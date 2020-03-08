@@ -36,18 +36,42 @@ $reportSettings = $mealOrder->store->reportSettings;
       <h1>
         {!! $mealOrder->html_title !!}
         </h1>
+        @if ($reportSettings->lab_description)
         <p>
-          @if ($reportSettings->lab_description)
         {!! $mealOrder->meal->description !!}
+        </p>
         @endif
-        </p><p>
+        @if ($reportSettings->lab_instructions)
+        <p>
         {!! $mealOrder->meal->instructions !!}
-        </p><p>
+        </p>
+        @endif
+        @if ($reportSettings->lab_customer)
+        <p>
         {!! $mealOrder->store->details->name !!}
-        </p><p>
+        </p>
+        @endif
+        @if ($reportSettings->lab_website)
+        <p>
         {!! $mealOrder->store->settings->website !!}
         </p>
-
+        @endif
+        <!-- @if ($reportSettings->lab_social)
+        <p>
+        {!! $mealOrder->store->settings->social !!}
+        </p>
+        @endif -->
+        <!-- @if ($reportSettings->lab_expiration)
+        <p>
+        {!! $mealOrder->meal->expiration !!}
+        </p>
+        @endif -->
+        @if ($reportSettings->lab_macros)
+          Calories: {!! $mealOrder->meal->macros->calories !!}
+          Proten: {!! $mealOrder->meal->macros->protein !!}
+          Fat: {!! $mealOrder->meal->macros->fat !!}
+          Carbs: {!! $mealOrder->meal->macros->carbs !!}
+        @endif
         @if ($reportSettings->lab_nutrition)
           <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
         @endif

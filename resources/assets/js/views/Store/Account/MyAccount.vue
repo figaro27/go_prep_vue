@@ -124,9 +124,18 @@
               ></b-form-input>
             </b-form-group>
 
-            <b-form-group label="About" :state="true">
-              <wysiwyg v-model="storeDetail.description" />
+            <b-form-group label="Social Media Handle" :state="true">
+              <b-form-input
+                type="text"
+                v-model="storeDetail.social"
+                placeholder="@name"
+                required
+              ></b-form-input>
             </b-form-group>
+
+            <!-- <b-form-group label="About" :state="true">
+              <wysiwyg v-model="storeDetail.description" />
+            </b-form-group> -->
 
             <b-button type="submit" variant="primary">Submit</b-button>
           </b-form>
@@ -240,7 +249,9 @@ export default {
     },
     updateStoreDetails() {
       let data = { ...this.storeDetails };
-
+      if (!data.social.includes("@")) {
+        data.social = "@" + data.social;
+      }
       this.asYouType();
 
       if (typeof data.logo !== "string") {
@@ -333,7 +344,7 @@ export default {
     },
     asYouType() {
       this.storeDetail.phone = this.storeDetail.phone.replace(/[^\d.-]/g, "");
-      this.storeDetail.phone = new AsYouType(this.store.details.country).input(
+      this.storeDetail.phone = new AsYouType(this.storeDetail.country).input(
         this.storeDetail.phone
       );
     }
