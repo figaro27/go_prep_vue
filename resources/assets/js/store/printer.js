@@ -196,6 +196,7 @@ const actions = {
    * @param {PrintJob} job
    */
   async addJob({ commit, state, dispatch, getters }, job) {
+    console.log(job);
     let printData = [
       {
         type: "pdf",
@@ -210,6 +211,7 @@ const actions = {
       orientation: "landscape",
       margins: job.margins,
       size: { ...job.size },
+      bounds: { width: job.size.width, height: job.size.height },
       units: "in",
       colorType: "grayscale",
       interpolation: "nearest-neighbor",

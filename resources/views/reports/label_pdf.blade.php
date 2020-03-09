@@ -44,7 +44,7 @@
         @endif
         @if ($reportSettings->lab_social)
         <p>
-        {!! $mealOrder->store->settings->social !!}
+        {!! $mealOrder->store->details->social !!}
         </p>
         @endif
         @if ($reportSettings->lab_expiration)
