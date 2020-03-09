@@ -22,10 +22,7 @@
       @endphp
 
 
-        @if ($reportSettings->lab_nutrition)
 
-          <div style="width:50%;float:left">
-        @endif
 
         <h5>
           {!! $mealOrder->html_title !!}
@@ -73,10 +70,9 @@
 
         @if ($reportSettings->lab_nutrition)
           
-          <div style="width:50%;float:left">
+          
             <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
-          </div>
-        
+          
         @endif
 
 
