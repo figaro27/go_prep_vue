@@ -86,7 +86,7 @@ class StripeController extends Controller
                 return 'Subscription not found';
             }
 
-            $subscription->cancel(false);
+            $subscription->cancel();
         }
     }
 }
