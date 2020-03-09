@@ -208,7 +208,6 @@ const actions = {
     const printerName = getters.getDevice;
     let config = qz.configs.create(printerName, {
       scaleContent: "true",
-      orientation: "landscape",
       margins: job.margins,
       size: { ...job.size },
       units: "in",
