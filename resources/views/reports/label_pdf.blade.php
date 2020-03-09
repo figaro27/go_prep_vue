@@ -14,7 +14,7 @@
   <script src="{{ asset(mix('/js/print.js')) }}"></script>
 </head>
 
-<body class="{{ $body_classes }}">
+
 
     @foreach($mealOrders as $i => $mealOrder)
       @php
@@ -24,7 +24,7 @@
 
         @if ($reportSettings->lab_nutrition)
 
-          <div style="width:50%">
+          <div style="width:50%;float:left">
         @endif
 
         <h5>
@@ -73,7 +73,7 @@
 
         @if ($reportSettings->lab_nutrition)
           
-          <div style="width:50%">
+          <div style="width:50%;float:left">
             <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
           </div>
         
@@ -83,6 +83,6 @@
     
     @endforeach
   </div>
-</body>
+
 
 </html>
