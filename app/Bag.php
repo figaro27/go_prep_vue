@@ -399,7 +399,11 @@ class Bag
                             }
                         }
                     }
-                    if ($item['size'] === null) {
+                    if (
+                        $item['size'] === null &&
+                        (is_array($item['meal']['meals']) ||
+                            is_object($item['meal']['meals']))
+                    ) {
                         foreach ($item['meal']['meals'] as $meal) {
                             // if (!$meals[$meal['id']]->active) {
                             //     //continue;

@@ -22,7 +22,8 @@ class StoreDetail extends Model implements HasMedia
         'state',
         'zip',
         'description',
-        'domain'
+        'domain',
+        'social'
     ];
 
     protected $appends = ['logo'];

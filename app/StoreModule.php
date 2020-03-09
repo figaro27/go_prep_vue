@@ -21,7 +21,8 @@ class StoreModule extends Model
         'cashOrderNoBalance' => 'boolean',
         'stockManagement' => 'boolean',
         'autoPrintPackingSlip' => 'boolean',
-        'showHotCheckbox' => 'boolean'
+        'showHotCheckbox' => 'boolean',
+        'mealExpiration' => 'boolean'
     ];
 
     protected $guarded = [];

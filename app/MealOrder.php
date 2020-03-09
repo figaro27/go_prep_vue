@@ -27,7 +27,8 @@ class MealOrder extends Pivot
         'unit_price',
         'instructions',
         'componentsFormat',
-        'addonsFormat'
+        'addonsFormat',
+        'expirationDate'
     ];
     protected $with = ['components', 'addons'];
 
@@ -423,5 +424,14 @@ class MealOrder extends Pivot
         }
         $addons = substr($addons, 0, -2);
         return $addons;
+    }
+
+    public function getExpirationDateAttribute()
+    {
+        $deliveryDate = new Carbon($this->order->delivery_date);
+        $expirationDate = $deliveryDate
+            ->addDays($this->meal->expirationDays)
+            ->format('D, m/d/Y');
+        return $expirationDate;
     }
 }

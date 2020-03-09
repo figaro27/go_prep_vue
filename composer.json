@@ -27,6 +27,7 @@
     "php-units-of-measure/php-units-of-measure": "^2.1",
     "predis/predis": "^1.1",
     "sentry/sentry-laravel": "1.0.1",
+    "spatie/browsershot": "^3.35",
     "spatie/laravel-medialibrary": "^7.6",
     "stripe/stripe-php": "^6.28",
     "tymon/jwt-auth": "1.0.*"

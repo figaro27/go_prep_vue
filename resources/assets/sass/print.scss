@@ -83,6 +83,12 @@ p {
   margin: 4px 0 4px 0;
 }
 
+.pagebreak,
+.achy-breaky {
+  clear: both;
+  page-break-after: always;
+}
+
 tr,
 td,
 th,

@@ -8,6 +8,9 @@ use App\Http\Requests\UpdateMealRequest;
 use App\Meal;
 use App\MealPackage;
 use App\MealMealPackage;
+use App\MealMealPackageSize;
+use App\MealMealPackageComponentOption;
+use App\MealMealPackageAddon;
 use App\MealSize;
 use Illuminate\Http\Request;
 
@@ -123,7 +126,8 @@ class MealController extends StoreController
                 'macros',
                 'production_group_id',
                 'salesTax',
-                'stock'
+                'stock',
+                'expirationDays'
             ]),
             'menu'
         );
@@ -177,32 +181,36 @@ class MealController extends StoreController
         }
 
         $mealMealPackages = MealMealPackage::where('meal_id', $mealId)->get();
-        $subCheck = false;
+        $mealMealPackageSizes = MealMealPackageSize::where(
+            'meal_id',
+            $mealId
+        )->get();
+        $mealMealPackageComponentOptions = MealMealPackageComponentOption::Where(
+            'meal_id',
+            $mealId
+        )->get();
+        $mealMealPackageAddons = MealMealPackageAddon::where(
+            'meal_id',
+            $mealId
+        )->get();
 
         foreach ($mealMealPackages as $mealMealPackage) {
-            $mealPackageId = $mealMealPackage->meal_package_id;
-            $packageMeals = MealMealPackage::where(
-                'meal_package_id',
-                $mealPackageId
-            )->get();
-            $quantity = $mealMealPackage->quantity;
-
-            foreach ($packageMeals as $packageMeal) {
-                if ($packageMeal->meal_id === $subId) {
-                    $subQuantity = $packageMeal->quantity;
-                    $packageMeal->update([
-                        'quantity' => $quantity + $subQuantity
-                    ]);
-                    $mealMealPackage->delete();
-                    $subCheck = true;
-                }
-            }
+            $mealMealPackage->update(['meal_id' => $subId]);
         }
 
-        if (!$subCheck) {
-            foreach ($mealMealPackages as $mealMealPackage) {
-                $mealMealPackage->update(['meal_id' => $subId]);
-            }
+        foreach ($mealMealPackageSizes as $mealMealPackageSize) {
+            $mealMealPackageSize->update(['meal_id' => $subId]);
+        }
+
+        foreach (
+            $mealMealPackageComponentOptions
+            as $mealMealPackageComponentOption
+        ) {
+            $mealMealPackageComponentOption->update(['meal_id' => $subId]);
+        }
+
+        foreach ($mealMealPackageAddons as $mealMealPackageAddon) {
+            $mealMealPackageAddon->update(['meal_id' => $subId]);
         }
 
         if ($this->store) {

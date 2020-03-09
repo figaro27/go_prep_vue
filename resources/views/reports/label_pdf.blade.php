@@ -1,10 +1,9 @@
 <html>
 
 <head>
+  <base href="{{ url('/') }}">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="{{ asset(mix('/css/print.css')) }}">
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.0.0/polyfill.min.js"></script>
 
   <script
   src="https://code.jquery.com/jquery-2.2.4.min.js"
@@ -15,31 +14,71 @@
   <script src="{{ asset(mix('/js/print.js')) }}"></script>
 </head>
 
-<body class="{{ $body_classes }}">
-  <div id="print-area">
-    <div class="unbreakable">
-      <h1>
-        {!! $mealOrder->html_title !!}
-        </h1>
+
+
+    @foreach($mealOrders as $i => $mealOrder)
+      @php
+      $reportSettings = $mealOrder->store->reportSettings;
+      @endphp
+
+
+
+        <!-- <img src="{{$logo}}"/> -->
+        <h5>
+          {!! $mealOrder->html_title !!}
+        </h5>
+        <br>
+        @if ($reportSettings->lab_description)
         <p>
         {!! $mealOrder->meal->description !!}
-        </p><p>
-        {!! $mealOrder->meal->instructions !!}
-        </p><p>
-        {!! $mealOrder->store->details->name !!}
-        </p><p>
+        </p>
+        @endif
+        
+        @if ($reportSettings->lab_website)
+        <p>
         {!! $mealOrder->store->settings->website !!}
         </p>
-
-        @if ($params['labelsNutrition'] === 'nutrition')
-          <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
         @endif
-    </div>
+        @if ($reportSettings->lab_social)
+        <p>
+        {!! $mealOrder->store->details->social !!}
+        </p>
+        @endif
+        @if ($reportSettings->lab_expiration)
+        <p>
+        Consume Before: {!! $mealOrder->expirationDate !!}
+        </p>
+        @endif
+        @if ($reportSettings->lab_instructions)
+        <p>
+        {!! $mealOrder->meal->instructions !!}
+        </p>
+        @endif
+        @if ($reportSettings->lab_customer)
+        <p>
+        <h6>Client: {!! $mealOrder->order->user->name !!}</h6>
+        </p>
+        @endif
+        
+
+        @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
+          Calories: {!! $mealOrder->meal->macros->calories !!}
+          Proten: {!! $mealOrder->meal->macros->protein !!}
+          Fat: {!! $mealOrder->meal->macros->fat !!}
+          Carbs: {!! $mealOrder->meal->macros->carbs !!}
+        @endif
+
+        @if ($reportSettings->lab_nutrition)
+          
+          
+            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
+          
+        @endif
+
+
+    
+    @endforeach
   </div>
 
-  <script>
-    window.status = "ready";
-  </script>
-</body>
 
 </html>

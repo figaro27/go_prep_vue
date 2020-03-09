@@ -456,6 +456,25 @@
                   :maxlength="150"
                   @change="e => updateMealInstructions(meal.id, e.target.value)"
                 ></textarea>
+
+                <h4 v-if="storeModules.mealExpiration" class="mt-4">
+                  Expiration
+                  <img
+                    v-b-popover.hover="
+                      'Set the number of expiration days after delivery to show the expiration date on your labels.'
+                    "
+                    title="Meal Expiration"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </h4>
+                <b-form-input
+                  v-if="storeModules.mealExpiration"
+                  v-model="meal.expirationDays"
+                  id="meal-instructions"
+                  class="form-control"
+                  type="number"
+                ></b-form-input>
               </b-tab>
 
               <b-tab title="Ingredients">
@@ -1406,7 +1425,8 @@ export default {
         components: this.meal.components,
         addons: this.meal.addons,
         macros: this.meal.macros,
-        salesTax: this.meal.salesTax
+        salesTax: this.meal.salesTax,
+        expirationDays: this.meal.expirationDays
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 

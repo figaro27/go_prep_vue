@@ -115,6 +115,9 @@ const state = {
     module_settings: {
       data: {}
     },
+    report_settings: {
+      data: {}
+    },
     meals: {
       data: {}
     },
@@ -773,6 +776,10 @@ const mutations = {
     state.store.module_settings.data = moduleSettings;
   },
 
+  storeReportSettings(state, { reportSettings }) {
+    state.store.report_settings.data = reportSettings;
+  },
+
   storeCoupons(state, { coupons }) {
     state.store.coupons.data = coupons;
   },
@@ -1323,6 +1330,16 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (
+        !_.isEmpty(data.store.report_settings) &&
+        _.isObject(data.store.report_settings)
+      ) {
+        let reportSettings = data.store.report_settings;
+        commit("storeReportSettings", { reportSettings });
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.ordersToday) && _.isObject(data.ordersToday)) {
         let orders = data.ordersToday;
         commit("storeOrdersToday", { orders });
@@ -1856,6 +1873,17 @@ const actions = {
       commit("storeModuleSettings", { modules: data });
     } else {
       throw new Error("Failed to retrieve modules");
+    }
+  },
+
+  async refreshStoreReportSettings({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/reportSettings");
+    const { data } = await res;
+
+    if (_.isObject(data)) {
+      commit("storeReportSettings", { report_settings: data });
+    } else {
+      throw new Error("Failed to retrieve report settings");
     }
   },
 
@@ -2840,6 +2868,13 @@ const getters = {
       return {};
     }
   },
+  viewedStoreReportSettings: state => {
+    try {
+      return state.viewed_store.report_settings || {};
+    } catch (e) {
+      return {};
+    }
+  },
   viewedStoreDeliveryDays: state => {
     return state.viewed_store.delivery_days || [];
   },
@@ -3236,6 +3271,13 @@ const getters = {
   storeModuleSettings: state => {
     try {
       return state.store.module_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeReportSettings: state => {
+    try {
+      return state.store.report_settings.data || {};
     } catch (e) {
       return {};
     }

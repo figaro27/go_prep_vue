@@ -71,6 +71,7 @@ class SpaController extends Controller
                         'settings',
                         'modules',
                         'moduleSettings',
+                        'reportSettings',
                         'details',
                         'coupons',
                         'giftCards',
@@ -114,7 +115,8 @@ class SpaController extends Controller
                         'productionGroups',
                         'lineItems',
                         'modules',
-                        'moduleSettings'
+                        'moduleSettings',
+                        'reportSettings'
                     ])
                     ->first();
 
@@ -137,6 +139,7 @@ class SpaController extends Controller
                         'settings',
                         'modules',
                         'moduleSettings',
+                        'reportSettings',
                         'details',
                         'coupons',
                         'giftCards',
@@ -257,7 +260,8 @@ class SpaController extends Controller
                     'productionGroups',
                     'lineItems',
                     'modules',
-                    'moduleSettings'
+                    'moduleSettings',
+                    'reportSettings'
                 ])
                 ->first();
 
@@ -278,6 +282,7 @@ class SpaController extends Controller
                     'settings',
                     'modules',
                     'moduleSettings',
+                    'reportSettings',
                     'details',
                     'giftCards',
                     'pickupLocations',
@@ -1134,7 +1139,8 @@ class SpaController extends Controller
                 'pickupLocations',
                 'lineItems',
                 'modules',
-                'moduleSettings'
+                'moduleSettings',
+                'reportSettings'
             ])
                 ->without([])
                 ->find(STORE_ID)

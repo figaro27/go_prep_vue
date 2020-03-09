@@ -360,6 +360,15 @@ foreach (
 
                             Route::resource('modules', 'StoreModuleController');
 
+                            Route::resource(
+                                'reportSettings',
+                                'ReportSettingController'
+                            );
+                            Route::post(
+                                'updateReportSettings',
+                                'ReportSettingController@updateReportSettings'
+                            );
+
                             Route::get(
                                 'getApplicationFee',
                                 'StoreSettingController@getApplicationFee'

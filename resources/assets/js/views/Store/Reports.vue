@@ -267,6 +267,13 @@
                 >
                   Print
                 </button>
+
+                <button
+                  @click="print('labels', 'pdf')"
+                  class="btn btn-primary btn-md mt-2"
+                >
+                  Print PDF
+                </button>
               </div>
             </div>
           </div>
@@ -328,25 +335,111 @@
       </div>
     </div>
     <b-modal
-      size="md"
+      size="lg"
       title="Labels Settings"
       v-model="showSettingsModal.labels"
       v-if="showSettingsModal.labels"
       no-fade
     >
-      <b-form-group class="mt-3">
-        <b-form-radio-group v-model="labelsNutrition">
-          <b-form-radio value="none">Don't Show Nutrition</b-form-radio>
-          <b-form-radio value="macros">Show Macros Only</b-form-radio>
-          <b-form-radio value="nutrition"
-            >Show Full Nutrition Facts</b-form-radio
-          >
-        </b-form-radio-group>
-      </b-form-group>
+      <p class="strong">Show the Following on the Label:</p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_nutrition"
+          >Nutrition</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_macros"
+          >Macros</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_logo"
+          >Logo</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_website"
+          >Website</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_social"
+          >Social Media Handle</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_customer"
+          >Customer Name</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_description"
+          >Meal Description</b-form-checkbox
+        >
+      </p>
+      <p>
+        <b-form-checkbox v-model="reportSettings.lab_instructions"
+          >Meal Instructions</b-form-checkbox
+        >
+      </p>
+      <p v-if="store.modules.mealExpiration">
+        <b-form-checkbox v-model="reportSettings.lab_expiration"
+          >Meal Expiration</b-form-checkbox
+        >
+      </p>
 
-      <b-form-group label="Label Size" class="mt-3">
-        <b-select v-model="labelSize" :options="labelSizeOptions"></b-select>
-      </b-form-group>
+      <div class="row">
+        <div class="col-md-6">
+          <b-form-group label="Label Size" class="mt-3">
+            <b-input-group size="md" append="in">
+              <b-input
+                v-model="reportSettings.lab_width"
+                class="d-inline-block"
+                type="number"
+              />
+              <b-input
+                v-model="reportSettings.lab_height"
+                class="d-inline-block"
+                type="number"
+              />
+            </b-input-group>
+          </b-form-group>
+        </div>
+
+        <div class="col-md-6">
+          <b-form-group label="Label Margins" class="mt-3">
+            <b-input-group size="md" append="top">
+              <b-input
+                v-model="reportSettings.lab_margin_top"
+                class="d-inline-block"
+                type="number"
+              />
+            </b-input-group>
+            <b-input-group size="md" append="right">
+              <b-input
+                v-model="reportSettings.lab_margin_right"
+                type="number"
+              />
+            </b-input-group>
+            <b-input-group size="md" append="bottom">
+              <b-input
+                v-model="reportSettings.lab_margin_bottom"
+                class="d-inline-block"
+                type="number"
+              />
+            </b-input-group>
+            <b-input-group size="md" append="left">
+              <b-input
+                v-model="reportSettings.lab_margin_left"
+                class="d-inline-block"
+                type="number"
+              />
+            </b-input-group>
+          </b-form-group>
+        </div>
+      </div>
+
+      <b-btn variant="primary" @click="updateReportSettings">Save</b-btn>
     </b-modal>
   </div>
 </template>
@@ -387,7 +480,6 @@ export default {
       showSettingsModal: {
         labels: false
       },
-      labelsNutrition: "none",
       labelSize: {
         width: 4,
         height: 6
@@ -444,7 +536,8 @@ export default {
       store: "viewedStore",
       orders: "storeOrders",
       isLoading: "isLoading",
-      pickupLocations: "viewedStorePickupLocations"
+      pickupLocations: "viewedStorePickupLocations",
+      reportSettings: "storeReportSettings"
     }),
     pickupLocationOptions() {
       return this.pickupLocations.map(loc => {
@@ -472,7 +565,7 @@ export default {
   mixins: [checkDateRange, printer],
   async mounted() {},
   methods: {
-    ...mapActions(["printer/connect"]),
+    ...mapActions(["printer/connect", "refreshStoreReportSettings"]),
 
     async print(report, format = "pdf", page = 1) {
       let params = { page };
@@ -528,8 +621,9 @@ export default {
       params.byOrderDate = 0;
 
       params.labelsNutrition = this.labelsNutrition;
-      params.width = this.labelSize.width;
-      params.height = this.labelSize.height;
+
+      params.width = this.reportSettings.lab_width;
+      params.height = this.reportSettings.lab_height;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
@@ -540,15 +634,16 @@ export default {
 
           if (format === "b64") {
             const size = new PrintSize(
-              this.labelSize.width,
-              this.labelSize.height
+              this.reportSettings.lab_width,
+              this.reportSettings.lab_height
             );
-            const job = new PrintJob(data.url, size, {
-              top: 0.25,
-              right: 0.25,
-              bottom: 0.25,
-              left: 0.25
-            });
+            const margins = {
+              top: this.reportSettings.lab_margin_top,
+              right: this.reportSettings.lab_margin_right,
+              bottom: this.reportSettings.lab_margin_bottom,
+              left: this.reportSettings.lab_margin_left
+            };
+            const job = new PrintJob(data.url, size, margins);
 
             this.printerAddJob(job);
           } else if (!_.isEmpty(data.url)) {
@@ -686,6 +781,20 @@ export default {
           this.showSettingsModal.labels = true;
           break;
       }
+    },
+    updateReportSettings() {
+      let settings = { ...this.reportSettings };
+      axios
+        .post("/api/me/updateReportSettings", settings)
+        .then(response => {
+          this.refreshStoreReportSettings();
+          this.$toastr.s("Your settings have been saved.", "Success");
+        })
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
+          this.$toastr.w(error);
+        });
     }
   }
 };

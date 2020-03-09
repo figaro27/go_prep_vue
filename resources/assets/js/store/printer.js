@@ -196,6 +196,7 @@ const actions = {
    * @param {PrintJob} job
    */
   async addJob({ commit, state, dispatch, getters }, job) {
+    console.log(job);
     let printData = [
       {
         type: "pdf",
@@ -206,9 +207,10 @@ const actions = {
 
     const printerName = getters.getDevice;
     let config = qz.configs.create(printerName, {
-      scaleContent: false,
+      scaleContent: "true",
+      orientation: "landscape",
       margins: job.margins,
-      size: job.size,
+      size: { ...job.size },
       units: "in",
       colorType: "grayscale",
       interpolation: "nearest-neighbor",
