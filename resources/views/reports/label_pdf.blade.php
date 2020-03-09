@@ -23,8 +23,8 @@
       <div class="achy-breaky" style="max-height: 100vh; overflow: hidden;">
 
         @if ($reportSettings->lab_nutrition)
-        <div class="row">
-          <div class="col-6">
+
+          <div style="width:50%">
         @endif
 
         <h5>
@@ -73,10 +73,10 @@
 
         @if ($reportSettings->lab_nutrition)
           </div>
-          <div class="col-6">
+          <div style="width:50%">
             <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
           </div>
-        </div>
+        
         @endif
 
 
