@@ -21,6 +21,12 @@
       $reportSettings = $mealOrder->store->reportSettings;
       @endphp
       <div class="achy-breaky" style="max-height: 100vh; overflow: hidden;">
+
+        @if ($reportSettings->lab_nutrition)
+        <div class="row">
+          <div class="col-6">
+        @endif
+
         <h4>
           {!! $mealOrder->html_title !!}
         </h4>
@@ -64,8 +70,14 @@
         @endif
 
         @if ($reportSettings->lab_nutrition)
-        <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
+          </div>
+          <div class="col-6">
+            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
+          </div>
+        </div>
         @endif
+
+
       </div>
     @endforeach
   </div>
