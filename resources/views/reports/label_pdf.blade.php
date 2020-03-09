@@ -27,25 +27,16 @@
           <div class="col-6">
         @endif
 
-        <h4>
+        <h5>
           {!! $mealOrder->html_title !!}
-        </h4>
-
+        </h5>
+        <br>
         @if ($reportSettings->lab_description)
         <p>
         {!! $mealOrder->meal->description !!}
         </p>
         @endif
-        @if ($reportSettings->lab_instructions)
-        <p>
-        {!! $mealOrder->meal->instructions !!}
-        </p>
-        @endif
-        @if ($reportSettings->lab_customer)
-        <p>
-        {!! $mealOrder->store->details->name !!}
-        </p>
-        @endif
+        
         @if ($reportSettings->lab_website)
         <p>
         {!! $mealOrder->store->settings->website !!}
@@ -60,6 +51,17 @@
         <p>
         Consume Before: {!! $mealOrder->expirationDate !!}
         </p>
+        @endif
+        @if ($reportSettings->lab_instructions)
+        <p>
+        {!! $mealOrder->meal->instructions !!}
+        </p>
+        @endif
+        @if ($reportSettings->lab_customer)
+        <p>
+        <h6>Client: {!! $mealOrder->order->user->name !!}</h6>
+        </p>
+        @endif
         @endif
 
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
