@@ -12,7 +12,6 @@ use Illuminate\Support\Carbon;
 use mikehaertl\wkhtmlto\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-use Nesk\Puphpeteer\Puppeteer;
 use Spatie\Browsershot\Browsershot;
 
 class Labels
@@ -126,11 +125,8 @@ class Labels
         $width = $this->params->get('width', 4);
         $height = $this->params->get('height', 6);
 
-        $puppeteer = new Puppeteer();
-        $browser = $puppeteer->launch();
-
         $vars = [
-            'mealOrders' => $mealOrders,
+            'mealOrders' => $mealOrders->slice(0, 1),
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
             'body_classes' => implode(' ', [$this->orientation])
@@ -146,8 +142,6 @@ class Labels
 
         $output = $page->pdf();
         Log::info('Saved to ' . $filename);
-
-        $browser->close();
 
         if ($type === 'pdf') {
             Storage::disk('local')->put($filename, $output);

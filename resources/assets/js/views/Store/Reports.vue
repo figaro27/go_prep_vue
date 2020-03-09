@@ -405,6 +405,38 @@
             </b-input-group>
           </b-form-group>
         </div>
+
+        <div class="col-md-6">
+          <b-form-group label="Label Margins" class="mt-3">
+            <b-input-group size="md" append="top">
+              <b-input
+                v-model="reportSettings.lab_margin_top"
+                class="d-inline-block"
+                type="number"
+              />
+            </b-input-group>
+            <b-input-group size="md" append="right">
+              <b-input
+                v-model="reportSettings.lab_margin_right"
+                type="number"
+              />
+            </b-input-group>
+            <b-input-group size="md" append="bottom">
+              <b-input
+                v-model="reportSettings.lab_margin_bottom"
+                class="d-inline-block"
+                type="number"
+              />
+            </b-input-group>
+            <b-input-group size="md" append="left">
+              <b-input
+                v-model="reportSettings.lab_margin_left"
+                class="d-inline-block"
+                type="number"
+              />
+            </b-input-group>
+          </b-form-group>
+        </div>
       </div>
 
       <b-btn variant="primary" @click="updateReportSettings">Save</b-btn>
@@ -605,12 +637,13 @@ export default {
               this.reportSettings.lab_width,
               this.reportSettings.lab_height
             );
-            const job = new PrintJob(data.url, size, {
-              top: 0.25,
-              right: 0.25,
-              bottom: 0.25,
-              left: 0.25
-            });
+            const margins = {
+              top: this.reportSettings.lab_margin_top,
+              right: this.reportSettings.lab_margin_right,
+              bottom: this.reportSettings.lab_margin_bottom,
+              left: this.reportSettings.lab_margin_left
+            };
+            const job = new PrintJob(data.url, size, margins);
 
             this.printerAddJob(job);
           } else if (!_.isEmpty(data.url)) {
