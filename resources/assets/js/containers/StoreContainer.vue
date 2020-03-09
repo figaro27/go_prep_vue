@@ -32,7 +32,7 @@
         <b-nav-item class="d-md-down-none">
           <DefaultHeaderDropdown/>
         </b-nav-item>-->
-        <!-- <PrinterNav /> -->
+        <PrinterNav />
         <StoreDropdown />
       </b-navbar-nav>
       <!-- <AsideToggler class="d-none d-lg-block" /> -->
