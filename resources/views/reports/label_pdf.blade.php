@@ -23,7 +23,7 @@
 
 
 
-
+        <img src="{{$logo}}"/>
         <h5>
           {!! $mealOrder->html_title !!}
         </h5>

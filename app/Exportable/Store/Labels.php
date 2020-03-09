@@ -122,14 +122,23 @@ class Labels
 
         $filename = 'public/' . md5(time()) . '.pdf';
 
-        $width = $this->params->get('width', 4);
-        $height = $this->params->get('height', 6);
+        $width = $this->store->reportSettings->lab_width;
+        $height = $this->store->reportSettings->lab_height;
+
+        try {
+            $logo = \App\Utils\Images::encodeB64(
+                $this->store->details->logo['url']
+            );
+        } catch (\Exception $e) {
+            $logo = $this->store->details->logo['url'];
+        }
 
         $vars = [
             'mealOrders' => $mealOrders->slice(0, 1),
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
-            'body_classes' => implode(' ', [$this->orientation])
+            'body_classes' => implode(' ', [$this->orientation]),
+            'logo' => $logo
         ];
 
         $html = view($this->exportPdfView(), $vars)->render();
