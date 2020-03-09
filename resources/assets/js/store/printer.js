@@ -205,15 +205,7 @@ const actions = {
     ];
 
     const printerName = getters.getDevice;
-    let config = qz.configs.create(printerName, {
-      scaleContent: "true",
-      margins: job.margins,
-      //size: { ...job.size },
-      units: "in",
-      colorType: "grayscale",
-      interpolation: "nearest-neighbor",
-      rasterize: "false"
-    });
+    let config = qz.configs.create(printerName, {});
 
     try {
       await qz.print(config, printData);

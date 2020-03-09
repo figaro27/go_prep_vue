@@ -784,7 +784,6 @@ export default {
     },
     updateReportSettings() {
       let settings = { ...this.reportSettings };
-      console.log(settings);
       axios
         .post("/api/me/updateReportSettings", settings)
         .then(response => {

@@ -14,7 +14,7 @@ class ReportSettingController extends StoreController
      */
     public function index()
     {
-        //
+        return $this->store->reportSettings();
     }
 
     /**
