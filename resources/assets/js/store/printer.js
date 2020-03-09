@@ -208,7 +208,7 @@ const actions = {
     const printerName = getters.getDevice;
     let config = qz.configs.create(printerName, {
       scaleContent: "true",
-      orientation: "landscape",
+      orientation: "portrait",
       margins: job.margins,
       size: { ...job.size },
       bounds: { width: job.size.width, height: job.size.height },
