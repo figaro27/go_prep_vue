@@ -267,6 +267,13 @@
                 >
                   Print
                 </button>
+
+                <button
+                  @click="print('labels', 'pdf')"
+                  class="btn btn-primary btn-md mt-2"
+                >
+                  Print PDF
+                </button>
               </div>
             </div>
           </div>
@@ -381,13 +388,26 @@
         >
       </p>
 
+      <div class="row">
+        <div class="col-md-6">
+          <b-form-group label="Label Size" class="mt-3">
+            <b-input-group size="md" append="in">
+              <b-input
+                v-model="reportSettings.lab_width"
+                class="d-inline-block"
+                type="number"
+              />
+              <b-input
+                v-model="reportSettings.lab_height"
+                class="d-inline-block"
+                type="number"
+              />
+            </b-input-group>
+          </b-form-group>
+        </div>
+      </div>
+
       <b-btn variant="primary" @click="updateReportSettings">Save</b-btn>
-      <b-form-group label="Label Size" class="mt-3">
-        <b-select
-          v-model="reportSettings.lab_size"
-          :options="labelSizeOptions"
-        ></b-select>
-      </b-form-group>
     </b-modal>
   </div>
 </template>
@@ -569,8 +589,9 @@ export default {
       params.byOrderDate = 0;
 
       params.labelsNutrition = this.labelsNutrition;
-      params.width = this.labelSize.width;
-      params.height = this.labelSize.height;
+
+      params.width = this.reportSettings.lab_width;
+      params.height = this.reportSettings.lab_height;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
@@ -581,8 +602,8 @@ export default {
 
           if (format === "b64") {
             const size = new PrintSize(
-              this.labelSize.width,
-              this.labelSize.height
+              this.reportSettings.lab_width,
+              this.reportSettings.lab_height
             );
             const job = new PrintJob(data.url, size, {
               top: 0.25,

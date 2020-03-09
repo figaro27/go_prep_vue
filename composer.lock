@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9116c62e973daed758e9225137d7a11f",
+    "content-hash": "128eb703c3b027fde0ff517b96dd7542",
     "packages": [
         {
             "name": "ajcastro/eager-load-pivot-relations",
@@ -148,12 +148,12 @@
             "version": "v0.11.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/barryvdh/laravel-cors.git",
+                "url": "https://github.com/fruitcake/laravel-cors.git",
                 "reference": "03492f1a3bc74a05de23f93b94ac7cc5c173eec9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-cors/zipball/03492f1a3bc74a05de23f93b94ac7cc5c173eec9",
+                "url": "https://api.github.com/repos/fruitcake/laravel-cors/zipball/03492f1a3bc74a05de23f93b94ac7cc5c173eec9",
                 "reference": "03492f1a3bc74a05de23f93b94ac7cc5c173eec9",
                 "shasum": ""
             },
@@ -295,6 +295,61 @@
             ],
             "description": "PHP binding for v4 of the Cloudflare Client API.",
             "time": "2019-06-07T15:34:38+00:00"
+        },
+        {
+            "name": "clue/socket-raw",
+            "version": "v1.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clue/php-socket-raw.git",
+                "reference": "00ab102d061f6cdb895e79dd4d69140c7bda31cc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clue/php-socket-raw/zipball/00ab102d061f6cdb895e79dd4d69140c7bda31cc",
+                "reference": "00ab102d061f6cdb895e79dd4d69140c7bda31cc",
+                "shasum": ""
+            },
+            "require": {
+                "ext-sockets": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.0 || ^6.0 || ^5.2 || ^4.8.35"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Socket\\Raw\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@clue.engineering"
+                }
+            ],
+            "description": "Simple and lightweight OOP wrapper for PHP's low-level sockets extension (ext-sockets)",
+            "homepage": "https://github.com/clue/php-socket-raw",
+            "keywords": [
+                "Socket",
+                "client",
+                "datagram",
+                "dgram",
+                "icmp",
+                "ipv6",
+                "server",
+                "stream",
+                "tcp",
+                "udg",
+                "udp",
+                "unix"
+            ],
+            "time": "2019-10-28T12:32:07+00:00"
         },
         {
             "name": "clue/stream-filter",
@@ -2042,6 +2097,7 @@
                 "TLDExtract",
                 "domain parser"
             ],
+            "abandoned": true,
             "time": "2019-02-11T14:37:05+00:00"
         },
         {
@@ -2085,6 +2141,7 @@
                 }
             ],
             "description": "Support package for TLDDatabase and TLDExtract",
+            "abandoned": true,
             "time": "2016-06-18T12:28:04+00:00"
         },
         {
@@ -2760,6 +2817,115 @@
                 "time"
             ],
             "time": "2019-06-11T09:07:59+00:00"
+        },
+        {
+            "name": "nesk/puphpeteer",
+            "version": "1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nesk/puphpeteer.git",
+                "reference": "21adf25d320f32b005cb3e2f9026616566015fcc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nesk/puphpeteer/zipball/21adf25d320f32b005cb3e2f9026616566015fcc",
+                "reference": "21adf25d320f32b005cb3e2f9026616566015fcc",
+                "shasum": ""
+            },
+            "require": {
+                "nesk/rialto": "^1.2.0",
+                "php": ">=7.1",
+                "psr/log": "^1.0",
+                "vierbergenlars/php-semver": "^3.0.2"
+            },
+            "require-dev": {
+                "codedungeon/phpunit-result-printer": ">=0.6 <1.0",
+                "monolog/monolog": "^1.23",
+                "phpunit/phpunit": "^6.5|^7.0",
+                "symfony/process": "^4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nesk\\Puphpeteer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Johann Pardanaud",
+                    "email": "pardanaud.j@gmail.com"
+                }
+            ],
+            "description": "A Puppeteer bridge for PHP, supporting the entire API.",
+            "keywords": [
+                "automation",
+                "developer-tools",
+                "headless-chrome",
+                "php",
+                "puppeteer",
+                "testing",
+                "web"
+            ],
+            "time": "2019-06-24T11:12:21+00:00"
+        },
+        {
+            "name": "nesk/rialto",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nesk/rialto.git",
+                "reference": "2403adc6b5f8fd4114d1ec00d9cce2e6ce3a5656"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nesk/rialto/zipball/2403adc6b5f8fd4114d1ec00d9cce2e6ce3a5656",
+                "reference": "2403adc6b5f8fd4114d1ec00d9cce2e6ce3a5656",
+                "shasum": ""
+            },
+            "require": {
+                "clue/socket-raw": "^1.2",
+                "php": ">=7.1",
+                "psr/log": "^1.0",
+                "symfony/process": "^3.3|^4.0"
+            },
+            "require-dev": {
+                "codedungeon/phpunit-result-printer": ">=0.6 <1.0",
+                "monolog/monolog": "^1.23",
+                "phpunit/phpunit": "^6.5|^7.0"
+            },
+            "suggest": {
+                "ext-weakref": "Required to run all the tests"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nesk\\Rialto\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Johann Pardanaud",
+                    "email": "pardanaud.j@gmail.com"
+                }
+            ],
+            "description": "Manage Node resources from PHP",
+            "keywords": [
+                "Bridge",
+                "Socket",
+                "communication",
+                "node",
+                "php",
+                "wrapper"
+            ],
+            "time": "2019-03-14T20:16:03+00:00"
         },
         {
             "name": "nexmo/client",
@@ -4333,6 +4499,62 @@
                 "sentry"
             ],
             "time": "2019-03-15T11:50:41+00:00"
+        },
+        {
+            "name": "spatie/browsershot",
+            "version": "3.35.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/browsershot.git",
+                "reference": "adb9e91c409462152b0baff473b2fa47cf413150"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/browsershot/zipball/adb9e91c409462152b0baff473b2fa47cf413150",
+                "reference": "adb9e91c409462152b0baff473b2fa47cf413150",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1",
+                "spatie/image": "^1.5.3",
+                "spatie/temporary-directory": "^1.1",
+                "symfony/process": "^4.2|^5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.1|^7.5",
+                "spatie/phpunit-snapshot-assertions": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Browsershot\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://github.com/freekmurze",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Convert a webpage to an image or pdf using headless Chrome",
+            "homepage": "https://github.com/spatie/browsershot",
+            "keywords": [
+                "chrome",
+                "convert",
+                "headless",
+                "image",
+                "pdf",
+                "puppeteer",
+                "screenshot",
+                "webpage"
+            ],
+            "time": "2020-03-05T08:48:51+00:00"
         },
         {
             "name": "spatie/image",
@@ -6330,6 +6552,58 @@
             "time": "2019-09-09T03:33:47+00:00"
         },
         {
+            "name": "vierbergenlars/php-semver",
+            "version": "3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vierbergenlars/php-semver.git",
+                "reference": "be22b86be4c1133acc42fd1685276792024af5f9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vierbergenlars/php-semver/zipball/be22b86be4c1133acc42fd1685276792024af5f9",
+                "reference": "be22b86be4c1133acc42fd1685276792024af5f9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4"
+            },
+            "bin": [
+                "bin/semver",
+                "bin/update-versions"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "vierbergenlars\\SemVer\\": "src/",
+                    "vierbergenlars\\LibJs\\": "src/"
+                },
+                "classmap": [
+                    "src/vierbergenlars/SemVer/internal.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lars Vierbergen",
+                    "email": "vierbergenlars@gmail.com"
+                }
+            ],
+            "description": "The Semantic Versioner for PHP",
+            "keywords": [
+                "semantic",
+                "semver",
+                "versioning"
+            ],
+            "time": "2017-07-11T09:53:59+00:00"
+        },
+        {
             "name": "vlucas/phpdotenv",
             "version": "v2.6.1",
             "source": {
@@ -6444,6 +6718,7 @@
                 "psr",
                 "psr-7"
             ],
+            "abandoned": "laminas/laminas-diactoros",
             "time": "2019-07-10T16:13:25+00:00"
         }
     ],

@@ -12,6 +12,8 @@ use Illuminate\Support\Carbon;
 use mikehaertl\wkhtmlto\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Nesk\Puphpeteer\Puppeteer;
+use Spatie\Browsershot\Browsershot;
 
 class Labels
 {
@@ -124,71 +126,30 @@ class Labels
         $width = $this->params->get('width', 4);
         $height = $this->params->get('height', 6);
 
-        $pdfConfig = [
-            'encoding' => 'utf-8',
-            'orientation' => $this->orientation,
-            'page-width' => $width . 'in',
-            'page-height' => $height . 'in',
-            'no-outline',
-            //'disable-smart-shrinking',
-            'no-pdf-compression',
-            'javascript-delay' => 2000,
-            //'window-status' => 'ready',
-            'debug-javascript',
-            'margin-top' => 0,
-            'margin-bottom' => 0,
-            'margin-left' => 0,
-            'margin-right' => 0,
-            'enable-external-links',
-            'enable-internal-links',
-            'load-error-handling ignore',
-            'no-stop-slow-scripts'
-        ];
-
-        if (config('pdf.xserver')) {
-            $pdfConfig = array_merge($pdfConfig, [
-                'use-xserver',
-                'commandOptions' => array(
-                    'enableXvfb' => true
-                )
-            ]);
-        }
-
-        Log::info($pdfConfig);
-
-        $pdf = new Pdf($pdfConfig);
-        $pdf->ignoreWarnings = true;
+        $puppeteer = new Puppeteer();
+        $browser = $puppeteer->launch();
 
         $vars = [
-            'mealOrder' => null,
+            'mealOrders' => $mealOrders,
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
             'body_classes' => implode(' ', [$this->orientation])
         ];
 
-        Log::info($vars);
+        $html = view($this->exportPdfView(), $vars)->render();
+        Log::info('Page HTML: ' . $html);
 
-        foreach ($mealOrders as $i => $order) {
-            $vars['mealOrder'] = $order;
-            $html = view($this->exportPdfView(), $vars)->render();
-            Log::info('Page HTML: ' . $html);
-            $pdf->addPage($html);
-        }
+        $page = Browsershot::html($html)
+            ->paperSize($width, $height, 'in')
+            ->waitUntilNetworkIdle()
+            ->waitForFunction('window.status === "ready"', 100, 3000);
 
-        $output = $pdf->toString();
-        $consoleOutput = $pdf->getCommand()->getOutput(false);
-
-        Log::info('Console output: ' . $consoleOutput);
-        //Log::info('Output: ' . $output);
-
-        if ($pdf->getError()) {
-            Log::error('Error: ' . $pdf->getError());
-        }
-
+        $output = $page->pdf();
         Log::info('Saved to ' . $filename);
 
+        $browser->close();
+
         if ($type === 'pdf') {
-            // || $type === 'b64') {
             Storage::disk('local')->put($filename, $output);
             return Storage::url($filename);
         } elseif ($type === 'b64') {
