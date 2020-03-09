@@ -206,7 +206,7 @@ const actions = {
 
     const printerName = getters.getDevice;
     let config = qz.configs.create(printerName, {
-      scaleContent: "false",
+      scaleContent: "true",
       margins: job.margins,
       //size: { ...job.size },
       units: "in",
