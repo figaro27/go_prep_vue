@@ -810,29 +810,41 @@ class Subscription extends Model
         }
 
         $items = $this->fresh()->meal_subscriptions->map(function ($meal) {
-            $price = $meal->meal_size
-                ? $meal->meal_size->price
-                : $meal->meal->price;
-            foreach ($meal->components as $component) {
-                $price += $component->option->price;
+            if (!$meal->meal_package) {
+                $price = $meal->meal_size
+                    ? $meal->meal_size->price
+                    : $meal->meal->price;
+                foreach ($meal->components as $component) {
+                    $price += $component->option->price;
+                }
+                foreach ($meal->addons as $addon) {
+                    $price += $addon->addon->price;
+                }
+                return [
+                    'quantity' => $meal->quantity,
+                    'meal' => $meal->meal,
+                    'price' => $price
+                ];
             }
-            foreach ($meal->addons as $addon) {
-                $price += $addon->addon->price;
-            }
-            return [
-                'quantity' => $meal->quantity,
-                'meal' => $meal->meal,
-                'price' => $price
-            ];
         });
 
         $store = $this->store;
 
         $bag = new Bag($items, $store);
 
-        $total = $bag->getTotal();
-        $afterDiscountBeforeFees = $bag->getTotal();
-        $preFeePreDiscount = $bag->getTotal();
+        $prePackagePrice = $bag->getTotal();
+
+        $totalPackagePrice = 0;
+        foreach (
+            $this->fresh()->meal_package_subscriptions
+            as $mealPackageSub
+        ) {
+            $totalPackagePrice += $mealPackageSub->price;
+        }
+
+        $total = $prePackagePrice + $totalPackagePrice;
+        $afterDiscountBeforeFees = $prePackagePrice + $totalPackagePrice;
+        $preFeePreDiscount = $prePackagePrice + $totalPackagePrice;
 
         $deliveryFee = $this->deliveryFee;
         $processingFee = 0;
@@ -1000,6 +1012,21 @@ class Subscription extends Model
                             'meal_addon_id' => $addon->addon->id
                         ]);
                     }
+                }
+            }
+
+            // Add new meal orders that exist in meal package orders that didn't get processed in the bag above.
+            foreach ($items as $item) {
+                if ($item->meal_package) {
+                    $mealOrder = new MealOrder();
+                    $mealOrder->order_id = $order->id;
+                    $mealOrder->store_id = $this->store->id;
+                    $mealOrder->meal_id = $item->meal_id;
+                    $mealOrder->meal_size_id = $item->meal_size_id;
+                    // $mealOrder->price = $item->price;
+                    $mealOrder->quantity = $item->quantity;
+                    $mealOrder->meal_package = 1;
+                    $mealOrder->save();
                 }
             }
         }
