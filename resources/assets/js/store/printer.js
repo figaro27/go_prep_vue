@@ -208,7 +208,7 @@ const actions = {
     let config = qz.configs.create(printerName, {
       scaleContent: "false",
       margins: job.margins,
-      size: { ...job.size },
+      //size: { ...job.size },
       units: "in",
       colorType: "grayscale",
       interpolation: "nearest-neighbor",
