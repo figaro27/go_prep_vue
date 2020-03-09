@@ -62,7 +62,7 @@
         <h6>Client: {!! $mealOrder->order->user->name !!}</h6>
         </p>
         @endif
-        @endif
+        
 
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
