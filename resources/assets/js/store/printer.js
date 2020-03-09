@@ -209,13 +209,13 @@ const actions = {
     let config = qz.configs.create(printerName, {
       // scaleContent: "true",
       orientation: "landscape",
-      // margins: job.margins,
+      margins: job.margins,
       size: { ...job.size },
       // bounds: { width: job.size.width, height: job.size.height },
       units: "in",
       colorType: "grayscale",
       // interpolation: "nearest-neighbor",
-      rasterize: "false"
+      rasterize: "true"
     });
 
     try {

@@ -15,12 +15,12 @@
 </head>
 
 <body class="{{ $body_classes }}">
-  <div id="print-area">
+
     @foreach($mealOrders as $i => $mealOrder)
       @php
       $reportSettings = $mealOrder->store->reportSettings;
       @endphp
-      <div class="achy-breaky" style="max-height: 100vh; overflow: hidden;">
+
 
         @if ($reportSettings->lab_nutrition)
 
@@ -72,7 +72,7 @@
         @endif
 
         @if ($reportSettings->lab_nutrition)
-          </div>
+          
           <div style="width:50%">
             <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
           </div>
@@ -80,7 +80,7 @@
         @endif
 
 
-      </div>
+    
     @endforeach
   </div>
 </body>
