@@ -212,7 +212,7 @@ const actions = {
       units: "in",
       colorType: "grayscale",
       interpolation: "nearest-neighbor",
-      rasterize: "true"
+      rasterize: "false"
     });
 
     try {
