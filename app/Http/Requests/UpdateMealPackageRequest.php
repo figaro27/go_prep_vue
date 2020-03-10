@@ -42,11 +42,11 @@ class UpdateMealPackageRequest extends FormRequest
                 'addons.*.title' => 'required'
             ];
         } else {
-            // return [
-            //     'title' => 'filled',
-            //     'price' => 'filled',
-            //     'category_ids' => 'filled'
-            // ];
+            return [
+                    // 'title' => 'filled',
+                    // 'price' => 'filled',
+                    // 'category_ids' => 'filled'
+                ];
         }
     }
 

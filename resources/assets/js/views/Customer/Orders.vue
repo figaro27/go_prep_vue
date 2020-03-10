@@ -3,8 +3,8 @@
     <div class="row">
       <div class="col-md-12">
         <Spinner v-if="!_orders || loading" />
-        <!-- <b-alert
-          v-if="_orders && _orders[0]"
+        <b-alert
+          v-if="_orders && _orders[0] && !loading"
           :show="!!$route.query.created || false"
           variant="success"
         >
@@ -20,7 +20,7 @@
               }}
             </span>
           </p>
-        </b-alert> -->
+        </b-alert>
         <b-alert
           :show="null !== _orders && 0 === _orders.length"
           variant="warning"

@@ -430,7 +430,7 @@ class Subscription extends Model
         // Adjust the price of the subscription on renewal if a one time coupon code was used. (Remove coupon from subscription).
         $coupon = Coupon::where('id', $this->coupon_id)->first();
         if (isset($coupon) && $coupon->oneTime) {
-            $this->syncPrices();
+            $this->syncPrices(false);
             $this->coupon_id = null;
             $this->couponReduction = null;
             $this->couponCode = null;
@@ -788,7 +788,7 @@ class Subscription extends Model
      *
      * @return void
      */
-    public function syncPrices()
+    public function syncPrices($mealsUpdated = true)
     {
         try {
             $subscription = \Stripe\Subscription::retrieve(
@@ -936,6 +936,9 @@ class Subscription extends Model
 
         // Assign new plan ID to subscription
         $this->stripe_plan = $plan->id;
+        if ($mealsUpdated) {
+            $this->updated = 1;
+        }
         $this->save();
 
         $this->updateCurrentMealOrders();

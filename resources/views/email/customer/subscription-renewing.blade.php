@@ -188,7 +188,10 @@ $currency = $subscription->store->settings->currency_symbol
                 </tr>
                 <!-- content -->
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> You have a subscription renewing from {{ $subscription->store->details->name }}. Your subscription meals may have been updated by us if we rotated our menu for the week. Please double check your meals.
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> You have a subscription renewing from {{ $subscription->store->details->name }}.
+                    @if ($subscription->updated)
+                    Your subscription was updated. Please check the meals below.
+                    @endif
                     @if (!$subscription->monthlyPrepay)
                     You have 24 hours left to update, or cancel your subscription before orders are locked in and your card is charged.
                     @else
