@@ -83,9 +83,16 @@ class SubscriptionController extends UserController
             if ($sub->weekCount % 4 === 0) {
                 $sub->cancel();
             } else {
-                $this->update([
-                    'cancelled_at' => Carbon::now('utc')
-                ]);
+                try {
+                    $sub->cancel();
+                } catch (\Exception $e) {
+                    return response()->json(
+                        [
+                            'error' => 'Failed to cancel Subscription'
+                        ],
+                        500
+                    );
+                }
             }
             return;
         }
