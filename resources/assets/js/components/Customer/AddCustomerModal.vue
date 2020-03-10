@@ -240,8 +240,8 @@ export default {
           this.$toastr.s("Customer added.");
           (this.existingEmail = ""), (this.showExistingCustomerAlert = false);
           this.$parent.addCustomerModal = false;
-          this.$parent.setCustomer();
-          if ($route.params.manualOrder) this.$parent.getCards();
+          this.$parent.setCustomer(response.data);
+          // if (this.$route.params.manualOrder) this.$parent.getCards();
         });
     },
     getStateNames(country = "US") {
