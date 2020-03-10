@@ -207,7 +207,8 @@ const actions = {
 
     const printerName = getters.getDevice;
     let config = qz.configs.create(printerName, {
-      size: { width: 2.25, height: 1.25 },
+      size: { width: 4, height: 2.33 },
+      orientation: "portrait",
       units: "in",
       colorType: "grayscale",
       interpolation: "nearest-neighbor"
