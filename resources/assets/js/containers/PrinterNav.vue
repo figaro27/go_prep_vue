@@ -96,8 +96,8 @@ export default {
   },
   mixins: [printer],
   async mounted() {
-    await this.printerConnect();
-    this.printerFindDevices();
+    // await this.printerConnect();
+    // this.printerFindDevices();
   },
   computed: {
     dotClass() {
