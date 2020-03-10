@@ -993,7 +993,6 @@ export default {
       addCustomerModal: false,
       weeklySubscriptionValue: null,
       customerModel: null,
-      existingCustomerAdded: false,
       emailCustomer: true,
       selectedPickupLocation:
         this.order && this.order.pickup_location_id
@@ -1029,16 +1028,14 @@ export default {
   },
   watch: {
     customer: function(val) {
-      if (!this.existingCustomerAdded) {
-        if (val) {
-          this.customerModel = this.getCustomerObject(val);
-        } else {
-          this.customerModel = null;
-        }
+      if (val) {
+        this.customerModel = this.getCustomerObject(val);
+      } else {
+        this.customerModel = null;
+      }
 
-        if (this.$route.params.manualOrder) {
-          this.getCards();
-        }
+      if (this.$route.params.manualOrder) {
+        this.getCards();
       }
     }
   },
@@ -2324,14 +2321,12 @@ use next_delivery_dates
         });
     },
     inputCustomer(id) {
-      this.existingCustomerAdded = false;
       this.getCards();
     },
-    setCustomer(user) {
-      this.existingCustomerAdded = true;
-      this.customer = user.id;
-      this.customerModel = { text: user.name, value: user.id };
-      this.$parent.setCustomer(user.id);
+    setCustomer(id) {
+      //this.customer = id;
+      //this.$forceUpdate();
+      this.$parent.setCustomer(id);
     },
     removeCoupon() {
       this.coupon = {};
