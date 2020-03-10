@@ -196,8 +196,15 @@ class Meal extends Model implements HasMedia
 
     public function getInPackageAttribute()
     {
-        $mealMealPackages = MealMealPackage::where('meal_id', $this->id)->get();
-        if (count($mealMealPackages) > 0) {
+        $mealMealPackages = MealMealPackage::whereHas('meal_package', function (
+            $mealPkg
+        ) {
+            $mealPkg->where('deleted_at', '=', null);
+        })
+            ->where('meal_id', $this->id)
+            ->count();
+
+        if ($mealMealPackages > 0) {
             return true;
         } else {
             return false;
