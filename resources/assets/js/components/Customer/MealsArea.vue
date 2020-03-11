@@ -402,7 +402,7 @@
                         >Select</span
                       >
                       <b-dropdown-item
-                        @click="addMeal(meal, false)"
+                        @click.stop="addMeal(meal, false)"
                         class="variation-dropdown"
                       >
                         {{ meal.default_size_title || "Regular" }} -
