@@ -830,13 +830,15 @@ class Meal extends Model implements HasMedia
                     $sizeIds->put($size['id'], $mealSize->id);
                     $servingsPerMeal = $size['servingsPerMeal'];
                     $servingSizeUnit = $size['servingSizeUnit'];
-                    Meal::saveMealServings(
-                        null,
-                        $meal,
-                        $servingsPerMeal,
-                        $servingSizeUnit,
-                        $mealSize
-                    );
+                    if (isset($servingsPerMeal) && isset($servingSizeUnit)) {
+                        Meal::saveMealServings(
+                            null,
+                            $meal,
+                            $servingsPerMeal,
+                            $servingSizeUnit,
+                            $mealSize
+                        );
+                    }
                 }
             }
 
@@ -957,13 +959,15 @@ class Meal extends Model implements HasMedia
 
         $servingsPerMeal = $request->get('servingsPerMeal');
         $servingSizeUnit = $request->get('servingSizeUnit');
-        Meal::saveMealServings(
-            null,
-            $meal,
-            $servingsPerMeal,
-            $servingSizeUnit,
-            null
-        );
+        if (isset($servingsPerMeal) && isset($servingSizeUnit)) {
+            Meal::saveMealServings(
+                null,
+                $meal,
+                $servingsPerMeal,
+                $servingSizeUnit,
+                null
+            );
+        }
     }
 
     public static function storeMealAdmin($request)
