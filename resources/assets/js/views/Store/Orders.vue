@@ -736,6 +736,7 @@
               stacked="sm"
               :columns="columnsMeal"
               :data="getMealTableData(order)"
+              :options="optionsMeal"
               ref="mealsTable"
               foot-clone
             >
@@ -829,45 +830,6 @@
             </v-client-table>
           </div>
         </div>
-        <div
-          class="row mt-4"
-          v-if="
-            viewOrderModal &&
-              order.line_items_order &&
-              order.line_items_order.length
-          "
-        >
-          <div class="col-md-12">
-            <h4>Extras</h4>
-            <hr />
-            <ul class="meal-quantities">
-              <li
-                v-for="lineItemOrder in order.line_items_order"
-                v-bind:key="lineItemOrder.id"
-              >
-                <div class="row">
-                  <div class="col-md-3">
-                    <span class="order-quantity">
-                      {{ lineItemOrder.quantity }}
-                    </span>
-                    <img src="/images/store/x-modal.png" class="mr-1 ml-1" />
-                  </div>
-                  <div class="col-md-9">
-                    <p class="mt-1">{{ lineItemOrder.title }}</p>
-                    <p class="strong">
-                      {{
-                        format.money(
-                          lineItemOrder.price * lineItemOrder.quantity,
-                          order.currency
-                        )
-                      }}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
       </b-modal>
     </div>
   </div>
@@ -922,6 +884,11 @@ export default {
       user_detail: {},
       meals: {},
       columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"],
+      optionsMeal: {
+        headings: {
+          unit_price: "Unit Price"
+        }
+      },
       columnsMealMultipleDelivery: [
         "delivery_date",
         "size",
@@ -1476,6 +1443,22 @@ export default {
                 : format.money(item.price, order.currency)
           });
         }
+      });
+
+      order.line_items_order.forEach(lineItem => {
+        data.push({
+          delivery_date: lineItem.delivery_date
+            ? moment(item.delivery_date.date).format("dddd, MMM Do")
+            : null,
+          size: null,
+          meal: lineItem.title,
+          quantity: lineItem.quantity,
+          unit_price: format.money(lineItem.price, order.currency),
+          subtotal: format.money(
+            lineItem.price * lineItem.quantity,
+            order.currency
+          )
+        });
       });
 
       order.purchased_gift_cards.forEach(purchasedGiftCard => {

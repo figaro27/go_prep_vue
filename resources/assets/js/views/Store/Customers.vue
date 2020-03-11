@@ -282,6 +282,7 @@
                   striped
                   stacked="sm"
                   :columns="columnsMeal"
+                  :options="optionsMeal"
                   :data="getMealTableData(order)"
                   foot-clone
                 >
@@ -386,6 +387,11 @@ export default {
           zip: "Zip",
           created_at: "Customer Since",
           actions: "Actions"
+        },
+        optionsMeal: {
+          headings: {
+            unit_price: "Unit Price"
+          }
         },
         dateColumns: ["Joined"],
         customSorting: {
@@ -621,6 +627,23 @@ export default {
           });
         }
       });
+
+      order.line_items_order.forEach(lineItem => {
+        data.push({
+          delivery_date: lineItem.delivery_date
+            ? moment(item.delivery_date.date).format("dddd, MMM Do")
+            : null,
+          size: null,
+          meal: lineItem.title,
+          quantity: lineItem.quantity,
+          unit_price: format.money(lineItem.price, order.currency),
+          subtotal: format.money(
+            lineItem.price * lineItem.quantity,
+            order.currency
+          )
+        });
+      });
+
       if (order.purchased_gift_cards && order.purchased_gift_cards.length > 0) {
         order.purchased_gift_cards.forEach(purchasedGiftCard => {
           data.push({

@@ -60,7 +60,12 @@ class User extends Authenticatable implements JWTSubject
         'stripe_account' => 'json'
     ];
 
-    protected $appends = ['name', 'cards', 'last_viewed_store'];
+    protected $appends = [
+        'name',
+        'cards',
+        'last_viewed_store',
+        'has_active_subscription'
+    ];
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -514,5 +519,18 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return false;
+    }
+
+    public function getHasActiveSubscriptionAttribute()
+    {
+        $subscriptions = Subscription::where([
+            'user_id' => $this->id,
+            'status' => 'active'
+        ])->count();
+        if ($subscriptions > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

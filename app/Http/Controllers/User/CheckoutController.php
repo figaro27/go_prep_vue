@@ -60,6 +60,16 @@ class CheckoutController extends UserController
         $bag = new Bag($bagItems, $store);
         $weeklyPlan = $request->get('plan');
 
+        if ($weeklyPlan && $user->has_active_subscription) {
+            return response()->json(
+                [
+                    'message' =>
+                        'You already have an active weekly subscription. Please go to the subscriptions page if you want to change your meals.'
+                ],
+                400
+            );
+        }
+
         // Checking all meals are in stock before proceeding
         if ($this->store->modules->stockManagement) {
             foreach ($bag->getItems() as $item) {
