@@ -80,7 +80,7 @@ class Customer extends Model
 
     public function getPaidOrdersAttribute()
     {
-        return $this->orders->where('paid', 1);
+        return $this->user->orders->where('paid', 1);
     }
 
     public function getJoinedAttribute()
