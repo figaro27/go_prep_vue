@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Mail;
 use Stripe;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Media\Utils as MediaUtils;
+use App\Subscription;
 
 class User extends Authenticatable implements JWTSubject
 {
