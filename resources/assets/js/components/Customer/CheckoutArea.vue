@@ -2328,10 +2328,13 @@ use next_delivery_dates
       this.getCards();
     },
     setCustomer(user) {
-      this.existingCustomerAdded = true;
-      this.customer = user.id;
-      this.customerModel = { text: user.name, value: user.id };
-      this.$parent.setCustomer(user.id);
+      if (user.existing) {
+        this.existingCustomerAdded = true;
+        this.customer = user.id;
+        this.customerModel = { text: user.name, value: user.id };
+      } else {
+        this.$parent.setCustomer(user.id);
+      }
     },
     removeCoupon() {
       this.coupon = {};

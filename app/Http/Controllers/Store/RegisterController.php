@@ -149,7 +149,8 @@ class RegisterController extends StoreController
         $user->createStoreCustomer($storeId, $currency, $gateway);
         $customer = [
             'id' => $user->id,
-            'name' => $user->name
+            'name' => $user->name,
+            'existing' => true
         ];
         return $customer;
     }
