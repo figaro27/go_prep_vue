@@ -209,6 +209,7 @@
               striped
               stacked="sm"
               :columns="columnsMeal"
+              :options="optionsMeal"
               :data="getMealTableData(order)"
               ref="mealsTable"
               foot-clone
@@ -358,6 +359,11 @@ export default {
         }
       },
       columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"],
+      optionsMeal: {
+        headings: {
+          unit_price: "Unit Price"
+        }
+      },
       columnsMealMultipleDelivery: [
         "delivery_date",
         "size",

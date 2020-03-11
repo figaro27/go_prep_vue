@@ -282,6 +282,7 @@
                   striped
                   stacked="sm"
                   :columns="columnsMeal"
+                  :options="optionsMeal"
                   :data="getMealTableData(order)"
                   foot-clone
                 >
@@ -386,6 +387,11 @@ export default {
           zip: "Zip",
           created_at: "Customer Since",
           actions: "Actions"
+        },
+        optionsMeal: {
+          headings: {
+            unit_price: "Unit Price"
+          }
         },
         dateColumns: ["Joined"],
         customSorting: {

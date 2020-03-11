@@ -736,6 +736,7 @@
               stacked="sm"
               :columns="columnsMeal"
               :data="getMealTableData(order)"
+              :options="optionsMeal"
               ref="mealsTable"
               foot-clone
             >
@@ -883,6 +884,11 @@ export default {
       user_detail: {},
       meals: {},
       columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"],
+      optionsMeal: {
+        headings: {
+          unit_price: "Unit Price"
+        }
+      },
       columnsMealMultipleDelivery: [
         "delivery_date",
         "size",
