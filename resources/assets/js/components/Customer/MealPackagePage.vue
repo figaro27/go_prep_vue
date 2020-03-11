@@ -1350,7 +1350,7 @@ export default {
         if (remaining < 0) {
           if (
             component.maximum -
-              this.choices[component.id][component.id].length ===
+              this.choices[component.id][component.id].length =
             0
           ) {
             this.$toastr.w("You have selected the maximum number of options.");
