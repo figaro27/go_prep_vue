@@ -147,6 +147,11 @@ class RegisterController extends StoreController
         $currency = $this->store->settings->currency;
         $gateway = $this->store->settings->payment_gateway;
         $user->createStoreCustomer($storeId, $currency, $gateway);
+        $customer = [
+            'id' => $user->id,
+            'name' => $user->name
+        ];
+        return $customer;
     }
 
     /**
