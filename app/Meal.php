@@ -828,8 +828,13 @@ class Meal extends Model implements HasMedia
                     // Map the fake size ID to the real one for components and addons
                     $mealSize->syncIngredients($size['ingredients']);
                     $sizeIds->put($size['id'], $mealSize->id);
-                    $servingsPerMeal = $size['servingsPerMeal'];
-                    $servingSizeUnit = $size['servingSizeUnit'];
+                    if (isset($size['servingsPerMeal'])) {
+                        $servingsPerMeal = $size['servingsPerMeal'];
+                    }
+                    if (isset($size['servingSizeUnit'])) {
+                        $servingSizeUnit = $size['servingSizeUnit'];
+                    }
+
                     if (isset($servingsPerMeal) && isset($servingSizeUnit)) {
                         Meal::saveMealServings(
                             null,

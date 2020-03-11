@@ -201,7 +201,7 @@
           </b-form>
         </b-tab>
 
-        <b-tab title="Enter Nutrition Directly" v-if="!createMealModal">
+        <b-tab title="Enter Nutrition Directly">
           <b-form @submit.prevent="addToRecipe(true)">
             <hr />
             <b-form-group>
