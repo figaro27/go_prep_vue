@@ -1348,24 +1348,18 @@ export default {
       this.$nextTick(() => {
         const remaining = this.getRemainingMeals(component.id);
         if (remaining < 0) {
+          this.$toastr.w("You have selected the maximum number of options.");
+          let truncated = choices.slice(0, remaining);
           if (
-            component.maximum -
-              this.choices[component.id][component.id].length =
-            0
+            this.choices[component.id][component.id].length >
+              component.maximum &&
+            component.minimum === 0
           ) {
-            this.$toastr.w("You have selected the maximum number of options.");
-            let truncated = choices.slice(0, remaining);
-            if (
-              this.choices[component.id][component.id].length >
-                component.maximum &&
-              component.minimum === 0
-            ) {
-              truncated = choices.slice(
-                0,
-                component.maximum -
-                  this.choices[component.id][component.id].length
-              );
-            }
+            truncated = choices.slice(
+              0,
+              component.maximum -
+                this.choices[component.id][component.id].length
+            );
           }
 
           this.$set(this.choices[component.id], option.id, truncated);
