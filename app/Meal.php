@@ -651,7 +651,9 @@ class Meal extends Model implements HasMedia
             'production_group_id',
             'salesTax',
             'stock',
-            'expirationDays'
+            'expirationDays',
+            'servingsPerMeal',
+            'servingSizeUnit'
         ]);
 
         $meal = new Meal();
@@ -826,6 +828,15 @@ class Meal extends Model implements HasMedia
                     // Map the fake size ID to the real one for components and addons
                     $mealSize->syncIngredients($size['ingredients']);
                     $sizeIds->put($size['id'], $mealSize->id);
+                    $servingsPerMeal = $size['servingsPerMeal'];
+                    $servingSizeUnit = $size['servingSizeUnit'];
+                    Meal::saveMealServings(
+                        null,
+                        $meal,
+                        $servingsPerMeal,
+                        $servingSizeUnit,
+                        $mealSize
+                    );
                 }
             }
 
@@ -943,6 +954,16 @@ class Meal extends Model implements HasMedia
 
             $macro->save();
         }
+
+        $servingsPerMeal = $request->get('servingsPerMeal');
+        $servingSizeUnit = $request->get('servingSizeUnit');
+        Meal::saveMealServings(
+            null,
+            $meal,
+            $servingsPerMeal,
+            $servingSizeUnit,
+            null
+        );
     }
 
     public static function storeMealAdmin($request)
@@ -1643,6 +1664,40 @@ class Meal extends Model implements HasMedia
             $hasComponents
         ) {
             return true;
+        }
+    }
+
+    public static function saveMealServings(
+        $request,
+        $meal,
+        $servingsPerMeal,
+        $servingSizeUnit,
+        $mealSize
+    ) {
+        $servingsPerMeal = $request
+            ? $request->get('servingsPerMeal')
+            : $servingsPerMeal;
+        $servingSizeUnit = $request
+            ? $request->get('servingSizeUnit')
+            : $servingSizeUnit;
+
+        if ($mealSize === null) {
+            $meal->servingsPerMeal = $servingsPerMeal;
+            if ($servingSizeUnit === null) {
+                $meal->servingSizeUnit = '';
+            } else {
+                $meal->servingSizeUnit = $servingSizeUnit;
+            }
+            $meal->save();
+        } else {
+            $mealSize->servingsPerMeal = $servingsPerMeal;
+
+            if ($servingSizeUnit === null) {
+                $mealSize->servingSizeUnit = '';
+            } else {
+                $mealSize->servingSizeUnit = $servingSizeUnit;
+            }
+            $mealSize->update();
         }
     }
 }

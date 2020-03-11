@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row mb-3 mt-2" v-if="!createMealModal">
+    <div class="row mb-3 mt-2">
       <div class="col-md-4">
         <strong>Servings Per Container</strong>
         <b-form-input
@@ -28,7 +28,7 @@
           variant="primary"
           class="mt-4"
           @click="saveMealServings"
-          v-if="!componentAddonPage"
+          v-if="!componentAddonPage && !createMealModal"
           >Save</b-btn
         >
       </div>
