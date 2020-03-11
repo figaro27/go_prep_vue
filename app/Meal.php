@@ -824,6 +824,7 @@ class Meal extends Model implements HasMedia
                     $mealSize->save();
 
                     // Map the fake size ID to the real one for components and addons
+                    $mealSize->syncIngredients($size['ingredients']);
                     $sizeIds->put($size['id'], $mealSize->id);
                 }
             }
