@@ -51,10 +51,8 @@
               :target="'categorySection_' + component.id"
             >
               <h3 class="center-text mb-3">
-                {{ getComponentLabel(component) }}
-                <span v-if="component.minimum > 0"
-                  >- Remaining: {{ getRemainingMeals(component.id) }}</span
-                >
+                {{ getComponentLabel(component) }} - Remaining:
+                {{ getRemainingMeals(component.id) }}
               </h3>
 
               <b-form-group :label="null">
@@ -1347,23 +1345,9 @@ export default {
 
       this.$nextTick(() => {
         const remaining = this.getRemainingMeals(component.id);
-        if (
-          (remaining < 0 && component.minimum > 0) ||
-          this.choices[component.id][component.id].length > component.maximum
-        ) {
+        if (remaining < 0) {
           this.$toastr.w("You have selected the maximum number of options.");
-          let truncated = choices.slice(0, remaining);
-          if (
-            this.choices[component.id][component.id].length >
-              component.maximum &&
-            component.minimum === 0
-          ) {
-            truncated = choices.slice(
-              0,
-              component.maximum -
-                this.choices[component.id][component.id].length
-            );
-          }
+          const truncated = choices.slice(0, remaining);
           this.$set(this.choices[component.id], option.id, truncated);
         } else if (remaining == 0) {
           // Next Part
