@@ -379,7 +379,7 @@
                       v-if="
                         !meal.meal_package &&
                           !meal.gift_card &&
-                          !meal.hasVariations
+                          (!meal.sizes || meal.sizes.length === 0)
                       "
                       @click.stop="addMeal(meal, null)"
                       class="menu-bag-btn small-buttons plus-minus"
@@ -391,18 +391,19 @@
                       v-if="
                         !meal.meal_package &&
                           !meal.gift_card &&
+                          meal.sizes &&
                           meal.sizes.length > 0
                       "
-                      toggle-class="brand-color"
+                      toggle-class="menu-bag-btn small-buttons plus-minus"
                       :ref="'dropdown_' + meal.id + '_' + group.category_id"
-                      class="mx-auto"
-                      size="lg"
                     >
-                      <span class="white-text" slot="button-content"
-                        >Select</span
+                      <i
+                        slot="button-content"
+                        :id="'dropdown_' + meal.id + '_' + group.category_id"
+                        >+</i
                       >
                       <b-dropdown-item
-                        @click="addMeal(meal, false)"
+                        @click.stop="addMeal(meal, false)"
                         class="variation-dropdown"
                       >
                         {{ meal.default_size_title || "Regular" }} -
@@ -418,47 +419,31 @@
                         {{ format.money(size.price, storeSettings.currency) }}
                       </b-dropdown-item>
                     </b-dropdown>
+
                     <b-btn
-                      v-if="
-                        !meal.meal_package &&
-                          !meal.gift_card &&
-                          meal.hasVariations &&
-                          meal.sizes.length === 0
-                      "
-                      @click.stop="addMeal(meal, null)"
-                      size="lg"
-                      class="mx-auto variation-dropdown brand-color white-text"
-                      style="height:45px"
-                    >
-                      Select
-                    </b-btn>
-                    <b-btn
-                      slot="button-content"
-                      class="brand-color mx-auto white-text"
-                      size="lg"
                       v-if="
                         meal.meal_package &&
                           !meal.gift_card &&
-                          !meal.hasVariations &&
-                          meal.sizes.length === 0
+                          (!meal.sizes || meal.sizes.length === 0)
                       "
-                      @click="addMeal(meal, true)"
-                      >Select</b-btn
+                      @click.stop="addMeal(meal, false)"
+                      class="menu-bag-btn small-buttons plus-minus"
                     >
+                      <i>+</i>
+                    </b-btn>
 
                     <b-dropdown
                       v-if="
                         meal.meal_package && meal.sizes && meal.sizes.length > 0
                       "
-                      toggle-class="brand-color"
+                      toggle-class="menu-bag-btn small-buttons plus-minus"
                       :ref="'dropdown_' + meal.id + '_' + group.category_id"
-                      class="mx-auto"
-                      size="lg"
                     >
-                      <span class="white-text" slot="button-content"
-                        >Select</span
+                      <i
+                        slot="button-content"
+                        :id="'dropdown_' + meal.id + '_' + group.category_id"
+                        >+</i
                       >
-
                       <b-dropdown-item
                         @click="addMeal(meal, true)"
                         class="variation-dropdown"
@@ -477,12 +462,7 @@
                       </b-dropdown-item>
                     </b-dropdown>
 
-                    <p
-                      class="mt-3 ml-2"
-                      v-if="!meal.meal_package && !meal.hasVariations"
-                    >
-                      {{ mealMixQuantity(meal) }}
-                    </p>
+                    <p class="mt-3 ml-2">{{ mealMixQuantity(meal) }}</p>
                     <!-- <b-form-input
                       type="text"
                       name
@@ -495,11 +475,6 @@
                     <div
                       @click.stop="minusMixOne(meal)"
                       class="bag-plus-minus small-buttons gray white-text"
-                      v-if="
-                        !meal.meal_package &&
-                          !meal.gift_card &&
-                          !meal.hasVariations
-                      "
                     >
                       <i>-</i>
                     </div>
