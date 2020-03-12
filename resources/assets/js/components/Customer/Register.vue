@@ -715,7 +715,8 @@ export default {
       this.form[formNumber].country = country;
     },
     asYouType() {
-      let country = this.store ? this.store.details.country : "US";
+      let country =
+        this.store && this.store.details ? this.store.details.country : "US";
       this.form[0].phone = this.form[0].phone.replace(/[^\d.-]/g, "");
       this.form[0].phone = new AsYouType(country).input(this.form[0].phone);
     }
