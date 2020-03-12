@@ -343,9 +343,12 @@ export default {
       // Setting referral users to coupons
       this.referredCouponUser.push(undefined);
       this.referredCouponUser.push(undefined);
-      this.couponTableData.forEach(row => {
-        this.referredCouponUser.push(row.referral_user_id);
-      });
+      if (this.couponTableData.length > 0) {
+        this.couponTableData.forEach(row => {
+          this.referredCouponUser.push(row.referral_user_id);
+        });
+      }
+
       this.showReferralSettingsModal = true;
     },
     exportData(report, format = "pdf", print = false) {
