@@ -127,7 +127,7 @@ export default {
       leads: "storeLeads"
     }),
     tableData() {
-      return this.leads;
+      return Object.values(this.leads);
     }
   },
   methods: {

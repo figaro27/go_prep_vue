@@ -260,7 +260,7 @@ export default {
       customers: "storeCustomers"
     }),
     tableData() {
-      return this.referrals;
+      return Object.values(this.referrals);
     },
     couponTableData() {
       return this.storeCoupons;
