@@ -281,7 +281,7 @@ class RegisterController extends Controller
 
             $storeModuleSettings = $store->moduleSettings()->create();
 
-            $storeReferralRules = $store->referralRules()->create([
+            $storeReferralSettings = $store->referralSettings()->create([
                 'signupEmail' => 0,
                 'showInNotifications' => 0,
                 'showInMenu' => 0,

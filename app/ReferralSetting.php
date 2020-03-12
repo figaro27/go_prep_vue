@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ReferralRule extends Model
+class ReferralSetting extends Model
 {
     protected $appends = ['amountFormat', 'url'];
 

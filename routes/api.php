@@ -348,13 +348,13 @@ foreach (
                             Route::resource('cards', 'CardController');
 
                             Route::resource(
-                                'referralRules',
-                                'ReferralRuleController'
+                                'referralSettings',
+                                'ReferralSettingController'
                             );
 
                             Route::patch(
-                                'referralRules',
-                                'ReferralRuleController@update'
+                                'referralSettings',
+                                'ReferralSettingController@update'
                             );
 
                             Route::resource('referrals', 'ReferralController');

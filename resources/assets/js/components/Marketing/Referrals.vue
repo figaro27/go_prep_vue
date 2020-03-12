@@ -2,7 +2,11 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
-      <b-btn variant="success" size="md" @click="showReferralRules" class="mb-3"
+      <b-btn
+        variant="success"
+        size="md"
+        @click="showReferralSettings"
+        class="mb-3"
         >Referral Settings</b-btn
       >
       <v-client-table
@@ -73,15 +77,15 @@
     <b-modal
       size="lg"
       title="Referral Settings"
-      v-model="showReferralRulesModal"
-      v-if="showReferralRulesModal"
+      v-model="showReferralSettingsModal"
+      v-if="showReferralSettingsModal"
       @ok.prevent="onViewMealModalOk"
       no-fade
     >
       <div class="container-md mt-3">
-        <b-form @submit.prevent="updateReferralRules">
+        <b-form @submit.prevent="updateReferralSettings">
           <b-form-group>
-            <b-form-checkbox v-model="referralRules.enabled"
+            <b-form-checkbox v-model="referralSettings.enabled"
               ><p>
                 Enable Referrals
                 <img
@@ -93,8 +97,8 @@
                   class="popover-size ml-1"
                 /></p
             ></b-form-checkbox>
-            <div v-if="referralRules.enabled">
-              <!-- <b-form-checkbox v-model="referralRules.signupEmail"
+            <div v-if="referralSettings.enabled">
+              <!-- <b-form-checkbox v-model="referralSettings.signupEmail"
                 ><p>
                   Send Signup Email
                   <img
@@ -106,7 +110,7 @@
                     class="popover-size ml-1"
                   /></p
               ></b-form-checkbox> -->
-              <b-form-checkbox v-model="referralRules.showInNotifications"
+              <b-form-checkbox v-model="referralSettings.showInNotifications"
                 ><p>
                   Show in Notifications
                   <img
@@ -118,7 +122,7 @@
                     class="popover-size ml-1"
                   /></p
               ></b-form-checkbox>
-              <b-form-checkbox v-model="referralRules.showInMenu"
+              <b-form-checkbox v-model="referralSettings.showInMenu"
                 ><p>
                   Show on Menu
                   <img
@@ -142,7 +146,7 @@
                 />
               </p>
               <b-form-radio-group
-                v-model="referralRules.type"
+                v-model="referralSettings.type"
                 :options="[
                   { text: 'Flat', value: 'flat' },
                   { text: 'Percent', value: 'percent' }
@@ -151,7 +155,7 @@
               </b-form-radio-group>
               <b-form-input
                 placeholder="Amount"
-                v-model="referralRules.amount"
+                v-model="referralSettings.amount"
                 class="mt-1"
               ></b-form-input>
 
@@ -227,7 +231,7 @@ export default {
   data() {
     return {
       referredCouponUser: [],
-      showReferralRulesModal: false,
+      showReferralSettingsModal: false,
       columns: [
         "user.name",
         "user.email",
@@ -251,7 +255,7 @@ export default {
       isLoading: "isLoading",
       initialized: "initialized",
       referrals: "storeReferrals",
-      referralRules: "storeReferralRules",
+      referralSettings: "storeReferralSettings",
       leads: "storeLeads",
       customers: "storeCustomers"
     }),
@@ -279,17 +283,17 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["refreshStoreReferrals", "refreshStoreReferralRules"]),
+    ...mapActions(["refreshStoreReferrals", "refreshStoreReferralSettings"]),
     formatMoney: format.money,
-    updateReferralRules() {
-      let referralRules = { ...this.referralRules };
+    updateReferralSettings() {
+      let referralSettings = { ...this.referralSettings };
 
       axios
-        .patch("/api/me/referralRules", referralRules)
+        .patch("/api/me/referralSettings", referralSettings)
         .then(response => {
-          this.refreshStoreReferralRules();
+          this.refreshStoreReferralSettings();
           this.$toastr.s("Your referral rules have been saved.", "Success");
-          this.showReferralRulesModal = false;
+          this.showReferralSettingsModal = false;
         })
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors));
@@ -335,14 +339,14 @@ export default {
           this.$toastr.w(error);
         });
     },
-    showReferralRules() {
+    showReferralSettings() {
       // Setting referral users to coupons
       this.referredCouponUser.push(undefined);
       this.referredCouponUser.push(undefined);
       this.couponTableData.forEach(row => {
         this.referredCouponUser.push(row.referral_user_id);
       });
-      this.showReferralRulesModal = true;
+      this.showReferralSettingsModal = true;
     },
     exportData(report, format = "pdf", print = false) {
       axios

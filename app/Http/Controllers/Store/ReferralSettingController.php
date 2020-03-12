@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Store;
 
 use App\Store;
-use App\ReferralRule;
+use App\ReferralSetting;
 use Illuminate\Http\Request;
 
-class ReferralRuleController extends StoreController
+class ReferralSettingController extends StoreController
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class ReferralRuleController extends StoreController
      */
     public function index()
     {
-        return $this->store->referralRules;
+        return $this->store->referralSettings;
     }
 
     /**
@@ -45,7 +45,7 @@ class ReferralRuleController extends StoreController
      * @param  \App\ReferralRule  $referralRule
      * @return \Illuminate\Http\Response
      */
-    public function show(ReferralRule $referralRule)
+    public function show(ReferralSetting $referralSetting)
     {
         //
     }
@@ -56,7 +56,7 @@ class ReferralRuleController extends StoreController
      * @param  \App\ReferralRule  $referralRule
      * @return \Illuminate\Http\Response
      */
-    public function edit(ReferralRule $referralRule)
+    public function edit(ReferralSetting $referralSetting)
     {
         //
     }
@@ -65,23 +65,26 @@ class ReferralRuleController extends StoreController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ReferralRule  $referralRule
+     * @param  \App\ReferralSetting  $referralRule
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ReferralRule $referralRule)
+    public function update(Request $request, ReferralSetting $referralSetting)
     {
-        $referralRules = ReferralRule::where('store_id', $this->store->id);
+        $referralSettings = ReferralSetting::where(
+            'store_id',
+            $this->store->id
+        );
         $values = $request->all();
-        $referralRules->update($values);
+        $referralSettings->update($values);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ReferralRule  $referralRule
+     * @param  \App\ReferralSetting  $referralRule
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ReferralRule $referralRule)
+    public function destroy(ReferralSetting $referralSetting)
     {
         //
     }

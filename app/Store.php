@@ -178,9 +178,9 @@ class Store extends Model
         return $this->hasMany('App\Referral')->with('user');
     }
 
-    public function referralRules()
+    public function referralSettings()
     {
-        return $this->hasOne('App\ReferralRule');
+        return $this->hasOne('App\ReferralSetting');
     }
 
     public function getDeliveryDayByWeekIndex($weekIndex)

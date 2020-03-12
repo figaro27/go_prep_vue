@@ -117,7 +117,7 @@ const state = {
     referrals: {
       data: {}
     },
-    referral_rules: {
+    referral_settings: {
       data: {}
     },
     meals: {
@@ -785,8 +785,8 @@ const mutations = {
     state.store.referrals.data = referrals;
   },
 
-  storeReferralRules(state, { referralRules }) {
-    state.store.referral_rules.data = referralRules;
+  storeReferralSettings(state, { referralSettings }) {
+    state.store.referral_settings.data = referralSettings;
   },
 
   storeCoupons(state, { coupons }) {
@@ -1346,11 +1346,11 @@ const actions = {
 
     try {
       if (
-        !_.isEmpty(data.store.referral_rules) &&
-        _.isObject(data.store.referral_rules)
+        !_.isEmpty(data.store.referral_settings) &&
+        _.isObject(data.store.referral_settings)
       ) {
-        let referralRules = data.store.referral_rules;
-        commit("storeReferralRules", { referralRules });
+        let referralSettings = data.store.referral_settings;
+        commit("storeReferralSettings", { referralSettings });
       }
     } catch (e) {}
 
@@ -2300,13 +2300,13 @@ const actions = {
     }
   },
 
-  async refreshStoreReferralRules({ commit, state }, args = {}) {
-    const res = await axios.get("/api/me/referralRules");
+  async refreshStoreReferralSettings({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/referralSettings");
     const { data } = await res;
-    const referral_rules = data;
+    const referral_settings = data;
 
-    if (_.isArray(referral_rules)) {
-      commit("storeReferralRules", { referral_rules });
+    if (_.isArray(referral_settings)) {
+      commit("storeReferralSettings", { referral_settings });
     } else {
       throw new Error("Failed to retrieve referral rules");
     }
@@ -2915,9 +2915,9 @@ const getters = {
       return {};
     }
   },
-  viewedStoreReferralRules: state => {
+  viewedStoreReferralSettings: state => {
     try {
-      return state.viewed_store.referral_rules || {};
+      return state.viewed_store.referral_settings || {};
     } catch (e) {
       return {};
     }
@@ -3329,9 +3329,9 @@ const getters = {
       return {};
     }
   },
-  storeReferralRules: state => {
+  storeReferralSettings: state => {
     try {
-      return state.store.referral_rules.data || {};
+      return state.store.referral_settings.data || {};
     } catch (e) {
       return {};
     }

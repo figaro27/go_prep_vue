@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateReferralRulesTable extends Migration
+class CreateReferralSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateReferralRulesTable extends Migration
      */
     public function up()
     {
-        Schema::create('referral_rules', function (Blueprint $table) {
+        Schema::create('referral_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('store_id');
             $table
@@ -36,6 +36,6 @@ class CreateReferralRulesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('referral_rules');
+        Schema::dropIfExists('referral_settings');
     }
 }

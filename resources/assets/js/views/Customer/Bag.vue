@@ -7,7 +7,9 @@
       <div
         class="alert alert-success"
         role="alert"
-        v-if="store && store.referral_rules.showInMenu && user.referralUrlCode"
+        v-if="
+          store && store.referral_settings.showInMenu && user.referralUrlCode
+        "
       >
         <h5 class="center-text">Referral Program</h5>
         <p class="center-text">
@@ -425,10 +427,10 @@ export default {
       return this.$route.params.subscriptionId;
     },
     referralAmount() {
-      return this.store.referral_rules.amountFormat;
+      return this.store.referral_settings.amountFormat;
     },
     referralUrl() {
-      return this.store.referral_rules.url + this.user.referralUrlCode;
+      return this.store.referral_settings.url + this.user.referralUrlCode;
     }
   },
   mounted() {

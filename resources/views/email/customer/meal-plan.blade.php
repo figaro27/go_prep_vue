@@ -503,12 +503,12 @@ $currency = $subscription->store->settings->currency_symbol
 
 
 @php
-$referralRules = $subscription->store->referralRules;
+$referralSettings = $subscription->store->referralSettings;
 $host = $subscription->store->details->host ? $subscription->store->details->host : '.goprep.';
 $referralURL = 'https://' . $subscription->store->details->domain . $host . 'com?r=' . $subscription->user->referralUrlCode;
-$percentAmount = trim($referralRules->amount, ".00");
+$percentAmount = trim($referralSettings->amount, ".00");
 @endphp
-@if ($referralRules->enabled && $referralRules->showInNotifications)
+@if ($referralSettings->enabled && $referralSettings->showInNotifications)
 
 <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
     <tr>
@@ -534,8 +534,8 @@ $percentAmount = trim($referralRules->amount, ".00");
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
                   Give out your referral link to customers and if they order using your link, you will receive 
-                  @if ($referralRules->type === 'flat')
-                    ${{ $referralRules->amount }}
+                  @if ($referralSettings->type === 'flat')
+                    ${{ $referralSettings->amount }}
                   @else
                     {{ $percentAmount }}%
                   @endif

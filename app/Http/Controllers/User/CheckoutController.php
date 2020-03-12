@@ -27,7 +27,7 @@ use App\MealPackageSubscription;
 use App\MealPackage;
 use App\MealPackageSize;
 use App\PurchasedGiftCard;
-use App\ReferralRule;
+use App\ReferralSetting;
 use App\Referral;
 use App\User;
 use App\Billing\Billing;
@@ -1154,8 +1154,11 @@ class CheckoutController extends UserController
         // Referrals
         $referralUrlCode = $request->get('referralUrl');
         if ($referralUrlCode || $couponReferralUserId) {
-            $referralRules = ReferralRule::where('store_id', $storeId)->first();
-            if ($referralRules->enabled) {
+            $referralSettings = ReferralSetting::where(
+                'store_id',
+                $storeId
+            )->first();
+            if ($referralSettings->enabled) {
                 // If both URL code & referral coupon code exists, prioritize coupon code
                 if ($couponReferralUserId) {
                     $referralUserId = $couponReferralUserId;
@@ -1169,10 +1172,11 @@ class CheckoutController extends UserController
                 }
 
                 $referralAmount = 0;
-                if ($referralRules->type === 'flat') {
-                    $referralAmount = $referralRules->amount;
+                if ($referralSettings->type === 'flat') {
+                    $referralAmount = $referralSettings->amount;
                 } else {
-                    $referralAmount = ($referralRules->amount / 100) * $total;
+                    $referralAmount =
+                        ($referralSettings->amount / 100) * $total;
                 }
 
                 $referral = Referral::where([

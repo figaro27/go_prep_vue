@@ -2,7 +2,7 @@
   <div class="main-customer-container box-shadow">
     <div class="row">
       <div class="col-md-8 offset-2">
-        <div v-if="store && store.referral_rules.enabled" class="mb-4">
+        <div v-if="store && store.referral_settings.enabled" class="mb-4">
           <p class="strong">Referral URL</p>
           <a :href="referralUrl">{{ referralUrl }}</a>
           <div v-if="referral" class="pt-3">
@@ -207,7 +207,7 @@
           <b-form-group
             label="New Referral"
             :state="true"
-            v-if="store && store.referral_rules.enabled"
+            v-if="store && store.referral_settings.enabled"
           >
             <c-switch
               color="success"

@@ -13,7 +13,7 @@ class AddEnabledColumnToReferralRulesTable extends Migration
      */
     public function up()
     {
-        Schema::table('referral_rules', function (Blueprint $table) {
+        Schema::table('referral_settings', function (Blueprint $table) {
             $table
                 ->boolean('enabled')
                 ->after('store_id')
@@ -28,7 +28,7 @@ class AddEnabledColumnToReferralRulesTable extends Migration
      */
     public function down()
     {
-        Schema::table('referral_rules', function (Blueprint $table) {
+        Schema::table('referral_settings', function (Blueprint $table) {
             $table->dropColumn('enabled');
         });
     }
