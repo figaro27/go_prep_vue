@@ -8,6 +8,8 @@ class ReferralSetting extends Model
 {
     protected $appends = ['amountFormat', 'url'];
 
+    protected $fillable = ['store_id'];
+
     protected $casts = [
         'enabled' => 'boolean',
         'signupEmail' => 'boolean',
