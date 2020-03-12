@@ -129,7 +129,6 @@
                 type="text"
                 v-model="storeDetail.social"
                 placeholder="@name"
-                required
               ></b-form-input>
             </b-form-group>
 
@@ -249,7 +248,7 @@ export default {
     },
     updateStoreDetails() {
       let data = { ...this.storeDetails };
-      if (!data.social.includes("@")) {
+      if (data.social && !data.social.includes("@")) {
         data.social = "@" + data.social;
       }
       this.asYouType();
