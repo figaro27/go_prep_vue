@@ -79,12 +79,13 @@
       title="Referral Settings"
       v-model="showReferralSettingsModal"
       v-if="showReferralSettingsModal"
-      @ok.prevent="onViewMealModalOk"
+      @ok.prevent="updateReferralSettings"
       no-fade
     >
       <div class="container-md mt-3">
         <b-form @submit.prevent="updateReferralSettings">
           <b-form-group>
+            <h5 class="strong mt-2 mb-2">Enable</h5>
             <b-form-checkbox v-model="referralSettings.enabled"
               ><p>
                 Enable Referrals
@@ -110,6 +111,7 @@
                     class="popover-size ml-1"
                   /></p
               ></b-form-checkbox> -->
+              <h5 class="strong mt-3 mb-2">Display</h5>
               <b-form-checkbox v-model="referralSettings.showInNotifications"
                 ><p>
                   Show in Notifications
@@ -134,8 +136,30 @@
                     class="popover-size ml-1"
                   /></p
               ></b-form-checkbox>
-              <p>
-                Type
+
+              <h5 class="strong mt-3 mb-2">
+                Frequency
+                <img
+                  v-b-popover.hover="
+                    'Choose the frequency and conditions in which your affiliate gets rewarded. \'First Order Only\' applies the reward only on the first order of a new customer they referred. \'All Orders With Link\' applies the reward on all orders in which the referral link is used. \'All Orders\' applies the reward on all orders that were created by a referred customer regardless if they use the referral link or not.'
+                  "
+                  title="Type"
+                  src="/images/store/popover.png"
+                  class="popover-size ml-1"
+                />
+              </h5>
+              <b-form-radio-group
+                v-model="referralSettings.frequency"
+                :options="[
+                  { text: 'All Orders With Link', value: 'urlOnly' },
+                  { text: 'First Order Only', value: 'firstOrder' },
+                  { text: 'All Orders', value: 'allOrders' }
+                ]"
+              >
+              </b-form-radio-group>
+
+              <h5 class="strong mt-4 mb-2">
+                Amount
                 <img
                   v-b-popover.hover="
                     'Choose flat for the referring customer to receive a flat amount per order no matter the amount of the order. Choose percent for the referring customer to receive a percentage of the order amount.'
@@ -144,12 +168,12 @@
                   src="/images/store/popover.png"
                   class="popover-size ml-1"
                 />
-              </p>
+              </h5>
               <b-form-radio-group
                 v-model="referralSettings.type"
                 :options="[
-                  { text: 'Flat', value: 'flat' },
-                  { text: 'Percent', value: 'percent' }
+                  { text: 'Percent', value: 'percent' },
+                  { text: 'Flat', value: 'flat' }
                 ]"
               >
               </b-form-radio-group>

@@ -74,7 +74,7 @@ class ReferralSettingController extends StoreController
             'store_id',
             $this->store->id
         );
-        $values = $request->all();
+        $values = $request->except(['amountFormat', 'url', 'store']);
         $referralSettings->update($values);
     }
 

@@ -20,11 +20,12 @@ class CreateReferralSettingsTable extends Migration
                 ->foreign('store_id')
                 ->references('id')
                 ->on('stores');
-            $table->boolean('signupEmail');
-            $table->boolean('showInNotifications');
-            $table->boolean('showInMenu');
-            $table->string('type');
-            $table->decimal('amount');
+            $table->boolean('signupEmail')->default(1);
+            $table->boolean('showInNotifications')->default(1);
+            $table->boolean('showInMenu')->default(1);
+            $table->string('frequency')->default('urlOnly');
+            $table->string('type')->default('percent');
+            $table->decimal('amount')->default(5.0);
             $table->timestamps();
         });
     }

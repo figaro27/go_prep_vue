@@ -360,11 +360,11 @@ class CheckoutController extends UserController
             if ($customDD) {
                 $order->delivery_day_id = $customDD->id;
             }
-            if (isset($referral)) {
-                $order->referral_id = $referral->id;
-            }
 
             $order->save();
+
+            $orderId = $order->id;
+
             if ($total > 0.5) {
                 $order_transaction = new OrderTransaction();
                 $order_transaction->order_id = $order->id;
@@ -805,10 +805,9 @@ class CheckoutController extends UserController
                 $order->originalAmount = $total * $deposit;
                 $order->cashOrder = $cashOrder;
                 $order->isMultipleDelivery = $isMultipleDelivery;
-                if (isset($referral)) {
-                    $order->referral_id = $referral->id;
-                }
                 $order->save();
+
+                $orderId = $order->id;
 
                 foreach ($bag->getItems() as $item) {
                     $mealOrder = new MealOrder();
@@ -1152,13 +1151,43 @@ class CheckoutController extends UserController
             }
         }
         // Referrals
-        $referralUrlCode = $request->get('referralUrl');
-        if ($referralUrlCode || $couponReferralUserId) {
-            $referralSettings = ReferralSetting::where(
-                'store_id',
-                $storeId
-            )->first();
-            if ($referralSettings->enabled) {
+        $referralSettings = ReferralSetting::where(
+            'store_id',
+            $storeId
+        )->first();
+
+        if ($referralSettings->enabled) {
+            // If first order only setting enabled and the user has placed orders already, return
+            $previousOrders = $user->orders
+                ->where('store_id', $store->id)
+                ->count();
+            if (
+                $referralSettings->frequency === 'firstOrder' &&
+                $previousOrders > 0
+            ) {
+                return;
+            }
+
+            $referralUrlCode = $request->get('referralUrl');
+
+            $userWasReferred = false;
+            $userReferralId = null;
+            foreach ($user->orders as $order) {
+                if ($order->referral_id !== null) {
+                    $userWasReferred = true;
+                    $userReferralId = Referral::where('id', $order->referral_id)
+                        ->pluck('user_id')
+                        ->first();
+                }
+            }
+
+            // If a referral code exists in the URL or in a coupon OR the referral settings are set to all orders and the user was previously referred
+            if (
+                $referralUrlCode ||
+                $couponReferralUserId ||
+                ($referralSettings->frequency === 'allOrders' &&
+                    $userWasReferred)
+            ) {
                 // If both URL code & referral coupon code exists, prioritize coupon code
                 if ($couponReferralUserId) {
                     $referralUserId = $couponReferralUserId;
@@ -1169,6 +1198,14 @@ class CheckoutController extends UserController
                     )
                         ->pluck('id')
                         ->first();
+                }
+
+                if (
+                    $referralSettings->frequency === 'allOrders' &&
+                    $userWasReferred &&
+                    $userReferralId !== null
+                ) {
+                    $referralUserId = $userReferralId;
                 }
 
                 $referralAmount = 0;
@@ -1183,6 +1220,7 @@ class CheckoutController extends UserController
                     'user_id' => $referralUserId,
                     'store_id' => $storeId
                 ])->first();
+
                 if (!$referral) {
                     // Create new referral
                     $referral = new Referral();
@@ -1203,6 +1241,9 @@ class CheckoutController extends UserController
                     $referral->balance += $referralAmount;
                     $referral->update();
                 }
+                $order = Order::where('id', $orderId)->first();
+                $order->referral_id = $referral->id;
+                $order->update();
 
                 $referralUser = User::where('id', $referralUserId)->first();
                 if ($user->notificationEnabled('new_referral')) {

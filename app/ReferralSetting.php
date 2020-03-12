@@ -13,7 +13,8 @@ class ReferralSetting extends Model
         'signupEmail' => 'boolean',
         'showInNotifications' => 'boolean',
         'showInMenu' => 'boolean',
-        'type' => 'string'
+        'type' => 'string',
+        'frequency' => 'string'
     ];
 
     public function store()
