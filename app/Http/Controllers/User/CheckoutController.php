@@ -60,11 +60,11 @@ class CheckoutController extends UserController
         $bag = new Bag($bagItems, $store);
         $weeklyPlan = $request->get('plan');
 
-        if ($weeklyPlan && $user->has_active_subscription) {
+        if ($user->has_active_subscription) {
             return response()->json(
                 [
                     'message' =>
-                        'You already have an active weekly subscription. Please go to the subscriptions page if you want to change your meals.'
+                        'You have an active weekly subscription. Please go to the subscriptions page if you\'d like to change the meals for your next order which will be automatically placed for you.'
                 ],
                 400
             );

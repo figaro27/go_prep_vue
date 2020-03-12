@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row mb-3 mt-2" v-if="!createMealModal">
+    <div class="row mb-3 mt-2">
       <div class="col-md-4">
         <strong>Servings Per Container</strong>
         <b-form-input
@@ -28,7 +28,7 @@
           variant="primary"
           class="mt-4"
           @click="saveMealServings"
-          v-if="!componentAddonPage"
+          v-if="!componentAddonPage && !createMealModal"
           >Save</b-btn
         >
       </div>
@@ -201,7 +201,7 @@
           </b-form>
         </b-tab>
 
-        <b-tab title="Enter Nutrition Directly" v-if="!createMealModal">
+        <b-tab title="Enter Nutrition Directly">
           <b-form @submit.prevent="addToRecipe(true)">
             <hr />
             <b-form-group>
