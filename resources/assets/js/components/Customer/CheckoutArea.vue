@@ -2316,6 +2316,22 @@ use next_delivery_dates
         .catch(async response => {
           let error = response.response.data.message;
 
+          if (response.response.data.removeableMeal) {
+            let removeableMeal = response.response.data.removeableMeal;
+            this.bag.forEach(item => {
+              if (item.meal.id === removeableMeal.id) {
+                this.clearMealFullQuantity(
+                  item.meal,
+                  item.meal_package,
+                  item.size,
+                  item.components,
+                  item.addons,
+                  item.special_instructions
+                );
+              }
+            });
+          }
+
           this.checkingOut = false;
           this.$toastr.w(error);
         })

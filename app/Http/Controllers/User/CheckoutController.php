@@ -102,7 +102,8 @@ class CheckoutController extends UserController
                     [
                         'message' =>
                             $meal->title .
-                            ' has been removed from the menu since the time you added it to your bag. Please adjust your order and try again.'
+                            ' has been removed from the menu by us since the time you added it. It is now removed from your bag. Please double check your order and checkout again.',
+                        'removeableMeal' => $meal
                     ],
                     400
                 );
