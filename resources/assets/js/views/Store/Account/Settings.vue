@@ -9,6 +9,20 @@
         <b-col>
           <b-tabs>
             <b-tab title="Orders" active>
+              <b-form-group label="Logo" :state="true" class="pb-5">
+                <picture-input
+                  :ref="`storeImageInput`"
+                  :prefill="logoPrefill"
+                  @prefill="$refs[`storeImageInput`].onResize()"
+                  :alertOnError="false"
+                  :autoToggleAspectRatio="true"
+                  margin="0"
+                  size="10"
+                  button-class="btn"
+                  style="width: 180px; height: 180px; margin: 0;"
+                  @change="val => updateLogo(val)"
+                ></picture-input>
+              </b-form-group>
               <b-form @submit.prevent="updateStoreSettings">
                 <b-form-group
                   label="Delivery / Pickup Day(s)"
@@ -485,9 +499,9 @@
                   placeholder="E.G. Heating instructions, meal expiration periods, or any personalized message. This goes on your packing slips & email notifications to your customers."
                 ></b-form-textarea>
 
-                <b-button type="submit" variant="primary" class="mt-3"
+                <!-- <b-button type="submit" variant="primary" class="mt-3"
                   >Save</b-button
-                >
+                > -->
 
                 <b-form @submit.prevent="updateStoreSettings">
                   <p class="mt-3">
@@ -622,7 +636,7 @@
                   @submit.prevent="updateStoreLogo"
                   v-if="!storeModules.hideBranding"
                 >
-                  <b-form-group label="Logo" :state="true">
+                  <!-- <b-form-group label="Logo" :state="true">
                     <picture-input
                       :ref="`storeImageInput`"
                       :prefill="logoPrefill"
@@ -632,15 +646,15 @@
                       margin="0"
                       size="10"
                       button-class="btn"
-                      style="width: 180px; height: auto; margin: 0;"
+                      style="width: 180px; height: 180px; margin: 0;"
                       @change="val => updateLogo(val)"
                     ></picture-input>
-                  </b-form-group>
-                  <div class="mt-3">
+                  </b-form-group> -->
+                  <!-- <div class="mt-3">
                     <b-button type="submit" variant="primary" class="mb-3"
                       >Save</b-button
                     >
-                  </div>
+                  </div> -->
                 </b-form>
               </b-form>
               <p>
@@ -1274,13 +1288,15 @@ import fs from "../../../lib/fs.js";
 import TermsOfService from "../../TermsOfService";
 import TermsOfAgreement from "../../TermsOfAgreement";
 import SalesTax from "sales-tax";
+import PictureInput from "vue-picture-input";
 
 export default {
   components: {
     cSwitch,
     Swatches,
     TermsOfService,
-    TermsOfAgreement
+    TermsOfAgreement,
+    PictureInput
   },
   data() {
     return {
@@ -1427,6 +1443,12 @@ export default {
         }
       }
       return null;
+    },
+    storeURLcheck() {
+      let URL = window.location.href;
+      let subdomainCheck = URL.substr(0, URL.indexOf("."));
+      if (subdomainCheck.includes("goprep")) return true;
+      else return false;
     }
   },
   created() {
@@ -1435,10 +1457,10 @@ export default {
     });
   },
   mounted() {
-    if (this.storeSettings.salesTax >= 0) {
+    if (this.storeSettings.salesTax !== null) {
       this.salesTax = this.storeSettings.salesTax;
     } else {
-      this.getSalesTax(this.storeDetail.state);
+      this.salesTax = this.getSalesTax(this.storeDetail.state);
     }
 
     this.view_delivery_days = this.storeSettings.view_delivery_days;
@@ -1487,6 +1509,8 @@ export default {
       settings.transferType = this.transferTypes;
       settings.delivery_distance_zipcodes = this.zipCodes;
       settings.color = this.color;
+
+      this.updateStoreLogo();
 
       axios
         .patch("/api/me/settings", settings)
