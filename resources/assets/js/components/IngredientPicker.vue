@@ -41,7 +41,7 @@
             v-model="recipe"
             class="flex-grow-1 mr-1 mb-1"
             :rows="3"
-            placeholder="Enter a query like '1 cup mashed potatoes and 2 tbsp gravy'. Be sure to include accurate measurement names such as tsp, tbsp, cup, gram, oz, fl oz, etc.."
+            placeholder="Enter a query like '1 cup mashed potatoes and 2 tbsp gravy'. Be sure to include accurate measurement names such as tsp, tbsp, cup, gram, oz, fl oz, etc."
           ></b-form-textarea>
           <b-button @click="searchRecipe" variant="primary">Add</b-button>
         </b-tab>

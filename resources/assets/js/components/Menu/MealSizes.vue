@@ -97,7 +97,7 @@
         </div>
         <div slot="ingredients" slot-scope="props">
           <b-btn v-if="props.row.id > -1" @click="editIngredients(props.row.id)"
-            >Adjust</b-btn
+            >Adjust Ingredients</b-btn
           >
         </div>
         <div slot="multiplier" slot-scope="props">

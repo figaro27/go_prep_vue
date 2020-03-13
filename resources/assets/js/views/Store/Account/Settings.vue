@@ -1300,6 +1300,7 @@ export default {
   },
   data() {
     return {
+      logoUpdated: false,
       acceptedTOA: 0,
       acceptedTOAcheck: 0,
       showTOAModal: 0,
@@ -1510,7 +1511,9 @@ export default {
       settings.delivery_distance_zipcodes = this.zipCodes;
       settings.color = this.color;
 
-      this.updateStoreLogo();
+      if (this.logoUpdated) {
+        this.updateStoreLogo();
+      }
 
       axios
         .patch("/api/me/settings", settings)
@@ -1758,6 +1761,7 @@ export default {
       this.zipCodes = e.target.value.split(",");
     },
     async updateLogo(logo) {
+      this.logoUpdated = true;
       let b64 = await fs.getBase64(this.$refs.storeImageInput.file);
       this.storeDetail.logo = b64;
     },

@@ -105,7 +105,7 @@
                 <b-btn
                   variant="primary"
                   @click="changeOptionIngredients(i, x, option.meal_size_id)"
-                  >Adjust</b-btn
+                  >Adjust Ingredients</b-btn
                 >
               </td>
               <td>
