@@ -61,7 +61,7 @@
             <b-btn
               variant="primary"
               @click="changeAddonIngredients(i, addon.meal_size_id)"
-              >Adjust</b-btn
+              >Adjust Ingredients</b-btn
             >
           </b-col>
           <b-col>
