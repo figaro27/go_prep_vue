@@ -292,8 +292,20 @@ class MealController extends StoreController
         $meal->delete();
     }
 
-    public function saveMealServings(Request $request, $id)
+    public function saveMealServings(Request $request)
     {
-        Meal::saveMealServings($request, $id);
+        $mealSizeId = $request->get('meal_size_id');
+        if ($mealSizeId) {
+            $meal = MealSize::where('id', $request->get('id'))->first();
+        } else {
+            $meal = Meal::where('id', $request->get('id'))->first();
+        }
+        $meal->servingsPerMeal = $request->get('servingsPerMeal');
+        if ($request->get('servingSizeUnit') === null) {
+            $meal->servingSizeUnit = '';
+        } else {
+            $meal->servingSizeUnit = $request->get('servingSizeUnit');
+        }
+        $meal->save();
     }
 }
