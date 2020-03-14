@@ -25,7 +25,7 @@
         >
         <img
           v-b-popover.hover="
-            'Example: Choose your protein. Choose your vegetable. Minimum and maximum sets the requirement that the customer needs to choose. For example - minimum 1 would be \'Choose at least 1 protein.\' Maximum 3 would be \'Choose up to 3 veggies.\''
+            'Example: Choose your protein. Minimum and maximum sets the requirement that the customer needs to choose. For example - minimum 1 would be \'Choose at least 1 protein.\' Maximum 3 would be \'Choose up to 3 veggies.\''
           "
           title="Meal Components"
           src="/images/store/popover.png"

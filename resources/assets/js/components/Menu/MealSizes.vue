@@ -29,7 +29,7 @@
       >
       <img
         v-b-popover.hover="
-          'Example: Medium, Large, Family Sized, etc. Please indicate the price for each size. For ingredient multiplier, please indicate the ratio of how many more ingredients are used for the new size. For example if the meal is twice as large, put 2. If you don\'t use ingredients, just put 1 in each field.'
+          'Example: Medium, Large, Family Sized, etc. Please indicate the price for each size. You can also adjust the ingredients for this particular size.'
         "
         title="Meal Sizes"
         src="/images/store/popover.png"
@@ -96,7 +96,10 @@
           ></money>
         </div>
         <div slot="ingredients" slot-scope="props">
-          <b-btn v-if="props.row.id > -1" @click="editIngredients(props.row.id)"
+          <b-btn
+            v-if="props.row.id > -1"
+            @click="editIngredients(props.row.id)"
+            variant="primary"
             >Adjust Ingredients</b-btn
           >
         </div>
