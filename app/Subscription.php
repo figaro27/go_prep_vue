@@ -671,20 +671,21 @@ class Subscription extends Model
      *
      * @return boolean
      */
-    public function cancel($withStripe = true)
+    public function cancel()
     {
-        if ($withStripe) {
-            try {
-                $subscription = \Stripe\Subscription::retrieve(
-                    'sub_' . $this->stripe_id,
-                    [
-                        'stripe_account' => $this->store->settings->stripe_id
-                    ]
-                );
-                $subscription->cancel_at_period_end = true;
-                $subscription->save();
-            } catch (\Exception $e) {
-            }
+        try {
+            $subscription = \Stripe\Subscription::retrieve(
+                'sub_' . $this->stripe_id,
+                [
+                    'stripe_account' => $this->store->settings->stripe_id
+                ]
+            );
+            $subscription->cancel_at_period_end = true;
+            $subscription->save();
+        } catch (\Exception $e) {
+            throw new \Exception(
+                'Failed to cancel Subscription in Stripe - ' . $this->stripe_id
+            );
         }
 
         $this->update([
