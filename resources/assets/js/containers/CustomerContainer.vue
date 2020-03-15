@@ -30,7 +30,9 @@
         <b-navbar-nav class="adjust-nav">
           <b-nav-item
             v-if="
-              'id' in viewedStore && name != 'customer-subscription-changes'
+              'id' in viewedStore &&
+                name != 'customer-subscription-changes' &&
+                !userHasSubscriptions
             "
             to="/customer/menu"
             @click.prevent="backToMenu()"
@@ -38,7 +40,9 @@
           >
           <b-nav-item
             v-if="
-              'id' in viewedStore && name != 'customer-subscription-changes'
+              'id' in viewedStore &&
+                name != 'customer-subscription-changes' &&
+                !userHasSubscriptions
             "
             to="/customer/bag"
             >Checkout</b-nav-item
@@ -194,8 +198,20 @@ export default {
     ...mapGetters({
       storeLogo: "viewedStoreLogo",
       store: "viewedStore",
-      total: "bagQuantity"
+      total: "bagQuantity",
+      subscriptions: "subscriptions"
     }),
+    userHasSubscriptions() {
+      if (
+        this.loggedIn &&
+        this.subscriptions &&
+        this.subscriptions.length > 0
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     storeSettings() {
       return this.store.settings;
     },
