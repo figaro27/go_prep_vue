@@ -40,12 +40,14 @@ export default {
   mounted() {},
   watch: {
     mealMixItems: function() {
+      console.log(1);
       if (!this.mealMixItems.isRunningLazy) {
         if (
           this.bag.length === 0 ||
           (this.bag.items && this.bag.items.length === 0) ||
           !this.$route.query.sub
         ) {
+          console.log(2);
           this.initBag();
         }
       }
@@ -54,8 +56,10 @@ export default {
   methods: {
     ...mapActions(["refreshSubscriptions"]),
     async initBag() {
+      console.log(3);
       this.clearAll();
       await this.refreshSubscriptions();
+      console.log(4);
       const subscription = _.find(this.subscriptions, {
         id: parseInt(this.subscriptionId)
       });
