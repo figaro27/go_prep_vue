@@ -117,13 +117,17 @@ export default {
         : { meal_package_size_id: sizeId };
 
       if (
-        (meal.components.length &&
+        (meal.components &&
+          meal.components.length &&
           _.maxBy(meal.components, "minimum") &&
           _.find(meal.components, component => {
             return _.find(component.options, sizeCriteria);
           }) &&
           !components) ||
-        (meal.addons.length && _.find(meal.addons, sizeCriteria) && !addons)
+        (meal.addons &&
+          meal.addons.length &&
+          _.find(meal.addons, sizeCriteria) &&
+          !addons)
       ) {
         if (this.mealModal && this.hideMealModal) {
           await this.hideMealModal();
