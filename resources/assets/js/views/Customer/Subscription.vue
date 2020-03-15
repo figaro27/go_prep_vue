@@ -38,20 +38,16 @@ export default {
     }
   },
   mounted() {
-    if (
-      this.bag.length === 0 ||
-      (this.bag.items && this.bag.items.length === 0)
-    ) {
-      this.initBag();
+    if (!this.mealMixItems.isRunningLazy) {
+      if (this.bag.items && this.bag.items.length === 0) {
+        this.initBag();
+      }
     }
   },
   watch: {
     mealMixItems: function() {
-      if (
-        this.bag.length === 0 ||
-        (this.bag.items && this.bag.items.length === 0)
-      ) {
-        this.initBag();
+      if (!this.mealMixItems.isRunningLazy) {
+        if (this.bag.items && this.bag.items.length === 0) this.initBag();
       }
     }
   },
