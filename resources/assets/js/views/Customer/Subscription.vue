@@ -37,34 +37,38 @@ export default {
       return this.$route.params.id;
     }
   },
-  mounted() {},
-  watch: {
-    mealMixItems: function() {
-      console.log(1);
-      if (!this.mealMixItems.isRunningLazy) {
-        if (
-          this.bag.length === 0 ||
-          (this.bag.items && this.bag.items.length === 0) ||
-          !this.$route.query.sub
-        ) {
-          console.log(2);
-          this.initBag();
-        }
+  mounted() {
+    if (!this.mealMixItems.isRunningLazy) {
+      if (
+        this.bag.length === 0 ||
+        (this.bag.items && this.bag.items.length === 0) ||
+        !this.$route.query.sub
+      ) {
+        this.initBag();
       }
     }
   },
+  // watch: {
+  //   mealMixItems: function() {
+  //     if (!this.mealMixItems.isRunningLazy) {
+  //       if (
+  //         this.bag.length === 0 ||
+  //         (this.bag.items && this.bag.items.length === 0) ||
+  //         !this.$route.query.sub
+  //       ) {
+  //         this.initBag();
+  //       }
+  //     }
+  //   }
+  // },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
     async initBag() {
-      console.log(3);
       this.clearAll();
       await this.refreshSubscriptions();
-      console.log(4);
       const subscription = _.find(this.subscriptions, {
         id: parseInt(this.subscriptionId)
       });
-
-      console.log("subscription " + subscription);
 
       if (!subscription) {
         return;
@@ -73,15 +77,11 @@ export default {
       // Setting pickup here
       this.pickup = subscription.pickup;
 
-      console.log("items " + subscription.items);
-
       _.forEach(subscription.items, item => {
         const meal = this.getMeal(item.meal_id);
         if (!meal) {
           return;
         }
-
-        console.log("meal " + meal);
 
         let components = _.mapValues(
           _.groupBy(item.components, "meal_component_id"),
