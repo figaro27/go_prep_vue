@@ -37,7 +37,7 @@
           <b-col cols="6">
             <b-input
               v-model="addon.title"
-              placeholder="i.e. Extra Meat"
+              placeholder="i.e. Extra Protein"
             ></b-input>
           </b-col>
           <b-col>

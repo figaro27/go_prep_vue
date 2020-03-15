@@ -57,7 +57,7 @@
                 Macros
                 <img
                   v-b-popover.hover="
-                    'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page. If you have Nutrition Facts enabled, be sure to keep these numbers consistent as your customers will see the differences.'
+                    'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page.'
                   "
                   title="Macros"
                   src="/images/store/popover.png"
@@ -172,7 +172,7 @@
                 Instructions
                 <img
                   v-b-popover.hover="
-                    'Here you can include special heating instructions, preparation instructions, or expiration info to your customers for this particular meal. If this meal is ordered, these specific instructions will be shown on the customer\'s packing slips & email receipts.'
+                    'Here you can include special heating or preparation instructions to your customers for this particular meal. If this meal is ordered, these specific instructions will be shown on the customer\'s packing slips, email receipts, and labels.'
                   "
                   title="Special Meal Instructions"
                   src="/images/store/popover.png"

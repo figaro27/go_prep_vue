@@ -46,7 +46,7 @@
                   ></b-form-checkbox-group>
                   <img
                     v-b-popover.hover="
-                      'These are the day(s) you plan on delivering your order or allowing pickup to your customers and will show up as options on the checkout page for the customer. Please choose at least one day to allow orders on your menu.'
+                      'These are the day(s) you plan on delivering your order or allowing pickup to your customers and will show up as options on the checkout page for the customer. At least one day needs to be set to allow ordering.'
                     "
                     title="Delivery / Pickup Day(s)"
                     src="/images/store/popover.png"
@@ -180,7 +180,7 @@
                   v-if="storeSettings.delivery_distance_type === 'zipcodes'"
                   label="Delivery Zip Codes"
                   label-for="delivery-distance-zipcodes"
-                  description="Separate zip codes by comma"
+                  description="Separate zip codes by comma."
                   :state="true"
                 >
                   <textarea
@@ -210,7 +210,7 @@
                   >
                     <img
                       v-b-popover.hover="
-                        'If you only have one delivery/pickup day, then choose either option and it will work the same way. Timed Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Period to 1 day and 12 hours. This will lock in orders for Sunday on Friday at 12 PM and lock in orders for Wednesday on Monday at 12 PM. Single Day Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Day to Friday at 12 PM. This locks in orders for BOTH Sunday & Wednesday on Friday at 12 PM.'
+                        'If you only have one delivery/pickup day, then choose either option and it will work the same way. Timed Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Period to 1 day and 12 hours. This will lock in orders for Sunday on Friday at 12 PM and lock in orders for Wednesday on Monday at 12 PM. Single Day Example: Your delivery days are Sunday and Wednesday, and you set the Cut Off Day to Friday at 12 PM. This locks in orders for BOTH Sunday & Wednesday on Friday at 12 PM. Count backwards from the delivery/pickup day to figure out the best cutoff time. The day begins at 12 AM.'
                       "
                       title="Cut Off Type"
                       src="/images/store/popover.png"
@@ -307,7 +307,7 @@
                     <span class="mr-1">Weekly Subscription Discount</span>
                     <img
                       v-b-popover.hover="
-                        'Give your customers an incentive to create a weekly subscription with you by offering a discount percentage. Please keep in mind the customer can still cancel at any time after their first order.'
+                        'Give your customers an incentive to create a weekly subscription with you by offering a discount percentage. The customer is locked into at least 2 orders before they can cancel their subscription through our system in order to prevent users from abusing the discount. They would have to contact you if they want to cancel the subscription before at least 2 orders in which you can cancel it for them if you agree.'
                       "
                       title="Weekly Subscription Discount"
                       src="/images/store/popover.png"
@@ -352,7 +352,7 @@
                       <span class="mr-1">Delivery Fee Type</span>
                       <img
                         v-b-popover.hover="
-                          'Either choose to apply a flat fee no matter how far the customer is, or a fee based on the distance of the customer in miles.'
+                          'Either choose to apply a flat fee no matter how far the customer is, or a fee based on the distance of the customer in miles. If you choose mileage, you set the base amount first and then the amount per mile. For example - Base amount - $3.00 and then .75 cents per mile. The base amount guarantees you at least receive that amount before the per mile fee gets added.'
                         "
                         title="Delivery Fee Type"
                         src="/images/store/popover.png"
@@ -485,7 +485,7 @@
                   <span class="mr-1">Notes For Customer</span>
                   <img
                     v-b-popover.hover="
-                      'Here you can optionally add any notes that you want to communicate to your customer on your packing slips and new order email notifications. Some examples include heating instructions, expiration periods of your meals, or any personalized message. This will be shown on your packing slips as well as email notifications the customer receives.'
+                      'Here you can optionally add any notes or customized message that you want to communicate to your customer on your packing slips and new order email notifications. This is usually some general information or a thank you of some kind.'
                     "
                     title="Notes For Customer"
                     src="/images/store/popover.png"
@@ -496,7 +496,7 @@
                   type="text"
                   rows="3"
                   v-model="storeSettings.notesForCustomer"
-                  placeholder="E.G. Heating instructions, meal expiration periods, or any personalized message. This goes on your packing slips & email notifications to your customers."
+                  placeholder="Thank you for your order."
                 ></b-form-textarea>
 
                 <!-- <b-button type="submit" variant="primary" class="mt-3"
@@ -526,7 +526,7 @@
                       <span class="mr-1">Sales Tax %</span>
                       <img
                         v-b-popover.hover="
-                          'Our system figures out your sales tax using the state you signed up with. You can override the number in the field below.'
+                          'Our system figures out your sales tax rate using the state you signed up with. You can override the number in the field below.'
                         "
                         title="Sales Tax"
                         src="/images/store/popover.png"
@@ -547,7 +547,7 @@
                     <span class="mr-1">Google Analytics Code</span>
                     <img
                       v-b-popover.hover="
-                        'Create a Google Analytics account and paste in your tracking code below. You\'ll then be able to see all kinds of traffic reports about who viewed your menu page. Please follow the exact format that is shown to you which looks like this: UA-00000000-00. If you need help setting up your Google Analytics account, please contact us and we\'ll be glad to set it up for you.'
+                        'Create a Google Analytics account and paste in your tracking code below. You\'ll then be able to see all kinds of traffic reports about who viewed your menu page. Please follow the exact format that is shown to you which looks like this: UA-00000000-00.'
                       "
                       title="Google Analytics"
                       src="/images/store/popover.png"
@@ -615,7 +615,7 @@
                     v-if="!storeSettings.open"
                     type="text"
                     v-model="storeSettings.closedReason"
-                    placeholder="Please include the reason to give to customers as to why you are currently not accepting new orders."
+                    placeholder="Here you can indicate the reason to your customers for not accepting orders."
                     required
                   ></b-form-input>
 
@@ -661,7 +661,7 @@
                 <span class="mr-1">Show Nutrition Facts</span>
                 <img
                   v-b-popover.hover="
-                    'Nutrition facts are generated based on the ingredients you enter in for each meal on your Menu page. The nutrition is then shown to your customers if they click on any of your meals when ordering from you.'
+                    'Nutrition facts are generated based on the ingredients you enter in for each meal on your Menu page, or you enter nutritional info directly. The nutrition is then shown to your customers if they click on any of your meals when ordering from you.'
                   "
                   title="Show Nutrition Facts"
                   src="/images/store/popover.png"
@@ -683,7 +683,7 @@
                 <span class="mr-1">Show Macros</span>
                 <img
                   v-b-popover.hover="
-                    'Enables input fields for your to add your meal\'s calories, carbs, protein, and fat. This then shows up underneath your meal titles on your menu page. If you have Nutrition Facts enabled as well, please keep the numbers the same as your customers will see any differences.'
+                    'Enables input fields for your to add your meal\'s calories, carbs, protein, and fat. This then shows up underneath your meal titles on your menu page.'
                   "
                   title="Show Macros"
                   src="/images/store/popover.png"
@@ -724,7 +724,7 @@
                 </b-form-group>
               </b-form>
 
-              <p>
+              <!-- <p>
                 <span class="mr-1">Allow Meal Packages</span>
                 <img
                   v-b-popover.hover="
@@ -734,9 +734,9 @@
                   src="/images/store/popover.png"
                   class="popover-size"
                 />
-              </p>
+              </p> -->
 
-              <b-form @submit.prevent="updateStoreSettings">
+              <!-- <b-form @submit.prevent="updateStoreSettings">
                 <b-form-group :state="true">
                   <c-switch
                     color="success"
@@ -746,13 +746,13 @@
                     @change.native="updateStoreSettings"
                   />
                 </b-form-group>
-              </b-form>
+              </b-form> -->
 
               <p>
                 <span class="mr-1">Allow Weekly Subscriptions</span>
                 <img
                   v-b-popover.hover="
-                    'Shows a section on your bag/checkout page that lets the customer opt in for a weekly subscription for an optional discount. The customer will then be charged every week. They can pause, cancel, or change meals in their subscriptions.'
+                    'Shows a section on your bag/checkout page that lets the customer opt in for a weekly subscription for an optional discount. The customer will then be charged every week. They can cancel, or change meals in their subscriptions. Users are locked into two weeks before being able to cancel. They have to contact you bif they wish to cancel beforehand.'
                   "
                   title="Allow Weekly Subscriptions"
                   src="/images/store/popover.png"
@@ -776,7 +776,7 @@
                 <span class="mr-1">Enable Meal Instructions</span>
                 <img
                   v-b-popover.hover="
-                    'Adds a new form field on each of your meals on the Menu page on your dashboard. Within that box you can type in special instructions specific to that particular meal such as heating instructions. If your customer orders that particular meal, these instructions will then be shown in their packing slips & email receipts. This is similar to the \'Notes for Customer\' option above, but for particular meals.'
+                    'Adds a new form field on each of your meals on the Menu page on your dashboard. Within that box you can type in special instructions specific to that particular meal such as heating instructions. If your customer orders that particular meal, these instructions will then be shown in their packing slips & email receipts.'
                   "
                   title="Enable Meal Instructions"
                   src="/images/store/popover.png"
@@ -816,7 +816,7 @@
                     <span class="mr-1">Main Website URL</span>
                     <img
                       v-b-popover.hover="
-                        'Optionally link up your main website to your menu and checkout page. If your customer clicks your logo they will be redirected back to your main website.'
+                        'Optionally link up your main website to your menu and checkout page. If your customer clicks your logo they will be redirected back to your main website. This will also show the website URL on your packing slips and labels.'
                       "
                       title="Main Website URL"
                       src="/images/store/popover.png"
@@ -842,7 +842,7 @@
                 ></b-form-radio-group>
                 <img
                   v-b-popover.hover="
-                    'Choose image based if you have images of your meals and want to showcase your meals visually. Choose text based if you don\'t have many images and want to emphasize descriptions more. Text based still shows images of your meals but in a much smaller size.'
+                    'Choose image based if you have images of your meals and want to showcase your meals visually. Choose text based if you don\'t have many images and want to emphasize descriptions more. Text based still shows images of your meals but in a smaller size.'
                   "
                   title="Menu Style"
                   src="/images/store/popover.png"
@@ -872,7 +872,7 @@
                 <span class="mr-1">Coupons</span>
                 <img
                   v-b-popover.hover="
-                    'Add a coupon that your customers can use on your checkout page. Choose the type - either an overall percentage of the bag or a flat amount.'
+                    'Add a coupon that your customers can use on your checkout page. Choose the type - either an overall percentage of the subtotal or a flat amount.'
                   "
                   title="Coupons"
                   src="/images/store/popover.png"
@@ -1114,7 +1114,7 @@
                     >
                     <img
                       v-b-popover.hover="
-                        'Make special instructions available on manual orders only - not for your customer\'s online orders.'
+                        'Make special instructions available on manual orders you create only - not for your customer\'s online orders.'
                       "
                       title="Store Only Special Instructions"
                       src="/images/store/popover.png"
@@ -1171,7 +1171,7 @@
                   <span class="mr-1 mt-2">Cash Orders for Customers</span>
                   <img
                     v-b-popover.hover="
-                      'Allow your customers to place cash on delivery orders.'
+                      'Allow your customers to check a box on the checkout page which indicates they want to place cash on delivery order. They will not be charged.'
                     "
                     title="Cash Orders for Customers"
                     src="/images/store/popover.png"

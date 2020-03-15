@@ -379,7 +379,7 @@
               ></b-form-input>
               <img
                 v-b-popover.hover="
-                  'Refund your customer partially or fully. As of right now, you can only refund up to the Original Total, not any additional charges. Refunds take 5-10 days to show on your customer\'s statements.'
+                  'Refund your customer partially or fully. Refunds take 5-10 days to show on your customer\'s statements. Leave the field blank for a full refund. Refunding does not remove the order from all of your reports. Please void the order for that.'
                 "
                 title="Refunds"
                 src="/images/store/popover.png"
@@ -407,7 +407,7 @@
               <img
                 v-if="order.voided === 0"
                 v-b-popover.hover="
-                  'Voiding an order removes the order information & meals from all of your reporting.'
+                  'Voiding an order removes the order information & meals from all of your reporting. It does not refund the customer.'
                 "
                 title="Voids"
                 src="/images/store/popover.png"
@@ -442,7 +442,7 @@
               <img
                 v-if="order.voided === 0"
                 v-b-popover.hover="
-                  'Customers receive emails after they checkout. This would just be a second copy if they didn\'t receive the first for any reason.'
+                  'Customers automatically receive email receipts after they checkout. This button would send a second copy if they didn\'t receive the first for any reason.'
                 "
                 title="Email Receipt"
                 src="/images/store/popover.png"
@@ -540,7 +540,7 @@
               >
               <img
                 v-b-popover.hover="
-                  'This settles the balance on the order to $0 for your records without charging or refunding your customer.'
+                  'This sets the balance on the order to $0 for your records without actually charging or refunding your customer.'
                 "
                 title="Settle Balance"
                 src="/images/store/popover.png"
