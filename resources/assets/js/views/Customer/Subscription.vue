@@ -48,19 +48,19 @@ export default {
       }
     }
   },
-  // watch: {
-  //   mealMixItems: function() {
-  //     if (!this.mealMixItems.isRunningLazy) {
-  //       if (
-  //         this.bag.length === 0 ||
-  //         (this.bag.items && this.bag.items.length === 0) ||
-  //         !this.$route.query.sub
-  //       ) {
-  //         this.initBag();
-  //       }
-  //     }
-  //   }
-  // },
+  watch: {
+    mealMixItems: function() {
+      if (!this.mealMixItems.isRunningLazy) {
+        if (
+          this.bag.length === 0 ||
+          (this.bag.items && this.bag.items.length === 0) ||
+          !this.$route.query.sub
+        ) {
+          this.initBag();
+        }
+      }
+    }
+  },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
     async initBag() {
