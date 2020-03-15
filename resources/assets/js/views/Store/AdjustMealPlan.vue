@@ -74,7 +74,7 @@ export default {
 
         let special_instructions = item.special_instructions;
         // Temporarily not initting meal package meals until SubscriptionBag model is created
-        if (!item.meal_package) {
+        if (item.meal_package_subscription_id === null) {
           for (let i = 0; i < item.quantity; i++) {
             this.addOne(
               meal,
