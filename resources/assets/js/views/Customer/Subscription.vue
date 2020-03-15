@@ -83,16 +83,18 @@ export default {
         let addons = _.map(item.addons, "meal_addon_id");
 
         let special_instructions = item.special_instructions;
-
-        for (let i = 0; i < item.quantity; i++) {
-          this.addOne(
-            meal,
-            false,
-            item.meal_size_id,
-            components,
-            addons,
-            special_instructions
-          );
+        // Temporarily not initting meal package meals until SubscriptionBag model is created
+        if (!item.meal_package) {
+          for (let i = 0; i < item.quantity; i++) {
+            this.addOne(
+              meal,
+              false,
+              item.meal_size_id,
+              components,
+              addons,
+              special_instructions
+            );
+          }
         }
       });
     }
