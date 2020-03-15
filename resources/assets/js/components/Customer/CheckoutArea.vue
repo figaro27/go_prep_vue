@@ -2198,9 +2198,9 @@ use next_delivery_dates
 
       let cardId = this.card;
 
-      if (this.grandTotal === 0) {
-        this.cashOrder = true;
-      }
+      // if (this.grandTotal === 0) {
+      //   this.cashOrder = true;
+      // }
 
       if (this.cashOrder === true) {
         cardId = 0;
