@@ -1031,6 +1031,25 @@ class Subscription extends Model
                     // $mealOrder->price = $item->price;
                     $mealOrder->quantity = $item->quantity;
                     $mealOrder->meal_package = 1;
+
+                    if ($item->meal_package_subscription_id !== null) {
+                        $mealPackageSub = MeaLPackageSubscription::where(
+                            'id',
+                            $item->meal_package_subscription_id
+                        )->first();
+                        $mealOrder->meal_package_order_id = MealPackageOrder::where(
+                            [
+                                'meal_package_id' =>
+                                    $mealPackageSub->meal_package_id,
+                                'meal_package_size_id' =>
+                                    $mealPackageSub->meal_package_size_id,
+                                'order_id' => $order->id
+                            ]
+                        )
+                            ->pluck('id')
+                            ->first();
+                    }
+
                     $mealOrder->save();
                 }
             }
