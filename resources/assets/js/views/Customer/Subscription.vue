@@ -41,8 +41,7 @@ export default {
     if (!this.mealMixItems.isRunningLazy) {
       if (
         this.bag.length === 0 ||
-        (this.bag.items && this.bag.items.length === 0) ||
-        !this.$route.query.sub
+        (this.bag.items && this.bag.items.length === 0)
       ) {
         this.initBag();
       }
@@ -53,8 +52,7 @@ export default {
       if (!this.mealMixItems.isRunningLazy) {
         if (
           this.bag.length === 0 ||
-          (this.bag.items && this.bag.items.length === 0) ||
-          !this.$route.query.sub
+          (this.bag.items && this.bag.items.length === 0)
         ) {
           this.initBag();
         }
