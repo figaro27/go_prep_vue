@@ -16,7 +16,7 @@
         <strong>Serving Size Unit</strong>
         <b-form-input
           v-model="meal.servingSizeUnit"
-          placeholder="Keto Bomb"
+          placeholder="Protein Pancake"
           v-if="!componentAddonPage"
         ></b-form-input>
         <span v-if="componentAddonPage" class="strong"
@@ -41,7 +41,7 @@
             v-model="recipe"
             class="flex-grow-1 mr-1 mb-1"
             :rows="3"
-            placeholder="Enter a query like '1 cup mashed potatoes and 2 tbsp gravy'. Be sure to include accurate measurement names such as tsp, tbsp, cup, gram, oz, fl oz, etc."
+            placeholder="Enter ingredients that make up the meal like '3 oz chicken breast, 1/2 tsp salt, etc'. Include measurements such as tsp, tbsp, cup, gram, oz, fl oz, and separate the ingredients by comma."
           ></b-form-textarea>
           <b-button @click="searchRecipe" variant="primary">Add</b-button>
         </b-tab>

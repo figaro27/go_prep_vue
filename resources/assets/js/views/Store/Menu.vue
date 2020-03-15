@@ -281,7 +281,7 @@
                     Macros
                     <img
                       v-b-popover.hover="
-                        'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page. If you have Nutrition Facts enabled, be sure to keep these numbers consistent as your customers will see the differences.'
+                        'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page.'
                       "
                       title="Macros"
                       src="/images/store/popover.png"
@@ -402,7 +402,7 @@
                     Contains
                     <img
                       v-b-popover.hover="
-                        'Indicate if your meal contains any of the below. These allow your meals to be filtered by your customer on your menu page for anyone looking to avoid meals that contain any of these options.'
+                        'Indicate if your meal contains any of the below. These allow your meals to be filtered by your customer on your menu page for anyone looking to avoid meals that contain any of these.'
                       "
                       title="Contains"
                       src="/images/store/popover.png"
@@ -422,7 +422,7 @@
                       Custom Sales Tax
                       <img
                         v-b-popover.hover="
-                          'If this meal should be charged different sales tax or even 0 sales tax, you can type the amount in this field.'
+                          'If this meal should be charged different sales tax rate or even 0 sales tax, you can type the amount in this field.'
                         "
                         title="Custom Sales Tax"
                         src="/images/store/popover.png"
@@ -440,7 +440,7 @@
                   Instructions
                   <img
                     v-b-popover.hover="
-                      'Here you can include special heating instructions, preparation instructions, or expiration info to your customers for this particular meal. If this meal is ordered, these specific instructions will be shown on the customer\'s packing slips & email receipts.'
+                      'Here you can include special heating or preparation instructions to your customers for this particular meal. If this meal is ordered, these specific instructions will be shown on the customer\'s packing slips & email receipts as well as labels if you choose.'
                     "
                     title="Special Meal Instructions"
                     src="/images/store/popover.png"

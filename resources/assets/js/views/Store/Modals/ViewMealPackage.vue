@@ -47,7 +47,7 @@
                 Categories
                 <img
                   v-b-popover.hover="
-                    'Categories show up as different sections of your menu to your customers. You can have the same meal show up in multiple categories. Add, remove, or rearrange the order of categories in Settings.'
+                    'Categories show up as different sections of your menu to your customers. You can have the same meal show up in multiple categories.'
                   "
                   title="Categories"
                   src="/images/store/popover.png"
