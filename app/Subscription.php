@@ -680,7 +680,8 @@ class Subscription extends Model
                     'stripe_account' => $this->store->settings->stripe_id
                 ]
             );
-            $subscription->cancel_at_period_end = true;
+            // $subscription->cancel_at_period_end = true;
+            $subscription->cancel();
             $subscription->save();
         } catch (\Exception $e) {
             throw new \Exception(
