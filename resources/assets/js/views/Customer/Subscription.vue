@@ -60,6 +60,8 @@ export default {
         id: parseInt(this.subscriptionId)
       });
 
+      console.log("subscription " + subscription);
+
       if (!subscription) {
         return;
       }
@@ -67,11 +69,15 @@ export default {
       // Setting pickup here
       this.pickup = subscription.pickup;
 
+      console.log("items " + subscription.items);
+
       _.forEach(subscription.items, item => {
         const meal = this.getMeal(item.meal_id);
         if (!meal) {
           return;
         }
+
+        console.log("meal " + meal);
 
         let components = _.mapValues(
           _.groupBy(item.components, "meal_component_id"),
