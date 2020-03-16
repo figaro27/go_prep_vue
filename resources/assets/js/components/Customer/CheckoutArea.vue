@@ -9,7 +9,12 @@
             $parent.orderId === undefined
         "
       >
-        <div class="row" v-if="!manualOrder && !store.modules.subscriptionOnly">
+        <div
+          class="row"
+          v-if="
+            !manualOrder && !store.modules.subscriptionOnly && !subscriptionId
+          "
+        >
           <div class="col-md-12 pb-1">
             <h3>
               <img
