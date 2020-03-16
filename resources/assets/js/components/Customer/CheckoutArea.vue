@@ -822,7 +822,7 @@
           >ADJUST ORDER</b-btn
         >
 
-        <div v-if="subscriptionId" class="d-none d-lg-block">
+        <div v-if="subscriptionId">
           <b-btn
             class="menu-bag-btn update-meals-btn"
             @click="updateSubscriptionMeals"
