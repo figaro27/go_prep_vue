@@ -832,11 +832,11 @@ export default {
         valueFibers: nutrition.fibers / servingsPerMeal,
         valueSugars: nutrition.sugars / servingsPerMeal,
         valueProteins: nutrition.proteins / servingsPerMeal,
-        valueVitaminD: ((nutrition.vitamind / 20000) * 100) / servingsPerMeal,
-        valuePotassium_2018:
+        // valueVitaminD: ((nutrition.vitamind / 20000) * 100) / servingsPerMeal,
+        // valuePotassium_2018:
           ((nutrition.potassium / 4700) * 100) / servingsPerMeal,
-        valueCalcium: ((nutrition.calcium / 1300) * 100) / servingsPerMeal,
-        valueIron: ((nutrition.iron / 18) * 100) / servingsPerMeal,
+        // valueCalcium: ((nutrition.calcium / 1300) * 100) / servingsPerMeal,
+        // valueIron: ((nutrition.iron / 18) * 100) / servingsPerMeal,
         valueAddedSugars: nutrition.addedSugars / servingsPerMeal,
         showLegacyVersion: false
       });

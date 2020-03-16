@@ -1249,19 +1249,19 @@ export default {
         valueFibers: (nutrition.fibers / servingsPerMeal).toFixed(0),
         valueSugars: (nutrition.sugars / servingsPerMeal).toFixed(0),
         valueProteins: (nutrition.proteins / servingsPerMeal).toFixed(0),
-        valueVitaminD: (
-          ((nutrition.vitamind / 20000) * 100) /
-          servingsPerMeal
-        ).toFixed(0),
-        valuePotassium_2018: (
-          ((nutrition.potassium / 4700) * 100) /
-          servingsPerMeal
-        ).toFixed(0),
-        valueCalcium: (
-          ((nutrition.calcium / 1300) * 100) /
-          servingsPerMeal
-        ).toFixed(0),
-        valueIron: (((nutrition.iron / 18) * 100) / servingsPerMeal).toFixed(0),
+        // valueVitaminD: (
+        //   ((nutrition.vitamind / 20000) * 100) /
+        //   servingsPerMeal
+        // ).toFixed(0),
+        // valuePotassium_2018: (
+        //   ((nutrition.potassium / 4700) * 100) /
+        //   servingsPerMeal
+        // ).toFixed(0),
+        // valueCalcium: (
+        //   ((nutrition.calcium / 1300) * 100) /
+        //   servingsPerMeal
+        // ).toFixed(0),
+        // valueIron: (((nutrition.iron / 18) * 100) / servingsPerMeal).toFixed(0),
         valueAddedSugars: (nutrition.addedsugars / servingsPerMeal).toFixed(0),
         showLegacyVersion: false
       };
