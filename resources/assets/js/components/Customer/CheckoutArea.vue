@@ -402,7 +402,8 @@
         v-if="
           ($route.params.storeView || storeOwner) &&
             !isMultipleDelivery &&
-            !$route.params.adjustMealPlan
+            !$route.params.adjustMealPlan &&
+            !subscriptionId
         "
       >
         <div>
