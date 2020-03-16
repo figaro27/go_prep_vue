@@ -22,10 +22,12 @@
       @endphp
 
       @if ($reportSettings->lab_nutrition)
-      <div style="display:inline-block"> <div style="float:left;width:50%">
+      <div style="display:inline-block"> <div style="width:50%">
         @endif
         <center>
+          @if ($reportSettings->lab_logo)
       <img src="{{$logo}}"/ style="width:40vh;height:40vh"> 
+      @endif
       <h5 style="text-align: center"> {!! $mealOrder->html_title !!}
       </h5> @if ($reportSettings->lab_description) 
       <p> {!!
@@ -59,7 +61,7 @@
       </center>
         </div>
         @if ($reportSettings->lab_nutrition)
-        <div style="float:left;width:50%;">
+        <div style="width:50%;">
           @endif
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
