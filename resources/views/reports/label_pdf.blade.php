@@ -61,7 +61,7 @@
         </p>
         @endif
         </div>
-        <div style="float:left;width:50%">
+        <div style="float:left;width:50%;height:auto">
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
           Proten: {!! $mealOrder->meal->macros->protein !!}
