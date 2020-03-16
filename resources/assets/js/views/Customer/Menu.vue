@@ -903,6 +903,11 @@ export default {
     });
   },
   mounted() {
+    if (this.$route.query.sub) {
+      this.bagPageURL =
+        "/customer/bag?sub=true&subscriptionId=" + this.$route.params.id;
+    }
+
     if (this.$route.query.filter) {
       this.search = this.$route.query.filter;
     }
