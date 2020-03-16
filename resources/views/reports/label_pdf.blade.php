@@ -24,7 +24,7 @@
 
       <div style="display:inline-block">
         <div style="float:left;width:50%">
-        <img src="{{$logo}}"/ style="width:100%;height:auto">
+        <img src="{{$logo}}"/ style="transform:scale(0.33,0.33)">
         <h5>
           {!! $mealOrder->html_title !!}
         </h5>
