@@ -24,22 +24,12 @@
 
       <div style="display:inline-block"> <div style="float:left;width:50%">
         <center>
-      <img src="{{$logo}}"/ style="width:40vh;height:40vh"> 
+      <img src="{{$logo}}"/ style="width:45vh;height:45vh"> 
       <h5 style="text-align: center"> {!! $mealOrder->html_title !!}
       </h5> <br> @if ($reportSettings->lab_description) 
       <p> {!!
       $mealOrder->meal->description !!} </p> @endif
         
-        @if ($reportSettings->lab_website)
-        <p>
-        {!! $mealOrder->store->settings->website !!}
-        </p>
-        @endif
-        @if ($reportSettings->lab_social)
-        <p>
-        {!! $mealOrder->store->details->social !!}
-        </p>
-        @endif
         @if ($reportSettings->lab_expiration)
         <p>
         Consume Before: {!! $mealOrder->expirationDate !!}
@@ -55,6 +45,16 @@
         <h6 style="text-align: center">Client: {!! $mealOrder->order->user->name !!}</h6>
         </p>
         @endif
+        @if ($reportSettings->lab_website)
+        <p>
+        {!! $mealOrder->store->settings->website !!}
+        </p>
+        @endif
+        @if ($reportSettings->lab_social)
+        <p>
+        {!! $mealOrder->store->details->social !!}
+        </p>
+        @endif
       </center>
         </div>
         <div style="float:left;width:50%;height:auto">
@@ -68,7 +68,7 @@
         @if ($reportSettings->lab_nutrition)
           
           
-            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
+            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform: scale(0.5)"></div>
           
         @endif
       </div>
