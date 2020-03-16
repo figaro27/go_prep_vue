@@ -114,12 +114,12 @@
                     placeholder="Cholesterol"
                     class="mt-2"
                   ></b-form-input>
-                  <b-form-input
+                  <!-- <b-form-input
                     type="number"
                     v-model="customIngredient.vitamind"
                     placeholder="Vitamin D"
                     class="mt-2"
-                  ></b-form-input>
+                  ></b-form-input> -->
                 </div>
                 <div class="col-md-2">
                   <b-form-input
@@ -168,7 +168,7 @@
                     placeholder="Proteins"
                     class="mt-2"
                   ></b-form-input>
-                  <b-form-input
+                  <!-- <b-form-input
                     type="number"
                     v-model="customIngredient.potassium"
                     placeholder="Potassium"
@@ -179,7 +179,7 @@
                     v-model="customIngredient.calcium"
                     placeholder="Calcium"
                     class="mt-2"
-                  ></b-form-input>
+                  ></b-form-input> -->
                 </div>
                 <div class="col-md-2">
                   <b-form-input
@@ -188,12 +188,12 @@
                     placeholder="Fibers"
                     class="mt-2"
                   ></b-form-input>
-                  <b-form-input
+                  <!-- <b-form-input
                     type="number"
                     v-model="customIngredient.iron"
                     placeholder="Iron"
                     class="mt-2"
-                  ></b-form-input>
+                  ></b-form-input> -->
                 </div>
               </div>
             </b-form-group>

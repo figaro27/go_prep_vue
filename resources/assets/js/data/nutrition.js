@@ -23,10 +23,10 @@ const nutrition = {
       fibers: 0,
       sugars: 0,
       proteins: 0,
-      vitamind: 0,
-      potassium: 0,
-      calcium: 0,
-      iron: 0,
+      // vitamind: 0,
+      // potassium: 0,
+      // calcium: 0,
+      // iron: 0,
       addedsugars: 0
     };
 
