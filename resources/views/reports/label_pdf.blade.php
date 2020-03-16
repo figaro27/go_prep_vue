@@ -24,7 +24,7 @@
 
       <div style="display:inline-block"> <div style="float:left;width:50%">
         <center>
-      <img src="{{$logo}}"/ style="width:40vh;height:40vh"> 
+      <img src="{{$logo}}"/ style="transform:scale(0.5)"> 
       <h5 style="text-align: center"> {!! $mealOrder->html_title !!}
       </h5> @if ($reportSettings->lab_description) 
       <p> {!!
