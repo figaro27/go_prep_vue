@@ -903,7 +903,7 @@ export default {
     });
   },
   mounted() {
-    if (this.$route.query.sub) {
+    if (this.$route.query.sub || this.$route.query.subscriptionId) {
       this.bagPageURL =
         "/customer/bag?sub=true&subscriptionId=" + this.$route.params.id;
     }
