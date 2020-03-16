@@ -46,12 +46,7 @@ class SubscriptionController extends StoreController
             ->where('id', $id)
             ->first();
 
-        $subscriptions->makeHidden([
-            'meal_ids',
-            'meal_quantities',
-            'store',
-            'next_delivery_date'
-        ]);
+        $subscriptions->makeHidden(['meal_ids', 'meal_quantities', 'store']);
 
         return $subscriptions;
     }
