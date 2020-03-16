@@ -67,12 +67,8 @@
 
         @if ($reportSettings->lab_nutrition)
           
-          @if ($reportSettings->lab_expiration)
-        <p>
-        Consume Before: {!! $mealOrder->expirationDate !!}
-        </p>
-        @endif
-            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(1)"></div>
+          
+            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(0.5)"></div>
           
         @endif
       </div>
