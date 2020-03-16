@@ -666,6 +666,8 @@ export default {
         this.subscriptions.length > 0 &&
         !this.$route.params.id
       ) {
+        this.$parent.bagPageURL =
+          "/customer/subscriptions/" + this.subscriptions[0].id;
         this.$router.push({
           path: "/customer/subscriptions/" + this.subscriptions[0].id,
           params: { subscriptionId: this.subscriptions[0].id },

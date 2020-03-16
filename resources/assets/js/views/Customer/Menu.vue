@@ -187,7 +187,7 @@
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
-            to="/customer/bag"
+            :to="bagPageURL"
             v-if="(!subscriptionId || !adjustOrder) && !mealPackagePageView"
           >
             <div class="d-flex flex-column h-100">
@@ -487,6 +487,7 @@ export default {
   },
   data() {
     return {
+      bagPageURL: "/customer/bag",
       adjustMealModal: false,
       adjustMealModal_meal: null,
       adjustMealModal_size: null,
