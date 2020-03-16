@@ -24,8 +24,10 @@
 
       <div style="display:inline-block"> <div style="float:left;width:50%">
         <center>
-      <img src="{{$logo}}"/ style="width:40vh;height:40vh"> <h5> {!! $mealOrder->html_title !!}
-      </h5> <br> @if ($reportSettings->lab_description) <p> {!!
+      <img src="{{$logo}}"/ style="width:40vh;height:40vh"> 
+      <h5 style="text-align: center"> {!! $mealOrder->html_title !!}
+      </h5> <br> @if ($reportSettings->lab_description) 
+      <p> {!!
       $mealOrder->meal->description !!} </p> @endif
         
         @if ($reportSettings->lab_website)
@@ -50,7 +52,7 @@
         @endif
         @if ($reportSettings->lab_customer)
         <p>
-        <h6>Client: {!! $mealOrder->order->user->name !!}</h6>
+        <h6 style="text-align: center">Client: {!! $mealOrder->order->user->name !!}</h6>
         </p>
         @endif
       </center>
