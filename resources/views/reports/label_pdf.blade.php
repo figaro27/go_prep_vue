@@ -29,15 +29,15 @@
       </h5> @if ($reportSettings->lab_description) 
       <p> {!!
       $mealOrder->meal->description !!} </p> @endif
-        
-        @if ($reportSettings->lab_expiration)
-        <p>
-        Consume Before: {!! $mealOrder->expirationDate !!}
-        </p>
-        @endif
+      
         @if ($reportSettings->lab_instructions)
         <p>
         {!! $mealOrder->meal->instructions !!}
+        </p>
+        @endif
+        @if ($reportSettings->lab_expiration)
+        <p>
+        Consume Before: {!! $mealOrder->expirationDate !!}
         </p>
         @endif
         @if ($reportSettings->lab_customer)
@@ -67,8 +67,12 @@
 
         @if ($reportSettings->lab_nutrition)
           
-          
-            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" ></div>
+          @if ($reportSettings->lab_expiration)
+        <p>
+        Consume Before: {!! $mealOrder->expirationDate !!}
+        </p>
+        @endif
+            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(1)"></div>
           
         @endif
       </div>
