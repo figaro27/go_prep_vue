@@ -22,7 +22,8 @@
       @endphp
 
 
-
+      <div style="display:inline-block">
+        <div style="float:left;width:50%">
         <!-- <img src="{{$logo}}"/> -->
         <h5>
           {!! $mealOrder->html_title !!}
@@ -59,8 +60,8 @@
         <h6>Client: {!! $mealOrder->order->user->name !!}</h6>
         </p>
         @endif
-        
-
+        </div>
+        <div style="float:left;width:50%">
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
           Proten: {!! $mealOrder->meal->macros->protein !!}
@@ -74,7 +75,7 @@
             <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
           
         @endif
-
+      </div>
 
     
     @endforeach
