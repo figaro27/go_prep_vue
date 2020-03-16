@@ -23,7 +23,8 @@
 
 
       <div style="display:inline-block"> <div style="float:left;width:50%">
-      <img src="{{$logo}}"/ style="width:20vh;height:20vh"> <h5> {!! $mealOrder->html_title !!}
+        <center>
+      <img src="{{$logo}}"/ style="width:40vh;height:40vh"> <h5> {!! $mealOrder->html_title !!}
       </h5> <br> @if ($reportSettings->lab_description) <p> {!!
       $mealOrder->meal->description !!} </p> @endif
         
@@ -52,6 +53,7 @@
         <h6>Client: {!! $mealOrder->order->user->name !!}</h6>
         </p>
         @endif
+      </center>
         </div>
         <div style="float:left;width:50%;height:auto">
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
