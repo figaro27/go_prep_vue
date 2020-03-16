@@ -1229,15 +1229,21 @@ export default {
         valueServingUnitQuantity: 1,
         valueServingSizeUnit: servingSizeUnit,
         showServingsPerContainer: true,
-
+        showPolyFat: false,
+        showMonoFat: false,
+        showTransFat: false,
+        showFibers: false,
+        showVitaminD: false,
+        showPotassium_2018: false,
+        showCalcium: false,
+        showIron: false,
+        showCaffeine: false,
         itemName: meal.title,
         ingredientList: ingredientList,
         showIngredients: this.showIngredients,
         decimalPlacesForQuantityTextbox: 2,
         allowFDARounding: false,
         decimalPlacesForNutrition: 0,
-        showPolyFat: false,
-        showMonoFat: false,
         valueCalories: (nutrition.calories / servingsPerMeal).toFixed(0),
         valueFatCalories: (nutrition.fatcalories / servingsPerMeal).toFixed(0),
         valueTotalFat: (nutrition.totalfat / servingsPerMeal).toFixed(0),
@@ -1249,19 +1255,19 @@ export default {
         valueFibers: (nutrition.fibers / servingsPerMeal).toFixed(0),
         valueSugars: (nutrition.sugars / servingsPerMeal).toFixed(0),
         valueProteins: (nutrition.proteins / servingsPerMeal).toFixed(0),
-        valueVitaminD: (
-          ((nutrition.vitamind / 20000) * 100) /
-          servingsPerMeal
-        ).toFixed(0),
-        valuePotassium_2018: (
-          ((nutrition.potassium / 4700) * 100) /
-          servingsPerMeal
-        ).toFixed(0),
-        valueCalcium: (
-          ((nutrition.calcium / 1300) * 100) /
-          servingsPerMeal
-        ).toFixed(0),
-        valueIron: (((nutrition.iron / 18) * 100) / servingsPerMeal).toFixed(0),
+        // valueVitaminD: (
+        //   ((nutrition.vitamind / 20000) * 100) /
+        //   servingsPerMeal
+        // ).toFixed(0),
+        // valuePotassium_2018: (
+        //   ((nutrition.potassium / 4700) * 100) /
+        //   servingsPerMeal
+        // ).toFixed(0),
+        // valueCalcium: (
+        //   ((nutrition.calcium / 1300) * 100) /
+        //   servingsPerMeal
+        // ).toFixed(0),
+        // valueIron: (((nutrition.iron / 18) * 100) / servingsPerMeal).toFixed(0),
         valueAddedSugars: (nutrition.addedsugars / servingsPerMeal).toFixed(0),
         showLegacyVersion: false
       };

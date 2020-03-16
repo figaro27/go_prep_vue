@@ -25,10 +25,10 @@ class NutritionController extends Controller
         'nf_dietary_fiber' => 'fibers',
         'nf_sugars' => 'sugars',
         'nf_protein' => 'proteins',
-        'nf_vitamind' => 'vitamind',
-        'nf_potassium' => 'potassium',
-        'nf_calcium' => 'calcium',
-        'nf_iron' => 'iron',
+        // 'nf_vitamind' => 'vitamind',
+        // 'nf_potassium' => 'potassium',
+        // 'nf_calcium' => 'calcium',
+        // 'nf_iron' => 'iron',
         'nf_addedsugars' => 'sugars'
     ];
 

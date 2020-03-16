@@ -114,12 +114,12 @@
                     placeholder="Cholesterol"
                     class="mt-2"
                   ></b-form-input>
-                  <b-form-input
+                  <!-- <b-form-input
                     type="number"
                     v-model="customIngredient.vitamind"
                     placeholder="Vitamin D"
                     class="mt-2"
-                  ></b-form-input>
+                  ></b-form-input> -->
                 </div>
                 <div class="col-md-2">
                   <b-form-input
@@ -168,7 +168,7 @@
                     placeholder="Proteins"
                     class="mt-2"
                   ></b-form-input>
-                  <b-form-input
+                  <!-- <b-form-input
                     type="number"
                     v-model="customIngredient.potassium"
                     placeholder="Potassium"
@@ -179,7 +179,7 @@
                     v-model="customIngredient.calcium"
                     placeholder="Calcium"
                     class="mt-2"
-                  ></b-form-input>
+                  ></b-form-input> -->
                 </div>
                 <div class="col-md-2">
                   <b-form-input
@@ -188,12 +188,12 @@
                     placeholder="Fibers"
                     class="mt-2"
                   ></b-form-input>
-                  <b-form-input
+                  <!-- <b-form-input
                     type="number"
                     v-model="customIngredient.iron"
                     placeholder="Iron"
                     class="mt-2"
-                  ></b-form-input>
+                  ></b-form-input> -->
                 </div>
               </div>
             </b-form-group>
@@ -812,15 +812,21 @@ export default {
         valueServingUnitQuantity: 1,
         valueServingSizeUnit: servingSizeUnit,
         showServingsPerContainer: true,
-
+        showPolyFat: false,
+        showMonoFat: false,
+        showTransFat: false,
+        showFibers: false,
+        showVitaminD: false,
+        showPotassium_2018: false,
+        showCalcium: false,
+        showIron: false,
+        showCaffeine: false,
         itemName: this.meal.title ? this.meal.title : "",
         ingredientList: ingredientList,
         showIngredients: this.showIngredients,
         decimalPlacesForQuantityTextbox: 2,
         allowFDARounding: false,
         decimalPlacesForNutrition: 0,
-        showPolyFat: false,
-        showMonoFat: false,
         valueCalories: nutrition.calories / servingsPerMeal,
         valueFatCalories: nutrition.fatCalories / servingsPerMeal,
         valueTotalFat: nutrition.totalfat / servingsPerMeal,
@@ -832,11 +838,11 @@ export default {
         valueFibers: nutrition.fibers / servingsPerMeal,
         valueSugars: nutrition.sugars / servingsPerMeal,
         valueProteins: nutrition.proteins / servingsPerMeal,
-        valueVitaminD: ((nutrition.vitamind / 20000) * 100) / servingsPerMeal,
-        valuePotassium_2018:
-          ((nutrition.potassium / 4700) * 100) / servingsPerMeal,
-        valueCalcium: ((nutrition.calcium / 1300) * 100) / servingsPerMeal,
-        valueIron: ((nutrition.iron / 18) * 100) / servingsPerMeal,
+        // valueVitaminD: ((nutrition.vitamind / 20000) * 100) / servingsPerMeal,
+        // valuePotassium_2018:
+        // ((nutrition.potassium / 4700) * 100) / servingsPerMeal,
+        // valueCalcium: ((nutrition.calcium / 1300) * 100) / servingsPerMeal,
+        // valueIron: ((nutrition.iron / 18) * 100) / servingsPerMeal,
         valueAddedSugars: nutrition.addedSugars / servingsPerMeal,
         showLegacyVersion: false
       });

@@ -1149,10 +1149,10 @@ export default {
         fibers: null,
         sugars: null,
         proteins: null,
-        vitaminD: null,
-        potassium: null,
-        calcium: null,
-        iron: null,
+        // vitaminD: null,
+        // potassium: null,
+        // calcium: null,
+        // iron: null,
         addedSugars: null
       },
 

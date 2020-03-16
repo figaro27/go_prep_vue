@@ -207,14 +207,16 @@ const actions = {
 
     const printerName = getters.getDevice;
     let config = qz.configs.create(printerName, {
-      scaleContent: "true",
-      orientation: "landscape",
+      autoscale: "true",
+      rasterize: "false",
       margins: job.margins,
-      size: { ...job.size },
       units: "in",
-      colorType: "grayscale",
-      interpolation: "nearest-neighbor",
-      rasterize: "false"
+      colorType: "grayscale"
+
+      // scaleContent: "true",
+      // orientation: "landscape",
+      // size: { ...job.size },
+      // interpolation: "nearest-neighbor",
     });
 
     try {
