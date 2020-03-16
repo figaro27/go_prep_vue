@@ -6,15 +6,11 @@
         v-if="
           storeSettings.allowMealPlans &&
             $route.params.subscriptionId === undefined &&
-            $parent.orderId === undefined
+            $parent.orderId === undefined &&
+            !subscriptionId
         "
       >
-        <div
-          class="row"
-          v-if="
-            !manualOrder && !store.modules.subscriptionOnly && !subscriptionId
-          "
-        >
+        <div class="row" v-if="!manualOrder && !store.modules.subscriptionOnly">
           <div class="col-md-12 pb-1">
             <h3>
               <img
@@ -55,10 +51,7 @@
             </h3>
           </div>
         </div>
-        <div
-          class="row"
-          v-if="!store.modules.subscriptionOnly && !subscriptionId"
-        >
+        <div class="row" v-if="!store.modules.subscriptionOnly">
           <div class="col-md-9">
             <strong
               ><p class="mr-1">
