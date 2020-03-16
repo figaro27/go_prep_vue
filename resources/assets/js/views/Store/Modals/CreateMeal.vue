@@ -34,13 +34,12 @@
               </b-form-group>
               <b-form-group>
                 <h4>Price</h4>
-                <money
+                <b-form-input
                   required
                   v-model="meal.price"
-                  :min="0.1"
                   class="form-control"
                   v-bind="{ prefix: storeCurrencySymbol }"
-                ></money>
+                ></b-form-input>
               </b-form-group>
               <h4 v-if="store.modules.stockManagement" class="mb-3">Stock</h4>
               <b-form-group
@@ -395,6 +394,7 @@ export default {
   data() {
     return {
       meal: {
+        price: null,
         sizes: [],
         components: [],
         addons: [],
