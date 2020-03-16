@@ -515,7 +515,7 @@
           storeModules.pickupHours &&
             pickup &&
             $route.params.subscriptionId === undefined &&
-            deliveryDay !== undefined
+            deliveryDay !== undefined && && !subscriptionId
         "
       >
         <div>
@@ -535,7 +535,8 @@
           storeModules.deliveryHours &&
             !pickup &&
             $route.params.subscriptionId === undefined &&
-            deliveryDay !== undefined
+            deliveryDay !== undefined &&
+            !subscriptionId
         "
       >
         <div>

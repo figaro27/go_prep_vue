@@ -68,7 +68,13 @@ f<template>
             >
               View
             </button>
-            <router-link :to="`/customer/subscriptions/${props.row.id}`">
+            <router-link
+              :to="
+                `/customer/subscriptions/${props.row.id}` +
+                  '?subscriptionId=' +
+                  props.row.id
+              "
+            >
               <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
             </router-link>
             <button
