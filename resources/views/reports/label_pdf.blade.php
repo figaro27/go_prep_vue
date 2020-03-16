@@ -24,7 +24,7 @@
 
       <div style="display:inline-block"> <div style="float:left;width:50%">
         <center>
-      <img src="{{$logo}}"/ style="width:45vh;height:45vh"> 
+      <img src="{{$logo}}"/ style="width:40vh;height:40vh"> 
       <h5 style="text-align: center"> {!! $mealOrder->html_title !!}
       </h5> <br> @if ($reportSettings->lab_description) 
       <p> {!!
@@ -68,7 +68,7 @@
         @if ($reportSettings->lab_nutrition)
           
           
-            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform: scale(0.5)"></div>
+            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform: scale(0.7)"></div>
           
         @endif
       </div>
