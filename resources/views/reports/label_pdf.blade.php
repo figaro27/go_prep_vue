@@ -73,7 +73,7 @@
         @if ($reportSettings->lab_nutrition)
           
           
-            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="font-size:6px"></div>
+            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="font-size:4px"></div>
           
       </div>
       @endif
