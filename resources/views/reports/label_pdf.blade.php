@@ -21,6 +21,7 @@
       $reportSettings = $mealOrder->store->reportSettings;
       @endphp
 
+
       @if ($reportSettings->lab_nutrition)
       <div style="display:inline-block"> <div style="width:50%;float:left">
         @endif
@@ -73,13 +74,14 @@
         @if ($reportSettings->lab_nutrition)
           
           
-            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="height:40vh;width:40vh"></div>
+            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.5)"></div>
           
       </div>
+</div>
       @endif
     
     @endforeach
-  </div>
+ 
 
 
 </html>
