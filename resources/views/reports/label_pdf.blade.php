@@ -24,7 +24,7 @@
 
       <div style="display:inline-block">
         <div style="float:left;width:50%">
-        <!-- <img src="{{$logo}}"/> -->
+        <img src="{{$logo}}"/ style="width:100%;height:auto">
         <h5>
           {!! $mealOrder->html_title !!}
         </h5>
@@ -61,7 +61,7 @@
         </p>
         @endif
         </div>
-        <div style="float:left;width:50%;height:100px">
+        <div style="float:left;width:50%;height:auto">
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
           Proten: {!! $mealOrder->meal->macros->protein !!}
