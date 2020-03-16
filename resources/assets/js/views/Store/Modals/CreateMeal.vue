@@ -36,6 +36,7 @@
                 <h4>Price</h4>
                 <b-form-input
                   required
+                  type="number"
                   v-model="meal.price"
                   class="form-control"
                   v-bind="{ prefix: storeCurrencySymbol }"
