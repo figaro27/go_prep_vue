@@ -497,7 +497,8 @@
             $route.params.subscriptionId === undefined &&
             !$route.params.storeView &&
             !storeOwner &&
-            !isMultipleDelivery
+            !isMultipleDelivery &&
+            !subscriptionId
         "
       >
         <div>
