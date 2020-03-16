@@ -829,6 +829,7 @@
             >UPDATE MEALS</b-btn
           >
         </div>
+        {{ subscriptionId }}
 
         <div
           v-if="
