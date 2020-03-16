@@ -22,18 +22,10 @@
       @endphp
 
 
-      <div style="display:inline-block">
-        <div style="float:left;width:50%">
-        <img src="{{$logo}}"/ style="transform:scale(0.33,0.33)">
-        <h5>
-          {!! $mealOrder->html_title !!}
-        </h5>
-        <br>
-        @if ($reportSettings->lab_description)
-        <p>
-        {!! $mealOrder->meal->description !!}
-        </p>
-        @endif
+      <div style="display:inline-block"> <div style="float:left;width:50%">
+      <img src="{{$logo}}"/ style="width:20vh;height:20vh"> <h5> {!! $mealOrder->html_title !!}
+      </h5> <br> @if ($reportSettings->lab_description) <p> {!!
+      $mealOrder->meal->description !!} </p> @endif
         
         @if ($reportSettings->lab_website)
         <p>
