@@ -433,7 +433,8 @@
             (pickup === 0 ||
               !store.modules.pickupLocations ||
               (store.modules.pickupLocations &&
-                selectedPickupLocation !== null))
+                selectedPickupLocation !== null)) &&
+            !subscriptionId
         "
       >
         <div>
