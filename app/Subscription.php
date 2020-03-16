@@ -25,6 +25,7 @@ class Subscription extends Model
         'latest_paid_order',
         'latest_unpaid_order',
         'next_delivery_date',
+        'next_unpaid_delivery_date',
         'next_order',
         'meal_ids',
         'meal_quantities',
@@ -204,6 +205,16 @@ class Subscription extends Model
 
         // Catch all
         return $this->store->getNextDeliveryDay($this->delivery_day);
+    }
+
+    public function getNextUnpaidDeliveryDateAttribute()
+    {
+        if ($this->latest_unpaid_order) {
+            $date = new Carbon(
+                $this->latest_unpaid_order->delivery_date->toDateTimeString()
+            );
+            return $date;
+        }
     }
 
     public function getNextOrderAttribute()
