@@ -55,7 +55,10 @@
             </h3>
           </div>
         </div>
-        <div class="row" v-if="!store.modules.subscriptionOnly">
+        <div
+          class="row"
+          v-if="!store.modules.subscriptionOnly && !subscriptionId"
+        >
           <div class="col-md-9">
             <strong
               ><p class="mr-1">
