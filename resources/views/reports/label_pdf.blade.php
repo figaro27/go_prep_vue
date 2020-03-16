@@ -21,8 +21,9 @@
       $reportSettings = $mealOrder->store->reportSettings;
       @endphp
 
-
+      @if ($reportSettings->lab_nutrition)
       <div style="display:inline-block"> <div style="float:left;width:50%">
+        @endif
         <center>
       <img src="{{$logo}}"/ style="width:40vh;height:40vh"> 
       <h5 style="text-align: center"> {!! $mealOrder->html_title !!}
@@ -57,7 +58,9 @@
         @endif
       </center>
         </div>
+        @if ($reportSettings->lab_nutrition)
         <div style="float:left;width:50%;transform:scale(0.5)">
+          @endif
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
           Proten: {!! $mealOrder->meal->macros->protein !!}
@@ -70,9 +73,8 @@
           
             <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}"></div>
           
-        @endif
       </div>
-
+      @endif
     
     @endforeach
   </div>
