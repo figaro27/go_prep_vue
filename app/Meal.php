@@ -621,7 +621,7 @@ class Meal extends Model implements HasMedia
     {
         $request->validate([
             'title' => 'required',
-            'price' => 'required|numeric|min:.01',
+            'price' => 'required|numeric',
             'category_ids' => 'required'
         ]);
 
