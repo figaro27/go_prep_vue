@@ -125,7 +125,13 @@ f<template>
       </p>
       <center>
         <b-btn variant="danger" @click="cancelSubscription">Cancel</b-btn>
-        <router-link :to="`/customer/subscriptions/${subId}`">
+        <router-link
+          :to="
+            `/customer/subscriptions/${props.row.id}` +
+              '?subscriptionId=' +
+              props.row.id
+          "
+        >
           <b-btn class="btn btn-success btn-md">Change Meals</b-btn>
         </router-link>
       </center>
