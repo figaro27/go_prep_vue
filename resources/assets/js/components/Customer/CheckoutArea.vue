@@ -327,7 +327,8 @@
           (!storeModules.hideDeliveryOption ||
             $route.params.storeView === true ||
             storeOwner) &&
-          !$route.params.adjustMealPlan
+          !$route.params.adjustMealPlan &&
+          !subscriptionId
       "
     >
       <b-alert
@@ -829,7 +830,6 @@
             >UPDATE MEALS</b-btn
           >
         </div>
-        {{ subscriptionId }}
 
         <div
           v-if="
