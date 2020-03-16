@@ -433,6 +433,9 @@ export default {
       return states.stateNames();
     },
     subscriptionId() {
+      if (this.$route.query.subscriptionId) {
+        return this.$route.query.subscriptionId;
+      }
       return this.$route.params.subscriptionId;
     }
   },
@@ -452,6 +455,12 @@ export default {
     }
   },
   mounted() {
+    if (this.subscriptionId) {
+      let sub = _.find(this.subscriptions, subscription => {
+        return subscription.id === parseInt(this.subscriptionId);
+      });
+      this.pickup = sub.pickup;
+    }
     $([document.documentElement, document.body]).scrollTop(0);
     if (this.$route.params.adjustOrder && this.order.coupon_id !== null) {
       let coupon = this.coupons.find(coupon => {
