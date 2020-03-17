@@ -22,7 +22,8 @@ export default {
   data() {
     return {
       isLoading: false,
-      pickup: null
+      pickup: null,
+      subscription_bags: []
     };
   },
   computed: {
@@ -31,6 +32,7 @@ export default {
       store: "store",
       bag: "bag",
       getMeal: "viewedStoreMeal",
+      getMealPackage: "viewedStoreMealPackage",
       mealMixItems: "mealMixItems"
     }),
     subscriptionId() {
@@ -63,37 +65,59 @@ export default {
       if (!subscription) {
         return;
       }
-
       // Setting pickup here
       this.pickup = subscription.pickup;
 
-      _.forEach(subscription.items, item => {
-        const meal = this.getMeal(item.meal_id);
-        if (!meal) {
-          return;
-        }
+      let stop = false;
 
-        let components = _.mapValues(
-          _.groupBy(item.components, "meal_component_id"),
-          choices => {
-            return _.map(choices, "meal_component_option_id");
-          }
-        );
+      axios.get("/api/me/subscription_bag/" + subscription.id).then(resp => {
+        if (resp.data && resp.data.subscription_bags) {
+          this.subscription_bags = resp.data.subscription_bags;
 
-        let addons = _.map(item.addons, "meal_addon_id");
+          if (this.subscription_bags.length > 0) {
+            // Until SubscriptionBag gets updated when meals are replaced, don't load anything when meal packages are involved.
+            if (subscription.mealsReplaced) {
+              this.subscription_bags.forEach(item => {
+                if (item.meal_package) {
+                  stop = true;
+                }
+              });
+            }
+            if (stop) {
+              return;
+            }
 
-        let special_instructions = item.special_instructions;
-        // Temporarily not initting meal package meals until SubscriptionBag model is created
-        if (item.meal_package_subscription_id === null) {
-          for (let i = 0; i < item.quantity; i++) {
-            this.addOne(
-              meal,
-              false,
-              item.meal_size_id,
-              components,
-              addons,
-              special_instructions
-            );
+            this.subscription_bags.forEach(item => {
+              this.addOneFromAdjust(item);
+            });
+          } else {
+            _.forEach(subscription.items, item => {
+              const meal = this.getMeal(item.meal_id);
+              if (!meal) {
+                return;
+              }
+
+              let components = _.mapValues(
+                _.groupBy(item.components, "meal_component_id"),
+                choices => {
+                  return _.map(choices, "meal_component_option_id");
+                }
+              );
+
+              let addons = _.map(item.addons, "meal_addon_id");
+
+              let special_instructions = item.special_instructions;
+              for (let i = 0; i < item.quantity; i++) {
+                this.addOne(
+                  meal,
+                  false,
+                  item.meal_size_id,
+                  components,
+                  addons,
+                  special_instructions
+                );
+              }
+            });
           }
         }
       });
