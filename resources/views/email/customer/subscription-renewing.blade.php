@@ -189,7 +189,7 @@ $currency = $subscription->store->settings->currency_symbol
                 <!-- content -->
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> You have a subscription renewing from {{ $subscription->store->details->name }}.
-                    @if ($subscription->updated)
+                    @if ($subscription->mealsReplaced)
                     Your subscription was updated. Please check the meals below.
                     @endif
                     @if (!$subscription->monthlyPrepay)
