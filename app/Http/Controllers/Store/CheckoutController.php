@@ -32,6 +32,7 @@ use App\MealPackageSubscription;
 use App\MealPackage;
 use App\MealPackageSize;
 use App\OrderBag;
+use App\SubscriptionBag;
 use App\PurchasedGiftCard;
 use App\Billing\Constants;
 use App\Billing\Charge;
@@ -1173,6 +1174,16 @@ class CheckoutController extends StoreController
                     $orderBag->order_id = (int) $order->id;
                     $orderBag->bag = json_encode($bagItem);
                     $orderBag->save();
+                }
+            }
+
+            if ($bagItems && count($bagItems) > 0) {
+                foreach ($bagItems as $bagItem) {
+                    $subscriptionBag = new SubscriptionBag();
+                    $subscriptionBag->subscription_id =
+                        (int) $userSubscription->id;
+                    $subscriptionBag->bag = json_encode($bagItem);
+                    $subscriptionBag->save();
                 }
             }
 

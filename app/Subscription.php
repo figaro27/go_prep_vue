@@ -801,7 +801,7 @@ class Subscription extends Model
      *
      * @return void
      */
-    public function syncPrices($mealsUpdated = true)
+    public function syncPrices($mealsReplaced = true)
     {
         try {
             $subscription = \Stripe\Subscription::retrieve(
@@ -949,8 +949,8 @@ class Subscription extends Model
 
         // Assign new plan ID to subscription
         $this->stripe_plan = $plan->id;
-        if ($mealsUpdated) {
-            $this->updated = 1;
+        if ($mealsReplaced) {
+            $this->mealsReplaced = 1;
         }
         $this->save();
 

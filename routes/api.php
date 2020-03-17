@@ -430,6 +430,7 @@ foreach (
                                 'order_bag/{order_id}',
                                 'CheckoutController@orderBag'
                             );
+
                             Route::get(
                                 'getLineItemOrders/{order_id}',
                                 'OrderController@getLineItemOrders'
@@ -443,6 +444,11 @@ foreach (
                             Route::post(
                                 'settleBalance',
                                 'OrderController@settleBalance'
+                            );
+
+                            Route::get(
+                                'subscription_bag/{subscription_id}',
+                                'SubscriptionController@subscriptionBag'
                             );
                         }
                     );
@@ -532,6 +538,11 @@ foreach (
                             );
 
                             Route::resource('/me', 'UserController');
+
+                            Route::get(
+                                'me/subscription_bag/{subscription_id}',
+                                'SubscriptionController@subscriptionBag'
+                            );
                         }
                     );
                 }

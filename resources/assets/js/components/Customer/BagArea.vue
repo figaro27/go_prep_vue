@@ -613,7 +613,7 @@ export default {
       }
     },
     clearFromBag(item) {
-      if (this.isAdjustOrder() || this.isManualOrder()) {
+      if (this.isAdjustOrder() || this.isManualOrder() || this.subscriptionId) {
         this.removeFromAdjust(item);
       } else {
         this.clearMealFullQuantity(
@@ -627,7 +627,7 @@ export default {
       }
     },
     removeFromBag(item) {
-      if (this.isAdjustOrder() || this.isManualOrder()) {
+      if (this.isAdjustOrder() || this.isManualOrder() || this.subscriptionId) {
         this.removeOneFromAdjust({
           ...item,
           quantity: 1

@@ -36,6 +36,7 @@ use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\OrderBag;
+use App\SubscriptionBag;
 use DB;
 use Exception;
 use App\Traits\DeliveryDates;
@@ -1192,6 +1193,16 @@ class CheckoutController extends UserController
                         $orderBag->order_id = (int) $order->id;
                         $orderBag->bag = json_encode($bagItem);
                         $orderBag->save();
+                    }
+                }
+
+                if ($bagItems && count($bagItems) > 0) {
+                    foreach ($bagItems as $bagItem) {
+                        $subscriptionBag = new SubscriptionBag();
+                        $subscriptionBag->subscription_id =
+                            (int) $userSubscription->id;
+                        $subscriptionBag->bag = json_encode($bagItem);
+                        $subscriptionBag->save();
                     }
                 }
 

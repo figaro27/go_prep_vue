@@ -13,6 +13,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Store;
 use App\Customer;
+use App\SubscriptionBag;
+use App\MealPackage;
+use App\MealPackageSize;
+use App\MealPackageSubscription;
 
 class SubscriptionController extends UserController
 {
@@ -234,6 +238,7 @@ class SubscriptionController extends UserController
         $store = Store::with(['settings', 'storeDetail'])->findOrFail($storeId);
         $storeName = strtolower($store->storeDetail->name);
 
+        $bagItems = $request->get('bag');
         $bag = new Bag($request->get('bag'), $store);
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
@@ -347,6 +352,7 @@ class SubscriptionController extends UserController
 
         // Update meals in subscription
         MealSubscription::where('subscription_id', $sub->id)->delete();
+        MealPackageSubscription::where('subscription_id', $sub->id)->delete();
         foreach ($bag->getItems() as $item) {
             $mealSub = new MealSubscription();
             $mealSub->subscription_id = $sub->id;
@@ -356,6 +362,56 @@ class SubscriptionController extends UserController
             $mealSub->price = $item['price'] * $item['quantity'];
             if (isset($item['size']) && $item['size']) {
                 $mealSub->meal_size_id = $item['size']['id'];
+            }
+            if ($item['meal_package']) {
+                $mealSub->meal_package = $item['meal_package'];
+            }
+            if ($item['meal_package'] === true) {
+                if (
+                    MealPackageSubscription::where([
+                        'meal_package_id' => $item['meal_package_id'],
+                        'meal_package_size_id' => $item['meal_package_size_id'],
+                        'subscription_id' => $sub->id
+                    ])
+                        ->get()
+                        ->count() === 0
+                ) {
+                    $mealPackageSubscription = new MealPackageSubscription();
+                    $mealPackageSubscription->store_id = $store->id;
+                    $mealPackageSubscription->subscription_id = $sub->id;
+                    $mealPackageSubscription->meal_package_id =
+                        $item['meal_package_id'];
+                    $mealPackageSubscription->meal_package_size_id =
+                        $item['meal_package_size_id'];
+                    $mealPackageSubscription->quantity =
+                        $item['package_quantity'];
+                    $mealPackageSubscription->price =
+                        $item['meal_package_size_id'] !== null
+                            ? MealPackageSize::where(
+                                'id',
+                                $item['meal_package_size_id']
+                            )
+                                ->pluck('price')
+                                ->first()
+                            : MealPackage::where('id', $item['meal_package_id'])
+                                ->pluck('price')
+                                ->first();
+                    $mealPackageSubscription->save();
+
+                    $mealSub->meal_package_subscription_id =
+                        $mealPackageSubscription->id;
+                } else {
+                    $mealSub->meal_package_subscription_id = MealPackageSubscription::where(
+                        [
+                            'meal_package_id' => $item['meal_package_id'],
+                            'meal_package_size_id' =>
+                                $item['meal_package_size_id'],
+                            'subscription_id' => $sub->id
+                        ]
+                    )
+                        ->pluck('id')
+                        ->first();
+                }
             }
             $mealSub->save();
 
@@ -378,6 +434,23 @@ class SubscriptionController extends UserController
                         'meal_addon_id' => $addonId
                     ]);
                 }
+            }
+        }
+
+        $subscriptionBags = SubscriptionBag::where(
+            'subscription_id',
+            $sub->id
+        )->get();
+        foreach ($subscriptionBags as $subscriptionBag) {
+            $subscriptionBag->delete();
+        }
+
+        if ($bagItems && count($bagItems) > 0) {
+            foreach ($bagItems as $bagItem) {
+                $subscriptionBag = new SubscriptionBag();
+                $subscriptionBag->subscription_id = (int) $sub->id;
+                $subscriptionBag->bag = json_encode($bagItem);
+                $subscriptionBag->save();
             }
         }
 
@@ -468,5 +541,26 @@ class SubscriptionController extends UserController
                 }
             }
         }
+    }
+
+    public function subscriptionBag($subscription_id)
+    {
+        $subscription_bags = SubscriptionBag::where(
+            'subscription_id',
+            $subscription_id
+        )
+            ->orderBy('id', 'asc')
+            ->get();
+        $data = [];
+
+        if ($subscription_bags) {
+            foreach ($subscription_bags as $subscription_bag) {
+                $data[] = json_decode($subscription_bag->bag);
+            }
+        }
+
+        return [
+            'subscription_bags' => $data
+        ];
     }
 }
