@@ -23,9 +23,9 @@
 
 
       @if ($reportSettings->lab_nutrition)
-      <div style="display:inline-block"> <div style="width:50%;float:left">
+<div style="width:50%;float:left">
         @endif
-        <center>
+
           @if ($reportSettings->lab_logo)
       <img src="{{$logo}}"/ style="width:40vh;height:40vh"> 
       @endif
@@ -59,7 +59,7 @@
         {!! $mealOrder->store->details->social !!}
         </p>
         @endif
-      </center>
+
         </div>
         @if ($reportSettings->lab_nutrition)
         <div style="width:50%;float:left">
@@ -77,7 +77,7 @@
             <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.5)"></div>
           
       </div>
-</div>
+
       @endif
     
     @endforeach
