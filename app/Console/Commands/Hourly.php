@@ -122,7 +122,7 @@ class Hourly extends Command
                 'subscription' => $sub
             ]);
             $count++;
-            $sub->updated = 0;
+            // $sub->updated = 0;
             $sub->save();
         }
         $this->info($count . ' `Subscription Renewing` notifications sent');
