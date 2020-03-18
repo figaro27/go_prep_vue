@@ -185,6 +185,11 @@
                 >
                   <textarea
                     v-model="deliveryDistanceZipcodes"
+                    @input="
+                      e => {
+                        updateZips(e);
+                      }
+                    "
                     class="form-control"
                     placeholder="Zip Codes"
                   ></textarea>
