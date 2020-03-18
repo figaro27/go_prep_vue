@@ -185,11 +185,6 @@
                 >
                   <textarea
                     v-model="deliveryDistanceZipcodes"
-                    @input="
-                      e => {
-                        updateZips(e);
-                      }
-                    "
                     class="form-control"
                     placeholder="Zip Codes"
                   ></textarea>
@@ -560,7 +555,6 @@
                       type="text"
                       v-model="storeSettings.gaCode"
                       placeholder="UA-00000000-00"
-                      required
                     ></b-form-input>
                   </b-form-group>
 
