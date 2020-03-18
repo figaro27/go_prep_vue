@@ -1008,7 +1008,8 @@ export default {
       getMeal: "storeMeal",
       storeModules: "storeModules",
       storeSettings: "storeSettings",
-      getStoreMeal: "storeMeal"
+      getStoreMeal: "storeMeal",
+      reportSettings: "storeReportSettings"
     }),
     orders: createInstance("orders", {
       page: 1,
@@ -1151,15 +1152,31 @@ export default {
           params: { order_id }
         })
         .then(response => {
-          if (!_.isEmpty(response.data.url)) {
-            let win = window.open(response.data.url);
-            win.addEventListener(
-              "load",
-              () => {
-                win.print();
-              },
-              false
+          if (format === "b64") {
+            const size = new PrintSize(
+              this.reportSettings.lab_width,
+              this.reportSettings.lab_height
             );
+            const margins = {
+              top: this.reportSettings.lab_margin_top,
+              right: this.reportSettings.lab_margin_right,
+              bottom: this.reportSettings.lab_margin_bottom,
+              left: this.reportSettings.lab_margin_left
+            };
+            const job = new PrintJob(data.url, size, margins);
+
+            this.printerAddJob(job);
+          } else {
+            if (!_.isEmpty(response.data.url)) {
+              let win = window.open(response.data.url);
+              win.addEventListener(
+                "load",
+                () => {
+                  win.print();
+                },
+                false
+              );
+            }
           }
         })
         .catch(err => {
