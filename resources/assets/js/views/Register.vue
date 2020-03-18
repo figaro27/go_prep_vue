@@ -1,6 +1,12 @@
 <template>
   <div class="row auth-box">
-    <b-modal id="tos" size="md" ref="tos" no-fade>
+    <b-modal
+      id="tos"
+      size="md"
+      ref="tos"
+      no-fade
+      style="position:relative;top:10px"
+    >
       <termsOfService></termsOfService>
     </b-modal>
     <b-modal id="toa" size="md" ref="toa" no-fade>
