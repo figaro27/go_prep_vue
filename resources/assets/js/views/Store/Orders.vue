@@ -432,6 +432,14 @@
               >
             </div>
 
+            <!-- <div>
+              <b-btn
+                class="btn mb-2 d-inline mr-1 royalBlueBG"
+                @click="printLabel(order.id)"
+                >Print Label</b-btn
+              >
+            </div> -->
+
             <div>
               <b-btn
                 class="btn mb-2 white-text d-inline"
@@ -845,6 +853,9 @@ import checkDateRange from "../../mixins/deliveryDates";
 import { sidebarCssClasses } from "../../shared/classes";
 import store from "../../store";
 import { AsYouType } from "libphonenumber-js";
+import printer from "../../mixins/printer";
+import { sleep } from "../../lib/utils";
+import { PrintJob, PrintSize } from "../../store/printer";
 
 export default {
   components: {
@@ -1000,7 +1011,8 @@ export default {
       getMeal: "storeMeal",
       storeModules: "storeModules",
       storeSettings: "storeSettings",
-      getStoreMeal: "storeMeal"
+      getStoreMeal: "storeMeal",
+      reportSettings: "storeReportSettings"
     }),
     orders: createInstance("orders", {
       page: 1,
@@ -1070,7 +1082,7 @@ export default {
       addJob: "addJob",
       removeJob: "removeJob"
     }),
-    ...mapActions("resources", ["refreshResource"]),
+    ...mapActions("resources", ["refreshResource"], "printer/connect"),
     refreshTable() {
       this.refreshResource("orders");
     },
@@ -1129,6 +1141,33 @@ export default {
               false
             );
           }
+        })
+        .catch(err => {
+          this.$toastr.e("Failed to print report.");
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    printLabel(order_id) {
+      axios
+        .get(`/api/me/print/labels/b64`, {
+          params: { order_id }
+        })
+        .then(response => {
+          const size = new PrintSize(
+            this.reportSettings.lab_width,
+            this.reportSettings.lab_height
+          );
+          const margins = {
+            top: this.reportSettings.lab_margin_top,
+            right: this.reportSettings.lab_margin_right,
+            bottom: this.reportSettings.lab_margin_bottom,
+            left: this.reportSettings.lab_margin_left
+          };
+          const job = new PrintJob(data.url, size, margins);
+
+          this.printerAddJob(job);
         })
         .catch(err => {
           this.$toastr.e("Failed to print report.");

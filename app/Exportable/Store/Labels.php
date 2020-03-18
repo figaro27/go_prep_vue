@@ -46,8 +46,19 @@ class Labels
         $params->date_format = $this->store->settings->date_format;
         $allDates = [];
 
-        $orders = $this->store->getOrders(null, $dates, true);
-        $orders = $orders->where('voided', 0);
+        if (isset($params['order_id']) && (int) $params['order_id'] != 0) {
+            $orders = $this->store
+                ->orders()
+                ->where([
+                    'paid' => 1,
+                    // 'voided' => 0,
+                    'id' => (int) $params['order_id']
+                ])
+                ->get();
+        } else {
+            $orders = $this->store->getOrders(null, $dates, true);
+            $orders = $orders->where('voided', 0);
+        }
 
         $total = $orders->count();
         $orders = $orders

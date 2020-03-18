@@ -12,6 +12,18 @@
   <script src="{{ asset(mix('/js/manifest.js')) }}"></script>
   <script src="{{ asset(mix('/js/vendor.js')) }}"></script>
   <script src="{{ asset(mix('/js/print.js')) }}"></script>
+<style>
+li{
+font-size:8px !important;
+
+text-indent: 1% !important;
+
+}
+.plain {
+position:relative !important;
+margin-left:-30px !important;
+}
+</style>
 </head>
 
 
@@ -23,20 +35,15 @@
 
 
       @if ($reportSettings->lab_nutrition)
-<div style="width:50%;float:left">
+<div style="width:50%;float:left;margin-left:10px">
         @endif
   <center>
           @if ($reportSettings->lab_logo)
-      <img src="{{$logo}}"/ style="width:35vh;height:35vh"> 
+      <img src="{{$logo}}"/ style="width:32vh;height:32vh;margin-top:8px;margin-bottom:4px"> 
       @endif
- @if ($reportSettings->lab_customer)
-        <p>
-        <h6 style="text-align: center">Client: {!! $mealOrder->order->user->name !!}</h6>
-        </p>
-        @endif
 
-      <h6 style="text-align: center"> {!! $mealOrder->html_title !!}
-      </h6> @if ($reportSettings->lab_description) 
+      <p class="text-11" style="font-weight:bold"> {!! $mealOrder->html_title !!}
+      </p> @if ($reportSettings->lab_description) 
       <p> {!!
       $mealOrder->meal->description !!} </p> @endif
       
@@ -51,19 +58,26 @@
         </p>
         @endif
              @if ($reportSettings->lab_website)
-        <p>
+        <p class="text-9">
         {!! $mealOrder->store->settings->website !!}
         </p>
         @endif
         @if ($reportSettings->lab_social)
-        <p>
+        <p class="text-9">
         {!! $mealOrder->store->details->social !!}
         </p>
         @endif
+ @if ($reportSettings->lab_customer)
+ 
+        <p class="text-13" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
+
+        @endif
+
   </center>
         </div>
-        @if ($reportSettings->lab_nutrition)
-        <div style="width:50%;float:left">
+        @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
+        <div style="width:45%;float:left">
+ 
           @endif
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
@@ -73,9 +87,10 @@
         @endif
 
         @if ($reportSettings->lab_nutrition)
-          <h3 style="transform:scale(.5)">Test</h3>
-          <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.5);"></div>
-      @if ($reportSettings->lab_nutrition)
+
+          <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.50);position:relative;top:-75;right:30"></div>
+      @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
+
       </div>
       @endif
       @endif
