@@ -62,8 +62,9 @@
         @endif
   </center>
         </div>
-        @if ($reportSettings->lab_nutrition)
+        @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
         <div style="width:50%;float:left">
+          <center>
           @endif
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
@@ -73,8 +74,10 @@
         @endif
 
         @if ($reportSettings->lab_nutrition)
-          <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.5);margin-right:100%"></div>
-      @if ($reportSettings->lab_nutrition)
+        <center>
+          <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.5);margin-right:100%;position:relative;top:-100"></div>
+      @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
+    </center>
       </div>
       @endif
       @endif
