@@ -27,16 +27,11 @@
         @endif
   <center>
           @if ($reportSettings->lab_logo)
-      <img src="{{$logo}}"/ style="width:35vh;height:35vh"> 
+      <img src="{{$logo}}"/ style="width:35vh;height:35vh;margin-bottom:8px"> 
       @endif
- @if ($reportSettings->lab_customer)
-        <p>
-        <h6 style="text-align: center">Client: {!! $mealOrder->order->user->name !!}</h6>
-        </p>
-        @endif
 
-      <h6 style="text-align: center"> {!! $mealOrder->html_title !!}
-      </h6> @if ($reportSettings->lab_description) 
+      <p class="text-13" style="font-weight:bold"> {!! $mealOrder->html_title !!}
+      </p> @if ($reportSettings->lab_description) 
       <p> {!!
       $mealOrder->meal->description !!} </p> @endif
       
@@ -51,20 +46,26 @@
         </p>
         @endif
              @if ($reportSettings->lab_website)
-        <p>
+        <p class="text-9">
         {!! $mealOrder->store->settings->website !!}
         </p>
         @endif
         @if ($reportSettings->lab_social)
-        <p>
+        <p class="text-9">
         {!! $mealOrder->store->details->social !!}
         </p>
         @endif
+ @if ($reportSettings->lab_customer)
+ 
+        <p class="text-15" style="font-weight:bold;margin-top:15px">Client: {!! $mealOrder->order->user->name !!}</p>
+
+        @endif
+
   </center>
         </div>
         @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
-        <div style="width:50%;float:left">
-          <center>
+        <div style="width:45%;float:left">
+ 
           @endif
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
@@ -74,10 +75,10 @@
         @endif
 
         @if ($reportSettings->lab_nutrition)
-        <center>
-          <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.5);margin-right:100%;position:relative;top:-100"></div>
+
+          <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.50);position:relative;top:-75;right:10"></div>
       @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
-    </center>
+
       </div>
       @endif
       @endif
