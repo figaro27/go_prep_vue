@@ -1152,32 +1152,19 @@ export default {
           params: { order_id }
         })
         .then(response => {
-          if (format === "b64") {
-            const size = new PrintSize(
-              this.reportSettings.lab_width,
-              this.reportSettings.lab_height
-            );
-            const margins = {
-              top: this.reportSettings.lab_margin_top,
-              right: this.reportSettings.lab_margin_right,
-              bottom: this.reportSettings.lab_margin_bottom,
-              left: this.reportSettings.lab_margin_left
-            };
-            const job = new PrintJob(data.url, size, margins);
+          const size = new PrintSize(
+            this.reportSettings.lab_width,
+            this.reportSettings.lab_height
+          );
+          const margins = {
+            top: this.reportSettings.lab_margin_top,
+            right: this.reportSettings.lab_margin_right,
+            bottom: this.reportSettings.lab_margin_bottom,
+            left: this.reportSettings.lab_margin_left
+          };
+          const job = new PrintJob(data.url, size, margins);
 
-            this.printerAddJob(job);
-          } else {
-            if (!_.isEmpty(response.data.url)) {
-              let win = window.open(response.data.url);
-              win.addEventListener(
-                "load",
-                () => {
-                  win.print();
-                },
-                false
-              );
-            }
-          }
+          this.printerAddJob(job);
         })
         .catch(err => {
           this.$toastr.e("Failed to print report.");
