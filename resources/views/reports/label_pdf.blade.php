@@ -23,11 +23,11 @@
 
 
       @if ($reportSettings->lab_nutrition)
-<div style="width:50%;float:left">
+<div style="width:50%;float:left;margin-left:10px">
         @endif
   <center>
           @if ($reportSettings->lab_logo)
-      <img src="{{$logo}}"/ style="width:35vh;height:35vh;margin-bottom:8px"> 
+      <img src="{{$logo}}"/ style="width:35vh;height:35vh;margin-top:8px;margin-bottom:8px"> 
       @endif
 
       <p class="text-13" style="font-weight:bold"> {!! $mealOrder->html_title !!}
@@ -76,7 +76,7 @@
 
         @if ($reportSettings->lab_nutrition)
 
-          <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.50);position:relative;top:-75;right:10"></div>
+          <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.50);position:relative;top:-75;right:30"></div>
       @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
 
       </div>
