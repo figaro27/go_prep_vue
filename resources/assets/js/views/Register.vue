@@ -1,9 +1,9 @@
 <template>
   <div class="row auth-box">
-    <b-modal id="tos" size="xl" ref="tos" no-fade>
+    <b-modal id="tos" size="md" ref="tos" no-fade>
       <termsOfService></termsOfService>
     </b-modal>
-    <b-modal id="toa" size="xl" ref="toa" no-fade>
+    <b-modal id="toa" size="md" ref="toa" no-fade>
       <termsOfAgreement></termsOfAgreement>
     </b-modal>
     <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
@@ -149,10 +149,39 @@
 
               <b-form-group horizontal>
                 <b-button
+                  v-if="!store.modules.pickupOnly"
                   @click="next()"
                   :disabled="$v.form[0].$invalid"
                   variant="primary"
                   >Next</b-button
+                >
+              </b-form-group>
+
+              <b-form-group horizontal v-if="store.modules.pickupOnly">
+                <b-form-checkbox
+                  id="accepted-tos"
+                  name="accepted-tos"
+                  v-model="form[1].accepted_tos"
+                  :value="1"
+                  :unchecked-value="0"
+                  :state="state(1, 'accepted_tos')"
+                >
+                  I accept the
+                  <span
+                    class="strong"
+                    @click.stop.prevent="$refs.tos.show()"
+                    @touch.stop.prevent="$refs.tos.show()"
+                    >terms of service</span
+                  >
+                </b-form-checkbox>
+              </b-form-group>
+
+              <b-form-group horizontal v-if="store.modules.pickupOnly">
+                <b-button
+                  type="submit"
+                  :disabled="$v.form[0].$invalid"
+                  variant="primary"
+                  >Submit</b-button
                 >
               </b-form-group>
             </div>
@@ -853,6 +882,12 @@ export default {
     async submit() {
       if (!(await this.validate(this.step))) {
         return;
+      }
+
+      if (this.store.modules.pickupOnly) {
+        this.form[1].address = "N/A";
+        this.form[1].city = "N/A";
+        this.form[1].zip = "N/A";
       }
 
       this.asYouType();

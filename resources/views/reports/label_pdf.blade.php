@@ -23,33 +23,34 @@
 
 
       @if ($reportSettings->lab_nutrition)
-      <div style="display:inline-block"> <div style="width:50%;float:left">
+<div style="width:50%;float:left">
         @endif
-        <center>
+  <center>
           @if ($reportSettings->lab_logo)
-      <img src="{{$logo}}"/ style="width:40vh;height:40vh"> 
+      <img src="{{$logo}}"/ style="width:35vh;height:35vh"> 
       @endif
-      <h5 style="text-align: center"> {!! $mealOrder->html_title !!}
-      </h5> @if ($reportSettings->lab_description) 
-      <p> {!!
-      $mealOrder->meal->description !!} </p> @endif
-      
-        @if ($reportSettings->lab_instructions)
-        <p>
-        {!! $mealOrder->meal->instructions !!}
-        </p>
-        @endif
-        @if ($reportSettings->lab_expiration)
-        <p>
-        Consume Before: {!! $mealOrder->expirationDate !!}
-        </p>
-        @endif
-        @if ($reportSettings->lab_customer)
+ @if ($reportSettings->lab_customer)
         <p>
         <h6 style="text-align: center">Client: {!! $mealOrder->order->user->name !!}</h6>
         </p>
         @endif
-        @if ($reportSettings->lab_website)
+
+      <h6 style="text-align: center"> {!! $mealOrder->html_title !!}
+      </h6> @if ($reportSettings->lab_description) 
+      <p> {!!
+      $mealOrder->meal->description !!} </p> @endif
+      
+        @if ($reportSettings->lab_instructions)
+        <p class="text-10">
+        {!! $mealOrder->meal->instructions !!}
+        </p>
+        @endif
+        @if ($reportSettings->lab_expiration)
+        <p class="text-10">
+        Consume Before: {!! $mealOrder->expirationDate !!}
+        </p>
+        @endif
+             @if ($reportSettings->lab_website)
         <p>
         {!! $mealOrder->store->settings->website !!}
         </p>
@@ -59,7 +60,7 @@
         {!! $mealOrder->store->details->social !!}
         </p>
         @endif
-      </center>
+  </center>
         </div>
         @if ($reportSettings->lab_nutrition)
         <div style="width:50%;float:left">
@@ -72,12 +73,11 @@
         @endif
 
         @if ($reportSettings->lab_nutrition)
-          
-          
-            <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.5)"></div>
-          
+          <h3 style="transform:scale(.5)">Test</h3>
+          <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.5);"></div>
+      @if ($reportSettings->lab_nutrition)
       </div>
-</div>
+      @endif
       @endif
     
     @endforeach

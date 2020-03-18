@@ -22,7 +22,8 @@ class StoreModule extends Model
         'stockManagement' => 'boolean',
         'autoPrintPackingSlip' => 'boolean',
         'showHotCheckbox' => 'boolean',
-        'mealExpiration' => 'boolean'
+        'mealExpiration' => 'boolean',
+        'pickupOnly' => 'boolean'
     ];
 
     protected $guarded = [];
