@@ -1079,7 +1079,7 @@ export default {
       addJob: "addJob",
       removeJob: "removeJob"
     }),
-    ...mapActions("resources", ["refreshResource"]),
+    ...mapActions("resources", ["refreshResource"], "printer/connect"),
     refreshTable() {
       this.refreshResource("orders");
     },
@@ -1147,6 +1147,10 @@ export default {
         });
     },
     printLabel(order_id) {
+      params.labelsNutrition = this.labelsNutrition;
+      params.width = this.reportSettings.lab_width;
+      params.height = this.reportSettings.lab_height;
+
       axios
         .get(`/api/me/print/labels/b64`, {
           params: { order_id }
