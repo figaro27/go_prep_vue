@@ -75,8 +75,9 @@
         @if ($reportSettings->lab_nutrition)
           <h3 style="transform:scale(.5)">Test</h3>
           <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.5);"></div>
+      @if ($reportSettings->lab_nutrition)
       </div>
-
+      @endif
       @endif
     
     @endforeach
