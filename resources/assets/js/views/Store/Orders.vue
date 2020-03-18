@@ -434,6 +434,14 @@
 
             <div>
               <b-btn
+                class="btn mb-2 d-inline mr-1 royalBlueBG"
+                @click="printLabel(order.id)"
+                >Print Label</b-btn
+              >
+            </div>
+
+            <div>
+              <b-btn
                 class="btn mb-2 white-text d-inline"
                 variant="secondary"
                 @click="emailCustomerReceipt(order.id)"
@@ -1116,6 +1124,30 @@ export default {
     printPackingSlip(order_id) {
       axios
         .get(`/api/me/print/packing_slips/pdf`, {
+          params: { order_id }
+        })
+        .then(response => {
+          if (!_.isEmpty(response.data.url)) {
+            let win = window.open(response.data.url);
+            win.addEventListener(
+              "load",
+              () => {
+                win.print();
+              },
+              false
+            );
+          }
+        })
+        .catch(err => {
+          this.$toastr.e("Failed to print report.");
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    printLabel(order_id) {
+      axios
+        .get(`/api/me/print/labels/b64`, {
           params: { order_id }
         })
         .then(response => {

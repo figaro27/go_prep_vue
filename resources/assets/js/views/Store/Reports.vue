@@ -262,17 +262,16 @@
               </div>
               <div class="col-md-6">
                 <button
+                  @click="print('labels', 'pdf')"
+                  class="btn btn-secondary btn-md mt-2"
+                >
+                  Preview
+                </button>
+                <button
                   @click="print('labels', 'b64')"
                   class="btn btn-primary btn-md mt-2"
                 >
                   Print
-                </button>
-
-                <button
-                  @click="print('labels', 'pdf')"
-                  class="btn btn-primary btn-md mt-2"
-                >
-                  Print PDF
                 </button>
               </div>
             </div>
