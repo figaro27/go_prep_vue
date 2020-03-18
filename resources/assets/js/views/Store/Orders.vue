@@ -853,6 +853,9 @@ import checkDateRange from "../../mixins/deliveryDates";
 import { sidebarCssClasses } from "../../shared/classes";
 import store from "../../store";
 import { AsYouType } from "libphonenumber-js";
+import printer from "../../mixins/printer";
+import { sleep } from "../../lib/utils";
+import { PrintJob, PrintSize } from "../../store/printer";
 
 export default {
   components: {
