@@ -12,6 +12,18 @@
   <script src="{{ asset(mix('/js/manifest.js')) }}"></script>
   <script src="{{ asset(mix('/js/vendor.js')) }}"></script>
   <script src="{{ asset(mix('/js/print.js')) }}"></script>
+<style>
+li{
+font-size:8px !important;
+
+text-indent: 1% !important;
+
+}
+.plain {
+position:relative !important;
+margin-left:-30px !important;
+}
+</style>
 </head>
 
 
@@ -27,10 +39,10 @@
         @endif
   <center>
           @if ($reportSettings->lab_logo)
-      <img src="{{$logo}}"/ style="width:35vh;height:35vh;margin-top:8px;margin-bottom:8px"> 
+      <img src="{{$logo}}"/ style="width:32vh;height:32vh;margin-top:8px;margin-bottom:4px"> 
       @endif
 
-      <p class="text-13" style="font-weight:bold"> {!! $mealOrder->html_title !!}
+      <p class="text-11" style="font-weight:bold"> {!! $mealOrder->html_title !!}
       </p> @if ($reportSettings->lab_description) 
       <p> {!!
       $mealOrder->meal->description !!} </p> @endif
@@ -57,7 +69,7 @@
         @endif
  @if ($reportSettings->lab_customer)
  
-        <p class="text-15" style="font-weight:bold;margin-top:15px">Client: {!! $mealOrder->order->user->name !!}</p>
+        <p class="text-13" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
 
         @endif
 
