@@ -567,7 +567,7 @@ export default {
     ...mapActions(["printer/connect", "refreshStoreReportSettings"]),
 
     async print(report, format = "pdf", page = 1) {
-      let params = {};
+      let params = { page };
 
       let dates = this.delivery_dates[report];
 
@@ -620,6 +620,11 @@ export default {
       params.byOrderDate = 0;
 
       params.labelsNutrition = this.labelsNutrition;
+
+      params.width = this.reportSettings.lab_width;
+      params.height = this.reportSettings.lab_height;
+
+      params.order_id = 664;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
