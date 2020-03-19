@@ -567,6 +567,8 @@ export default {
     ...mapActions(["printer/connect", "refreshStoreReportSettings"]),
 
     async print(report, format = "pdf", page = 1) {
+      let params = {};
+
       let dates = this.delivery_dates[report];
 
       if (dates.start && dates.end) {
