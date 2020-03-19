@@ -797,6 +797,16 @@ class Subscription extends Model
         }
     }
 
+    public static function syncStock($meal)
+    {
+        $mealSubs = MealSubscription::where('meal_id', $meal->id)->get();
+        foreach ($mealSubs as $mealSub) {
+            $mealSub->delete();
+            $mealSub->subscription->syncPrices();
+            $mealSub->subscription->updateCurrentMealOrders();
+        }
+    }
+
     /**
      * Ensures subscription pricing is in line with the attached meals
      *

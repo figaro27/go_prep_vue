@@ -432,6 +432,7 @@ class CheckoutController extends UserController
                             $meal->stock -= $item['quantity'];
                             if ($meal->stock === 0) {
                                 $meal->active = 0;
+                                Subscription::syncStock($meal);
                             }
                             $meal->update();
                         }
@@ -848,6 +849,7 @@ class CheckoutController extends UserController
                             $meal->stock -= $item['quantity'];
                             if ($meal->stock === 0) {
                                 $meal->active = 0;
+                                Subscription::syncStock($meal);
                             }
                         }
                         $meal->update();
