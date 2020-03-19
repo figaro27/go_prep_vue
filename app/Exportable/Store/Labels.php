@@ -145,7 +145,7 @@ class Labels
         }
 
         $vars = [
-            'mealOrders' => $mealOrders->slice(0, 1),
+            'mealOrders' => $mealOrders,
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
             'body_classes' => implode(' ', [$this->orientation]),
