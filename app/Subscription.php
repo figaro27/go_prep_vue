@@ -45,7 +45,8 @@ class Subscription extends Model
         'amount' => 'float',
         'salesTax' => 'float',
         'mealPlanDiscount' => 'float',
-        'monthlyPrepay' => 'boolean'
+        'monthlyPrepay' => 'boolean',
+        'mealsReplaced' => 'boolean'
     ];
 
     public function user()

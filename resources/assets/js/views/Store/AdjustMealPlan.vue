@@ -64,18 +64,11 @@ export default {
         if (resp.data && resp.data.subscription_bags) {
           this.subscription_bags = resp.data.subscription_bags;
 
-          if (this.subscription_bags.length > 0) {
-            // Until SubscriptionBag gets updated when meals are replaced, don't load anything when meal packages are involved.
-            if (subscription.mealsReplaced) {
-              this.subscription_bags.forEach(item => {
-                if (item.meal_package) {
-                  stop = true;
-                }
-              });
-            }
-            if (stop) {
-              return;
-            }
+          // Don't load from SubscriptionBag if meals have been replaced in the subscription - meals aren't replacing in the stored object currently
+          if (
+            !subscription.mealsReplaced &&
+            this.subscription_bags.length > 0
+          ) {
             this.subscription_bags.forEach(item => {
               this.addOneFromAdjust(item);
             });
