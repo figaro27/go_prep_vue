@@ -86,16 +86,6 @@ class CheckoutController extends StoreController
             foreach ($bag->getItems() as $item) {
                 $meal = Meal::where('id', $item['meal']['id'])->first();
                 if ($meal && $meal->stock !== null) {
-                    // if ($weeklyPlan) {
-                    //     return response()->json(
-                    //         [
-                    //             'message' =>
-                    //                 $meal->title .
-                    //                 ' is not allowed in subscriptions. Please remove from your bag and try again.'
-                    //         ],
-                    //         400
-                    //     );
-                    // }
                     if ($meal->stock < $item['quantity']) {
                         return response()->json(
                             [
@@ -107,13 +97,6 @@ class CheckoutController extends StoreController
                             ],
                             400
                         );
-                    }
-                    if (!$weeklyPlan) {
-                        $meal->stock -= $item['quantity'];
-                        if ($meal->stock === 0) {
-                            $meal->active = 0;
-                        }
-                        $meal->update();
                     }
                 }
             }
@@ -404,6 +387,7 @@ class CheckoutController extends StoreController
                             $meal->stock -= $item['quantity'];
                             if ($meal->stock === 0) {
                                 $meal->active = 0;
+                                Subscription::syncStock($meal);
                             }
                             $meal->update();
                         }
@@ -838,6 +822,7 @@ class CheckoutController extends StoreController
                         $meal->stock -= $item['quantity'];
                         if ($meal->stock === 0) {
                             $meal->active = 0;
+                            Subscription::syncStock($meal);
                         }
                         $meal->update();
                     }

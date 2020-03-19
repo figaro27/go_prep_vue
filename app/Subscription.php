@@ -45,7 +45,8 @@ class Subscription extends Model
         'amount' => 'float',
         'salesTax' => 'float',
         'mealPlanDiscount' => 'float',
-        'monthlyPrepay' => 'boolean'
+        'monthlyPrepay' => 'boolean',
+        'mealsReplaced' => 'boolean'
     ];
 
     public function user()
@@ -793,6 +794,16 @@ class Subscription extends Model
 
         if ($this->store->notificationEnabled('resumed_subscription')) {
             $this->store->sendNotification('resumed_subscription', $this);
+        }
+    }
+
+    public static function syncStock($meal)
+    {
+        $mealSubs = MealSubscription::where('meal_id', $meal->id)->get();
+        foreach ($mealSubs as $mealSub) {
+            $mealSub->delete();
+            $mealSub->subscription->syncPrices();
+            $mealSub->subscription->updateCurrentMealOrders();
         }
     }
 
