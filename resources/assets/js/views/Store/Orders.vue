@@ -1149,12 +1149,14 @@ export default {
           this.loading = false;
         });
     },
-    printLabel(order_id) {
+    printLabel(order_id, format = "b64", page = 1) {
       axios
         .get(`/api/me/print/labels/b64`, {
           params: { order_id }
         })
         .then(response => {
+          const { data } = response;
+
           const size = new PrintSize(
             this.reportSettings.lab_width,
             this.reportSettings.lab_height
