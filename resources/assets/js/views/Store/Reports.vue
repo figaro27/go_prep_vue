@@ -624,8 +624,6 @@ export default {
       params.width = this.reportSettings.lab_width;
       params.height = this.reportSettings.lab_height;
 
-      params.order_id = 666;
-
       axios
         .get(`/api/me/print/${report}/${format}`, {
           params
