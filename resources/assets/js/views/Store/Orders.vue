@@ -862,7 +862,7 @@ export default {
     Spinner,
     vSelect
   },
-  mixins: [checkDateRange],
+  mixins: [checkDateRange, printer],
   data() {
     return {
       page: 1,
