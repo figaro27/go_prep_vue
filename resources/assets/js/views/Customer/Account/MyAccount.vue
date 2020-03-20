@@ -57,7 +57,6 @@
             type="text"
             v-model="userDetail.delivery"
             placeholder="Delivery Instructions"
-            required
           ></b-form-input>
           <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
         </b-form>

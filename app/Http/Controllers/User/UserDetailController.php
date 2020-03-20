@@ -77,8 +77,8 @@ class UserDetailController extends UserController
             'address' => 'required|string',
             'city' => 'required|string',
             'state' => 'required|string',
-            'zip' => 'required',
-            'delivery' => 'required|string'
+            'zip' => 'required'
+            // 'delivery' => 'required|string'
             // 'billingAddress' => 'string',
             // 'billingCity' => 'string',
             // 'billingState' => 'string',
