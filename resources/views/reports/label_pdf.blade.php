@@ -88,7 +88,7 @@ margin-left:-30px !important;
 
         @if ($reportSettings->lab_nutrition)
 
-          <div class="nutritionFacts sm" data-meal="{{ $mealOrder->json }}" style="position:relative;left:10px;top:5px"></div>
+          <div class="nutritionFacts sm" data-meal="{{ $mealOrder->json }}" style="position:relative;left:20px;top:5px"></div>
       @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
 
       </div>

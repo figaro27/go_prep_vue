@@ -371,11 +371,11 @@
           >Customer Name</b-form-checkbox
         >
       </p>
-      <p>
+      <!-- <p>
         <b-form-checkbox v-model="reportSettings.lab_description"
           >Meal Description</b-form-checkbox
         >
-      </p>
+      </p> -->
       <p>
         <b-form-checkbox v-model="reportSettings.lab_instructions"
           >Meal Instructions</b-form-checkbox
