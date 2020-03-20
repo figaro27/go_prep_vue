@@ -1,6 +1,16 @@
 @import "fonts";
 @import "~nutrition-label-jquery-plugin/dist/css/nutritionLabel-min.css";
 
+.nutritionFacts {
+  &.sm {
+    .nf {
+      font-size: 7px;
+      line-height: 7px;
+      width: 140px !important;
+    }
+  }
+}
+
 ul {
   margin: 0;
   padding: 0 !important;
