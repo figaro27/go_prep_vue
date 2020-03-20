@@ -20,6 +20,7 @@ class Labels
 
     protected $store;
     protected $allDates;
+    protected $orderId;
 
     public function __construct(Store $store, $params = [])
     {
@@ -28,6 +29,7 @@ class Labels
         $this->orientation = 'portrait';
         $this->page = $params->get('page', 1);
         $this->perPage = 10;
+        $this->orderId = $params->get('order_id');
     }
 
     public function filterVars($vars)
@@ -46,13 +48,13 @@ class Labels
         $params->date_format = $this->store->settings->date_format;
         $allDates = [];
 
-        if (isset($params['order_id']) && (int) $params['order_id'] != 0) {
+        if ($this->orderId) {
             $orders = $this->store
                 ->orders()
                 ->where([
                     'paid' => 1,
                     // 'voided' => 0,
-                    'id' => (int) $params['order_id']
+                    'id' => $this->orderId
                 ])
                 ->get();
         } else {
