@@ -33,7 +33,7 @@
           <DefaultHeaderDropdown/>
         </b-nav-item>-->
         <!-- BMP Testing -->
-        <PrinterNav />
+        <PrinterNav v-if="viewedStore.id === 40" />
         <StoreDropdown />
       </b-navbar-nav>
       <!-- <AsideToggler class="d-none d-lg-block" /> -->
