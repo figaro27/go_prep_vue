@@ -98,13 +98,13 @@ export default {
   mixins: [printer],
   async mounted() {
     // BMP Testing
-    if (this.store.id === 40) {
+    if (this.viewedStore.id === 40) {
       await this.printerConnect();
       this.printerFindDevices();
     }
   },
   computed: {
-    ...mapGetters(["store"]),
+    ...mapGetters(["viewedStore"]),
     dotClass() {
       switch (this.printerStatus) {
         case "CONNECTED":

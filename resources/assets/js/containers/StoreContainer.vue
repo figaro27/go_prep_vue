@@ -33,7 +33,7 @@
           <DefaultHeaderDropdown/>
         </b-nav-item>-->
         <!-- BMP Testing -->
-        <PrinterNav v-if="store.id === 40" />
+        <PrinterNav v-if="viewedStore.id === 40" />
         <StoreDropdown />
       </b-navbar-nav>
       <!-- <AsideToggler class="d-none d-lg-block" /> -->
@@ -155,7 +155,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["initialized", "isLoading", "storeSettings", "store"]),
+    ...mapGetters(["initialized", "isLoading", "storeSettings", "viewedStore"]),
     classes() {
       let classes = ["app"];
       classes.push(this.$route.name);
