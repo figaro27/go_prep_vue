@@ -386,8 +386,8 @@
           >Meal Expiration</b-form-checkbox
         >
       </p>
-
-      <div class="row">
+      <!-- BMP Testing -->
+      <div class="row" v-if="store.id === 40">
         <div class="col-md-6">
           <b-form-group label="Label Size" class="mt-3">
             <b-input-group size="md" append="in">
