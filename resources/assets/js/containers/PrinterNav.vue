@@ -88,6 +88,7 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from "@coreui/vue";
+import { mapGetters, mapActions } from "vuex";
 import printer from "../mixins/printer";
 
 export default {
