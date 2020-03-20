@@ -88,6 +88,7 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from "@coreui/vue";
+import { mapGetters, mapActions } from "vuex";
 import printer from "../mixins/printer";
 
 export default {
@@ -96,10 +97,14 @@ export default {
   },
   mixins: [printer],
   async mounted() {
-    // await this.printerConnect();
-    // this.printerFindDevices();
+    // BMP Testing
+    if (this.store.id === 40) {
+      await this.printerConnect();
+      this.printerFindDevices();
+    }
   },
   computed: {
+    ...mapGetters(["store"]),
     dotClass() {
       switch (this.printerStatus) {
         case "CONNECTED":

@@ -95,19 +95,21 @@ class CheckoutController extends UserController
         // Preventing checkout if the meal has been made inactive or deleted since the time it was added to the bag.
 
         foreach ($bag->getItems() as $item) {
-            $meal = Meal::where('id', $item['meal']['id'])
-                ->withTrashed()
-                ->first();
-            if (!$meal->active || $meal->deleted_at !== null) {
-                return response()->json(
-                    [
-                        'message' =>
-                            $meal->title .
-                            ' has been removed from the menu by us since the time you added it. It is now removed from your bag. Please double check your order and checkout again.',
-                        'removeableMeal' => $meal
-                    ],
-                    400
-                );
+            if ($item['meal']['gift_card'] === false) {
+                $meal = Meal::where('id', $item['meal']['id'])
+                    ->withTrashed()
+                    ->first();
+                if (!$meal->active || $meal->deleted_at !== null) {
+                    return response()->json(
+                        [
+                            'message' =>
+                                $meal->title .
+                                ' has been removed from the menu by us since the time you added it. It is now removed from your bag. Please double check your order and checkout again.',
+                            'removeableMeal' => $meal
+                        ],
+                        400
+                    );
+                }
             }
         }
 

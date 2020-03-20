@@ -239,7 +239,7 @@
           </div>
         </div>
       </div>
-      <!-- <div class="col-md-6">
+      <div class="col-md-6">
         <div class="card">
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Labels</h4>
@@ -277,7 +277,7 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
     </div>
     <div class="row">
       <div class="col-md-12">
@@ -371,11 +371,11 @@
           >Customer Name</b-form-checkbox
         >
       </p>
-      <p>
+      <!-- <p>
         <b-form-checkbox v-model="reportSettings.lab_description"
           >Meal Description</b-form-checkbox
         >
-      </p>
+      </p> -->
       <p>
         <b-form-checkbox v-model="reportSettings.lab_instructions"
           >Meal Instructions</b-form-checkbox
@@ -386,8 +386,8 @@
           >Meal Expiration</b-form-checkbox
         >
       </p>
-
-      <div class="row">
+      <!-- BMP Testing -->
+      <div class="row" v-if="store.id === 40">
         <div class="col-md-6">
           <b-form-group label="Label Size" class="mt-3">
             <b-input-group size="md" append="in">

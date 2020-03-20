@@ -39,14 +39,14 @@ margin-left:-30px !important;
         @endif
   <center>
           @if ($reportSettings->lab_logo)
-      <img src="{{$logo}}"/ style="width:32vh;height:32vh;margin-top:8px;margin-bottom:4px"> 
+      <img src="{{$logo}}"/ style="width:32vh;height:32vh;margin-top:8px;margin-bottom:4px">
       @endif
 
       <p class="text-11" style="font-weight:bold"> {!! $mealOrder->html_title !!}
-      </p> @if ($reportSettings->lab_description) 
+      </p> @if ($reportSettings->lab_description)
       <p> {!!
       $mealOrder->meal->description !!} </p> @endif
-      
+
         @if ($reportSettings->lab_instructions)
         <p class="text-10">
         {!! $mealOrder->meal->instructions !!}
@@ -68,7 +68,7 @@ margin-left:-30px !important;
         </p>
         @endif
  @if ($reportSettings->lab_customer)
- 
+
         <p class="text-13" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
 
         @endif
@@ -77,7 +77,7 @@ margin-left:-30px !important;
         </div>
         @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
         <div style="width:45%;float:left">
- 
+
           @endif
         @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
@@ -88,15 +88,15 @@ margin-left:-30px !important;
 
         @if ($reportSettings->lab_nutrition)
 
-          <div class="nutritionFacts" data-meal="{{ $mealOrder->json }}" style="transform:scale(.50);position:relative;top:-75;right:30"></div>
+          <div class="nutritionFacts sm" data-meal="{{ $mealOrder->json }}" style="position:relative;left:20px;top:10px"></div>
       @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
 
       </div>
       @endif
       @endif
-    
+
     @endforeach
- 
+
 
 
 </html>
