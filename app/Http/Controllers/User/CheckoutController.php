@@ -95,7 +95,11 @@ class CheckoutController extends UserController
         // Preventing checkout if the meal has been made inactive or deleted since the time it was added to the bag.
 
         foreach ($bag->getItems() as $item) {
-            if ($item['meal']['gift_card'] === false) {
+            if (
+                isset($item['meal']) &&
+                isset($item['meal']['gift_card']) &&
+                $item['meal']['gift_card'] === false
+            ) {
                 $meal = Meal::where('id', $item['meal']['id'])
                     ->withTrashed()
                     ->first();
