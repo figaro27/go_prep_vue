@@ -239,7 +239,8 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <!-- BMP Testing -->
+      <div class="col-md-6" v-if="store.id === 40">
         <div class="card">
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Labels</h4>
@@ -386,8 +387,7 @@
           >Meal Expiration</b-form-checkbox
         >
       </p>
-      <!-- BMP Testing -->
-      <div class="row" v-if="store.id === 40">
+      <div class="row">
         <div class="col-md-6">
           <b-form-group label="Label Size" class="mt-3">
             <b-input-group size="md" append="in">
