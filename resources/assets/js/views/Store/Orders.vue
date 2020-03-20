@@ -432,13 +432,13 @@
               >
             </div>
 
-            <!-- <div>
+            <div>
               <b-btn
                 class="btn mb-2 d-inline mr-1 royalBlueBG"
                 @click="printLabel(order.id)"
                 >Print Label</b-btn
               >
-            </div> -->
+            </div>
 
             <div>
               <b-btn
