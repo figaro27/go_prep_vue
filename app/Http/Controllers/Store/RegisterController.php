@@ -147,8 +147,14 @@ class RegisterController extends StoreController
         $currency = $this->store->settings->currency;
         $gateway = $this->store->settings->payment_gateway;
         $user->createStoreCustomer($storeId, $currency, $gateway);
+        $customerId = Customer::where([
+            'user_id' => $user->id,
+            'store_id' => $storeId
+        ])
+            ->pluck('id')
+            ->first();
         $customer = [
-            'id' => $user->id,
+            'id' => $customerId,
             'name' => $user->name,
             'existing' => true
         ];
