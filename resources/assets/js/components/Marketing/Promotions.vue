@@ -2,6 +2,14 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
+      <v-client-table
+        :columns="columns"
+        :data="tableData"
+        :options="{
+          headings: {}
+        }"
+      >
+      </v-client-table>
     </div>
   </div>
 </template>
@@ -21,7 +29,16 @@ export default {
   },
   mixins: [checkDateRange],
   data() {
-    return {};
+    return {
+      columns: [
+        "active",
+        "rewardType",
+        "rewardAmount",
+        "conditionType",
+        "conditionAmount",
+        "endDate"
+      ]
+    };
   },
   created() {},
   mounted() {},
@@ -30,11 +47,15 @@ export default {
       store: "viewedStore",
       storeCoupons: "storeCoupons",
       isLoading: "isLoading",
-      initialized: "initialized"
-    })
+      initialized: "initialized",
+      promotions: "storePromotions"
+    }),
+    tableData() {
+      return Object.values(this.promotions);
+    }
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions(["refreshStorePromotions"]),
     formatMoney: format.money
   }
 };

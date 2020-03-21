@@ -120,6 +120,9 @@ const state = {
     referral_settings: {
       data: {}
     },
+    promotions: {
+      data: {}
+    },
     meals: {
       data: {}
     },
@@ -789,6 +792,10 @@ const mutations = {
     state.store.referral_settings.data = referralSettings;
   },
 
+  storePromotions(state, { promotions }) {
+    state.store.promotions.data = promotions;
+  },
+
   storeCoupons(state, { coupons }) {
     state.store.coupons.data = coupons;
   },
@@ -1351,6 +1358,16 @@ const actions = {
       ) {
         let referralSettings = data.store.referral_settings;
         commit("storeReferralSettings", { referralSettings });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.promotions) &&
+        _.isObject(data.store.promotions)
+      ) {
+        let promotions = data.store.promotions;
+        commit("storePromotions", { promotions });
       }
     } catch (e) {}
 
@@ -2312,6 +2329,18 @@ const actions = {
     }
   },
 
+  async refreshStorePromotions({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/promotions");
+    const { data } = await res;
+    const promotions = data;
+
+    if (_.isArray(promotions)) {
+      commit("storePromotions", { promotions });
+    } else {
+      throw new Error("Failed to retrieve promotions");
+    }
+  },
+
   async refreshCategories({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/categories");
     const { data } = await res;
@@ -2922,6 +2951,13 @@ const getters = {
       return {};
     }
   },
+  viewedStorePromotions: state => {
+    try {
+      return state.viewed_store.promotions || {};
+    } catch (e) {
+      return {};
+    }
+  },
   viewedStoreDeliveryDays: state => {
     return state.viewed_store.delivery_days || [];
   },
@@ -3332,6 +3368,13 @@ const getters = {
   storeReferralSettings: state => {
     try {
       return state.store.referral_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storePromotions: state => {
+    try {
+      return state.store.promotions.data || {};
     } catch (e) {
       return {};
     }

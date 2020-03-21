@@ -369,6 +369,16 @@ foreach (
                                 'ReferralController@settleBalance'
                             );
 
+                            Route::resource(
+                                'promotions',
+                                'PromotionController'
+                            );
+
+                            Route::patch(
+                                'promotions',
+                                'PromotionController@update'
+                            );
+
                             Route::post(
                                 'pauseMealPlans',
                                 'StoreSettingController@pauseMealPlans'
