@@ -404,19 +404,13 @@ export default {
   },
   async mounted() {
     this.loading = true;
-    this.refreshInactiveMeals();
     await this.refreshCustomerOrders();
     this.loading = false;
     window.scrollTo(0, 0);
   },
   updated() {},
   methods: {
-    ...mapActions([
-      "refreshCustomerOrders",
-      "addJob",
-      "removeJob",
-      "refreshInactiveMeals"
-    ]),
+    ...mapActions(["refreshCustomerOrders", "addJob", "removeJob"]),
     formatMoney: format.money,
     getMealTableData() {
       let data = [];
