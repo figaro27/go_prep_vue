@@ -381,7 +381,7 @@ export default {
       initialized: "initialized",
       isLoading: "isLoading",
       getStoreMeal: "viewedStoreMeal",
-      storeModules: "viewedStoreModules"
+      storeModules: "viewedStoreModules"refreshInactiveMeals
     }),
     tableData() {
       let orders = this._orders;
@@ -404,13 +404,14 @@ export default {
   },
   async mounted() {
     this.loading = true;
+    this.refreshInactiveMeals();
     await this.refreshCustomerOrders();
     this.loading = false;
     window.scrollTo(0, 0);
   },
   updated() {},
   methods: {
-    ...mapActions(["refreshCustomerOrders", "addJob", "removeJob"]),
+    ...mapActions(["refreshCustomerOrders", "addJob", "removeJob", "refreshInactiveMeals"]),
     formatMoney: format.money,
     getMealTableData() {
       let data = [];
@@ -487,10 +488,8 @@ export default {
       });
 
       order.items.forEach(item => {
-        console.log("item: " + item);
         if (item.meal_package_order_id === null && !item.hidden) {
           const meal = this.getStoreMeal(item.meal_id);
-          console.log("meal: " + meal);
           if (!meal) {
             return null;
           }
