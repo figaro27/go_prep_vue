@@ -381,7 +381,7 @@ export default {
       initialized: "initialized",
       isLoading: "isLoading",
       getStoreMeal: "viewedStoreMeal",
-      storeModules: "viewedStoreModules"refreshInactiveMeals
+      storeModules: "viewedStoreModules"
     }),
     tableData() {
       let orders = this._orders;
@@ -411,7 +411,12 @@ export default {
   },
   updated() {},
   methods: {
-    ...mapActions(["refreshCustomerOrders", "addJob", "removeJob", "refreshInactiveMeals"]),
+    ...mapActions([
+      "refreshCustomerOrders",
+      "addJob",
+      "removeJob",
+      "refreshInactiveMeals"
+    ]),
     formatMoney: format.money,
     getMealTableData() {
       let data = [];
