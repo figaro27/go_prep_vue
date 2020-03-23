@@ -35,7 +35,16 @@ class PromotionController extends StoreController
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->get('promotion');
+        $promotion = new Promotion();
+        $promotion->store_id = $this->store->id;
+        $promotion->active = 1;
+        $promotion->promotionType = $data['promotionType'];
+        $promotion->promotionAmount = $data['promotionAmount'];
+        $promotion->freeDelivery = $data['freeDelivery'];
+        $promotion->conditionType = $data['conditionType'];
+        $promotion->conditionAmount = $data['conditionAmount'];
+        $promotion->save();
     }
 
     /**
@@ -69,7 +78,32 @@ class PromotionController extends StoreController
      */
     public function update(Request $request, Promotion $promotion)
     {
-        //
+        $data = $request->all();
+        if (isset($data['active'])) {
+            $promotion->active = $data['active'];
+        }
+
+        if (isset($data['promotionType'])) {
+            $promotion->promotionType = $data['promotionType'];
+        }
+
+        if (isset($data['promotionAmount'])) {
+            $promotion->promotionAmount = $data['promotionAmount'];
+        }
+
+        if (isset($data['freeDelivery'])) {
+            $promotion->freeDelivery = $data['freeDelivery'];
+        }
+
+        if (isset($data['conditionType'])) {
+            $promotion->conditionType = $data['conditionType'];
+        }
+
+        if (isset($data['conditionAmount'])) {
+            $promotion->conditionAmount = $data['conditionAmount'];
+        }
+
+        $promotion->save();
     }
 
     /**
@@ -80,6 +114,6 @@ class PromotionController extends StoreController
      */
     public function destroy(Promotion $promotion)
     {
-        //
+        $promotion->delete();
     }
 }

@@ -18,7 +18,7 @@
             <b-tab title="Coupons">
               <coupons></coupons>
             </b-tab>
-            <b-tab title="Gift Cards">
+            <b-tab title="Purchased Gift Cards">
               <gift-cards></gift-cards>
             </b-tab>
           </b-tabs>

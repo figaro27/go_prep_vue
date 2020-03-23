@@ -2,15 +2,191 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
-      <v-client-table
-        :columns="columns"
-        :data="tableData"
-        :options="{
-          headings: {}
-        }"
-      >
+      <v-client-table :columns="columns" :data="tableData" :options="options">
+        <div slot="beforeTable" class="mb-2">
+          <button
+            class="btn btn-success btn-md mb-2 mb-sm-0"
+            @click="showAddPromotionModal = true"
+          >
+            Add Promotion
+          </button>
+        </div>
+        <div slot="active" slot-scope="props">
+          <b-form-checkbox
+            class="largeCheckboxPromotions"
+            type="checkbox"
+            v-model="props.row.active"
+            :value="1"
+            :unchecked-value="0"
+            @change="val => updatePromotion(props.row.id, 'active', val)"
+          ></b-form-checkbox>
+        </div>
+        <div slot="promotionType" slot-scope="props">
+          <b-form-select
+            v-model="props.row.promotionType"
+            :options="promotionTypeOptions"
+            @change="val => updatePromotion(props.row.id, 'promotionType', val)"
+          ></b-form-select>
+        </div>
+        <div slot="promotionAmount" slot-scope="props">
+          <b-form-input
+            v-model="props.row.promotionAmount"
+            @change="
+              val => updatePromotion(props.row.id, 'promotionAmount', val)
+            "
+          ></b-form-input>
+        </div>
+        <div slot="freeDelivery" slot-scope="props">
+          <b-form-checkbox
+            class="largeCheckboxPromotions ml-3"
+            type="checkbox"
+            v-model="props.row.freeDelivery"
+            :value="1"
+            :unchecked-value="0"
+            @change="val => updatePromotion(props.row.id, 'freeDelivery', val)"
+          ></b-form-checkbox>
+        </div>
+        <div slot="conditionType" slot-scope="props">
+          <b-form-select
+            v-model="props.row.conditionType"
+            :options="conditionTypeOptions"
+            @change="val => updatePromotion(props.row.id, 'conditionType', val)"
+          ></b-form-select>
+        </div>
+        <div slot="conditionAmount" slot-scope="props">
+          <b-form-input
+            v-model="props.row.conditionAmount"
+            @change="
+              val => updatePromotion(props.row.id, 'conditionAmount', val)
+            "
+          ></b-form-input>
+        </div>
+        <div slot="actions" slot-scope="props">
+          <b-btn
+            variant="danger"
+            @click="
+              (showDeletePromotionModal = true), (promotionId = props.row.id)
+            "
+            >Delete</b-btn
+          >
+        </div>
       </v-client-table>
     </div>
+    <b-modal
+      size="md"
+      title="Delete Promotion"
+      v-model="showDeletePromotionModal"
+      v-if="showDeletePromotionModal"
+      hide-header
+      hide-footer
+      no-fade
+    >
+      <h5 class="center-text p-2 mt-2">
+        Are you sure you want to delete this promotion?
+      </h5>
+      <div class="d-flex pt-2" style="justify-content:center">
+        <b-btn
+          class="d-inline mr-2"
+          variant="secondary"
+          @click="(showDeletePromotionModal = false), (promotionId = null)"
+          >Cancel</b-btn
+        >
+        <b-btn class="d-inline" variant="danger" @click="destroyPromotion"
+          >Delete</b-btn
+        >
+      </div>
+    </b-modal>
+    <b-modal
+      size="lg"
+      title="Add Promotion"
+      v-model="showAddPromotionModal"
+      v-if="showAddPromotionModal"
+      no-fade
+      @ok.prevent="addPromotion"
+    >
+      <div class="container-md mt-3 pl-5 pr-5">
+        <h6 class="strong mt-2 mb-2">
+          Promotion Type
+          <img
+            v-b-popover.hover="
+              'Choose if you want the promotion amount given to the customer to be a flat amount or a percentage.'
+            "
+            title="Promotion Type"
+            src="/images/store/popover.png"
+            class="popover-size ml-1"
+          />
+        </h6>
+        <b-form-select
+          v-model="newPromotion.promotionType"
+          :options="promotionTypeOptions"
+        ></b-form-select>
+
+        <h6 class="strong mt-2 mb-2">
+          Promotion Amount
+
+          <img
+            v-b-popover.hover="
+              'Enter the amount you want to give to the customer.'
+            "
+            title="Promotion Amount"
+            src="/images/store/popover.png"
+            class="popover-size ml-1"
+          />
+        </h6>
+        <b-form-input
+          type="number"
+          v-model="newPromotion.promotionAmount"
+        ></b-form-input>
+
+        <h6 class="strong mt-2 mb-2">
+          Add Free Delivery
+          <img
+            v-b-popover.hover="'Do you want to add on free delivery?'"
+            title="Add Free Delivery"
+            src="/images/store/popover.png"
+            class="popover-size ml-1"
+          />
+        </h6>
+        <b-form-checkbox
+          type="checkbox"
+          v-model="newPromotion.freeDelivery"
+          :value="1"
+          :unchecked-value="0"
+        ></b-form-checkbox>
+
+        <h6 class="strong mt-2 mb-2">
+          Condition Type
+          <img
+            v-b-popover.hover="
+              'Choose the condition you want to be met to allow the promotion. A certain subtotal, number of items being checked out, number of orders placed by the customer, or no condition.'
+            "
+            title="Condition Type"
+            src="/images/store/popover.png"
+            class="popover-size ml-1"
+          />
+        </h6>
+        <b-form-select
+          v-model="newPromotion.conditionType"
+          :options="conditionTypeOptions"
+        ></b-form-select>
+
+        <h6 class="strong mt-2 mb-2">
+          Condition Amount
+          <img
+            v-b-popover.hover="
+              'Enter the amount required for the condition to be met in order to provide the promotion.'
+            "
+            title="Condition Amount"
+            src="/images/store/popover.png"
+            class="popover-size ml-1"
+          />
+        </h6>
+        <b-form-input
+          type="number"
+          v-model="newPromotion.conditionAmount"
+        ></b-form-input>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -30,14 +206,36 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      newPromotion: {},
+      promotionId: null,
+      showAddPromotionModal: false,
+      showDeletePromotionModal: false,
       columns: [
         "active",
-        "rewardType",
-        "rewardAmount",
+        "promotionType",
+        "promotionAmount",
+        "freeDelivery",
         "conditionType",
         "conditionAmount",
-        "endDate"
-      ]
+        "actions"
+      ],
+      options: {
+        filterable: false,
+        headings: {
+          active: "Active",
+          promotionType: "Promotion Type",
+          promotionAmount: "Promotion Amount",
+          freeDelivery: "Free Delivery",
+          conditionType: "Condition Type",
+          conditionAmount: "Condition Amount",
+          actions: "Actions"
+        },
+        rowClassCallback: function(row) {
+          let classes = `promotion promotion-${row.id}`;
+          classes += row.active ? "" : " faded";
+          return classes;
+        }
+      }
     };
   },
   created() {},
@@ -52,11 +250,51 @@ export default {
     }),
     tableData() {
       return Object.values(this.promotions);
+    },
+    promotionTypeOptions() {
+      return [
+        { value: "flat", text: "Flat" },
+        { value: "percent", text: "Percent" }
+      ];
+    },
+    conditionTypeOptions() {
+      return [
+        { value: "subtotal", text: "Subtotal" },
+        { value: "meals", text: "Meals" },
+        { value: "orders", text: "Orders" },
+        { value: "none", text: "None" }
+      ];
     }
   },
   methods: {
     ...mapActions(["refreshStorePromotions"]),
-    formatMoney: format.money
+    formatMoney: format.money,
+    async updatePromotion(id, field, val) {
+      axios
+        .patch(`/api/me/promotions/${id}`, { [field]: val })
+        .then(response => {
+          this.$toastr.s("Promotion updated.");
+        });
+    },
+    destroyPromotion() {
+      axios
+        .delete(`/api/me/promotions/${this.promotionId}`)
+        .then(async response => {
+          await this.refreshStorePromotions();
+          this.showDeletePromotionModal = false;
+          this.$toastr.s("Promotion deleted.");
+        });
+    },
+    addPromotion() {
+      axios
+        .post(`/api/me/promotions`, { promotion: this.newPromotion })
+        .then(async response => {
+          await this.refreshStorePromotions();
+          this.newPromotion = {};
+          this.showAddPromotionModal = false;
+          this.$toastr.s("Promotion added.");
+        });
+    }
   }
 };
 </script>

@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <img
         v-b-popover.hover="
-          'Leads are users who created an account and viewed your menu one ore more times in the past but have not yet placed an order.'
+          'Leads are users who created an account and viewed your menu one or more times in the past but have not yet placed an order.'
         "
         title="Leads"
         src="/images/store/popover.png"

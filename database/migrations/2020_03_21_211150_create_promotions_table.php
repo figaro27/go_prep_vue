@@ -21,11 +21,11 @@ class CreatePromotionsTable extends Migration
                 ->references('id')
                 ->on('stores');
             $table->boolean('active')->default(0);
-            $table->string('rewardType');
-            $table->decimal('rewardAmount')->nullable();
+            $table->string('promotionType')->default('flat');
+            $table->decimal('promotionAmount')->nullable();
+            $table->boolean('freeDelivery')->default(0);
             $table->string('conditionType');
             $table->decimal('conditionAmount')->nullable();
-            $table->dateTime('endDate')->nullable();
             $table->timestamps();
         });
     }
