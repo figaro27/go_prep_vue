@@ -23,6 +23,7 @@ use Stripe;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Media\Utils as MediaUtils;
 use App\Referral;
+use App\Order;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -63,7 +64,13 @@ class User extends Authenticatable implements JWTSubject
         'stripe_account' => 'json'
     ];
 
-    protected $appends = ['name', 'cards', 'last_viewed_store', 'referrals'];
+    protected $appends = [
+        'name',
+        'cards',
+        'last_viewed_store',
+        'referrals',
+        'orderCount'
+    ];
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -530,5 +537,13 @@ class User extends Authenticatable implements JWTSubject
     public function getReferralsAttribute()
     {
         return Referral::where('user_id', $this->id)->get();
+    }
+
+    public function getorderCountAttribute()
+    {
+        return Order::where([
+            'user_id' => $this->id,
+            'store_id' => $this->last_viewed_store_id
+        ])->count();
     }
 }
