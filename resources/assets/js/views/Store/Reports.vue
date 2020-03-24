@@ -786,7 +786,7 @@ export default {
       axios
         .post("/api/me/updateReportSettings", settings)
         .then(response => {
-          this.refreshStoreReportSettings();
+          // this.refreshStoreReportSettings();
           this.$toastr.s("Your settings have been saved.", "Success");
         })
         .catch(response => {
