@@ -19,8 +19,8 @@ class CardController extends UserController
     public function index()
     {
         $store = Store::where('id', $this->user->last_viewed_store_id)->first();
-        $storeId = $store->id;
-        $gateway = $store->settings->payment_gateway;
+        $storeId = $store ? $store->id : null;
+        $gateway = $store ? $store->settings->payment_gateway : null;
 
         return $this->user
             ->cards()
