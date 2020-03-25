@@ -171,7 +171,11 @@
                 format.money(order.purchasedGiftCardReduction, order.currency)
               }})
             </p>
-
+            <p class="text-success" v-if="order.promotionReduction > 0">
+              Promotional Discount: ({{
+                format.money(order.promotionReduction, order.currency)
+              }})
+            </p>
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
             </p>

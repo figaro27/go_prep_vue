@@ -127,6 +127,7 @@ class CheckoutController extends StoreController
         $purchasedGiftCardReduction = $request->get(
             'purchasedGiftCardReduction'
         );
+        $promotionReduction = $request->get('promotionReduction');
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
@@ -326,6 +327,7 @@ class CheckoutController extends StoreController
             $order->couponCode = $couponCode;
             $order->purchased_gift_card_id = $purchasedGiftCardId;
             $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
+            $order->promotionReduction = $promotionReduction;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->deposit = $deposit;
@@ -768,6 +770,7 @@ class CheckoutController extends StoreController
             $userSubscription->coupon_id = $couponId;
             $userSubscription->couponReduction = $couponReduction;
             $userSubscription->couponCode = $couponCode;
+            $userSubscription->promotionReduction = $promotionReduction;
             // In this case the 'next renewal time' is actually the first charge time
             $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
             $userSubscription->pickup_location_id = $pickupLocation;
@@ -803,6 +806,7 @@ class CheckoutController extends StoreController
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
             $order->coupon_id = $couponId;
             $order->couponReduction = $couponReduction;
+            $order->promotionReduction = $promotionReduction;
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;

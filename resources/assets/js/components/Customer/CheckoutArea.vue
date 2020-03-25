@@ -2247,6 +2247,7 @@ use next_delivery_dates
             ? this.purchasedGiftCard.id
             : null,
           purchasedGiftCardReduction: this.purchasedGiftCardReduction,
+          promotionReduction: this.promotionReduction,
           pickupLocation: this.selectedPickupLocation,
           customer: this.customerModel
             ? this.customerModel.value
@@ -2411,6 +2412,7 @@ use next_delivery_dates
             ? this.purchasedGiftCard.id
             : null,
           purchasedGiftCardReduction: this.purchasedGiftCardReduction,
+          promotionReduction: this.promotionReduction,
           deliveryFee: this.deliveryFee,
           processingFee: this.processingFeeAmount,
           pickupLocation: this.selectedPickupLocation,
