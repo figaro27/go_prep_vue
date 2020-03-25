@@ -102,89 +102,106 @@
       v-model="showAddPromotionModal"
       v-if="showAddPromotionModal"
       no-fade
-      @ok.prevent="addPromotion"
+      hide-footer
     >
       <div class="container-md mt-3 pl-5 pr-5">
-        <h6 class="strong mt-2 mb-2">
-          Promotion Type
-          <img
-            v-b-popover.hover="
-              'Choose if you want the promotion amount given to the customer to be a flat amount or a percentage.'
-            "
-            title="Promotion Type"
-            src="/images/store/popover.png"
-            class="popover-size ml-1"
-          />
-        </h6>
-        <b-form-select
-          v-model="newPromotion.promotionType"
-          :options="promotionTypeOptions"
-        ></b-form-select>
+        <b-form @submit.prevent="addPromotion">
+          <h6 class="strong mt-2 mb-2">
+            Promotion Type
+            <img
+              v-b-popover.hover="
+                'Choose if you want the promotion amount given to the customer to be a flat amount or a percentage.'
+              "
+              title="Promotion Type"
+              src="/images/store/popover.png"
+              class="popover-size ml-1"
+            />
+          </h6>
+          <b-form-select
+            v-model="newPromotion.promotionType"
+            :options="promotionTypeOptions"
+            required
+          ></b-form-select>
 
-        <h6 class="strong mt-2 mb-2">
-          Promotion Amount
+          <h6 class="strong mt-2 mb-2">
+            Promotion Amount
 
-          <img
-            v-b-popover.hover="
-              'Enter the amount you want to give to the customer.'
-            "
-            title="Promotion Amount"
-            src="/images/store/popover.png"
-            class="popover-size ml-1"
-          />
-        </h6>
-        <b-form-input
-          type="number"
-          v-model="newPromotion.promotionAmount"
-        ></b-form-input>
+            <img
+              v-b-popover.hover="
+                'Enter the amount you want to give to the customer.'
+              "
+              title="Promotion Amount"
+              src="/images/store/popover.png"
+              class="popover-size ml-1"
+            />
+          </h6>
+          <b-form-input
+            type="number"
+            v-model="newPromotion.promotionAmount"
+            required
+          ></b-form-input>
 
-        <h6 class="strong mt-2 mb-2">
-          Add Free Delivery
-          <img
-            v-b-popover.hover="'Do you want to add on free delivery?'"
-            title="Add Free Delivery"
-            src="/images/store/popover.png"
-            class="popover-size ml-1"
-          />
-        </h6>
-        <b-form-checkbox
-          type="checkbox"
-          v-model="newPromotion.freeDelivery"
-          :value="1"
-          :unchecked-value="0"
-        ></b-form-checkbox>
+          <h6 class="strong mt-2 mb-2">
+            Add Free Delivery
+            <img
+              v-b-popover.hover="'Do you want to add on free delivery?'"
+              title="Add Free Delivery"
+              src="/images/store/popover.png"
+              class="popover-size ml-1"
+            />
+          </h6>
+          <b-form-checkbox
+            type="checkbox"
+            v-model="newPromotion.freeDelivery"
+            :value="1"
+            :unchecked-value="0"
+          ></b-form-checkbox>
 
-        <h6 class="strong mt-2 mb-2">
-          Condition Type
-          <img
-            v-b-popover.hover="
-              'Choose the condition you want to be met to allow the promotion. A certain subtotal, number of items being checked out, number of orders placed by the customer, or no condition.'
-            "
-            title="Condition Type"
-            src="/images/store/popover.png"
-            class="popover-size ml-1"
-          />
-        </h6>
-        <b-form-select
-          v-model="newPromotion.conditionType"
-          :options="conditionTypeOptions"
-        ></b-form-select>
+          <h6 class="strong mt-2 mb-2">
+            Condition Type
+            <img
+              v-b-popover.hover="
+                'Choose the condition you want to be met to allow the promotion. A certain subtotal, number of items being checked out, number of orders placed by the customer, or no condition.'
+              "
+              title="Condition Type"
+              src="/images/store/popover.png"
+              class="popover-size ml-1"
+            />
+          </h6>
+          <b-form-select
+            v-model="newPromotion.conditionType"
+            :options="conditionTypeOptions"
+            required
+          ></b-form-select>
 
-        <h6 class="strong mt-2 mb-2">
-          Condition Amount
-          <img
-            v-b-popover.hover="
-              'Enter the amount required for the condition to be met in order to provide the promotion.'
-            "
-            title="Condition Amount"
-            src="/images/store/popover.png"
-            class="popover-size ml-1"
-          />
-        </h6>
-        <b-form-input
-          type="number"
-          v-model="newPromotion.conditionAmount"
-        ></b-form-input>
+          <h6 class="strong mt-2 mb-2">
+            Condition Amount
+            <img
+              v-b-popover.hover="
+                'Enter the amount required for the condition to be met in order to provide the promotion.'
+              "
+              title="Condition Amount"
+              src="/images/store/popover.png"
+              class="popover-size ml-1"
+            />
+          </h6>
+          <b-form-input
+            type="number"
+            v-model="newPromotion.conditionAmount"
+            required
+          ></b-form-input>
+          <div class="d-flex">
+            <b-button
+              variant="secondary"
+              @click="showAddPromotionModal = false"
+              class="mt-3 d-inline mr-2 mb-3"
+              >Cancel</b-button
+            >
+            <b-button type="submit" variant="primary" class="mt-3 d-inline mb-3"
+              >Add</b-button
+            >
+          </div>
+        </b-form>
       </div>
     </b-modal>
   </div>
@@ -293,6 +310,12 @@ export default {
           this.newPromotion = {};
           this.showAddPromotionModal = false;
           this.$toastr.s("Promotion added.");
+        })
+        .catch(response => {
+          console.log(_.first(Object.values(response.response.data)));
+
+          let error = _.first(Object.values(response.response.data));
+          this.$toastr.w(error);
         });
     }
   }

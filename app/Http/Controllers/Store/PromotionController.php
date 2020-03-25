@@ -36,6 +36,22 @@ class PromotionController extends StoreController
     public function store(Request $request)
     {
         $data = $request->get('promotion');
+
+        $promotions = Promotion::where('store_id', $this->store->id)->get();
+        foreach ($promotions as $promotion) {
+            if ($promotion->conditionType === $data['conditionType']) {
+                return response()->json(
+                    [
+                        'message' =>
+                            'A promotion with the condition type "' .
+                            $data['conditionType'] .
+                            '" already exists. Please edit the existing promotion instead of adding a duplicate.'
+                    ],
+                    400
+                );
+            }
+        }
+
         $promotion = new Promotion();
         $promotion->store_id = $this->store->id;
         $promotion->active = 1;
