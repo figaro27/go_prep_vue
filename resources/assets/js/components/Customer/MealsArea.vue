@@ -20,6 +20,72 @@
         {{ store.settings.closedReason }}
       </p>
     </b-alert>
+
+    <div
+      class="col-md-12"
+      v-for="promotion in activePromotions"
+      :key="promotion.id"
+    >
+      <b-alert
+        variant="success"
+        show
+        v-if="
+          promotion.conditionType === 'meals' &&
+            totalBagQuantity < promotion.conditionAmount
+        "
+      >
+        <h6 class="center-text">
+          Add {{ promotion.conditionAmount - totalBagQuantity }} more meals to
+          receive a discount of
+          <span v-if="promotion.promotionType === 'flat'">{{
+            format.money(promotion.promotionAmount, storeSettings.currency)
+          }}</span>
+          <span v-else>{{ promotion.promotionAmount }}%</span>
+        </h6>
+      </b-alert>
+      <b-alert
+        variant="success"
+        show
+        v-if="
+          promotion.conditionType === 'subtotal' &&
+            totalBagPricePreFees < promotion.conditionAmount
+        "
+      >
+        <h6 class="center-text">
+          Add
+          {{
+            format.money(
+              promotion.conditionAmount - totalBagPricePreFees,
+              storeSettings.currency
+            )
+          }}
+          more to receive a discount of
+          <span v-if="promotion.promotionType === 'flat'">{{
+            format.money(promotion.promotionAmount, storeSettings.currency)
+          }}</span>
+          <span v-else>{{ promotion.promotionAmount }}%</span>
+        </h6>
+      </b-alert>
+      <b-alert
+        variant="success"
+        show
+        v-if="
+          promotion.conditionType === 'orders' &&
+            loggedIn &&
+            user.orderCount % promotion.conditionAmount !== 0
+        "
+      >
+        <h6 class="center-text">
+          Order {{ promotion.conditionAmount - user.orderCount }} more times to
+          receive a discount of
+          <span v-if="promotion.promotionType === 'flat'">{{
+            format.money(promotion.promotionAmount, storeSettings.currency)
+          }}</span>
+          <span v-else>{{ promotion.promotionAmount }}%</span>
+        </h6>
+      </b-alert>
+    </div>
+
     <div
       class="alert alert-success"
       role="alert"
@@ -648,8 +714,18 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       _categories: "viewedStoreCategories",
-      user: "user"
+      user: "user",
+      promotions: "viewedStorePromotions",
+      loggedIn: "loggedIn",
+      totalBagPricePreFees: "totalBagPricePreFees"
     }),
+    totalBagQuantity() {
+      let quantity = 0;
+      this.bag.forEach(item => {
+        quantity += item.quantity;
+      });
+      return quantity;
+    },
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
     },
@@ -668,6 +744,15 @@ export default {
     },
     referralUrl() {
       return this.store.referral_settings.url + this.user.referralUrlCode;
+    },
+    activePromotions() {
+      let promotions = [];
+      this.promotions.forEach(promotion => {
+        if (promotion.active) {
+          promotions.push(promotion);
+        }
+      });
+      return promotions;
     }
   },
   methods: {

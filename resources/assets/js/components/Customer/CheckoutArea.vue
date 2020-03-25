@@ -1,6 +1,72 @@
 <template>
   <div>
     <ul class="list-group">
+      <li class="bag-item" v-if="activePromotions.length > 0">
+        <div
+          class="col-md-12"
+          v-for="promotion in activePromotions"
+          :key="promotion.id"
+        >
+          <b-alert
+            variant="success"
+            show
+            v-if="
+              promotion.conditionType === 'meals' &&
+                totalBagQuantity < promotion.conditionAmount
+            "
+          >
+            <h6 class="center-text">
+              Add {{ promotion.conditionAmount - totalBagQuantity }} more meals
+              to receive a discount of
+              <span v-if="promotion.promotionType === 'flat'">{{
+                format.money(promotion.promotionAmount, storeSettings.currency)
+              }}</span>
+              <span v-else>{{ promotion.promotionAmount }}%</span>
+            </h6>
+          </b-alert>
+          <b-alert
+            variant="success"
+            show
+            v-if="
+              promotion.conditionType === 'subtotal' &&
+                subtotal < promotion.conditionAmount
+            "
+          >
+            <h6 class="center-text">
+              Add
+              {{
+                format.money(
+                  promotion.conditionAmount - subtotal,
+                  storeSettings.currency
+                )
+              }}
+              more to receive a discount of
+              <span v-if="promotion.promotionType === 'flat'">{{
+                format.money(promotion.promotionAmount, storeSettings.currency)
+              }}</span>
+              <span v-else>{{ promotion.promotionAmount }}%</span>
+            </h6>
+          </b-alert>
+          <b-alert
+            variant="success"
+            show
+            v-if="
+              promotion.conditionType === 'orders' &&
+                loggedIn &&
+                user.orderCount % promotion.conditionAmount !== 0
+            "
+          >
+            <h6 class="center-text">
+              Order {{ promotion.conditionAmount - user.orderCount }} more times
+              to receive a discount of
+              <span v-if="promotion.promotionType === 'flat'">{{
+                format.money(promotion.promotionAmount, storeSettings.currency)
+              }}</span>
+              <span v-else>{{ promotion.promotionAmount }}%</span>
+            </h6>
+          </b-alert>
+        </div>
+      </li>
       <li
         class="bag-item"
         v-if="
@@ -1110,6 +1176,15 @@ export default {
       referrals: "viewedStoreReferrals",
       promotions: "viewedStorePromotions"
     }),
+    activePromotions() {
+      let promotions = [];
+      this.promotions.forEach(promotion => {
+        if (promotion.active) {
+          promotions.push(promotion);
+        }
+      });
+      return promotions;
+    },
     bagURL() {
       let referralUrl = this.$route.query.r ? "?r=" + this.$route.query.r : "";
       return "/customer/bag" + referralUrl;
