@@ -150,7 +150,7 @@ class Hourly extends Command
                     /* Timezone Set */
 
                     $currentHour = date('H');
-                    if ($currentHour === "09") {
+                    if ($currentHour === "08") {
                         $order->user->sendNotification('delivery_today', [
                             'user' => $order->user,
                             'customer' => $order->customer,
