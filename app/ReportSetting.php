@@ -12,6 +12,7 @@ class ReportSetting extends Model
     protected $casts = [
         'lab_nutrition' => 'boolean',
         'lab_macros' => 'boolean',
+        'lab_logo' => 'boolean',
         'lab_website' => 'boolean',
         'lab_social' => 'boolean',
         'lab_customer' => 'boolean',
