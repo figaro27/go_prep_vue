@@ -1,7 +1,10 @@
 <template>
   <div>
     <ul class="list-group">
-      <li class="bag-item" v-if="activePromotions.length > 0">
+      <li
+        class="bag-item"
+        v-if="activePromotions.length > 0 && !weeklySubscriptionValue"
+      >
         <div
           class="col-md-12"
           v-for="promotion in activePromotions"
@@ -262,7 +265,11 @@
             >
             <span
               class="text-success"
-              v-if="promotionFreeDelivery && !couponFreeDelivery"
+              v-if="
+                promotionFreeDelivery &&
+                  !couponFreeDelivery &&
+                  !weeklySubscriptionValue
+              "
               >Free Delivery</span
             >
           </div>
@@ -283,7 +290,11 @@
             >
             <span
               class="text-success"
-              v-if="promotionFreeDelivery && !couponFreeDelivery"
+              v-if="
+                promotionFreeDelivery &&
+                  !couponFreeDelivery &&
+                  !weeklySubscriptionValue
+              "
             >
               ({{ format.money(0, storeSettings.currency) }})
             </span>
@@ -372,7 +383,10 @@
         </div>
       </li>
 
-      <li class="checkout-item" v-if="referralReduction > 0">
+      <li
+        class="checkout-item"
+        v-if="referralReduction > 0 && !weeklySubscriptionValue"
+      >
         <div class="row">
           <div class="col-6 col-md-4">
             <span class="text-success">Referral ({{ referral.code }})</span>
@@ -387,7 +401,10 @@
         </div>
       </li>
 
-      <li class="checkout-item" v-if="promotionReduction > 0">
+      <li
+        class="checkout-item"
+        v-if="promotionReduction > 0 && !weeklySubscriptionValue"
+      >
         <div class="row">
           <div class="col-6 col-md-4">
             <span class="text-success">Promotional Discount</span>
@@ -1777,7 +1794,9 @@ use next_delivery_dates
       return this.purchasedGiftCard.balance;
     },
     referralReduction() {
-      return this.referral ? this.referral.balance : 0;
+      return this.referral && !this.weeklySubscriptionValue
+        ? this.referral.balance
+        : 0;
     },
     promotionReduction() {
       let promotions = this.promotions;
@@ -1821,7 +1840,7 @@ use next_delivery_dates
         }
       });
 
-      return reduction;
+      return !this.weeklySubscriptionValue ? reduction : 0;
     },
     grandTotal() {
       return (
@@ -1864,7 +1883,7 @@ use next_delivery_dates
           }
         }
       });
-      return freeDelivery;
+      return !this.weeklySubscriptionValue ? freeDelivery : false;
     },
     totalBagQuantity() {
       let quantity = 0;
