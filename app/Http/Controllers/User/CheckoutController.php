@@ -115,6 +115,7 @@ class CheckoutController extends UserController
             'purchasedGiftCardReduction'
         );
         $promotionReduction = $request->get('promotionReduction');
+        $referralReduction = $request->get('referralReduction');
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
@@ -350,6 +351,7 @@ class CheckoutController extends UserController
             $order->purchased_gift_card_id = $purchasedGiftCardId;
             $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
             $order->promotionReduction = $promotionReduction;
+            $order->referralReduction = $referralReduction;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->cashOrder = $cashOrder;
@@ -765,6 +767,7 @@ class CheckoutController extends UserController
                 $userSubscription->coupon_id = $couponId;
                 $userSubscription->couponReduction = $couponReduction;
                 $userSubscription->promotionReduction = $promotionReduction;
+                $userSubscription->referralReduction = $referralReduction;
                 $userSubscription->couponCode = $couponCode;
                 // In this case the 'next renewal time' is actually the first charge time
                 $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
@@ -803,6 +806,7 @@ class CheckoutController extends UserController
                 $order->couponReduction = $couponReduction;
                 $order->couponCode = $couponCode;
                 $order->promotionReduction = $promotionReduction;
+                $order->referralReduction = $referralReduction;
                 $order->pickup_location_id = $pickupLocation;
                 $order->transferTime = $transferTime;
                 $order->dailyOrderNumber = $dailyOrderNumber;

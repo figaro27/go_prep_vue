@@ -61,6 +61,7 @@ const state = {
     items: {},
     coupon: null,
     purchased_gift_card: null,
+    referral: null,
     meal_plan: false,
     pickup: false
   },
@@ -743,6 +744,9 @@ const mutations = {
   },
   setBagPurchasedGiftCard(state, purchased_gift_card) {
     state.bag.purchased_gift_card = purchased_gift_card;
+  },
+  setBagReferral(state, referral) {
+    state.bag.referral = referral;
   },
   setBagMealPlan(state, mealPlan) {
     state.bag.meal_plan = mealPlan;
@@ -3056,6 +3060,9 @@ const getters = {
   },
   bagPurchasedGiftCard(state) {
     return state.bag.purchased_gift_card;
+  },
+  bagReferral(state) {
+    return state.bag.referral;
   },
   bagMealPlan(state) {
     return state.bag.meal_plan;

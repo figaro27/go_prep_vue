@@ -254,6 +254,11 @@
                       )
                     }})
                   </p>
+                  <p class="text-success" v-if="order.referralReduction > 0">
+                    Referral Discount: ({{
+                      format.money(order.referralReduction, order.currency)
+                    }})
+                  </p>
                   <p class="text-success" v-if="order.promotionReduction > 0">
                     Promotional Discount: ({{
                       format.money(order.promotionReduction, order.currency)

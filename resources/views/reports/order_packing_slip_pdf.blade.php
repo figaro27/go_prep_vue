@@ -312,8 +312,12 @@ $brandColor = $order->store->settings->color;
               <td style="border:none"><b>Coupon</b></td>
               <td style="border:none;text-align:right;position:relative;right:8px">({{ $purchasedGiftCard }}) {{$currency}}{{number_format($purchasedGiftCardReduction, 2)}}</td>
             </tr>@endif
+            @if ($order->referralReduction > 0)<tr>
+              <td style="border:none"><b>Referral Discount</b></td>
+              <td style="border:none;text-align:right;position:relative;right:8px">(Referral Discount) {{$currency}}{{number_format($referralReduction, 2)}}</td>
+            </tr>@endif
             @if ($order->promotionalDiscount > 0)<tr>
-              <td style="border:none"><b>PromotionalDiscount</b></td>
+              <td style="border:none"><b>Promotional Discount</b></td>
               <td style="border:none;text-align:right;position:relative;right:8px">(Promotional Discount) {{$currency}}{{number_format($promotionReduction, 2)}}</td>
             </tr>@endif
             @if ($order->balance > 0)<tr>

@@ -10,6 +10,9 @@ class Coupon extends Model
     use SoftDeletes;
 
     protected $appends = ['referredUserName'];
+    protected $casts = [
+        'freeDelivery' => 'boolean'
+    ];
 
     public function store()
     {

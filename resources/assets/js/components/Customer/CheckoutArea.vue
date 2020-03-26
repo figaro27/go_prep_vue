@@ -258,9 +258,11 @@
               <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
             </span>
             <span class="text-success" v-if="couponApplied"
-              >({{ coupon.code }})</span
+              >Coupon ({{ coupon.code }})</span
             >
-            <span class="text-success" v-if="promotionFreeDelivery"
+            <span
+              class="text-success"
+              v-if="promotionFreeDelivery && !couponFreeDelivery"
               >Free Delivery</span
             >
           </div>
@@ -279,7 +281,10 @@
             <span class="text-success" v-if="couponFreeDelivery"
               >Free Delivery</span
             >
-            <span class="text-success" v-if="promotionFreeDelivery">
+            <span
+              class="text-success"
+              v-if="promotionFreeDelivery && !couponFreeDelivery"
+            >
               ({{ format.money(0, storeSettings.currency) }})
             </span>
           </div>
@@ -350,7 +355,9 @@
             <span class="d-inline mr-2" @click="removePurchasedGiftCard">
               <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
             </span>
-            <span class="text-success">({{ purchasedGiftCard.code }})</span>
+            <span class="text-success"
+              >Gift Card ({{ purchasedGiftCard.code }})</span
+            >
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             <span class="text-success" v-if="purchasedGiftCardReduction > 0"
@@ -359,6 +366,21 @@
                   purchasedGiftCardReduction,
                   storeSettings.currency
                 )
+              }})</span
+            >
+          </div>
+        </div>
+      </li>
+
+      <li class="checkout-item" v-if="referralReduction > 0">
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <span class="text-success">Referral ({{ referral.code }})</span>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5">
+            <span class="text-success"
+              >({{
+                format.money(referralReduction, storeSettings.currency)
               }})</span
             >
           </div>
@@ -400,14 +422,14 @@
             <b-form-group id="coupon">
               <b-form-input
                 id="coupon-code"
-                v-model="couponCode"
+                v-model="discountCode"
                 required
                 placeholder="Enter Promotional Code"
               ></b-form-input>
             </b-form-group>
           </div>
           <div class="col-xs-6 pl-2">
-            <b-btn variant="primary" @click="applyCoupon">Apply</b-btn>
+            <b-btn variant="primary" @click="applyDiscountCode">Apply</b-btn>
           </div>
         </div>
       </li>
@@ -1068,7 +1090,7 @@ export default {
       checkingOut: false,
       deposit: null,
       creditCardId: null,
-      couponCode: "",
+      discountCode: "",
       addCustomerModal: false,
       weeklySubscriptionValue: null,
       customerModel: null,
@@ -1150,6 +1172,7 @@ export default {
       bagDeliveryDate: "bagDeliveryDate",
       coupon: "bagCoupon",
       purchasedGiftCard: "bagPurchasedGiftCard",
+      referral: "bagReferral",
       deliveryPlan: "bagMealPlan",
       mealPlan: "bagMealPlan",
       hasMeal: "bagHasMeal",
@@ -1753,6 +1776,9 @@ use next_delivery_dates
       }
       return this.purchasedGiftCard.balance;
     },
+    referralReduction() {
+      return this.referral ? this.referral.balance : 0;
+    },
     promotionReduction() {
       let promotions = this.promotions;
       let reduction = 0;
@@ -1802,6 +1828,7 @@ use next_delivery_dates
         this.afterFees +
         this.tax -
         this.purchasedGiftCardReduction -
+        this.referralReduction -
         this.promotionReduction
       );
     },
@@ -2060,6 +2087,7 @@ use next_delivery_dates
       "setBagMealPlan",
       "setBagCoupon",
       "setBagPurchasedGiftCard",
+      "setBagReferral",
       "setBagDeliveryDate",
       "clearBagDeliveryDate"
     ]),
@@ -2071,13 +2099,13 @@ use next_delivery_dates
     getCustomerObject(id) {
       return _.find(this.customers, ["value", id]);
     },
-    applyCoupon() {
+    applyDiscountCode() {
       let coupons = this.coupons;
       if (this.$route.params.storeView) {
         coupons = Object.values(this.storeCoupons);
       }
       coupons.forEach(coupon => {
-        if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
+        if (this.discountCode.toUpperCase() === coupon.code.toUpperCase()) {
           if (coupon.oneTime) {
             let oneTimePass = this.oneTimeCouponCheck(coupon.id);
             if (oneTimePass === "login") {
@@ -2089,15 +2117,15 @@ use next_delivery_dates
             if (!oneTimePass) {
               this.$toastr.e(
                 "This was a one-time coupon that has already been used.",
-                'Coupon Code: "' + this.couponCode + '"'
+                'Coupon Code: "' + this.discountCode + '"'
               );
-              this.couponCode = "";
+              this.discountCode = "";
               return;
             }
           }
           this.coupon = coupon;
           this.setBagCoupon(coupon);
-          this.couponCode = "";
+          this.discountCode = "";
           this.$toastr.s("Coupon Applied.", "Success");
         }
       });
@@ -2108,7 +2136,8 @@ use next_delivery_dates
       }
       this.purchasedGiftCards.forEach(purchasedGiftCard => {
         if (
-          this.couponCode.toUpperCase() === purchasedGiftCard.code.toUpperCase()
+          this.discountCode.toUpperCase() ===
+          purchasedGiftCard.code.toUpperCase()
         ) {
           if (purchasedGiftCard.balance === "0.00") {
             this.$toastr.e("There are no more funds left on this gift card.");
@@ -2116,21 +2145,21 @@ use next_delivery_dates
           }
           this.purchasedGiftCard = purchasedGiftCard;
           this.setBagPurchasedGiftCard(purchasedGiftCard);
-          this.couponCode = "";
+          this.discountCode = "";
           this.$toastr.s("Gift Card Applied.", "Success");
         }
       });
 
-      this.referrals.forEach(referral => {
-        if (this.couponCode.toUpperCase() === referral.code.toUpperCase()) {
-          if (referral.balance === "0.00") {
+      this.referrals.forEach(ref => {
+        if (this.discountCode.toUpperCase() === ref.code.toUpperCase()) {
+          if (ref.balance === "0.00") {
             this.$toastr.e("There are no balance remaining.");
             return;
           }
-          // Using the same name as purchasedGiftCard for now - rename to 'promotionalCode' in the future to include gift cards & referral codes
-          this.purchasedGiftCard = referral;
-          this.setBagPurchasedGiftCard(referral);
-          this.couponCode = "";
+
+          this.referral = ref;
+          this.setBagReferral(ref);
+          this.discountCode = "";
           this.$toastr.s("Referral Code Applied.", "Success");
         }
       });
@@ -2247,6 +2276,7 @@ use next_delivery_dates
             ? this.purchasedGiftCard.id
             : null,
           purchasedGiftCardReduction: this.purchasedGiftCardReduction,
+          referralReduction: this.referralReduction,
           promotionReduction: this.promotionReduction,
           pickupLocation: this.selectedPickupLocation,
           customer: this.customerModel
@@ -2275,6 +2305,7 @@ use next_delivery_dates
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
           this.setBagPurchasedGiftCard(null);
+          this.setBagReferral(null);
           this.emptyBag();
           this.refreshResource("orders");
           this.refreshUpcomingOrders();
@@ -2412,6 +2443,7 @@ use next_delivery_dates
             ? this.purchasedGiftCard.id
             : null,
           purchasedGiftCardReduction: this.purchasedGiftCardReduction,
+          referralReduction: this.referralReduction,
           promotionReduction: this.promotionReduction,
           deliveryFee: this.deliveryFee,
           processingFee: this.processingFeeAmount,
@@ -2438,6 +2470,7 @@ use next_delivery_dates
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
           this.setBagPurchasedGiftCard(null);
+          this.setBagReferral(null);
           this.clearBagDeliveryDate();
 
           if (this.isManualOrder) {
@@ -2502,13 +2535,13 @@ use next_delivery_dates
     removeCoupon() {
       this.coupon = {};
       this.setBagCoupon(null);
-      this.couponCode = "";
+      this.discountCode = "";
     },
     removePurchasedGiftCard() {
       this.purchasedGiftCard = {};
       this.setBagPurchasedGiftCard(null);
       //edit
-      this.couponCode = "";
+      this.discountCode = "";
     },
     editDeliveryFee() {
       this.editingDeliveryFee = true;

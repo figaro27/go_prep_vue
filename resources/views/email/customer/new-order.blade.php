@@ -393,6 +393,7 @@ $currency = $order->store->settings->currency_symbol
                         $balance = $order->balance;
                         $purchasedGiftCard = $order->purchased_gift_card_code;
                         $purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
+                        $referralReduction = $order->referralReduction;
                         $promotionReduction = $order->promotionReduction;
                         @endphp
 
@@ -423,9 +424,12 @@ $currency = $order->store->settings->currency_symbol
                         Gift Card ({{$purchasedGiftCard}})
                         @endif<br>
                         @endif
+                        @if ($referralReduction > 0)
+                        Referral Discount<br>
+                        @endif
                         @if ($promotionReduction > 0)
-Promotional Discount<br>
-@endif
+                        Promotional Discount<br>
+                        @endif
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold;">Total</span><br>
                         @if ($balance > 0)
@@ -456,6 +460,9 @@ Promotional Discount<br>
                           @if ($purchasedGiftCardReduction > 0)
                           ({{$currency}}{{ number_format($purchasedGiftCardReduction, 2) }})<br>
                           @endif
+                          @if ($referralReduction > 0)
+({{$currency}}{{ number_format($referralReduction, 2) }})<br>
+@endif
                           @if ($promotionReduction > 0)
 ({{$currency}}{{ number_format($promotionReduction, 2) }})<br>
 @endif
