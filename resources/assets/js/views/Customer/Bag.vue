@@ -217,6 +217,7 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
       coupons: "viewedStoreCoupons",
+      referrals: "viewedStoreReferrals",
       pickupLocations: "viewedStorePickupLocations",
       lineItems: "viewedStoreLineItems",
       getMeal: "viewedStoreMeal",
@@ -445,6 +446,16 @@ export default {
       this.setBagCoupon(coupon);
     }
 
+    if (
+      this.$route.params.adjustOrder &&
+      this.order.applied_referral_id !== null
+    ) {
+      let appliedReferral = this.referrals.find(referral => {
+        return referral.id === this.order.applied_referral_id;
+      });
+      this.setBagReferral(appliedReferral);
+    }
+
     if (this.store.modules.subscriptionOnly) {
       this.$refs.checkoutArea.weeklySubscriptionValue = true;
     }
@@ -566,7 +577,12 @@ export default {
       "refreshUpcomingOrders",
       "refreshStoreCustomers"
     ]),
-    ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
+    ...mapMutations([
+      "emptyBag",
+      "setBagMealPlan",
+      "setBagCoupon",
+      "setBagReferral"
+    ]),
     preventNegative() {
       if (this.total < 0) {
         this.total += 1;

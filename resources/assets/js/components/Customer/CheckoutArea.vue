@@ -384,10 +384,24 @@
 
       <li
         class="checkout-item"
-        v-if="promotionReduction > 0 && !weeklySubscriptionValue"
+        v-if="
+          promotionReduction > 0 &&
+            !weeklySubscriptionValue &&
+            !removePromotions
+        "
       >
         <div class="row">
           <div class="col-6 col-md-4">
+            <span
+              class="d-inline mr-2"
+              @click="removePromotions = true"
+              v-if="
+                ($route.params.storeView === true || storeOwner) &&
+                  removePromotions === false
+              "
+            >
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
+            </span>
             <span class="text-success">Promotional Discount</span>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
@@ -1069,6 +1083,7 @@ export default {
   },
   data() {
     return {
+      removePromotions: false,
       hasWeeklySubscriptionItems: false,
       hasMonthlySubscriptionItems: false,
       hasMonthlyPrepaySubscriptionItems: false,
@@ -1781,13 +1796,16 @@ use next_delivery_dates
       if (this.weeklySubscriptionValue || !this.referral) {
         return 0;
       }
+      if (this.$route.params.adjustOrder) {
+        return this.order.referralReduction;
+      }
       if (this.referral.balance > this.afterFeesAndTax) {
         return this.afterFeesAndTax;
       }
       return this.referral.balance;
     },
     promotionReduction() {
-      if (this.weeklySubscriptionValue) {
+      if (this.weeklySubscriptionValue || this.removePromotions) {
         return 0;
       }
       let promotions = this.promotions;
