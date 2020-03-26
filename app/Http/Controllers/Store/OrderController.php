@@ -586,7 +586,7 @@ class OrderController extends StoreController
         if ($this->store->modules->stockManagement) {
             foreach ($bag->getItems() as $item) {
                 $meal = Meal::where('id', $item['meal']['id'])->first();
-                if ($meal->stock !== null) {
+                if ($meal && $meal->stock !== null) {
                     $existingMealOrder = $order
                         ->meal_orders()
                         ->where('meal_id', $item['meal']['id'])
