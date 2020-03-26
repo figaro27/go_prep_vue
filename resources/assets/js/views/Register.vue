@@ -511,7 +511,7 @@
 
               <b-form-group horizontal v-if="!manualOrder">
                 <b-button
-                  v-if="form[0].role === 'store'"
+                  v-if="!planless"
                   @click="next()"
                   :disabled="$v.form[2].$invalid"
                   variant="primary"
