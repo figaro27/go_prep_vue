@@ -329,7 +329,6 @@ $currency = $subscription->store->settings->currency_symbol
                         $salesTax = $subscription->salesTax;
                         $coupon = $subscription->couponReduction;
                         $couponCode = $subscription->couponCode;
-                        $promotionReduction = $subscription->promotionReduction;
                         @endphp
 
                         Subtotal: <br>
@@ -348,9 +347,6 @@ $currency = $subscription->store->settings->currency_symbol
                         @if ($processingFee > 0)
                         Processing Fee<br>
                         @endif
-                        @if ($promotionReduction > 0)
-Promotional Discount<br>
-@endif
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span>
                       </td>
@@ -374,9 +370,6 @@ Promotional Discount<br>
                           @if ($processingFee > 0)
                           {{$currency}}{{ number_format($processingFee, 2) }}<br>
                           @endif               
-                          @if ($promotionReduction > 0)
-({{$currency}}{{ number_format($promotionReduction, 2) }})<br>
-@endif
                           <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">{{$currency}}{{ number_format($subscription->amount, 2) }}</span>
                           @if ($subscription->cashOrder)

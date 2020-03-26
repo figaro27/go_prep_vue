@@ -15,8 +15,14 @@ class AddReferralReductionFieldToOrdersTable extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table
+                ->unsignedInteger('applied_referral_id')
+                ->after('couponCode')
+                ->references('id')
+                ->on('referrals')
+                ->nullable();
+            $table
                 ->decimal('referralReduction')
-                ->after('purchasedGiftCardReduction')
+                ->after('applied_referral_id')
                 ->nullable();
         });
     }
@@ -29,6 +35,7 @@ class AddReferralReductionFieldToOrdersTable extends Migration
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
+            $table->dropColumn('applied_referral_id');
             $table->dropColumn('referralReduction');
         });
     }

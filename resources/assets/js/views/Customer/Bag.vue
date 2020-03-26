@@ -8,7 +8,10 @@
         class="alert alert-success"
         role="alert"
         v-if="
-          store && store.referral_settings.showInMenu && user.referralUrlCode
+          store &&
+            store.referral_settings &&
+            store.referral_settings.showInMenu &&
+            user.referralUrlCode
         "
       >
         <h5 class="center-text">Referral Program</h5>

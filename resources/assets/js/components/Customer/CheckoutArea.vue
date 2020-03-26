@@ -2165,7 +2165,7 @@ use next_delivery_dates
       this.referrals.forEach(ref => {
         if (this.discountCode.toUpperCase() === ref.code.toUpperCase()) {
           if (ref.balance === "0.00") {
-            this.$toastr.e("There are no balance remaining.");
+            this.$toastr.e("There is no balance remaining.");
             return;
           }
 
@@ -2288,6 +2288,7 @@ use next_delivery_dates
             ? this.purchasedGiftCard.id
             : null,
           purchasedGiftCardReduction: this.purchasedGiftCardReduction,
+          applied_referral_id: this.referral ? this.referral.id : null,
           referralReduction: this.referralReduction,
           promotionReduction: this.promotionReduction,
           pickupLocation: this.selectedPickupLocation,
@@ -2455,6 +2456,7 @@ use next_delivery_dates
             ? this.purchasedGiftCard.id
             : null,
           purchasedGiftCardReduction: this.purchasedGiftCardReduction,
+          applied_referral_id: this.referral ? this.referral.id : null,
           referralReduction: this.referralReduction,
           promotionReduction: this.promotionReduction,
           deliveryFee: this.deliveryFee,

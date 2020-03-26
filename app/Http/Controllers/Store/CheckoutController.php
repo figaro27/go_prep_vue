@@ -42,6 +42,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use DB;
 use App\Traits\DeliveryDates;
+use App\Referral;
 
 class CheckoutController extends StoreController
 {
@@ -128,6 +129,7 @@ class CheckoutController extends StoreController
             'purchasedGiftCardReduction'
         );
         $promotionReduction = $request->get('promotionReduction');
+        $appliedReferralId = $request->get('applied_referral_id');
         $referralReduction = $request->get('referralReduction');
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
@@ -329,6 +331,7 @@ class CheckoutController extends StoreController
             $order->purchased_gift_card_id = $purchasedGiftCardId;
             $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
             $order->promotionReduction = $promotionReduction;
+            $order->applied_referral_id = $appliedReferralId;
             $order->referralReduction = $referralReduction;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
@@ -772,8 +775,6 @@ class CheckoutController extends StoreController
             $userSubscription->coupon_id = $couponId;
             $userSubscription->couponReduction = $couponReduction;
             $userSubscription->couponCode = $couponCode;
-            $userSubscription->referralReduction = $referralReduction;
-            $userSubscription->promotionReduction = $promotionReduction;
             // In this case the 'next renewal time' is actually the first charge time
             $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
             $userSubscription->pickup_location_id = $pickupLocation;
@@ -809,6 +810,7 @@ class CheckoutController extends StoreController
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
             $order->coupon_id = $couponId;
             $order->couponReduction = $couponReduction;
+            $order->applied_referral_id = $appliedReferralId;
             $order->referralReduction = $referralReduction;
             $order->promotionReduction = $promotionReduction;
             $order->couponCode = $couponCode;
@@ -1167,6 +1169,12 @@ class CheckoutController extends StoreController
                 ]);
             } catch (\Exception $e) {
             }
+        }
+
+        if ($referralReduction > 0) {
+            $referral = Referral::where('id', $appliedReferralId)->first();
+            $referral->balance -= $referralReduction;
+            $referral->update();
         }
 
         return $orderId;
