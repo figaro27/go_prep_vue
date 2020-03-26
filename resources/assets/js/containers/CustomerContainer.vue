@@ -78,7 +78,7 @@
           <b-nav-item
             v-if="!loggedIn"
             class="px-3 mr-4 white-text d-sm-block d-md-none"
-            to="/register?planless"
+            to="/register"
             >Register</b-nav-item
           >
         </b-navbar-nav>
