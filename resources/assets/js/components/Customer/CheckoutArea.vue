@@ -1765,21 +1765,31 @@ use next_delivery_dates
 
       return subtotal;
     },
+    afterFeesAndTax() {
+      return this.afterFees + this.tax;
+    },
     purchasedGiftCardReduction() {
       if (!this.purchasedGiftCardApplied) {
         return 0;
       }
-      if (this.purchasedGiftCard.balance > this.afterFees + this.tax) {
-        return this.afterFees + this.tax;
+      if (this.purchasedGiftCard.balance > this.afterFeesAndTax) {
+        return this.afterFeesAndTax;
       }
       return this.purchasedGiftCard.balance;
     },
     referralReduction() {
-      return this.referral && !this.weeklySubscriptionValue
-        ? this.referral.balance
-        : 0;
+      if (this.weeklySubscriptionValue || !this.referral) {
+        return 0;
+      }
+      if (this.referral.balance > this.afterFeesAndTax) {
+        return this.afterFeesAndTax;
+      }
+      return this.referral.balance;
     },
     promotionReduction() {
+      if (this.weeklySubscriptionValue) {
+        return 0;
+      }
       let promotions = this.promotions;
       let reduction = 0;
 
@@ -1820,8 +1830,10 @@ use next_delivery_dates
           }
         }
       });
-
-      return !this.weeklySubscriptionValue ? reduction : 0;
+      if (reduction > this.afterFeesAndTax - this.referralReduction) {
+        return this.afterFeesAndTax - this.referralReduction;
+      }
+      return reduction;
     },
     grandTotal() {
       return (
