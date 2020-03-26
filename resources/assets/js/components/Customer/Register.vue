@@ -9,7 +9,7 @@
     <div class="col-md-12">
       <b-form @submit.prevent="submit" autocomplete="off" ref="form">
         <div v-if="step === 0">
-          <b-form-group horizontal label="Account Type">
+          <!-- <b-form-group horizontal label="Account Type">
             <b-form-radio-group
               horizontal
               label="Account Type"
@@ -22,7 +22,7 @@
               >
             </b-form-radio-group>
           </b-form-group>
-
+ -->
           <b-form-group
             horizontal
             label="First Name"
@@ -489,7 +489,7 @@ export default {
 
       form: {
         0: {
-          role: null,
+          role: "customer",
           email: null,
           password: null,
           password_confirmation: null,
