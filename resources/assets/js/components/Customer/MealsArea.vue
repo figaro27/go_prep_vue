@@ -72,11 +72,11 @@
         v-if="
           promotion.conditionType === 'orders' &&
             loggedIn &&
-            user.orderCount % promotion.conditionAmount !== 0
+            getRemainingPromotionOrders(promotion) !== 0
         "
       >
         <h6 class="center-text">
-          Order {{ promotion.conditionAmount - user.orderCount }} more times to
+          Order {{ getRemainingPromotionOrders(promotion) }} more times to
           receive a discount of
           <span v-if="promotion.promotionType === 'flat'">{{
             format.money(promotion.promotionAmount, storeSettings.currency)
@@ -1108,6 +1108,17 @@ export default {
         this.$parent.showMealPackagesArea = false;
       }
       this.$parent.search = "";
+    },
+    getRemainingPromotionOrders(promotion) {
+      let conditionAmount = promotion.conditionAmount;
+      if (conditionAmount > this.user.orderCount) {
+        return conditionAmount - this.user.orderCount;
+      } else {
+        while (conditionAmount < this.user.orderCount) {
+          conditionAmount += conditionAmount;
+        }
+        return conditionAmount - this.user.orderCount;
+      }
     }
   }
 };

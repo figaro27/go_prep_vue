@@ -56,12 +56,12 @@
             v-if="
               promotion.conditionType === 'orders' &&
                 loggedIn &&
-                user.orderCount % promotion.conditionAmount !== 0
+                getRemainingPromotionOrders(promotion) !== 0
             "
           >
             <h6 class="center-text">
-              Order {{ promotion.conditionAmount - user.orderCount }} more times
-              to receive a discount of
+              Order {{ getRemainingPromotionOrders(promotion) }} more times to
+              receive a discount of
               <span v-if="promotion.promotionType === 'flat'">{{
                 format.money(promotion.promotionAmount, storeSettings.currency)
               }}</span>
@@ -177,6 +177,7 @@
           </strong>
         </p>
       </li> -->
+
       <li class="checkout-item">
         <div class="row">
           <div class="col-6 col-md-4">
@@ -184,6 +185,30 @@
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             {{ format.money(subtotal, storeSettings.currency) }}
+          </div>
+        </div>
+      </li>
+
+      <li class="checkout-item" v-if="couponApplied">
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <span
+              class="d-inline mr-2"
+              @click="removeCoupon"
+              v-if="couponApplied"
+            >
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
+            </span>
+            <span class="text-success" v-if="couponApplied"
+              >Coupon ({{ coupon.code }})</span
+            >
+          </div>
+          <div class="col-6 col-md-3 offset-md-5">
+            <span class="text-success" v-if="couponReduction > 0"
+              >({{
+                format.money(couponReduction, storeSettings.currency)
+              }})</span
+            >
           </div>
         </div>
       </li>
@@ -250,102 +275,55 @@
           </div>
         </div>
       </li>
-      <li class="checkout-item" v-if="couponApplied || promotionFreeDelivery">
-        <div class="row">
-          <div class="col-6 col-md-4">
-            <span
-              class="d-inline mr-2"
-              @click="removeCoupon"
-              v-if="couponApplied"
-            >
-              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
-            </span>
-            <span class="text-success" v-if="couponApplied"
-              >Coupon ({{ coupon.code }})</span
-            >
-            <span
-              class="text-success"
-              v-if="
-                promotionFreeDelivery &&
-                  !couponFreeDelivery &&
-                  !weeklySubscriptionValue
-              "
-              >Free Delivery</span
-            >
-          </div>
-          <div class="col-6 col-md-3 offset-md-5">
-            <span class="text-success" v-if="couponReduction > 0"
-              >({{
-                format.money(couponReduction, storeSettings.currency)
-              }})</span
-            >
-            <span
-              class="text-success"
-              v-if="couponReduction > 0 && couponFreeDelivery"
-            >
-              +
-            </span>
-            <span class="text-success" v-if="couponFreeDelivery"
-              >Free Delivery</span
-            >
-            <span
-              class="text-success"
-              v-if="
-                promotionFreeDelivery &&
-                  !couponFreeDelivery &&
-                  !weeklySubscriptionValue
-              "
-            >
-              ({{ format.money(0, storeSettings.currency) }})
-            </span>
-          </div>
-        </div>
-      </li>
 
       <li
         class="checkout-item"
-        v-if="
-          bagDeliverySettings.applyDeliveryFee &&
-            pickup === 0 &&
-            !couponFreeDelivery &&
-            !promotionFreeDelivery
-        "
+        v-if="bagDeliverySettings.applyDeliveryFee && pickup === 0"
       >
         <div class="row">
           <div class="col-6 col-md-4">
             <strong>Delivery Fee</strong>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
-            <span v-if="editingDeliveryFee">
-              <b-form-input
-                type="number"
-                v-model="customDeliveryFee"
-                class="d-inline width-70"
-              ></b-form-input>
+            <span v-if="!couponFreeDelivery && !promotionFreeDelivery">
+              <span v-if="editingDeliveryFee">
+                <b-form-input
+                  type="number"
+                  v-model="customDeliveryFee"
+                  class="d-inline width-70"
+                ></b-form-input>
+                <i
+                  style="flex-basis:30%"
+                  class="fas fa-check-circle text-primary pt-2 pl-1"
+                  @click="editingDeliveryFee = false"
+                ></i>
+              </span>
+              <span v-else>{{
+                format.money(deliveryFeeAmount, storeSettings.currency)
+              }}</span>
               <i
-                style="flex-basis:30%"
-                class="fas fa-check-circle text-primary pt-2 pl-1"
-                @click="editingDeliveryFee = false"
+                v-if="
+                  ($route.params.storeView || storeOwner) && !editingDeliveryFee
+                "
+                @click="editDeliveryFee"
+                class="fa fa-edit text-warning"
+              ></i>
+              <i
+                class="fas fa-undo-alt text-secondary"
+                v-if="
+                  customDeliveryFee !== null && editingDeliveryFee === false
+                "
+                @click="
+                  customDeliveryFee = null;
+                  editingDeliveryFee = false;
+                "
               ></i>
             </span>
-            <span v-else>{{
-              format.money(deliveryFeeAmount, storeSettings.currency)
-            }}</span>
-            <i
-              v-if="
-                ($route.params.storeView || storeOwner) && !editingDeliveryFee
-              "
-              @click="editDeliveryFee"
-              class="fa fa-edit text-warning"
-            ></i>
-            <i
-              class="fas fa-undo-alt text-secondary"
-              v-if="customDeliveryFee !== null && editingDeliveryFee === false"
-              @click="
-                customDeliveryFee = null;
-                editingDeliveryFee = false;
-              "
-            ></i>
+            <span v-else>
+              <p class="text-success">
+                {{ format.money(0, storeSettings.currency) }}
+              </p>
+            </span>
           </div>
         </div>
       </li>
@@ -389,6 +367,9 @@
       >
         <div class="row">
           <div class="col-6 col-md-4">
+            <span class="d-inline mr-2" @click="removeReferral">
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
+            </span>
             <span class="text-success">Referral ({{ referral.code }})</span>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
@@ -1824,7 +1805,7 @@ use next_delivery_dates
           }
           if (
             promotion.conditionType === "orders" &&
-            this.user.orderCount % promotion.conditionAmount === 0
+            this.getRemainingPromotionOrders(promotion) === 0
           ) {
             reduction +=
               promotion.promotionType === "flat"
@@ -2556,6 +2537,10 @@ use next_delivery_dates
       this.setBagCoupon(null);
       this.discountCode = "";
     },
+    removeReferral() {
+      this.referral = {};
+      this.setBagReferral(null);
+    },
     removePurchasedGiftCard() {
       this.purchasedGiftCard = {};
       this.setBagPurchasedGiftCard(null);
@@ -2619,6 +2604,17 @@ use next_delivery_dates
         return true;
       } else {
         return false;
+      }
+    },
+    getRemainingPromotionOrders(promotion) {
+      let conditionAmount = promotion.conditionAmount;
+      if (conditionAmount > this.user.orderCount) {
+        return conditionAmount - this.user.orderCount;
+      } else {
+        while (conditionAmount < this.user.orderCount) {
+          conditionAmount += conditionAmount;
+        }
+        return conditionAmount - this.user.orderCount;
       }
     }
   }
