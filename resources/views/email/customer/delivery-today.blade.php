@@ -213,15 +213,23 @@ $currency = $order->store->settings->currency_symbol
                 </tr>
           @if ($order->pickup === 0)
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your delivery is coming today.</td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your delivery is coming today.
+                    @if ($order->balance === 0 || $order->balance === null)
+                      This order is paid in full.
+                    @endif
+                  </td>
                 </tr>
                 @else
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your pickup is scheduled for today.</td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your pickup is scheduled for today.
+                    @if ($order->balance === 0 || $order->balance === null)
+                  This order is paid in full.
+                @endif
+                  </td>
                 </tr>
                 @if ($order->pickup_location_id != null)
                   <tr>
-                    <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d;"> Pickup Location:
+                    <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#7f8c8d;"> Pickup Location:
                     {{ $order->pickup_location->name }}<br>
                     {{ $order->pickup_location->address }},
                     {{ $order->pickup_location->city }},
@@ -231,6 +239,7 @@ $currency = $order->store->settings->currency_symbol
                   </tr>
                 @endif
                 @endif
+                
           <!-- header -->
           <tr>
             <td height="15"></td>
@@ -472,11 +481,10 @@ $currency = $order->store->settings->currency_symbol
                         Gift Card ({{$purchasedGiftCard}})<br>
                         @endif
                         <br>
+
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold;">Total</span><br>
-                        @if ($balance > 0)
-                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Paid</span><br>
-                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Balance</span>
-                        @endif
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;position:relative;top:5px">Paid</span><br>
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;position:relative;top:5px">Balance</span>
                       </td>
 
                     
@@ -508,12 +516,12 @@ $currency = $order->store->settings->currency_symbol
                             @endif
                           </span><br>
                           
-                          @if ($balance > 0)
-                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
+                          
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;position:relative;top:5px">
                             {{$order->store->settings->currency_symbol}}{{number_format($order->amount - $order->balance, 2)}}</span><br>
-                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;position:relative;top:5px">
                             {{$order->store->settings->currency_symbol}}{{number_format($order->balance, 2)}}</span>
-                          @endif
+                          
                           @if ($order->subscription && $order->subscription->monthlyPrepay && ($order->subscription->weekCount !== 1 || $order->subscription->weekCount % 4 !== 1))
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">Prepaid</span>
                           @endif
