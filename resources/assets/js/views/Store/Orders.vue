@@ -432,7 +432,7 @@
               >
             </div>
             <!-- BMP Testing -->
-            <div v-if="store.id === 40">
+            <div v-if="store.id === 40 || store.id === 127 || store.id === 131">
               <b-btn
                 class="btn mb-2 d-inline mr-1 royalBlueBG"
                 @click="printLabel(order.id)"

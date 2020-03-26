@@ -240,7 +240,10 @@
         </div>
       </div>
       <!-- BMP Testing -->
-      <div class="col-md-6" v-if="store.id === 40">
+      <div
+        class="col-md-6"
+        v-if="store.id === 40 || store.id === 127 || store.id === 131"
+      >
         <div class="card">
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Labels</h4>
