@@ -38,10 +38,6 @@ class Store extends Model
         'hasPromoCodes'
     ];
 
-    protected $casts = [
-        'accepted_toa' => 'boolean'
-    ];
-
     public static function boot()
     {
         parent::boot();
