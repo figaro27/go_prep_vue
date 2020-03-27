@@ -1337,7 +1337,7 @@ export default {
   computed: {
     ...mapGetters({
       user: "user",
-      store: "store",
+      store: "viewedStore",
       storeDetail: "storeDetail",
       storeSetting: "storeSetting",
       storeSettings: "storeSettings",
@@ -1766,7 +1766,7 @@ export default {
       });
     },
     checkTOAforModal() {
-      if (this.acceptedTOA === 0) {
+      if (!this.store.accepted_toa) {
         this.showTOAModal = 1;
       } else {
         this.allowOpen();
@@ -1776,7 +1776,10 @@ export default {
       if (this.acceptedTOA === 1) {
         axios.get("/api/me/acceptedTOA");
         this.storeSettings.open = true;
-      } else this.storeSettings.open = false;
+      } else {
+        this.storeSettings.open = false;
+      }
+      this.updateStoreSettings();
     },
     pauseMealPlans() {
       axios.post("/api/me/pauseMealPlans", {
