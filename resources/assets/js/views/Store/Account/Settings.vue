@@ -585,9 +585,7 @@
                     >ID: {{ storeSettings.stripe_id }}</b-form-group
                   >
                   <a :href="payments_url" target="_blank">
-                    <b-button type="submit" variant="primary"
-                      >View Stripe Account</b-button
-                    >
+                    <b-button variant="primary">View Stripe Account</b-button>
                   </a>
                 </div>
                 <b-form @submit.prevent="closeStore" v-if="canOpen">
@@ -1427,7 +1425,6 @@ export default {
       return (
         this.storeSettings.cutoff_days + this.storeSettings.cutoff_hours > 0 &&
         this.storeSettings.delivery_days.length > 0 &&
-        this.storeSettings.delivery_distance_radius > 0 &&
         ((this.storeSettings.payment_gateway === "stripe" &&
           !_.isEmpty(this.storeSettings.stripe_id)) ||
           (this.storeSettings.payment_gateway === "authorize" &&
