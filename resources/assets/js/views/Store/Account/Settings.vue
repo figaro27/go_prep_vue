@@ -1774,7 +1774,7 @@ export default {
     },
     allowOpen() {
       if (this.acceptedTOA === 1) {
-        let open = this.storeSettings.open;
+        let open = ...[this.storeSettings.open];
         axios.get("/api/me/acceptedTOA");
         if (!open) {
           this.storeSettings.open = 1;
