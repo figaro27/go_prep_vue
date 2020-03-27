@@ -134,17 +134,16 @@
               </h5>
               <div v-if="editingId === group.id">
                 <div>
-                  <b-input
-                    v-model="groupTitle"
-                    placeholder="New name"
-                    class="w-50 mr-2"
-                  ></b-input>
-                  <b-btn
-                    @click.prevent="updateGroup"
-                    variant="primary"
-                    class="mb-1 mt-1"
-                    >Save</b-btn
-                  >
+                  <b-form @submit.prevent="updateGroup">
+                    <b-input
+                      v-model="groupTitle"
+                      required
+                      class="w-50 mr-2"
+                    ></b-input>
+                    <b-btn type="submit" variant="primary" class="mb-1 mt-1"
+                      >Save</b-btn
+                    >
+                  </b-form>
                 </div>
               </div>
             </li>
