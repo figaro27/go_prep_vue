@@ -1766,22 +1766,14 @@ export default {
       });
     },
     checkTOAforModal() {
-      if (!this.store.accepted_toa && !this.storeSettings.open) {
+      if (!this.store.accepted_toa && this.storeSettings.open) {
         this.showTOAModal = 1;
       } else {
-        this.allowOpen();
+        this.updateStoreSettings();
       }
     },
     allowOpen() {
-      if (this.acceptedTOA === 1) {
-        let open = [...this.storeSettings.open];
-        axios.get("/api/me/acceptedTOA");
-        if (!open) {
-          this.storeSettings.open = 1;
-        } else {
-          this.storeSettings.open = 0;
-        }
-
+      if (this.acceptedTOAcheck === "1") {
         this.updateStoreSettings();
       } else {
         this.$toastr.w("Please accept the terms of agreement.");

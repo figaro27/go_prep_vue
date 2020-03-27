@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\StoreSetting;
 use App\Subscription;
 use App\Customer;
+use App\Store;
 use App\Mail\Customer\MealPLanPaused;
 use App\Mail\Customer\SubscriptionCancelled;
 use Illuminate\Support\Facades\Mail;
@@ -98,6 +99,12 @@ class StoreSettingController extends StoreController
         $values['notifications'] = json_encode($values['notifications']);
 
         $settings->update($values);
+
+        $store = Store::where('id', $this->store->id)->first();
+        if ($values['open'] === true) {
+            $store->accepted_toa = 1;
+            $store->update();
+        }
     }
 
     /**
