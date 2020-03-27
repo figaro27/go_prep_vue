@@ -593,7 +593,7 @@
                     <span class="mr-1 mt-2">Open</span>
                     <img
                       v-b-popover.hover="
-                        'You can toggle this off to stop accepting new orders from customers for any reason. Please be sure to fill out the reason below to communicate to your customers.'
+                        'You can toggle this off to stop accepting new orders from customers for any reason. Please fill out the reason for being closed below to communicate to your customers.'
                       "
                       title="Open or Closed"
                       src="/images/store/popover.png"
@@ -1768,6 +1768,8 @@ export default {
     checkTOAforModal() {
       if (this.acceptedTOA === 0) {
         this.showTOAModal = 1;
+      } else {
+        this.allowOpen();
       }
     },
     allowOpen() {
