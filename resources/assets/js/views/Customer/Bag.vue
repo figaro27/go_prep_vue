@@ -82,6 +82,7 @@
             ref="checkoutArea"
             :orderNotes="orderNotes"
             :publicOrderNotes="publicOrderNotes"
+            :availablePromotionPoints="availablePromotionPoints"
           ></checkout-area>
 
           <store-closed
@@ -145,6 +146,7 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
+      availablePromotionPoints: null,
       orderNotes: null,
       publicOrderNotes: null,
       showAuthModal: false,
@@ -505,6 +507,10 @@ export default {
     // if (!this.deliveryDay && this.deliveryDateOptions.length > 0) {
     //   this.deliveryDay = this.deliveryDateOptions[0].value;
     // }
+
+    if (this.loggedIn) {
+      this.getPromotionPoints(this.user.id);
+    }
   },
   updated() {
     this.creditCardId = this.card;
@@ -803,6 +809,16 @@ export default {
       if (this.$refs.checkoutArea.checkPickup() === true) {
         this.pickup = 1;
       }
+    },
+    getPromotionPoints(id) {
+      axios
+        .post("/api/me/getPromotionPoints", {
+          userId: id,
+          storeId: this.store.id
+        })
+        .then(response => {
+          this.availablePromotionPoints = response.data;
+        });
     }
   }
 };

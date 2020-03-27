@@ -129,6 +129,7 @@ class CheckoutController extends StoreController
             'purchasedGiftCardReduction'
         );
         $promotionReduction = $request->get('promotionReduction');
+        $pointsReduction = $request->get('pointsReduction');
         $appliedReferralId = $request->get('applied_referral_id');
         $referralReduction = $request->get('referralReduction');
         $deliveryFee = $request->get('deliveryFee');
@@ -331,6 +332,7 @@ class CheckoutController extends StoreController
             $order->purchased_gift_card_id = $purchasedGiftCardId;
             $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
             $order->promotionReduction = $promotionReduction;
+            $order->pointsReduction = $pointsReduction;
             $order->applied_referral_id = $appliedReferralId;
             $order->referralReduction = $referralReduction;
             $order->pickup_location_id = $pickupLocation;
@@ -813,6 +815,7 @@ class CheckoutController extends StoreController
             $order->applied_referral_id = $appliedReferralId;
             $order->referralReduction = $referralReduction;
             $order->promotionReduction = $promotionReduction;
+            $order->pointsReduction = $pointsReduction;
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
@@ -1175,6 +1178,17 @@ class CheckoutController extends StoreController
             $referral = Referral::where('id', $appliedReferralId)->first();
             $referral->balance -= $referralReduction;
             $referral->update();
+        }
+
+        // Promotion Points
+        if ($pointsReduction > 0) {
+            $customer->points = 0;
+            $customer->update();
+        }
+
+        if ($promotionPointsAmount) {
+            $customer->points += $promotionPointsAmount;
+            $customer->update();
         }
 
         return $orderId;

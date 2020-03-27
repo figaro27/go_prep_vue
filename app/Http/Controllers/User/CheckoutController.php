@@ -30,6 +30,7 @@ use App\PurchasedGiftCard;
 use App\ReferralSetting;
 use App\Referral;
 use App\User;
+use App\Customer;
 use App\Billing\Billing;
 use App\Billing\Constants;
 use App\Billing\Charge;
@@ -125,6 +126,7 @@ class CheckoutController extends UserController
         $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
         //$stripeToken = $request->get('token');
         $deposit = 1;
+        $pointsReduction = $request->get('pointsReduction');
 
         $cashOrder = $request->get('cashOrder');
         if ($cashOrder) {
@@ -185,6 +187,8 @@ class CheckoutController extends UserController
                 $dailyOrderNumber = 1;
             }
         }
+
+        $promotionPointsAmount = $request->get('promotionPointsAmount');
 
         // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
         //     $discount = $store->settings->mealPlanDiscount / 100;
@@ -352,6 +356,7 @@ class CheckoutController extends UserController
             $order->purchased_gift_card_id = $purchasedGiftCardId;
             $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
             $order->promotionReduction = $promotionReduction;
+            $order->pointsReduction = $pointsReduction;
             $order->applied_referral_id = $appliedReferralId;
             $order->referralReduction = $referralReduction;
             $order->pickup_location_id = $pickupLocation;
@@ -806,6 +811,7 @@ class CheckoutController extends UserController
                 $order->couponReduction = $couponReduction;
                 $order->couponCode = $couponCode;
                 $order->promotionReduction = $promotionReduction;
+                $order->pointsReduction = $pointsReduction;
                 $order->applied_referral_id = $appliedReferralId;
                 $order->referralReduction = $referralReduction;
                 $order->pickup_location_id = $pickupLocation;
@@ -1159,6 +1165,18 @@ class CheckoutController extends UserController
                 }
             }
         }
+
+        // Promotion Points
+        if ($pointsReduction > 0) {
+            $customer->points = 0;
+            $customer->update();
+        }
+
+        if ($promotionPointsAmount) {
+            $customer->points += $promotionPointsAmount;
+            $customer->update();
+        }
+
         // Referrals
         $referralSettings = ReferralSetting::where(
             'store_id',

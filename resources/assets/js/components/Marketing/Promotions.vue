@@ -36,7 +36,11 @@
             "
           ></b-form-input>
         </div>
-        <div slot="freeDelivery" slot-scope="props">
+        <div
+          slot="freeDelivery"
+          slot-scope="props"
+          v-if="props.row.promotionType !== 'points'"
+        >
           <b-form-checkbox
             class="largeCheckboxPromotions ml-3"
             type="checkbox"
@@ -46,14 +50,22 @@
             @change="val => updatePromotion(props.row.id, 'freeDelivery', val)"
           ></b-form-checkbox>
         </div>
-        <div slot="conditionType" slot-scope="props">
+        <div
+          slot="conditionType"
+          slot-scope="props"
+          v-if="props.row.promotionType !== 'points'"
+        >
           <b-form-select
             v-model="props.row.conditionType"
             :options="conditionTypeOptions"
             @change="val => updatePromotion(props.row.id, 'conditionType', val)"
           ></b-form-select>
         </div>
-        <div slot="conditionAmount" slot-scope="props">
+        <div
+          slot="conditionAmount"
+          slot-scope="props"
+          v-if="props.row.promotionType !== 'points'"
+        >
           <b-form-input
             v-model="props.row.conditionAmount"
             @change="
@@ -122,74 +134,111 @@
             :options="promotionTypeOptions"
             required
           ></b-form-select>
+          <div v-if="newPromotion.promotionType === 'points'">
+            <h6 class="strong mt-2 mb-2">
+              Cash Back Percentage
+              <img
+                v-b-popover.hover="
+                  'A points rewards system is essentially a cash back system for your customers. You are letting them earn points based on their purchases and then they can spend those points on future orders. Enter the percentage amount in the box which determines the amount of points they receive on each purchase. Points will be multiplied by 100. A 2% points system on a $100 order would earn the customer 200 points. 200 points would be equivalent to $2 dollars that they can spend on future orders.'
+                "
+                title="Cash Back Percentage"
+                src="/images/store/popover.png"
+                class="popover-size ml-1"
+              />
+            </h6>
+            <b-form-input
+              v-model="newPromotion.promotionAmount"
+              placeholder="2%"
+              required
+              type="number"
+            ></b-form-input>
 
-          <h6 class="strong mt-2 mb-2">
-            Promotion Amount
+            <h6 class="strong mt-2 mb-2">
+              Points Naming
+              <img
+                v-b-popover.hover="
+                  'Add a custom title for your points system to be communicated to customers in various places. E.G. \'Earn 200 Fresh Points on this order.\' The naming of company\'s points systems are usually similar to or found in the company name.'
+                "
+                title="Cash Back Percentage"
+                src="/images/store/popover.png"
+                class="popover-size ml-1"
+              />
+            </h6>
+            <b-form-input
+              v-model="newPromotion.pointsName"
+              placeholder="Fresh Points"
+              required
+            ></b-form-input>
+          </div>
+          <div v-if="newPromotion.promotionType !== 'points'">
+            <h6 class="strong mt-2 mb-2">
+              Promotion Amount
 
-            <img
-              v-b-popover.hover="
-                'Enter the amount you want to give to the customer.'
-              "
-              title="Promotion Amount"
-              src="/images/store/popover.png"
-              class="popover-size ml-1"
-            />
-          </h6>
-          <b-form-input
-            type="number"
-            v-model="newPromotion.promotionAmount"
-            required
-          ></b-form-input>
+              <img
+                v-b-popover.hover="
+                  'Enter the amount you want to give to the customer.'
+                "
+                title="Promotion Amount"
+                src="/images/store/popover.png"
+                class="popover-size ml-1"
+              />
+            </h6>
+            <b-form-input
+              type="number"
+              v-model="newPromotion.promotionAmount"
+              required
+            ></b-form-input>
 
-          <h6 class="strong mt-2 mb-2">
-            Add Free Delivery
-            <img
-              v-b-popover.hover="'Do you want to add on free delivery?'"
-              title="Add Free Delivery"
-              src="/images/store/popover.png"
-              class="popover-size ml-1"
-            />
-          </h6>
-          <b-form-checkbox
-            type="checkbox"
-            v-model="newPromotion.freeDelivery"
-            :value="1"
-            :unchecked-value="0"
-          ></b-form-checkbox>
+            <h6 class="strong mt-2 mb-2">
+              Add Free Delivery
+              <img
+                v-b-popover.hover="'Do you want to add on free delivery?'"
+                title="Add Free Delivery"
+                src="/images/store/popover.png"
+                class="popover-size ml-1"
+              />
+            </h6>
+            <b-form-checkbox
+              type="checkbox"
+              v-model="newPromotion.freeDelivery"
+              :value="1"
+              :unchecked-value="0"
+            ></b-form-checkbox>
 
-          <h6 class="strong mt-2 mb-2">
-            Condition Type
-            <img
-              v-b-popover.hover="
-                'Choose the condition you want to be met to allow the promotion. A certain subtotal, number of items being checked out, number of orders placed by the customer, or no condition.'
-              "
-              title="Condition Type"
-              src="/images/store/popover.png"
-              class="popover-size ml-1"
-            />
-          </h6>
-          <b-form-select
-            v-model="newPromotion.conditionType"
-            :options="conditionTypeOptions"
-            required
-          ></b-form-select>
+            <h6 class="strong mt-2 mb-2">
+              Condition Type
+              <img
+                v-b-popover.hover="
+                  'Choose the condition you want to be met to allow the promotion. A certain subtotal, number of items being checked out, number of orders placed by the customer, or no condition.'
+                "
+                title="Condition Type"
+                src="/images/store/popover.png"
+                class="popover-size ml-1"
+              />
+            </h6>
+            <b-form-select
+              v-model="newPromotion.conditionType"
+              :options="conditionTypeOptions"
+              required
+            ></b-form-select>
 
-          <h6 class="strong mt-2 mb-2">
-            Condition Amount
-            <img
-              v-b-popover.hover="
-                'Enter the amount required for the condition to be met in order to provide the promotion.'
-              "
-              title="Condition Amount"
-              src="/images/store/popover.png"
-              class="popover-size ml-1"
-            />
-          </h6>
-          <b-form-input
-            type="number"
-            v-model="newPromotion.conditionAmount"
-            required
-          ></b-form-input>
+            <h6 class="strong mt-2 mb-2">
+              Condition Amount
+              <img
+                v-b-popover.hover="
+                  'Enter the amount required for the condition to be met in order to provide the promotion.'
+                "
+                title="Condition Amount"
+                src="/images/store/popover.png"
+                class="popover-size ml-1"
+              />
+            </h6>
+            <b-form-input
+              type="number"
+              v-model="newPromotion.conditionAmount"
+              required
+            ></b-form-input>
+          </div>
           <div class="d-flex">
             <b-button
               variant="secondary"
@@ -223,7 +272,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      newPromotion: {},
+      newPromotion: { freeDelivery: 0 },
       promotionId: null,
       showAddPromotionModal: false,
       showDeletePromotionModal: false,
@@ -270,8 +319,9 @@ export default {
     },
     promotionTypeOptions() {
       return [
-        { value: "flat", text: "Flat" },
-        { value: "percent", text: "Percent" }
+        { value: "flat", text: "Flat Reward" },
+        { value: "percent", text: "Percent Reward" },
+        { value: "points", text: "Points System" }
       ];
     },
     conditionTypeOptions() {

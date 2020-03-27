@@ -624,6 +624,7 @@ class OrderController extends StoreController
             'purchasedGiftCardReduction'
         );
         $promotionReduction = $request->get('promotionReduction');
+        $pointsReduction = $request->get('pointsReduction');
         $deliveryFee = $request->get('deliveryFee');
         $deliveryDate = $request->get('deliveryDate');
         $isMultipleDelivery = (int) $request->get('isMultipleDelivery');
@@ -673,6 +674,7 @@ class OrderController extends StoreController
         $order->couponCode = $couponCode;
         $order->coupon_id = $couponId;
         $order->promotionReduction = $promotionReduction;
+        $order->pointsReduction = $pointsReduction;
         $order->couponCode = $couponCode;
         $order->purchased_gift_card_id = $purchasedGiftCardId;
         $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;

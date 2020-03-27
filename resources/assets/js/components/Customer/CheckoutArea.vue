@@ -68,6 +68,19 @@
               <span v-else>{{ promotion.promotionAmount }}%</span>
             </h6>
           </b-alert>
+
+          <b-alert
+            variant="success"
+            show
+            v-if="
+              promotion.promotionType === 'points' && promotionPointsAmount > 0
+            "
+          >
+            <h6 class="center-text">
+              You will earn {{ promotionPointsAmount }}
+              {{ promotionPointsName }} on this order.
+            </h6>
+          </b-alert>
         </div>
       </li>
       <li
@@ -414,6 +427,38 @@
         </div>
       </li>
 
+      <li
+        class="checkout-item"
+        v-if="
+          promotionPointsReduction > 0 &&
+            !weeklySubscriptionValue &&
+            !removePromotions
+        "
+      >
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <span
+              class="d-inline mr-2"
+              @click="removePromotions = true"
+              v-if="
+                ($route.params.storeView === true || storeOwner) &&
+                  removePromotions === false
+              "
+            >
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
+            </span>
+            <span class="text-success">{{ promotionPointsName }}</span>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5">
+            <span class="text-success"
+              >({{
+                format.money(promotionPointsReduction, storeSettings.currency)
+              }})</span
+            >
+          </div>
+        </div>
+      </li>
+
       <li class="checkout-item">
         <div class="row">
           <div class="col-6 col-md-4">
@@ -442,6 +487,32 @@
           </div>
           <div class="col-xs-6 pl-2">
             <b-btn variant="primary" @click="applyDiscountCode">Apply</b-btn>
+          </div>
+        </div>
+      </li>
+
+      <li
+        v-if="
+          availablePromotionPoints &&
+            availablePromotionPoints > 0 &&
+            !weeklySubscriptionValue
+        "
+      >
+        <div class="row">
+          <div class="col-sm-12 pl-3">
+            <b-alert variant="info" show class="pb-4"
+              >You have
+              <span class="strong"
+                >{{ availablePromotionPoints }} {{ promotionPointsName }}</span
+              >
+              available. Would you like to use your points on this order?
+              <c-switch
+                color="primary"
+                variant="pill"
+                size="lg"
+                v-model="usePromotionPoints"
+                class="pt-3"
+            /></b-alert>
           </div>
         </div>
       </li>
@@ -1083,6 +1154,8 @@ export default {
   },
   data() {
     return {
+      promotionPoints: null,
+      usePromotionPoints: false,
       removePromotions: false,
       hasWeeklySubscriptionItems: false,
       hasMonthlySubscriptionItems: false,
@@ -1137,7 +1210,8 @@ export default {
       type: String,
       default: "stripe"
     },
-    adjustMealPlan: null
+    adjustMealPlan: null,
+    availablePromotionPoints: null
   },
   watch: {
     customer: function(val) {
@@ -1220,6 +1294,20 @@ export default {
         }
       });
       return promotions;
+    },
+    promotionPointsAmount() {
+      let promotion = this.promotions.find(promotion => {
+        return promotion.promotionType === "points";
+      });
+      return ((promotion.promotionAmount / 100) * this.subtotal * 100).toFixed(
+        0
+      );
+    },
+    promotionPointsName() {
+      let promotion = this.promotions.find(promotion => {
+        return promotion.promotionType === "points";
+      });
+      return promotion.pointsName;
     },
     bagURL() {
       let referralUrl = this.$route.query.r ? "?r=" + this.$route.query.r : "";
@@ -1853,13 +1941,24 @@ use next_delivery_dates
       }
       return reduction;
     },
+    promotionPointsReduction() {
+      if (this.weeklySubscriptionValue || this.removePromotions) {
+        return 0;
+      }
+      if (this.usePromotionPoints) {
+        return this.availablePromotionPoints / 100;
+      } else {
+        return 0;
+      }
+    },
     grandTotal() {
       return (
         this.afterFees +
         this.tax -
         this.purchasedGiftCardReduction -
         this.referralReduction -
-        this.promotionReduction
+        this.promotionReduction -
+        this.promotionPointsReduction
       );
     },
     promotionFreeDelivery() {
@@ -2319,7 +2418,8 @@ use next_delivery_dates
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer,
           customSalesTax: this.customSalesTax !== null ? 1 : 0,
-          dontAffectBalance: this.dontAffectBalance
+          dontAffectBalance: this.dontAffectBalance,
+          pointsReduction: this.promotionPointsReduction
         })
         .then(resp => {
           if (this.purchasedGiftCard !== null) {
@@ -2490,7 +2590,9 @@ use next_delivery_dates
           lineItemsOrder: this.orderLineItems,
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer,
-          referralUrl: this.$route.query.r
+          referralUrl: this.$route.query.r,
+          promotionPointsAmount: this.promotionPointsAmount,
+          pointsReduction: this.promotionPointsReduction
         })
         .then(async resp => {
           //this.checkingOut = false;
@@ -2648,6 +2750,9 @@ use next_delivery_dates
         }
         return conditionAmount - this.user.orderCount;
       }
+    },
+    applyPromotionPoints() {
+      alert("eyyy");
     }
   }
 };

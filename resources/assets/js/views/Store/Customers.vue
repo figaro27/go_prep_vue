@@ -264,6 +264,11 @@
                       format.money(order.promotionReduction, order.currency)
                     }})
                   </p>
+                  <p class="text-success" v-if="order.pointsReduction > 0">
+                    Points Used: ({{
+                      format.money(order.pointsReduction, order.currency)
+                    }})
+                  </p>
                   <p class="strong">
                     Total: {{ format.money(order.amount, order.currency) }}
                   </p>

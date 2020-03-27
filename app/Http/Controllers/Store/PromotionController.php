@@ -39,7 +39,10 @@ class PromotionController extends StoreController
 
         $promotions = Promotion::where('store_id', $this->store->id)->get();
         foreach ($promotions as $promotion) {
-            if ($promotion->conditionType === $data['conditionType']) {
+            if (
+                isset($data['conditionType']) &&
+                $promotion->conditionType === $data['conditionType']
+            ) {
                 return response()->json(
                     [
                         'message' =>
@@ -58,8 +61,15 @@ class PromotionController extends StoreController
         $promotion->promotionType = $data['promotionType'];
         $promotion->promotionAmount = $data['promotionAmount'];
         $promotion->freeDelivery = $data['freeDelivery'];
-        $promotion->conditionType = $data['conditionType'];
-        $promotion->conditionAmount = $data['conditionAmount'];
+        $promotion->conditionType = isset($data['conditionType'])
+            ? $data['conditionType']
+            : null;
+        $promotion->conditionAmount = isset($data['conditionAmount'])
+            ? $data['conditionAmount']
+            : null;
+        $promotion->pointsName = isset($data['pointsName'])
+            ? $data['pointsName']
+            : null;
         $promotion->save();
     }
 

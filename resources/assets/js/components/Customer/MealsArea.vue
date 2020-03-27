@@ -84,6 +84,16 @@
           <span v-else>{{ promotion.promotionAmount }}%</span>
         </h6>
       </b-alert>
+      <b-alert
+        variant="success"
+        show
+        v-if="promotion.promotionType === 'points' && promotionPointsAmount > 0"
+      >
+        <h6 class="center-text">
+          You will earn {{ promotionPointsAmount }}
+          {{ promotion.pointsName }} on this order.
+        </h6>
+      </b-alert>
     </div>
 
     <div
@@ -749,6 +759,16 @@ export default {
     },
     referralUrl() {
       return this.store.referral_settings.url + this.user.referralUrlCode;
+    },
+    promotionPointsAmount() {
+      let promotion = this.promotions.find(promotion => {
+        return promotion.promotionType === "points";
+      });
+      return (
+        (promotion.promotionAmount / 100) *
+        this.totalBagPricePreFees *
+        100
+      ).toFixed(0);
     },
     activePromotions() {
       let promotions = [];

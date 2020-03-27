@@ -374,6 +374,7 @@ $currency = $order->store->settings->currency_symbol
                         $purchasedGiftCard = $order->purchased_gift_card_code;
                         $purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
                         $promotionReduction = $order->promotionReduction;
+                        $pointsReduction = $order->pointsReduction;
                         @endphp
 
                         Subtotal: <br>
@@ -402,6 +403,9 @@ $currency = $order->store->settings->currency_symbol
                         @if ($promotionReduction > 0)
 Promotional Discount
 @endif
+@if ($pointsReduction > 0)
+                        Points Reduction<br>
+                        @endif
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold;">Total</span><br>
                         @if ($balance > 0)
@@ -434,6 +438,9 @@ Promotional Discount
                           @endif
                           @if ($promotionReduction > 0)
 ({{$currency}}{{ number_format($promotionReduction, 2) }})<br>
+@endif
+@if ($pointsReduction > 0)
+({{$currency}}{{ number_format($pointsReduction, 2) }})<br>
 @endif
                           <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold; ">{{$currency}}{{ number_format($order->amount, 2) }}

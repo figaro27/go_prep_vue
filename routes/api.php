@@ -523,6 +523,11 @@ foreach (
                             );
 
                             Route::resource('/me', 'UserController');
+
+                            Route::post(
+                                'me/getPromotionPoints',
+                                'StoreController@getPromotionPoints'
+                            );
                         }
                     );
                 }
