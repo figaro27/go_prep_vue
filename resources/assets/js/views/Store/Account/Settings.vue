@@ -1766,7 +1766,6 @@ export default {
       });
     },
     checkTOAforModal() {
-      console.log("test");
       if (this.acceptedTOA === 0) {
         this.showTOAModal = 1;
       } else {
@@ -1774,7 +1773,7 @@ export default {
       }
     },
     allowOpen() {
-      if (this.acceptedTOAcheck === "1") {
+      if (this.acceptedTOA === 1) {
         axios.get("/api/me/acceptedTOA");
         this.storeSettings.open = true;
       } else this.storeSettings.open = false;
