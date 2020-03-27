@@ -1774,8 +1774,9 @@ export default {
     },
     allowOpen() {
       if (this.acceptedTOA === 1) {
+        let open = this.storeSettings.open;
         axios.get("/api/me/acceptedTOA");
-        this.storeSettings.open = !this.storeSettings.open;
+        this.storeSettings.open = !open;
         this.updateStoreSettings();
       } else {
         this.$toastr.w("Please accept the terms of agreement.");
