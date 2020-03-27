@@ -605,7 +605,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.open"
-                    @change="checkTOAforModal"
+                    @change.native="checkTOAforModal"
                   />
 
                   <b-form-input
@@ -1766,6 +1766,7 @@ export default {
       });
     },
     checkTOAforModal() {
+      console.log("test");
       if (this.acceptedTOA === 0) {
         this.showTOAModal = 1;
       } else {
