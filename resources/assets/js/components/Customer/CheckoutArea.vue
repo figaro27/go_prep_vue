@@ -2167,6 +2167,11 @@ use next_delivery_dates
         }
       }
 
+      if (this.creditCardId === null && !this.cashOrder) {
+        this.$toastr.w("Please add a payment method.");
+        return;
+      }
+
       // if (this.grandTotal <= 0 && !this.cashOrder) {
       //   this.$toastr.e(
       //     "At least .50 cents is required to process an order.",
