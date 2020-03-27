@@ -605,7 +605,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.open"
-                    @change.native="checkTOAforModal"
+                    @change="checkTOAforModal"
                   />
 
                   <b-form-input
