@@ -21,7 +21,7 @@
      <div class="delivery-part">
       @if ($delivery_dates)
         <h2>
-          @if ($params['byOrderDate'])
+          @if (isset($params['byOrderDate']) && $params['byOrderDate'])
           Order Dates:
           @else
           Delivery Dates:
