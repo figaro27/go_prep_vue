@@ -1423,7 +1423,6 @@ export default {
     },
     canOpen() {
       return (
-        this.storeSettings.cutoff_days + this.storeSettings.cutoff_hours > 0 &&
         this.storeSettings.delivery_days.length > 0 &&
         ((this.storeSettings.payment_gateway === "stripe" &&
           !_.isEmpty(this.storeSettings.stripe_id)) ||
