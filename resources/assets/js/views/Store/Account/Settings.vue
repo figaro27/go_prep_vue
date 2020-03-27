@@ -1766,7 +1766,7 @@ export default {
       });
     },
     checkTOAforModal() {
-      if (!this.store.accepted_toa) {
+      if (!this.store.accepted_toa && !this.storeSettings.open) {
         this.showTOAModal = 1;
       } else {
         this.allowOpen();
@@ -1775,11 +1775,12 @@ export default {
     allowOpen() {
       if (this.acceptedTOA === 1) {
         axios.get("/api/me/acceptedTOA");
-        this.storeSettings.open = true;
+        this.storeSettings.open = !this.storeSettings.open;
+        this.updateStoreSettings();
       } else {
-        this.storeSettings.open = false;
+        this.$toastr.w("Please accept the terms of agreement.");
+        return;
       }
-      this.updateStoreSettings();
     },
     pauseMealPlans() {
       axios.post("/api/me/pauseMealPlans", {
