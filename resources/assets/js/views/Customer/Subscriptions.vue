@@ -73,7 +73,7 @@ f<template>
           <div slot="actions" class="text-nowrap" slot-scope="props">
             <button
               class="btn view btn-primary btn-sm"
-              @click="viewSubscription(props.row.id)"
+              @click="viewSubscription(props.row.id), (subId = props.row.id)"
             >
               View
             </button>
