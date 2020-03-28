@@ -633,6 +633,7 @@ export default {
         );
       }
       this.cancelSubscriptionModal = false;
+      this.viewSubscriptionModal = false;
       this.refreshSubscriptions();
     },
     getIntervalDays(subscription) {
