@@ -246,7 +246,8 @@
       >
         <div class="card">
           <div class="card-body m-sm-4">
-            <h4 class="center-text mb-4">Labels</h4>
+            <h4 class="center-text mb-2">Labels</h4>
+            <h6 class="center-text text-danger mb-4">(Beta)</h6>
             <div class="report-date-picker">
               <delivery-date-picker
                 v-model="delivery_dates.labels"
@@ -338,78 +339,117 @@
       </div>
     </div>
     <b-modal
-      size="lg"
+      size="xl"
       title="Labels Settings"
       v-model="showSettingsModal.labels"
       v-if="showSettingsModal.labels"
       no-fade
+      no-close-on-backdrop
     >
-      <p class="strong">Show the Following on the Label:</p>
-      <p>
-        <b-form-checkbox v-model="reportSettings.lab_nutrition"
-          >Nutrition</b-form-checkbox
-        >
-      </p>
-      <p>
-        <b-form-checkbox v-model="reportSettings.lab_macros"
-          >Macros</b-form-checkbox
-        >
-      </p>
-      <p>
-        <b-form-checkbox v-model="reportSettings.lab_logo"
-          >Logo</b-form-checkbox
-        >
-      </p>
-      <p>
-        <b-form-checkbox v-model="reportSettings.lab_website"
-          >Website</b-form-checkbox
-        >
-      </p>
-      <p>
-        <b-form-checkbox v-model="reportSettings.lab_social"
-          >Social Media Handle</b-form-checkbox
-        >
-      </p>
-      <p>
-        <b-form-checkbox v-model="reportSettings.lab_customer"
-          >Customer Name</b-form-checkbox
-        >
-      </p>
-      <!-- <p>
-        <b-form-checkbox v-model="reportSettings.lab_description"
-          >Meal Description</b-form-checkbox
-        >
-      </p> -->
-      <p>
-        <b-form-checkbox v-model="reportSettings.lab_instructions"
-          >Meal Instructions</b-form-checkbox
-        >
-      </p>
-      <p v-if="store.modules.mealExpiration">
-        <b-form-checkbox v-model="reportSettings.lab_expiration"
-          >Meal Expiration</b-form-checkbox
-        >
-      </p>
+      <b-alert variant="warning" show>
+        <h6 class="center-text text-danger">Beta</h6>
+        <p>
+          This feature is currently in beta. It has only been tested on Dymo
+          printers using a common label size of 4" by 2.33" inches. Please
+          adjust the dimensions & margins below to see if it prints correctly
+          for you. You can also try adjusting Printer Preferences on your
+          computer. If it still doesn't come out perfectly, please contact us
+          and we will work it into our development pipeline to get it right for
+          your printer. We may need you to temporarily ship us your printer so
+          we can use it to test.
+        </p>
+      </b-alert>
+      <b-alert variant="info" show>
+        <h6 class="center-text">Setup Instructions</h6>
+        <p>
+          #1 Visit this
+          <a href="https://qz.io/download/" target="_blank" class="strong"
+            >link</a
+          >
+          and install the one on the left. If you have a Mac instead of Windows,
+          click "Show All Systems" and download the Apple OS X version.
+        </p>
+        <p>
+          #2 Run the installer on your computer and make sure the QZ Tray
+          application is running. Refresh GoPrep and the red light at the top
+          should show as green.
+        </p>
+        <p>
+          #3 Click the printer icon at the top of GoPrep and choose your label
+          printer.
+        </p>
+        <p>
+          #4 Adjust and save the settings below. The label size is required but
+          the margins can and should be left blank unless adjustment is needed.
+        </p>
+        <p>
+          #5 Click the "Preview" button to see if the labels are coming out
+          correctly. Test on a single order first on the orders page.
+        </p>
+      </b-alert>
       <div class="row">
-        <div class="col-md-6">
-          <b-form-group label="Label Size" class="mt-3">
-            <b-input-group size="md" append="in">
-              <b-input
-                v-model="reportSettings.lab_width"
-                class="d-inline-block"
-                type="number"
-              />
-              <b-input
-                v-model="reportSettings.lab_height"
-                class="d-inline-block"
-                type="number"
-              />
+        <div class="col-md-4">
+          <p class="strong">Show the Following on the Label</p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.lab_nutrition"
+              >Nutrition</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.lab_macros"
+              >Macros</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.lab_logo"
+              >Logo</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.lab_website"
+              >Website</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.lab_social"
+              >Social Media Handle</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.lab_customer"
+              >Customer Name</b-form-checkbox
+            >
+          </p>
+          <!-- <p>
+          <b-form-checkbox v-model="reportSettings.lab_description"
+            >Meal Description</b-form-checkbox
+          >
+        </p> -->
+          <p>
+            <b-form-checkbox v-model="reportSettings.lab_instructions"
+              >Meal Instructions</b-form-checkbox
+            >
+          </p>
+          <p v-if="store.modules.mealExpiration">
+            <b-form-checkbox v-model="reportSettings.lab_expiration"
+              >Meal Expiration</b-form-checkbox
+            >
+          </p>
+        </div>
+        <div class="col-md-4">
+          <p class="strong">Label Dimensions</p>
+          <b-form-group class="mt-3">
+            <b-input-group size="md" append="width">
+              <b-input v-model="reportSettings.lab_width" type="number" />
+            </b-input-group>
+            <b-input-group size="md" append="height">
+              <b-input v-model="reportSettings.lab_height" type="number" />
             </b-input-group>
           </b-form-group>
         </div>
-
-        <div class="col-md-6">
-          <b-form-group label="Label Margins" class="mt-3">
+        <div class="col-md-4">
+          <p class="strong">Label Margins</p>
+          <b-form-group class="mt-3">
             <b-input-group size="md" append="top">
               <b-input
                 v-model="reportSettings.lab_margin_top"
