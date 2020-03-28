@@ -2314,13 +2314,13 @@ use next_delivery_dates
             await this.refreshSubscriptions();
             this.$router.push({
               path: "/customer/subscriptions",
-              query: { created: true, pickup: this.pickup }
+              query: { created: true, pickup: this.pickup === 1 ? true : false }
             });
           } else {
             // await this.refreshCustomerOrders();
             this.$router.push({
               path: "/customer/orders",
-              query: { created: true, pickup: this.pickup }
+              query: { created: true, pickup: this.pickup === 1 ? true : false }
             });
           }
           this.emptyBag();

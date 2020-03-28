@@ -10,7 +10,7 @@ f<template>
           <p class="center-text mt-3">
             Thank you for your order.
             <span v-if="!storeModules.hideTransferOptions">
-              <span v-if="!!$route.query.pickup"
+              <span v-if="$route.query.pickup"
                 >You can pick up your order on</span
               >
               <span v-else>Your order will be delivered on</span>
@@ -19,6 +19,15 @@ f<template>
                   "dddd, MMM Do, Y"
                 ) || ""
               }}
+              <span v-if="!$route.query.pickup">to {{ customerAddress }}.</span>
+              <p v-if="!$route.query.pickup">
+                If you'd like your order delivered to a different address,
+                please change it
+                <router-link :to="'/customer/account/my-account'"
+                  >here
+                </router-link>
+                and we will deliver to the updated address.
+              </p>
             </span>
           </p>
         </b-alert>
@@ -403,7 +412,8 @@ export default {
       storeSettings: "storeSettings",
       initialized: "initialized",
       getStoreMeal: "viewedStoreMeal",
-      storeModules: "viewedStoreModules"
+      storeModules: "viewedStoreModules",
+      user: "user"
     }),
     activeSubscriptions() {
       if (this.subscriptions)
@@ -450,6 +460,18 @@ export default {
       });
 
       return activeSubs;
+    },
+    customerAddress() {
+      let detail = this.user.user_detail;
+      return (
+        detail.address +
+        ", " +
+        detail.city +
+        ", " +
+        detail.state +
+        " " +
+        detail.zip
+      );
     }
   },
   mounted() {},

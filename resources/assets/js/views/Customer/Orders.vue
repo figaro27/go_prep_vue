@@ -11,13 +11,23 @@
           <p class="center-text mt-3">
             Thank you for your order.
             <span v-if="!storeModules.hideTransferOptions">
-              <span v-if="!!$route.query.pickup"
+              <span v-if="$route.query.pickup"
                 >You can pick up your order on</span
               >
               <span v-else>Your order will be delivered on</span>
               {{
                 moment(_orders[0].delivery_date).format("dddd, MMM Do, Y") || ""
               }}
+
+              <span v-if="!$route.query.pickup">to {{ customerAddress }}.</span>
+              <p v-if="!$route.query.pickup">
+                If you'd like your order delivered to a different address,
+                please change it
+                <router-link :to="'/customer/account/my-account'"
+                  >here
+                </router-link>
+                and we will deliver to the updated address.
+              </p>
             </span>
           </p>
         </b-alert>
@@ -381,7 +391,8 @@ export default {
       initialized: "initialized",
       isLoading: "isLoading",
       getStoreMeal: "viewedStoreMeal",
-      storeModules: "viewedStoreModules"
+      storeModules: "viewedStoreModules",
+      user: "user"
     }),
     tableData() {
       let orders = this._orders;
@@ -400,6 +411,18 @@ export default {
       //}
 
       return _.isArray(orders) ? orders : [];
+    },
+    customerAddress() {
+      let detail = this.user.user_detail;
+      return (
+        detail.address +
+        ", " +
+        detail.city +
+        ", " +
+        detail.state +
+        " " +
+        detail.zip
+      );
     }
   },
   async mounted() {
