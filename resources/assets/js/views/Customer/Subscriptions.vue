@@ -160,11 +160,7 @@ f<template>
             <button
               v-if="subscription.paid_order_count >= 2"
               class="btn btn-danger btn-sm"
-              @click="
-                {
-                  (cancelSubscriptionModal = true), (subId = subscription.id);
-                }
-              "
+              @click="cancelSubscription"
             >
               Cancel
             </button>
