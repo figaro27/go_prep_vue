@@ -14,6 +14,8 @@
 // To Be Removed
 //Route::get('/getDeliveryRoutes', 'DeliveryRouteController@getRoutes');
 
+Route::get('testRenewSubscription', 'TestController@testRenewSubscription');
+
 Route::get(
     '/mail/cancelledSubscription',
     'EmailTestController@storeCancelledSubscription'

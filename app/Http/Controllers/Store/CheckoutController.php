@@ -666,6 +666,17 @@ class CheckoutController extends StoreController
                 } catch (\Exception $e) {
                 }
             }
+
+            // Promotion Points
+            if ($pointsReduction > 0) {
+                $customer->points = 0;
+                $customer->update();
+            }
+
+            if ($promotionPointsAmount) {
+                $customer->points += $promotionPointsAmount;
+                $customer->update();
+            }
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
 
@@ -1178,17 +1189,6 @@ class CheckoutController extends StoreController
             $referral = Referral::where('id', $appliedReferralId)->first();
             $referral->balance -= $referralReduction;
             $referral->update();
-        }
-
-        // Promotion Points
-        if ($pointsReduction > 0) {
-            $customer->points = 0;
-            $customer->update();
-        }
-
-        if ($promotionPointsAmount) {
-            $customer->points += $promotionPointsAmount;
-            $customer->update();
         }
 
         return $orderId;

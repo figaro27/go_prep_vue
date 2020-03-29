@@ -395,6 +395,24 @@ class Subscription extends Model
         $order_transaction->amount = $latestOrder->amount;
         $order_transaction->save();
 
+        // Accrue promotion points if points system exists
+        $promotions = $latestOrder->store->promotions;
+        $pointsRate = 0;
+        foreach ($promotions as $promotion) {
+            if ($promotion->promotionType === 'points' && $promotion->active) {
+                $pointsRate = $promotion->promotionAmount;
+            }
+        }
+        if ($pointsRate > 0) {
+            $customer = Customer::where(
+                'id',
+                $latestOrder->customer_id
+            )->first();
+            $customer->points +=
+                $latestOrder->afterDiscountBeforeFees * $pointsRate;
+            $customer->update();
+        }
+
         // Create new order for next delivery
         $newOrder = new Order();
         $newOrder->user_id = $this->user_id;

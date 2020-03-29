@@ -131,6 +131,8 @@
           </b-form>
 
           <!--        
+            <p><b-btn @click="testRenewSubscription">TEST RENEW SUBSCRIPTION</b-btn></p>
+
             <p><b-btn @click="getDeliveryRoutes">TEST DELIVERY ROUTE</b-btn></p>
 
             <p><b-btn @click="cancelledSubscription">cancelledSubscription</b-btn></p>
@@ -316,6 +318,9 @@ export default {
     },
     getDeliveryRoutes() {
       axios.get("/getDeliveryRoutes");
+    },
+    testRenewSubscription() {
+      axios.get("/testRenewSubscription");
     }
   }
 };

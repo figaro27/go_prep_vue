@@ -8,6 +8,7 @@ use App\User;
 use App\Store;
 use App\Exportable\Store\MealOrders;
 use App\Exportable\Store\PackingSlips;
+use App\Subscription;
 
 class TestController extends Controller
 {
@@ -58,5 +59,11 @@ class TestController extends Controller
         $url = $exportable->export($format);
 
         exit($url);
+    }
+
+    public function testRenewSubscription()
+    {
+        $sub = Subscription::where('id', 304)->first();
+        $sub->renew();
     }
 }
