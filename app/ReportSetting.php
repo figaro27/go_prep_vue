@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class ReportSetting extends Model
 {
+    protected $fillable = ['store_id'];
+
     protected $casts = [
         'lab_nutrition' => 'boolean',
         'lab_macros' => 'boolean',
