@@ -2351,7 +2351,7 @@ use next_delivery_dates
 
       if (
         purchasedGiftCard &&
-        this.couponCode.toUpperCase() === purchasedGiftCard.code.toUpperCase()
+        this.discountCode.toUpperCase() === purchasedGiftCard.code.toUpperCase()
       ) {
         if (purchasedGiftCard.balance === "0.00") {
           this.$toastr.e("There are no more funds left on this gift card.");
@@ -2360,11 +2360,11 @@ use next_delivery_dates
         this.purchasedGiftCard = purchasedGiftCard;
 
         this.setBagPurchasedGiftCard(purchasedGiftCard);
-        this.couponCode = "";
+        this.discountCode = "";
         this.$toastr.s("Gift Card Applied.", "Success");
         return;
       }
-      this.couponCode = "";
+      this.discountCode = "";
       this.$toastr.w("Promo code not found.");
       this.purchasedGiftCards.forEach(purchasedGiftCard => {
         if (
