@@ -2343,7 +2343,7 @@ use next_delivery_dates
       await axios
         .post(this.prefix + "findPurchasedGiftCard", {
           store_id: this.store.id,
-          purchasedGiftCardCode: this.couponCode
+          purchasedGiftCardCode: this.discountCode
         })
         .then(resp => {
           purchasedGiftCard = resp.data;
