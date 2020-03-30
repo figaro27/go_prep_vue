@@ -122,7 +122,7 @@
             Promotion Type
             <img
               v-b-popover.hover="
-                'Choose if you want the promotion amount given to the customer to be a flat amount or a percentage.'
+                'Choose if you want the promotion amount given to the customer to be a flat amount or a percentage. Or add a points accrual system.'
               "
               title="Promotion Type"
               src="/images/store/popover.png"
@@ -157,9 +157,9 @@
               Points Naming
               <img
                 v-b-popover.hover="
-                  'Add a custom title for your points system to be communicated to customers in various places. E.G. \'Earn 200 Fresh Points on this order.\' The naming of company\'s points systems are usually similar to or found in the company name. Or you can just simply let it be called \'Points\'.'
+                  'Add a custom title for your points system to be communicated to customers in various places. E.G. \'You will earn 200 Prep Points on this order.\' The naming of company\'s points systems are usually similar to or found in the company name. Or you can just simply let it be called \'Points\'.'
                 "
-                title="Cash Back Percentage"
+                title="Points Naming"
                 src="/images/store/popover.png"
                 class="popover-size ml-1"
               />

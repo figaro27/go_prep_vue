@@ -1,10 +1,34 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
+      <b-alert variant="info" show>
+        <h5 class="pb-2">NEW UPDATES</h5>
+        <p>
+          -<b>Marketing Page</b> in the left menu. Includes leads, promotions,
+          and a referral system. Coupons and Purchased Gift Cards have been
+          moved here from the Settings page.
+        </p>
+        <p>
+          -<b>Labels Report (Beta)</b> on the reports page for your meal
+          containers. You can also print a label for a single order on this
+          page.
+        </p>
+        <p>
+          -Hover over these info icons wherever you see them on the pages above
+          for explanations:
+          <img
+            v-b-popover.hover="
+              'I\'m called a \'Popover\' and I help explain how things work. Hover over me wherever you see me.'
+            "
+            title="Popover"
+            src="/images/store/popover.png"
+            class="popover-size ml-1"
+          />
+        </p>
+      </b-alert>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
-
           <v-client-table
             :columns="columns"
             :data="tableData"
