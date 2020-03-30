@@ -157,7 +157,7 @@
               Points Naming
               <img
                 v-b-popover.hover="
-                  'Add a custom title for your points system to be communicated to customers in various places. E.G. \'Earn 200 Fresh Points on this order.\' The naming of company\'s points systems are usually similar to or found in the company name.'
+                  'Add a custom title for your points system to be communicated to customers in various places. E.G. \'Earn 200 Fresh Points on this order.\' The naming of company\'s points systems are usually similar to or found in the company name. Or you can just simply let it be called \'Points\'.'
                 "
                 title="Cash Back Percentage"
                 src="/images/store/popover.png"
@@ -272,7 +272,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      newPromotion: { freeDelivery: 0 },
+      newPromotion: { freeDelivery: 0, pointsName: "Points" },
       promotionId: null,
       showAddPromotionModal: false,
       showDeletePromotionModal: false,
