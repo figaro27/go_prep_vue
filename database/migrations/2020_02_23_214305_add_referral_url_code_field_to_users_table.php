@@ -17,7 +17,8 @@ class AddReferralUrlCodeFieldToUsersTable extends Migration
             $table
                 ->string('referralUrlCode')
                 ->after('updated_at')
-                ->nullable();
+                ->nullable()
+                ->unique();
         });
     }
 
