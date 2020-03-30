@@ -19,7 +19,7 @@
             <th>Address</th>
             <th>City</th>
             <th>Zip</th>
-            <th>Account Created</th>
+            <th>Menu Viewed</th>
           </tr>
         </thead>
 

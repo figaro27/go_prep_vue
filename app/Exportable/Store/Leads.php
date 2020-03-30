@@ -42,7 +42,7 @@ class Leads
                 'Address',
                 'City',
                 'Zip',
-                'Customer Since'
+                'Menu Viewed'
             ]);
         }
         return $leads;

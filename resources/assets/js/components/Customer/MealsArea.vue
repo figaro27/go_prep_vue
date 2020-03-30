@@ -70,11 +70,12 @@
               storeSettings.currency
             )
           }}
-          more to receive a discount of
+          more to receive
           <span v-if="promotion.promotionType === 'flat'">{{
             format.money(promotion.promotionAmount, storeSettings.currency)
           }}</span>
           <span v-else>{{ promotion.promotionAmount }}%</span>
+          off your order.
         </h6>
       </b-alert>
       <b-alert

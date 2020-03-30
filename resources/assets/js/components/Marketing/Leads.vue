@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <img
         v-b-popover.hover="
-          'Leads are users who created an account and viewed your menu one or more times in the past but have not yet placed an order.'
+          'Leads are users who viewed your menu one or more times in the past and created an account but have not yet placed an order.'
         "
         title="Leads"
         src="/images/store/popover.png"
@@ -81,7 +81,7 @@ export default {
           "user_detail.address": "Address",
           "user_detail.city": "City",
           "user_detail.zip": "Zip",
-          created_at: "Account Created"
+          created_at: "Menu Viewed"
         },
         dateColumns: ["Joined"],
         customSorting: {

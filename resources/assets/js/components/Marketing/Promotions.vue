@@ -117,12 +117,20 @@
       hide-footer
     >
       <div class="container-md mt-3 pl-5 pr-5">
+        <a
+          href="https://www.goprep.com/wp-content/uploads/2020/03/promotions.png"
+          target="_blank"
+          class="strong mb-3"
+          >This example</a
+        >
+        would give the customer $5 off and free delivery on orders of $80 or
+        more. You can add one promotion of each condition type.
         <b-form @submit.prevent="addPromotion">
           <h6 class="strong mt-2 mb-2">
             Promotion Type
             <img
               v-b-popover.hover="
-                'Choose if you want the promotion amount given to the customer to be a flat amount or a percentage. Or add a points accrual system.'
+                'Choose if you want the reward given to the customer to be a flat amount or a percentage if they meet the condition. Or add a points accrual system.'
               "
               title="Promotion Type"
               src="/images/store/popover.png"
@@ -166,7 +174,7 @@
             </h6>
             <b-form-input
               v-model="newPromotion.pointsName"
-              placeholder="Fresh Points"
+              placeholder="Points"
               required
             ></b-form-input>
           </div>
@@ -176,7 +184,7 @@
 
               <img
                 v-b-popover.hover="
-                  'Enter the amount you want to give to the customer.'
+                  'Enter the amount you want to discount the order if the customer meets the condition.'
                 "
                 title="Promotion Amount"
                 src="/images/store/popover.png"
@@ -209,7 +217,7 @@
               Condition Type
               <img
                 v-b-popover.hover="
-                  'Choose the condition you want to be met to allow the promotion. A certain subtotal, number of items being checked out, number of orders placed by the customer, or no condition.'
+                  'Choose the condition you want to be met to allow the promotion. A minimum subtotal, minimum number of items in the customer\'s bag, every certain number of orders placed by the customer, or no condition at all. We recommend you choose either Subtotal or Items but not both together or the customer would meet both conditions many times and receive both promotional rewards.'
                 "
                 title="Condition Type"
                 src="/images/store/popover.png"
@@ -327,7 +335,7 @@ export default {
     conditionTypeOptions() {
       return [
         { value: "subtotal", text: "Subtotal" },
-        { value: "meals", text: "Meals" },
+        { value: "meals", text: "Items" },
         { value: "orders", text: "Orders" },
         { value: "none", text: "None" }
       ];
