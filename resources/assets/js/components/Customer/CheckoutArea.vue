@@ -2303,7 +2303,7 @@ use next_delivery_dates
       await axios
         .post(this.prefix + "findCoupon", {
           store_id: this.store.id,
-          couponCode: this.couponCode
+          couponCode: this.discountCode
         })
         .then(resp => {
           coupon = resp.data;
@@ -2311,7 +2311,7 @@ use next_delivery_dates
 
       if (
         coupon &&
-        this.couponCode.toUpperCase() === coupon.code.toUpperCase()
+        this.discountCode.toUpperCase() === coupon.code.toUpperCase()
       ) {
         if (coupon.oneTime) {
           let oneTimePass = this.oneTimeCouponCheck(coupon.id);
@@ -2324,15 +2324,15 @@ use next_delivery_dates
           if (!oneTimePass) {
             this.$toastr.e(
               "This was a one-time coupon that has already been used.",
-              'Coupon Code: "' + this.couponCode + '"'
+              'Coupon Code: "' + this.discountCode + '"'
             );
-            this.couponCode = "";
+            this.discountCode = "";
             return;
           }
         }
         this.coupon = coupon;
         this.setBagCoupon(coupon);
-        this.couponCode = "";
+        this.discountCode = "";
         this.$toastr.s("Coupon Applied.", "Success");
         return;
       }
