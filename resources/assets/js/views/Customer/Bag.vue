@@ -19,10 +19,7 @@
         <p class="center-text">
           Give out your referral link to customers and if they order using your
           link, you will receive {{ referralAmount }} on each order that comes
-          in.
-        </p>
-        <p class="center-text">
-          Your referral link is <a :href="referralUrl">{{ referralUrl }}</a>
+          in. Your referral link is <a :href="referralUrl">{{ referralUrl }}</a>
         </p>
       </div>
       <auth-modal :showAuthModal="showAuthModal"></auth-modal>
