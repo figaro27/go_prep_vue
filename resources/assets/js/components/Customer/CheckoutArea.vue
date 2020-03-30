@@ -3,7 +3,11 @@
     <ul class="list-group">
       <li
         class="bag-item"
-        v-if="activePromotions.length > 0 && !weeklySubscriptionValue"
+        v-if="
+          activePromotions.length > 0 &&
+            !weeklySubscriptionValue &&
+            !subscriptionId
+        "
       >
         <div
           class="col-md-12"

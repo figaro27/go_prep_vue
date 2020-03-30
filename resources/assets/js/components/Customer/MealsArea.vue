@@ -36,6 +36,7 @@
       class="col-md-12"
       v-for="promotion in activePromotions"
       :key="promotion.id"
+      v-if="!$route.query.sub"
     >
       <b-alert
         variant="success"
@@ -114,6 +115,7 @@
       v-if="
         store &&
           store.referral_settings &&
+          store.referral_settings.enabled &&
           store.referral_settings.showInMenu &&
           user.referralUrlCode
       "
