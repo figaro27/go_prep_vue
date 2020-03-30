@@ -10,7 +10,7 @@
         v-if="
           store &&
             store.referral_settings &&
-            store.referral_settings.enabled
+            store.referral_settings.enabled &&
             store.referral_settings.showInMenu &&
             user.referralUrlCode
         "
