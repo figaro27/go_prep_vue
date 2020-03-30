@@ -2299,40 +2299,43 @@ use next_delivery_dates
       }
     },
     async applyDiscountCode() {
-      let coupons = this.coupons;
-      if (this.$route.params.storeView) {
-        coupons = Object.values(this.storeCoupons);
-      }
-      coupons.forEach(coupon => {
-        if (this.discountCode.toUpperCase() === coupon.code.toUpperCase()) {
-          if (coupon.oneTime) {
-            let oneTimePass = this.oneTimeCouponCheck(coupon.id);
-            if (oneTimePass === "login") {
-              this.$toastr.e(
-                "This is a one-time coupon. Please log in or create an account to check if it has already been used."
-              );
-              return;
-            }
-            if (!oneTimePass) {
-              this.$toastr.e(
-                "This was a one-time coupon that has already been used.",
-                'Coupon Code: "' + this.discountCode + '"'
-              );
-              this.discountCode = "";
-              return;
-            }
+      let coupon = {};
+      await axios
+        .post(this.prefix + "findCoupon", {
+          store_id: this.store.id,
+          couponCode: this.couponCode
+        })
+        .then(resp => {
+          coupon = resp.data;
+        });
+
+      if (
+        coupon &&
+        this.couponCode.toUpperCase() === coupon.code.toUpperCase()
+      ) {
+        if (coupon.oneTime) {
+          let oneTimePass = this.oneTimeCouponCheck(coupon.id);
+          if (oneTimePass === "login") {
+            this.$toastr.e(
+              "This is a one-time coupon. Please log in or create an account to check if it has already been used."
+            );
+            return;
           }
-          this.coupon = coupon;
-          this.setBagCoupon(coupon);
-          this.discountCode = "";
-          this.$toastr.s("Coupon Applied.", "Success");
+          if (!oneTimePass) {
+            this.$toastr.e(
+              "This was a one-time coupon that has already been used.",
+              'Coupon Code: "' + this.couponCode + '"'
+            );
+            this.couponCode = "";
+            return;
+          }
         }
         this.coupon = coupon;
         this.setBagCoupon(coupon);
         this.couponCode = "";
         this.$toastr.s("Coupon Applied.", "Success");
         return;
-      });
+      }
 
       if (this.weeklySubscriptionValue) {
         this.$toastr.w("Gift cards are allowed on one time orders only.");
