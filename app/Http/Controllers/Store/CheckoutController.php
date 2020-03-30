@@ -43,6 +43,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use DB;
 use App\Traits\DeliveryDates;
+use App\Referral;
 
 class CheckoutController extends StoreController
 {
@@ -113,6 +114,10 @@ class CheckoutController extends StoreController
         $purchasedGiftCardReduction = $request->get(
             'purchasedGiftCardReduction'
         );
+        $promotionReduction = $request->get('promotionReduction');
+        $pointsReduction = $request->get('pointsReduction');
+        $appliedReferralId = $request->get('applied_referral_id');
+        $referralReduction = $request->get('referralReduction');
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
@@ -313,6 +318,10 @@ class CheckoutController extends StoreController
             $order->couponCode = $couponCode;
             $order->purchased_gift_card_id = $purchasedGiftCardId;
             $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
+            $order->promotionReduction = $promotionReduction;
+            $order->pointsReduction = $pointsReduction;
+            $order->applied_referral_id = $appliedReferralId;
+            $order->referralReduction = $referralReduction;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->deposit = $deposit;
@@ -653,6 +662,17 @@ class CheckoutController extends StoreController
                 } catch (\Exception $e) {
                 }
             }
+
+            // Promotion Points
+            if ($pointsReduction > 0) {
+                $customer->points = 0;
+                $customer->update();
+            }
+
+            if ($promotionPointsAmount) {
+                $customer->points += $promotionPointsAmount;
+                $customer->update();
+            }
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
 
@@ -799,6 +819,10 @@ class CheckoutController extends StoreController
             $order->delivery_date = (new Carbon($deliveryDay))->toDateString();
             $order->coupon_id = $couponId;
             $order->couponReduction = $couponReduction;
+            $order->applied_referral_id = $appliedReferralId;
+            $order->referralReduction = $referralReduction;
+            $order->promotionReduction = $promotionReduction;
+            $order->pointsReduction = $pointsReduction;
             $order->couponCode = $couponCode;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
@@ -1178,6 +1202,12 @@ class CheckoutController extends StoreController
                 ]);
             } catch (\Exception $e) {
             }
+        }
+
+        if ($referralReduction > 0) {
+            $referral = Referral::where('id', $appliedReferralId)->first();
+            $referral->balance -= $referralReduction;
+            $referral->update();
         }
 
         return $orderId;

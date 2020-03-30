@@ -3,6 +3,88 @@
     <ul class="list-group">
       <li
         class="bag-item"
+        v-if="activePromotions.length > 0 && !weeklySubscriptionValue"
+      >
+        <div
+          class="col-md-12"
+          v-for="promotion in activePromotions"
+          :key="promotion.id"
+        >
+          <b-alert
+            variant="success"
+            show
+            v-if="
+              promotion.conditionType === 'meals' &&
+                totalBagQuantity < promotion.conditionAmount
+            "
+          >
+            <h6 class="center-text">
+              Add {{ promotion.conditionAmount - totalBagQuantity }} more meals
+              to receive a discount of
+              <span v-if="promotion.promotionType === 'flat'">{{
+                format.money(promotion.promotionAmount, storeSettings.currency)
+              }}</span>
+              <span v-else>{{ promotion.promotionAmount }}%</span>
+            </h6>
+          </b-alert>
+          <b-alert
+            variant="success"
+            show
+            v-if="
+              promotion.conditionType === 'subtotal' &&
+                subtotal < promotion.conditionAmount
+            "
+          >
+            <h6 class="center-text">
+              Add
+              {{
+                format.money(
+                  promotion.conditionAmount - subtotal,
+                  storeSettings.currency
+                )
+              }}
+              more to receive a discount of
+              <span v-if="promotion.promotionType === 'flat'">{{
+                format.money(promotion.promotionAmount, storeSettings.currency)
+              }}</span>
+              <span v-else>{{ promotion.promotionAmount }}%</span>
+            </h6>
+          </b-alert>
+          <b-alert
+            variant="success"
+            show
+            v-if="
+              promotion.conditionType === 'orders' &&
+                loggedIn &&
+                getRemainingPromotionOrders(promotion) !== 0
+            "
+          >
+            <h6 class="center-text">
+              Order {{ getRemainingPromotionOrders(promotion) }} more times to
+              receive a discount of
+              <span v-if="promotion.promotionType === 'flat'">{{
+                format.money(promotion.promotionAmount, storeSettings.currency)
+              }}</span>
+              <span v-else>{{ promotion.promotionAmount }}%</span>
+            </h6>
+          </b-alert>
+
+          <b-alert
+            variant="success"
+            show
+            v-if="
+              promotion.promotionType === 'points' && promotionPointsAmount > 0
+            "
+          >
+            <h6 class="center-text">
+              You will earn {{ promotionPointsAmount }}
+              {{ promotionPointsName }} on this order.
+            </h6>
+          </b-alert>
+        </div>
+      </li>
+      <li
+        class="bag-item"
         v-if="
           storeSettings.allowMealPlans &&
             $route.params.subscriptionId === undefined &&
@@ -109,6 +191,7 @@
           </strong>
         </p>
       </li> -->
+
       <li class="checkout-item">
         <div class="row">
           <div class="col-6 col-md-4">
@@ -119,28 +202,26 @@
           </div>
         </div>
       </li>
+
       <li class="checkout-item" v-if="couponApplied">
         <div class="row">
           <div class="col-6 col-md-4">
-            <span class="d-inline mr-2" @click="removeCoupon">
+            <span
+              class="d-inline mr-2"
+              @click="removeCoupon"
+              v-if="couponApplied"
+            >
               <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
             </span>
-            <span class="text-success">({{ coupon.code }})</span>
+            <span class="text-success" v-if="couponApplied"
+              >Coupon ({{ coupon.code }})</span
+            >
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             <span class="text-success" v-if="couponReduction > 0"
               >({{
                 format.money(couponReduction, storeSettings.currency)
               }})</span
-            >
-            <span
-              class="text-success"
-              v-if="couponReduction > 0 && couponFreeDelivery"
-            >
-              +
-            </span>
-            <span class="text-success" v-if="couponFreeDelivery"
-              >Free Delivery</span
             >
           </div>
         </div>
@@ -211,47 +292,52 @@
 
       <li
         class="checkout-item"
-        v-if="
-          bagDeliverySettings.applyDeliveryFee &&
-            pickup === 0 &&
-            !couponFreeDelivery
-        "
+        v-if="bagDeliverySettings.applyDeliveryFee && pickup === 0"
       >
         <div class="row">
           <div class="col-6 col-md-4">
             <strong>Delivery Fee</strong>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
-            <span v-if="editingDeliveryFee">
-              <b-form-input
-                type="number"
-                v-model="customDeliveryFee"
-                class="d-inline width-70"
-              ></b-form-input>
+            <span v-if="!couponFreeDelivery && !promotionFreeDelivery">
+              <span v-if="editingDeliveryFee">
+                <b-form-input
+                  type="number"
+                  v-model="customDeliveryFee"
+                  class="d-inline width-70"
+                ></b-form-input>
+                <i
+                  style="flex-basis:30%"
+                  class="fas fa-check-circle text-primary pt-2 pl-1"
+                  @click="editingDeliveryFee = false"
+                ></i>
+              </span>
+              <span v-else>{{
+                format.money(deliveryFeeAmount, storeSettings.currency)
+              }}</span>
               <i
-                style="flex-basis:30%"
-                class="fas fa-check-circle text-primary pt-2 pl-1"
-                @click="editingDeliveryFee = false"
+                v-if="
+                  ($route.params.storeView || storeOwner) && !editingDeliveryFee
+                "
+                @click="editDeliveryFee"
+                class="fa fa-edit text-warning"
+              ></i>
+              <i
+                class="fas fa-undo-alt text-secondary"
+                v-if="
+                  customDeliveryFee !== null && editingDeliveryFee === false
+                "
+                @click="
+                  customDeliveryFee = null;
+                  editingDeliveryFee = false;
+                "
               ></i>
             </span>
-            <span v-else>{{
-              format.money(deliveryFeeAmount, storeSettings.currency)
-            }}</span>
-            <i
-              v-if="
-                ($route.params.storeView || storeOwner) && !editingDeliveryFee
-              "
-              @click="editDeliveryFee"
-              class="fa fa-edit text-warning"
-            ></i>
-            <i
-              class="fas fa-undo-alt text-secondary"
-              v-if="customDeliveryFee !== null && editingDeliveryFee === false"
-              @click="
-                customDeliveryFee = null;
-                editingDeliveryFee = false;
-              "
-            ></i>
+            <span v-else>
+              <p class="text-success">
+                {{ format.money(0, storeSettings.currency) }}
+              </p>
+            </span>
           </div>
         </div>
       </li>
@@ -272,7 +358,9 @@
             <span class="d-inline mr-2" @click="removePurchasedGiftCard">
               <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
             </span>
-            <span class="text-success">({{ purchasedGiftCard.code }})</span>
+            <span class="text-success"
+              >Gift Card ({{ purchasedGiftCard.code }})</span
+            >
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             <span class="text-success" v-if="purchasedGiftCardReduction > 0"
@@ -281,6 +369,91 @@
                   purchasedGiftCardReduction,
                   storeSettings.currency
                 )
+              }})</span
+            >
+          </div>
+        </div>
+      </li>
+
+      <li
+        class="checkout-item"
+        v-if="referralReduction > 0 && !weeklySubscriptionValue"
+      >
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <span class="d-inline mr-2" @click="removeReferral">
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
+            </span>
+            <span class="text-success">Referral ({{ referral.code }})</span>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5">
+            <span class="text-success"
+              >({{
+                format.money(referralReduction, storeSettings.currency)
+              }})</span
+            >
+          </div>
+        </div>
+      </li>
+
+      <li
+        class="checkout-item"
+        v-if="
+          promotionReduction > 0 &&
+            !weeklySubscriptionValue &&
+            !removePromotions
+        "
+      >
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <span
+              class="d-inline mr-2"
+              @click="removePromotions = true"
+              v-if="
+                ($route.params.storeView === true || storeOwner) &&
+                  removePromotions === false
+              "
+            >
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
+            </span>
+            <span class="text-success">Promotional Discount</span>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5">
+            <span class="text-success"
+              >({{
+                format.money(promotionReduction, storeSettings.currency)
+              }})</span
+            >
+          </div>
+        </div>
+      </li>
+
+      <li
+        class="checkout-item"
+        v-if="
+          promotionPointsReduction > 0 &&
+            !weeklySubscriptionValue &&
+            !removePromotions
+        "
+      >
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <span
+              class="d-inline mr-2"
+              @click="removePromotions = true"
+              v-if="
+                ($route.params.storeView === true || storeOwner) &&
+                  removePromotions === false
+              "
+            >
+              <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
+            </span>
+            <span class="text-success">{{ promotionPointsName }}</span>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5">
+            <span class="text-success"
+              >({{
+                format.money(promotionPointsReduction, storeSettings.currency)
               }})</span
             >
           </div>
@@ -307,14 +480,40 @@
             <b-form-group id="coupon">
               <b-form-input
                 id="coupon-code"
-                v-model="couponCode"
+                v-model="discountCode"
                 required
                 placeholder="Enter Promotional Code"
               ></b-form-input>
             </b-form-group>
           </div>
           <div class="col-xs-6 pl-2">
-            <b-btn variant="primary" @click="applyCoupon">Apply</b-btn>
+            <b-btn variant="primary" @click="applyDiscountCode">Apply</b-btn>
+          </div>
+        </div>
+      </li>
+
+      <li
+        v-if="
+          availablePromotionPoints &&
+            availablePromotionPoints > 0 &&
+            !weeklySubscriptionValue
+        "
+      >
+        <div class="row">
+          <div class="col-sm-12 pl-3">
+            <b-alert variant="info" show class="pb-4"
+              >You have
+              <span class="strong"
+                >{{ availablePromotionPoints }} {{ promotionPointsName }}</span
+              >
+              available. Would you like to use your points on this order?
+              <c-switch
+                color="primary"
+                variant="pill"
+                size="lg"
+                v-model="usePromotionPoints"
+                class="pt-3"
+            /></b-alert>
           </div>
         </div>
       </li>
@@ -858,7 +1057,7 @@
           <router-link
             :to="{
               path: '/login',
-              query: { redirect: '/customer/bag' }
+              query: { redirect: bagURL }
             }"
           >
             <b-btn class="menu-bag-btn">LOG IN</b-btn>
@@ -868,7 +1067,7 @@
           <router-link
             :to="{
               name: 'register',
-              query: { redirect: '/customer/bag' },
+              query: { redirect: bagURL },
               params: { customerRegister: true }
             }"
           >
@@ -977,6 +1176,9 @@ export default {
     return {
       coupons: [],
       purchasedGiftCards: [],
+      promotionPoints: null,
+      usePromotionPoints: false,
+      removePromotions: false,
       hasWeeklySubscriptionItems: false,
       hasMonthlySubscriptionItems: false,
       hasMonthlyPrepaySubscriptionItems: false,
@@ -996,7 +1198,7 @@ export default {
       checkingOut: false,
       deposit: null,
       creditCardId: null,
-      couponCode: "",
+      discountCode: "",
       addCustomerModal: false,
       weeklySubscriptionValue: null,
       customerModel: null,
@@ -1032,7 +1234,8 @@ export default {
       type: String,
       default: "stripe"
     },
-    adjustMealPlan: null
+    adjustMealPlan: null,
+    availablePromotionPoints: null
   },
   watch: {
     customer: function(val) {
@@ -1082,6 +1285,7 @@ export default {
       bagDeliveryDate: "bagDeliveryDate",
       coupon: "bagCoupon",
       purchasedGiftCard: "bagPurchasedGiftCard",
+      referral: "bagReferral",
       deliveryPlan: "bagMealPlan",
       mealPlan: "bagMealPlan",
       hasMeal: "bagHasMeal",
@@ -1102,7 +1306,9 @@ export default {
       user: "user",
       storeCoupons: "storeCoupons",
       bagDeliverySettings: "bagDeliverySettings",
-      deliveryDays: "viewedStoreDeliveryDays"
+      deliveryDays: "viewedStoreDeliveryDays",
+      referrals: "viewedStoreReferrals",
+      promotions: "viewedStorePromotions"
     }),
     prefix() {
       if (this.loggedIn) {
@@ -1110,6 +1316,33 @@ export default {
       } else {
         return "/api/guest/";
       }
+    },
+    activePromotions() {
+      let promotions = [];
+      this.promotions.forEach(promotion => {
+        if (promotion.active) {
+          promotions.push(promotion);
+        }
+      });
+      return promotions;
+    },
+    promotionPointsAmount() {
+      let promotion = this.promotions.find(promotion => {
+        return promotion.promotionType === "points";
+      });
+      return ((promotion.promotionAmount / 100) * this.subtotal * 100).toFixed(
+        0
+      );
+    },
+    promotionPointsName() {
+      let promotion = this.promotions.find(promotion => {
+        return promotion.promotionType === "points";
+      });
+      return promotion.pointsName;
+    },
+    bagURL() {
+      let referralUrl = this.$route.query.r ? "?r=" + this.$route.query.r : "";
+      return "/customer/bag" + referralUrl;
     },
     hasMultipleSubscriptionItems() {
       let subscriptionItemTypes = 0;
@@ -1608,7 +1841,7 @@ use next_delivery_dates
         if (this.$route.params.adjustOrder) {
           return this.order.deliveryFee;
         }
-        if (!this.couponFreeDelivery) {
+        if (!this.couponFreeDelivery && !this.promotionFreeDelivery) {
           if (applyDeliveryFee) {
             let fee = 0;
             if (deliveryFeeType === "flat") {
@@ -1666,17 +1899,139 @@ use next_delivery_dates
 
       return subtotal;
     },
+    afterFeesAndTax() {
+      return this.afterFees + this.tax;
+    },
     purchasedGiftCardReduction() {
       if (!this.purchasedGiftCardApplied) {
         return 0;
       }
-      if (this.purchasedGiftCard.balance > this.afterFees + this.tax) {
-        return this.afterFees + this.tax;
+      if (this.purchasedGiftCard.balance > this.afterFeesAndTax) {
+        return this.afterFeesAndTax;
       }
       return this.purchasedGiftCard.balance;
     },
+    referralReduction() {
+      if (this.weeklySubscriptionValue || !this.referral) {
+        return 0;
+      }
+      if (this.$route.params.adjustOrder) {
+        return this.order.referralReduction;
+      }
+      if (this.referral.balance > this.afterFeesAndTax) {
+        return this.afterFeesAndTax;
+      }
+      return this.referral.balance;
+    },
+    promotionReduction() {
+      if (this.weeklySubscriptionValue || this.removePromotions) {
+        return 0;
+      }
+      let promotions = this.promotions;
+      let reduction = 0;
+
+      promotions.forEach(promotion => {
+        if (promotion.active) {
+          if (
+            promotion.conditionType === "subtotal" &&
+            this.subtotal >= promotion.conditionAmount
+          ) {
+            reduction +=
+              promotion.promotionType === "flat"
+                ? promotion.promotionAmount
+                : (promotion.promotionAmount / 100) * this.subtotal;
+          }
+          if (
+            promotion.conditionType === "meals" &&
+            this.totalBagQuantity >= promotion.conditionAmount
+          ) {
+            reduction +=
+              promotion.promotionType === "flat"
+                ? promotion.promotionAmount
+                : (promotion.promotionAmount / 100) * this.subtotal;
+          }
+          if (
+            promotion.conditionType === "orders" &&
+            this.getRemainingPromotionOrders(promotion) === 0
+          ) {
+            reduction +=
+              promotion.promotionType === "flat"
+                ? promotion.promotionAmount
+                : (promotion.promotionAmount / 100) * this.subtotal;
+          }
+          if (promotion.conditionType === "none") {
+            reduction +=
+              promotion.promotionType === "flat"
+                ? promotion.promotionAmount
+                : (promotion.promotionAmount / 100) * this.subtotal;
+          }
+        }
+      });
+      if (reduction > this.afterFeesAndTax - this.referralReduction) {
+        return this.afterFeesAndTax - this.referralReduction;
+      }
+      return reduction;
+    },
+    promotionPointsReduction() {
+      if (this.weeklySubscriptionValue || this.removePromotions) {
+        return 0;
+      }
+      if (this.usePromotionPoints) {
+        return this.availablePromotionPoints / 100;
+      } else {
+        return 0;
+      }
+    },
     grandTotal() {
-      return this.afterFees + this.tax - this.purchasedGiftCardReduction;
+      return (
+        this.afterFees +
+        this.tax -
+        this.purchasedGiftCardReduction -
+        this.referralReduction -
+        this.promotionReduction -
+        this.promotionPointsReduction
+      );
+    },
+    promotionFreeDelivery() {
+      let promotions = this.promotions;
+      let freeDelivery = false;
+
+      promotions.forEach(promotion => {
+        if (promotion.active) {
+          if (
+            promotion.conditionType === "subtotal" &&
+            this.subtotal >= promotion.conditionAmount &&
+            promotion.freeDelivery
+          ) {
+            freeDelivery = true;
+          }
+          if (
+            promotion.conditionType === "meals" &&
+            this.totalBagQuantity >= promotion.conditionAmount &&
+            promotion.freeDelivery
+          ) {
+            freeDelivery = true;
+          }
+          if (
+            promotion.conditionType === "orders" &&
+            this.user.orderCount % promotion.conditionAmount === 0 &&
+            promotion.freeDelivery
+          ) {
+            freeDelivery = true;
+          }
+          if (promotion.conditionType === "none" && promotion.freeDelivery) {
+            freeDelivery = true;
+          }
+        }
+      });
+      return !this.weeklySubscriptionValue ? freeDelivery : false;
+    },
+    totalBagQuantity() {
+      let quantity = 0;
+      this.bag.forEach(item => {
+        quantity += item.quantity;
+      });
+      return quantity;
     },
     hasCoupons() {
       let bagHasGiftCard = false;
@@ -1892,6 +2247,7 @@ use next_delivery_dates
       "setBagMealPlan",
       "setBagCoupon",
       "setBagPurchasedGiftCard",
+      "setBagReferral",
       "setBagDeliveryDate",
       "clearBagDeliveryDate"
     ]),
@@ -1935,12 +2291,43 @@ use next_delivery_dates
             return;
           }
         }
+      }
+    },
+    async applyDiscountCode() {
+      let coupons = this.coupons;
+      if (this.$route.params.storeView) {
+        coupons = Object.values(this.storeCoupons);
+      }
+      coupons.forEach(coupon => {
+        if (this.discountCode.toUpperCase() === coupon.code.toUpperCase()) {
+          if (coupon.oneTime) {
+            let oneTimePass = this.oneTimeCouponCheck(coupon.id);
+            if (oneTimePass === "login") {
+              this.$toastr.e(
+                "This is a one-time coupon. Please log in or create an account to check if it has already been used."
+              );
+              return;
+            }
+            if (!oneTimePass) {
+              this.$toastr.e(
+                "This was a one-time coupon that has already been used.",
+                'Coupon Code: "' + this.discountCode + '"'
+              );
+              this.discountCode = "";
+              return;
+            }
+          }
+          this.coupon = coupon;
+          this.setBagCoupon(coupon);
+          this.discountCode = "";
+          this.$toastr.s("Coupon Applied.", "Success");
+        }
         this.coupon = coupon;
         this.setBagCoupon(coupon);
         this.couponCode = "";
         this.$toastr.s("Coupon Applied.", "Success");
         return;
-      }
+      });
 
       if (this.weeklySubscriptionValue) {
         this.$toastr.w("Gift cards are allowed on one time orders only.");
@@ -1974,6 +2361,35 @@ use next_delivery_dates
       }
       this.couponCode = "";
       this.$toastr.w("Promo code not found.");
+      this.purchasedGiftCards.forEach(purchasedGiftCard => {
+        if (
+          this.discountCode.toUpperCase() ===
+          purchasedGiftCard.code.toUpperCase()
+        ) {
+          if (purchasedGiftCard.balance === "0.00") {
+            this.$toastr.e("There are no more funds left on this gift card.");
+            return;
+          }
+          this.purchasedGiftCard = purchasedGiftCard;
+          this.setBagPurchasedGiftCard(purchasedGiftCard);
+          this.discountCode = "";
+          this.$toastr.s("Gift Card Applied.", "Success");
+        }
+      });
+
+      this.referrals.forEach(ref => {
+        if (this.discountCode.toUpperCase() === ref.code.toUpperCase()) {
+          if (ref.balance === "0.00") {
+            this.$toastr.e("There is no balance remaining.");
+            return;
+          }
+
+          this.referral = ref;
+          this.setBagReferral(ref);
+          this.discountCode = "";
+          this.$toastr.s("Referral Code Applied.", "Success");
+        }
+      });
     },
     oneTimeCouponCheck(couponId) {
       if (this.$route.params.storeView || this.storeOwner) {
@@ -2087,6 +2503,9 @@ use next_delivery_dates
             ? this.purchasedGiftCard.id
             : null,
           purchasedGiftCardReduction: this.purchasedGiftCardReduction,
+          applied_referral_id: this.referral ? this.referral.id : null,
+          referralReduction: this.referralReduction,
+          promotionReduction: this.promotionReduction,
           pickupLocation: this.selectedPickupLocation,
           customer: this.customerModel
             ? this.customerModel.value
@@ -2098,7 +2517,8 @@ use next_delivery_dates
           emailCustomer: this.emailCustomer,
           customSalesTax: this.customSalesTax !== null ? 1 : 0,
           dontAffectBalance: this.dontAffectBalance,
-          hot: this.hot ? this.hot : 0
+          hot: this.hot ? this.hot : 0,
+          pointsReduction: this.promotionPointsReduction
         })
         .then(resp => {
           if (this.purchasedGiftCard !== null) {
@@ -2115,6 +2535,7 @@ use next_delivery_dates
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
           this.setBagPurchasedGiftCard(null);
+          this.setBagReferral(null);
           this.emptyBag();
           this.refreshResource("orders");
           this.refreshUpcomingOrders();
@@ -2257,6 +2678,9 @@ use next_delivery_dates
             ? this.purchasedGiftCard.id
             : null,
           purchasedGiftCardReduction: this.purchasedGiftCardReduction,
+          applied_referral_id: this.referral ? this.referral.id : null,
+          referralReduction: this.referralReduction,
+          promotionReduction: this.promotionReduction,
           deliveryFee: this.deliveryFee,
           processingFee: this.processingFeeAmount,
           pickupLocation: this.selectedPickupLocation,
@@ -2270,7 +2694,10 @@ use next_delivery_dates
           transferTime: this.transferTime,
           lineItemsOrder: this.orderLineItems,
           grandTotal: this.grandTotal,
-          emailCustomer: this.emailCustomer
+          emailCustomer: this.emailCustomer,
+          referralUrl: this.$route.query.r,
+          promotionPointsAmount: this.promotionPointsAmount,
+          pointsReduction: this.promotionPointsReduction
         })
         .then(async resp => {
           //this.checkingOut = false;
@@ -2282,6 +2709,7 @@ use next_delivery_dates
           this.setBagMealPlan(false);
           this.setBagCoupon(null);
           this.setBagPurchasedGiftCard(null);
+          this.setBagReferral(null);
           this.clearBagDeliveryDate();
 
           if (this.isManualOrder) {
@@ -2367,13 +2795,17 @@ use next_delivery_dates
     removeCoupon() {
       this.coupon = {};
       this.setBagCoupon(null);
-      this.couponCode = "";
+      this.discountCode = "";
+    },
+    removeReferral() {
+      this.referral = {};
+      this.setBagReferral(null);
     },
     removePurchasedGiftCard() {
       this.purchasedGiftCard = {};
       this.setBagPurchasedGiftCard(null);
       //edit
-      this.couponCode = "";
+      this.discountCode = "";
     },
     editDeliveryFee() {
       this.editingDeliveryFee = true;
@@ -2433,6 +2865,20 @@ use next_delivery_dates
       } else {
         return false;
       }
+    },
+    getRemainingPromotionOrders(promotion) {
+      let conditionAmount = promotion.conditionAmount;
+      if (conditionAmount > this.user.orderCount) {
+        return conditionAmount - this.user.orderCount;
+      } else {
+        while (conditionAmount < this.user.orderCount) {
+          conditionAmount += conditionAmount;
+        }
+        return conditionAmount - this.user.orderCount;
+      }
+    },
+    applyPromotionPoints() {
+      alert("eyyy");
     }
   }
 };

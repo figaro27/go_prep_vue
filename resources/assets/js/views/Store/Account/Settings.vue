@@ -1318,16 +1318,6 @@ export default {
       zipCodes: [],
       view_delivery_days: 1,
       payments_url: "",
-      coupon: { type: "flat", freeDelivery: 0, oneTime: 0 },
-      columns: ["code", "type", "amount", "freeDelivery", "oneTime", "actions"],
-      purchasedGiftCardColumns: [
-        "created_at",
-        "purchased_by",
-        "emailRecipient",
-        "code",
-        "amount",
-        "balance"
-      ],
       deselectedDeliveryDay: null,
       showCutoffModal: false,
       stripeConnectUrl: null,
@@ -1343,19 +1333,9 @@ export default {
       storeSettings: "storeSettings",
       storeCategories: "storeCategories",
       storeSubscriptions: "storeSubscriptions",
-      storeCoupons: "storeCoupons",
       storeModules: "storeModules",
-      storeModuleSettings: "storeModuleSettings",
-      purchasedGiftCards: "storePurchasedGiftCards"
+      storeModuleSettings: "storeModuleSettings"
     }),
-    tableData() {
-      if (this.storeCoupons.length > 0) return this.storeCoupons;
-      else return [];
-    },
-    purchasedGiftCardTableData() {
-      if (this.purchasedGiftCards.length > 0) return this.purchasedGiftCards;
-      else return [];
-    },
     storeDetails() {
       return this.storeDetail;
     },
@@ -1482,7 +1462,6 @@ export default {
     ...mapActions([
       "refreshCategories",
       "refreshStoreSettings",
-      "refreshStoreCoupons",
       "refreshStoreModules",
       "refreshStoreModuleSettings"
     ]),
@@ -1550,37 +1529,6 @@ export default {
         });
 
       this.$toastr.s("Your settings have been saved.", "Success");
-    },
-    saveCoupon() {
-      this.spliceCharacters();
-      axios
-        .post("/api/me/coupons", this.coupon)
-        .then(response => {
-          this.coupon = {
-            type: "flat",
-            freeDelivery: 0,
-            oneTime: 0
-          };
-          this.$toastr.s("Coupon Added", "Success");
-        })
-        .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors));
-          error = error.join(" ");
-          this.$toastr.w(error);
-        })
-        .finally(() => {
-          this.refreshStoreCoupons();
-        });
-    },
-    deleteCoupon(id) {
-      axios
-        .delete("/api/me/coupons/" + id)
-        .then(response => {
-          this.$toastr.s("Coupon Deleted", "Success");
-        })
-        .finally(() => {
-          this.refreshStoreCoupons();
-        });
     },
     closeStore() {
       let activeSubscriptions = false;
@@ -1668,24 +1616,6 @@ export default {
           let intToString = this.storeSettings.minimumPrice.toString();
           let newPrice = intToString.replace("$", "");
           this.storeSettings.minimumPrice = newPrice;
-        }
-      }
-
-      if (this.coupon.amount != null) {
-        let couponAmount = this.coupon.amount;
-        if (this.coupon.amount.toString().includes("$")) {
-          let intToString = this.coupon.amount.toString();
-          let newPrice = intToString.replace("$", "");
-          this.coupon.amount = newPrice;
-        }
-      }
-
-      if (this.coupon.amount != null) {
-        let couponAmount = this.coupon.amount;
-        if (this.coupon.amount.toString().includes("%")) {
-          let intToString = this.coupon.amount.toString();
-          let newPrice = intToString.replace("%", "");
-          this.coupon.amount = newPrice;
         }
       }
     },

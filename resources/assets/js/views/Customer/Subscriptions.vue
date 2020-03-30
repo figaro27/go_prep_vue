@@ -50,12 +50,7 @@ f<template>
         </b-alert>
 
         <Spinner v-if="!subscriptions" />
-        <v-client-table
-          :columns="columns"
-          :data="tableData"
-          :options="options"
-          v-show="!isLoading"
-        >
+        <v-client-table :columns="columns" :data="tableData" :options="options">
           <div slot="interval" class="text-nowrap" slot-scope="props">
             {{ props.row.interval_title }}
           </div>

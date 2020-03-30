@@ -37,6 +37,7 @@ import StoreAdjustOrder from "./views/Store/AdjustOrder.vue";
 import StoreAdjustMealPlan from "./views/Store/AdjustMealPlan.vue";
 import StoreBag from "./views/Store/Bag.vue";
 import StoreUpdates from "./views/Store/Updates.vue";
+import StoreMarketing from "./views/Store/Marketing.vue";
 
 import Spinner from "./components/Spinner.vue";
 
@@ -231,6 +232,11 @@ let routes = [
     path: "/store/updates",
     component: StoreUpdates,
     name: "store-updates"
+  },
+  {
+    path: "/store/marketing",
+    component: StoreMarketing,
+    name: "store-marketing"
   },
   {
     path: "/spinner",

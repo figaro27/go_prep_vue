@@ -57,6 +57,12 @@ export default {
       // class: 'nav-child',
     },
     {
+      name: "Marketing",
+      url: "/store/marketing",
+      icon: "fa fa-bullhorn"
+      // class: 'nav-child',
+    },
+    {
       name: "Settings",
       url: "/store/account/settings",
       icon: "fa fa-cog"

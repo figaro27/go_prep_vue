@@ -306,6 +306,8 @@ foreach (
                                 'SubscriptionController@resume'
                             );
                             Route::resource('customers', 'CustomerController');
+
+                            Route::get('leads', 'UserController@getLeads');
                             Route::get(
                                 'customersNoOrders',
                                 'CustomerController@customersNoOrders'
@@ -317,10 +319,14 @@ foreach (
                             Route::resource('units', 'UnitController');
                             Route::resource('categories', 'CategoryController');
                             Route::resource('coupons', 'CouponController');
+
                             Route::post(
                                 'findCoupon',
                                 'CouponController@findCoupon'
                             );
+
+                            Route::patch('coupons', 'CouponController@update');
+
                             Route::resource('giftCards', 'GiftCardController');
                             Route::resource(
                                 'purchasedGiftCards',
@@ -374,6 +380,39 @@ foreach (
                                 'StoreSettingController@getApplicationFee'
                             );
                             Route::resource('cards', 'CardController');
+
+                            Route::resource(
+                                'referralSettings',
+                                'ReferralSettingController'
+                            );
+
+                            Route::patch(
+                                'referralSettings',
+                                'ReferralSettingController@update'
+                            );
+
+                            Route::resource('referrals', 'ReferralController');
+
+                            Route::patch(
+                                'referrals',
+                                'ReferralController@update'
+                            );
+
+                            Route::post(
+                                'settleReferralBalance',
+                                'ReferralController@settleBalance'
+                            );
+
+                            Route::resource(
+                                'promotions',
+                                'PromotionController'
+                            );
+
+                            Route::patch(
+                                'promotions',
+                                'PromotionController@update'
+                            );
+
                             Route::post(
                                 'pauseMealPlans',
                                 'StoreSettingController@pauseMealPlans'
@@ -542,6 +581,11 @@ foreach (
                             Route::get(
                                 'me/subscription_bag/{subscription_id}',
                                 'SubscriptionController@subscriptionBag'
+                            );
+
+                            Route::post(
+                                'me/getPromotionPoints',
+                                'StoreController@getPromotionPoints'
                             );
                         }
                     );

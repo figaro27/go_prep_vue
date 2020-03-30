@@ -32,6 +32,101 @@
       </p>
     </b-alert>
 
+    <div
+      class="col-md-12"
+      v-for="promotion in activePromotions"
+      :key="promotion.id"
+    >
+      <b-alert
+        variant="success"
+        show
+        v-if="
+          promotion.conditionType === 'meals' &&
+            totalBagQuantity < promotion.conditionAmount
+        "
+      >
+        <h6 class="center-text">
+          Add {{ promotion.conditionAmount - totalBagQuantity }} more meals to
+          receive a discount of
+          <span v-if="promotion.promotionType === 'flat'">{{
+            format.money(promotion.promotionAmount, storeSettings.currency)
+          }}</span>
+          <span v-else>{{ promotion.promotionAmount }}%</span>
+        </h6>
+      </b-alert>
+      <b-alert
+        variant="success"
+        show
+        v-if="
+          promotion.conditionType === 'subtotal' &&
+            totalBagPricePreFees < promotion.conditionAmount
+        "
+      >
+        <h6 class="center-text">
+          Add
+          {{
+            format.money(
+              promotion.conditionAmount - totalBagPricePreFees,
+              storeSettings.currency
+            )
+          }}
+          more to receive a discount of
+          <span v-if="promotion.promotionType === 'flat'">{{
+            format.money(promotion.promotionAmount, storeSettings.currency)
+          }}</span>
+          <span v-else>{{ promotion.promotionAmount }}%</span>
+        </h6>
+      </b-alert>
+      <b-alert
+        variant="success"
+        show
+        v-if="
+          promotion.conditionType === 'orders' &&
+            loggedIn &&
+            getRemainingPromotionOrders(promotion) !== 0
+        "
+      >
+        <h6 class="center-text">
+          Order {{ getRemainingPromotionOrders(promotion) }} more times to
+          receive a discount of
+          <span v-if="promotion.promotionType === 'flat'">{{
+            format.money(promotion.promotionAmount, storeSettings.currency)
+          }}</span>
+          <span v-else>{{ promotion.promotionAmount }}%</span>
+        </h6>
+      </b-alert>
+      <b-alert
+        variant="success"
+        show
+        v-if="promotion.promotionType === 'points' && promotionPointsAmount > 0"
+      >
+        <h6 class="center-text">
+          You will earn {{ promotionPointsAmount }}
+          {{ promotion.pointsName }} on this order.
+        </h6>
+      </b-alert>
+    </div>
+
+    <div
+      class="alert alert-success"
+      role="alert"
+      v-if="
+        store &&
+          store.referral_settings &&
+          store.referral_settings.showInMenu &&
+          user.referralUrlCode
+      "
+    >
+      <h5 class="center-text">Referral Program</h5>
+      <p class="center-text">
+        Give out your referral link to customers and if they order using your
+        link, you will receive {{ referralAmount }} on each order that comes in.
+      </p>
+      <p class="center-text">
+        Your referral link is <a :href="referralUrl">{{ referralUrl }}</a>
+      </p>
+    </div>
+
     <meal-package-components-modal
       ref="packageComponentModal"
       :packageTitle="packageTitle"
@@ -689,8 +784,18 @@ export default {
       getMealPackage: "viewedStoreMealPackage",
       _categories: "viewedStoreCategories",
       user: "user",
-      subscriptions: "subscriptions"
+      subscriptions: "subscriptions",
+      promotions: "viewedStorePromotions",
+      loggedIn: "loggedIn",
+      totalBagPricePreFees: "totalBagPricePreFees"
     }),
+    totalBagQuantity() {
+      let quantity = 0;
+      this.bag.forEach(item => {
+        quantity += item.quantity;
+      });
+      return quantity;
+    },
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
     },
@@ -703,6 +808,31 @@ export default {
       } else {
         return "categorySection customer-menu-container";
       }
+    },
+    referralAmount() {
+      return this.store.referral_settings.amountFormat;
+    },
+    referralUrl() {
+      return this.store.referral_settings.url + this.user.referralUrlCode;
+    },
+    promotionPointsAmount() {
+      let promotion = this.promotions.find(promotion => {
+        return promotion.promotionType === "points";
+      });
+      return (
+        (promotion.promotionAmount / 100) *
+        this.totalBagPricePreFees *
+        100
+      ).toFixed(0);
+    },
+    activePromotions() {
+      let promotions = [];
+      this.promotions.forEach(promotion => {
+        if (promotion.active) {
+          promotions.push(promotion);
+        }
+      });
+      return promotions;
     }
   },
   methods: {
@@ -1059,6 +1189,17 @@ export default {
         this.$parent.showMealPackagesArea = false;
       }
       this.$parent.search = "";
+    },
+    getRemainingPromotionOrders(promotion) {
+      let conditionAmount = promotion.conditionAmount;
+      if (conditionAmount > this.user.orderCount) {
+        return conditionAmount - this.user.orderCount;
+      } else {
+        while (conditionAmount < this.user.orderCount) {
+          conditionAmount += conditionAmount;
+        }
+        return conditionAmount - this.user.orderCount;
+      }
     }
   }
 };

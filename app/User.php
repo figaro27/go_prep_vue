@@ -13,6 +13,7 @@ use App\Mail\Customer\SubscriptionRenewing;
 use App\Mail\Customer\SubscriptionMealSubstituted;
 use App\Mail\Customer\SubscriptionCancelled;
 use App\Mail\Customer\AdjustedOrder;
+use App\Mail\Customer\NewReferral;
 use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -22,6 +23,8 @@ use Stripe;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Media\Utils as MediaUtils;
 use App\Subscription;
+use App\Referral;
+use App\Order;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -39,7 +42,8 @@ class User extends Authenticatable implements JWTSubject
         'user_role_id',
         'accepted_tos',
         'stripe_id',
-        'added_by_store_id'
+        'added_by_store_id',
+        'referralUrlCode'
     ];
 
     /**
@@ -65,7 +69,9 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'cards',
         'last_viewed_store',
-        'has_active_subscription'
+        'has_active_subscription',
+        'referrals',
+        'orderCount'
     ];
 
     /**
@@ -136,6 +142,11 @@ class User extends Authenticatable implements JWTSubject
     public function store()
     {
         return $this->hasOne('App\Store');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany('App\Referrals');
     }
 
     public function hasRole($role)
@@ -417,10 +428,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function notificationEnabled($notif)
     {
-        if (!$this->settings) {
+        if (!$this->details) {
             return false;
         }
-        return $this->settings->notificationEnabled($notif);
+        return $this->details->notificationEnabled($notif);
     }
 
     public function sendNotification($notif, $data = [])
@@ -505,6 +516,9 @@ class User extends Authenticatable implements JWTSubject
             case 'adjusted_order':
                 $email = new AdjustedOrder($data);
                 break;
+            case 'new_referral':
+                $email = new NewReferral($data);
+                break;
         }
 
         if ($email) {
@@ -533,5 +547,18 @@ class User extends Authenticatable implements JWTSubject
         } else {
             return false;
         }
+    }
+
+    public function getReferralsAttribute()
+    {
+        return Referral::where('user_id', $this->id)->get();
+    }
+
+    public function getorderCountAttribute()
+    {
+        return Order::where([
+            'user_id' => $this->id,
+            'store_id' => $this->last_viewed_store_id
+        ])->count();
     }
 }

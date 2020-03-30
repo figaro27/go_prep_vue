@@ -27,6 +27,10 @@ use App\MealPackageSubscription;
 use App\MealPackage;
 use App\MealPackageSize;
 use App\PurchasedGiftCard;
+use App\ReferralSetting;
+use App\Referral;
+use App\User;
+use App\Customer;
 use App\Billing\Billing;
 use App\Billing\Constants;
 use App\Billing\Charge;
@@ -124,10 +128,17 @@ class CheckoutController extends UserController
         $couponId = $request->get('coupon_id');
         $couponReduction = $request->get('couponReduction');
         $couponCode = $request->get('couponCode');
+        $couponReferralUserId = Coupon::where('id', $couponId)
+            ->pluck('referral_user_id')
+            ->first();
+
         $purchasedGiftCardId = $request->get('purchased_gift_card_id');
         $purchasedGiftCardReduction = $request->get(
             'purchasedGiftCardReduction'
         );
+        $promotionReduction = $request->get('promotionReduction');
+        $appliedReferralId = $request->get('applied_referral_id');
+        $referralReduction = $request->get('referralReduction');
         $deliveryFee = $request->get('deliveryFee');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
@@ -136,6 +147,7 @@ class CheckoutController extends UserController
         $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
         //$stripeToken = $request->get('token');
         $deposit = 1;
+        $pointsReduction = $request->get('pointsReduction');
 
         $cashOrder = $request->get('cashOrder');
         if ($cashOrder) {
@@ -196,6 +208,8 @@ class CheckoutController extends UserController
                 $dailyOrderNumber = 1;
             }
         }
+
+        $promotionPointsAmount = $request->get('promotionPointsAmount');
 
         // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
         //     $discount = $store->settings->mealPlanDiscount / 100;
@@ -362,6 +376,10 @@ class CheckoutController extends UserController
             $order->couponCode = $couponCode;
             $order->purchased_gift_card_id = $purchasedGiftCardId;
             $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
+            $order->promotionReduction = $promotionReduction;
+            $order->pointsReduction = $pointsReduction;
+            $order->applied_referral_id = $appliedReferralId;
+            $order->referralReduction = $referralReduction;
             $order->pickup_location_id = $pickupLocation;
             $order->transferTime = $transferTime;
             $order->cashOrder = $cashOrder;
@@ -376,6 +394,9 @@ class CheckoutController extends UserController
             }
 
             $order->save();
+
+            $orderId = $order->id;
+
             if ($total > 0.5) {
                 $order_transaction = new OrderTransaction();
                 $order_transaction->order_id = $order->id;
@@ -644,30 +665,23 @@ class CheckoutController extends UserController
                 ]);
             }
 
-            // Send notification
-            /*$email = new NewOrder([
+            $user->sendNotification('new_order', [
                 'order' => $order ?? null,
                 'pickup' => $pickup ?? null,
                 'card' => $card ?? null,
                 'customer' => $customer ?? null,
                 'subscription' => null
             ]);
-            try {
-                Mail::to($user)
-                    ->bcc('mike@goprep.com')
-                    ->send($email);
-            } catch (\Exception $e) {
-            }*/
 
-            try {
-                $user->sendNotification('new_order', [
-                    'order' => $order ?? null,
-                    'pickup' => $pickup ?? null,
-                    'card' => $card ?? null,
-                    'customer' => $customer ?? null,
-                    'subscription' => null
-                ]);
-            } catch (\Exception $e) {
+            // Promotion Points
+            if ($pointsReduction > 0) {
+                $customer->points = 0;
+                $customer->update();
+            }
+
+            if ($promotionPointsAmount) {
+                $customer->points += $promotionPointsAmount;
+                $customer->update();
             }
         } else {
             $weekIndex = date('N', strtotime($deliveryDay));
@@ -836,6 +850,10 @@ class CheckoutController extends UserController
                 $order->coupon_id = $couponId;
                 $order->couponReduction = $couponReduction;
                 $order->couponCode = $couponCode;
+                $order->promotionReduction = $promotionReduction;
+                $order->pointsReduction = $pointsReduction;
+                $order->applied_referral_id = $appliedReferralId;
+                $order->referralReduction = $referralReduction;
                 $order->pickup_location_id = $pickupLocation;
                 $order->transferTime = $transferTime;
                 $order->dailyOrderNumber = $dailyOrderNumber;
@@ -843,6 +861,8 @@ class CheckoutController extends UserController
                 $order->cashOrder = $cashOrder;
                 $order->isMultipleDelivery = $isMultipleDelivery;
                 $order->save();
+
+                $orderId = $order->id;
 
                 foreach ($bag->getItems() as $item) {
                     if ($this->store->modules->stockManagement) {
@@ -1175,22 +1195,6 @@ class CheckoutController extends UserController
                     ]);
                 }
 
-                // Send notification
-                /*$email = new MealPlan([
-                'order' => $order ?? null,
-                'pickup' => $pickup ?? null,
-                'card' => $card ?? null,
-                'customer' => $customer ?? null,
-                'subscription' => $userSubscription ?? null
-            ]);
-
-            try {
-                Mail::to($user)
-                    ->bcc('mike@goprep.com')
-                    ->send($email);
-            } catch (\Exception $e) {
-            }*/
-
                 if ($bagItems && count($bagItems) > 0) {
                     foreach ($bagItems as $bagItem) {
                         $orderBag = new OrderBag();
@@ -1221,6 +1225,120 @@ class CheckoutController extends UserController
                 } catch (\Exception $e) {
                 }
             }
+        }
+
+        // Referrals
+        $referralSettings = ReferralSetting::where(
+            'store_id',
+            $storeId
+        )->first();
+
+        if ($referralSettings->enabled) {
+            // If first order only setting enabled and the user has placed orders already, return
+            $previousOrders = $user->orders
+                ->where('store_id', $store->id)
+                ->count();
+            if (
+                $referralSettings->frequency === 'firstOrder' &&
+                $previousOrders > 0
+            ) {
+                return;
+            }
+
+            $referralUrlCode = $request->get('referralUrl');
+
+            $userWasReferred = false;
+            $userReferralId = null;
+            foreach ($user->orders as $order) {
+                if ($order->referral_id !== null) {
+                    $userWasReferred = true;
+                    $userReferralId = Referral::where('id', $order->referral_id)
+                        ->pluck('user_id')
+                        ->first();
+                }
+            }
+
+            // If a referral code exists in the URL or in a coupon OR the referral settings are set to all orders and the user was previously referred
+            if (
+                $referralUrlCode ||
+                $couponReferralUserId ||
+                ($referralSettings->frequency === 'allOrders' &&
+                    $userWasReferred)
+            ) {
+                // If both URL code & referral coupon code exists, prioritize coupon code
+                if ($couponReferralUserId) {
+                    $referralUserId = $couponReferralUserId;
+                } else {
+                    $referralUserId = User::where(
+                        'referralUrlCode',
+                        $referralUrlCode
+                    )
+                        ->pluck('id')
+                        ->first();
+                }
+
+                if (
+                    $referralSettings->frequency === 'allOrders' &&
+                    $userWasReferred &&
+                    $userReferralId !== null
+                ) {
+                    $referralUserId = $userReferralId;
+                }
+
+                $referralAmount = 0;
+                if ($referralSettings->type === 'flat') {
+                    $referralAmount = $referralSettings->amount;
+                } else {
+                    $referralAmount =
+                        ($referralSettings->amount / 100) * $total;
+                }
+
+                $referral = Referral::where([
+                    'user_id' => $referralUserId,
+                    'store_id' => $storeId
+                ])->first();
+
+                if (!$referral) {
+                    // Create new referral
+                    $referral = new Referral();
+                    $referral->store_id = $storeId;
+                    $referral->user_id = $referralUserId;
+                    $referral->ordersReferred = 1;
+                    $referral->amountReferred = $total;
+                    $referral->code =
+                        'R' .
+                        strtoupper(substr(uniqid(rand(10, 99), false), -3)) .
+                        chr(rand(65, 90)) .
+                        rand(0, 9);
+                    $referral->balance = $referralAmount;
+                    $referral->save();
+                } else {
+                    $referral->ordersReferred += 1;
+                    $referral->amountReferred += $total;
+                    $referral->balance += $referralAmount;
+                    $referral->update();
+                }
+                $order = Order::where('id', $orderId)->first();
+                $order->referral_id = $referral->id;
+                $order->update();
+
+                $referralUser = User::where('id', $referralUserId)->first();
+                if ($user->notificationEnabled('new_referral')) {
+                    $referralUser->sendNotification('new_referral', [
+                        'order' => $order ?? null,
+                        'pickup' => $pickup ?? null,
+                        'customer' => $customer ?? null,
+                        'referral' => $referral,
+                        'referralAmount' => $referralAmount
+                    ]);
+                }
+            }
+        }
+
+        if ($referralReduction > 0) {
+            $referral = Referral::where('id', $appliedReferralId)->first();
+            $referral->balance -= $referralReduction;
+            $referral->update();
         }
     }
 }

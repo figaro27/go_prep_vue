@@ -62,6 +62,7 @@ const state = {
     items: {},
     coupon: null,
     purchased_gift_card: null,
+    referral: null,
     meal_plan: false,
     pickup: false
   },
@@ -118,6 +119,15 @@ const state = {
     report_settings: {
       data: {}
     },
+    referrals: {
+      data: {}
+    },
+    referral_settings: {
+      data: {}
+    },
+    promotions: {
+      data: {}
+    },
     meals: {
       data: {}
     },
@@ -125,6 +135,9 @@ const state = {
       data: {}
     },
     customers: {
+      data: {}
+    },
+    leads: {
       data: {}
     },
     payments: {
@@ -736,6 +749,9 @@ const mutations = {
   setBagPurchasedGiftCard(state, purchased_gift_card) {
     state.bag.purchased_gift_card = purchased_gift_card;
   },
+  setBagReferral(state, referral) {
+    state.bag.referral = referral;
+  },
   setBagMealPlan(state, mealPlan) {
     state.bag.meal_plan = mealPlan;
   },
@@ -780,6 +796,18 @@ const mutations = {
     state.store.report_settings.data = reportSettings;
   },
 
+  storeReferrals(state, { referrals }) {
+    state.store.referrals.data = referrals;
+  },
+
+  storeReferralSettings(state, { referralSettings }) {
+    state.store.referral_settings.data = referralSettings;
+  },
+
+  storePromotions(state, { promotions }) {
+    state.store.promotions.data = promotions;
+  },
+
   storeCoupons(state, { coupons }) {
     state.store.coupons.data = coupons;
   },
@@ -814,6 +842,10 @@ const mutations = {
 
   storeCustomers(state, { customers }) {
     state.store.customers.data = customers;
+  },
+
+  storeLeads(state, { leads }) {
+    state.store.leads.data = leads;
   },
 
   storeOrders(state, { orders }) {
@@ -1321,6 +1353,16 @@ const actions = {
 
     try {
       if (
+        !_.isEmpty(data.store.report_settings) &&
+        _.isObject(data.store.report_settings)
+      ) {
+        let reportSettings = data.store.report_settings;
+        commit("storeReportSettings", { reportSettings });
+      }
+    } catch (e) {}
+
+    try {
+      if (
         !_.isEmpty(data.store.module_settings) &&
         _.isObject(data.store.module_settings)
       ) {
@@ -1331,11 +1373,31 @@ const actions = {
 
     try {
       if (
-        !_.isEmpty(data.store.report_settings) &&
-        _.isObject(data.store.report_settings)
+        !_.isEmpty(data.store.referrals) &&
+        _.isObject(data.store.referrals)
       ) {
-        let reportSettings = data.store.report_settings;
-        commit("storeReportSettings", { reportSettings });
+        let referrals = data.store.referrals;
+        commit("storeReferrals", { referrals });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.referral_settings) &&
+        _.isObject(data.store.referral_settings)
+      ) {
+        let referralSettings = data.store.referral_settings;
+        commit("storeReferralSettings", { referralSettings });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.promotions) &&
+        _.isObject(data.store.promotions)
+      ) {
+        let promotions = data.store.promotions;
+        commit("storePromotions", { promotions });
       }
     } catch (e) {}
 
@@ -1432,6 +1494,13 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.leads) && _.isObject(data.store.leads)) {
+        let leads = data.store.leads;
+        commit("storeLeads", { leads });
+      }
+    } catch (e) {}
+
+    try {
       if (!_.isEmpty(data.store.meals) && _.isObject(data.store.meals)) {
         let meals = data.store.meals;
         commit("storeMeals", { meals });
@@ -1521,6 +1590,7 @@ const actions = {
 
     dispatch("refreshInactiveMeals");
     dispatch("refreshStoreCustomers"),
+      dispatch("refreshStoreLeads"),
       dispatch("refreshOrderIngredients"),
       dispatch("refreshIngredients"),
       dispatch("refreshStoreSubscriptions");
@@ -2264,6 +2334,54 @@ const actions = {
     }
   },
 
+  async refreshStoreLeads({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/leads");
+    const { data } = await res;
+    const leads = data;
+
+    if (_.isArray(leads)) {
+      commit("storeLeads", { leads });
+    } else {
+      throw new Error("Failed to retrieve leads");
+    }
+  },
+
+  async refreshStoreReferrals({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/referrals");
+    const { data } = await res;
+    const referrals = data;
+
+    if (_.isArray(referrals)) {
+      commit("storeReferrals", { referrals });
+    } else {
+      throw new Error("Failed to retrieve referrals");
+    }
+  },
+
+  async refreshStoreReferralSettings({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/referralSettings");
+    const { data } = await res;
+    const referral_settings = data;
+
+    if (_.isArray(referral_settings)) {
+      commit("storeReferralSettings", { referral_settings });
+    } else {
+      throw new Error("Failed to retrieve referral rules");
+    }
+  },
+
+  async refreshStorePromotions({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/promotions");
+    const { data } = await res;
+    const promotions = data;
+
+    if (_.isArray(promotions)) {
+      commit("storePromotions", { promotions });
+    } else {
+      throw new Error("Failed to retrieve promotions");
+    }
+  },
+
   async refreshCategories({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/categories");
     const { data } = await res;
@@ -2875,6 +2993,27 @@ const getters = {
       return {};
     }
   },
+  viewedStoreReferrals: state => {
+    try {
+      return state.viewed_store.referrals || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  viewedStoreReferralSettings: state => {
+    try {
+      return state.viewed_store.referral_settings || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  viewedStorePromotions: state => {
+    try {
+      return state.viewed_store.promotions || {};
+    } catch (e) {
+      return {};
+    }
+  },
   viewedStoreDeliveryDays: state => {
     return state.viewed_store.delivery_days || [];
   },
@@ -2973,6 +3112,9 @@ const getters = {
   },
   bagPurchasedGiftCard(state) {
     return state.bag.purchased_gift_card;
+  },
+  bagReferral(state) {
+    return state.bag.referral;
   },
   bagMealPlan(state) {
     return state.bag.meal_plan;
@@ -3275,9 +3417,31 @@ const getters = {
       return {};
     }
   },
+
   storeReportSettings: state => {
     try {
       return state.store.report_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeReferrals: state => {
+    try {
+      return state.store.referrals.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeReferralSettings: state => {
+    try {
+      return state.store.referral_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storePromotions: state => {
+    try {
+      return state.store.promotions.data || {};
     } catch (e) {
       return {};
     }
@@ -3458,6 +3622,13 @@ const getters = {
       return _.find(state.store.customers.data, { id }) || null;
     } catch (e) {
       return null;
+    }
+  },
+  storeLeads: state => {
+    try {
+      return state.store.leads.data || {};
+    } catch (e) {
+      return {};
     }
   },
   storeOrders: state => {

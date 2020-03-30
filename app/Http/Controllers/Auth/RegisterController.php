@@ -163,7 +163,12 @@ class RegisterController extends Controller
             'password' => Hash::make($data['user']['password']),
             'timezone' => 'America/New_York',
             'remember_token' => Hash::make(str_random(10)),
-            'accepted_tos' => 1
+            'accepted_tos' => 1,
+            'referralUrlCode' =>
+                'R' .
+                strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
+                chr(rand(65, 90)) .
+                rand(0, 9)
         ]);
 
         $userDetails = $user->details()->create([
@@ -190,7 +195,8 @@ class RegisterController extends Controller
                 'meal_plan_paused' => true,
                 'new_order' => true,
                 'subscription_meal_substituted' => true,
-                'subscription_renewing' => true
+                'subscription_renewing' => true,
+                'new_referral' => true
             )
         ]);
 
@@ -274,6 +280,14 @@ class RegisterController extends Controller
             ]);
 
             $storeModuleSettings = $store->moduleSettings()->create();
+
+            $storeReferralSettings = $store->referralSettings()->create([
+                'signupEmail' => 0,
+                'showInNotifications' => 0,
+                'showInMenu' => 0,
+                'type' => 'percent',
+                'amount' => 5.0
+            ]);
 
             try {
                 $key = new \Cloudflare\API\Auth\APIKey(

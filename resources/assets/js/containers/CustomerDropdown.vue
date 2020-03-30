@@ -4,13 +4,13 @@
       <div><i class="fas fa-user customer-nav-icon"></i></div> </template
     >\
     <template slot="dropdown" class="account-dropdown" style="margin-top:30px">
-      <router-link
+      <!-- <router-link
         to="/customer/account/my-account"
         class="link-remove dropdown-item"
       >
         <i class="fa fa-user" />
         My Account
-      </router-link>
+      </router-link> -->
 
       <router-link
         to="/customer/account/contact"
