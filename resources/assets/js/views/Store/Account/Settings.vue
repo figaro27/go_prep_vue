@@ -864,6 +864,50 @@
                 <b-button type="submit" variant="primary mt-2">Save</b-button>
               </b-form>
             </b-tab>
+
+            <b-tab title="Notifications">
+              <b-form @submit.prevent="updateStoreSettings">
+                <b-form-group label="New Orders" :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.notifications.new_order"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+
+                <b-form-group label="New Subscriptions" :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.notifications.new_subscription"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+
+                <b-form-group label="Cancelled Subscriptions" :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.notifications.cancelled_subscription"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+
+                <b-form-group label="Ready to Print" :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.notifications.ready_to_print"
+                    @change.native="updateStoreSettings"
+                  />
+                </b-form-group>
+              </b-form>
+            </b-tab>
             <b-tab title="Advanced">
               <b-form @submit.prevent="updateStoreModules">
                 <p class="mt-2">
