@@ -118,7 +118,7 @@
     >
       <div class="container-md mt-3 pl-5 pr-5">
         <a
-          href="https://www.goprep.com/wp-content/uploads/2020/03/promotions.png"
+          href="http://www.goprep.com/wp-content/uploads/2020/03/promotions.png"
           target="_blank"
           class="strong mb-3"
           >This example</a
@@ -140,6 +140,7 @@
           <b-form-select
             v-model="newPromotion.promotionType"
             :options="promotionTypeOptions"
+            class="w-180"
             required
           ></b-form-select>
           <div v-if="newPromotion.promotionType === 'points'">
@@ -227,6 +228,7 @@
             <b-form-select
               v-model="newPromotion.conditionType"
               :options="conditionTypeOptions"
+              class="w-180"
               required
             ></b-form-select>
 
