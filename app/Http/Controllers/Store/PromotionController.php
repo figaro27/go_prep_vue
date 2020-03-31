@@ -53,6 +53,19 @@ class PromotionController extends StoreController
                     400
                 );
             }
+            if (
+                $promotion->promotionType === 'points' &&
+                isset($data['promotionType']) &&
+                $data['promotionType'] === 'points'
+            ) {
+                return response()->json(
+                    [
+                        'message' =>
+                            'You already added a points system promotion.'
+                    ],
+                    400
+                );
+            }
         }
 
         $promotion = new Promotion();
