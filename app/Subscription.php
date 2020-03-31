@@ -33,7 +33,8 @@ class Subscription extends Model
         'items',
         'meal_package_items',
         'interval_title',
-        'paid_order_count'
+        'paid_order_count',
+        'total_item_quantity'
     ];
 
     protected $casts = [
@@ -437,13 +438,72 @@ class Subscription extends Model
         $order_transaction->save();
 
         // Accrue promotion points if points system exists
+        // Also check if other promotion conditions are being met on the upcoming order and remove if not
         $promotions = $latestOrder->store->promotions;
         $pointsRate = 0;
+        $this->promotionReduction = 0;
         foreach ($promotions as $promotion) {
-            if ($promotion->promotionType === 'points' && $promotion->active) {
-                $pointsRate = $promotion->promotionAmount;
+            if ($promotion->active) {
+                if ($promotion->promotionType === 'points') {
+                    $pointsRate = $promotion->promotionAmount;
+                }
+                if ($promotion->conditionType === 'subtotal') {
+                    if (
+                        $this->preFeePreDiscount > $promotion->conditionAmount
+                    ) {
+                        if ($promotion->promotionType === 'flat') {
+                            $this->promotionReduction +=
+                                $promotion->promotionAmount;
+                        } else {
+                            $this->promotionReduction +=
+                                ($promotion->promotionAmount / 100) *
+                                $this->preFeePreDiscount;
+                        }
+                    }
+                }
+                if ($promotion->conditionType === 'meals') {
+                    if (
+                        $this->total_item_quantity > $promotion->condtionAmount
+                    ) {
+                        if ($promotion->promotionType === 'flat') {
+                            $this->promotionReduction +=
+                                $promotion->promotionAmount;
+                        } else {
+                            $this->promotionReduction +=
+                                ($promotion->promotionAmount / 100) *
+                                $this->preFeePreDiscount;
+                        }
+                    }
+                }
+                if ($promotion->conditionType === 'orders') {
+                    $remainingPromotionOrders = 0;
+                    $conditionAmount = $promotion->conditionAmount;
+                    if ($conditionAmount > $this->user->orderCount) {
+                        $remainingPromotionOrders =
+                            $conditionAmount - $this->user->orderCount;
+                    } else {
+                        $increment = $conditionAmount;
+                        while ($conditionAmount < $this->user->orderCount) {
+                            $conditionAmount += $increment;
+                        }
+                        $remainingPromotionOrders =
+                            $conditionAmount - $this->user->orderCount;
+                    }
+                    if ($remainingPromotionOrders === 0.0) {
+                        if ($promotion->promotionType === 'flat') {
+                            $this->promotionReduction +=
+                                $promotion->promotionAmount;
+                        } else {
+                            $this->promotionReduction +=
+                                ($promotion->promotionAmount / 100) *
+                                $this->preFeePreDiscount;
+                        }
+                    }
+                }
             }
+            $this->update();
         }
+
         if ($pointsRate > 0) {
             $customer = Customer::where(
                 'id',
@@ -452,6 +512,19 @@ class Subscription extends Model
             $customer->points +=
                 $latestOrder->afterDiscountBeforeFees * $pointsRate;
             $customer->update();
+        }
+
+        // Set points reduction on subscription to 0 after renewal since points were all used on first order
+        $this->pointsReduction = 0;
+        $this->update();
+
+        // Check referral type and set referral reduction to 0 if the frequency type is not all orders.
+        if (
+            $this->store->referralSettings &&
+            $this->store->referralSettings->frequency === 'allOrders'
+        ) {
+            $this->referralReduction = 0;
+            $this->update();
         }
 
         // Create new order for next delivery
@@ -486,6 +559,9 @@ class Subscription extends Model
         $newOrder->deliveryFee = $this->deliveryFee;
         $newOrder->processingFee = $this->processingFee;
         $newOrder->salesTax = $this->salesTax;
+        $newOrder->referralReduction = $this->referralReduction;
+        $newOrder->promotionReduction = $this->promotionReduction;
+        $newOrder->pointsReduction = $this->pointsReduction;
         $newOrder->originalAmount = $this->amount;
         $newOrder->amount = $this->amount;
         $newOrder->currency = $this->currency;
@@ -1142,5 +1218,16 @@ class Subscription extends Model
     public function getPaidOrderCountAttribute()
     {
         return $this->orders->where('paid', 1)->count();
+    }
+
+    public function getTotalItemQuantityAttribute()
+    {
+        $total = 0;
+
+        foreach ($this->meal_subscriptions as $mealSub) {
+            $total += $mealSub->quantity;
+        }
+
+        return $total;
     }
 }

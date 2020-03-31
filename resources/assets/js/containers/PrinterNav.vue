@@ -97,15 +97,8 @@ export default {
   },
   mixins: [printer],
   async mounted() {
-    // BMP Testing
-    if (
-      this.viewedStore.id === 40 ||
-      this.viewedStore.id === 127 ||
-      this.viewedStore.id === 131
-    ) {
-      await this.printerConnect();
-      this.printerFindDevices();
-    }
+    await this.printerConnect();
+    this.printerFindDevices();
   },
   computed: {
     ...mapGetters(["viewedStore"]),

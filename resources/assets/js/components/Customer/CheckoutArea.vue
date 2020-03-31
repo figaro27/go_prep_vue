@@ -1,14 +1,7 @@
 <template>
   <div>
     <ul class="list-group">
-      <li
-        class="bag-item"
-        v-if="
-          activePromotions.length > 0 &&
-            !weeklySubscriptionValue &&
-            !subscriptionId
-        "
-      >
+      <li class="bag-item" v-if="activePromotions.length > 0">
         <div
           class="col-md-12"
           v-for="promotion in activePromotions"
@@ -61,7 +54,8 @@
             v-if="
               promotion.conditionType === 'orders' &&
                 loggedIn &&
-                getRemainingPromotionOrders(promotion) !== 0
+                getRemainingPromotionOrders(promotion) !== 0 &&
+                !user.storeOwner
             "
           >
             <h6 class="center-text">
@@ -380,10 +374,7 @@
         </div>
       </li>
 
-      <li
-        class="checkout-item"
-        v-if="referralReduction > 0 && !weeklySubscriptionValue"
-      >
+      <li class="checkout-item" v-if="referralReduction > 0">
         <div class="row">
           <div class="col-6 col-md-4">
             <span class="d-inline mr-2" @click="removeReferral">
@@ -403,11 +394,7 @@
 
       <li
         class="checkout-item"
-        v-if="
-          promotionReduction > 0 &&
-            !weeklySubscriptionValue &&
-            !removePromotions
-        "
+        v-if="promotionReduction > 0 && !removePromotions"
       >
         <div class="row">
           <div class="col-6 col-md-4">
@@ -435,11 +422,7 @@
 
       <li
         class="checkout-item"
-        v-if="
-          promotionPointsReduction > 0 &&
-            !weeklySubscriptionValue &&
-            !removePromotions
-        "
+        v-if="promotionPointsReduction > 0 && !removePromotions"
       >
         <div class="row">
           <div class="col-6 col-md-4">
@@ -497,13 +480,7 @@
         </div>
       </li>
 
-      <li
-        v-if="
-          availablePromotionPoints &&
-            availablePromotionPoints > 0 &&
-            !weeklySubscriptionValue
-        "
-      >
+      <li v-if="availablePromotionPoints && availablePromotionPoints > 0">
         <div class="row">
           <div class="col-sm-12 pl-3">
             <b-alert variant="info" show class="pb-4"
@@ -1831,7 +1808,7 @@ use next_delivery_dates
       } else return this.afterCoupon;
     },
     deliveryFeeAmount() {
-      if (!this.pickup) {
+      if (this.pickup === 1) {
         let {
           applyDeliveryFee,
           deliveryFee,
@@ -1846,7 +1823,11 @@ use next_delivery_dates
         if (this.$route.params.adjustOrder) {
           return this.order.deliveryFee;
         }
-        if (!this.couponFreeDelivery && !this.promotionFreeDelivery) {
+        if (
+          !this.couponFreeDelivery &&
+          !this.promotionFreeDelivery &&
+          this.pickup === 1
+        ) {
           if (applyDeliveryFee) {
             let fee = 0;
             if (deliveryFeeType === "flat") {
@@ -1917,7 +1898,7 @@ use next_delivery_dates
       return this.purchasedGiftCard.balance;
     },
     referralReduction() {
-      if (this.weeklySubscriptionValue || !this.referral) {
+      if (!this.referral) {
         return 0;
       }
       if (this.$route.params.adjustOrder) {
@@ -1929,7 +1910,7 @@ use next_delivery_dates
       return this.referral.balance;
     },
     promotionReduction() {
-      if (this.weeklySubscriptionValue || this.removePromotions) {
+      if (this.removePromotions) {
         return 0;
       }
       let promotions = this.promotions;
@@ -1978,7 +1959,7 @@ use next_delivery_dates
       return reduction;
     },
     promotionPointsReduction() {
-      if (this.weeklySubscriptionValue || this.removePromotions) {
+      if (this.removePromotions) {
         return 0;
       }
       if (this.usePromotionPoints) {
@@ -2879,14 +2860,12 @@ use next_delivery_dates
       if (conditionAmount > this.user.orderCount) {
         return conditionAmount - this.user.orderCount;
       } else {
+        let increment = conditionAmount;
         while (conditionAmount < this.user.orderCount) {
-          conditionAmount += conditionAmount;
+          conditionAmount += increment;
         }
         return conditionAmount - this.user.orderCount;
       }
-    },
-    applyPromotionPoints() {
-      alert("eyyy");
     }
   }
 };

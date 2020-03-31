@@ -814,6 +814,10 @@ class CheckoutController extends UserController
                 $userSubscription->coupon_id = $couponId;
                 $userSubscription->couponReduction = $couponReduction;
                 $userSubscription->couponCode = $couponCode;
+                $userSubscription->applied_referral_id = $appliedReferralId;
+                $userSubscription->referralReduction = $referralReduction;
+                $userSubscription->promotionReduction = $promotionReduction;
+                $userSubscription->pointsReduction = $pointsReduction;
                 // In this case the 'next renewal time' is actually the first charge time
                 $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
                 $userSubscription->pickup_location_id = $pickupLocation;

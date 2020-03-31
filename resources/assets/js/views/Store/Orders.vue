@@ -4,21 +4,21 @@
       <b-alert variant="info" show>
         <h5 class="pb-2">NEW UPDATES</h5>
         <p>
-          -<b>Marketing Page</b> in the left menu. Includes leads, promotions,
-          and a referral system. Coupons and Purchased Gift Cards have been
-          moved here from the Settings page.
+          -<b>Marketing Page</b> in the left menu. Includes <b>leads</b>,
+          <b>promotions</b>, and a <b>referral system</b>. Coupons and Purchased
+          Gift Cards have been moved here from the Settings page.
         </p>
         <p>
           -<b>Labels Report (Beta)</b> on the reports page for your meal
-          containers. You can also print a label for a single order on this
-          page.
+          containers. You can also print a label for a single order on the page
+          below.
         </p>
         <p>
           -Hover over these info icons wherever you see them on the pages above
           for explanations:
           <img
             v-b-popover.hover="
-              'I\'m called a \'Popover\' and I help explain how things work. Hover over me wherever you see me.'
+              'I\'m called a Popover and I help explain how things work. Hover over me wherever you see me.'
             "
             title="Popover"
             src="/images/store/popover.png"
@@ -455,8 +455,7 @@
                 >Print Packing Slip</b-btn
               >
             </div>
-            <!-- BMP Testing -->
-            <div v-if="store.id === 40 || store.id === 127 || store.id === 131">
+            <div>
               <b-btn
                 class="btn mb-2 d-inline mr-1 royalBlueBG"
                 @click="printLabel(order.id)"

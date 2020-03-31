@@ -261,6 +261,11 @@ class SubscriptionController extends UserController
         $mealPlanDiscount = $request->get('mealPlanDiscount');
         $salesTax = $request->get('salesTax');
 
+        $promotionReduction = $request->get('promotionReduction');
+        $appliedReferralId = $request->get('applied_referral_id');
+        $referralReduction = $request->get('referralReduction');
+        $pointsReduction = $request->get('pointsReduction');
+
         // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
         //     $discount = $store->settings->mealPlanDiscount / 100;
         //     $mealPlanDiscount = $total * $discount;
@@ -478,6 +483,9 @@ class SubscriptionController extends UserController
         $sub->couponReduction = $couponReduction;
         $sub->couponCode = $couponCode;
         $sub->pickup_location_id = $pickupLocation;
+        $sub->referralReduction = $referralReduction;
+        $sub->promotionReduction = $promotionReduction;
+        $sub->pointsReduction = $pointsReduction;
         $sub->save();
 
         // Update future orders IF cutoff hasn't passed yet
@@ -502,6 +510,9 @@ class SubscriptionController extends UserController
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
             $order->salesTax = $salesTax;
+            $order->referralReduction = $referralReduction;
+            $order->promotionReduction = $promotionReduction;
+            $order->pointsReduction = $pointsReduction;
             $order->amount = $total;
             $order->save();
 

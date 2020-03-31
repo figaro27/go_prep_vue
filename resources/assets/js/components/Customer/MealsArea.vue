@@ -36,7 +36,6 @@
       class="col-md-12"
       v-for="promotion in activePromotions"
       :key="promotion.id"
-      v-if="!$route.query.sub"
     >
       <b-alert
         variant="success"
@@ -85,7 +84,8 @@
         v-if="
           promotion.conditionType === 'orders' &&
             loggedIn &&
-            getRemainingPromotionOrders(promotion) !== 0
+            getRemainingPromotionOrders(promotion) !== 0 &&
+            !user.storeOwner
         "
       >
         <h6 class="center-text">

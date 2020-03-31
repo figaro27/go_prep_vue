@@ -388,6 +388,9 @@ $currency = $subscription->store->settings->currency_symbol
                         $salesTax = $subscription->salesTax;
                         $couponCode = $subscription->couponCode;
                         $couponReduction = $subscription->couponReduction;
+                        $referralReduction = $subscription->referralReduction;
+                        $promotionReduction = $subscription->promotionReduction;
+                        $pointsReduction = $subscription->pointsReduction;
                         @endphp
 
                         Subtotal: <br>
@@ -406,7 +409,24 @@ $currency = $subscription->store->settings->currency_symbol
                         @if ($processingFee > 0)
                         Processing Fee<br>
                         @endif
-                        
+                        @if ($referralReduction > 0)
+                        Referral Discount<br>
+                        @endif
+                        @if ($promotionReduction > 0)
+                        Promotion Discount<br>
+                        @endif
+                        @if ($pointsReduction > 0)
+                        Points Discount<br>
+                        @endif
+                        @if ($referralReduction > 0)
+                        {{$currency}}{{ number_format($referralReduction, 2) }}<br>
+                        @endif
+                        @if ($promotionReduction > 0)
+                        {{$currency}}{{ number_format($promotionReduction, 2) }}<br>
+                        @endif
+                        @if ($pointsReduction > 0)
+                        {{$currency}}{{ number_format($pointsReduction, 2) }}<br>
+                        @endif
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span>
                       </td>

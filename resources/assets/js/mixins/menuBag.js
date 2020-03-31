@@ -386,7 +386,10 @@ export default {
             transferTime: this.transferTime,
             grandTotal: this.grandTotal,
             processingFee: this.processingFeeAmount,
-            mealPlanDiscount: this.mealPlanDiscount
+            mealPlanDiscount: this.mealPlanDiscount,
+            referralReduction: this.referralReduction,
+            promotionReduction: this.promotionReduction,
+            pointsReduction: this.promotionPointsReduction
           }
         );
         await this.refreshSubscriptions();
