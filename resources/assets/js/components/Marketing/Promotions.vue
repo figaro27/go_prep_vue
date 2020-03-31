@@ -166,7 +166,7 @@
               Points Naming
               <img
                 v-b-popover.hover="
-                  'Add a custom title for your points system to be communicated to customers in various places. E.G. \'You will earn 200 Prep Points on this order.\' The naming of company\'s points systems are usually similar to or found in the company name. Or you can just simply let it be called \'Points\'.'
+                  'Add a custom title for your points system to be communicated to customers in various places. E.G. \'You will earn 200 Prep Points on this order.\' The naming of company\'s points systems are usually similar to or found in the company name. Or you can just simply let them be called \'Points\'.'
                 "
                 title="Points Naming"
                 src="/images/store/popover.png"
