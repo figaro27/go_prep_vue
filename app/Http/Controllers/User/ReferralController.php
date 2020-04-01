@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Store;
+namespace App\Http\Controllers\User;
 
 use App\Referral;
 use Illuminate\Http\Request;
 
-class ReferralController extends StoreController
+class ReferralController extends UserController
 {
     /**
      * Display a listing of the resource.
@@ -29,7 +29,6 @@ class ReferralController extends StoreController
             return $referral;
         }
     }
-
     /**
      * Show the form for creating a new resource.
      *

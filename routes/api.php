@@ -32,6 +32,10 @@ foreach (
                 'findPurchasedGiftCard',
                 'PurchasedGiftCardController@findPurchasedGiftCard'
             );
+            Route::post(
+                'findReferralCode',
+                'ReferralController@findReferralCode'
+            );
         }
     );
     //Auth::routes();
@@ -336,6 +340,10 @@ foreach (
                                 'findPurchasedGiftCard',
                                 'PurchasedGiftCardController@findPurchasedGiftCard'
                             );
+                            Route::post(
+                                'findReferralCode',
+                                'ReferralController@findReferralCode'
+                            );
                             Route::resource(
                                 'pickupLocations',
                                 'PickupLocationController'
@@ -517,6 +525,11 @@ foreach (
                             Route::post(
                                 '/me/findPurchasedGiftCard',
                                 'PurchasedGiftCardController@findPurchasedGiftCard'
+                            );
+
+                            Route::post(
+                                '/me/findReferralCode',
+                                'ReferralController@findReferralCode'
                             );
 
                             Route::get(

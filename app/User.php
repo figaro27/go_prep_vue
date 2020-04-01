@@ -558,7 +558,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return Order::where([
             'user_id' => $this->id,
-            'store_id' => $this->last_viewed_store_id
+            'store_id' => $this->last_viewed_store_id,
+            'paid' => 1
         ])->count();
     }
 }

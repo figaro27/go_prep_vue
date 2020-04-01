@@ -437,95 +437,7 @@ class Subscription extends Model
         $order_transaction->amount = $latestOrder->amount;
         $order_transaction->save();
 
-        // Accrue promotion points if points system exists
-        // Also check if other promotion conditions are being met on the upcoming order and remove if not
-        $promotions = $latestOrder->store->promotions;
-        $pointsRate = 0;
-        $this->promotionReduction = 0;
-        foreach ($promotions as $promotion) {
-            if ($promotion->active) {
-                if ($promotion->promotionType === 'points') {
-                    $pointsRate = $promotion->promotionAmount;
-                }
-                if ($promotion->conditionType === 'subtotal') {
-                    if (
-                        $this->preFeePreDiscount > $promotion->conditionAmount
-                    ) {
-                        if ($promotion->promotionType === 'flat') {
-                            $this->promotionReduction +=
-                                $promotion->promotionAmount;
-                        } else {
-                            $this->promotionReduction +=
-                                ($promotion->promotionAmount / 100) *
-                                $this->preFeePreDiscount;
-                        }
-                    }
-                }
-                if ($promotion->conditionType === 'meals') {
-                    if (
-                        $this->total_item_quantity > $promotion->condtionAmount
-                    ) {
-                        if ($promotion->promotionType === 'flat') {
-                            $this->promotionReduction +=
-                                $promotion->promotionAmount;
-                        } else {
-                            $this->promotionReduction +=
-                                ($promotion->promotionAmount / 100) *
-                                $this->preFeePreDiscount;
-                        }
-                    }
-                }
-                if ($promotion->conditionType === 'orders') {
-                    $remainingPromotionOrders = 0;
-                    $conditionAmount = $promotion->conditionAmount;
-                    if ($conditionAmount > $this->user->orderCount) {
-                        $remainingPromotionOrders =
-                            $conditionAmount - $this->user->orderCount;
-                    } else {
-                        $increment = $conditionAmount;
-                        while ($conditionAmount < $this->user->orderCount) {
-                            $conditionAmount += $increment;
-                        }
-                        $remainingPromotionOrders =
-                            $conditionAmount - $this->user->orderCount;
-                    }
-                    if ($remainingPromotionOrders === 0.0) {
-                        if ($promotion->promotionType === 'flat') {
-                            $this->promotionReduction +=
-                                $promotion->promotionAmount;
-                        } else {
-                            $this->promotionReduction +=
-                                ($promotion->promotionAmount / 100) *
-                                $this->preFeePreDiscount;
-                        }
-                    }
-                }
-            }
-            $this->update();
-        }
-
-        if ($pointsRate > 0) {
-            $customer = Customer::where(
-                'id',
-                $latestOrder->customer_id
-            )->first();
-            $customer->points +=
-                $latestOrder->afterDiscountBeforeFees * $pointsRate;
-            $customer->update();
-        }
-
-        // Set points reduction on subscription to 0 after renewal since points were all used on first order
-        $this->pointsReduction = 0;
-        $this->update();
-
-        // Check referral type and set referral reduction to 0 if the frequency type is not all orders.
-        if (
-            $this->store->referralSettings &&
-            $this->store->referralSettings->frequency === 'allOrders'
-        ) {
-            $this->referralReduction = 0;
-            $this->update();
-        }
+        $this->syncPrices();
 
         // Create new order for next delivery
         $newOrder = new Order();
@@ -733,6 +645,395 @@ class Subscription extends Model
         }
     }
 
+    public function syncDiscountPrices()
+    {
+        $promotions = $this->store->promotions;
+        $pointsRate = 0;
+        $this->promotionReduction = 0;
+        foreach ($promotions as $promotion) {
+            if ($promotion->active) {
+                if ($promotion->promotionType === 'points') {
+                    $pointsRate = $promotion->promotionAmount;
+                }
+                if ($promotion->conditionType === 'subtotal') {
+                    if (
+                        $this->preFeePreDiscount > $promotion->conditionAmount
+                    ) {
+                        if ($promotion->promotionType === 'flat') {
+                            $this->promotionReduction +=
+                                $promotion->promotionAmount;
+                        } else {
+                            $this->promotionReduction +=
+                                ($promotion->promotionAmount / 100) *
+                                $this->preFeePreDiscount;
+                        }
+                        if ($promotion->freeDelivery) {
+                            $this->deliveryFee = 0;
+                        }
+                    }
+                }
+                if ($promotion->conditionType === 'meals') {
+                    if (
+                        $this->total_item_quantity > $promotion->condtionAmount
+                    ) {
+                        if ($promotion->promotionType === 'flat') {
+                            $this->promotionReduction +=
+                                $promotion->promotionAmount;
+                        } else {
+                            $this->promotionReduction +=
+                                ($promotion->promotionAmount / 100) *
+                                $this->preFeePreDiscount;
+                        }
+                        if ($promotion->freeDelivery) {
+                            $this->deliveryFee = 0;
+                        }
+                    }
+                }
+                if ($promotion->conditionType === 'orders') {
+                    $remainingPromotionOrders = 0;
+                    $conditionAmount = $promotion->conditionAmount;
+                    if ($conditionAmount > $this->user->orderCount) {
+                        $remainingPromotionOrders =
+                            $conditionAmount - $this->user->orderCount;
+                    } else {
+                        $increment = $conditionAmount;
+                        while ($conditionAmount < $this->user->orderCount) {
+                            $conditionAmount += $increment;
+                        }
+                        $remainingPromotionOrders =
+                            $conditionAmount - $this->user->orderCount;
+                    }
+                    if ($remainingPromotionOrders === 0.0) {
+                        if ($promotion->promotionType === 'flat') {
+                            $this->promotionReduction +=
+                                $promotion->promotionAmount;
+                        } else {
+                            $this->promotionReduction +=
+                                ($promotion->promotionAmount / 100) *
+                                $this->preFeePreDiscount;
+                        }
+                        if ($promotion->freeDelivery) {
+                            $this->deliveryFee = 0;
+                        }
+                    }
+                }
+            }
+            $this->update();
+        }
+
+        if ($pointsRate > 0) {
+            $customer = Customer::where('id', $this->customer_id)->first();
+            $customer->points = 0;
+            $customer->points += $this->afterDiscountBeforeFees * $pointsRate;
+            $customer->update();
+        }
+
+        // Set points reduction on subscription to 0 after renewal since points were all used on first order
+        $this->pointsReduction = 0;
+        $this->update();
+
+        // Check referral type and set referral reduction to 0 if the frequency type is not all orders.
+        if (
+            $this->store->referralSettings &&
+            $this->store->referralSettings->frequency !== 'allOrders'
+        ) {
+            $this->referralReduction = 0;
+            $this->update();
+        }
+    }
+
+    public static function syncStock($meal)
+    {
+        $mealSubs = MealSubscription::where('meal_id', $meal->id)->get();
+        foreach ($mealSubs as $mealSub) {
+            $mealSub->delete();
+            $mealSub->subscription->syncPrices();
+            $mealSub->subscription->updateCurrentMealOrders();
+        }
+    }
+
+    /**
+     * Ensures subscription pricing is in line with the attached meals
+     *
+     * @return void
+     */
+    public function syncPrices($mealsReplaced = true)
+    {
+        try {
+            $subscription = \Stripe\Subscription::retrieve(
+                'sub_' . $this->stripe_id,
+                ['stripe_account' => $this->store->settings->stripe_id]
+            );
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'error' => 'Subscription not found at payment gateway'
+                ],
+                404
+            );
+        }
+
+        // Cancelled subscription. Halt here
+        if ($subscription->status === \Stripe\Subscription::STATUS_CANCELED) {
+            return;
+        }
+
+        $items = $this->fresh()->meal_subscriptions->map(function ($meal) {
+            if (!$meal->meal_package) {
+                $price = $meal->meal_size
+                    ? $meal->meal_size->price
+                    : $meal->meal->price;
+                foreach ($meal->components as $component) {
+                    $price += $component->option->price;
+                }
+                foreach ($meal->addons as $addon) {
+                    $price += $addon->addon->price;
+                }
+                return [
+                    'quantity' => $meal->quantity,
+                    'meal' => $meal->meal,
+                    'price' => $price
+                ];
+            }
+        });
+
+        $store = $this->store;
+
+        $bag = new Bag($items, $store);
+
+        $prePackagePrice = $bag->getTotal();
+
+        $totalPackagePrice = 0;
+        foreach (
+            $this->fresh()->meal_package_subscriptions
+            as $mealPackageSub
+        ) {
+            $totalPackagePrice += $mealPackageSub->price;
+        }
+
+        $total = $prePackagePrice + $totalPackagePrice;
+        $afterDiscountBeforeFees = $prePackagePrice + $totalPackagePrice;
+        $preFeePreDiscount = $prePackagePrice + $totalPackagePrice;
+
+        $deliveryFee = $this->deliveryFee;
+        $processingFee = 0;
+        $mealPlanDiscount = 0;
+        $salesTaxRate =
+            round(100 * ($this->salesTax / $this->afterDiscountBeforeFees), 2) /
+                100 ??
+            0;
+
+        if ($this->store->settings->applyMealPlanDiscount) {
+            $discount = $this->store->settings->mealPlanDiscount / 100;
+            $mealPlanDiscount = $total * $discount;
+            $total -= $mealPlanDiscount;
+            $afterDiscountBeforeFees = $total;
+        }
+
+        // if ($this->store->settings->applyDeliveryFee && !$this->pickup) {
+        //     $total += $this->store->settings->deliveryFee;
+        //     $deliveryFee += $this->store->settings->deliveryFee;
+        // }
+        $total += $deliveryFee;
+
+        if ($this->store->settings->applyProcessingFee) {
+            if ($this->store->settings->processingFeeType === 'flat') {
+                $total += $this->store->settings->processingFee;
+                $processingFee += $this->store->settings->processingFee;
+            } else {
+                $processingFee +=
+                    ($this->store->settings->processingFee / 100) *
+                    $afterDiscountBeforeFees;
+                $total += $processingFee;
+            }
+        }
+
+        $salesTax = $afterDiscountBeforeFees * $salesTaxRate;
+        $total += $salesTax;
+
+        $total = floor($total * 100) / 100;
+
+        // Update subscription pricing
+        $this->preFeePreDiscount = $preFeePreDiscount;
+        $this->mealPlanDiscount = $mealPlanDiscount;
+        $this->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+        $this->processingFee = $processingFee;
+        $this->deliveryFee = $deliveryFee;
+        $this->salesTax = $salesTax;
+
+        $this->save();
+
+        $this->syncDiscountPrices();
+        $total -= $this->referralReduction;
+        $total -= $this->promotionReduction;
+        $total -= $this->pointsReduction;
+        $this->amount = $total;
+        $this->save();
+
+        // Delete existing stripe plan
+        try {
+            $plan = \Stripe\Plan::retrieve($this->stripe_plan, [
+                'stripe_account' => $this->store->settings->stripe_id
+            ]);
+            $plan->delete();
+        } catch (\Exception $e) {
+        }
+
+        // Create stripe plan with new pricing
+        $plan = \Stripe\Plan::create(
+            [
+                "amount" => round($total * 100),
+                "interval" => "week",
+                "product" => [
+                    "name" =>
+                        "Weekly subscription (" .
+                        $this->store->storeDetail->name .
+                        ")"
+                ],
+                "currency" => "usd"
+            ],
+            ['stripe_account' => $this->store->settings->stripe_id]
+        );
+
+        // Assign plan to stripe subscription
+        \Stripe\Subscription::update(
+            $subscription->id,
+            [
+                'cancel_at_period_end' => false,
+                'items' => [
+                    [
+                        'id' => $subscription->items->data[0]->id,
+                        'plan' => $plan->id
+                    ]
+                ],
+                'prorate' => false
+            ],
+            ['stripe_account' => $this->store->settings->stripe_id]
+        );
+
+        // Assign new plan ID to subscription
+        $this->stripe_plan = $plan->id;
+        if ($mealsReplaced) {
+            $this->mealsReplaced = 1;
+        }
+        $this->save();
+
+        $this->updateCurrentMealOrders();
+    }
+
+    public function updateCurrentMealOrders()
+    {
+        $items = $this->fresh()->meal_subscriptions;
+
+        $store = $this->store;
+
+        $bag = new Bag($items, $store);
+        // Update future orders IF cutoff hasn't passed yet
+        $futureOrders = $this->orders()
+            ->where([['fulfilled', 0], ['paid', 0]])
+            ->whereDate('delivery_date', '>=', Carbon::now())
+            ->get();
+
+        foreach ($futureOrders as $order) {
+            // Cutoff already passed. Missed your chance bud!
+            if ($order->cutoff_passed) {
+                continue;
+            }
+
+            // Update order pricing
+            $order->preFeePreDiscount = $this->preFeePreDiscount;
+            $order->mealPlanDiscount = $this->mealPlanDiscount;
+            $order->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
+            $order->processingFee = $this->processingFee;
+            $order->deliveryFee = $this->deliveryFee;
+            $order->salesTax = $this->salesTax;
+            $order->referralReduction = $this->referralReduction;
+            $order->promotionReduction = $this->promotionReduction;
+            $order->pointsReduction = $this->pointsReduction;
+            $order->amount = $this->amount;
+            $order->save();
+
+            // Replace order meals
+            $mealOrders = MealOrder::where('order_id', $order->id)->get();
+
+            // Remove old meal orders & variations
+            foreach ($mealOrders as $mealOrder) {
+                foreach ($mealOrder->components as $component) {
+                    $component->delete();
+                }
+                foreach ($mealOrder->addons as $addon) {
+                    $addon->delete();
+                }
+                $mealOrder->delete();
+            }
+
+            // Add new meal orders & variations
+            foreach ($bag->getItems() as $item) {
+                $mealOrder = new MealOrder();
+                $mealOrder->order_id = $order->id;
+                $mealOrder->store_id = $this->store->id;
+                $mealOrder->meal_id = $item['meal']['id'];
+                $mealOrder->meal_size_id = $item['meal_size']['id'];
+                $mealOrder->price = $item['price'];
+                $mealOrder->quantity = $item['quantity'];
+                $mealOrder->save();
+
+                if (isset($item['components']) && $item['components']) {
+                    foreach ($item['components'] as $component) {
+                        MealOrderComponent::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_component_id' => $component->id,
+                            'meal_component_option_id' => $component->option->id
+                        ]);
+                    }
+                }
+
+                if (isset($item['addons']) && $item['addons']) {
+                    foreach ($item['addons'] as $addon) {
+                        MealOrderAddon::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_addon_id' => $addon->addon->id
+                        ]);
+                    }
+                }
+            }
+
+            // Add new meal orders that exist in meal package orders that didn't get processed in the bag above.
+            foreach ($items as $item) {
+                if ($item->meal_package) {
+                    $mealOrder = new MealOrder();
+                    $mealOrder->order_id = $order->id;
+                    $mealOrder->store_id = $this->store->id;
+                    $mealOrder->meal_id = $item->meal_id;
+                    $mealOrder->meal_size_id = $item->meal_size_id;
+                    // $mealOrder->price = $item->price;
+                    $mealOrder->quantity = $item->quantity;
+                    $mealOrder->meal_package = 1;
+
+                    if ($item->meal_package_subscription_id !== null) {
+                        $mealPackageSub = MeaLPackageSubscription::where(
+                            'id',
+                            $item->meal_package_subscription_id
+                        )->first();
+                        $mealOrder->meal_package_order_id = MealPackageOrder::where(
+                            [
+                                'meal_package_id' =>
+                                    $mealPackageSub->meal_package_id,
+                                'meal_package_size_id' =>
+                                    $mealPackageSub->meal_package_size_id,
+                                'order_id' => $order->id
+                            ]
+                        )
+                            ->pluck('id')
+                            ->first();
+                    }
+
+                    $mealOrder->save();
+                }
+            }
+        }
+    }
+
     /**
      *  Handle payment failure
      *
@@ -888,287 +1189,6 @@ class Subscription extends Model
 
         if ($this->store->notificationEnabled('resumed_subscription')) {
             $this->store->sendNotification('resumed_subscription', $this);
-        }
-    }
-
-    public static function syncStock($meal)
-    {
-        $mealSubs = MealSubscription::where('meal_id', $meal->id)->get();
-        foreach ($mealSubs as $mealSub) {
-            $mealSub->delete();
-            $mealSub->subscription->syncPrices();
-            $mealSub->subscription->updateCurrentMealOrders();
-        }
-    }
-
-    /**
-     * Ensures subscription pricing is in line with the attached meals
-     *
-     * @return void
-     */
-    public function syncPrices($mealsReplaced = true)
-    {
-        try {
-            $subscription = \Stripe\Subscription::retrieve(
-                'sub_' . $this->stripe_id,
-                ['stripe_account' => $this->store->settings->stripe_id]
-            );
-        } catch (\Exception $e) {
-            return response()->json(
-                [
-                    'error' => 'Subscription not found at payment gateway'
-                ],
-                404
-            );
-        }
-
-        // Cancelled subscription. Halt here
-        if ($subscription->status === \Stripe\Subscription::STATUS_CANCELED) {
-            return;
-        }
-
-        $items = $this->fresh()->meal_subscriptions->map(function ($meal) {
-            if (!$meal->meal_package) {
-                $price = $meal->meal_size
-                    ? $meal->meal_size->price
-                    : $meal->meal->price;
-                foreach ($meal->components as $component) {
-                    $price += $component->option->price;
-                }
-                foreach ($meal->addons as $addon) {
-                    $price += $addon->addon->price;
-                }
-                return [
-                    'quantity' => $meal->quantity,
-                    'meal' => $meal->meal,
-                    'price' => $price
-                ];
-            }
-        });
-
-        $store = $this->store;
-
-        $bag = new Bag($items, $store);
-
-        $prePackagePrice = $bag->getTotal();
-
-        $totalPackagePrice = 0;
-        foreach (
-            $this->fresh()->meal_package_subscriptions
-            as $mealPackageSub
-        ) {
-            $totalPackagePrice += $mealPackageSub->price;
-        }
-
-        $total = $prePackagePrice + $totalPackagePrice;
-        $afterDiscountBeforeFees = $prePackagePrice + $totalPackagePrice;
-        $preFeePreDiscount = $prePackagePrice + $totalPackagePrice;
-
-        $deliveryFee = $this->deliveryFee;
-        $processingFee = 0;
-        $mealPlanDiscount = 0;
-        $salesTaxRate =
-            round(100 * ($this->salesTax / $this->afterDiscountBeforeFees), 2) /
-                100 ??
-            0;
-
-        if ($this->store->settings->applyMealPlanDiscount) {
-            $discount = $this->store->settings->mealPlanDiscount / 100;
-            $mealPlanDiscount = $total * $discount;
-            $total -= $mealPlanDiscount;
-            $afterDiscountBeforeFees = $total;
-        }
-
-        // if ($this->store->settings->applyDeliveryFee && !$this->pickup) {
-        //     $total += $this->store->settings->deliveryFee;
-        //     $deliveryFee += $this->store->settings->deliveryFee;
-        // }
-        $total += $deliveryFee;
-
-        if ($this->store->settings->applyProcessingFee) {
-            if ($this->store->settings->processingFeeType === 'flat') {
-                $total += $this->store->settings->processingFee;
-                $processingFee += $this->store->settings->processingFee;
-            } else {
-                $processingFee +=
-                    ($this->store->settings->processingFee / 100) *
-                    $afterDiscountBeforeFees;
-                $total += $processingFee;
-            }
-        }
-
-        $salesTax = $afterDiscountBeforeFees * $salesTaxRate;
-        $total += $salesTax;
-        $total = floor($total * 100) / 100;
-
-        // Update subscription pricing
-        $this->preFeePreDiscount = $preFeePreDiscount;
-        $this->mealPlanDiscount = $mealPlanDiscount;
-        $this->afterDiscountBeforeFees = $afterDiscountBeforeFees;
-        $this->processingFee = $processingFee;
-        $this->deliveryFee = $deliveryFee;
-        $this->salesTax = $salesTax;
-        $this->amount = $total;
-        $this->save();
-
-        // Delete existing stripe plan
-        try {
-            $plan = \Stripe\Plan::retrieve($this->stripe_plan, [
-                'stripe_account' => $this->store->settings->stripe_id
-            ]);
-            $plan->delete();
-        } catch (\Exception $e) {
-        }
-
-        // Create stripe plan with new pricing
-        $plan = \Stripe\Plan::create(
-            [
-                "amount" => round($total * 100),
-                "interval" => "week",
-                "product" => [
-                    "name" =>
-                        "Weekly subscription (" .
-                        $this->store->storeDetail->name .
-                        ")"
-                ],
-                "currency" => "usd"
-            ],
-            ['stripe_account' => $this->store->settings->stripe_id]
-        );
-
-        // Assign plan to stripe subscription
-        \Stripe\Subscription::update(
-            $subscription->id,
-            [
-                'cancel_at_period_end' => false,
-                'items' => [
-                    [
-                        'id' => $subscription->items->data[0]->id,
-                        'plan' => $plan->id
-                    ]
-                ],
-                'prorate' => false
-            ],
-            ['stripe_account' => $this->store->settings->stripe_id]
-        );
-
-        // Assign new plan ID to subscription
-        $this->stripe_plan = $plan->id;
-        if ($mealsReplaced) {
-            $this->mealsReplaced = 1;
-        }
-        $this->save();
-
-        $this->updateCurrentMealOrders();
-    }
-
-    public function updateCurrentMealOrders()
-    {
-        $items = $this->fresh()->meal_subscriptions;
-
-        $store = $this->store;
-
-        $bag = new Bag($items, $store);
-        // Update future orders IF cutoff hasn't passed yet
-        $futureOrders = $this->orders()
-            ->where([['fulfilled', 0], ['paid', 0]])
-            ->whereDate('delivery_date', '>=', Carbon::now())
-            ->get();
-
-        foreach ($futureOrders as $order) {
-            // Cutoff already passed. Missed your chance bud!
-            if ($order->cutoff_passed) {
-                continue;
-            }
-
-            // Update order pricing
-            $order->preFeePreDiscount = $this->preFeePreDiscount;
-            $order->mealPlanDiscount = $this->mealPlanDiscount;
-            $order->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
-            $order->processingFee = $this->processingFee;
-            $order->deliveryFee = $this->deliveryFee;
-            $order->salesTax = $this->salesTax;
-            $order->amount = $this->amount;
-            $order->save();
-
-            // Replace order meals
-            $mealOrders = MealOrder::where('order_id', $order->id)->get();
-
-            // Remove old meal orders & variations
-            foreach ($mealOrders as $mealOrder) {
-                foreach ($mealOrder->components as $component) {
-                    $component->delete();
-                }
-                foreach ($mealOrder->addons as $addon) {
-                    $addon->delete();
-                }
-                $mealOrder->delete();
-            }
-
-            // Add new meal orders & variations
-            foreach ($bag->getItems() as $item) {
-                $mealOrder = new MealOrder();
-                $mealOrder->order_id = $order->id;
-                $mealOrder->store_id = $this->store->id;
-                $mealOrder->meal_id = $item['meal']['id'];
-                $mealOrder->meal_size_id = $item['meal_size']['id'];
-                $mealOrder->price = $item['price'];
-                $mealOrder->quantity = $item['quantity'];
-                $mealOrder->save();
-
-                if (isset($item['components']) && $item['components']) {
-                    foreach ($item['components'] as $component) {
-                        MealOrderComponent::create([
-                            'meal_order_id' => $mealOrder->id,
-                            'meal_component_id' => $component->id,
-                            'meal_component_option_id' => $component->option->id
-                        ]);
-                    }
-                }
-
-                if (isset($item['addons']) && $item['addons']) {
-                    foreach ($item['addons'] as $addon) {
-                        MealOrderAddon::create([
-                            'meal_order_id' => $mealOrder->id,
-                            'meal_addon_id' => $addon->addon->id
-                        ]);
-                    }
-                }
-            }
-
-            // Add new meal orders that exist in meal package orders that didn't get processed in the bag above.
-            foreach ($items as $item) {
-                if ($item->meal_package) {
-                    $mealOrder = new MealOrder();
-                    $mealOrder->order_id = $order->id;
-                    $mealOrder->store_id = $this->store->id;
-                    $mealOrder->meal_id = $item->meal_id;
-                    $mealOrder->meal_size_id = $item->meal_size_id;
-                    // $mealOrder->price = $item->price;
-                    $mealOrder->quantity = $item->quantity;
-                    $mealOrder->meal_package = 1;
-
-                    if ($item->meal_package_subscription_id !== null) {
-                        $mealPackageSub = MeaLPackageSubscription::where(
-                            'id',
-                            $item->meal_package_subscription_id
-                        )->first();
-                        $mealOrder->meal_package_order_id = MealPackageOrder::where(
-                            [
-                                'meal_package_id' =>
-                                    $mealPackageSub->meal_package_id,
-                                'meal_package_size_id' =>
-                                    $mealPackageSub->meal_package_size_id,
-                                'order_id' => $order->id
-                            ]
-                        )
-                            ->pluck('id')
-                            ->first();
-                    }
-
-                    $mealOrder->save();
-                }
-            }
         }
     }
 

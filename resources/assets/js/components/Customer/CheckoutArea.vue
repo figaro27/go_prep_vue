@@ -1156,6 +1156,8 @@ export default {
   },
   data() {
     return {
+      purchasedGiftCardAppliedFirst: false,
+      referralAppliedFirst: false,
       coupons: [],
       purchasedGiftCards: [],
       promotionPoints: null,
@@ -1808,7 +1810,7 @@ use next_delivery_dates
       } else return this.afterCoupon;
     },
     deliveryFeeAmount() {
-      if (this.pickup === 1) {
+      if (this.pickup === 0) {
         let {
           applyDeliveryFee,
           deliveryFee,
@@ -1826,7 +1828,7 @@ use next_delivery_dates
         if (
           !this.couponFreeDelivery &&
           !this.promotionFreeDelivery &&
-          this.pickup === 1
+          this.pickup === 0
         ) {
           if (applyDeliveryFee) {
             let fee = 0;
@@ -1892,9 +1894,19 @@ use next_delivery_dates
       if (!this.purchasedGiftCardApplied) {
         return 0;
       }
-      if (this.purchasedGiftCard.balance > this.afterFeesAndTax) {
-        return this.afterFeesAndTax;
+      if (this.referralAppliedFirst) {
+        if (
+          this.purchasedGiftCard.balance >
+          this.afterFeesAndTax - this.referralReduction
+        ) {
+          return this.afterFeesAndTax - this.referralReduction;
+        }
+      } else {
+        if (this.purchasedGiftCard.balance > this.afterFeesAndTax) {
+          return this.afterFeesAndTax;
+        }
       }
+
       return this.purchasedGiftCard.balance;
     },
     referralReduction() {
@@ -1904,9 +1916,19 @@ use next_delivery_dates
       if (this.$route.params.adjustOrder) {
         return this.order.referralReduction;
       }
-      if (this.referral.balance > this.afterFeesAndTax) {
-        return this.afterFeesAndTax;
+      if (this.purchasedGiftCardAppliedFirst) {
+        if (
+          this.referral.balance >
+          this.afterFeesAndTax - this.purchasedGiftCardReduction
+        ) {
+          return this.afterFeesAndTax - this.purchasedGiftCardReduction;
+        }
+      } else {
+        if (this.referral.balance > this.afterFeesAndTax) {
+          return this.afterFeesAndTax;
+        }
       }
+
       return this.referral.balance;
     },
     promotionReduction() {
@@ -1953,8 +1975,17 @@ use next_delivery_dates
           }
         }
       });
-      if (reduction > this.afterFeesAndTax - this.referralReduction) {
-        return this.afterFeesAndTax - this.referralReduction;
+      if (
+        reduction >
+        this.afterFeesAndTax -
+          this.referralReduction -
+          this.purchasedGiftCardReduction
+      ) {
+        return (
+          this.afterFeesAndTax -
+          this.referralReduction -
+          this.purchasedGiftCardReduction
+        );
       }
       return reduction;
     },
@@ -2010,7 +2041,7 @@ use next_delivery_dates
           }
         }
       });
-      return !this.weeklySubscriptionValue ? freeDelivery : false;
+      return freeDelivery;
     },
     totalBagQuantity() {
       let quantity = 0;
@@ -2346,39 +2377,44 @@ use next_delivery_dates
         this.setBagPurchasedGiftCard(purchasedGiftCard);
         this.discountCode = "";
         this.$toastr.s("Gift Card Applied.", "Success");
+        if (!this.referralAppliedFirst) {
+          this.purchasedGiftCardAppliedFirst = true;
+        }
+        return;
+      }
+      // this.discountCode = "";
+      // this.$toastr.w("Promo code not found.");
+
+      let referral = {};
+      await axios
+        .post(this.prefix + "findReferralCode", {
+          store_id: this.store.id,
+          referralCode: this.discountCode
+        })
+        .then(resp => {
+          referral = resp.data;
+        });
+
+      if (
+        referral &&
+        this.discountCode.toUpperCase() === referral.code.toUpperCase()
+      ) {
+        if (referral.balance === "0.00") {
+          this.$toastr.e("There are no more funds left on your referral code.");
+          return;
+        }
+        this.referral = referral;
+
+        this.setBagReferral(referral);
+        this.discountCode = "";
+        this.$toastr.s("Referral Code Applied.", "Success");
+        if (!this.purchasedGiftCardAppliedFirst) {
+          this.referralAppliedFirst = true;
+        }
         return;
       }
       this.discountCode = "";
       this.$toastr.w("Promo code not found.");
-      this.purchasedGiftCards.forEach(purchasedGiftCard => {
-        if (
-          this.discountCode.toUpperCase() ===
-          purchasedGiftCard.code.toUpperCase()
-        ) {
-          if (purchasedGiftCard.balance === "0.00") {
-            this.$toastr.e("There are no more funds left on this gift card.");
-            return;
-          }
-          this.purchasedGiftCard = purchasedGiftCard;
-          this.setBagPurchasedGiftCard(purchasedGiftCard);
-          this.discountCode = "";
-          this.$toastr.s("Gift Card Applied.", "Success");
-        }
-      });
-
-      this.referrals.forEach(ref => {
-        if (this.discountCode.toUpperCase() === ref.code.toUpperCase()) {
-          if (ref.balance === "0.00") {
-            this.$toastr.e("There is no balance remaining.");
-            return;
-          }
-
-          this.referral = ref;
-          this.setBagReferral(ref);
-          this.discountCode = "";
-          this.$toastr.s("Referral Code Applied.", "Success");
-        }
-      });
     },
     oneTimeCouponCheck(couponId) {
       if (this.$route.params.storeView || this.storeOwner) {
