@@ -495,6 +495,7 @@
                 size="lg"
                 v-model="usePromotionPoints"
                 class="pt-3"
+                @change.native="applyPromotionPoints"
             /></b-alert>
           </div>
         </div>
@@ -1156,10 +1157,9 @@ export default {
   },
   data() {
     return {
-      purchasedGiftCardAppliedFirst: false,
-      referralAppliedFirst: false,
       coupons: [],
       purchasedGiftCards: [],
+      pointsReduction: 0,
       promotionPoints: null,
       usePromotionPoints: false,
       removePromotions: false,
@@ -1894,20 +1894,8 @@ use next_delivery_dates
       if (!this.purchasedGiftCardApplied) {
         return 0;
       }
-      if (this.referralAppliedFirst) {
-        if (
-          this.purchasedGiftCard.balance >
-          this.afterFeesAndTax - this.referralReduction
-        ) {
-          return this.afterFeesAndTax - this.referralReduction;
-        }
-      } else {
-        if (this.purchasedGiftCard.balance > this.afterFeesAndTax) {
-          return this.afterFeesAndTax;
-        }
-      }
 
-      return this.purchasedGiftCard.balance;
+      return parseFloat(this.purchasedGiftCard.balance);
     },
     referralReduction() {
       if (!this.referral) {
@@ -1916,20 +1904,8 @@ use next_delivery_dates
       if (this.$route.params.adjustOrder) {
         return this.order.referralReduction;
       }
-      if (this.purchasedGiftCardAppliedFirst) {
-        if (
-          this.referral.balance >
-          this.afterFeesAndTax - this.purchasedGiftCardReduction
-        ) {
-          return this.afterFeesAndTax - this.purchasedGiftCardReduction;
-        }
-      } else {
-        if (this.referral.balance > this.afterFeesAndTax) {
-          return this.afterFeesAndTax;
-        }
-      }
 
-      return this.referral.balance;
+      return parseFloat(this.referral.balance);
     },
     promotionReduction() {
       if (this.removePromotions) {
@@ -1975,37 +1951,26 @@ use next_delivery_dates
           }
         }
       });
-      if (
-        reduction >
-        this.afterFeesAndTax -
-          this.referralReduction -
-          this.purchasedGiftCardReduction
-      ) {
-        return (
-          this.afterFeesAndTax -
-          this.referralReduction -
-          this.purchasedGiftCardReduction
-        );
-      }
       return reduction;
     },
     promotionPointsReduction() {
-      if (this.removePromotions) {
+      if (
+        this.removePromotions ||
+        !this.usePromotionPoints ||
+        this.afterFeesAndTax <= 0
+      ) {
         return 0;
       }
-      if (this.usePromotionPoints) {
-        return this.availablePromotionPoints / 100;
-      } else {
-        return 0;
-      }
+      return this.pointsReduction;
     },
     grandTotal() {
+      return this.afterFeesAndTax - this.totalDiscountReduction;
+    },
+    totalDiscountReduction() {
       return (
-        this.afterFees +
-        this.tax -
-        this.purchasedGiftCardReduction -
-        this.referralReduction -
-        this.promotionReduction -
+        this.purchasedGiftCardReduction +
+        this.referralReduction +
+        this.promotionReduction +
         this.promotionPointsReduction
       );
     },
@@ -2328,13 +2293,13 @@ use next_delivery_dates
         if (coupon.oneTime) {
           let oneTimePass = this.oneTimeCouponCheck(coupon.id);
           if (oneTimePass === "login") {
-            this.$toastr.e(
+            this.$toastr.w(
               "This is a one-time coupon. Please log in or create an account to check if it has already been used."
             );
             return;
           }
           if (!oneTimePass) {
-            this.$toastr.e(
+            this.$toastr.w(
               "This was a one-time coupon that has already been used.",
               'Coupon Code: "' + this.discountCode + '"'
             );
@@ -2369,17 +2334,23 @@ use next_delivery_dates
         this.discountCode.toUpperCase() === purchasedGiftCard.code.toUpperCase()
       ) {
         if (purchasedGiftCard.balance === "0.00") {
-          this.$toastr.e("There are no more funds left on this gift card.");
+          this.$toastr.w("There are no more funds left on this gift card.");
           return;
+        }
+        if (this.grandTotal === 0) {
+          this.$toastr.w(
+            "The total price of this order is 0. It can't be discounted any more."
+          );
+          return;
+        }
+        if (purchasedGiftCard.balance > this.grandTotal) {
+          purchasedGiftCard.balance = this.grandTotal;
         }
         this.purchasedGiftCard = purchasedGiftCard;
 
         this.setBagPurchasedGiftCard(purchasedGiftCard);
         this.discountCode = "";
         this.$toastr.s("Gift Card Applied.", "Success");
-        if (!this.referralAppliedFirst) {
-          this.purchasedGiftCardAppliedFirst = true;
-        }
         return;
       }
       // this.discountCode = "";
@@ -2400,17 +2371,24 @@ use next_delivery_dates
         this.discountCode.toUpperCase() === referral.code.toUpperCase()
       ) {
         if (referral.balance === "0.00") {
-          this.$toastr.e("There are no more funds left on your referral code.");
+          this.$toastr.w("There are no more funds left on your referral code.");
           return;
         }
+        if (this.grandTotal === 0) {
+          this.$toastr.w(
+            "The total price of this order is 0. It can't be discounted any more."
+          );
+          return;
+        }
+        if (referral.balance > this.grandTotal) {
+          referral.balance = this.grandTotal;
+        }
+
         this.referral = referral;
 
         this.setBagReferral(referral);
         this.discountCode = "";
         this.$toastr.s("Referral Code Applied.", "Success");
-        if (!this.purchasedGiftCardAppliedFirst) {
-          this.referralAppliedFirst = true;
-        }
         return;
       }
       this.discountCode = "";
@@ -2901,6 +2879,21 @@ use next_delivery_dates
           conditionAmount += increment;
         }
         return conditionAmount - this.user.orderCount;
+      }
+    },
+    applyPromotionPoints() {
+      if (this.usePromotionPoints) {
+        if (this.grandTotal === 0) {
+          this.$toastr.w(
+            "The total price of this order is 0. It can't be discounted any more."
+          );
+          return;
+        }
+        if (this.availablePromotionPoints / 100 > this.grandTotal) {
+          this.pointsReduction = this.grandTotal;
+        } else {
+          this.pointsReduction = this.availablePromotionPoints / 100;
+        }
       }
     }
   }

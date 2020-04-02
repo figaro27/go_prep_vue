@@ -419,11 +419,7 @@ $currency = $order->store->settings->currency_symbol
                         Processing Fee<br>
                         @endif
                         @if ($purchasedGiftCardReduction > 0)
-                        @if (str_len($purchasedGiftCard) > 5)
-                        Referral Code ({{$purchasedGiftCard}})
-                        @else
-                        Gift Card ({{$purchasedGiftCard}})
-                        @endif<br>
+                        Gift Card ({{$purchasedGiftCard}})<br>
                         @endif
                         @if ($referralReduction > 0)
                         Referral Discount<br>

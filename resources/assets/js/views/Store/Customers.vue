@@ -241,12 +241,7 @@
                     class="text-success"
                     v-if="order.purchasedGiftCardReduction > 0"
                   >
-                    <span v-if="order.purchased_gift_card_code.length > 5">
-                      Referral Code
-                    </span>
-                    <span v-else>
-                      Gift Card
-                    </span>
+                    Gift Card
                     {{ order.purchased_gift_card_code }} ({{
                       format.money(
                         order.purchasedGiftCardReduction,

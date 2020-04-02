@@ -723,7 +723,7 @@ class Subscription extends Model
 
         if ($pointsRate > 0) {
             $customer = Customer::where('id', $this->customer_id)->first();
-            $customer->points = 0;
+            $customer->points -= $pointsReduction * 100;
             $customer->points += $this->afterDiscountBeforeFees * $pointsRate;
             $customer->update();
         }

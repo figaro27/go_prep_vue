@@ -665,7 +665,7 @@ class CheckoutController extends StoreController
 
             // Promotion Points
             if ($pointsReduction > 0) {
-                $customer->points = 0;
+                $customer->points -= $pointsReduction * 100;
                 $customer->update();
             }
 

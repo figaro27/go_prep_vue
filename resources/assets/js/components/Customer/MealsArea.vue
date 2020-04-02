@@ -1196,8 +1196,9 @@ export default {
       if (conditionAmount > this.user.orderCount) {
         return conditionAmount - this.user.orderCount;
       } else {
+        let increment = conditionAmount;
         while (conditionAmount < this.user.orderCount) {
-          conditionAmount += conditionAmount;
+          conditionAmount += increment;
         }
         return conditionAmount - this.user.orderCount;
       }
