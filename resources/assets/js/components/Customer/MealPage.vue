@@ -1,6 +1,14 @@
 <template>
   <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
     <div class="meal-page mt-5 mb-3 flexibleRow">
+      <button
+        type="button"
+        :style="brandColor"
+        class="mobile-sticky-button btn btn-lg white-text d-md-none"
+        @click="addMeal(meal)"
+      >
+        Add
+      </button>
       <div class="flexibleArea">
         <div class="row">
           <div class="col-md-4">
@@ -162,7 +170,7 @@
               {{ format.money(mealVariationPrice, storeSettings.currency) }}
             </h2>
           </div>
-          <div class="col-md-3 offset-1">
+          <div class="col-md-3 offset-1 d-xs-none">
             <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
           </div>
         </div>
@@ -172,7 +180,7 @@
               {{ format.money(mealVariationPrice, storeSettings.currency) }}
             </h2>
           </div>
-          <div class="col-md-3 offset-1">
+          <div class="col-md-3 offset-1 d-xs-none">
             <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
           </div>
         </div>
@@ -273,6 +281,13 @@ export default {
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings"
     }),
+    brandColor() {
+      if (this.store.settings) {
+        let style = "background-color:";
+        style += this.store.settings.color;
+        return style;
+      }
+    },
     // columns() {
     //   if (this.storeSettings.menuStyle === "image") return "col-md-8";
     //   else return "col-md-12";
