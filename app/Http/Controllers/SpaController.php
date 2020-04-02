@@ -297,8 +297,6 @@ class SpaController extends Controller
                     'reportSettings',
                     'details',
                     'giftCards',
-                    'purchasedGiftCards',
-                    'referrals',
                     'referralSettings',
                     'promotions',
                     'pickupLocations',
