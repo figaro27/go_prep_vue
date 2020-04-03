@@ -4,10 +4,10 @@
       <button
         type="button"
         :style="brandColor"
-        class="mobile-sticky-button btn btn-lg white-text d-md-none"
+        class="mobile-sticky-button btn btn-lg white-text"
         @click="addMeal(meal)"
       >
-        Add
+        <h4 class="strong">ADD TO BAG</h4>
       </button>
       <div class="flexibleArea">
         <div class="row">
@@ -78,6 +78,7 @@
         ></b-form-radio-group>
 
         <meal-variations-area
+          id="meal-variations-area"
           :meal="meal"
           :sizeId="mealSize"
           :invalid="invalid"
@@ -170,9 +171,9 @@
               {{ format.money(mealVariationPrice, storeSettings.currency) }}
             </h2>
           </div>
-          <div class="col-md-3 offset-1 d-xs-none">
+          <!-- <div class="col-md-3 offset-1 hidden-sm">
             <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
-          </div>
+          </div> -->
         </div>
         <div class="row mt-4" v-if="storeSettings.menuStyle === 'text'">
           <div class="col-md-2">
@@ -180,9 +181,9 @@
               {{ format.money(mealVariationPrice, storeSettings.currency) }}
             </h2>
           </div>
-          <div class="col-md-3 offset-1 d-xs-none">
+          <!-- <div class="col-md-3 offset-1 hidden-sm">
             <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
-          </div>
+          </div> -->
         </div>
 
         <div class="row">
@@ -431,6 +432,10 @@ export default {
     addMeal(meal) {
       if (this.invalidCheck && this.hasVariations) {
         this.invalid = true;
+        this.scrollToValidations();
+        this.$toastr.w(
+          "Please select the minimum/maximum required meal variations."
+        );
         return;
       }
 
@@ -625,6 +630,11 @@ export default {
     setSizeFromMealsArea(size) {
       this.sizeChanged = true;
       this.mealSize = size;
+    },
+    scrollToValidations() {
+      let element = document.getElementById("meal-variations-area");
+      element.scrollIntoView();
+      window.scrollBy(0, -130);
     }
   }
 };

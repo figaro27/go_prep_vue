@@ -1538,6 +1538,7 @@ body.forgotresettoken {
   left: 40%;
   margin: 0 0 0 -20%;
   z-index: 1000;
+  height: 65px;
 }
 
 @media all and (max-width: 400px) {
@@ -1557,4 +1558,16 @@ body.forgotresettoken {
 .square-bullets li {
   list-style-type: square !important;
   margin-bottom: 20px !important;
+}
+
+.hidden-md {
+  @include media-breakpoint-down(md) {
+    display: none !important;
+  }
+}
+
+.hidden-sm {
+  @include media-breakpoint-down(sm) {
+    display: none !important;
+  }
 }
