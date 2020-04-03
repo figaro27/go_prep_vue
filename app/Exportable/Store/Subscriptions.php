@@ -21,8 +21,6 @@ class Subscriptions
     public function exportData($type = null)
     {
         $params = $this->params;
-        $params->date_format = $this->store->settings->date_format;
-
         $subscriptions = $this->store
             ->subscriptions()
             ->with(['user', 'orders', 'orders.meals'])
