@@ -11,7 +11,8 @@
         <p>
           -<b>Labels Report (Beta)</b> on the reports page for your meal
           containers. You can also print a label for a single order on the page
-          below.
+          below. The new icons at the top of the screen are related to the
+          labels report.
         </p>
         <p>
           -Hover over these info icons wherever you see them on the pages above
