@@ -400,6 +400,7 @@
                 v-model="refundAmount"
                 placeholder="$0.00"
                 class="d-inline width-100"
+                type="number"
               ></b-form-input>
               <img
                 v-b-popover.hover="
