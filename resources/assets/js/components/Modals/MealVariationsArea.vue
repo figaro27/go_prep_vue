@@ -23,19 +23,19 @@
                 v-if="false === $v.choices[component.id].required"
                 class="invalid-feedback d-block"
               >
-                This field is required
+                <h6>This field is required</h6>
               </div>
               <div
                 v-if="$v.choices[component.id].minimum === false"
                 class="invalid-feedback d-block"
               >
-                Minimum {{ component.minimum }}
+                <h6>Minimum {{ component.minimum }}</h6>
               </div>
               <div
                 v-if="$v.choices[component.id].maximum === false"
                 class="invalid-feedback d-block"
               >
-                Maximum {{ component.maximum }}
+                <h6>Maximum {{ component.maximum }}</h6>
               </div>
             </div>
           </b-form-group>

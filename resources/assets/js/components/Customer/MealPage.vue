@@ -1,6 +1,14 @@
 <template>
   <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
     <div class="meal-page mt-5 mb-3 flexibleRow">
+      <button
+        type="button"
+        :style="brandColor"
+        class="mobile-sticky-button btn btn-lg white-text"
+        @click="addMeal(meal)"
+      >
+        <h4 class="strong">ADD TO BAG</h4>
+      </button>
       <div class="flexibleArea">
         <div class="row">
           <div class="col-md-4">
@@ -70,6 +78,7 @@
         ></b-form-radio-group>
 
         <meal-variations-area
+          id="meal-variations-area"
           :meal="meal"
           :sizeId="mealSize"
           :invalid="invalid"
@@ -162,9 +171,9 @@
               {{ format.money(mealVariationPrice, storeSettings.currency) }}
             </h2>
           </div>
-          <div class="col-md-3 offset-1">
+          <!-- <div class="col-md-3 offset-1 hidden-sm">
             <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
-          </div>
+          </div> -->
         </div>
         <div class="row mt-4" v-if="storeSettings.menuStyle === 'text'">
           <div class="col-md-2">
@@ -172,9 +181,9 @@
               {{ format.money(mealVariationPrice, storeSettings.currency) }}
             </h2>
           </div>
-          <div class="col-md-3 offset-1">
+          <!-- <div class="col-md-3 offset-1 hidden-sm">
             <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
-          </div>
+          </div> -->
         </div>
 
         <div class="row">
@@ -273,6 +282,13 @@ export default {
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings"
     }),
+    brandColor() {
+      if (this.store.settings) {
+        let style = "background-color:";
+        style += this.store.settings.color;
+        return style;
+      }
+    },
     // columns() {
     //   if (this.storeSettings.menuStyle === "image") return "col-md-8";
     //   else return "col-md-12";
@@ -416,6 +432,10 @@ export default {
     addMeal(meal) {
       if (this.invalidCheck && this.hasVariations) {
         this.invalid = true;
+        this.scrollToValidations();
+        this.$toastr.w(
+          "Please select the minimum/maximum required meal variations."
+        );
         return;
       }
 
@@ -610,6 +630,11 @@ export default {
     setSizeFromMealsArea(size) {
       this.sizeChanged = true;
       this.mealSize = size;
+    },
+    scrollToValidations() {
+      let element = document.getElementById("meal-variations-area");
+      element.scrollIntoView();
+      window.scrollBy(0, -130);
     }
   }
 };

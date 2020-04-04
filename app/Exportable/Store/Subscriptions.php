@@ -21,7 +21,6 @@ class Subscriptions
     public function exportData($type = null)
     {
         $params = $this->params;
-
         $subscriptions = $this->store
             ->subscriptions()
             ->with(['user', 'orders', 'orders.meals'])

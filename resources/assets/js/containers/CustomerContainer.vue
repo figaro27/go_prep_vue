@@ -34,7 +34,7 @@
                 name != 'customer-subscription-changes' &&
                 !userHasSubscriptions
             "
-            to="/customer/menu"
+            :to="menuURL"
             @click.prevent="backToMenu()"
             >Menu</b-nav-item
           >
@@ -44,17 +44,14 @@
                 name != 'customer-subscription-changes' &&
                 !userHasSubscriptions
             "
-            to="/customer/bag"
+            :to="bagURL"
             >Checkout</b-nav-item
           >
           <b-nav-item v-if="loggedIn" to="/customer/orders">Orders</b-nav-item>
           <b-nav-item v-if="loggedIn" to="/customer/subscriptions"
             >Subscriptions</b-nav-item
           >
-          <b-nav-item
-            v-if="loggedIn"
-            to="/customer/account/my-account"
-            class="white-text d-sm-block d-md-none"
+          <b-nav-item v-if="loggedIn" to="/customer/account/my-account"
             >My Account</b-nav-item
           >
           <b-nav-item
@@ -211,6 +208,14 @@ export default {
       } else {
         return false;
       }
+    },
+    menuURL() {
+      let referralUrl = this.$route.query.r ? "?r=" + this.$route.query.r : "";
+      return "/customer/menu" + referralUrl;
+    },
+    bagURL() {
+      let referralUrl = this.$route.query.r ? "?r=" + this.$route.query.r : "";
+      return "/customer/bag" + referralUrl;
     },
     storeSettings() {
       return this.store.settings;

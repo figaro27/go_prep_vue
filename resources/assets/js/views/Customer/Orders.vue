@@ -171,11 +171,26 @@
               {{ format.money(order.processingFee, order.currency) }}
             </p>
             <p class="text-success" v-if="order.purchasedGiftCardReduction > 0">
-              Gift Card {{ order.purchased_gift_card_code }} ({{
+              Gift Card
+              {{ order.purchased_gift_card_code }} ({{
                 format.money(order.purchasedGiftCardReduction, order.currency)
               }})
             </p>
-
+            <p class="text-success" v-if="order.referralReduction > 0">
+              Referral Discount: ({{
+                format.money(order.referralReduction, order.currency)
+              }})
+            </p>
+            <p class="text-success" v-if="order.promotionReduction > 0">
+              Promotional Discount: ({{
+                format.money(order.promotionReduction, order.currency)
+              }})
+            </p>
+            <p class="text-success" v-if="order.pointsReduction > 0">
+              Points Used: ({{
+                format.money(order.pointsReduction, order.currency)
+              }})
+            </p>
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
             </p>
@@ -560,12 +575,14 @@ export default {
       });
 
       order.purchased_gift_cards.forEach(purchasedGiftCard => {
-        data.push({
-          meal: "Gift Card Code: " + purchasedGiftCard.code,
-          quantity: 1,
-          unit_price: format.money(purchasedGiftCard.amount, order.currency),
-          subtotal: format.money(purchasedGiftCard.amount, order.currency)
-        });
+        if (purchasedGiftCard.length === 5) {
+          data.push({
+            meal: "Gift Card Code: " + purchasedGiftCard.code,
+            quantity: 1,
+            unit_price: format.money(purchasedGiftCard.amount, order.currency),
+            subtotal: format.money(purchasedGiftCard.amount, order.currency)
+          });
+        }
       });
 
       return _.filter(data);

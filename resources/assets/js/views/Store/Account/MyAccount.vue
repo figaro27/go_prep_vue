@@ -143,6 +143,8 @@
             <p><b-btn @click="testRenewSubscription">TEST RENEW SUBSCRIPTION</b-btn></p>
             
             <p><b-btn @click="testDeleteMealOrders">TEST DELETE MEAL ORDERS</b-btn></p>
+    
+            <p><b-btn @click="testRenewSubscription">TEST RENEW SUBSCRIPTION</b-btn></p>
 
             <p><b-btn @click="getDeliveryRoutes">TEST DELIVERY ROUTE</b-btn></p>
 
@@ -346,6 +348,9 @@ export default {
       this.storeDetail.phone = new AsYouType(this.storeDetail.country).input(
         this.storeDetail.phone
       );
+    },
+    testRenewSubscription() {
+      axios.get("/testRenewSubscription");
     }
   }
 };

@@ -1,10 +1,34 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
+      <b-alert variant="info" show>
+        <h5 class="pb-2">NEW UPDATES</h5>
+        <p>
+          -<b>Marketing Page</b> in the left menu. Includes <b>leads</b>,
+          <b>promotions</b>, and a <b>referral system</b>. Coupons and Purchased
+          Gift Cards have been moved here from the Settings page.
+        </p>
+        <p>
+          -<b>Labels Report (Beta)</b> on the reports page for your meal
+          containers. You can also print a label for a single order on the page
+          below.
+        </p>
+        <p>
+          -Hover over these info icons wherever you see them on the pages above
+          for explanations:
+          <img
+            v-b-popover.hover="
+              'I\'m called a Popover and I help explain how things work. Hover over me wherever you see me.'
+            "
+            title="Popover"
+            src="/images/store/popover.png"
+            class="popover-size ml-1"
+          />
+        </p>
+      </b-alert>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
-
           <v-client-table
             :columns="columns"
             :data="tableData"
@@ -376,6 +400,7 @@
                 v-model="refundAmount"
                 placeholder="$0.00"
                 class="d-inline width-100"
+                type="number"
               ></b-form-input>
               <img
                 v-b-popover.hover="
@@ -431,8 +456,7 @@
                 >Print Packing Slip</b-btn
               >
             </div>
-            <!-- BMP Testing -->
-            <div v-if="store.id === 40 || store.id === 127 || store.id === 131">
+            <div>
               <b-btn
                 class="btn mb-2 d-inline mr-1 royalBlueBG"
                 @click="printLabel(order.id)"
@@ -492,11 +516,26 @@
               {{ format.money(order.processingFee, order.currency) }}
             </p>
             <p class="text-success" v-if="order.purchasedGiftCardReduction > 0">
-              Gift Card {{ order.purchased_gift_card_code }} ({{
+              Gift Card
+              {{ order.purchased_gift_card_code }} ({{
                 format.money(order.purchasedGiftCardReduction, order.currency)
               }})
             </p>
-
+            <p class="text-success" v-if="order.referralReduction > 0">
+              Referral Discount: ({{
+                format.money(order.referralReduction, order.currency)
+              }})
+            </p>
+            <p class="text-success" v-if="order.promotionReduction > 0">
+              Promotional Discount: ({{
+                format.money(order.promotionReduction, order.currency)
+              }})
+            </p>
+            <p class="text-success" v-if="order.pointsReduction > 0">
+              Points Used: ({{
+                format.money(order.pointsReduction, order.currency)
+              }})
+            </p>
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
             </p>
@@ -1503,12 +1542,14 @@ export default {
       });
 
       order.purchased_gift_cards.forEach(purchasedGiftCard => {
-        data.push({
-          meal: "Gift Card Code: " + purchasedGiftCard.code,
-          quantity: 1,
-          unit_price: format.money(purchasedGiftCard.amount, order.currency),
-          subtotal: format.money(purchasedGiftCard.amount, order.currency)
-        });
+        if (purchasedGiftCard.length === 5) {
+          data.push({
+            meal: "Gift Card Code: " + purchasedGiftCard.code,
+            quantity: 1,
+            unit_price: format.money(purchasedGiftCard.amount, order.currency),
+            subtotal: format.money(purchasedGiftCard.amount, order.currency)
+          });
+        }
       });
 
       return _.filter(data);

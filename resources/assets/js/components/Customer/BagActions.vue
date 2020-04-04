@@ -82,7 +82,7 @@
         >NEXT</b-btn
       >
 
-      <router-link to="/customer/menu">
+      <router-link to="/customer/menu" query="$route.query">
         <b-btn
           v-if="
             $route.name === 'customer-bag' && !minimumMet && subId === undefined
@@ -100,6 +100,12 @@
         <b-btn
           v-if="$route.name === 'customer-bag' && !minimumMet && subId"
           class="menu-bag-btn mb-2"
+          :to="{
+            name: 'customer-menu',
+            query: {
+              r: $route.query.r
+            }
+          }"
           >BACK</b-btn
         >
       </router-link>

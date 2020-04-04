@@ -864,163 +864,6 @@
                 <b-button type="submit" variant="primary mt-2">Save</b-button>
               </b-form>
             </b-tab>
-            <b-tab title="Coupons">
-              <p>
-                <span class="mr-1">Coupons</span>
-                <img
-                  v-b-popover.hover="
-                    'Add a coupon that your customers can use on your checkout page. Choose the type - either an overall percentage of the subtotal or a flat amount.'
-                  "
-                  title="Coupons"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p>
-
-              <v-client-table
-                :columns="columns"
-                :data="tableData"
-                :options="{
-                  orderBy: {
-                    column: 'id',
-                    ascending: true
-                  },
-                  headings: {
-                    freeDelivery: 'Free Delivery',
-                    oneTime: 'One Time'
-                  },
-                  filterable: false
-                }"
-              >
-                <div slot="beforeTable" class="mb-2">
-                  <b-form @submit.prevent="saveCoupon">
-                    <b-form-group id="coupon">
-                      <div class="row">
-                        <div class="col-md-2">
-                          <b-form-input
-                            id="coupon-code"
-                            v-model="coupon.code"
-                            required
-                            placeholder="Enter Coupon Code"
-                          ></b-form-input>
-                        </div>
-                        <div class="col-md-2">
-                          <b-form-radio-group v-model="coupon.type">
-                            <div class="row">
-                              <div class="col-md-6 pt-2">
-                                <b-form-radio name="coupon-type" value="flat"
-                                  >Flat</b-form-radio
-                                >
-                              </div>
-                              <div class="col-md-6 pt-2">
-                                <b-form-radio name="coupon-type" value="percent"
-                                  >Percent</b-form-radio
-                                >
-                              </div>
-                            </div>
-                          </b-form-radio-group>
-                        </div>
-                        <div class="col-md-2">
-                          <b-form-input
-                            id="coupon-code"
-                            v-model="coupon.amount"
-                            placeholder="Enter Amount"
-                            required
-                          ></b-form-input>
-                        </div>
-                        <div class="col-md-2">
-                          <b-form-checkbox
-                            v-model="coupon.freeDelivery"
-                            value="1"
-                            unchecked-value="0"
-                            class="pt-2"
-                          >
-                            Free Delivery
-                          </b-form-checkbox>
-                        </div>
-                        <div class="col-md-2">
-                          <b-form-checkbox
-                            v-model="coupon.oneTime"
-                            value="1"
-                            unchecked-value="0"
-                            class="pt-2"
-                          >
-                            One Time
-                          </b-form-checkbox>
-                        </div>
-                        <div class="col-md-1">
-                          <b-button type="submit" variant="success"
-                            >Add</b-button
-                          >
-                        </div>
-                      </div>
-                    </b-form-group>
-                  </b-form>
-                </div>
-
-                <div slot="freeDelivery" slot-scope="props">
-                  <p v-if="props.row.freeDelivery" class="text-success">✓</p>
-                  <p v-if="!props.row.freeDelivery" class="red">X</p>
-                </div>
-
-                <div slot="oneTime" slot-scope="props">
-                  <p v-if="props.row.oneTime" class="text-success">✓</p>
-                  <p v-if="!props.row.oneTime" class="red">X</p>
-                </div>
-
-                <div
-                  slot="actions"
-                  slot-scope="props"
-                  v-if="props.row.id !== -1"
-                >
-                  <b-btn
-                    variant="danger"
-                    size="sm"
-                    @click="e => deleteCoupon(props.row.id)"
-                    >Delete</b-btn
-                  >
-                </div>
-              </v-client-table>
-            </b-tab>
-            <b-tab title="Gift Cards">
-              <p>
-                <span class="mr-1">Purchased Gift Cards</span>
-                <img
-                  v-b-popover.hover="
-                    'Add gift cards available for purchase on your menu and if anyone buys a gift card, the purchased codes can be viewed here along with their remaining balances.'
-                  "
-                  title="Purchased Gift Cards"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p>
-
-              <v-client-table
-                :columns="purchasedGiftCardColumns"
-                :data="purchasedGiftCardTableData"
-                :options="{
-                  orderBy: {
-                    column: 'created_at',
-                    ascending: false
-                  },
-                  headings: {
-                    created_at: 'Purchased',
-                    purchased_by: 'Purchased By',
-                    emailRecipient: 'Emailed To',
-                    code: 'Code',
-                    amount: 'Amount',
-                    balance: 'Balance'
-                  },
-                  filterable: false
-                }"
-              >
-                <div slot="created_at" slot-scope="props">
-                  <p>
-                    {{ moment(props.row.created_at).format("dddd MMM Do") }}
-                  </p>
-                </div>
-              </v-client-table>
-            </b-tab>
 
             <b-tab title="Notifications">
               <b-form @submit.prevent="updateStoreSettings">
@@ -1318,16 +1161,6 @@ export default {
       zipCodes: [],
       view_delivery_days: 1,
       payments_url: "",
-      coupon: { type: "flat", freeDelivery: 0, oneTime: 0 },
-      columns: ["code", "type", "amount", "freeDelivery", "oneTime", "actions"],
-      purchasedGiftCardColumns: [
-        "created_at",
-        "purchased_by",
-        "emailRecipient",
-        "code",
-        "amount",
-        "balance"
-      ],
       deselectedDeliveryDay: null,
       showCutoffModal: false,
       stripeConnectUrl: null,
@@ -1343,19 +1176,9 @@ export default {
       storeSettings: "storeSettings",
       storeCategories: "storeCategories",
       storeSubscriptions: "storeSubscriptions",
-      storeCoupons: "storeCoupons",
       storeModules: "storeModules",
-      storeModuleSettings: "storeModuleSettings",
-      purchasedGiftCards: "storePurchasedGiftCards"
+      storeModuleSettings: "storeModuleSettings"
     }),
-    tableData() {
-      if (this.storeCoupons.length > 0) return this.storeCoupons;
-      else return [];
-    },
-    purchasedGiftCardTableData() {
-      if (this.purchasedGiftCards.length > 0) return this.purchasedGiftCards;
-      else return [];
-    },
     storeDetails() {
       return this.storeDetail;
     },
@@ -1482,7 +1305,6 @@ export default {
     ...mapActions([
       "refreshCategories",
       "refreshStoreSettings",
-      "refreshStoreCoupons",
       "refreshStoreModules",
       "refreshStoreModuleSettings"
     ]),
@@ -1550,37 +1372,6 @@ export default {
         });
 
       this.$toastr.s("Your settings have been saved.", "Success");
-    },
-    saveCoupon() {
-      this.spliceCharacters();
-      axios
-        .post("/api/me/coupons", this.coupon)
-        .then(response => {
-          this.coupon = {
-            type: "flat",
-            freeDelivery: 0,
-            oneTime: 0
-          };
-          this.$toastr.s("Coupon Added", "Success");
-        })
-        .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors));
-          error = error.join(" ");
-          this.$toastr.w(error);
-        })
-        .finally(() => {
-          this.refreshStoreCoupons();
-        });
-    },
-    deleteCoupon(id) {
-      axios
-        .delete("/api/me/coupons/" + id)
-        .then(response => {
-          this.$toastr.s("Coupon Deleted", "Success");
-        })
-        .finally(() => {
-          this.refreshStoreCoupons();
-        });
     },
     closeStore() {
       let activeSubscriptions = false;
@@ -1668,24 +1459,6 @@ export default {
           let intToString = this.storeSettings.minimumPrice.toString();
           let newPrice = intToString.replace("$", "");
           this.storeSettings.minimumPrice = newPrice;
-        }
-      }
-
-      if (this.coupon.amount != null) {
-        let couponAmount = this.coupon.amount;
-        if (this.coupon.amount.toString().includes("$")) {
-          let intToString = this.coupon.amount.toString();
-          let newPrice = intToString.replace("$", "");
-          this.coupon.amount = newPrice;
-        }
-      }
-
-      if (this.coupon.amount != null) {
-        let couponAmount = this.coupon.amount;
-        if (this.coupon.amount.toString().includes("%")) {
-          let intToString = this.coupon.amount.toString();
-          let newPrice = intToString.replace("%", "");
-          this.coupon.amount = newPrice;
         }
       }
     },

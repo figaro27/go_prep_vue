@@ -50,12 +50,7 @@ f<template>
         </b-alert>
 
         <Spinner v-if="!subscriptions" />
-        <v-client-table
-          :columns="columns"
-          :data="tableData"
-          :options="options"
-          v-show="!isLoading"
-        >
+        <v-client-table :columns="columns" :data="tableData" :options="options">
           <div slot="interval" class="text-nowrap" slot-scope="props">
             {{ props.row.interval_title }}
           </div>
@@ -235,7 +230,30 @@ f<template>
                 format.money(subscription.processingFee, subscription.currency)
               }}
             </p>
-
+            <p v-if="subscription.referralReduction > 0" class="text-success">
+              Referral Discount: ({{
+                format.money(
+                  subscription.referralReduction,
+                  subscription.currency
+                )
+              }})
+            </p>
+            <p v-if="subscription.promotionReduction > 0" class="text-success">
+              Promotion Discount: ({{
+                format.money(
+                  subscription.promotionReduction,
+                  subscription.currency
+                )
+              }})
+            </p>
+            <p v-if="subscription.pointsReduction > 0" class="text-success">
+              Points Used: ({{
+                format.money(
+                  subscription.pointsReduction,
+                  subscription.currency
+                )
+              }})
+            </p>
             <p class="strong">
               Total:
               {{ format.money(subscription.amount, subscription.currency) }}

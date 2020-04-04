@@ -55,7 +55,14 @@ class RegisterController extends StoreController
                 'timezone' => 'America/New_York',
                 'remember_token' => Hash::make(str_random(10)),
                 'accepted_tos' => 1,
-                'added_by_store_id' => $storeId
+                'added_by_store_id' => $storeId,
+                'referralUrlCode' =>
+                    'R' .
+                    strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
+                    chr(rand(65, 90)) .
+                    rand(0, 9) .
+                    rand(0, 9) .
+                    chr(rand(65, 90))
             ]);
 
             $userDetails = $user->details()->create([

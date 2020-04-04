@@ -68,8 +68,14 @@ export default {
         this.$route.params.adjustOrder
       )
         return "/store/adjust-order/";
-      else if (!this.$route.params.storeView) return "/customer/menu";
-      else if (this.$route.params.preview) return "/store/menu/preview";
+      else if (!this.$route.params.storeView) {
+        return {
+          name: "customer-menu",
+          query: {
+            r: this.$route.query.r
+          }
+        };
+      } else if (this.$route.params.preview) return "/store/menu/preview";
       else if (this.$route.params.manualOrder) return "/store/manual-order";
     }
   },

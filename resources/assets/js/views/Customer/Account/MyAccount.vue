@@ -2,6 +2,15 @@
   <div class="main-customer-container box-shadow">
     <div class="row">
       <div class="col-md-8 offset-2">
+        <div v-if="store && store.referral_settings.enabled" class="mb-4">
+          <p class="strong">Referral URL</p>
+          <a :href="referralUrl">{{ referralUrl }}</a>
+          <div v-if="referral" class="pt-3">
+            <strong>Redeem Code:</strong> {{ referral.code }}
+            <strong class="ml-3">Balance:</strong>
+            {{ format.money(referral.balance, storeSettings.currency) }}
+          </div>
+        </div>
         <p class="strong">My Account</p>
         <b-form @submit.prevent="updateCustomer">
           <b-form-input
@@ -195,6 +204,19 @@
               @change.native="updateCustomer"
             />
           </b-form-group>
+          <b-form-group
+            label="New Referral"
+            :state="true"
+            v-if="store && store.referral_settings.enabled"
+          >
+            <c-switch
+              color="success"
+              variant="pill"
+              size="lg"
+              v-model="userDetail.notifications.new_referral"
+              @change.native="updateCustomer"
+            />
+          </b-form-group>
         </b-form>
 
         <p class="strong mt-4">Payment Methods</p>
@@ -244,6 +266,22 @@ export default {
     },
     stateNames() {
       return states.selectOptions("US");
+    },
+    referralUrl() {
+      let host = this.store.details.host ? this.store.details.host : "goprep";
+      return (
+        "http://" +
+        this.store.details.domain +
+        "." +
+        host +
+        ".com/?r=" +
+        this.user.referralUrlCode
+      );
+    },
+    referral() {
+      return this.user.referrals.find(referral => {
+        return (referral.store_id = this.store.id);
+      });
     }
   },
   mounted() {},

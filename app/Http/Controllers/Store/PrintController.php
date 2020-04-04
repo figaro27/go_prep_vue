@@ -19,6 +19,8 @@ use App\Exportable\Store\MealsIngredients;
 use App\Exportable\Store\DeliveryRoutes;
 use App\Exportable\Store\Payments;
 use App\Exportable\Store\Labels;
+use App\Exportable\Store\Leads;
+use App\Exportable\Store\Referrals;
 
 class PrintController extends StoreController
 {
@@ -90,6 +92,13 @@ class PrintController extends StoreController
 
             case 'payments':
                 $exportable = new Payments($this->store, $params);
+                break;
+
+            case 'leads':
+                $exportable = new Leads($this->store, $params);
+                break;
+            case 'referrals':
+                $exportable = new Referrals($this->store, $params);
                 break;
         }
 

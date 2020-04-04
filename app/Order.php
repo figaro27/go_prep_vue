@@ -11,7 +11,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['fulfilled', 'notes', 'publicNotes', 'delivery_day'];
+    protected $fillable = [
+        'fulfilled',
+        'notes',
+        'publicNotes',
+        'delivery_day',
+        'referral_id'
+    ];
 
     protected $hidden = [
         'store',

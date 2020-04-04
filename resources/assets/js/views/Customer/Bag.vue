@@ -4,6 +4,25 @@
     :style="fullHeight"
   >
     <div class="bag">
+      <div
+        class="alert alert-success"
+        role="alert"
+        v-if="
+          store &&
+            store.referral_settings &&
+            store.referral_settings.enabled &&
+            store.referral_settings.showInMenu &&
+            user.referralUrlCode
+        "
+      >
+        <h5 class="center-text">Referral Program</h5>
+        <p class="center-text">
+          Give out your referral link to customers and if they order using your
+          link, you will receive {{ referralAmount }} on each order that comes
+          in. <br />Your referral link is
+          <a :href="referralUrl">{{ referralUrl }}</a>
+        </p>
+      </div>
       <auth-modal :showAuthModal="showAuthModal"></auth-modal>
       <spinner v-if="loading" position="absolute"></spinner>
 
@@ -75,6 +94,7 @@
             ref="checkoutArea"
             :orderNotes="orderNotes"
             :publicOrderNotes="publicOrderNotes"
+            :availablePromotionPoints="availablePromotionPoints"
           ></checkout-area>
 
           <store-closed
@@ -138,6 +158,7 @@ export default {
   mixins: [MenuBag],
   data() {
     return {
+      availablePromotionPoints: null,
       orderNotes: null,
       publicOrderNotes: null,
       showAuthModal: false,
@@ -222,6 +243,7 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
       coupons: "viewedStoreCoupons",
+      referrals: "viewedStoreReferrals",
       pickupLocations: "viewedStorePickupLocations",
       lineItems: "viewedStoreLineItems",
       getMeal: "viewedStoreMeal",
@@ -437,6 +459,12 @@ export default {
         return this.$route.query.subscriptionId;
       }
       return this.$route.params.subscriptionId;
+    },
+    referralAmount() {
+      return this.store.referral_settings.amountFormat;
+    },
+    referralUrl() {
+      return this.store.referral_settings.url + this.user.referralUrlCode;
     }
   },
   watch: {
@@ -467,6 +495,16 @@ export default {
         return coupon.id === this.order.coupon_id;
       });
       this.setBagCoupon(coupon);
+    }
+
+    if (
+      this.$route.params.adjustOrder &&
+      this.order.applied_referral_id !== null
+    ) {
+      let appliedReferral = this.referrals.find(referral => {
+        return referral.id === this.order.applied_referral_id;
+      });
+      this.setBagReferral(appliedReferral);
     }
 
     if (this.store.modules.subscriptionOnly) {
@@ -523,6 +561,10 @@ export default {
     // if (!this.deliveryDay && this.deliveryDateOptions.length > 0) {
     //   this.deliveryDay = this.deliveryDateOptions[0].value;
     // }
+
+    if (this.loggedIn) {
+      this.getPromotionPoints(this.user.id);
+    }
   },
   updated() {
     this.creditCardId = this.card;
@@ -599,7 +641,12 @@ export default {
       "refreshUpcomingOrders",
       "refreshStoreCustomers"
     ]),
-    ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
+    ...mapMutations([
+      "emptyBag",
+      "setBagMealPlan",
+      "setBagCoupon",
+      "setBagReferral"
+    ]),
     preventNegative() {
       if (this.total < 0) {
         this.total += 1;
@@ -820,6 +867,16 @@ export default {
       if (this.$refs.checkoutArea.checkPickup() === true) {
         this.pickup = 1;
       }
+    },
+    getPromotionPoints(id) {
+      axios
+        .post("/api/me/getPromotionPoints", {
+          userId: id,
+          storeId: this.store.id
+        })
+        .then(response => {
+          this.availablePromotionPoints = response.data;
+        });
     }
   }
 };

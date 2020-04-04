@@ -11,6 +11,8 @@ $coupon = $currency . number_format($order->couponReduction, 2);
 $couponCode = $order->couponCode;
 $purchasedGiftCard = $order->purchased_gift_card_code;
 $purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
+$promotionReduction = $order->promotionReduction;
+$pointsReduction = $order->pointsReduction;
 $amount = $currency . number_format($order->amount, 2);
 $deposit = $currency . number_format($order->deposit, 2);
 $cashOrder = $order->cashOrder;
@@ -325,7 +327,19 @@ $hot = $order->hot;
             </tr>@endif
             @if ($order->purchasedGiftCardReduction > 0)<tr>
               <td style="border:none"><b>Coupon</b></td>
-              <td style="border:none;text-align:right;position:relative;right:8px">({{ $purchasedGiftCard }}) {{ $purchasedGiftCardReduction }}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">({{ $purchasedGiftCard }}) {{$currency}}{{number_format($purchasedGiftCardReduction, 2)}}</td>
+            </tr>@endif
+            @if ($order->referralReduction > 0)<tr>
+              <td style="border:none"><b>Referral Discount</b></td>
+              <td style="border:none;text-align:right;position:relative;right:8px">(Referral Discount) {{$currency}}{{number_format($referralReduction, 2)}}</td>
+            </tr>@endif
+            @if ($order->promotionReduction > 0)<tr>
+              <td style="border:none"><b>Promotional Discount</b></td>
+              <td style="border:none;text-align:right;position:relative;right:8px">(Promotional Discount) {{$currency}}{{number_format($promotionReduction, 2)}}</td>
+            </tr>@endif
+            @if ($order->pointsReduction > 0)<tr>
+              <td style="border:none"><b>Promotional Discount</b></td>
+              <td style="border:none;text-align:right;position:relative;right:8px">(Points Used) {{$currency}}{{number_format($pointsReduction, 2)}}</td>
             </tr>@endif
             @if ($order->balance > 0)<tr>
             <td style="border:none"><b>Total</b></td>

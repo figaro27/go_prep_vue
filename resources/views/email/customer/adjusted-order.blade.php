@@ -380,7 +380,11 @@ $currency = $order->store->settings->currency_symbol
                         Processing Fee<br>
                         @endif
                         @if ($purchasedGiftCardReduction > 0)
+                        @if (str_len($purchasedGiftCard) > 5)
+                        Referral Code ({{$purchasedGiftCard}})
+                        @else
                         Gift Card ({{$purchasedGiftCard}})<br>
+                        @endif
                         @endif
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold;">Total</span><br>

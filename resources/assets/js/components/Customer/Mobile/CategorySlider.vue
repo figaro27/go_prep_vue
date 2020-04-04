@@ -16,9 +16,9 @@
           v-for="category in categories"
           :key="category.id"
           @click.prevent="goToCategory(slugify(category.category))"
-          class="m-2"
+          class="m-3"
         >
-          {{ category.category }}
+          <h5>{{ category.category }}</h5>
         </div>
       </slick>
 
@@ -27,9 +27,10 @@
           v-for="category in categories"
           :key="category.category"
           @click.prevent="goToCategory(slugify(category.category))"
-          class="d-inline-block m-2"
-          >{{ category.category }}</span
+          class="d-inline-block m-3"
         >
+          <h5>{{ category.category }}</h5>
+        </span>
       </div>
     </div>
   </div>
@@ -147,7 +148,7 @@ export default {
     goToCategory(category) {
       if ($("#xs").is(":visible") || $("#sm").is(":visible")) {
         const top = $(`#${category}`).offset().top;
-        $(document).scrollTop(top - 110);
+        $(document).scrollTop(top - 130);
       } else {
         $(".main-menu-area").scrollTop(0);
         const top = $(`#${category}`).position().top;

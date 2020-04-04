@@ -1,6 +1,6 @@
 import SalesTax from "sales-tax";
 import store from "../store";
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 
 export default {
   computed: {
@@ -72,6 +72,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(["setBagPurchasedGiftCard", "setBagReferral"]),
     async addOne(
       meal,
       mealPackage = false,
@@ -189,6 +190,8 @@ export default {
       addons = null,
       special_instructions = null
     ) {
+      this.setBagReferral(null);
+      this.setBagPurchasedGiftCard(null);
       this.$store.commit("removeFromBag", {
         meal,
         quantity: 1,
@@ -386,7 +389,10 @@ export default {
             transferTime: this.transferTime,
             grandTotal: this.grandTotal,
             processingFee: this.processingFeeAmount,
-            mealPlanDiscount: this.mealPlanDiscount
+            mealPlanDiscount: this.mealPlanDiscount,
+            referralReduction: this.referralReduction,
+            promotionReduction: this.promotionReduction,
+            pointsReduction: this.promotionPointsReduction
           }
         );
         await this.refreshSubscriptions();

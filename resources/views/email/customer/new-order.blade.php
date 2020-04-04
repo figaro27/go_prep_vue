@@ -393,6 +393,9 @@ $currency = $order->store->settings->currency_symbol
                         $balance = $order->balance;
                         $purchasedGiftCard = $order->purchased_gift_card_code;
                         $purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
+                        $referralReduction = $order->referralReduction;
+                        $promotionReduction = $order->promotionReduction;
+                        $pointsReduction = $order->pointsReduction;
                         @endphp
 
                         Subtotal: <br>
@@ -417,6 +420,15 @@ $currency = $order->store->settings->currency_symbol
                         @endif
                         @if ($purchasedGiftCardReduction > 0)
                         Gift Card ({{$purchasedGiftCard}})<br>
+                        @endif
+                        @if ($referralReduction > 0)
+                        Referral Discount<br>
+                        @endif
+                        @if ($promotionReduction > 0)
+                        Promotional Discount<br>
+                        @endif
+                        @if ($pointsReduction > 0)
+                        Points Reduction<br>
                         @endif
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold;">Total</span><br>
@@ -448,6 +460,15 @@ $currency = $order->store->settings->currency_symbol
                           @if ($purchasedGiftCardReduction > 0)
                           ({{$currency}}{{ number_format($purchasedGiftCardReduction, 2) }})<br>
                           @endif
+                          @if ($referralReduction > 0)
+({{$currency}}{{ number_format($referralReduction, 2) }})<br>
+@endif
+                          @if ($promotionReduction > 0)
+({{$currency}}{{ number_format($promotionReduction, 2) }})<br>
+@endif
+@if ($pointsReduction > 0)
+({{$currency}}{{ number_format($pointsReduction, 2) }})<br>
+@endif
                           <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold; ">{{$currency}}{{ number_format($order->amount, 2) }}
                             @if ($order->cashOrder)
@@ -669,6 +690,63 @@ $currency = $order->store->settings->currency_symbol
   </table>
 
   @endif
+
+@php
+$referralSettings = $order->store->referralSettings;
+$host = $order->store->details->host ? $order->store->details->host : '.goprep.';
+$referralURL = 'https://' . $order->store->details->domain . $host . 'com?r=' . $order->user->referralUrlCode;
+$percentAmount = trim($referralSettings->amount, ".00");
+@endphp
+@if ($referralSettings->enabled && $referralSettings->showInNotifications)
+
+<table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="center">
+        <table align="center" border="0" cellpadding="0" cellspacing="0">
+          <tr>
+            <td width="600" align="center">
+              <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td height="20"></td>
+                </tr>
+                <!-- title -->
+
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Referral Program</td>
+                </tr>
+                <!-- end title -->
+                <tr>
+                  <td height="5"></td>
+                </tr>
+                <!-- content -->
+
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
+                  Give out your referral link to customers and if they order using your link, you will receive 
+                  @if ($referralSettings->type === 'flat')
+                    ${{ $referralSettings->amount }}
+                  @else
+                    {{ $percentAmount }}%
+                  @endif
+                  on each order that comes in. Your referral link is: <a href="{{$referralURL}}">{{$referralURL}}</a>
+                  </td>
+                </tr>
+               
+                <!-- end content -->
+                <tr>
+                  <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
+                </tr>
+               
+                
+                
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+@endif
 
   <table class="full" align="center" width="100%" bgcolor="#FFFFFF" border="0" cellspacing="0" cellpadding="0">
     <tr>
