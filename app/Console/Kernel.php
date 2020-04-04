@@ -24,10 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(App\Console\Commands\Daily::class)
+        $schedule
+            ->command(\App\Console\Commands\Daily::class)
             ->dailyAt('00:00');
-        $schedule->command(App\Console\Commands\Hourly::class)
-            ->hourly();
+        $schedule->command(\App\Console\Commands\Hourly::class)->hourly();
     }
 
     /**
