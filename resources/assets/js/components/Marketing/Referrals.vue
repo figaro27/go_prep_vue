@@ -91,7 +91,7 @@
                 Enable Referrals
                 <img
                   v-b-popover.hover="
-                    'Enable or disable a referral program for your store.'
+                    'Enable or disable a referral program for your store. This will give your customers the ability to refer other customers to you and get rewarded for doing so based on the settings and amounts you choose.'
                   "
                   title="Enable Referrals"
                   src="/images/store/popover.png"
@@ -181,6 +181,7 @@
                 placeholder="Amount"
                 v-model="referralSettings.amount"
                 class="mt-1"
+                type="number"
               ></b-form-input>
 
               <div v-if="storeCoupons.length > 0" class="mt-4">
