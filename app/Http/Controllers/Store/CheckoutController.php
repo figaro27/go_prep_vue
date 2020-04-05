@@ -202,6 +202,8 @@ class CheckoutController extends StoreController
 
         $storeCustomer = null;
 
+        $promotionPointsAmount = $request->get('promotionPointsAmount');
+
         if (!$cashOrder) {
             $storeCustomer = $customerUser->getStoreCustomer(
                 $store->id,
