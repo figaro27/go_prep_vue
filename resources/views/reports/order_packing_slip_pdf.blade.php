@@ -99,9 +99,14 @@ $hot = $order->hot;
   @endif
   <div class="row">
     <div class="col-4">
-          <h4 class="bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</h4>
-          <img src="{{$logo}}" style="width:200px;height:auto"/>
-          <p class="text-11">{{ $order->store->details->address }}, {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
+          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;padding-bottom:0px;margin-bottom:0px">{{ $order->store->details->name }}</p>
+@if ($squareLogo)
+<img src="{{$logo}}" style="width:100px;height:auto;"/>
+@else
+          <img src="{{$logo}}" style="width:200px;height:auto;"/>
+@endif
+          <p class="text-11">{{ $order->store->details->address }}</p>
+    <p class="text-11">{{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}</p>
           <p class="text-11">{{ $order->store->details->phone }}</p>
           @if ($order->store->settings->website) 
           <p class="text-11">{{ $order->store->settings->website }}</p>

@@ -233,12 +233,20 @@ class PackingSlips
 
         Log::info('Logo URL: ' . $logo);
 
+        $logoSize = getImageSize($logo);
+        $squareLogo = true;
+
+        if ($logoSize[0] !== $logoSize[1]) {
+            $squareLogo = false;
+        }
+
         $vars = [
             'order' => null,
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
             'body_classes' => implode(' ', [$this->orientation]),
-            'logo' => $logo
+            'logo' => $logo,
+            'squareLogo' => $squareLogo
         ];
 
         Log::info($vars);
