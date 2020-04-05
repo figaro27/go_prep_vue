@@ -33,7 +33,8 @@ class StoreSetting extends Model
         'meal_packages',
         'currency',
         'showMacros',
-        'preventNextWeekOrders'
+        'preventNextWeekOrders',
+        'timezone'
     ];
 
     /**
