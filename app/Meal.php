@@ -385,70 +385,77 @@ class Meal extends Model implements HasMedia
 
     public function getSubstituteIdsAttribute()
     {
-        $ids = Cache::rememberForever(
-            'meal_substitutes_' . $this->id,
-            function () {
-                $mealsQuery = $this->store
-                    ->meals()
-                    ->where([
-                        ['id', '<>', $this->id],
-                        ['price', '<=', $this->price * 1.2],
-                        ['price', '>=', $this->price * 0.8]
-                    ])
-                    ->whereDoesntHave('allergies', function ($query) {
-                        $allergyIds = $this->allergies->pluck('id');
-                        $query->whereIn('allergies.id', $allergyIds);
-                    })
-                    ->whereHas(
-                        'categories',
-                        function ($query) {
-                            $catIds = $this->categories->pluck('id');
-                            return $query->whereIn('categories.id', $catIds);
-                        },
-                        '>=',
-                        1
-                    );
+        if ($this->store) {
+            $ids = Cache::rememberForever(
+                'meal_substitutes_' . $this->id,
+                function () {
+                    $mealsQuery = $this->store
+                        ->meals()
+                        ->where([
+                            ['id', '<>', $this->id],
+                            ['price', '<=', $this->price * 1.2],
+                            ['price', '>=', $this->price * 0.8]
+                        ])
+                        ->whereDoesntHave('allergies', function ($query) {
+                            $allergyIds = $this->allergies->pluck('id');
+                            $query->whereIn('allergies.id', $allergyIds);
+                        })
+                        ->whereHas(
+                            'categories',
+                            function ($query) {
+                                $catIds = $this->categories->pluck('id');
+                                return $query->whereIn(
+                                    'categories.id',
+                                    $catIds
+                                );
+                            },
+                            '>=',
+                            1
+                        );
 
-                $meals = $mealsQuery->get();
-                // if ($meals->count() <= 5) {
-                //     return $meals->pluck('id');
-                // }
+                    $meals = $mealsQuery->get();
+                    // if ($meals->count() <= 5) {
+                    //     return $meals->pluck('id');
+                    // }
 
-                // $mealsQuery = $mealsQuery->whereNotIn(
-                //     'id',
-                //     $meals->pluck('id')
-                // );
+                    // $mealsQuery = $mealsQuery->whereNotIn(
+                    //     'id',
+                    //     $meals->pluck('id')
+                    // );
 
-                // $mealsQuery = $mealsQuery
-                //     ->whereHas(
-                //         'categories',
-                //         function ($query) {
-                //             $catIds = $this->categories->pluck('id');
-                //             return $query->whereIn('categories.id', $catIds);
-                //         },
-                //         '>=',
-                //         1
-                //     );
-                // ->orWhereHas(
-                //     'tags',
-                //     function ($query) {
-                //         $tagIds = $this->tags->pluck('id');
-                //         return $query->whereIn('meal_tags.id', $tagIds);
-                //     },
-                //     '>=',
-                //     1
-                // );
+                    // $mealsQuery = $mealsQuery
+                    //     ->whereHas(
+                    //         'categories',
+                    //         function ($query) {
+                    //             $catIds = $this->categories->pluck('id');
+                    //             return $query->whereIn('categories.id', $catIds);
+                    //         },
+                    //         '>=',
+                    //         1
+                    //     );
+                    // ->orWhereHas(
+                    //     'tags',
+                    //     function ($query) {
+                    //         $tagIds = $this->tags->pluck('id');
+                    //         return $query->whereIn('meal_tags.id', $tagIds);
+                    //     },
+                    //     '>=',
+                    //     1
+                    // );
 
-                // $extraMeals = $mealsQuery->get();
+                    // $extraMeals = $mealsQuery->get();
 
-                return $meals
-                    // ->concat($extraMeals)
-                    ->slice(0, 5)
-                    ->pluck('id');
-            }
-        );
+                    return $meals
+                        // ->concat($extraMeals)
+                        ->slice(0, 5)
+                        ->pluck('id');
+                }
+            );
 
-        return $ids;
+            return $ids;
+        } else {
+            return null;
+        }
     }
 
     public function store()
