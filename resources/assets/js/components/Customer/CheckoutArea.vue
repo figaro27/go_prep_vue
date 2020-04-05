@@ -1314,10 +1314,14 @@ export default {
       let promotion = this.promotions.find(promotion => {
         return promotion.promotionType === "points";
       });
+      if (promotion) {
+        return (
+          (promotion.promotionAmount / 100) *
+          this.subtotal *
+          100
+        ).toFixed(0);
+      }
       return 0;
-      // return ((promotion.promotionAmount / 100) * this.subtotal * 100).toFixed(
-      //   0
-      // );
     },
     promotionPointsName() {
       let promotion = this.promotions.find(promotion => {
