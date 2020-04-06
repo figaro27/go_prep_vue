@@ -1,5 +1,28 @@
 <template>
   <div>
+    <b-modal
+      size="md"
+      title="Delete Card"
+      v-model="showDeleteCardModal"
+      v-if="showDeleteCardModal"
+      no-fade
+      hide-footer
+    >
+      <h6 class="center-text p-2">
+        This card is tied to a subscription. The subscription will be cancelled
+        if you delete this card. You can create a new subscription after.
+      </h6>
+
+      <h5 class="center-text p-1">Proceed?</h5>
+      <div class="d-flex" style="justify-content:center">
+        <b-btn @click="showDeleteCardModal = false" class="d-inline mr-2"
+          >Cancel</b-btn
+        >
+        <b-btn @click="deleteCard(cardId)" variant="danger" class="d-inline"
+          >Delete</b-btn
+        >
+      </div>
+    </b-modal>
     <b-form-group label="Add New Card" v-if="gateway === 'stripe'">
       <card
         class="stripe-card"
@@ -39,7 +62,7 @@
             <b-btn
               class="card-delete"
               variant="plain"
-              @click="e => deleteCard(card.id)"
+              @click="e => checkCardSubscriptions(card.id)"
             >
               <i class="fa fa-minus-circle text-danger"></i>
             </b-btn>
@@ -64,7 +87,7 @@
             <b-btn
               class="card-delete"
               variant="plain"
-              @click="e => deleteCard(card.id)"
+              @click="e => checkCardSubscriptions(card.id)"
             >
               <i class="fa fa-minus-circle text-danger"></i>
             </b-btn>
@@ -127,6 +150,8 @@ export default {
   },
   data() {
     return {
+      showDeleteCardModal: false,
+      cardId: null,
       stripeKey: window.app.stripe_key,
       // stripeOptions,
       addingCard: false,
@@ -141,7 +166,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions(["refreshCards"]),
+    ...mapActions(["refreshCards", "refreshSubscriptions"]),
     async onClickCreateCard() {
       this.addingCard = true;
       let token = null;
@@ -221,6 +246,17 @@ export default {
           this.$parent.loading = false;
         });
     },
+    checkCardSubscriptions(id) {
+      let card = this.cards.find(card => {
+        return (card.id = id);
+      });
+      if (card.in_subscription > 0) {
+        this.showDeleteCardModal = true;
+        this.cardId = id;
+      } else {
+        this.deleteCard(id);
+      }
+    },
     deleteCard(id) {
       axios.delete("/api/me/cards/" + id).then(async resp => {
         if (this.manualOrder || this.$route.params.manualOrder) {
@@ -231,7 +267,9 @@ export default {
         if (this.value === id) {
           this.selectCard(_.first(this.cards).id);
         }
+        this.showDeleteCardModal = false;
         this.$toastr.s("Payment method deleted.");
+        this.refreshSubscriptions();
       });
     },
     selectCard(id) {

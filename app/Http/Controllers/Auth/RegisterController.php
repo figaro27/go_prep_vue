@@ -161,7 +161,6 @@ class RegisterController extends Controller
             'user_role_id' => $data['user']['role'] === 'store' ? 2 : 1,
             'email' => $data['user']['email'],
             'password' => Hash::make($data['user']['password']),
-            'timezone' => 'America/New_York',
             'remember_token' => Hash::make(str_random(10)),
             'accepted_tos' => 1,
             'referralUrlCode' =>
@@ -218,14 +217,6 @@ class RegisterController extends Controller
                 'created_at' => now()
             ]);
 
-            switch ($data['store']['country']) {
-                case 'GB':
-                    $timezone = 'Europe/London';
-                    break;
-                default:
-                    $timezone = 'America/New_York';
-            }
-
             if (
                 isset($data['store']['currency']) &&
                 in_array($data['store']['currency'], ['USD', 'GBP', 'CAD'])
@@ -245,7 +236,7 @@ class RegisterController extends Controller
             }
 
             $storeSettings = $store->settings()->create([
-                'timezone' => $timezone,
+                'timezone' => $this->getTimeZone($data),
                 'currency' => $currency,
                 'open' => 0,
                 'notifications' => [],
@@ -445,5 +436,80 @@ class RegisterController extends Controller
                     ->getTTL() * 60,
             'redirect' => $redirect
         ];
+    }
+
+    public function getTimeZone($data)
+    {
+        if ($data['store']['country'] === 'GB') {
+            return 'Europe/London';
+        }
+
+        switch ($data['store']['state']) {
+            case 'NY':
+            case 'NJ':
+            case 'CT':
+            case 'TN':
+            case 'KY':
+            case 'DE':
+            case 'DC':
+            case 'GA':
+            case 'NC':
+            case 'ME':
+            case 'MD':
+            case 'MA':
+            case 'NH':
+            case 'OH':
+            case 'PA':
+            case 'RI':
+            case 'SC':
+            case 'VT':
+            case 'VA':
+            case 'WV':
+            case 'MI':
+            case 'FL':
+            case 'IN':
+                return 'America/New_York';
+                break;
+            case 'AL':
+            case 'AR':
+            case 'IL':
+            case 'IA':
+            case 'LA':
+            case 'MN':
+            case 'MS':
+            case 'MO':
+            case 'OK':
+            case 'WI':
+            case 'KS':
+            case 'TX':
+                return 'America/Chicago';
+                break;
+            case 'ID':
+            case 'AZ':
+            case 'CO':
+            case 'MT':
+            case 'NM':
+            case 'UT':
+            case 'WY':
+            case 'ND':
+            case 'NE':
+            case 'SD':
+                return 'America/Denver';
+                break;
+            case 'CA':
+            case 'WA':
+            case 'OR':
+            case 'NV':
+                return 'America/Los_Angeles';
+                break;
+            case 'AK':
+                return 'America/Anchorage';
+                break;
+            case 'HI':
+                return 'America/Adak';
+                break;
+            default:
+                return 'America/New_York';
+        }
     }
 }

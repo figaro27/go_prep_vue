@@ -8,6 +8,7 @@ use App\Http\Controllers\User\UserController;
 use Http\Client\Exception\RequestException;
 use Illuminate\Http\Request;
 use App\Store;
+use App\Subscription;
 
 class CardController extends UserController
 {
@@ -171,6 +172,50 @@ class CardController extends UserController
             return response('', 404);
         }
 
+        $this->destroySubscription($id);
+
         $card->delete();
+    }
+
+    public function destroySubscription($id)
+    {
+        $sub = Subscription::where('card_id', $id)->first();
+        if (!$sub) {
+            return response()->json(
+                [
+                    'error' => 'Subscription not found'
+                ],
+                404
+            );
+        }
+
+        if ($sub->monthlyPrepay) {
+            if ($sub->weekCount % 4 === 0) {
+                $sub->cancel();
+            } else {
+                try {
+                    $sub->cancel();
+                } catch (\Exception $e) {
+                    return response()->json(
+                        [
+                            'error' => 'Failed to cancel Subscription'
+                        ],
+                        500
+                    );
+                }
+            }
+            return;
+        }
+
+        try {
+            $sub->cancel();
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'error' => 'Failed to cancel Subscription'
+                ],
+                500
+            );
+        }
     }
 }
