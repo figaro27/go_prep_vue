@@ -4,10 +4,12 @@ const nutrition = {
   getIngredientList(ingredients) {
     let ingredientList = "";
     ingredients.forEach(function(ingredient) {
-      ingredientList +=
-        ingredient.food_name.charAt(0).toUpperCase() +
-        ingredient.food_name.slice(1) +
-        ", ";
+      if (!ingredient.hidden) {
+        ingredientList +=
+          ingredient.food_name.charAt(0).toUpperCase() +
+          ingredient.food_name.slice(1) +
+          ", ";
+      }
     });
     return ingredientList;
   },
