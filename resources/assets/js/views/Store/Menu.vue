@@ -678,17 +678,13 @@
           </button>
           <button
             class="btn btn-warning btn-lg mt-3 d-inline"
-            v-if="
-              !deleteMeal &&
-                deactivatingMeal.in_package &&
-                !deactivatingMeal.substitute
-            "
+            v-if="!deleteMeal"
             @click="updateActive(mealID, 0)"
           >
             Deactivate & Keep
           </button>
         </div>
-        <!-- <img
+        <img
           v-if="!deleteMeal"
           v-b-popover.hover="
             'Deactivate the meal from your menu, but keep the meal in current subscriptions & meal packages.'
@@ -697,7 +693,7 @@
           src="/images/store/popover.png"
           class="popover-size"
           style="position:relative;top:8px"
-        /> -->
+        />
         <h5 class="mb-4 mt-4" v-if="!deleteMeal">
           Choose a replacement meal from the dropdown.
         </h5>
