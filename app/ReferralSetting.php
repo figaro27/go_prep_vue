@@ -42,6 +42,6 @@ class ReferralSetting extends Model
             $this->store->details->domain .
             '.' .
             $host .
-            '.com/?r=';
+            '.com/customer/menu?r=';
     }
 }
