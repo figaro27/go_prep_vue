@@ -373,7 +373,8 @@ export default {
           this.referredCouponUser.push(row.referral_user_id);
         });
       }
-
+      console.log("ref:" + this.referredCouponUser);
+      console.log("table:" + this.couponTableData);
       this.showReferralSettingsModal = true;
     },
     exportData(report, format = "pdf", print = false) {
