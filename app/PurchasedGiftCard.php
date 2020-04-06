@@ -16,6 +16,8 @@ class PurchasedGiftCard extends Model
     public function getPurchasedByAttribute()
     {
         $user = User::where('id', $this->user_id)->first();
-        return $user->details->firstname . ' ' . $user->details->lastname;
+        return $user
+            ? $user->details->firstname . ' ' . $user->details->lastname
+            : null;
     }
 }
