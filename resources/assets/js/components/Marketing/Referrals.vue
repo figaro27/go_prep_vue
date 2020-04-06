@@ -366,7 +366,7 @@ export default {
     },
     showReferralSettings() {
       // Setting referral users to coupons
-      this.referredCouponUser.push(undefined);
+      // this.referredCouponUser.push(undefined);
       this.referredCouponUser.push(undefined);
       if (this.couponTableData.length > 0) {
         this.couponTableData.forEach(row => {
