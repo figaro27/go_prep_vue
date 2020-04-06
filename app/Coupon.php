@@ -26,6 +26,6 @@ class Coupon extends Model
             $this->referral_user_id
         )->first();
 
-        return $userDetail ? $userDetail->firstname : '';
+        return $userDetail ? $userDetail->full_name : '';
     }
 }

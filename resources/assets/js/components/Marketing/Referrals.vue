@@ -309,7 +309,7 @@ export default {
         this.store.details.domain +
         "." +
         host +
-        ".com/customer/menu?r="
+        ".com/customer/Menu?r="
       );
     }
   },
@@ -376,7 +376,7 @@ export default {
       this.referredCouponUser.push(undefined);
       if (this.couponTableData.length > 0) {
         this.couponTableData.forEach(row => {
-          this.referredCouponUser.push(row.referral_user_id);
+          this.referredCouponUser.push(row.referredUserName);
         });
       }
       this.showReferralSettingsModal = true;
