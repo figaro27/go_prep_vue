@@ -304,7 +304,13 @@ export default {
     },
     storeReferralUrl() {
       let host = this.store.details.host ? this.store.details.host : "goprep";
-      return "http://" + this.store.details.domain + "." + host + ".com/?r=";
+      return (
+        "http://" +
+        this.store.details.domain +
+        "." +
+        host +
+        ".com/customer/menu?r="
+      );
     }
   },
   methods: {
@@ -373,8 +379,6 @@ export default {
           this.referredCouponUser.push(row.referral_user_id);
         });
       }
-      console.log("ref:" + this.referredCouponUser);
-      console.log("table:" + this.couponTableData);
       this.showReferralSettingsModal = true;
     },
     exportData(report, format = "pdf", print = false) {
