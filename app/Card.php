@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Subscription;
 
 class Card extends Model
 {
@@ -16,6 +17,8 @@ class Card extends Model
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
+
+    protected $appends = ['in_subscription'];
 
     protected $fillable = [
         'stripe_id',
@@ -40,5 +43,13 @@ class Card extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    public function getInSubscriptionAttribute()
+    {
+        return Subscription::where([
+            'status' => 'active',
+            'card_id' => $this->id
+        ])->count();
     }
 }

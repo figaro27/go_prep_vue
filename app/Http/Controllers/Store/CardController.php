@@ -9,6 +9,7 @@ use App\Customer;
 use App\User;
 use App\Card;
 use App\Billing\Authorize;
+use App\Subscription;
 
 class CardController extends StoreController
 {
@@ -151,6 +152,50 @@ class CardController extends StoreController
             return response('', 404);
         }
 
+        $this->destroySubscription($id);
+
         $card->delete();
+    }
+
+    public function destroySubscription($id)
+    {
+        $sub = Subscription::where('card_id', $id)->first();
+        if (!$sub) {
+            return response()->json(
+                [
+                    'error' => 'Subscription not found'
+                ],
+                404
+            );
+        }
+
+        if ($sub->monthlyPrepay) {
+            if ($sub->weekCount % 4 === 0) {
+                $sub->cancel();
+            } else {
+                try {
+                    $sub->cancel();
+                } catch (\Exception $e) {
+                    return response()->json(
+                        [
+                            'error' => 'Failed to cancel Subscription'
+                        ],
+                        500
+                    );
+                }
+            }
+            return;
+        }
+
+        try {
+            $sub->cancel();
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'error' => 'Failed to cancel Subscription'
+                ],
+                500
+            );
+        }
     }
 }
