@@ -216,8 +216,13 @@
                       label="name"
                       :options="users"
                       :reduce="user => user.value"
-                      @input="assignCouponToUser(props.row.id)"
-                      v-model="referredCouponUser[props.row.id]"
+                      @input="
+                        assignCouponToUser(
+                          props.row.id,
+                          referredCouponUser[props.row.id - 1]
+                        )
+                      "
+                      v-model="referredCouponUser[props.row.id - 1]"
                     >
                     </v-select>
                   </div>
@@ -292,13 +297,13 @@ export default {
     },
     users() {
       let customers = this.customers;
-      let leads = this.leads;
-      let users = customers.concat(leads);
+      // let leads = this.leads;
+      // let users = customers.concat(leads);
 
-      return _.map(users, user => {
+      return _.map(customers, customer => {
         return {
-          name: user.name,
-          value: user.id
+          name: customer.name,
+          value: customer.user_id
         };
       });
     },
@@ -341,11 +346,11 @@ export default {
         this.refreshStoreReferrals();
       });
     },
-    assignCouponToUser(couponId) {
+    assignCouponToUser(couponId, userId) {
       axios
         .patch("/api/me/coupons", {
           id: couponId,
-          referral_user_id: this.referredCouponUser[couponId]
+          referral_user_id: userId
         })
         .then(response => {
           this.$toastr.s("Coupon has been assigned to a user.", "Success");
@@ -370,12 +375,10 @@ export default {
           this.$toastr.w(error);
         });
     },
-    showReferralSettings() {
+    async showReferralSettings() {
       // Setting referral users to coupons
-      // this.referredCouponUser.push(undefined);
-      this.referredCouponUser.push(undefined);
       if (this.couponTableData.length > 0) {
-        this.couponTableData.forEach(row => {
+        await this.couponTableData.forEach(row => {
           this.referredCouponUser.push(row.referredUserName);
         });
       }
