@@ -58,9 +58,9 @@ class Payments
                     $sums[2] += $payment->preFeePreDiscount;
                     $sums[4] += $payment->couponReduction;
                     $sums[5] += $payment->mealPlanDiscount;
-                    $sums[6] += $payment->deliveryFee;
-                    $sums[7] += $payment->processingFee;
-                    $sums[8] += $payment->salesTax;
+                    $sums[6] += $payment->salesTax;
+                    $sums[7] += $payment->deliveryFee;
+                    $sums[8] += $payment->processingFee;
                     // $sums[8] += $payment->goprep_fee;
                     // $sums[9] += $payment->stripe_fee;
                     $sums[9] += $payment->purchasedGiftCardReduction;
@@ -78,9 +78,9 @@ class Payments
                         $payment->couponCode,
                         '$' . number_format($payment->couponReduction, 2),
                         '$' . number_format($payment->mealPlanDiscount, 2),
+                        '$' . number_format($payment->salesTax, 2),
                         '$' . number_format($payment->deliveryFee, 2),
                         '$' . number_format($payment->processingFee, 2),
-                        '$' . number_format($payment->salesTax, 2),
                         // '$' . number_format($payment->goprep_fee, 2),
                         // '$' . number_format($payment->stripe_fee, 2),
                         '$' .
@@ -122,9 +122,9 @@ class Payments
                 $mealPlanDiscount = 0;
                 $couponReduction = 0;
                 $afterDiscountBeforeFees = 0;
+                $salesTax = 0;
                 $processingFee = 0;
                 $deliveryFee = 0;
-                $salesTax = 0;
                 // $goPrepFeeAmount = 0;
                 // $stripeFeeAmount = 0;
                 $purchasedGiftCardReduction = 0;
@@ -142,9 +142,9 @@ class Payments
                     $preFeePreDiscount += $order->preFeePreDiscount;
                     $couponReduction += $order->couponReduction;
                     $mealPlanDiscount += $order->mealPlanDiscount;
+                    $salesTax += $order->salesTax;
                     $processingFee += $order->processingFee;
                     $deliveryFee += $order->deliveryFee;
-                    $salesTax += $order->salesTax;
                     // $goPrepFeeAmount += $order->goprep_fee;
                     // $stripeFeeAmount += $order->stripe_fee;
                     $purchasedGiftCardReduction +=
@@ -171,9 +171,9 @@ class Payments
                     '$' . number_format($preFeePreDiscount, 2),
                     '$' . number_format($couponReduction, 2),
                     '$' . number_format($mealPlanDiscount, 2),
+                    '$' . number_format($salesTax, 2),
                     '$' . number_format($deliveryFee, 2),
                     '$' . number_format($processingFee, 2),
-                    '$' . number_format($salesTax, 2),
                     // '$' . number_format($goPrepFeeAmount, 2),
                     // '$' . number_format($stripeFeeAmount, 2),
                     '$' . number_format($purchasedGiftCardReduction, 2),
@@ -189,9 +189,9 @@ class Payments
                 $sumsByDaily[2] += $preFeePreDiscount;
                 $sumsByDaily[3] += $couponReduction;
                 $sumsByDaily[4] += $mealPlanDiscount;
-                $sumsByDaily[5] += $deliveryFee;
-                $sumsByDaily[6] += $processingFee;
-                $sumsByDaily[7] += $salesTax;
+                $sumsByDaily[5] += $salesTax;
+                $sumsByDaily[6] += $deliveryFee;
+                $sumsByDaily[7] += $processingFee;
                 // $sumsByDaily[8] += $goPrepFeeAmount;
                 // $sumsByDaily[9] += $stripeFeeAmount;
                 $sumsByDaily[8] += $purchasedGiftCardReduction;
@@ -225,11 +225,10 @@ class Payments
                 'Delivery Date',
                 'Subtotal',
                 'Coupon',
-                'Coupon',
                 'Subscription',
+                'Sales Tax',
                 'Processing Fee',
                 'Delivery Fee',
-                'Sales Tax',
                 // 'GoPrep Fee',
                 // 'Stripe Fee',
                 'Gift Card',
