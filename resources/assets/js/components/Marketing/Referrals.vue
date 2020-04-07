@@ -184,7 +184,7 @@
                 type="number"
               ></b-form-input>
 
-              <div v-if="storeCoupons.length > 0" class="mt-4">
+              <!-- <div v-if="storeCoupons.length > 0" class="mt-4">
                 <p class="strong">
                   Link Coupons To Referrals
                   <img
@@ -196,7 +196,7 @@
                     class="popover-size ml-1"
                   />
                 </p>
-                <!-- <v-client-table
+                <v-client-table
                   :columns="couponColumns"
                   :data="couponTableData"
                   :options="{
@@ -233,8 +233,8 @@
                       >Remove</b-btn
                     >
                   </div>
-                </v-client-table> -->
-              </div>
+                </v-client-table>
+              </div> -->
             </div>
           </b-form-group>
           <b-button type="submit" variant="primary" class="mt-3">Save</b-button>
