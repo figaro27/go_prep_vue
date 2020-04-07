@@ -196,7 +196,7 @@
                     class="popover-size ml-1"
                   />
                 </p>
-                <v-client-table
+                <!-- <v-client-table
                   :columns="couponColumns"
                   :data="couponTableData"
                   :options="{
@@ -233,7 +233,7 @@
                       >Remove</b-btn
                     >
                   </div>
-                </v-client-table>
+                </v-client-table> -->
               </div>
             </div>
           </b-form-group>
@@ -377,19 +377,12 @@ export default {
     },
     async showReferralSettings() {
       // Setting referral users to coupons
-      console.log("COUP");
       if (this.couponTableData.length > 0) {
         await this.couponTableData.forEach(row => {
-          console.log(row);
-          this.referredCouponUser.push("test");
+          this.referredCouponUser.push(row.referredUserName);
         });
       }
       this.showReferralSettingsModal = true;
-
-      console.log("REFF");
-      this.referredCouponUser.forEach(user => {
-        console.log(user);
-      });
     },
     exportData(report, format = "pdf", print = false) {
       axios
