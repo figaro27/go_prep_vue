@@ -377,13 +377,16 @@ export default {
     },
     async showReferralSettings() {
       // Setting referral users to coupons
+      console.log("COUP");
       if (this.couponTableData.length > 0) {
         await this.couponTableData.forEach(row => {
+          console.log(row);
           this.referredCouponUser.push(row.referredUserName);
         });
       }
       this.showReferralSettingsModal = true;
 
+      console.log("REFF");
       this.referredCouponUser.forEach(user => {
         console.log(user);
       });
