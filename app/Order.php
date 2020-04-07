@@ -47,6 +47,10 @@ class Order extends Model
         'mealPlanDiscount' => 'float',
         'couponReduction' => 'float',
         'adjustedDifference' => 'float',
+        'purchasedGiftCardReduction' => 'float',
+        'referralReduction' => 'float',
+        'promotionReduction' => 'float',
+        'pointsReduction' => 'float',
         'hot' => 'float'
         //'created_at' => 'date:F d, Y'
     ];

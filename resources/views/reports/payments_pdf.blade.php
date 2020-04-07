@@ -49,13 +49,17 @@
             @if ($params['dailySummary'] == 0)
             <th>Coupon Code</th>
             @endif
-            <th>Coupon Reduction</th>
-            <th>Subscription Discount</th>
+            <th>Coupon</th>
+            <th>Subscription</th>
             <th>Delivery Fee</th>
             <th>Processing Fee</th>
             <th>Sales Tax</th>
             <!-- <th>GoPrep Fee</th>
             <th>Stripe Fee</th> -->
+            <th>Gift Card</th>    
+            <th>Referral</th>    
+            <th>Promotion</th>    
+            <th>Points</th>    
             <th>Total</th>           
             <th>Balance</th>
             <!-- <th>Refunded</th> -->
