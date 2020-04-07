@@ -381,7 +381,7 @@ export default {
       if (this.couponTableData.length > 0) {
         await this.couponTableData.forEach(row => {
           console.log(row);
-          this.referredCouponUser.push(row.referredUserName);
+          this.referredCouponUser.push("test");
         });
       }
       this.showReferralSettingsModal = true;
