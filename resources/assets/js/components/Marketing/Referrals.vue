@@ -328,7 +328,7 @@ export default {
         .patch("/api/me/referralSettings", referralSettings)
         .then(response => {
           this.refreshStoreReferralSettings();
-          this.$toastr.s("Your referral rules have been saved.", "Success");
+          this.$toastr.s("Your referral settings have been saved.", "Success");
           this.showReferralSettingsModal = false;
         })
         .catch(response => {
@@ -379,6 +379,7 @@ export default {
       // Setting referral users to coupons
       if (this.couponTableData.length > 0) {
         await this.couponTableData.forEach(row => {
+          console.log(row);
           this.referredCouponUser.push(row.referredUserName);
         });
       }
