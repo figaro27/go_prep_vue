@@ -217,7 +217,7 @@
                       :options="users"
                       :reduce="user => user.value"
                       @input="assignCouponToUser(props.row.id)"
-                      v-model="referredCouponUser[props.row.id]"
+                      v-model="referredCouponUser[props.row.id - 1]"
                     >
                     </v-select>
                   </div>
@@ -370,16 +370,17 @@ export default {
           this.$toastr.w(error);
         });
     },
-    showReferralSettings() {
+    async showReferralSettings() {
       // Setting referral users to coupons
       // this.referredCouponUser.push(undefined);
-      this.referredCouponUser.push(undefined);
+      // this.referredCouponUser.push(undefined);
       if (this.couponTableData.length > 0) {
-        this.couponTableData.forEach(row => {
+        await this.couponTableData.forEach(row => {
           this.referredCouponUser.push(row.referredUserName);
         });
       }
       this.showReferralSettingsModal = true;
+      console.log(this.referredCouponUser);
     },
     exportData(report, format = "pdf", print = false) {
       axios
