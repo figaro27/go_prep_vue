@@ -5,8 +5,8 @@
   <link rel="stylesheet" href="{{ asset(mix('/css/print.css')) }}">
 
   <style>
-    .text-success {
-      color:#5cb85c !important;
+    .text-green {
+      color:#006400 !important;
     }
   table tbody tr:first-child {
     font-weight: bold;
@@ -52,10 +52,10 @@
             @endif
             <th>Subtotal</th>
             @if (!$params['removeCoupon'])
-            <th class="text-success">Coupon</th>
+            <th class="text-green">(Coupon)</th>
             @endif
             @if (!$params['removeSubscription'])
-            <th class="text-success">Subscription</th>
+            <th class="text-green">(Subscription)</th>
             @endif
             @if (!$params['removeSalesTax'])
             <th>Sales Tax</th>
@@ -67,16 +67,16 @@
             <th>Processing Fee</th>
             @endif
             @if (!$params['removeGiftCard'])
-            <th class="text-success">Gift Card</th>
+            <th class="text-green">(Gift Card)</th>
             @endif
             @if (!$params['removeReferral'])
-            <th class="text-success">Referral</th> 
+            <th class="text-green">(Referral)</th> 
             @endif
             @if (!$params['removePromotion'])
-            <th class="text-success">Promotion</th> 
+            <th class="text-green">(Promotion)</th> 
             @endif
             @if (!$params['removePoints'])
-            <th class="text-success">Points</th> 
+            <th class="text-green">(Points)</th> 
             @endif
             <th>Total</th>  
             @if (!$params['removeBalance']) 
