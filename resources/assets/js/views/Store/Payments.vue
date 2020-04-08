@@ -412,8 +412,8 @@ export default {
           let totalOrders = 0;
           let sums = {
             preFeePreDiscount: 0,
-            mealPlanDiscount: 0,
             couponReduction: 0,
+            mealPlanDiscount: 0,
             afterDiscountBeforeFees: 0,
             salesTax: 0,
             processingFee: 0,
@@ -432,14 +432,12 @@ export default {
             created_at = order.paid_at;
             totalOrders += 1;
             sums.preFeePreDiscount += order.preFeePreDiscount;
-            sums.mealPlanDiscount += order.mealPlanDiscount;
             sums.couponReduction += order.couponReduction;
+            sums.mealPlanDiscount += order.mealPlanDiscount;
             sums.afterDiscountBeforeFees += order.afterDiscountBeforeFees;
             sums.salesTax += order.salesTax;
             sums.processingFee += order.processingFee;
             sums.deliveryFee += order.deliveryFee;
-            // sums.goprep_fee += order.goprep_fee;
-            // sums.stripe_fee += order.stripe_fee;
             sums.referralReduction += order.referralReduction;
             sums.purchasedGiftCardReduction += order.purchasedGiftCardReduction;
             sums.promotionReduction += order.promotionReduction;
@@ -451,8 +449,8 @@ export default {
             created_at: created_at,
             totalOrders: totalOrders,
             preFeePreDiscount: sums.preFeePreDiscount,
-            mealPlanDiscount: sums.mealPlanDiscount,
             couponReduction: sums.couponReduction,
+            mealPlanDiscount: sums.mealPlanDiscount,
             afterDiscountBeforeFees: sums.afterDiscountBeforeFees,
             salesTax: sums.salesTax,
             processingFee: sums.processingFee,
@@ -461,8 +459,6 @@ export default {
             purchasedGiftCardReduction: sums.purchasedGiftCardReduction,
             promotionReduction: sums.promotionReduction,
             pointsReduction: sums.pointsReduction,
-            // goprep_fee: sums.goprep_fee,
-            // stripe_fee: sums.stripe_fee,
             amount: sums.amount,
             balance: sums.balance
           });
@@ -482,8 +478,8 @@ export default {
         let totalOrders = 0;
         let sums = {
           preFeePreDiscount: 0,
-          mealPlanDiscount: 0,
           couponReduction: 0,
+          mealPlanDiscount: 0,
           afterDiscountBeforeFees: 0,
           salesTax: 0,
           processingFee: 0,
@@ -501,14 +497,12 @@ export default {
 
         orders.forEach(order => {
           sums.preFeePreDiscount += order.preFeePreDiscount;
-          sums.mealPlanDiscount += order.mealPlanDiscount;
           sums.couponReduction += order.couponReduction;
+          sums.mealPlanDiscount += order.mealPlanDiscount;
           sums.afterDiscountBeforeFees += order.afterDiscountBeforeFees;
           sums.salesTax += order.salesTax;
           sums.processingFee += order.processingFee;
           sums.deliveryFee += order.deliveryFee;
-          // sums.goprep_fee += order.goprep_fee;
-          // sums.stripe_fee += order.stripe_fee;
           sums.referralReduction += order.referralReduction;
           sums.purchasedGiftCardReduction += order.purchasedGiftCardReduction;
           sums.promotionReduction += order.promotionReduction;
@@ -522,14 +516,12 @@ export default {
           created_at: "TOTALS",
           totalOrders: grandTotalOrders,
           preFeePreDiscount: sums.preFeePreDiscount,
-          mealPlanDiscount: sums.mealPlanDiscount,
           couponReduction: sums.couponReduction,
+          mealPlanDiscount: sums.mealPlanDiscount,
           afterDiscountBeforeFees: sums.afterDiscountBeforeFees,
           salesTax: sums.salesTax,
           processingFee: sums.processingFee,
           deliveryFee: sums.deliveryFee,
-          // goprep_fee: sums.goprep_fee,
-          // stripe_fee: sums.stripe_fee,
           referralReduction: sums.referralReduction,
           purchasedGiftCardReduction: sums.purchasedGiftCardReduction,
           promotionReduction: sums.promotionReduction,
