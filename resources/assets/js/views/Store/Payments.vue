@@ -316,7 +316,6 @@ export default {
           delivery_date: "Delivery Date",
           totalOrders: "Orders",
           subtotal: "Subtotal",
-          couponCode: "Coupon",
           couponReduction: "Coupon",
           mealPlanDiscount: "Subscription",
           salesTax: "Sales Tax",
@@ -572,12 +571,6 @@ export default {
           columns.splice(4, 0, "deliveryFee");
         }
 
-        // if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
-        //   columns.splice(columns.length - 1, 0, "goprep_fee");
-        // }
-        // if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
-        //   columns.splice(columns.length - 1, 0, "stripe_fee");
-        // }
         if (!columns.includes("refundedAmount") && order.refundedAmount > 0) {
           columns.splice(columns.length, 0, "refundedAmount");
         }
@@ -601,12 +594,6 @@ export default {
         if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
           columns.splice(4, 0, "deliveryFee");
         }
-        // if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
-        //   columns.splice(columns.length - 1, 0, "goprep_fee");
-        // }
-        // if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
-        //   columns.splice(columns.length - 1, 0, "stripe_fee");
-        // }
 
         if (
           !columns.includes("purchasedGiftCardReduction") &&
