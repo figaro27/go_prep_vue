@@ -63,7 +63,6 @@ class Payments
                         $payment->created_at->format('D, m/d/Y'),
                         $payment->delivery_date->format('D, m/d/Y'),
                         '$' . number_format($payment->preFeePreDiscount, 2),
-                        $payment->couponCode,
                         '$' . number_format($payment->couponReduction, 2),
                         '$' . number_format($payment->mealPlanDiscount, 2),
                         '$' . number_format($payment->salesTax, 2),
