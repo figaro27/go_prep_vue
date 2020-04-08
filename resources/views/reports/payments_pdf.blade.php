@@ -5,6 +5,9 @@
   <link rel="stylesheet" href="{{ asset(mix('/css/print.css')) }}">
 
   <style>
+    .text-success {
+      color:#5cb85c !important;
+    }
   table tbody tr:first-child {
     font-weight: bold;
   }
@@ -12,6 +15,8 @@
     width: 100px;
     word-break: break-all;
     }
+
+
   </style>
 </head>
 
