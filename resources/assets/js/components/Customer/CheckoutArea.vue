@@ -1662,7 +1662,7 @@ export default {
         this.bagDeliveryDate === "2020-04-12 00:00:00" &&
         (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
       ) {
-        for (let i = 0; i <= 6; i++) newHourOptions.pop();
+        for (let i = 0; i <= 5; i++) newHourOptions.pop();
       }
 
       return newHourOptions;
