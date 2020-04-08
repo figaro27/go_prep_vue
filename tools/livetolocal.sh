@@ -5,7 +5,7 @@ ssh goprep "
   exit
 "
 
-scp forge@157.230.216.93:~/backup_sql.sql $1
+scp forge@167.99.235.17:~/backup_sql.sql $1
 
 mysql -u root -e "drop database goprep";
 mysql -u root -e "create database goprep";
