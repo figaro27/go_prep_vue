@@ -229,7 +229,24 @@ class Payments
             ]);
         }
 
-        return $payments->toArray();
+        // Remove unused columns from report
+        $removedIndexes = [];
+        $filteredPayments = [];
+
+        foreach ($payments[0] as $i => $payment) {
+            if ($payment === 0 || $payment === '$0.00') {
+                array_push($removedIndexes, $i);
+            }
+        }
+
+        foreach ($payments as $payment) {
+            foreach ($removedIndexes as $removedIndex) {
+                unset($payment[$removedIndex]);
+            }
+            array_push($filteredPayments, $payment);
+        }
+
+        return $filteredPayments;
     }
 
     public function exportPdfView()
