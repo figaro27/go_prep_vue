@@ -30,18 +30,6 @@ class Payments
         $sums = ['TOTALS', '', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-        dd(
-            $this->store->getOrders(
-                null,
-                $this->getDeliveryDates(),
-                null,
-                true,
-                null,
-                $byOrderDate ? true : false,
-                $couponCode
-            )
-        );
-
         if ($dailySummary != 1) {
             $payments = $this->store
                 ->getOrders(
