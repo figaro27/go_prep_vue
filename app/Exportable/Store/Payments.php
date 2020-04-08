@@ -27,7 +27,7 @@ class Payments
         $byOrderDate = $this->params->get('byOrderDate');
         $params->date_format = $this->store->settings->date_format;
 
-        $sums = ['TOTALS', '', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $sums = ['TOTALS', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         if ($dailySummary != 1) {
@@ -44,33 +44,27 @@ class Payments
                 ->where('voided', 0)
                 ->map(function ($payment) use (&$sums, $byOrderDate) {
                     $sums[2] += $payment->preFeePreDiscount;
-                    $sums[4] += $payment->couponReduction;
-                    $sums[5] += $payment->mealPlanDiscount;
-                    $sums[6] += $payment->salesTax;
-                    $sums[7] += $payment->deliveryFee;
-                    $sums[8] += $payment->processingFee;
-                    // $sums[8] += $payment->goprep_fee;
-                    // $sums[9] += $payment->stripe_fee;
-                    $sums[9] += $payment->purchasedGiftCardReduction;
-                    $sums[10] += $payment->referralReduction;
-                    $sums[11] += $payment->promotionReduction;
-                    $sums[12] += $payment->pointsReduction;
-                    $sums[13] += $payment->amount;
-                    $sums[14] += $payment->balance;
-                    // $sums[10] += $payment->refundedAmount;
+                    $sums[3] += $payment->couponReduction;
+                    $sums[4] += $payment->mealPlanDiscount;
+                    $sums[5] += $payment->salesTax;
+                    $sums[6] += $payment->deliveryFee;
+                    $sums[7] += $payment->processingFee;
+                    $sums[8] += $payment->purchasedGiftCardReduction;
+                    $sums[9] += $payment->referralReduction;
+                    $sums[10] += $payment->promotionReduction;
+                    $sums[11] += $payment->pointsReduction;
+                    $sums[12] += $payment->amount;
+                    $sums[13] += $payment->balance;
 
                     $paymentsRows = [
                         $payment->created_at->format('D, m/d/Y'),
                         $payment->delivery_date->format('D, m/d/Y'),
                         '$' . number_format($payment->preFeePreDiscount, 2),
-                        $payment->couponCode,
                         '$' . number_format($payment->couponReduction, 2),
                         '$' . number_format($payment->mealPlanDiscount, 2),
                         '$' . number_format($payment->salesTax, 2),
                         '$' . number_format($payment->deliveryFee, 2),
                         '$' . number_format($payment->processingFee, 2),
-                        // '$' . number_format($payment->goprep_fee, 2),
-                        // '$' . number_format($payment->stripe_fee, 2),
                         '$' .
                             number_format(
                                 $payment->purchasedGiftCardReduction,
@@ -81,7 +75,6 @@ class Payments
                         '$' . number_format($payment->pointsReduction, 2),
                         '$' . number_format($payment->amount, 2),
                         '$' . number_format($payment->balance, 2)
-                        // '$' . number_format($payment->refundedAmount, 2)
                     ];
 
                     return $paymentsRows;
@@ -113,15 +106,12 @@ class Payments
                 $salesTax = 0;
                 $processingFee = 0;
                 $deliveryFee = 0;
-                // $goPrepFeeAmount = 0;
-                // $stripeFeeAmount = 0;
                 $purchasedGiftCardReduction = 0;
                 $referralReduction = 0;
                 $promotionReduction = 0;
                 $pointsReduction = 0;
                 $amount = 0;
                 $balance = 0;
-                // $refundedAmount = 0;
 
                 foreach ($orderByDay as $order) {
                     $created_at = $order->order_day;
@@ -162,15 +152,12 @@ class Payments
                     '$' . number_format($salesTax, 2),
                     '$' . number_format($deliveryFee, 2),
                     '$' . number_format($processingFee, 2),
-                    // '$' . number_format($goPrepFeeAmount, 2),
-                    // '$' . number_format($stripeFeeAmount, 2),
                     '$' . number_format($purchasedGiftCardReduction, 2),
                     '$' . number_format($referralReduction, 2),
                     '$' . number_format($promotionReduction, 2),
                     '$' . number_format($pointsReduction, 2),
                     '$' . number_format($amount, 2),
                     '$' . number_format($balance, 2)
-                    // '$' . number_format($refundedAmount, 2)
                 ]);
 
                 $sumsByDaily[1] += $totalOrders;
@@ -180,18 +167,15 @@ class Payments
                 $sumsByDaily[5] += $salesTax;
                 $sumsByDaily[6] += $deliveryFee;
                 $sumsByDaily[7] += $processingFee;
-                // $sumsByDaily[8] += $goPrepFeeAmount;
-                // $sumsByDaily[9] += $stripeFeeAmount;
                 $sumsByDaily[8] += $purchasedGiftCardReduction;
                 $sumsByDaily[9] += $referralReduction;
                 $sumsByDaily[10] += $promotionReduction;
                 $sumsByDaily[11] += $pointsReduction;
                 $sumsByDaily[12] += $amount;
                 $sumsByDaily[13] += $balance;
-                // $sumsByDaily[10] += $refundedAmount;
             }
 
-            foreach ([2, 3, 4, 5, 6, 7, 8, 9] as $i) {
+            foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as $i) {
                 $sumsByDaily[$i] = '$' . number_format($sumsByDaily[$i], 2);
             }
 
@@ -200,12 +184,51 @@ class Payments
         }
 
         // Format the sum row
-        foreach ([2, 4, 5, 6, 7, 8, 9, 10] as $i) {
+        foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as $i) {
             $sums[$i] = '$' . number_format($sums[$i], 2);
         }
 
         // Push the sums to the start of the list
         $payments->prepend($sums);
+
+        // Remove unused columns from report
+        $removedIndexes = [];
+        $filteredPayments = [];
+
+        $params['removedIndex'] = $removedIndexes;
+
+        foreach ($payments[0] as $i => $payment) {
+            if ($payment === 0 || $payment === '$0.00') {
+                array_push($removedIndexes, $i);
+            }
+        }
+
+        foreach ($payments as $payment) {
+            foreach ($removedIndexes as $removedIndex) {
+                unset($payment[$removedIndex]);
+            }
+            array_push($filteredPayments, $payment);
+        }
+
+        // Remove unused columns from blade
+        $params['removeCoupon'] = in_array(3, $removedIndexes) ? true : false;
+        $params['removeSubscription'] = in_array(4, $removedIndexes)
+            ? true
+            : false;
+        $params['removeSalesTax'] = in_array(5, $removedIndexes) ? true : false;
+        $params['removeDeliveryFee'] = in_array(6, $removedIndexes)
+            ? true
+            : false;
+        $params['removeProcessingFee'] = in_array(7, $removedIndexes)
+            ? true
+            : false;
+        $params['removeGiftCard'] = in_array(8, $removedIndexes) ? true : false;
+        $params['removeReferral'] = in_array(9, $removedIndexes) ? true : false;
+        $params['removePromotion'] = in_array(10, $removedIndexes)
+            ? true
+            : false;
+        $params['removePoints'] = in_array(11, $removedIndexes) ? true : false;
+        $params['removeBalance'] = in_array(13, $removedIndexes) ? true : false;
 
         if ($type !== 'pdf') {
             $payments->prepend([
@@ -227,9 +250,10 @@ class Payments
                 'Balance'
                 // 'Refunded'
             ]);
+            return $payments;
         }
 
-        return $payments->toArray();
+        return $filteredPayments;
     }
 
     public function exportPdfView()

@@ -184,9 +184,10 @@
                 type="number"
               ></b-form-input>
 
-              <!-- <div v-if="storeCoupons.length > 0" class="mt-4">
+              <div v-if="storeCoupons.length > 0" class="mt-4">
                 <p class="strong">
                   Link Coupons To Referrals
+                  {{ referredCouponUser }}
                   <img
                     v-b-popover.hover="
                       'You can attach one of your existing coupons to a referral user using the table below. If you create a unique coupon code for a certain affiliate individual or company, and a customer uses that coupon code, the referral bonus will be applied to that user. This is another way to get referral sales other than your affiliates giving out their URL. Instead, they can give our their unique coupon code given to them by you in order to give customers an incentive to order.'
@@ -219,10 +220,10 @@
                       @input="
                         assignCouponToUser(
                           props.row.id,
-                          referredCouponUser[props.row.id - 1]
+                          referredCouponUser[props.index - 1]
                         )
                       "
-                      v-model="referredCouponUser[props.row.id - 1]"
+                      v-model="referredCouponUser[props.index - 1]"
                     >
                     </v-select>
                   </div>
@@ -234,7 +235,7 @@
                     >
                   </div>
                 </v-client-table>
-              </div> -->
+              </div>
             </div>
           </b-form-group>
           <b-button type="submit" variant="primary" class="mt-3">Save</b-button>

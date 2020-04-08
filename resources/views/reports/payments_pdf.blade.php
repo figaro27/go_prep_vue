@@ -5,6 +5,9 @@
   <link rel="stylesheet" href="{{ asset(mix('/css/print.css')) }}">
 
   <style>
+    .text-green {
+      color:#006400 !important;
+    }
   table tbody tr:first-child {
     font-weight: bold;
   }
@@ -12,6 +15,8 @@
     width: 100px;
     word-break: break-all;
     }
+
+
   </style>
 </head>
 
@@ -46,22 +51,37 @@
             <th>Orders</th>
             @endif
             <th>Subtotal</th>
-            @if ($params['dailySummary'] == 0)
-            <th>Coupon Code</th>
+            @if (!$params['removeCoupon'])
+            <th class="text-green">(Coupon)</th>
             @endif
-            <th>Coupon</th>
-            <th>Subscription</th>
-            <th>Delivery Fee</th>
-            <th>Processing Fee</th>
+            @if (!$params['removeSubscription'])
+            <th class="text-green">(Subscription)</th>
+            @endif
+            @if (!$params['removeSalesTax'])
             <th>Sales Tax</th>
-            <!-- <th>GoPrep Fee</th>
-            <th>Stripe Fee</th> -->
-            <th>Gift Card</th>    
-            <th>Referral</th>    
-            <th>Promotion</th>    
-            <th>Points</th>    
-            <th>Total</th>           
+            @endif
+            @if (!$params['removeDeliveryFee'])
+            <th>Delivery Fee</th>
+            @endif
+            @if (!$params['removeProcessingFee'])
+            <th>Processing Fee</th>
+            @endif
+            @if (!$params['removeGiftCard'])
+            <th class="text-green">(Gift Card)</th>
+            @endif
+            @if (!$params['removeReferral'])
+            <th class="text-green">(Referral)</th> 
+            @endif
+            @if (!$params['removePromotion'])
+            <th class="text-green">(Promotion)</th> 
+            @endif
+            @if (!$params['removePoints'])
+            <th class="text-green">(Points)</th> 
+            @endif
+            <th>Total</th>  
+            @if (!$params['removeBalance']) 
             <th>Balance</th>
+            @endif
             <!-- <th>Refunded</th> -->
           </tr>
         </thead>
