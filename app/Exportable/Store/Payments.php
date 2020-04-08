@@ -210,7 +210,7 @@ class Payments
             array_push($filteredPayments, $payment);
         }
 
-        // Remove unused columns from blade
+        // Remove unused columns from blade template
         $params['removeCoupon'] = in_array(3, $removedIndexes) ? true : false;
         $params['removeSubscription'] = in_array(4, $removedIndexes)
             ? true
@@ -240,15 +240,12 @@ class Payments
                 'Sales Tax',
                 'Processing Fee',
                 'Delivery Fee',
-                // 'GoPrep Fee',
-                // 'Stripe Fee',
                 'Gift Card',
                 'Referral',
                 'Promotion',
                 'Points',
                 'Total',
                 'Balance'
-                // 'Refunded'
             ]);
             return $payments;
         }
