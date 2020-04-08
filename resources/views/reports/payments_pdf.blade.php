@@ -46,22 +46,37 @@
             <th>Orders</th>
             @endif
             <th>Subtotal</th>
-            @if ($params['dailySummary'] == 0)
-            <th>Coupon Code</th>
-            @endif
+            @if (!$params['removeCoupon'])
             <th>Coupon</th>
+            @endif
+            @if (!$params['removeSubscription'])
             <th>Subscription</th>
-            <th>Delivery Fee</th>
-            <th>Processing Fee</th>
+            @endif
+            @if (!$params['removeSalesTax'])
             <th>Sales Tax</th>
-            <!-- <th>GoPrep Fee</th>
-            <th>Stripe Fee</th> -->
-            <th>Gift Card</th>    
-            <th>Referral</th>    
-            <th>Promotion</th>    
-            <th>Points</th>    
-            <th>Total</th>           
+            @endif
+            @if (!$params['removeDeliveryFee'])
+            <th>Delivery Fee</th>
+            @endif
+            @if (!$params['removeProcessingFee'])
+            <th>Processing Fee</th>
+            @endif
+            @if (!$params['removeGiftCard'])
+            <th>Gift Card</th>
+            @endif
+            @if (!$params['removeReferral'])
+            <th>Referral</th> 
+            @endif
+            @if (!$params['removePromotion'])
+            <th>Promotion</th> 
+            @endif
+            @if (!$params['removePoints'])
+            <th>Points</th> 
+            @endif
+            <th>Total</th>  
+            @if (!$params['removeBalance']) 
             <th>Balance</th>
+            @endif
             <!-- <th>Refunded</th> -->
           </tr>
         </thead>

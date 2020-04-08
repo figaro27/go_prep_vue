@@ -207,6 +207,45 @@ class Payments
         // Push the sums to the start of the list
         $payments->prepend($sums);
 
+        // Remove unused columns from report
+        $removedIndexes = [];
+        $filteredPayments = [];
+
+        $params['removedIndex'] = $removedIndexes;
+
+        foreach ($payments[0] as $i => $payment) {
+            if ($payment === 0 || $payment === '$0.00') {
+                array_push($removedIndexes, $i);
+            }
+        }
+
+        foreach ($payments as $payment) {
+            foreach ($removedIndexes as $removedIndex) {
+                unset($payment[$removedIndex]);
+            }
+            array_push($filteredPayments, $payment);
+        }
+
+        // Remove unused columns from blade
+        $params['removeCoupon'] = in_array(3, $removedIndexes) ? true : false;
+        $params['removeSubscription'] = in_array(4, $removedIndexes)
+            ? true
+            : false;
+        $params['removeSalesTax'] = in_array(5, $removedIndexes) ? true : false;
+        $params['removeDeliveryFee'] = in_array(6, $removedIndexes)
+            ? true
+            : false;
+        $params['removeProcessingFee'] = in_array(7, $removedIndexes)
+            ? true
+            : false;
+        $params['removeGiftCard'] = in_array(8, $removedIndexes) ? true : false;
+        $params['removeReferral'] = in_array(9, $removedIndexes) ? true : false;
+        $params['removePromotion'] = in_array(10, $removedIndexes)
+            ? true
+            : false;
+        $params['removePoints'] = in_array(11, $removedIndexes) ? true : false;
+        $params['removeBalance'] = in_array(13, $removedIndexes) ? true : false;
+
         if ($type !== 'pdf') {
             $payments->prepend([
                 'Order Date',
@@ -227,23 +266,6 @@ class Payments
                 'Balance'
                 // 'Refunded'
             ]);
-        }
-
-        // Remove unused columns from report
-        $removedIndexes = [];
-        $filteredPayments = [];
-
-        foreach ($payments[0] as $i => $payment) {
-            if ($payment === 0 || $payment === '$0.00') {
-                array_push($removedIndexes, $i);
-            }
-        }
-
-        foreach ($payments as $payment) {
-            foreach ($removedIndexes as $removedIndex) {
-                unset($payment[$removedIndex]);
-            }
-            array_push($filteredPayments, $payment);
         }
 
         return $filteredPayments;
