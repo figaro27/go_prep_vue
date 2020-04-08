@@ -50,7 +50,7 @@
             <th class="text-success">Coupon</th>
             @endif
             @if (!$params['removeSubscription'])
-            <th>Subscription</th>
+            <th class="text-success">Subscription</th>
             @endif
             @if (!$params['removeSalesTax'])
             <th>Sales Tax</th>
@@ -62,16 +62,16 @@
             <th>Processing Fee</th>
             @endif
             @if (!$params['removeGiftCard'])
-            <th>Gift Card</th>
+            <th class="text-success">Gift Card</th>
             @endif
             @if (!$params['removeReferral'])
-            <th>Referral</th> 
+            <th class="text-success">Referral</th> 
             @endif
             @if (!$params['removePromotion'])
-            <th>Promotion</th> 
+            <th class="text-success">Promotion</th> 
             @endif
             @if (!$params['removePoints'])
-            <th>Points</th> 
+            <th class="text-success">Points</th> 
             @endif
             <th>Total</th>  
             @if (!$params['removeBalance']) 
