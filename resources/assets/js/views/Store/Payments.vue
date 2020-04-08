@@ -593,15 +593,15 @@ export default {
       });
 
       this.ordersByDate.forEach(order => {
-        if (!columns.includes("couponReduction") && order.couponCode != null) {
-          columns.splice(3, 0, "couponReduction");
-          // columns.splice(3, 0, "couponCode");
-        }
         if (
           !columns.includes("mealPlanDiscount") &&
           order.mealPlanDiscount > 0
         ) {
           columns.splice(3, 0, "mealPlanDiscount");
+        }
+        if (!columns.includes("couponReduction") && order.couponCode != null) {
+          columns.splice(3, 0, "couponReduction");
+          // columns.splice(3, 0, "couponCode");
         }
         if (!columns.includes("processingFee") && order.processingFee > 0) {
           columns.splice(4, 0, "processingFee");
