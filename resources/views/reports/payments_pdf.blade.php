@@ -47,7 +47,7 @@
             @endif
             <th>Subtotal</th>
             @if (!$params['removeCoupon'])
-            <th>Coupon</th>
+            <th class="text-success">Coupon</th>
             @endif
             @if (!$params['removeSubscription'])
             <th>Subscription</th>
