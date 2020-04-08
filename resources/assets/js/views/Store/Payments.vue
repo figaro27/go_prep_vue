@@ -113,21 +113,6 @@
                 }}
               </div>
             </div>
-            <div slot="mealPlanDiscount" slot-scope="props">
-              <div class="text-success">
-                {{
-                  props.row.mealPlanDiscount !== null &&
-                  props.row.mealPlanDiscount > 0
-                    ? "(" +
-                      formatMoney(
-                        props.row.mealPlanDiscount,
-                        props.row.currency
-                      ) +
-                      ")"
-                    : " - "
-                }}
-              </div>
-            </div>
             <!-- <div slot="couponCode" slot-scope="props">
               <div>{{ props.row.couponCode }}</div>
             </div> -->
@@ -139,6 +124,21 @@
                     ? "(" +
                       formatMoney(
                         props.row.couponReduction,
+                        props.row.currency
+                      ) +
+                      ")"
+                    : " - "
+                }}
+              </div>
+            </div>
+            <div slot="mealPlanDiscount" slot-scope="props">
+              <div class="text-success">
+                {{
+                  props.row.mealPlanDiscount !== null &&
+                  props.row.mealPlanDiscount > 0
+                    ? "(" +
+                      formatMoney(
+                        props.row.mealPlanDiscount,
                         props.row.currency
                       ) +
                       ")"
@@ -316,9 +316,9 @@ export default {
           delivery_date: "Delivery Date",
           totalOrders: "Orders",
           subtotal: "Subtotal",
-          mealPlanDiscount: "Subscription",
           couponCode: "Coupon",
           couponReduction: "Coupon",
+          mealPlanDiscount: "Subscription",
           salesTax: "Sales Tax",
           processingFee: "Processing Fee",
           deliveryFee: "Delivery Fee",
