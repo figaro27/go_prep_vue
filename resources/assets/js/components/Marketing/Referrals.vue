@@ -187,7 +187,6 @@
               <div v-if="storeCoupons.length > 0" class="mt-4">
                 <p class="strong">
                   Link Coupons To Referrals
-                  {{ referredCouponUser }}
                   <img
                     v-b-popover.hover="
                       'You can attach one of your existing coupons to a referral user using the table below. If you create a unique coupon code for a certain affiliate individual or company, and a customer uses that coupon code, the referral bonus will be applied to that user. This is another way to get referral sales other than your affiliates giving out their URL. Instead, they can give our their unique coupon code given to them by you in order to give customers an incentive to order.'
