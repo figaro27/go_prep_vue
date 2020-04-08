@@ -200,7 +200,7 @@ class Payments
         }
 
         // Format the sum row
-        foreach ([2, 4, 5, 6, 7, 8, 9, 10] as $i) {
+        foreach ([2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as $i) {
             $sums[$i] = '$' . number_format($sums[$i], 2);
         }
 
