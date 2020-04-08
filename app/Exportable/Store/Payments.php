@@ -250,6 +250,7 @@ class Payments
                 'Balance'
                 // 'Refunded'
             ]);
+            return $payments;
         }
 
         return $filteredPayments;
