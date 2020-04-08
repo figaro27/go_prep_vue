@@ -61,7 +61,7 @@
                 <b-form-select
                   v-model="filters.couponCode"
                   :options="coupons"
-                  class="ml-3"
+                  class="ml-3 w-180"
                   v-if="coupons.length > 0"
                 >
                   <template slot="first">
@@ -114,35 +114,67 @@
               </div>
             </div>
             <div slot="mealPlanDiscount" slot-scope="props">
-              <div>
+              <div class="text-success">
                 {{
-                  formatMoney(props.row.mealPlanDiscount, props.row.currency)
+                  props.row.mealPlanDiscount !== null &&
+                  props.row.mealPlanDiscount > 0
+                    ? "(" +
+                      formatMoney(
+                        props.row.mealPlanDiscount,
+                        props.row.currency
+                      ) +
+                      ")"
+                    : " - "
                 }}
               </div>
             </div>
-            <div slot="couponCode" slot-scope="props">
+            <!-- <div slot="couponCode" slot-scope="props">
               <div>{{ props.row.couponCode }}</div>
-            </div>
+            </div> -->
             <div slot="couponReduction" slot-scope="props">
-              <div>
-                {{ formatMoney(props.row.couponReduction, props.row.currency) }}
-              </div>
-            </div>
-            <div slot="processingFee" slot-scope="props">
-              <div>
-                {{ formatMoney(props.row.processingFee, props.row.currency) }}
-              </div>
-            </div>
-            <div slot="deliveryFee" slot-scope="props">
-              <div>
-                {{ formatMoney(props.row.deliveryFee, props.row.currency) }}
+              <div class="text-success">
+                {{
+                  props.row.couponReduction !== null &&
+                  props.row.couponReduction > 0
+                    ? "(" +
+                      formatMoney(
+                        props.row.couponReduction,
+                        props.row.currency
+                      ) +
+                      ")"
+                    : " - "
+                }}
               </div>
             </div>
             <div slot="salesTax" slot-scope="props">
               <div>
-                {{ formatMoney(props.row.salesTax, props.row.currency) }}
+                {{
+                  props.row.salesTax !== null && props.row.salesTax > 0
+                    ? formatMoney(props.row.salesTax, props.row.currency)
+                    : " - "
+                }}
               </div>
             </div>
+            <div slot="processingFee" slot-scope="props">
+              <div>
+                {{
+                  props.row.processingFee !== null &&
+                  props.row.processingFee > 0
+                    ? formatMoney(props.row.processingFee, props.row.currency)
+                    : " - "
+                }}
+              </div>
+            </div>
+            <div slot="deliveryFee" slot-scope="props">
+              <div>
+                {{
+                  props.row.deliveryFee !== null && props.row.deliveryFee > 0
+                    ? formatMoney(props.row.deliveryFee, props.row.currency)
+                    : " - "
+                }}
+              </div>
+            </div>
+
             <!-- <div slot="total" slot-scope="props">
               <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
             </div> -->
@@ -156,6 +188,66 @@
                 {{ formatMoney(props.row.stripe_fee, props.row.currency) }}
               </div>
             </div>
+            <div slot="referralReduction" slot-scope="props">
+              <div class="text-success">
+                {{
+                  props.row.referralReduction !== null &&
+                  props.row.referralReduction > 0
+                    ? "(" +
+                      formatMoney(
+                        props.row.referralReduction,
+                        props.row.currency
+                      ) +
+                      ")"
+                    : " - "
+                }}
+              </div>
+            </div>
+            <div slot="purchasedGiftCardReduction" slot-scope="props">
+              <div class="text-success">
+                {{
+                  props.row.purchasedGiftCardReduction !== null &&
+                  props.row.purchasedGiftCardReduction > 0
+                    ? "(" +
+                      formatMoney(
+                        props.row.purchasedGiftCardReduction,
+                        props.row.currency
+                      ) +
+                      ")"
+                    : " - "
+                }}
+              </div>
+            </div>
+            <div slot="promotionReduction" slot-scope="props">
+              <div class="text-success">
+                {{
+                  props.row.promotionReduction !== null &&
+                  props.row.promotionReduction > 0
+                    ? "(" +
+                      formatMoney(
+                        props.row.promotionReduction,
+                        props.row.currency
+                      ) +
+                      ")"
+                    : " - "
+                }}
+              </div>
+            </div>
+            <div slot="pointsReduction" slot-scope="props">
+              <div class="text-success">
+                {{
+                  props.row.pointsReduction !== null &&
+                  props.row.pointsReduction > 0
+                    ? "(" +
+                      formatMoney(
+                        props.row.pointsReduction,
+                        props.row.currency
+                      ) +
+                      ")"
+                    : " - "
+                }}
+              </div>
+            </div>
             <div slot="amount" slot-scope="props">
               <div>
                 {{ formatMoney(props.row.amount, props.row.currency) }}
@@ -164,7 +256,11 @@
             <div slot="balance" slot-scope="props">
               <div>
                 <!-- {{ formatMoney((100 - props.row.deposit)/100 * props.row.grandTotal, props.row.currency) }} -->
-                {{ formatMoney(props.row.balance, props.row.currency) }}
+                {{
+                  props.row.balance !== null && props.row.balance > 0
+                    ? formatMoney(props.row.balance, props.row.currency)
+                    : " - "
+                }}
               </div>
             </div>
             <div slot="refundedAmount" slot-scope="props">
@@ -220,15 +316,19 @@ export default {
           delivery_date: "Delivery Date",
           totalOrders: "Orders",
           subtotal: "Subtotal",
-          mealPlanDiscount: "Subscription Discount",
+          mealPlanDiscount: "Subscription",
           couponCode: "Coupon",
-          couponReduction: "Coupon Reduction",
+          couponReduction: "Coupon",
+          salesTax: "Sales Tax",
           processingFee: "Processing Fee",
           deliveryFee: "Delivery Fee",
-          salesTax: "Sales Tax",
           // total: "PreFee Total",
           goprep_fee: "GoPrep Fee",
           stripe_fee: "Stripe Fee",
+          referralReduction: "Referral",
+          purchasedGiftCardReduction: "Gift Card",
+          promotionReduction: "Promotion",
+          pointsReduction: "Points",
           amount: "Total",
           balance: "Balance",
           refundedAmount: "Refunded"
@@ -315,9 +415,13 @@ export default {
             mealPlanDiscount: 0,
             couponReduction: 0,
             afterDiscountBeforeFees: 0,
+            salesTax: 0,
             processingFee: 0,
             deliveryFee: 0,
-            salesTax: 0,
+            referralReduction: 0,
+            purchasedGiftCardReduction: 0,
+            promotionReduction: 0,
+            pointsReduction: 0,
             // goprep_fee: 0,
             // stripe_fee: 0,
             amount: 0,
@@ -331,11 +435,15 @@ export default {
             sums.mealPlanDiscount += order.mealPlanDiscount;
             sums.couponReduction += order.couponReduction;
             sums.afterDiscountBeforeFees += order.afterDiscountBeforeFees;
+            sums.salesTax += order.salesTax;
             sums.processingFee += order.processingFee;
             sums.deliveryFee += order.deliveryFee;
-            sums.salesTax += order.salesTax;
             // sums.goprep_fee += order.goprep_fee;
             // sums.stripe_fee += order.stripe_fee;
+            sums.referralReduction += order.referralReduction;
+            sums.purchasedGiftCardReduction += order.purchasedGiftCardReduction;
+            sums.promotionReduction += order.promotionReduction;
+            sums.pointsReduction += order.pointsReduction;
             sums.amount += order.amount;
             sums.balance += order.balance;
           });
@@ -346,9 +454,13 @@ export default {
             mealPlanDiscount: sums.mealPlanDiscount,
             couponReduction: sums.couponReduction,
             afterDiscountBeforeFees: sums.afterDiscountBeforeFees,
+            salesTax: sums.salesTax,
             processingFee: sums.processingFee,
             deliveryFee: sums.deliveryFee,
-            salesTax: sums.salesTax,
+            referralReduction: sums.referralReduction,
+            purchasedGiftCardReduction: sums.purchasedGiftCardReduction,
+            promotionReduction: sums.promotionReduction,
+            pointsReduction: sums.pointsReduction,
             // goprep_fee: sums.goprep_fee,
             // stripe_fee: sums.stripe_fee,
             amount: sums.amount,
@@ -373,11 +485,15 @@ export default {
           mealPlanDiscount: 0,
           couponReduction: 0,
           afterDiscountBeforeFees: 0,
+          salesTax: 0,
           processingFee: 0,
           deliveryFee: 0,
-          salesTax: 0,
           goprep_fee: 0,
           stripe_fee: 0,
+          referralReduction: 0,
+          purchasedGiftCardReduction: 0,
+          promotionReduction: 0,
+          pointsReduction: 0,
           amount: 0,
           balance: 0,
           refundedAmount: 0
@@ -388,11 +504,15 @@ export default {
           sums.mealPlanDiscount += order.mealPlanDiscount;
           sums.couponReduction += order.couponReduction;
           sums.afterDiscountBeforeFees += order.afterDiscountBeforeFees;
+          sums.salesTax += order.salesTax;
           sums.processingFee += order.processingFee;
           sums.deliveryFee += order.deliveryFee;
-          sums.salesTax += order.salesTax;
           // sums.goprep_fee += order.goprep_fee;
           // sums.stripe_fee += order.stripe_fee;
+          sums.referralReduction += order.referralReduction;
+          sums.purchasedGiftCardReduction += order.purchasedGiftCardReduction;
+          sums.promotionReduction += order.promotionReduction;
+          sums.pointsReduction += order.pointsReduction;
           sums.amount += order.amount;
           sums.balance += order.balance;
           sums.refundedAmount += order.refundedAmount;
@@ -405,11 +525,15 @@ export default {
           mealPlanDiscount: sums.mealPlanDiscount,
           couponReduction: sums.couponReduction,
           afterDiscountBeforeFees: sums.afterDiscountBeforeFees,
+          salesTax: sums.salesTax,
           processingFee: sums.processingFee,
           deliveryFee: sums.deliveryFee,
-          salesTax: sums.salesTax,
           // goprep_fee: sums.goprep_fee,
           // stripe_fee: sums.stripe_fee,
+          referralReduction: sums.referralReduction,
+          purchasedGiftCardReduction: sums.purchasedGiftCardReduction,
+          promotionReduction: sums.promotionReduction,
+          pointsReduction: sums.pointsReduction,
           amount: sums.amount,
           balance: sums.balance,
           refundedAmount: sums.refundedAmount,
@@ -435,20 +559,25 @@ export default {
 
       this.upcomingOrdersWithoutItems.forEach(order => {
         if (!columns.includes("couponCode") && order.couponCode != null) {
-          columns.splice(2, 0, "couponReduction");
-          columns.splice(2, 0, "couponCode");
+          columns.splice(3, 0, "couponReduction");
+          // columns.splice(3, 0, "couponCode");
         }
         if (
           !columns.includes("mealPlanDiscount") &&
           order.mealPlanDiscount > 0
         ) {
-          columns.splice(2, 0, "mealPlanDiscount");
+          columns.splice(3, 0, "mealPlanDiscount");
         }
+
+        if (!columns.includes("salesTax") && order.salesTax > 0) {
+          columns.splice(3, 0, "salesTax");
+        }
+
         if (!columns.includes("processingFee") && order.processingFee > 0) {
-          columns.splice(2, 0, "processingFee");
+          columns.splice(4, 0, "processingFee");
         }
         if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
-          columns.splice(2, 0, "deliveryFee");
+          columns.splice(4, 0, "deliveryFee");
         }
 
         // if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
@@ -463,21 +592,21 @@ export default {
       });
 
       this.ordersByDate.forEach(order => {
-        if (!columns.includes("couponCode") && order.couponCode != null) {
-          columns.splice(2, 0, "couponReduction");
-          columns.splice(2, 0, "couponCode");
+        if (!columns.includes("couponReduction") && order.couponCode != null) {
+          columns.splice(3, 0, "couponReduction");
+          // columns.splice(3, 0, "couponCode");
         }
         if (
           !columns.includes("mealPlanDiscount") &&
           order.mealPlanDiscount > 0
         ) {
-          columns.splice(2, 0, "mealPlanDiscount");
+          columns.splice(3, 0, "mealPlanDiscount");
         }
         if (!columns.includes("processingFee") && order.processingFee > 0) {
-          columns.splice(2, 0, "processingFee");
+          columns.splice(4, 0, "processingFee");
         }
         if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
-          columns.splice(2, 0, "deliveryFee");
+          columns.splice(4, 0, "deliveryFee");
         }
         // if (!columns.includes("goprep_fee") && order.goprep_fee > 0) {
         //   columns.splice(columns.length - 1, 0, "goprep_fee");
@@ -485,6 +614,32 @@ export default {
         // if (!columns.includes("stripe_fee") && order.stripe_fee > 0) {
         //   columns.splice(columns.length - 1, 0, "stripe_fee");
         // }
+
+        if (
+          !columns.includes("purchasedGiftCardReduction") &&
+          order.purchasedGiftCardReduction > 0
+        ) {
+          columns.splice(columns.length - 2, 0, "purchasedGiftCardReduction");
+        }
+
+        if (
+          !columns.includes("referralReduction") &&
+          order.referralReduction > 0
+        ) {
+          columns.splice(columns.length - 2, 0, "referralReduction");
+        }
+
+        if (
+          !columns.includes("promotionReduction") &&
+          order.promotionReduction > 0
+        ) {
+          columns.splice(columns.length - 2, 0, "promotionReduction");
+        }
+
+        if (!columns.includes("pointsReduction") && order.pointsReduction > 0) {
+          columns.splice(columns.length - 2, 0, "pointsReduction");
+        }
+
         if (!columns.includes("refundedAmount") && order.refundedAmount > 0) {
           columns.splice(columns.length - 1, 0, "refundedAmount");
         }

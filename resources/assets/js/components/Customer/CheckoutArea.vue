@@ -1648,15 +1648,21 @@ export default {
       });
 
       // Temporary fix for Livoti's to limit Christmas day hours until hour by pickup day feature is ready
+      // if (
+      //   this.bagDeliveryDate === "2019-12-24 00:00:00" &&
+      //   (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
+      // ) {
+      //   for (let i = 0; i <= 3; i++) newHourOptions.pop();
+      //   if (this.storeId === 110) {
+      //     newHourOptions.unshift("8 AM - 9 AM");
+      //     newHourOptions.unshift("7 AM - 8 AM");
+      //   }
+      // }
       if (
-        this.bagDeliveryDate === "2019-12-24 00:00:00" &&
+        this.bagDeliveryDate === "2020-04-12 00:00:00" &&
         (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
       ) {
-        for (let i = 0; i <= 3; i++) newHourOptions.pop();
-        if (this.storeId === 110) {
-          newHourOptions.unshift("8 AM - 9 AM");
-          newHourOptions.unshift("7 AM - 8 AM");
-        }
+        for (let i = 0; i <= 6; i++) newHourOptions.pop();
       }
 
       return newHourOptions;
