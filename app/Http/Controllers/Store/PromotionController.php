@@ -73,7 +73,9 @@ class PromotionController extends StoreController
         $promotion->active = 1;
         $promotion->promotionType = $data['promotionType'];
         $promotion->promotionAmount = $data['promotionAmount'];
-        $promotion->freeDelivery = $data['freeDelivery'];
+        $promotion->freeDelivery = isset($data['freeDelivery'])
+            ? $data['freeDelivery']
+            : 0;
         $promotion->conditionType = isset($data['conditionType'])
             ? $data['conditionType']
             : null;
