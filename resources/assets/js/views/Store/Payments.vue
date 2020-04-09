@@ -724,13 +724,13 @@ export default {
           start: this.filters.delivery_dates.start,
           end: this.filters.delivery_dates.end,
           payments: this.filters.byOrderDate,
-          removeManualOrders: this.filters.removeManualOrders
+          removeManualOrders: this.filters.removeManualOrders,
           removeCashOrders: this.filters.removeCashOrders
         })
         .then(response => {
           this.ordersByDate = response.data;
         });
-    },
+    }
   }
 };
 </script>
