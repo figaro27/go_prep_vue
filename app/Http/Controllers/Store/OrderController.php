@@ -291,6 +291,8 @@ class OrderController extends StoreController
     public function getOrdersToday(Request $request)
     {
         $paymentsPage = $request->get('payments');
+        $removeManualOrders = $request->get('removeManualOrders');
+        $removeCashOrders = $request->get('removeCashOrders');
 
         $fromDate = Carbon::today(
             $this->store->settings->timezone
@@ -309,8 +311,17 @@ class OrderController extends StoreController
                 ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1])
                 ->where($date, '>=', $fromDate)
-                ->get()
             : [];
+
+        if (isset($removeManualOrders) && $removeManualOrders === 1) {
+            $orders = $orders->where('manual', 0);
+        }
+
+        if (isset($removeCashOrders) && $removeCashOrders === 1) {
+            $orders = $orders->where('cashOrder', 0);
+        }
+
+        $orders = $orders->get();
 
         $orders->makeHidden([
             'items',
