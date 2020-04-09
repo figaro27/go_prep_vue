@@ -57,11 +57,33 @@
                   :unchecked-value="0"
                   ><span class="paragraph">Daily Summary</span></b-form-checkbox
                 > -->
+                <b-form-checkbox
+                  class="mediumCheckbox ml-3"
+                  type="checkbox"
+                  v-model="filters.removeManualOrders"
+                  :value="1"
+                  :unchecked-value="0"
+                  @input="toggleManualOrders"
+                  ><span class="paragraph"
+                    >Remove Manual Orders</span
+                  ></b-form-checkbox
+                >
+                <b-form-checkbox
+                  class="mediumCheckbox ml-4"
+                  type="checkbox"
+                  v-model="filters.removeCashOrders"
+                  :value="1"
+                  :unchecked-value="0"
+                  @input="toggleCashOrders"
+                  ><span class="paragraph"
+                    >Remove Cash Orders</span
+                  ></b-form-checkbox
+                >
 
                 <b-form-select
                   v-model="filters.couponCode"
                   :options="coupons"
-                  class="ml-3 w-180"
+                  class="ml-4 w-180"
                   v-if="coupons.length > 0"
                 >
                   <template slot="first">
@@ -305,7 +327,9 @@ export default {
         },
         couponCode: null,
         dailySummary: 0,
-        byOrderDate: 0
+        byOrderDate: 0,
+        removeManualOrders: 0,
+        removeCashOrders: 0
       },
       order: {},
       orderId: "",
@@ -630,6 +654,8 @@ export default {
       params.couponCode = this.filters.couponCode;
       params.dailySummary = this.filters.dailySummary;
       params.byOrderDate = this.filters.byOrderDate;
+      params.removeManualOrders = this.filters.removeManualOrders;
+      params.removeCashOrders = this.filters.removeCashOrders;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
@@ -691,6 +717,30 @@ export default {
             this.upcomingOrdersByOrderDate = response.data;
           });
       }
+    },
+    toggleManualOrders() {
+      axios
+        .post("/api/me/getOrdersWithDatesWithoutItems", {
+          start: this.filters.delivery_dates.start,
+          end: this.filters.delivery_dates.end,
+          payments: this.filters.byOrderDate,
+          removeManualOrders: this.filters.removeManualOrders
+        })
+        .then(response => {
+          this.ordersByDate = response.data;
+        });
+    },
+    toggleCashOrders() {
+      axios
+        .post("/api/me/getOrdersWithDatesWithoutItems", {
+          start: this.filters.delivery_dates.start,
+          end: this.filters.delivery_dates.end,
+          payments: this.filters.byOrderDate,
+          removeCashOrders: this.filters.removeCashOrders
+        })
+        .then(response => {
+          this.ordersByDate = response.data;
+        });
     }
   }
 };

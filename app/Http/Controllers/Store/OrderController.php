@@ -451,6 +451,8 @@ class OrderController extends StoreController
         // Optimized orders for Store/Orders & Store/Payments pages
 
         $paymentsPage = $request->get('payments');
+        $removeManualOrders = $request->get('removeManualOrders');
+        $removeCashOrders = $request->get('removeCashOrders');
 
         if ($request->get('end') != null) {
             $endDate = $request->get('end');
@@ -472,8 +474,17 @@ class OrderController extends StoreController
                 ->where(['paid' => 1])
                 ->where($date, '>=', $request->get('start'))
                 ->where($date, '<=', $endDate)
-                ->get()
             : [];
+
+        if (isset($removeManualOrders) && $removeManualOrders === 1) {
+            $orders = $orders->where('manual', 0);
+        }
+
+        if (isset($removeCashOrders) && $removeCashOrders === 1) {
+            $orders = $orders->where('cashOrder', 0);
+        }
+
+        $orders = $orders->get();
 
         $orders->makeHidden([
             'items',
