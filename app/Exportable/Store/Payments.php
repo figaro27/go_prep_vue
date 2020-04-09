@@ -25,6 +25,9 @@ class Payments
         $couponCode = $this->params->get('couponCode');
         $dailySummary = $this->params->get('dailySummary');
         $byOrderDate = $this->params->get('byOrderDate');
+        $removeManualOrders = $this->params->get('removeManualOrders');
+        $removeCashOrders = $this->params->get('removeCashOrders');
+
         $params->date_format = $this->store->settings->date_format;
 
         $sums = ['TOTALS', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -39,7 +42,9 @@ class Payments
                     true,
                     null,
                     $byOrderDate ? true : false,
-                    $couponCode
+                    $couponCode,
+                    $removeManualOrders ? true : false,
+                    $removeCashOrders ? true : false
                 )
                 ->where('voided', 0)
                 ->map(function ($payment) use (&$sums, $byOrderDate) {
@@ -271,7 +276,6 @@ class Payments
                 $filteredPayments
             );
         }
-
         return $filteredPayments;
     }
 

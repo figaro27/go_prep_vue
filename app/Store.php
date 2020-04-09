@@ -697,7 +697,9 @@ class Store extends Model
         $onlyPaid = true,
         $onlyDelivery = false,
         $orderDates = false,
-        $couponCode = ''
+        $couponCode = '',
+        $removeManualOrders = false,
+        $removeCashOrders = false
     ) {
         $orders = $this->orders()->with(['meals', 'meal_orders']);
 
@@ -706,7 +708,9 @@ class Store extends Model
                 $dateRange,
                 $onlyPaid,
                 $onlyDelivery,
-                $couponCode
+                $couponCode,
+                $removeManualOrders,
+                $removeCashOrders
             ) {
                 if ($onlyPaid) {
                     $query->where('paid', 1);
@@ -716,6 +720,12 @@ class Store extends Model
                 }
                 if ($couponCode != '') {
                     $query->where('couponCode', $couponCode);
+                }
+                if ($removeManualOrders) {
+                    $query->where('manual', 0);
+                }
+                if ($removeCashOrders) {
+                    $query->where('cashOrder', 0);
                 }
 
                 $query->where(function ($innerQuery) use ($dateRange) {
