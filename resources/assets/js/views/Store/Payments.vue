@@ -63,7 +63,7 @@
                   v-model="filters.removeManualOrders"
                   :value="1"
                   :unchecked-value="0"
-                  @input="toggleManualOrders"
+                  @input="toggleManualCashOrders"
                   ><span class="paragraph"
                     >Remove Manual Orders</span
                   ></b-form-checkbox
@@ -74,7 +74,7 @@
                   v-model="filters.removeCashOrders"
                   :value="1"
                   :unchecked-value="0"
-                  @input="toggleCashOrders"
+                  @input="toggleManualCashOrders"
                   ><span class="paragraph"
                     >Remove Cash Orders</span
                   ></b-form-checkbox
@@ -718,24 +718,13 @@ export default {
           });
       }
     },
-    toggleManualOrders() {
+    toggleManualCashOrders() {
       axios
         .post("/api/me/getOrdersWithDatesWithoutItems", {
           start: this.filters.delivery_dates.start,
           end: this.filters.delivery_dates.end,
           payments: this.filters.byOrderDate,
-          removeManualOrders: this.filters.removeManualOrders
-        })
-        .then(response => {
-          this.ordersByDate = response.data;
-        });
-    },
-    toggleCashOrders() {
-      axios
-        .post("/api/me/getOrdersWithDatesWithoutItems", {
-          start: this.filters.delivery_dates.start,
-          end: this.filters.delivery_dates.end,
-          payments: this.filters.byOrderDate,
+          removeManualOrders: this.filters.removeManualOrders,
           removeCashOrders: this.filters.removeCashOrders
         })
         .then(response => {
