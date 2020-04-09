@@ -60,11 +60,11 @@
             @if (!$params['removeSalesTax'])
             <th>Sales Tax</th>
             @endif
-            @if (!$params['removeDeliveryFee'])
-            <th>Delivery Fee</th>
-            @endif
             @if (!$params['removeProcessingFee'])
             <th>Processing Fee</th>
+            @endif
+            @if (!$params['removeDeliveryFee'])
+            <th>Delivery Fee</th>
             @endif
             @if (!$params['removeGiftCard'])
             <th class="text-green">(Gift Card)</th>

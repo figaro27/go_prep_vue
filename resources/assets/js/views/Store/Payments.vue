@@ -535,99 +535,48 @@ export default {
       return orders;
     },
     columns() {
-      let columns = [
-        "created_at",
-        "delivery_date",
-        "subtotal",
-        "salesTax",
-        // "total",
+      let columns = ["created_at", "delivery_date", "subtotal"];
 
-        "amount",
-        "balance"
-      ];
-
-      let addedColumns = [];
-
-      this.upcomingOrdersWithoutItems.forEach(order => {
-        if (!columns.includes("couponReduction") && order.couponCode != null) {
-          columns.splice(3, 0, "couponReduction");
-          // columns.splice(3, 0, "couponCode");
-        }
-        if (
-          !columns.includes("mealPlanDiscount") &&
-          order.mealPlanDiscount > 0
-        ) {
-          columns.splice(3, 0, "mealPlanDiscount");
-        }
-
-        if (!columns.includes("salesTax") && order.salesTax > 0) {
-          columns.splice(3, 0, "salesTax");
-        }
-
-        if (!columns.includes("processingFee") && order.processingFee > 0) {
-          columns.splice(4, 0, "processingFee");
-        }
-        if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
-          columns.splice(4, 0, "deliveryFee");
-        }
-
-        if (!columns.includes("refundedAmount") && order.refundedAmount > 0) {
-          columns.splice(columns.length, 0, "refundedAmount");
-        }
-      });
+      let addedColumns = {};
 
       this.ordersByDate.forEach(order => {
-        if (!columns.includes("couponReduction") && order.couponCode != null) {
-          columns.splice(3, 0, "couponReduction");
-          // columns.splice(3, 0, "couponCode");
-        }
-        if (
-          !columns.includes("mealPlanDiscount") &&
-          order.mealPlanDiscount > 0
-        ) {
-          columns.splice(3, 0, "mealPlanDiscount");
-        }
-
-        if (!columns.includes("processingFee") && order.processingFee > 0) {
-          columns.splice(4, 0, "processingFee");
-        }
-        if (!columns.includes("deliveryFee") && order.deliveryFee > 0) {
-          columns.splice(4, 0, "deliveryFee");
-        }
-
-        if (
-          !columns.includes("purchasedGiftCardReduction") &&
-          order.purchasedGiftCardReduction > 0
-        ) {
-          columns.splice(columns.length - 2, 0, "purchasedGiftCardReduction");
-        }
-
-        if (
-          !columns.includes("referralReduction") &&
-          order.referralReduction > 0
-        ) {
-          columns.splice(columns.length - 2, 0, "referralReduction");
-        }
-
-        if (
-          !columns.includes("promotionReduction") &&
-          order.promotionReduction > 0
-        ) {
-          columns.splice(columns.length - 2, 0, "promotionReduction");
-        }
-
-        if (!columns.includes("pointsReduction") && order.pointsReduction > 0) {
-          columns.splice(columns.length - 2, 0, "pointsReduction");
-        }
-
-        if (!columns.includes("refundedAmount") && order.refundedAmount > 0) {
-          columns.splice(columns.length - 1, 0, "refundedAmount");
-        }
+        if (order.couponReduction > 0) addedColumns.couponReduction = true;
+        if (order.mealPlanDiscount > 0) addedColumns.mealPlanDiscount = true;
+        if (order.processingFee > 0) addedColumns.processingFee = true;
+        if (order.deliveryFee > 0) addedColumns.deliveryFee = true;
+        if (order.purchasedGiftCardReduction > 0)
+          addedColumns.purchasedGiftCardReduction = true;
+        if (order.referralReduction > 0) addedColumns.referralReduction = true;
+        if (order.promotionReduction > 0)
+          addedColumns.promotionReduction = true;
+        if (order.pointsReduction > 0) addedColumns.pointsReduction = true;
+        if (order.balance > 0) addedColumns.balance = true;
       });
 
-      if (this.filters.dailySummary) {
-        columns.splice(1, 0, "totalOrders");
-      }
+      if (addedColumns.couponReduction)
+        columns.splice(columns.length, 0, "couponReduction");
+      if (addedColumns.mealPlanDiscount)
+        columns.splice(columns.length, 0, "mealPlanDiscount");
+      if (addedColumns.processingFee)
+        columns.splice(columns.length, 0, "processingFee");
+      if (addedColumns.deliveryFee)
+        columns.splice(columns.length, 0, "deliveryFee");
+      if (addedColumns.purchasedGiftCardReduction)
+        columns.splice(columns.length, 0, "purchasedGiftCardReduction");
+      if (addedColumns.referralReduction)
+        columns.splice(columns.length, 0, "referralReduction");
+      if (addedColumns.promotionReduction)
+        columns.splice(columns.length, 0, "promotionReduction");
+      if (addedColumns.pointsReduction)
+        columns.splice(columns.length, 0, "pointsReduction");
+
+      columns.splice(columns.length, 0, "amount");
+
+      if (addedColumns.balance) columns.splice(columns.length, 0, "balance");
+
+      // if (this.filters.dailySummary) {
+      //   columns.splice(1, 0, "totalOrders");
+      // }
 
       return columns;
     },

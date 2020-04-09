@@ -182,6 +182,13 @@
             <span v-else>
               <p>{{ customer.delivery }}</p>
             </span>
+            <span v-if="pointsName">
+              <h4>{{ pointsName }}</h4>
+              <span v-if="customer.points && customer.points > 0">{{
+                customer.points
+              }}</span>
+              <span v-else>0</span>
+            </span>
           </div>
         </div>
         <div
@@ -454,6 +461,15 @@ export default {
       initialized: "initialized",
       getStoreMeal: "viewedStoreMeal"
     }),
+    pointsName() {
+      let name = null;
+      this.store.promotions.forEach(promotion => {
+        if (promotion.promotionType === "points") {
+          name = promotion.pointsName;
+        }
+      });
+      return name;
+    },
     stateNames() {
       return states.selectOptions("US");
     },
