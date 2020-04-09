@@ -522,7 +522,7 @@
         "
         variant="warning center-text"
         show
-        >Orders are closed until {{ storeSettings.menuReopening }}.</b-alert
+        >Orders are closed.</b-alert
       >
       <b-form-group>
         <b-form-radio-group v-model="pickup" v-on:input="changePickup">
