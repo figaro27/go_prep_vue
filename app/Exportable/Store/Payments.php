@@ -47,8 +47,8 @@ class Payments
                     $sums[3] += $payment->couponReduction;
                     $sums[4] += $payment->mealPlanDiscount;
                     $sums[5] += $payment->salesTax;
-                    $sums[6] += $payment->deliveryFee;
-                    $sums[7] += $payment->processingFee;
+                    $sums[6] += $payment->processingFee;
+                    $sums[7] += $payment->deliveryFee;
                     $sums[8] += $payment->purchasedGiftCardReduction;
                     $sums[9] += $payment->referralReduction;
                     $sums[10] += $payment->promotionReduction;
@@ -63,8 +63,8 @@ class Payments
                         '$' . number_format($payment->couponReduction, 2),
                         '$' . number_format($payment->mealPlanDiscount, 2),
                         '$' . number_format($payment->salesTax, 2),
-                        '$' . number_format($payment->deliveryFee, 2),
                         '$' . number_format($payment->processingFee, 2),
+                        '$' . number_format($payment->deliveryFee, 2),
                         '$' .
                             number_format(
                                 $payment->purchasedGiftCardReduction,
@@ -150,8 +150,8 @@ class Payments
                     '$' . number_format($couponReduction, 2),
                     '$' . number_format($mealPlanDiscount, 2),
                     '$' . number_format($salesTax, 2),
-                    '$' . number_format($deliveryFee, 2),
                     '$' . number_format($processingFee, 2),
+                    '$' . number_format($deliveryFee, 2),
                     '$' . number_format($purchasedGiftCardReduction, 2),
                     '$' . number_format($referralReduction, 2),
                     '$' . number_format($promotionReduction, 2),
@@ -165,8 +165,8 @@ class Payments
                 $sumsByDaily[3] += $couponReduction;
                 $sumsByDaily[4] += $mealPlanDiscount;
                 $sumsByDaily[5] += $salesTax;
-                $sumsByDaily[6] += $deliveryFee;
-                $sumsByDaily[7] += $processingFee;
+                $sumsByDaily[6] += $processingFee;
+                $sumsByDaily[7] += $deliveryFee;
                 $sumsByDaily[8] += $purchasedGiftCardReduction;
                 $sumsByDaily[9] += $referralReduction;
                 $sumsByDaily[10] += $promotionReduction;
@@ -196,7 +196,6 @@ class Payments
         $filteredPayments = [];
 
         $params['removedIndex'] = $removedIndexes;
-
         foreach ($payments[0] as $i => $payment) {
             if ($payment === 0 || $payment === '$0.00') {
                 array_push($removedIndexes, $i);
@@ -216,10 +215,10 @@ class Payments
             ? true
             : false;
         $params['removeSalesTax'] = in_array(5, $removedIndexes) ? true : false;
-        $params['removeDeliveryFee'] = in_array(6, $removedIndexes)
+        $params['removeProcessingFee'] = in_array(6, $removedIndexes)
             ? true
             : false;
-        $params['removeProcessingFee'] = in_array(7, $removedIndexes)
+        $params['removeDeliveryFee'] = in_array(7, $removedIndexes)
             ? true
             : false;
         $params['removeGiftCard'] = in_array(8, $removedIndexes) ? true : false;
@@ -230,24 +229,47 @@ class Payments
         $params['removePoints'] = in_array(11, $removedIndexes) ? true : false;
         $params['removeBalance'] = in_array(13, $removedIndexes) ? true : false;
 
+        $filteredHeaders[0] = ['Order Date', 'Delivery Date', 'Subtotal'];
+
+        // Probably a better way to do this.
+
+        if (!in_array(3, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Coupon');
+        }
+        if (!in_array(4, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Subscription');
+        }
+        if (!in_array(5, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Sales Tax');
+        }
+        if (!in_array(6, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Processing Fee');
+        }
+        if (!in_array(7, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Delivery Fee');
+        }
+        if (!in_array(8, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Gift Card');
+        }
+        if (!in_array(9, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Referral');
+        }
+        if (!in_array(10, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Promotion');
+        }
+        if (!in_array(11, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Points');
+        }
+        array_push($filteredHeaders[0], 'Total');
+        if (!in_array(13, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Balance');
+        }
+
         if ($type !== 'pdf') {
-            $payments->prepend([
-                'Order Date',
-                'Delivery Date',
-                'Subtotal',
-                'Coupon',
-                'Subscription',
-                'Sales Tax',
-                'Processing Fee',
-                'Delivery Fee',
-                'Gift Card',
-                'Referral',
-                'Promotion',
-                'Points',
-                'Total',
-                'Balance'
-            ]);
-            return $payments;
+            $filteredPayments = array_merge(
+                $filteredHeaders,
+                $filteredPayments
+            );
         }
 
         return $filteredPayments;
