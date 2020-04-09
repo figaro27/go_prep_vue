@@ -423,36 +423,62 @@ class StoreSetting extends Model
     public function getMenuReopeningAttribute()
     {
         $day = '';
-        switch ($this->enableNextWeekDay) {
-            case 'Sun':
+        if ($this->enableNextWeekDay && $this->enableNextWeekHour) {
+            switch ($this->enableNextWeekDay) {
+                case 'Sun':
+                    $day = 'Sunday';
+                    break;
+                case 'Mon':
+                    $day = 'Monday';
+                    break;
+                case 'Tue':
+                    $day = 'Tuesday';
+                    break;
+                case 'Wed':
+                    $day = 'Wednesday';
+                    break;
+                case 'Thu':
+                    $day = 'Thursday';
+                    break;
+                case 'Fri':
+                    $day = 'Friday';
+                    break;
+                case 'Sat':
+                    $day = 'Saturday';
+                    break;
+            }
+
+            // Rework to get time zone difference.
+            $adjustedTime = (int) $this->enableNextWeekHour;
+            $adjustedTime = $adjustedTime - 5;
+
+            $time = date("g:i a", strtotime($adjustedTime . ':00'));
+
+            return $day . ' at ' . $time;
+        }
+        switch ($this->delivery_days[0]) {
+            case 'sun':
                 $day = 'Sunday';
                 break;
-            case 'Mon':
+            case 'mon':
                 $day = 'Monday';
                 break;
-            case 'Tue':
+            case 'due':
                 $day = 'Tuesday';
                 break;
-            case 'Wed':
+            case 'wed':
                 $day = 'Wednesday';
                 break;
-            case 'Thu':
+            case 'thu':
                 $day = 'Thursday';
                 break;
-            case 'Fri':
+            case 'fri':
                 $day = 'Friday';
                 break;
-            case 'Sat':
+            case 'sat':
                 $day = 'Saturday';
                 break;
         }
-
-        // Rework to get time zone difference.
-        $adjustedTime = (int) $this->enableNextWeekHour;
-        $adjustedTime = $adjustedTime - 5;
-
-        $time = date("g:i a", strtotime($adjustedTime . ':00'));
-
-        return $day . ' at ' . $time;
+        return $day;
     }
 }
