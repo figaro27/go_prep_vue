@@ -542,6 +542,7 @@ export default {
       this.ordersByDate.forEach(order => {
         if (order.couponReduction > 0) addedColumns.couponReduction = true;
         if (order.mealPlanDiscount > 0) addedColumns.mealPlanDiscount = true;
+        if (order.salesTax > 0) addedColumns.salesTax = true;
         if (order.processingFee > 0) addedColumns.processingFee = true;
         if (order.deliveryFee > 0) addedColumns.deliveryFee = true;
         if (order.purchasedGiftCardReduction > 0)
@@ -557,6 +558,7 @@ export default {
         columns.splice(columns.length, 0, "couponReduction");
       if (addedColumns.mealPlanDiscount)
         columns.splice(columns.length, 0, "mealPlanDiscount");
+      if (addedColumns.salesTax) columns.splice(columns.length, 0, "salesTax");
       if (addedColumns.processingFee)
         columns.splice(columns.length, 0, "processingFee");
       if (addedColumns.deliveryFee)
