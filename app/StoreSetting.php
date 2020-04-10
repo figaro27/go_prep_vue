@@ -456,29 +456,31 @@ class StoreSetting extends Model
 
             return $day . ' at ' . $time;
         }
-        switch ($this->delivery_days[0]) {
-            case 'sun':
-                $day = 'Sunday';
-                break;
-            case 'mon':
-                $day = 'Monday';
-                break;
-            case 'due':
-                $day = 'Tuesday';
-                break;
-            case 'wed':
-                $day = 'Wednesday';
-                break;
-            case 'thu':
-                $day = 'Thursday';
-                break;
-            case 'fri':
-                $day = 'Friday';
-                break;
-            case 'sat':
-                $day = 'Saturday';
-                break;
+        if ($this->delivery_days && $this->delivery_days[0]) {
+            switch ($this->delivery_days[0]) {
+                case 'sun':
+                    $day = 'Sunday';
+                    break;
+                case 'mon':
+                    $day = 'Monday';
+                    break;
+                case 'due':
+                    $day = 'Tuesday';
+                    break;
+                case 'wed':
+                    $day = 'Wednesday';
+                    break;
+                case 'thu':
+                    $day = 'Thursday';
+                    break;
+                case 'fri':
+                    $day = 'Friday';
+                    break;
+                case 'sat':
+                    $day = 'Saturday';
+                    break;
+            }
+            return $day;
         }
-        return $day;
     }
 }
