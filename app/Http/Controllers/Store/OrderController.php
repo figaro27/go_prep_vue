@@ -1000,10 +1000,9 @@ class OrderController extends StoreController
                         "application_fee" => round(
                             $chargeAmount * $application_fee
                         ),
-                        "statement_descriptor" => substr(
-                            $store->storeDetail->name,
-                            22
-                        )
+                        "statement_descriptor" => $store
+                            ? substr($store->storeDetail->name, 22)
+                            : 'GoPrep'
                     ],
                     ["stripe_account" => $store->settings->stripe_id],
                     [
