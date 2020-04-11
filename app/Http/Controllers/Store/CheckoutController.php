@@ -248,8 +248,10 @@ class CheckoutController extends StoreController
                                 "application_fee" => round(
                                     $afterDiscountBeforeFees * $application_fee
                                 ),
-                                "statement_descriptor" =>
-                                    $store->storeDetail->name
+                                "statement_descriptor" => substr(
+                                    $store->storeDetail->name,
+                                    22
+                                )
                             ],
                             ["stripe_account" => $storeSettings->stripe_id],
                             [
