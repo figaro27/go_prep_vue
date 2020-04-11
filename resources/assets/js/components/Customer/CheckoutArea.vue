@@ -462,6 +462,7 @@
       </li>
 
       <!-- Coupon Area -->
+      <span v-if="store.id === 127">{{ hasCoupons }}</span>
       <li v-if="hasCoupons && !$route.params.adjustMealPlan && !subscriptionId">
         <div class="row">
           <div class="col-xs-6 pl-3">
