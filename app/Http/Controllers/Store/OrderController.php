@@ -999,10 +999,7 @@ class OrderController extends StoreController
                         // Change to "application_fee_amount" as per Stripe's updates
                         "application_fee" => round(
                             $chargeAmount * $application_fee
-                        ),
-                        "statement_descriptor" => $store
-                            ? substr($store->storeDetail->name, 22)
-                            : 'GoPrep'
+                        )
                     ],
                     ["stripe_account" => $store->settings->stripe_id],
                     [
