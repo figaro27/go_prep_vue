@@ -298,7 +298,9 @@ class CheckoutController extends UserController
                                 "source" => $storeSource,
                                 "application_fee" => round(
                                     $afterDiscountBeforeFees * $application_fee
-                                )
+                                ),
+                                "statement_descriptor" =>
+                                    $store->storeDetail->name
                             ],
                             ["stripe_account" => $storeSettings->stripe_id],
                             [

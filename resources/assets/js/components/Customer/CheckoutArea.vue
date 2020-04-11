@@ -2032,6 +2032,8 @@ use next_delivery_dates
       });
       return quantity;
     },
+    // Prevents the box from showing if a customer has a gift card in their bag.
+
     // hasCoupons() {
     //   let bagHasGiftCard = false;
     //   this.bag.forEach(item => {
