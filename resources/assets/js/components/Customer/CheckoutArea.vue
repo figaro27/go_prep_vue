@@ -462,8 +462,13 @@
       </li>
 
       <!-- Coupon Area -->
-      <span v-if="store.id === 127">{{ hasCoupons }}</span>
-      <li v-if="hasCoupons && !$route.params.adjustMealPlan && !subscriptionId">
+      <li
+        v-if="
+          store.hasPromoCodes &&
+            !$route.params.adjustMealPlan &&
+            !subscriptionId
+        "
+      >
         <div class="row">
           <div class="col-xs-6 pl-3">
             <b-form-group id="coupon">
@@ -2027,19 +2032,19 @@ use next_delivery_dates
       });
       return quantity;
     },
-    hasCoupons() {
-      let bagHasGiftCard = false;
-      this.bag.forEach(item => {
-        if (item.meal.gift_card) {
-          bagHasGiftCard = true;
-        }
-      });
-      if (this.store.hasPromoCodes && !bagHasGiftCard) {
-        return true;
-      } else {
-        return false;
-      }
-    },
+    // hasCoupons() {
+    //   let bagHasGiftCard = false;
+    //   this.bag.forEach(item => {
+    //     if (item.meal.gift_card) {
+    //       bagHasGiftCard = true;
+    //     }
+    //   });
+    //   if (this.store.hasPromoCodes && !bagHasGiftCard) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // },
     applyMealPlanDiscount() {
       return this.storeSettings.applyMealPlanDiscount;
     },
