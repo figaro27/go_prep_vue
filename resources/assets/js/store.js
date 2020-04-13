@@ -596,7 +596,7 @@ const mutations = {
     item.delivery_day = delivery_day;
 
     if (isNew) {
-      item.free = false;
+      // item.free = false;
       item.guid = guid;
     }
     /* Adjustments End */

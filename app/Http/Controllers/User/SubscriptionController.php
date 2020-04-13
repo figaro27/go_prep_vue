@@ -390,17 +390,7 @@ class SubscriptionController extends UserController
                         $item['meal_package_size_id'];
                     $mealPackageSubscription->quantity =
                         $item['package_quantity'];
-                    $mealPackageSubscription->price =
-                        $item['meal_package_size_id'] !== null
-                            ? MealPackageSize::where(
-                                'id',
-                                $item['meal_package_size_id']
-                            )
-                                ->pluck('price')
-                                ->first()
-                            : MealPackage::where('id', $item['meal_package_id'])
-                                ->pluck('price')
-                                ->first();
+                    $mealPackageSubscription->price = $item['package_price'];
                     $mealPackageSubscription->save();
 
                     $mealSub->meal_package_subscription_id =
