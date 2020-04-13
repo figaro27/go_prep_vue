@@ -464,7 +464,7 @@ const mutations = {
     }
   ) {
     console.log(free);
-    console.log(item);
+    console.log(meal);
     /* Remove Mutation - This is temporary solution. Not professional code. */
     meal = JSON.parse(JSON.stringify(meal));
     size = JSON.parse(JSON.stringify(size));
