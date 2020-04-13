@@ -776,17 +776,7 @@ class OrderController extends StoreController
                     $mealPackageOrder->meal_package_size_id =
                         $item['meal_package_size_id'];
                     $mealPackageOrder->quantity = $item['package_quantity'];
-                    $mealPackageOrder->price =
-                        $item['meal_package_size_id'] !== null
-                            ? MealPackageSize::where(
-                                'id',
-                                $item['meal_package_size_id']
-                            )
-                                ->pluck('price')
-                                ->first()
-                            : MealPackage::where('id', $item['meal_package_id'])
-                                ->pluck('price')
-                                ->first();
+                    $mealPackageOrder->price = $item['package_price'];
                     if (isset($item['delivery_day']) && $item['delivery_day']) {
                         $mealPackageOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
                             $item['delivery_day']['day'],

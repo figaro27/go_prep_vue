@@ -306,6 +306,9 @@ class SubscriptionController extends StoreController
             $mealSub->meal_id = $item['meal']['id'];
             $mealSub->quantity = $item['quantity'];
             $mealSub->price = $item['price'] * $item['quantity'];
+            if (isset($item['free'])) {
+                $mealSub->free = $item['free'];
+            }
             if (isset($item['size']) && $item['size']) {
                 $mealSub->meal_size_id = $item['size']['id'];
             }
@@ -332,17 +335,7 @@ class SubscriptionController extends StoreController
                         $item['meal_package_size_id'];
                     $mealPackageSubscription->quantity =
                         $item['package_quantity'];
-                    $mealPackageSubscription->price =
-                        $item['meal_package_size_id'] !== null
-                            ? MealPackageSize::where(
-                                'id',
-                                $item['meal_package_size_id']
-                            )
-                                ->pluck('price')
-                                ->first()
-                            : MealPackage::where('id', $item['meal_package_id'])
-                                ->pluck('price')
-                                ->first();
+                    $mealPackageSubscription->price = $item['package_price'];
                     $mealPackageSubscription->save();
 
                     $mealSub->meal_package_subscription_id =

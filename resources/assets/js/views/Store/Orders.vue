@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <b-alert variant="info" show>
+      <!-- <b-alert variant="info" show>
         <h5 class="pb-2">NEW UPDATES</h5>
         <p>
           -<b>Marketing Page</b> in the left menu. Includes <b>leads</b>,
@@ -26,7 +26,7 @@
             class="popover-size ml-1"
           />
         </p>
-      </b-alert>
+      </b-alert> -->
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />

@@ -1016,6 +1016,9 @@ class CheckoutController extends StoreController
                 $mealSub->meal_id = $item['meal']['id'];
                 $mealSub->quantity = $item['quantity'];
                 $mealSub->price = $item['price'] * $item['quantity'];
+                if (isset($item['free'])) {
+                    $mealSub->free = $item['free'];
+                }
                 if (isset($item['delivery_day']) && $item['delivery_day']) {
                     $mealSub->delivery_date = $this->getDeliveryDateMultipleDelivery(
                         $item['delivery_day']['day'],
@@ -1057,19 +1060,7 @@ class CheckoutController extends StoreController
                         $mealPackageSubscription->quantity =
                             $item['package_quantity'];
                         $mealPackageSubscription->price =
-                            $item['meal_package_size_id'] !== null
-                                ? MealPackageSize::where(
-                                    'id',
-                                    $item['meal_package_size_id']
-                                )
-                                    ->pluck('price')
-                                    ->first()
-                                : MealPackage::where(
-                                    'id',
-                                    $item['meal_package_id']
-                                )
-                                    ->pluck('price')
-                                    ->first();
+                            $item['package_price'];
                         $mealPackageSubscription->save();
 
                         $mealSub->meal_package_subscription_id =
