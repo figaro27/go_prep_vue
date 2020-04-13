@@ -463,6 +463,8 @@ const mutations = {
       free = null
     }
   ) {
+    console.log(free);
+    console.log(item);
     /* Remove Mutation - This is temporary solution. Not professional code. */
     meal = JSON.parse(JSON.stringify(meal));
     size = JSON.parse(JSON.stringify(size));
@@ -594,8 +596,6 @@ const mutations = {
     item.original_price = parseFloat(parseFloat(price).toFixed(2));
     item.price = item.original_price + 0;
     item.delivery_day = delivery_day;
-
-    console.log(item);
 
     if (isNew) {
       // item.free = false;
