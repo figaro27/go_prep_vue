@@ -532,7 +532,7 @@ class CheckoutController extends UserController
                             //         )
                             //             ->pluck('price')
                             //             ->first();
-                            $mealPackageOrder->price = $item['package_price'];
+                            $mealPackageOrder->price = $item['price'];
                             if (
                                 isset($item['delivery_day']) &&
                                 $item['delivery_day']
@@ -945,7 +945,7 @@ class CheckoutController extends UserController
                             //         )
                             //             ->pluck('price')
                             //             ->first();
-                            $mealPackageOrder->price = $item['package_price'];
+                            $mealPackageOrder->price = $item['price'];
                             if (
                                 isset($item['delivery_day']) &&
                                 $item['delivery_day']
