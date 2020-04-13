@@ -306,6 +306,9 @@ class SubscriptionController extends StoreController
             $mealSub->meal_id = $item['meal']['id'];
             $mealSub->quantity = $item['quantity'];
             $mealSub->price = $item['price'] * $item['quantity'];
+            if (isset($item['free'])) {
+                $mealSub->free = $item['free'];
+            }
             if (isset($item['size']) && $item['size']) {
                 $mealSub->meal_size_id = $item['size']['id'];
             }
