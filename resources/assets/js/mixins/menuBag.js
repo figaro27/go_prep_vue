@@ -153,7 +153,7 @@ export default {
         meal.price = 0;
       }
       console.log("menuBag " + free);
-      console.log("menuBag " + menu);
+      console.log("menuBag " + meal);
       this.$store.commit("addToBag", {
         meal,
         quantity: 1,
