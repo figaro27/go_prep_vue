@@ -302,6 +302,7 @@ class Subscription extends Model
                     'price' => $mealSub->price
                         ? $mealSub->price
                         : $mealSub->unit_price * $mealSub->quantity,
+                    'free' => $mealSub->free,
                     'special_instructions' => $mealSub->special_instructions,
                     'meal_package_subscription_id' =>
                         $mealSub->meal_package_subscription_id,
