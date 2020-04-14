@@ -568,14 +568,10 @@ export default {
     lineItemOptions() {
       let options = [];
       this.lineItems.forEach(lineItem => {
-        let title =
-          lineItem.size !== null
-            ? lineItem.size + " - " + lineItem.title
-            : lineItem.title;
         options.push({
-          text: title,
+          text: lineItem.full_title,
           price: lineItem.price,
-          title: title,
+          title: lineItem.full_title,
           quantity: 1
         });
       });
