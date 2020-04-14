@@ -132,7 +132,8 @@ class Hourly extends Command
 
         $orders = Order::where([
             'delivery_date' => date('Y-m-d'),
-            'paid' => 1
+            'paid' => 1,
+            'voided' => 0
         ])->get();
 
         // Adjust for timezone in Store Settings
