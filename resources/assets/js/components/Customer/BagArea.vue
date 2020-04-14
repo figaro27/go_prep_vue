@@ -352,6 +352,11 @@
         <b-input-group>
           <div class="col-md-7">
             <b-form-input
+              v-model="lineItem.size"
+              placeholder="Size"
+              class="mr-3"
+            ></b-form-input>
+            <b-form-input
               v-model="lineItem.title"
               placeholder="Title"
               class="mr-3"
@@ -556,10 +561,14 @@ export default {
     lineItemOptions() {
       let options = [];
       this.lineItems.forEach(lineItem => {
+        let title =
+          lineItem.size !== null
+            ? lineItem.size + " - " + lineItem.title
+            : lineItem.title;
         options.push({
-          text: lineItem.title,
+          text: title,
           price: lineItem.price,
-          title: lineItem.title,
+          title: title,
           quantity: 1
         });
       });
