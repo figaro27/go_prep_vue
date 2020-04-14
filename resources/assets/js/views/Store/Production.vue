@@ -361,7 +361,7 @@ export default {
         let base_size = "";
 
         if (size) {
-          base_size = size.title;
+          base_size = size.title ? size.title : size;
         } else if (meal && meal.default_size_title) {
           base_size = meal.default_size_title;
         }

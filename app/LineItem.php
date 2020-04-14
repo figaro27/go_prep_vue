@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class LineItem extends Model
 {
+    protected $appends = ['full_title', 'base_size'];
+
     public function store()
     {
         return $this->belongsTo('App\Store');
@@ -27,4 +29,16 @@ class LineItem extends Model
     protected $casts = [
         'price' => 'float'
     ];
+
+    public function getFullTitleAttribute()
+    {
+        return $this->size !== null
+            ? $this->size . ' - ' . $this->title
+            : $this->title;
+    }
+
+    public function getBaseSizeAttribute()
+    {
+        return $this->size;
+    }
 }
