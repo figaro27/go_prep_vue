@@ -8,13 +8,7 @@ class LineItemOrder extends Pivot
 {
     protected $table = 'line_item_orders';
 
-    protected $appends = [
-        'title',
-        'price',
-        'size',
-        'full_title',
-        'production_group_id'
-    ];
+    protected $appends = ['title', 'price', 'size', 'production_group_id'];
 
     protected $casts = [
         'price' => 'float'
