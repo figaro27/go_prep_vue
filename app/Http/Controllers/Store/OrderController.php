@@ -1179,6 +1179,8 @@ class OrderController extends StoreController
                     'price' => $lineItemOrder->price,
                     'quantity' => $lineItemOrder->quantity,
                     'title' => $lineItemOrder->title,
+                    'full_title' => $lineItemOrder->full_title,
+                    'size' => $lineItemOrder->size,
                     'production_group_id' => $lineItemOrder->production_group_id
                 ];
             });

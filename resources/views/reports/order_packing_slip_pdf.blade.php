@@ -281,7 +281,7 @@ $hot = $order->hot;
         @foreach ($order->lineItemsOrders as $i => $lineItemOrder)
         <tr class="{{ $count % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$lineItemOrder->quantity}}</td>
-          <td></td>
+          <td>{!! $lineItemOrder->size !!}</td>
           <td>{!! $lineItemOrder->title !!}</td>
           <td style="text-align:right;padding-right:12px">{{$currency}}{{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
         </tr>

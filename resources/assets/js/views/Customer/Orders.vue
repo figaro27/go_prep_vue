@@ -563,7 +563,7 @@ export default {
           delivery_date: lineItem.delivery_date
             ? moment(item.delivery_date.date).format("dddd, MMM Do")
             : null,
-          size: null,
+          size: lineItem.size,
           meal: lineItem.title,
           quantity: lineItem.quantity,
           unit_price: format.money(lineItem.price, order.currency),
