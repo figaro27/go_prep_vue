@@ -86,17 +86,17 @@ export default {
 
       this.clearAll();
 
-      // axios.get("/api/me/order_bag/" + this.order.id).then(resp => {
-      //   if (resp.data && resp.data.order_bags) {
-      //     this.order_bags = resp.data.order_bags;
+      axios.get("/api/me/order_bag/" + this.order.id).then(resp => {
+        if (resp.data && resp.data.order_bags) {
+          this.order_bags = resp.data.order_bags;
 
-      //     if (this.order_bags) {
-      //       this.order_bags.forEach(item => {
-      //         this.addOneFromAdjust(item);
-      //       });
-      //     }
-      //   }
-      // });
+          if (this.order_bags) {
+            this.order_bags.forEach(item => {
+              this.addOneFromAdjust(item);
+            });
+          }
+        }
+      });
 
       axios.get("/api/me/getLineItemOrders/" + this.order.id).then(resp => {
         resp.data.forEach(lineItemOrder => {
@@ -104,88 +104,88 @@ export default {
         });
       });
 
-      if (this.order.meal_package_items) {
-        _.forEach(this.order.meal_package_items, pkgItem => {
-          let meal_package_id = pkgItem.meal_package_id;
-          let meal_package = this.getMealPackage(meal_package_id);
-          meal_package.price = pkgItem.price;
+      // if (this.order.meal_package_items) {
+      //   _.forEach(this.order.meal_package_items, pkgItem => {
+      //     let meal_package_id = pkgItem.meal_package_id;
+      //     let meal_package = this.getMealPackage(meal_package_id);
+      //     meal_package.price = pkgItem.price;
 
-          // Adding meals to meal package
-          meal_package.meals = [];
-          let index = null;
-          if (pkgItem.meal_package_size) {
-            _.forEach(meal_package.sizes, (size, i) => {
-              if (pkgItem.meal_package_size_id) {
-                if (size.id === pkgItem.meal_package_size_id) {
-                  index = i;
-                }
-              } else {
-                if (size.id === pkgItem.meal_package_size.id) {
-                  index = i;
-                }
-              }
-            });
-          }
-          if (index !== null) {
-            meal_package.sizes[index].meals = [];
-          }
+      //     // Adding meals to meal package
+      //     meal_package.meals = [];
+      //     let index = null;
+      //     if (pkgItem.meal_package_size) {
+      //       _.forEach(meal_package.sizes, (size, i) => {
+      //         if (pkgItem.meal_package_size_id) {
+      //           if (size.id === pkgItem.meal_package_size_id) {
+      //             index = i;
+      //           }
+      //         } else {
+      //           if (size.id === pkgItem.meal_package_size.id) {
+      //             index = i;
+      //           }
+      //         }
+      //       });
+      //     }
+      //     if (index !== null) {
+      //       meal_package.sizes[index].meals = [];
+      //     }
 
-          _.forEach(this.order.items, item => {
-            if (item.meal_package_order_id === pkgItem.id) {
-              const meal = this.getMeal(item.meal_id);
-              meal.meal_size_id = item.meal_size_id;
-              meal.quantity = item.quantity;
-              meal.special_instructions = item.special_instructions;
+      //     _.forEach(this.order.items, item => {
+      //       if (item.meal_package_order_id === pkgItem.id) {
+      //         const meal = this.getMeal(item.meal_id);
+      //         meal.meal_size_id = item.meal_size_id;
+      //         meal.quantity = item.quantity;
+      //         meal.special_instructions = item.special_instructions;
 
-              if (pkgItem.meal_package_size && index !== null) {
-                meal_package.sizes[index].meals.push(meal);
-                meal_package.sizes[index].price = pkgItem.price;
-              } else {
-                meal_package.meals.push(meal);
-              }
-            }
-          });
-          for (let i = 0; i < pkgItem.quantity; i++) {
-            this.addOne(meal_package, true, pkgItem.meal_package_size_id);
-          }
-        });
-      }
+      //         if (pkgItem.meal_package_size && index !== null) {
+      //           meal_package.sizes[index].meals.push(meal);
+      //           meal_package.sizes[index].price = pkgItem.price;
+      //         } else {
+      //           meal_package.meals.push(meal);
+      //         }
+      //       }
+      //     });
+      //     for (let i = 0; i < pkgItem.quantity; i++) {
+      //       this.addOne(meal_package, true, pkgItem.meal_package_size_id);
+      //     }
+      //   });
+      // }
 
-      _.forEach(this.order.items, item => {
-        if (!item.meal_package_order_id) {
-          const meal = this.getMeal(item.meal_id);
-          if (!meal) {
-            return;
-          }
+      // _.forEach(this.order.items, item => {
+      //   if (!item.meal_package_order_id) {
+      //     const meal = this.getMeal(item.meal_id);
+      //     if (!meal) {
+      //       return;
+      //     }
 
-          let components = _.mapValues(
-            _.groupBy(item.components, "meal_component_id"),
-            choices => {
-              return _.map(choices, "meal_component_option_id");
-            }
-          );
+      //     let components = _.mapValues(
+      //       _.groupBy(item.components, "meal_component_id"),
+      //       choices => {
+      //         return _.map(choices, "meal_component_option_id");
+      //       }
+      //     );
 
-          let addons = _.map(item.addons, "meal_addon_id");
+      //     let addons = _.map(item.addons, "meal_addon_id");
 
-          let special_instructions = item.special_instructions;
+      //     let special_instructions = item.special_instructions;
 
-          let free = item.free;
+      //     let free = item.free;
 
-          meal.price = item.price;
+      //     meal.price = item.price;
 
-          for (let i = 0; i < item.quantity; i++) {
-            this.addOne(
-              meal,
-              false,
-              item.meal_size_id,
-              components,
-              addons,
-              special_instructions,
-              free
-            );
-          }
-        }
-      });
+      //     for (let i = 0; i < item.quantity; i++) {
+      //       this.addOne(
+      //         meal,
+      //         false,
+      //         item.meal_size_id,
+      //         components,
+      //         addons,
+      //         special_instructions,
+      //         free
+      //       );
+      //     }
+      //   }
+      // });
     }
   }
 };
