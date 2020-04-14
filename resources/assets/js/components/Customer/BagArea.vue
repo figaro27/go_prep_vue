@@ -571,7 +571,8 @@ export default {
         options.push({
           text: lineItem.full_title,
           price: lineItem.price,
-          title: lineItem.full_title,
+          title: lineItem.title,
+          full_title: lineItem.full_title,
           quantity: 1
         });
       });
