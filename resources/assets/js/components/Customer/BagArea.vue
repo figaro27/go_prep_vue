@@ -285,7 +285,12 @@
             <div class="flex-grow-1">
               <span>
                 <p>
-                  {{ orderLineItem.title }} -
+                  {{
+                    orderLineItem.size
+                      ? orderLineItem.size + " - " + orderLineItem.title
+                      : orderLineItem.title
+                  }}
+                  -
                   {{
                     format.money(
                       orderLineItem.price * orderLineItem.quantity,
