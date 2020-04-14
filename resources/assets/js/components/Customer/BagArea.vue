@@ -350,19 +350,21 @@
       <h3 class="center-text mt-3">Add New</h3>
       <div class="row">
         <b-input-group>
-          <div class="col-md-7">
+          <div class="col-md-4">
             <b-form-input
               v-model="lineItem.size"
               placeholder="Size"
               class="mr-3"
             ></b-form-input>
+          </div>
+          <div class="col-md-4">
             <b-form-input
               v-model="lineItem.title"
               placeholder="Title"
               class="mr-3"
             ></b-form-input>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <b-form-input
               v-model="lineItem.price"
               placeholder="Price"

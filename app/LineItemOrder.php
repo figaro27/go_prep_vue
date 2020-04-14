@@ -8,7 +8,13 @@ class LineItemOrder extends Pivot
 {
     protected $table = 'line_item_orders';
 
-    protected $appends = ['title', 'price', 'size', 'production_group_id'];
+    protected $appends = [
+        'title',
+        'price',
+        'size',
+        'full_title',
+        'production_group_id'
+    ];
 
     protected $casts = [
         'price' => 'float'
@@ -26,7 +32,9 @@ class LineItemOrder extends Pivot
 
     public function getTitleAttribute()
     {
-        return $this->lineItem->title;
+        return $this->lineItem->size !== null
+            ? $this->lineItem->size . ' - ' . $this->lineItem->title
+            : $this->lineItem->title;
     }
 
     public function getPriceAttribute()
