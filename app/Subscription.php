@@ -443,20 +443,6 @@ class Subscription extends Model
         // Create new order for next delivery
         $newOrder = new Order();
 
-        // Adjust the price of the subscription on renewal if a one time coupon code was used. (Remove coupon from subscription).
-        $coupon = Coupon::where('id', $this->coupon_id)->first();
-        if (isset($coupon) && $coupon->oneTime) {
-            $this->syncPrices(false);
-            $this->coupon_id = null;
-            $this->couponReduction = null;
-            $this->couponCode = null;
-            $this->update();
-        } else {
-            $newOrder->coupon_id = $this->coupon_id;
-            $newOrder->couponReduction = $this->couponReduction;
-            $newOrder->couponCode = $this->couponCode;
-        }
-
         $newOrder->user_id = $this->user_id;
         $newOrder->customer_id = $this->customer_id;
         $newOrder->card_id = $this->card_id ? $this->card_id : null;
@@ -472,6 +458,9 @@ class Subscription extends Model
         $newOrder->deliveryFee = $this->deliveryFee;
         $newOrder->processingFee = $this->processingFee;
         $newOrder->salesTax = $this->salesTax;
+        $newOrder->coupon_id = $this->coupon_id;
+        $newOrder->couponReduction = $this->couponReduction;
+        $newOrder->couponCode = $this->couponCode;
         $newOrder->referralReduction = $this->referralReduction;
         $newOrder->promotionReduction = $this->promotionReduction;
         $newOrder->pointsReduction = $this->pointsReduction;
@@ -816,6 +805,18 @@ class Subscription extends Model
         $afterDiscountBeforeFees = $prePackagePrice + $totalPackagePrice;
         $preFeePreDiscount = $prePackagePrice + $totalPackagePrice;
 
+        // Adjust the price of the subscription on renewal if a one time coupon code was used. (Remove coupon from subscription).
+        $coupon = Coupon::where('id', $this->coupon_id)->first();
+        if (isset($coupon) && $coupon->oneTime) {
+            $this->coupon_id = null;
+            $this->couponReduction = null;
+            $this->couponCode = null;
+            $this->update();
+        } else {
+            $afterDiscountBeforeFees -= $this->couponReduction;
+            $total -= $this->couponReduction;
+        }
+
         $deliveryFee = $this->deliveryFee;
         $processingFee = 0;
         $mealPlanDiscount = 0;
@@ -826,9 +827,9 @@ class Subscription extends Model
 
         if ($this->store->settings->applyMealPlanDiscount) {
             $discount = $this->store->settings->mealPlanDiscount / 100;
-            $mealPlanDiscount = $total * $discount;
+            $mealPlanDiscount = $preFeePreDiscount * $discount;
             $total -= $mealPlanDiscount;
-            $afterDiscountBeforeFees = $total;
+            $afterDiscountBeforeFees -= $mealPlanDiscount;
         }
 
         // if ($this->store->settings->applyDeliveryFee && !$this->pickup) {
