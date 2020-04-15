@@ -43,7 +43,11 @@
       class="mb-3"
       >Add Card</b-btn
     > -->
-    <b-btn variant="primary" @click="onClickCreateCard()" class="mb-3"
+    <b-btn
+      variant="primary"
+      @click="onClickCreateCard()"
+      class="mb-3"
+      :disabled="addingCard"
       >Add Card</b-btn
     >
     <div v-if="cards.length && !$route.params.manualOrder">
