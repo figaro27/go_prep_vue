@@ -215,4 +215,13 @@ class TestController extends Controller
         $sub = Subscription::where('id', 304)->first();
         $sub->renew();
     }
+
+    public function testChargeDescriptor()
+    {
+        \Stripe\Stripe::setApiKey('sk_live_DFayWPQLIyuuUUKFWibtVCND');
+
+        \Stripe\Account::update('acct_1E7tQ7JZQV89SXbH', [
+            'business_profile' => ['name' => 'MQS']
+        ]);
+    }
 }
