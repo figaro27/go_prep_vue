@@ -218,22 +218,16 @@ class TestController extends Controller
 
     public function testChargeDescriptor()
     {
-        \Stripe\Stripe::setApiKey('sk_live_DFayWPQLIyuuUUKFWibtVCND');
+        \Stripe\Stripe::setApiKey('sk_live_w371HmpG4A0x4xG1E3FMYgdr00IjD6SplL');
 
-        \Stripe\Account::update(
-            'acct_1E7tQ7JZQV89SXbH',
-            [
-                'business_profile' => ['name' => 'MQS']
-            ],
-            [
-                'company' => ['name' => 'MQS2']
-            ],
-            [
-                'external_accounts' => [
-                    'data' => ['account_holder_name' => 'MQS3']
+        $test = \Stripe\Account::update('acct_1GOv9dLVLsZe90Mo', [
+            'settings' => [
+                'payments' => [
+                    'statement_descriptor' => 'Under the Ground BloNo'
                 ]
-            ],
-            ['settings' => ['payments' => ['statement_descriptor' => 'MQS4']]]
-        );
+            ]
+        ]);
+
+        return $test;
     }
 }
