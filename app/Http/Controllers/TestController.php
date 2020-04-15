@@ -220,13 +220,20 @@ class TestController extends Controller
     {
         \Stripe\Stripe::setApiKey('sk_live_DFayWPQLIyuuUUKFWibtVCND');
 
-        \Stripe\Account::update('acct_1E7tQ7JZQV89SXbH', [
-            'business_profile' => ['name' => 'MQS'],
-            'company' => ['name' => 'MQS2'],
-            'external_accounts' => [
-                'data' => ['account_holder_name' => 'MQS3']
+        \Stripe\Account::update(
+            'acct_1E7tQ7JZQV89SXbH',
+            [
+                'business_profile' => ['name' => 'MQS']
             ],
-            'settings' => ['payments' => ['statement_descriptor' => 'MQS4']]
-        ]);
+            [
+                'company' => ['name' => 'MQS2']
+            ],
+            [
+                'external_accounts' => [
+                    'data' => ['account_holder_name' => 'MQS3']
+                ]
+            ],
+            ['settings' => ['payments' => ['statement_descriptor' => 'MQS4']]]
+        );
     }
 }
