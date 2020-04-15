@@ -137,6 +137,12 @@
             </b-form-group> -->
 
             <b-button type="submit" variant="primary">Submit</b-button>
+
+            <p v-if="store.id === 13">
+              <b-btn @click="testChargeDescriptor"
+                >TEST CHARGE DESCRIPTOR</b-btn
+              >
+            </p>
           </b-form>
 
           <!--
@@ -351,6 +357,9 @@ export default {
     },
     testRenewSubscription() {
       axios.get("/testRenewSubscription");
+    },
+    testChargeDescriptor() {
+      axios.get("/testChargeDescriptor");
     }
   }
 };
