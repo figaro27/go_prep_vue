@@ -48,6 +48,24 @@ class CardController extends StoreController
         $gateway = $request->get('payment_gateway');
         $card = $request->get('card');
 
+        $existingCards = Card::where('user_id', $userId)
+            ->where('deleted_at', null)
+            ->get();
+        foreach ($existingCards as $existingCard) {
+            if (
+                $existingCard->brand === $card['brand'] &&
+                $existingCard->last4 === (int) $card['last4']
+            ) {
+                return response()->json(
+                    [
+                        'error' =>
+                            'You have already added this card to the system.'
+                    ],
+                    400
+                );
+            }
+        }
+
         if ($gateway === Constants::GATEWAY_STRIPE) {
             try {
                 if (!$user->hasCustomer()) {
