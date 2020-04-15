@@ -969,6 +969,15 @@ class Subscription extends Model
                 $mealOrder->delete();
             }
 
+            // Remove old meal packages
+            $mealPackageOrders = MealPackageOrder::where(
+                'order_id',
+                $order->id
+            )->get();
+            foreach ($mealPackageOrders as $mealPackageOrder) {
+                $mealPackageOrder->delete();
+            }
+
             // Add new meal orders & variations
             foreach ($bag->getItems() as $item) {
                 $mealOrder = new MealOrder();
@@ -978,6 +987,35 @@ class Subscription extends Model
                 $mealOrder->meal_size_id = $item['meal_size']['id'];
                 $mealOrder->price = $item['price'];
                 $mealOrder->quantity = $item['quantity'];
+                if (isset($item['delivery_day']) && $item['delivery_day']) {
+                    $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
+                        $item['delivery_day']['day'],
+                        $isMultipleDelivery
+                    );
+                }
+                if (isset($item['size']) && $item['size']) {
+                    $mealOrder->meal_size_id = $item['size']['id'];
+                }
+                if (isset($item['special_instructions'])) {
+                    $mealOrder->special_instructions =
+                        $item['special_instructions'];
+                }
+                if (isset($item['free'])) {
+                    $mealOrder->free = $item['free'];
+                }
+                if ($item['meal_package']) {
+                    $mealOrder->meal_package = $item['meal_package'];
+                    $mealOrder->meal_package_variation = isset(
+                        $item['meal_package_variation']
+                    )
+                        ? $item['meal_package_variation']
+                        : 0;
+                }
+
+                if (isset($item['meal_package_title'])) {
+                    $mealOrder->meal_package_title =
+                        $item['meal_package_title'];
+                }
                 $mealOrder->save();
 
                 if (isset($item['components']) && $item['components']) {

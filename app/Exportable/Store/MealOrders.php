@@ -213,6 +213,8 @@ class MealOrders
                 }
 
                 $title = $lineItemsOrder->getTitleAttribute();
+                $size = $lineItemsOrder->getSizeAttribute();
+                $title = $title . '<sep>' . $size;
 
                 if ($groupByDate) {
                     if (!isset($lineItemQuantities[$title])) {
@@ -323,7 +325,10 @@ class MealOrders
             }
 
             foreach ($lineItemQuantities as $title => $quantity) {
-                $production->push([$quantity, '', $title]);
+                $temp = explode('<sep>', $title);
+                $title = $temp[0];
+                $size = $temp && isset($temp[1]) ? $temp[1] : "";
+                $production->push([$quantity, $size, $title]);
             }
         } else {
             foreach ($mealQuantities as $title => $mealDates) {
@@ -345,6 +350,10 @@ class MealOrders
             }
 
             foreach ($lineItemQuantities as $title => $lineItemDates) {
+                $temp = explode('<sep>', $title);
+                $size = $temp && isset($temp[0]) ? $temp[0] : "";
+                $title = $temp[1];
+
                 $row = [];
                 foreach ($allDates as $date) {
                     if (isset($lineItemDates[$date])) {
@@ -353,8 +362,8 @@ class MealOrders
                         $row[] = 0;
                     }
                 }
-                $row[] = '';
                 $row[] = $title;
+                $row[] = $size;
                 $production->push($row);
             }
         }

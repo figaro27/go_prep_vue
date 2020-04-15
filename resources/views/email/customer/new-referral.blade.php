@@ -319,7 +319,7 @@ $currency = $order->store->settings->currency_symbol
                 @foreach($order->lineItemsOrder as $lineItemOrder)
 
                 <tr>
-                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->title }}</td>
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->full_title }}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
                     {{$currency}}{{ number_format($lineItemOrder->price, 2) }}</td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $lineItemOrder->quantity }}</td>

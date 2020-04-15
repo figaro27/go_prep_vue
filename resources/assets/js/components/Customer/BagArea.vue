@@ -285,7 +285,12 @@
             <div class="flex-grow-1">
               <span>
                 <p>
-                  {{ orderLineItem.title }} -
+                  {{
+                    orderLineItem.size
+                      ? orderLineItem.size + " - " + orderLineItem.title
+                      : orderLineItem.title
+                  }}
+                  -
                   {{
                     format.money(
                       orderLineItem.price * orderLineItem.quantity,
@@ -350,14 +355,21 @@
       <h3 class="center-text mt-3">Add New</h3>
       <div class="row">
         <b-input-group>
-          <div class="col-md-7">
+          <div class="col-md-4">
+            <b-form-input
+              v-model="lineItem.size"
+              placeholder="Size"
+              class="mr-3"
+            ></b-form-input>
+          </div>
+          <div class="col-md-4">
             <b-form-input
               v-model="lineItem.title"
               placeholder="Title"
               class="mr-3"
             ></b-form-input>
           </div>
-          <div class="col-md-3">
+          <div class="col-md-2">
             <b-form-input
               v-model="lineItem.price"
               placeholder="Price"
@@ -557,9 +569,10 @@ export default {
       let options = [];
       this.lineItems.forEach(lineItem => {
         options.push({
-          text: lineItem.title,
+          text: lineItem.full_title,
           price: lineItem.price,
           title: lineItem.title,
+          full_title: lineItem.full_title,
           quantity: 1
         });
       });

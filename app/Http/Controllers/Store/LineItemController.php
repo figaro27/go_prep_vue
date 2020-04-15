@@ -40,6 +40,7 @@ class LineItemController extends StoreController
         $props = $props->only([
             'order_id',
             'title',
+            'size',
             'price',
             'production_group_id'
         ]);
@@ -47,6 +48,7 @@ class LineItemController extends StoreController
         $lineItem = new LineItem();
         $lineItem->store_id = $this->store->id;
         $lineItem->title = $props->get('title');
+        $lineItem->size = $props->get('size');
         $lineItem->price =
             $props->get('price') !== null ? $props->get('price') : 0.0;
         $lineItem->production_group_id = $props->get('production_group_id');

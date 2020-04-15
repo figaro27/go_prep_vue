@@ -253,7 +253,7 @@ class OrdersByCustomer
                                         ->map(function ($lineItemOrder) {
                                             return [
                                                 'title' =>
-                                                    $lineItemOrder->title,
+                                                    $lineItemOrder->full_title,
                                                 'quantity' =>
                                                     $lineItemOrder->quantity
                                             ];

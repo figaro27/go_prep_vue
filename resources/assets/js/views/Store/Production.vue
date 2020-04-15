@@ -336,13 +336,14 @@ export default {
               if (item.production_group_id !== this.productionGroupId)
                 return null;
             }
-
+            let size = lineItem.size;
             let title = lineItem.title;
             let base_title = lineItem.title;
 
             if (!mealCounts[title]) {
               mealCounts[title] = 0;
               mealIds[title] = lineItem.id;
+              mealSizes[title] = size;
               mealTitles[title] = base_title;
             }
             mealCounts[title] += lineItem.quantity;
@@ -360,7 +361,7 @@ export default {
         let base_size = "";
 
         if (size) {
-          base_size = size.title;
+          base_size = size.title ? size.title : size;
         } else if (meal && meal.default_size_title) {
           base_size = meal.default_size_title;
         }
