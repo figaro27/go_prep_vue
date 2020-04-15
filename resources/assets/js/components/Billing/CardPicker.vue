@@ -229,7 +229,6 @@ export default {
           this.selectCard(resp.data.id);
           this.newCard = null;
           this.$toastr.s("Payment method saved.");
-          this.addingCard = false;
         })
         .catch(resp => {
           let error = "";
@@ -248,6 +247,7 @@ export default {
         })
         .finally(() => {
           this.$parent.loading = false;
+          this.addingCard = false;
         });
     },
     checkCardSubscriptions(id) {
