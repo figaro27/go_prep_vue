@@ -356,8 +356,8 @@ class MealOrders
 
                 $row = [];
                 foreach ($allDates as $date) {
-                    if (isset($mealDates[$date])) {
-                        $row[] = $mealDates[$date];
+                    if (isset($lineItemDates[$date])) {
+                        $row[] = $lineItemDates[$date];
                     } else {
                         $row[] = 0;
                     }
