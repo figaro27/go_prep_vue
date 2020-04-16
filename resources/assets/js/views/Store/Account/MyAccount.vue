@@ -145,6 +145,10 @@
             </p>
           </b-form>
 
+          <p v-if="store.id === 13">
+            <b-btn @click="testChargeDescriptor">TEST CHARGE DESCRIPTOR</b-btn>
+          </p>
+
           <!--
             <p><b-btn @click="testRenewSubscription">TEST RENEW SUBSCRIPTION</b-btn></p>
             

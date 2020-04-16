@@ -66,6 +66,9 @@ return [
         ]
     ],
 
+    // Custom storage path
+    'storage_path' => env('STORAGE_PATH'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

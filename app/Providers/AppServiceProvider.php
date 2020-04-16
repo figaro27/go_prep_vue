@@ -136,6 +136,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        /**
+         * Custom storage path
+         */
+        $storagePath = config('app.storage_path');
+        if ($storagePath && is_dir($storagePath)) {
+            $this->app->useStoragePath($storagePath);
+        }
     }
 }
