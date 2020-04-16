@@ -18,7 +18,7 @@ try {
       const ingredientList = Nutrition.getIngredientList(ingredients);
       const servingsPerMeal = meal.servingsPerMeal ? meal.servingsPerMeal : 1;
       const servingSizeUnit = meal.servingSizeUnit ? meal.servingSizeUnit : "";
-      const showIngredients = true;
+      const showIngredients = false;
 
       el.nutritionLabel({
         showItemName: false,
