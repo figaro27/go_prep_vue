@@ -1695,6 +1695,14 @@ export default {
         : this.storeSettings.next_orderable_delivery_dates;
       let deliveryDays = this.store.delivery_days;
 
+      // If no cutoff, add today's date
+      if (
+        this.storeSettings.cutoff_days === 0 &&
+        this.storeSettings.cutoff_hours === 0
+      ) {
+        dates = this.storeSettings.next_delivery_dates;
+      }
+
       /*
 use next_delivery_dates
 
