@@ -22,12 +22,16 @@ try {
 
       el.nutritionLabel({
         showServingUnitQuantityTextbox: false,
+        showServingWeightGrams: false,
+        showServingsPerContainer: false,
+        showServingUnitQuantity: false,
+        showOnlyTheTextServingSize: true,
+        textServingSize: servingSizeUnit,
+
         showItemName: false,
-        showServingUnitQuantity: true,
         valueServingPerContainer: servingsPerMeal,
         valueServingUnitQuantity: 1,
         valueServingSizeUnit: servingSizeUnit,
-        showServingsPerContainer: true,
         showPolyFat: false,
         showMonoFat: false,
         showTransFat: false,
