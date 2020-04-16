@@ -22,7 +22,7 @@ try {
 
       el.nutritionLabel({
         showItemName: false,
-        showServingUnitQuantity: true,
+        showServingUnitQuantity: false,
         valueServingPerContainer: servingsPerMeal,
         valueServingUnitQuantity: 1,
         valueServingSizeUnit: servingSizeUnit,
