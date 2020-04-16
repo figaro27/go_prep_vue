@@ -21,8 +21,9 @@ try {
       const showIngredients = false;
 
       el.nutritionLabel({
+        showServingUnitQuantityTextbox: false,
         showItemName: false,
-        showServingUnitQuantity: false,
+        showServingUnitQuantity: true,
         valueServingPerContainer: servingsPerMeal,
         valueServingUnitQuantity: 1,
         valueServingSizeUnit: servingSizeUnit,
