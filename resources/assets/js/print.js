@@ -23,16 +23,15 @@ try {
       const showIngredients = false;
 
       el.nutritionLabel({
-        showServingUnitQuantityTextbox: false,
+        // showServingUnitQuantityTextbox: false,
+        // showServingUnitQuantity: false,
+        // showOnlyTheTextServingSize: true,
+
         showServingWeightGrams: false,
         showIngredients: false,
         showServingsPerContainer: true,
         showItemName: false,
-
-        showServingUnitQuantity: false,
-        showOnlyTheTextServingSize: true,
         textServingSize: servingSizeUnit,
-
         valueServingPerContainer: servingsPerMeal,
 
         showPolyFat: false,
