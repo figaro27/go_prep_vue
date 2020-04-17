@@ -129,6 +129,8 @@
       </p>
     </div>
 
+    <p v-html="store.details.description" v-if="store.details.description"></p>
+
     <meal-package-components-modal
       ref="packageComponentModal"
       :packageTitle="packageTitle"
