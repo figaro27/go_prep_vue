@@ -800,7 +800,7 @@
             >!-->
 
             <!-- Hide regular customer dropdown & show search customer dropdown if store has 250 or more customers -->
-            <v-select
+            <!-- <v-select
               v-if="!store.bulkCustomers"
               label="text"
               :options="customers"
@@ -808,14 +808,13 @@
               @input="inputCustomer"
             >
             </v-select>
-
+ -->
             <v-select
-              v-if="store.bulkCustomers"
               label="text"
               :options="customerOptions"
               @search="onSearchCustomer"
               v-model="customerModel"
-              placeholder="Search"
+              placeholder="Type name, email, phone, or address."
               :filterable="false"
             >
             </v-select>

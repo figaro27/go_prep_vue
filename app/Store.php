@@ -1237,7 +1237,7 @@ class Store extends Model
 
     public function getBulkCustomersAttribute()
     {
-        if ($this->customers->count() >= 2) {
+        if ($this->customers->count() >= 200) {
             return true;
         } else {
             return false;
