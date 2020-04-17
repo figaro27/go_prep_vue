@@ -798,14 +798,28 @@
               :value="customer"
               @input="getCards"
             >!-->
+
+            <!-- Hide regular customer dropdown & show search customer dropdown if store has 250 or more customers -->
             <v-select
+              v-if="!store.bulkCustomers"
               label="text"
               :options="customers"
               v-model="customerModel"
               @input="inputCustomer"
             >
             </v-select>
+
+            <v-select
+              v-if="store.bulkCustomers"
+              label="text"
+              :options="customerOptions"
+              @search="onSearchCustomer"
+              v-model="customerModel"
+              placeholder="Search"
+            >
+            </v-select>
           </b-form-group>
+
           <b-btn
             variant="primary"
             v-if="storeModules.manualCustomers"
@@ -1163,6 +1177,7 @@ export default {
   },
   data() {
     return {
+      customerOptions: [],
       coupons: [],
       purchasedGiftCards: [],
       pointsReduction: 0,
@@ -2922,7 +2937,33 @@ use next_delivery_dates
           this.pointsReduction = this.availablePromotionPoints / 100;
         }
       }
-    }
+    },
+    onSearchCustomer(search, loading) {
+      if (search !== "") {
+        this.customerOptions = [];
+        loading(true);
+        this.search(loading, search, this);
+      }
+    },
+    search: _.debounce((loading, search, vm) => {
+      axios
+        .post("/api/me/searchCustomer", {
+          query: search
+        })
+        .then(response => {
+          response.data.forEach(customer => {
+            if (customer) {
+              vm.customerOptions.push({
+                text: customer.name,
+                value: parseInt(customer.id)
+              });
+            }
+          });
+        })
+        .finally(() => {
+          loading(false);
+        });
+    }, 600)
   }
 };
 </script>

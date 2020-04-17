@@ -35,7 +35,8 @@ class Store extends Model
         'next_delivery_date',
         'next_cutoff_date',
         'url',
-        'hasPromoCodes'
+        'hasPromoCodes',
+        'bulkCustomers'
     ];
 
     public static function boot()
@@ -1228,6 +1229,15 @@ class Store extends Model
             $this->coupons->count() > 0 ||
             $this->purchasedGiftCards->count() > 0
         ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getBulkCustomersAttribute()
+    {
+        if ($this->customers->count() >= 2) {
             return true;
         } else {
             return false;

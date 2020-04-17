@@ -31,7 +31,6 @@ class Customer extends Model
         'last_order',
         'total_payments',
         'total_paid',
-        'paid_orders',
         'firstname',
         'lastname',
         'name',
