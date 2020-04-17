@@ -533,6 +533,7 @@ class User extends Authenticatable implements JWTSubject
                     return true;
                 }
             } catch (\Exception $e) {
+                throw new \Exception($e);
             }
         }
 
