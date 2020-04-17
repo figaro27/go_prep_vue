@@ -31,7 +31,7 @@ try {
         showIngredients: false,
         showServingsPerContainer: true,
         showItemName: false,
-        textServingSize: servingSizeUnit,
+        // textServingSize: servingSizeUnit,
         valueServingPerContainer: servingsPerMeal,
 
         showPolyFat: false,
