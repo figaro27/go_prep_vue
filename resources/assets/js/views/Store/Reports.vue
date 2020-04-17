@@ -341,6 +341,7 @@
       v-if="showSettingsModal.labels"
       no-fade
       no-close-on-backdrop
+      @ok="updateReportSettings"
     >
       <b-alert variant="warning" show>
         <h6 class="center-text text-danger">Beta</h6>
