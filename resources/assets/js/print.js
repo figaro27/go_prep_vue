@@ -30,7 +30,7 @@ try {
 
         showServingWeightGrams: false,
         showIngredients: false,
-        showServingsPerContainer: false,
+        showServingsPerContainer: true,
         showItemName: false,
         valueServingPerContainer: servingsPerMeal,
 
