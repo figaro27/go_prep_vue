@@ -816,6 +816,7 @@
               @search="onSearchCustomer"
               v-model="customerModel"
               placeholder="Search"
+              :filterable="false"
             >
             </v-select>
           </b-form-group>

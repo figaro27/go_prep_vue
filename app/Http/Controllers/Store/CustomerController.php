@@ -218,7 +218,7 @@ class CustomerController extends StoreController
                         return $customer;
                     }
                 });
-            return $customers;
+            return array_filter($customers->values()->toArray());
         }
 
         return [];
