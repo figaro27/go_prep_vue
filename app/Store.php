@@ -1096,7 +1096,6 @@ class Store extends Model
                 Mail::to($this->user)->send($email);
                 return true;
             } catch (\Exception $e) {
-                throw new \Exception($e);
             }
         }
 
