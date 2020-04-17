@@ -1092,8 +1092,11 @@ class Store extends Model
         }
 
         if ($email) {
-            Mail::to($this->user)->send($email);
-            return true;
+            try {
+                Mail::to($this->user)->send($email);
+                return true;
+            } catch (\Exception $e) {
+            }
         }
 
         return false;
