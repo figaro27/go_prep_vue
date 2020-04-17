@@ -26,12 +26,12 @@ try {
         // showServingUnitQuantityTextbox: false,
         // showServingUnitQuantity: false,
         // showOnlyTheTextServingSize: true,
+        // textServingSize: servingSizeUnit,
 
         showServingWeightGrams: false,
         showIngredients: false,
-        showServingsPerContainer: true,
+        showServingsPerContainer: false,
         showItemName: false,
-        // textServingSize: servingSizeUnit,
         valueServingPerContainer: servingsPerMeal,
 
         showPolyFat: false,
