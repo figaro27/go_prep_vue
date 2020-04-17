@@ -1251,11 +1251,13 @@ export default {
         } else {
           this.customerModel = null;
         }
-
         if (this.$route.params.manualOrder) {
           this.getCards();
         }
       }
+    },
+    customerModel: function(val) {
+      this.getCards();
     }
   },
   mounted: function() {
