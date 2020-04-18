@@ -1177,7 +1177,6 @@ export default {
   },
   data() {
     return {
-      cardCheck: false,
       customerOptions: [],
       coupons: [],
       purchasedGiftCards: [],
@@ -1245,21 +1244,18 @@ export default {
   },
   watch: {
     customer: function(val) {
-      if (!this.cardCheck) {
-        if (!this.existingCustomerAdded) {
-          if (val) {
-            this.customerModel = this.getCustomerObject(val);
-          } else {
-            this.customerModel = null;
-          }
-          if (this.$route.params.manualOrder) {
-            this.getCards();
-          }
+      if (!this.existingCustomerAdded) {
+        if (val) {
+          this.customerModel = this.getCustomerObject(val);
+        } else {
+          this.customerModel = null;
+        }
+        if (this.$route.params.manualOrder) {
+          this.getCards();
         }
       }
     },
     customerModel: function(val) {
-      this.cardCheck = true;
       this.getCards();
     }
   },

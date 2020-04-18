@@ -210,10 +210,10 @@ class CustomerController extends StoreController
                             false ||
                         strpos(strtolower($customer->phone), $query) !==
                             false ||
-                        strpos(strtolower($customer->address), $query) !==
-                            false ||
-                        strpos(strtolower($customer->city), $query) !== false ||
-                        strpos(strtolower($customer->zip), $query) !== false
+                        strpos(strtolower($customer->address), $query) !== false
+                        //     ||
+                        // strpos(strtolower($customer->city), $query) !== false ||
+                        // strpos(strtolower($customer->zip), $query) !== false
                     ) {
                         return $customer;
                     }
