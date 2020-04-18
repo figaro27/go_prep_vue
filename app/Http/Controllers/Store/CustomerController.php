@@ -192,4 +192,36 @@ class CustomerController extends StoreController
             return [];
         }
     }
+
+    public function searchCustomer(Request $request)
+    {
+        $query = strtolower($request->get('query'));
+
+        if ($query) {
+            $customers = Customer::where('store_id', $this->store->id)
+                ->get()
+                ->map(function ($customer) use ($query) {
+                    if (
+                        strpos(strtolower($customer->email), $query) !==
+                            false ||
+                        strpos(strtolower($customer->firstname), $query) !==
+                            false ||
+                        strpos(strtolower($customer->lastname), $query) !==
+                            false ||
+                        strpos(strtolower($customer->phone), $query) !==
+                            false ||
+                        strpos(strtolower($customer->address), $query) !== false
+                        //     ||
+                        // strpos(strtolower($customer->city), $query) !== false ||
+                        // strpos(strtolower($customer->zip), $query) !== false
+                    ) {
+                        return $customer;
+                    }
+                });
+
+            return $customers;
+        }
+
+        return [];
+    }
 }

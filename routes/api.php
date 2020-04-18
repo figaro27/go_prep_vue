@@ -310,6 +310,10 @@ foreach (
                                 'SubscriptionController@resume'
                             );
                             Route::resource('customers', 'CustomerController');
+                            Route::post(
+                                'searchCustomer',
+                                'CustomerController@searchCustomer'
+                            );
 
                             Route::get('leads', 'UserController@getLeads');
                             Route::get(
