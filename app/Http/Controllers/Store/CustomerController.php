@@ -199,25 +199,18 @@ class CustomerController extends StoreController
 
         if ($query) {
             $customers = Customer::where('store_id', $this->store->id)
-                ->get()
-                ->map(function ($customer) use ($query) {
-                    if (
-                        strpos(strtolower($customer->email), $query) !==
-                            false ||
-                        strpos(strtolower($customer->firstname), $query) !==
-                            false ||
-                        strpos(strtolower($customer->lastname), $query) !==
-                            false ||
-                        strpos(strtolower($customer->phone), $query) !==
-                            false ||
-                        strpos(strtolower($customer->address), $query) !== false
-                        //     ||
-                        // strpos(strtolower($customer->city), $query) !== false ||
-                        // strpos(strtolower($customer->zip), $query) !== false
-                    ) {
-                        return $customer;
-                    }
-                });
+                ->whereHas('user', function ($q) use ($query) {
+                    $q
+                        ->where('email', 'LIKE', "%$query%")
+                        ->orWhereHas('userDetail', function ($q) use ($query) {
+                            $q
+                                ->where('firstname', 'LIKE', "%$query%")
+                                ->orWhere('lastname', 'LIKE', "%$query%")
+                                ->orWhere('phone', 'LIKE', "%$query%")
+                                ->orWhere('address', 'LIKE', "%$query%");
+                        });
+                })
+                ->get();
 
             return $customers;
         }
