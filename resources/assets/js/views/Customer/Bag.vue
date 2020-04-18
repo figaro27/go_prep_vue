@@ -562,7 +562,7 @@ export default {
     //   this.deliveryDay = this.deliveryDateOptions[0].value;
     // }
 
-    if (this.loggedIn) {
+    if (!this.$route.params.storeView && this.loggedIn) {
       this.getPromotionPoints(this.user.id);
     }
   },
