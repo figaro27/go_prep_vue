@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Store;
 
+use App\Customer;
+use App\Order;
 use App\User;
 use App\UserDetail;
-use App\Customer;
-use App\Card;
-use App\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class CustomerController extends StoreController
 {
@@ -203,11 +201,9 @@ class CustomerController extends StoreController
                     $q
                         ->where('email', 'LIKE', "%$query%")
                         ->orWhereHas('userDetail', function ($q) use ($query) {
-                            $q
-                                ->where('firstname', 'LIKE', "%$query%")
-                                ->orWhere('lastname', 'LIKE', "%$query%")
-                                ->orWhere('phone', 'LIKE', "%$query%")
-                                ->orWhere('address', 'LIKE', "%$query%");
+                            $q->whereRaw(
+                                "MATCH(firstname, lastname, phone, address) AGAINST('\"{$query}\"' IN BOOLEAN MODE)"
+                            );
                         });
                 })
                 ->get();
