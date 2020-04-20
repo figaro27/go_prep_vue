@@ -112,6 +112,19 @@
           </b-form>
         </div> -->
 
+        <p class="strong mt-4">Change Email</p>
+        <b-form @submit.prevent="updateEmail">
+          <b-form-group :state="true">
+            <b-form-input
+              type="email"
+              v-model="user.email"
+              placeholder="Current Email"
+              required
+            ></b-form-input>
+          </b-form-group>
+          <b-button type="submit" variant="primary">Save</b-button>
+        </b-form>
+
         <p class="strong mt-4">Change Password</p>
         <b-form @submit.prevent="updatePassword">
           <b-form-group :state="true">
@@ -315,6 +328,17 @@ export default {
             e.response.data,
             "Failed to update password."
           );
+        });
+    },
+    updateEmail() {
+      axios
+        .post("/api/me/updateEmail", { email: this.user.email })
+        .then(response => {
+          this.$toastr.s("Email updated.");
+          this.refreshUser();
+        })
+        .catch(e => {
+          this.toastErrorResponse(e.response.data, "Failed to update email.");
         });
     },
     spliceZip() {

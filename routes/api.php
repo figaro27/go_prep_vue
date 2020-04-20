@@ -557,6 +557,11 @@ foreach (
                             );
 
                             Route::post(
+                                '/me/updateEmail',
+                                'UserController@updateEmail'
+                            );
+
+                            Route::post(
                                 'bag/checkout',
                                 'CheckoutController@checkout'
                             );

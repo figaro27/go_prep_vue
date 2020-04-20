@@ -1843,6 +1843,19 @@ use next_delivery_dates
     subscribeAndSaveAmount() {
       return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
     },
+    removeDeliveryFee() {
+      // Checks if the bag is empty or if the bag contains ONLY a gift card.
+      if (this.bag.length === 0) {
+        return true;
+      }
+      let remove = true;
+      this.bag.forEach(item => {
+        if (!item.meal.hasOwnProperty("gift_card")) {
+          remove = false;
+        }
+      });
+      return remove;
+    },
     afterDiscount() {
       if (
         (this.applyMealPlanDiscount && this.weeklySubscription) ||
@@ -1866,6 +1879,9 @@ use next_delivery_dates
         }
         if (this.$route.params.adjustOrder) {
           return this.order.deliveryFee;
+        }
+        if (this.removeDeliveryFee) {
+          return 0;
         }
         if (
           !this.couponFreeDelivery &&
