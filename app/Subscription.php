@@ -316,7 +316,9 @@ class Subscription extends Model
                             'meal_component_option_id' => $component->option
                                 ? $component->option->id
                                 : null,
-                            'component' => $component->component->title,
+                            'component' => $component->component
+                                ? $component->component->title
+                                : null,
                             'option' => $component->option
                                 ? $component->option->title
                                 : null
