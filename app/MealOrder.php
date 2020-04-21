@@ -28,7 +28,9 @@ class MealOrder extends Pivot
         'instructions',
         'componentsFormat',
         'addonsFormat',
-        'expirationDate'
+        'expirationDate',
+        'ingredientList',
+        'allergyList'
     ];
     protected $with = ['components', 'addons'];
 
@@ -433,5 +435,25 @@ class MealOrder extends Pivot
             ->addDays($this->meal->expirationDays)
             ->format('m/d/Y');
         return $expirationDate;
+    }
+
+    public function getIngredientListAttribute()
+    {
+        $ingredients = $this->meal->ingredients;
+        $ingredientList = '';
+        foreach ($ingredients as $ingredient) {
+            $ingredientList .= $ingredient['food_name'] . ', ';
+        }
+        return $ingredientList;
+    }
+
+    public function getAllergyListAttribute()
+    {
+        $allergyList = '';
+        foreach ($this->meal->allergy_titles as $allergy) {
+            $allergyList .= $allergy . ', ';
+        }
+        $allergyList = rtrim($allergyList, ', ');
+        return $allergyList;
     }
 }

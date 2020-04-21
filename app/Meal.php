@@ -85,9 +85,7 @@ class Meal extends Model implements HasMedia
         'item_quantity',
         'in_package',
         'meal_size_id',
-        'hasVariations',
-        'ingredientList',
-        'allergenList'
+        'hasVariations'
     ];
 
     protected $hidden = [
@@ -1718,25 +1716,5 @@ class Meal extends Model implements HasMedia
             }
             $mealSize->update();
         }
-    }
-
-    public function getIngredientListAttribute()
-    {
-        $ingredients = $this->ingredients;
-        $ingredientList = '';
-        foreach ($ingredients as $ingredient) {
-            $ingredientList .= $ingredient['food_name'] . ', ';
-        }
-        return $ingredientList;
-    }
-
-    public function getAllergenListAttribute()
-    {
-        $allergyList = '';
-        foreach ($this->allergy_titles as $allergy) {
-            $allergyList .= $allergy . ', ';
-        }
-        $allergyList = rtrim($allergyList, ', ');
-        return $allergyList;
     }
 }
