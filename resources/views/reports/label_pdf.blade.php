@@ -60,16 +60,7 @@ margin-left:-30px !important;
         Consume Before: {!! $mealOrder->expirationDate !!}
         </p>
         @endif
-             @if ($reportSettings->lab_website)
-        <p class="text-9"><b>
-        {!! $mealOrder->store->settings->website !!}
-        </b></p>
-        @endif
-        @if ($reportSettings->lab_social)
-        <p class="text-9"><b>
-        {!! $mealOrder->store->details->social !!}
-        </b></p>
-        @endif
+  
  @if ($reportSettings->lab_customer)
 
         <p class="text-13" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
@@ -81,6 +72,16 @@ margin-left:-30px !important;
 @if ($reportSettings->lab_allergies && strlen($mealOrder['allergyList']) > 0)
 <p class="text-9"><b>Allergens:</b> {{ $mealOrder['allergyList'] }}</p>
 @endif
+@if ($reportSettings->lab_website)
+        <p class="text-9"><b>
+        {!! $mealOrder->store->settings->website !!}
+        </b></p>
+        @endif
+        @if ($reportSettings->lab_social)
+        <p class="text-9"><b>
+        {!! $mealOrder->store->details->social !!}
+        </b></p>
+        @endif
   </center>
         </div>
         @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
