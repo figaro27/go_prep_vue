@@ -36,16 +36,16 @@
         @change="evt => onChangeNewCard(evt)"
       ></inline-credit-card-field>
     </b-form-group>
-    <b-btn
+    <!-- <b-btn
       variant="primary"
       @click="onClickCreateCard()"
       :disabled="addingCard"
       class="mb-3"
       >Add Card</b-btn
-    >
-    <!-- <b-btn variant="primary" @click="onClickCreateCard()" class="mb-3"
-      >Add Card</b-btn
     > -->
+    <b-btn variant="primary" @click="onClickCreateCard()" class="mb-3"
+      >Add Card</b-btn
+    >
     <div v-if="cards.length && !$route.params.manualOrder">
       <b-list-group class="card-list">
         <b-list-group-item
