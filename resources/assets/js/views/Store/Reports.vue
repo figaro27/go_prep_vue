@@ -432,6 +432,16 @@
               >Meal Expiration</b-form-checkbox
             >
           </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.lab_ingredients"
+              >Ingredients</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.lab_allergens"
+              >Allergens</b-form-checkbox
+            >
+          </p>
         </div>
         <div class="col-md-4">
           <p class="strong">Label Dimensions</p>
