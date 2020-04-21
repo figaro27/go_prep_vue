@@ -27,7 +27,7 @@ margin-left:-30px !important;
 </head>
 
 
-
+<div style="height:100vh">
     @foreach($mealOrders as $i => $mealOrder)
       @php
       $reportSettings = $mealOrder->store->reportSettings;
@@ -40,6 +40,9 @@ margin-left:-30px !important;
   <center>
           @if ($reportSettings->lab_logo)
       <img src="{{$logo}}"/ style="width:32vh;height:32vh;margin-top:8px;margin-bottom:4px">
+      @else
+      <!-- Temporary solution as only image tags work to prevent labels being misaligned & cut off. -->
+      <img src="{{$whiteSpace}}"/ style="width:32vh;height:15vh;margin-top:8px;margin-bottom:4px">
       @endif
 
       <p class="text-11" style="font-weight:bold"> {!! $mealOrder->html_title !!}
@@ -96,7 +99,7 @@ margin-left:-30px !important;
       @endif
 
     @endforeach
-
+</div>
 
 
 </html>
