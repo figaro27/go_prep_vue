@@ -76,7 +76,7 @@ margin-left:-30px !important;
 
         @endif
         
-<p class="text-9">Ingrdients: {{ $mealOrder['ingredientList'] }}</p>
+<p class="text-9">Ingredients: {{ $mealOrder['ingredientList'] }}</p>
 
 
 <p class="text-9">Allergens: {{ $mealOrder['allergyList'] }}</p>
