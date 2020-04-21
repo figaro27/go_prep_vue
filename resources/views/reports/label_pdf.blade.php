@@ -75,6 +75,11 @@ margin-left:-30px !important;
         <p class="text-13" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
 
         @endif
+        
+<p class="text-9">Ingrdients: {{ $mealOrder['ingredientList'] }}</p>
+
+
+<p class="text-9">Allergens: {{ $mealOrder['allergyList'] }}</p>
 
   </center>
         </div>
