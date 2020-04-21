@@ -571,7 +571,7 @@ class Bag
                 foreach ($item['components'] as $componentId => $choices) {
                     foreach ($choices as $optionId) {
                         $option = MealComponentOption::find($optionId);
-                        $price += $option->price;
+                        $price += $option ? $option->price : 0;
                     }
                 }
             }
