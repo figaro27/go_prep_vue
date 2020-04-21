@@ -957,6 +957,11 @@ export default {
   beforeDestroy() {
     this.showActiveFilters();
   },
+  updated() {
+    if (this.$route.params.checkoutData) {
+      this.pickup = this.$route.params.checkoutData.pickup;
+    }
+  },
   methods: {
     ...mapActions([
       "refreshSubscriptions",

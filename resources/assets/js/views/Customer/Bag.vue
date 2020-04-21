@@ -590,7 +590,7 @@ export default {
   },
   methods: {
     updateData(newData) {
-      if (this.forceValue) {
+      if (this.forceValue || !this.$route.params.storeView) {
         this.checkoutData = newData;
         if (newData.hasOwnProperty("customer")) {
           this.customer = newData.customer;

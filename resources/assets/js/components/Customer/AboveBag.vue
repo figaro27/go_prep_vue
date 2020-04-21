@@ -73,6 +73,9 @@ export default {
           name: "customer-menu",
           query: {
             r: this.$route.query.r
+          },
+          params: {
+            checkoutData: this.checkoutData
           }
         };
       } else if (this.$route.params.preview) return "/store/menu/preview";
