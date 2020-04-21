@@ -438,7 +438,7 @@
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_allergens"
+            <b-form-checkbox v-model="reportSettings.lab_allergies"
               >Allergens</b-form-checkbox
             >
           </p>
