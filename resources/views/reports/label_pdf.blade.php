@@ -75,10 +75,10 @@ margin-left:-30px !important;
         <p class="text-13" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
 
         @endif
-@if ($reportSettings->lab_ingredients && strlen($mealOrder['ingredientList'] > 0))   
+@if ($reportSettings->lab_ingredients && strlen($mealOrder['ingredientList']) > 0)
 <p class="text-9">Ingredients: {{ $mealOrder['ingredientList'] }}</p>
 @endif
-@if ($reportSettings->lab_allergies && strlen($mealOrder['allergyList']) > 0))
+@if ($reportSettings->lab_allergies && strlen($mealOrder['allergyList']) > 0)
 <p class="text-9">Allergens: {{ $mealOrder['allergyList'] }}</p>
 @endif
   </center>
