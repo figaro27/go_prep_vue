@@ -61,14 +61,14 @@ margin-left:-30px !important;
         </p>
         @endif
              @if ($reportSettings->lab_website)
-        <p class="text-9">
+        <p class="text-9"><b>
         {!! $mealOrder->store->settings->website !!}
-        </p>
+        </b></p>
         @endif
         @if ($reportSettings->lab_social)
-        <p class="text-9">
+        <p class="text-9"><b>
         {!! $mealOrder->store->details->social !!}
-        </p>
+        </b></p>
         @endif
  @if ($reportSettings->lab_customer)
 
@@ -76,10 +76,10 @@ margin-left:-30px !important;
 
         @endif
 @if ($reportSettings->lab_ingredients && strlen($mealOrder['ingredientList']) > 0)
-<p class="text-9">Ingredients: {{ $mealOrder['ingredientList'] }}</p>
+<p class="text-9"><b>Ingredients:</b> {{ $mealOrder['ingredientList'] }}</p>
 @endif
 @if ($reportSettings->lab_allergies && strlen($mealOrder['allergyList']) > 0)
-<p class="text-9">Allergens: {{ $mealOrder['allergyList'] }}</p>
+<p class="text-9"><b>Allergens:</b> {{ $mealOrder['allergyList'] }}</p>
 @endif
   </center>
         </div>
