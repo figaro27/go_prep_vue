@@ -544,7 +544,7 @@ const mutations = {
             let option = _.find(component.options, {
               id: parseInt(optionId)
             });
-            price += option.price;
+            price += option ? option.price : 0;
           });
         } else {
           if (component.price) {
@@ -554,7 +554,7 @@ const mutations = {
             let option = _.find(component.options, {
               id: parseInt(optionId)
             });
-            price += option.price;
+            price += option ? option.price : 0;
 
             _.forEach(choices, choice => {
               if (choice.price) {
