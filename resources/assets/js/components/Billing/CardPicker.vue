@@ -183,6 +183,7 @@ export default {
           } else {
             this.$toastr.e("Failed to save payment method");
           }
+          this.addingCard = false;
           throw new Error("Failed to save payment method", data);
         }
 
@@ -234,7 +235,7 @@ export default {
           } else {
             error = resp;
           }
-
+          this.addingCard = false;
           if (!_.isEmpty(resp.response.data.error)) {
             error = resp.response.data.error;
           }
