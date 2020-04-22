@@ -1349,6 +1349,10 @@ export default {
       this.refreshTable();
     },
     charge() {
+      if (this.chargeAmount === null || this.chargeAmount < 0.5) {
+        this.$toastr.w("Please enter an amount in the box greater than .50");
+        return;
+      }
       axios
         .post("/api/me/charge", {
           orderId: this.orderId,
@@ -1386,7 +1390,12 @@ export default {
             this.viewOrderModal = false;
             this.$toastr.s(
               "Successfully refunded " +
-                format.money(this.refundAmount, this.storeSettings.currency)
+                format.money(
+                  this.refundAmount == null
+                    ? this.order.amount
+                    : this.refundAmount,
+                  this.storeSettings.currency
+                )
             );
             this.refundAmount = 0;
             this.refreshResource("orders");
