@@ -480,6 +480,9 @@ class SubscriptionController extends UserController
         $sub->referralReduction = $referralReduction;
         $sub->promotionReduction = $promotionReduction;
         $sub->pointsReduction = $pointsReduction;
+        $sub->customer_updated = Carbon::now(
+            $this->store->settings->timezone
+        )->toDateTimeString();
         $sub->save();
 
         // Update future orders IF cutoff hasn't passed yet
