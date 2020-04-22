@@ -1357,9 +1357,12 @@ export default {
         })
         .then(response => {
           this.viewOrderModal = false;
+          this.$toastr.s(
+            "Successfully charged " +
+              format.money(this.chargeAmount, this.storeSettings.currency)
+          );
           this.chargeAmount = 0;
           tthis.refreshResource("orders");
-          this.$toastr.s(response.data);
           this.applyToBalanceCharge = false;
           this.applyToBalanceRefund = false;
         });
@@ -1381,9 +1384,12 @@ export default {
             );
           } else {
             this.viewOrderModal = false;
+            this.$toastr.s(
+              "Successfully refunded " +
+                format.money(this.refundAmount, this.storeSettings.currency)
+            );
             this.refundAmount = 0;
             this.refreshResource("orders");
-            this.$toastr.s(response.data);
             this.applyToBalanceCharge = false;
             this.applyToBalanceRefund = false;
           }
@@ -1397,7 +1403,6 @@ export default {
         .post("/api/me/settleBalance", { orderId: this.orderId })
         .then(response => {
           this.$toastr.s("Balance has been settled to 0");
-          this.viewOrderModal = false;
           this.refreshResource("orders");
           this.applyToBalanceCharge = false;
           this.applyToBalanceRefund = false;
@@ -1409,7 +1414,6 @@ export default {
           orderId: this.orderId
         })
         .then(response => {
-          this.viewOrderModal = false;
           this.refreshResource("orders");
           this.$toastr.s(response.data);
         });
