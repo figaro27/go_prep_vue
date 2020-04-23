@@ -1194,29 +1194,59 @@ export default {
         });
     },
     printLabel(order_id, format, page = 1) {
+      let params = { page };
+
+      params.width = this.reportSettings.lab_width;
+      params.height = this.reportSettings.lab_height;
+
       axios
         .get(`/api/me/print/labels/${format}`, {
-          params: { order_id }
+          params
         })
         .then(response => {
           const { data } = response;
 
-          const size = new PrintSize(
-            this.reportSettings.lab_width,
-            this.reportSettings.lab_height
-          );
-          const margins = {
-            top: this.reportSettings.lab_margin_top,
-            right: this.reportSettings.lab_margin_right,
-            bottom: this.reportSettings.lab_margin_bottom,
-            left: this.reportSettings.lab_margin_left
-          };
-          const job = new PrintJob(data.url, size, margins);
+          if (format === "b64") {
+            const size = new PrintSize(
+              this.reportSettings.lab_width,
+              this.reportSettings.lab_height
+            );
+            const margins = {
+              top: this.reportSettings.lab_margin_top,
+              right: this.reportSettings.lab_margin_right,
+              bottom: this.reportSettings.lab_margin_bottom,
+              left: this.reportSettings.lab_margin_left
+            };
+            const job = new PrintJob(data.url, size, margins);
 
-          this.printerAddJob(job);
+            this.printerAddJob(job);
+          } else if (!_.isEmpty(data.url)) {
+            let win = window.open(data.url);
+            if (win) {
+              win.addEventListener(
+                "load",
+                () => {
+                  win.print();
+
+                  if (data.next_page && data.next_page !== page) {
+                    this.print(report, format, data.next_page);
+                  }
+                },
+                false
+              );
+            } else {
+              this.$toastr.e(
+                "Please add a popup exception to print this report.",
+                "Failed to display PDF."
+              );
+            }
+          }
         })
         .catch(err => {
-          this.$toastr.e("Failed to print report.");
+          this.$toastr.e(
+            "Please disable any popup blocker in our browser.",
+            "Failed to print report."
+          );
         })
         .finally(() => {
           this.loading = false;
