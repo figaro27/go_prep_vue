@@ -457,18 +457,22 @@
                 >Print Packing Slip</b-btn
               >
             </div>
-            <div>
+            <div class="d-flex">
               <b-btn
                 class="btn mb-2 d-inline mr-1 royalBlueBG"
-                @click="printLabel(order.id)"
+                @click="printLabel(order.id, 'b64')"
                 >Print Label</b-btn
               >
+              <b-btn
+                class="btn mb-2 d-inline btn-secondary"
+                @click="printLabel(order.id, 'pdf')"
+                >Preview Label</b-btn
+              >
             </div>
-
             <div>
               <b-btn
                 class="btn mb-2 white-text d-inline"
-                variant="secondary"
+                variant="success"
                 @click="emailCustomerReceipt(order.id)"
                 >Email Receipt</b-btn
               >
@@ -1189,9 +1193,9 @@ export default {
           this.loading = false;
         });
     },
-    printLabel(order_id, format = "b64", page = 1) {
+    printLabel(order_id, format, page = 1) {
       axios
-        .get(`/api/me/print/labels/b64`, {
+        .get(`/api/me/print/labels/${format}`, {
           params: { order_id }
         })
         .then(response => {
