@@ -281,6 +281,17 @@ class CheckoutController extends StoreController
 
                 $transactionId = $billing->charge($charge);
                 $charge->id = $transactionId;
+            } elseif ($gateway === Constants::GATEWAY_CASH) {
+                // Charge must be at least $1
+                if (round($afterDiscountBeforeFees * $application_fee) >= 1) {
+                    $charge = \Stripe\Charge::create([
+                        'amount' => round(
+                            $afterDiscountBeforeFees * $application_fee
+                        ),
+                        'currency' => $storeSettings->currency,
+                        'source' => $storeSettings->stripe_id
+                    ]);
+                }
             }
 
             $total = $request->get('grandTotal');
