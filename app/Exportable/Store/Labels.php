@@ -127,6 +127,10 @@ class Labels
         Log::info('Starting label print');
 
         $mealOrders = $this->exportData();
+
+        // Ordering labels by meal instead of order. Possibly make this a user option.
+        $mealOrders = $mealOrders->groupBy('meal_id')->flatten();
+
         Log::info('Found ' . count($mealOrders) . ' orders');
 
         if (!count($mealOrders)) {
