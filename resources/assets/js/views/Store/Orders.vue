@@ -460,12 +460,12 @@
             <div class="d-flex">
               <b-btn
                 class="btn mb-2 d-inline mr-1 royalBlueBG"
-                @click="printLabel(order.id, 'b64')"
+                @click="printLabel(order.id, 'labels', 'b64')"
                 >Print Label</b-btn
               >
               <b-btn
                 class="btn mb-2 d-inline btn-secondary"
-                @click="printLabel(order.id, 'pdf')"
+                @click="printLabel(order.id, 'labels', 'pdf')"
                 >Preview Label</b-btn
               >
             </div>
@@ -1193,7 +1193,7 @@ export default {
           this.loading = false;
         });
     },
-    printLabel(order_id, format, page = 1) {
+    printLabel(order_id, report, format, page = 1) {
       let params = { page };
 
       params.width = this.reportSettings.lab_width;
@@ -1201,7 +1201,7 @@ export default {
       params.order_id = order_id;
 
       axios
-        .get(`/api/me/print/labels/${format}`, {
+        .get(`/api/me/print/${report}/${format}`, {
           params
         })
         .then(response => {
