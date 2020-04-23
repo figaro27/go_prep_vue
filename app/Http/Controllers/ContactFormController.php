@@ -54,7 +54,11 @@ class ContactFormController extends Controller
         $email = auth('api')->user()->email;
         $id = auth('api')->user()->id;
         $lastViewedStoreId = auth('api')->user()->last_viewed_store_id;
+        $addedByStoreId = auth('api')->user()->added_by_store_id;
         $store = Store::where('id', $lastViewedStoreId)->first();
+        if ($store === null) {
+            $store = Store::where('id', $addedByStoreId)->first();
+        }
         $lastViewedStore = $store->details->name;
         $storeEmail = $store->user->email;
         $firstname = UserDetail::where('user_id', $id)

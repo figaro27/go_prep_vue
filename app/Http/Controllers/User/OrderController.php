@@ -73,8 +73,8 @@ class OrderController extends UserController
             'visible_items'
         ]);
 
-        if (!$this->store->modules->multipleDeliveryDays) {
-            $order->makeHIdden(['delivery_dates_array', 'isMultipleDelivery']);
+        if ($this->store && !$this->store->modules->multipleDeliveryDays) {
+            $order->makeHidden(['delivery_dates_array', 'isMultipleDelivery']);
         }
 
         return $order;
