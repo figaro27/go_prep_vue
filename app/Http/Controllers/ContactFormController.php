@@ -86,6 +86,7 @@ class ContactFormController extends Controller
             $message
                 ->to($data['storeEmail'])
                 ->bcc('mike@goprep.com')
+                ->bcc('danny@goprep.com')
                 ->subject('GoPrep - Contact Form Inquiry from Customer');
         });
     }
