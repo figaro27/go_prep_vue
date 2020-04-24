@@ -23,7 +23,7 @@ trait Exportable
     protected $page = 1;
 
     /** @var int $perPage */
-    protected $perPage = 25;
+    protected $perPage = 15;
 
     abstract public function exportData($type = null);
     abstract public function exportPdfView();
