@@ -428,7 +428,7 @@ $currency = $order->store->settings->currency_symbol
                         Promotional Discount<br>
                         @endif
                         @if ($pointsReduction > 0)
-                        Points Reduction<br>
+                        Points Discount<br>
                         @endif
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold;">Total</span><br>
