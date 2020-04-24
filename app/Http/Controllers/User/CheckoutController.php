@@ -398,8 +398,11 @@ class CheckoutController extends UserController
             $orderId = $order->id;
 
             if ($gateway === Constants::GATEWAY_CASH) {
-                // Charge must be at least $1
-                if (round($afterDiscountBeforeFees * $application_fee) >= 1) {
+                // Charge must be at least .5
+                if (
+                    round($afterDiscountBeforeFees * $application_fee) / 100 >=
+                    0.5
+                ) {
                     $charge = \Stripe\Charge::create([
                         'amount' => round(
                             $afterDiscountBeforeFees * $application_fee
@@ -409,7 +412,9 @@ class CheckoutController extends UserController
                         'description' =>
                             $store->storeDetail->name .
                             ' application fee for cash order #' .
-                            $orderId
+                            $orderId .
+                            ' - ' .
+                            $order->order_number
                     ]);
                 }
             }
