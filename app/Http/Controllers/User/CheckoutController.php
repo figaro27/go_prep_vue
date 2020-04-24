@@ -332,6 +332,17 @@ class CheckoutController extends UserController
 
                 $transactionId = $billing->charge($charge);
                 $charge->id = $transactionId;
+            } elseif ($gateway === Constants::GATEWAY_CASH) {
+                // Charge must be at least $1
+                if (round($afterDiscountBeforeFees * $application_fee) >= 1) {
+                    $charge = \Stripe\Charge::create([
+                        'amount' => round(
+                            $afterDiscountBeforeFees * $application_fee
+                        ),
+                        'currency' => $storeSettings->currency,
+                        'source' => $storeSettings->stripe_id
+                    ]);
+                }
             }
 
             $balance = null;
@@ -396,23 +407,6 @@ class CheckoutController extends UserController
             $order->save();
 
             $orderId = $order->id;
-
-            if ($gateway === Constants::GATEWAY_CASH) {
-                // Charge must be at least $1
-                if (round($afterDiscountBeforeFees * $application_fee) >= 1) {
-                    $charge = \Stripe\Charge::create([
-                        'amount' => round(
-                            $afterDiscountBeforeFees * $application_fee
-                        ),
-                        'currency' => $storeSettings->currency,
-                        'source' => $storeSettings->stripe_id,
-                        'description' =>
-                            $store->storeDetail->name .
-                            ' application fee for cash order #' .
-                            $orderId
-                    ]);
-                }
-            }
 
             if ($total > 0.5) {
                 $order_transaction = new OrderTransaction();
