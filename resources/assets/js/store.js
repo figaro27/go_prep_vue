@@ -1967,7 +1967,7 @@ const actions = {
     const res = await axios.get("/api/me/deliveryFeeZipCodes");
     const { data } = await res;
     if (_.isObject(data)) {
-      commit("storeDeliveryFeeZipCodes", { delivery_fee_zip_codes: data });
+      commit("storeDeliveryFeeZipCodes", { deliveryFeeZipCodes: data });
     } else {
       throw new Error("Failed to retrieve delivery fee zip codes");
     }

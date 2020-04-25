@@ -14,7 +14,7 @@ class DeliveryFeeZipCodeController extends StoreController
      */
     public function index()
     {
-        return $this->store->deliveryFeeZipCodes();
+        return $this->store->deliveryFeeZipCodes;
     }
 
     /**
