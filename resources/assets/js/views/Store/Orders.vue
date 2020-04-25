@@ -4,7 +4,7 @@
       <b-alert variant="info" show>
         <h5>New Feature</h5>
         <p>
-          You can now set different delivery fees based on your customers' zip
+          You can now set different delivery fees based on your customer's zip
           codes. Choose <b>"Flat By Zip"</b> under <b>Delivery Fee Type</b> in
           <b>Settings</b> and then click the button to set your rates.
         </p>
