@@ -383,7 +383,7 @@
                       <span class="mr-1">Delivery Fee Type</span>
                       <img
                         v-b-popover.hover="
-                          'Either choose to apply a flat fee no matter how far the customer is, or a fee based on the distance of the customer in miles. If you choose mileage, you set the base amount first and then the amount per mile. For example - Base amount - $3.00 and then .75 cents per mile. The base amount guarantees you at least receive that amount before the per mile fee gets added.'
+                          'Either choose to apply a flat fee no matter how far the customer is, a flat fee based on the zip code, or a fee based on the distance of the customer in miles. If you choose mileage, you set the base amount first and then the amount per mile. For example - Base amount - $3.00 and then .75 cents per mile. The base amount guarantees you at least receive that amount before the per mile fee gets added.'
                         "
                         title="Delivery Fee Type"
                         src="/images/store/popover.png"
