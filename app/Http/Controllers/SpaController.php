@@ -90,7 +90,8 @@ class SpaController extends Controller
                         'meals.sizes',
                         'meals.components',
                         'meals.addons',
-                        'meals.macros'
+                        'meals.macros',
+                        'deliveryFeeZipCodes'
                     ])->find(STORE_ID)
                     : null;
 
@@ -122,7 +123,8 @@ class SpaController extends Controller
                         'lineItems',
                         'modules',
                         'moduleSettings',
-                        'reportSettings'
+                        'reportSettings',
+                        'deliveryFeeZipCodes'
                     ])
                     ->first();
 
@@ -164,7 +166,8 @@ class SpaController extends Controller
                         'meals.sizes',
                         'meals.components',
                         'meals.addons',
-                        'meals.macros'
+                        'meals.macros',
+                        'deliveryFeeZipCodes'
                     ])->find(STORE_ID)
                     : $user->last_viewed_store;
 
@@ -273,7 +276,8 @@ class SpaController extends Controller
                     'lineItems',
                     'modules',
                     'moduleSettings',
-                    'reportSettings'
+                    'reportSettings',
+                    'deliveryFeeZipCodes'
                 ])
                 ->first();
 
@@ -301,7 +305,8 @@ class SpaController extends Controller
                     'promotions',
                     'pickupLocations',
                     'lineItems',
-                    'deliveryDays'
+                    'deliveryDays',
+                    'deliveryFeeZipCodes'
                 ])->find(STORE_ID)
                 : $last_viewed_store;
 
@@ -1157,7 +1162,8 @@ class SpaController extends Controller
                 'lineItems',
                 'modules',
                 'moduleSettings',
-                'reportSettings'
+                'reportSettings',
+                'deliveryFeeZipCodes'
             ])
                 ->without([])
                 ->find(STORE_ID)

@@ -81,6 +81,37 @@
                     >Confirm</b-btn
                   >
                 </b-modal>
+
+                <b-modal
+                  size="md"
+                  v-model="deliveryFeeZipCodeModal"
+                  title="Delivery Fee By Zip Code"
+                  @ok="updateDeliveryFeeZipCodes"
+                  @cancel="deliveryFeeZipCodes = []"
+                >
+                  <li
+                    v-for="(dfzc, i) in deliveryFeeZipCodes"
+                    class="mb-1 mt-2"
+                  >
+                    <div class="row d-flex" style="justify-content:center;">
+                      <div class="col-md-3 d-flex">
+                        <span class="strong pt-1">{{ dfzc.zip_code }}</span>
+                      </div>
+                      <div class="col-md-3 d-flex">
+                        <span class="d-inline pt-2 pr-1">{{
+                          storeSettings.currency_symbol
+                        }}</span
+                        ><b-form-input
+                          v-model="dfzc.delivery_fee"
+                          type="number"
+                          class="d-inline"
+                        ></b-form-input>
+                      </div>
+                    </div>
+                    <hr />
+                  </li>
+                </b-modal>
+
                 <b-modal
                   size="xl"
                   ref="deliveryDaysModal"
@@ -361,6 +392,9 @@
                     </p>
                     <b-form-radio-group v-model="storeSettings.deliveryFeeType">
                       <b-form-radio name="flat" value="flat">Flat</b-form-radio>
+                      <b-form-radio name="zip" value="zip"
+                        >Flat By Zip</b-form-radio
+                      >
                       <b-form-radio name="mileage" value="mileage"
                         >Mileage</b-form-radio
                       >
@@ -377,6 +411,16 @@
                       placeholder="Delivery Fee"
                       required
                     ></b-form-input>
+                    <b-btn
+                      variant="primary"
+                      class="mt-3"
+                      v-if="
+                        storeSettings.applyDeliveryFee &&
+                          storeSettings.deliveryFeeType === 'zip'
+                      "
+                      @click="setDeliveryFeeZipCodes()"
+                      >Set Rates</b-btn
+                    >
                     <div class="row">
                       <div class="col-md-6">
                         <b-form-input
@@ -1140,6 +1184,8 @@ export default {
   },
   data() {
     return {
+      deliveryFeeZipCodeModal: false,
+      deliveryFeeZipCodes: [],
       logoUpdated: false,
       acceptedTOA: 0,
       acceptedTOAcheck: 0,
@@ -1177,7 +1223,8 @@ export default {
       storeCategories: "storeCategories",
       storeSubscriptions: "storeSubscriptions",
       storeModules: "storeModules",
-      storeModuleSettings: "storeModuleSettings"
+      storeModuleSettings: "storeModuleSettings",
+      storeDeliveryFeesZipCodes: "storeDeliveryFeeZipCodes"
     }),
     storeDetails() {
       return this.storeDetail;
@@ -1583,6 +1630,40 @@ export default {
     },
     setSalesTax(rate) {
       this.salesTax = rate * 100;
+    },
+    setDeliveryFeeZipCodes() {
+      this.storeDeliveryFeesZipCodes.forEach(dfzc => {
+        this.deliveryFeeZipCodes.push({
+          zip_code: dfzc.zip_code,
+          delivery_fee: dfzc.delivery_fee
+        });
+      });
+
+      this.storeSettings.delivery_distance_zipcodes.forEach(zipCode => {
+        let contains = false;
+        this.deliveryFeeZipCodes.forEach(dfzc => {
+          if (dfzc.zip_code === zipCode) {
+            contains = true;
+          }
+        });
+        if (!contains) {
+          this.deliveryFeeZipCodes.push({
+            zip_code: zipCode,
+            delivery_fee: this.storeSettings.deliveryFee
+          });
+        }
+      });
+
+      this.deliveryFeeZipCodeModal = true;
+    },
+    updateDeliveryFeeZipCodes() {
+      axios
+        .post("/api/me/updateDeliveryFeeZipCodes", this.deliveryFeeZipCodes)
+        .then(resp => {
+          this.$toastr.s("Your settings have been saved.", "Success");
+        });
+      this.deliveryFeeZipCodeModal = false;
+      this.deliveryFeeZipCodes = [];
     }
   }
 };

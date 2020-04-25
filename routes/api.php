@@ -501,6 +501,16 @@ foreach (
                                 'subscription_bag/{subscription_id}',
                                 'SubscriptionController@subscriptionBag'
                             );
+
+                            Route::resource(
+                                'deliveryFeeZipCodes',
+                                'DeliveryFeeZipCodeController'
+                            );
+
+                            Route::post(
+                                'updateDeliveryFeeZipCodes',
+                                'DeliveryFeeZipCodeController@updateDeliveryFeeZipCodes'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {
