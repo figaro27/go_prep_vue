@@ -311,7 +311,7 @@ class MealOrder extends Pivot
                         isset($component->option->title)
                     ) {
                         $title .=
-                            '<li class="plain" style="font-size:14px">' .
+                            '<li class="plain" style="font-size:16px">' .
                             $component->option->title .
                             '</li>';
                     }
@@ -319,7 +319,7 @@ class MealOrder extends Pivot
             }
             if ($hasAddons) {
                 foreach ($this->addons as $addon) {
-                    $title .= '<li class="plus" style="font-size:14px;">';
+                    $title .= '<li class="plus" style="font-size:16px;">';
                     if (isset($addon->addon->title) && $addon->addon != null) {
                         $title .= $addon->addon->title;
                     }

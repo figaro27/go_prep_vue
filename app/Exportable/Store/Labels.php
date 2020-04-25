@@ -28,7 +28,7 @@ class Labels
         $this->params = collect($params);
         $this->orientation = 'portrait';
         $this->page = $params->get('page', 1);
-        $this->perPage = 10;
+        $this->perPage = 10000;
         $this->orderId = $params->get('order_id');
     }
 
