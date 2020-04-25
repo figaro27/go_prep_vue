@@ -22,6 +22,11 @@ text-indent: 1% !important;
 .plain {
 position:relative !important;
 margin-left:-30px !important;
+font-size:11px !important;
+}
+
+.plus {
+font-size:11px !important;
 }
 </style>
 </head>
@@ -109,3 +114,4 @@ margin-left:-30px !important;
 
 
 </html>
+
