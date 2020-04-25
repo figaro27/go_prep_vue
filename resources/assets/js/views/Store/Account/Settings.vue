@@ -1665,6 +1665,7 @@ export default {
           this.refreshStoreDeliveryFeeZipCodes();
           this.$toastr.s("Your settings have been saved.", "Success");
         });
+      this.updateStoreSettings();
       this.deliveryFeeZipCodeModal = false;
       this.deliveryFeeZipCodes = [];
     }
