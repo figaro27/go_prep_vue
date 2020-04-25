@@ -1353,7 +1353,8 @@ export default {
       "refreshCategories",
       "refreshStoreSettings",
       "refreshStoreModules",
-      "refreshStoreModuleSettings"
+      "refreshStoreModuleSettings",
+      "refreshStoreDeliveryFeeZipCodes"
     ]),
     updateStoreSettings() {
       this.spliceCharacters();
@@ -1661,6 +1662,7 @@ export default {
       axios
         .post("/api/me/updateDeliveryFeeZipCodes", this.deliveryFeeZipCodes)
         .then(resp => {
+          this.refreshStoreDeliveryFeeZipCodes();
           this.$toastr.s("Your settings have been saved.", "Success");
         });
       this.deliveryFeeZipCodeModal = false;
