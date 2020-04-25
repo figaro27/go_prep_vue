@@ -1663,7 +1663,6 @@ export default {
         .post("/api/me/updateDeliveryFeeZipCodes", this.deliveryFeeZipCodes)
         .then(resp => {
           this.refreshStoreDeliveryFeeZipCodes();
-          this.$toastr.s("Your settings have been saved.", "Success");
         });
       this.updateStoreSettings();
       this.deliveryFeeZipCodeModal = false;
