@@ -116,6 +116,9 @@ const state = {
     module_settings: {
       data: {}
     },
+    delivery_fee_zip_codes: {
+      data: {}
+    },
     report_settings: {
       data: {}
     },
@@ -792,6 +795,10 @@ const mutations = {
     state.store.module_settings.data = moduleSettings;
   },
 
+  storeDeliveryFeeZipCodes(state, { deliveryFeeZipCodes }) {
+    state.store.delivery_fee_zip_codes.data = deliveryFeeZipCodes;
+  },
+
   storeReportSettings(state, { reportSettings }) {
     state.store.report_settings.data = reportSettings;
   },
@@ -1373,6 +1380,16 @@ const actions = {
 
     try {
       if (
+        !_.isEmpty(data.store.delivery_fee_zip_codes) &&
+        _.isObject(data.store.delivery_fee_zip_codes)
+      ) {
+        let deliveryFeeZipCodes = data.store.delivery_fee_zip_codes;
+        commit("storeDeliveryFeeZipCodes", { deliveryFeeZipCodes });
+      }
+    } catch (e) {}
+
+    try {
+      if (
         !_.isEmpty(data.store.referrals) &&
         _.isObject(data.store.referrals)
       ) {
@@ -1940,9 +1957,19 @@ const actions = {
     const { data } = await res;
 
     if (_.isObject(data)) {
-      commit("storeModuleSettings", { modules: data });
+      commit("storeModuleSettings", { module_settings: data });
     } else {
       throw new Error("Failed to retrieve modules");
+    }
+  },
+
+  async refreshStoreDeliveryFeeZipCodes({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/deliveryFeeZipCodes");
+    const { data } = await res;
+    if (_.isObject(data)) {
+      commit("storeDeliveryFeeZipCodes", { delivery_fee_zip_codes: data });
+    } else {
+      throw new Error("Failed to retrieve delivery fee zip codes");
     }
   },
 
@@ -2986,6 +3013,13 @@ const getters = {
       return {};
     }
   },
+  viewedStoreDeliveryFeeZipCodes: state => {
+    try {
+      return state.viewed_store.delivery_fee_zip_codes || {};
+    } catch (e) {
+      return {};
+    }
+  },
   viewedStoreReportSettings: state => {
     try {
       return state.viewed_store.report_settings || {};
@@ -3413,6 +3447,14 @@ const getters = {
   storeModuleSettings: state => {
     try {
       return state.store.module_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+
+  storeDeliveryFeeZipCodes: state => {
+    try {
+      return state.store.delivery_fee_zip_codes.data || {};
     } catch (e) {
       return {};
     }

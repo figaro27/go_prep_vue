@@ -1315,7 +1315,8 @@ export default {
       bagDeliverySettings: "bagDeliverySettings",
       deliveryDays: "viewedStoreDeliveryDays",
       referrals: "viewedStoreReferrals",
-      promotions: "viewedStorePromotions"
+      promotions: "viewedStorePromotions",
+      deliveryFeeZipCodes: "viewedStoreDeliveryFeeZipCodes"
     }),
     prefix() {
       if (this.loggedIn) {
@@ -1892,6 +1893,15 @@ use next_delivery_dates
             let fee = 0;
             if (deliveryFeeType === "flat") {
               fee = deliveryFee;
+            } else if (deliveryFeeType === "zip") {
+              if (!this.loggedIn) {
+                fee = deliveryFee;
+              } else {
+                let zip = this.deliveryFeeZipCodes.find(dfzc => {
+                  return dfzc.zip_code === this.user.user_detail.zip;
+                });
+                fee = zip ? zip.delivery_fee : deliveryFee;
+              }
             } else if (deliveryFeeType === "mileage") {
               let distance = parseFloat(this.store.distance);
               fee =
