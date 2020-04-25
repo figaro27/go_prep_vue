@@ -1632,13 +1632,14 @@ export default {
       this.salesTax = rate * 100;
     },
     setDeliveryFeeZipCodes() {
-      this.storeDeliveryFeesZipCodes.forEach(dfzc => {
-        this.deliveryFeeZipCodes.push({
-          zip_code: dfzc.zip_code,
-          delivery_fee: dfzc.delivery_fee
+      if (_.isArray(this.storeDeliveryFeesZipCodes)) {
+        this.storeDeliveryFeesZipCodes.forEach(dfzc => {
+          this.deliveryFeeZipCodes.push({
+            zip_code: dfzc.zip_code,
+            delivery_fee: dfzc.delivery_fee
+          });
         });
-      });
-
+      }
       this.storeSettings.delivery_distance_zipcodes.forEach(zipCode => {
         let contains = false;
         this.deliveryFeeZipCodes.forEach(dfzc => {
