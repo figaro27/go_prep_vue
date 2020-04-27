@@ -187,7 +187,8 @@ export default {
   data() {
     return {
       navBgColor: "",
-      bgColor: ""
+      bgColor: "",
+      pickup: null
     };
   },
   computed: {
