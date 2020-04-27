@@ -544,9 +544,11 @@ const mutations = {
 
         if (!item.meal_package) {
           _.forEach(choices, optionId => {
-            let option = _.find(component.options, {
-              id: parseInt(optionId)
-            });
+            let option = component
+              ? _.find(component.options, {
+                  id: parseInt(optionId)
+                })
+              : null;
             price += option ? option.price : 0;
           });
         } else {
