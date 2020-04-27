@@ -1098,15 +1098,13 @@ class Store extends Model
                 break;
         }
 
-        if ($email && !$recipient) {
+        if ($email && !isset($recipient)) {
             try {
                 Mail::to($this->user)->send($email);
                 return true;
             } catch (\Exception $e) {
             }
-        }
-
-        if ($email && $recipient) {
+        } elseif ($email && isset($recipient)) {
             try {
                 Mail::to($recipient)->send($email);
                 return true;
