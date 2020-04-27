@@ -1171,7 +1171,10 @@ const triggerLazy = (
     bypass_meal
   )
     .then(data => {
-      if (data.items && data.items.length > 0) {
+      if (
+        (data.items && data.items.length > 0) ||
+        data.category_data !== null
+      ) {
         let items = state.viewed_store.items;
         let meals = state.viewed_store.meals;
         let packages = state.viewed_store.packages;
