@@ -1094,12 +1094,21 @@ class Store extends Model
 
             case 'new_gift_card':
                 $email = new NewGiftCard($data);
+                $recipient = $data['emailRecipient'];
                 break;
         }
 
-        if ($email) {
+        if ($email && !$recipient) {
             try {
                 Mail::to($this->user)->send($email);
+                return true;
+            } catch (\Exception $e) {
+            }
+        }
+
+        if ($email && $recipient) {
+            try {
+                Mail::to($recipient)->send($email);
                 return true;
             } catch (\Exception $e) {
             }

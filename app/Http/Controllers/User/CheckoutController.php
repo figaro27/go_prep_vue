@@ -464,17 +464,11 @@ class CheckoutController extends UserController
                         $purchasedGiftCard->save();
 
                         if (isset($item['emailRecipient'])) {
-                            Mail::to($item['emailRecipient'])->send(
-                                new NewGiftCard([
-                                    'order' => $order ?? null,
-                                    'purchasedGiftCard' => $purchasedGiftCard
-                                ])
-                            );
-
-                            // $store->sendNotification('new_gift_card', [
-                            //     'order' => $order ?? null,
-                            //     'purchasedGiftCard' => $purchasedGiftCard
-                            // ]);
+                            $store->sendNotification('new_gift_card', [
+                                'order' => $order ?? null,
+                                'purchasedGiftCard' => $purchasedGiftCard,
+                                'emailRecipient' => $item['emailRecipient']
+                            ]);
                         }
                     }
                 } else {
