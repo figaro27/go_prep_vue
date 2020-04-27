@@ -1716,7 +1716,8 @@ export default {
       // If no cutoff, add today's date
       if (
         this.storeSettings.cutoff_days === 0 &&
-        this.storeSettings.cutoff_hours === 0
+        this.storeSettings.cutoff_hours === 0 &&
+        !this.weeklySubscriptionValue
       ) {
         dates = this.storeSettings.next_delivery_dates;
       }
