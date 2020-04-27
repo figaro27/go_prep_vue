@@ -961,6 +961,9 @@ export default {
     if (this.$route.params.checkoutData) {
       this.pickup = this.$route.params.checkoutData.pickup;
     }
+    if (this.$parent.pickup !== null) {
+      this.pickup = this.$parent.pickup;
+    }
   },
   methods: {
     ...mapActions([
