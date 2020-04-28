@@ -557,7 +557,8 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       allTags: "tags",
-      bagDeliveryDate: "bagDeliveryDate"
+      bagDeliveryDate: "bagDeliveryDate",
+      bagPickup: "bagPickup"
     }),
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
