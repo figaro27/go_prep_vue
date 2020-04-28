@@ -1222,6 +1222,16 @@ export default {
           : null
     };
   },
+  updated() {
+    // this.creditCardId = this.card;
+
+    // this.$eventBus.$on("chooseCustomer", () => {
+    //   this.chooseCustomer();
+    // });
+    if (this.bagPickupSet) {
+      this.pickup = this.bagPickup;
+    }
+  },
   props: {
     order: null,
     orderNotes: null,
@@ -1323,7 +1333,9 @@ export default {
       deliveryDays: "viewedStoreDeliveryDays",
       referrals: "viewedStoreReferrals",
       promotions: "viewedStorePromotions",
-      deliveryFeeZipCodes: "viewedStoreDeliveryFeeZipCodes"
+      deliveryFeeZipCodes: "viewedStoreDeliveryFeeZipCodes",
+      bagPickup: "bagPickup",
+      bagPickupSet: "bagPickupSet"
     }),
     prefix() {
       if (this.loggedIn) {
@@ -2312,7 +2324,8 @@ use next_delivery_dates
       "setBagPurchasedGiftCard",
       "setBagReferral",
       "setBagDeliveryDate",
-      "clearBagDeliveryDate"
+      "clearBagDeliveryDate",
+      "setBagPickup"
     ]),
     preventNegative() {
       if (this.total < 0) {
@@ -2498,7 +2511,7 @@ use next_delivery_dates
       this.updateParentData();
     },
     changePickup(val) {
-      // this.setBagPickup(val);
+      this.setBagPickup(val);
       this.updateParentData();
     },
     setWeeklySubscriptionValue(v) {
@@ -2638,13 +2651,6 @@ use next_delivery_dates
       if (!_.includes(this.transferType, "delivery")) this.pickup = 1;
 
       this.selectedPickupLocation = this.pickupLocationOptions[0].value;
-    },
-    updated() {
-      this.creditCardId = this.card;
-
-      this.$eventBus.$on("chooseCustomer", () => {
-        this.chooseCustomer();
-      });
     },
     checkout() {
       this.subscriptionItemsCheck();
