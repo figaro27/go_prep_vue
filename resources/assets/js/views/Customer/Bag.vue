@@ -251,8 +251,7 @@ export default {
       _orders: "orders",
       user: "user",
       bagDeliverySettings: "bagDeliverySettings",
-      subscriptions: "subscriptions",
-      bagPickup: "bagPickup"
+      subscriptions: "subscriptions"
     }),
     fullHeight() {
       if (!this.mobile && !this.storeOwner) return "min-height:100%";
