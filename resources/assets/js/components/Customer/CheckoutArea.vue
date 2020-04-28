@@ -486,7 +486,14 @@
         </div>
       </li>
 
-      <li v-if="availablePromotionPoints && availablePromotionPoints > 0">
+      <li
+        v-if="
+          availablePromotionPoints &&
+            availablePromotionPoints > 0 &&
+            !$route.params.adjustMealPlan &&
+            !subscriptionId
+        "
+      >
         <div class="row">
           <div class="col-sm-12 pl-3">
             <b-alert variant="info" show class="pb-4"
