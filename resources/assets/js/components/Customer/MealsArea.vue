@@ -757,6 +757,11 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
+
+    // Remove first category if it has no items.
+    if (this.meals[0].meals.length === 0) {
+      this.$parent.finalCategories.shift();
+    }
   },
   watch: {
     subscriptions: function() {

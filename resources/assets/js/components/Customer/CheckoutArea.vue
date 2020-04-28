@@ -1824,6 +1824,9 @@ use next_delivery_dates
       }
       let coupon = this.coupon;
       let subtotal = this.subtotal;
+      if (coupon.fromSub) {
+        return coupon.amount;
+      }
       if (coupon.type === "flat") {
         return coupon.amount < subtotal ? coupon.amount : subtotal;
       } else if (coupon.type === "percent") {
