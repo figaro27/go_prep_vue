@@ -64,7 +64,7 @@ const state = {
     purchased_gift_card: null,
     referral: null,
     meal_plan: false,
-    pickup: false
+    pickup: null
   },
   delivery_date: null,
 
@@ -739,6 +739,9 @@ const mutations = {
   },
   clearBagDeliveryDate(state, date) {
     this.state.delivery_date = null;
+  },
+  setBagPickup({ state, dispatch }, pickup) {
+    this.state.bag.pickup = pickup;
   },
   updateBagItem(state, item) {
     if (item.guid) {
