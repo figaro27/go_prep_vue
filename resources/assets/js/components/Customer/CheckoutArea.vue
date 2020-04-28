@@ -1228,7 +1228,7 @@ export default {
     // this.$eventBus.$on("chooseCustomer", () => {
     //   this.chooseCustomer();
     // });
-    if (this.bagPickup !== null) {
+    if (this.bagPickupSet) {
       this.pickup = this.bagPickup;
     }
   },
@@ -1334,7 +1334,8 @@ export default {
       referrals: "viewedStoreReferrals",
       promotions: "viewedStorePromotions",
       deliveryFeeZipCodes: "viewedStoreDeliveryFeeZipCodes",
-      bagPickup: "bagPickup"
+      bagPickup: "bagPickup",
+      bagPickupSet: "bagPickupSet"
     }),
     prefix() {
       if (this.loggedIn) {

@@ -64,7 +64,8 @@ const state = {
     purchased_gift_card: null,
     referral: null,
     meal_plan: false,
-    pickup: null
+    pickup: null,
+    pickupSet: false
   },
   delivery_date: null,
 
@@ -742,6 +743,7 @@ const mutations = {
   },
   setBagPickup({ state, dispatch }, pickup) {
     this.state.bag.pickup = pickup;
+    this.state.bag.pickupSet = true;
   },
   updateBagItem(state, item) {
     if (item.guid) {
@@ -3163,6 +3165,9 @@ const getters = {
   },
   bagPickup(state) {
     return state.bag.pickup;
+  },
+  bagPickupSet(state) {
+    return state.bag.pickupSet;
   },
   bagDeliveryDate(state) {
     return state.delivery_date;
