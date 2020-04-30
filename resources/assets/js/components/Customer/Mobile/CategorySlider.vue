@@ -1,8 +1,8 @@
 <template>
   <div class="category-slider d-block d-md-none">
-    <div class="text-center" v-if="showCategorySlider">
+    <div class="text-center">
       <slick
-        v-if="categories.length > 3"
+        v-if="showCategorySlider"
         ref="categorySlider"
         :options="{
           arrows: false,
@@ -90,16 +90,8 @@ export default {
           }
         });
       }
-      if (
-        (finalCategories.length >= 3 && this.categories.length >= 3) ||
-        finalCategories.length < 3
-      ) {
-        return true;
-      } else {
-        return false;
-      }
 
-      // return !isRunningLazy;
+      return !isRunningLazy;
     },
     categoriesOld() {
       let sorting = {};
