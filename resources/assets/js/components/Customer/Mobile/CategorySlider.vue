@@ -24,7 +24,7 @@
 
       <div v-else class="text-center">
         <span
-          v-for="category in categories"
+          v-for="category in categories.slice(0, 3)"
           :key="category.category"
           @click.prevent="goToCategory(slugify(category.category))"
           class="d-inline-block m-3"
