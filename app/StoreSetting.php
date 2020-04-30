@@ -452,7 +452,7 @@ class StoreSetting extends Model
             $adjustedTime = (int) $this->enableNextWeekHour;
             $adjustedTime = $adjustedTime - 5;
 
-            if ($adjustedTime < 0) {
+            if ($adjustedTime <= 0) {
                 return $day;
             } else {
                 $time = date("g:i a", strtotime($adjustedTime . ':00'));
