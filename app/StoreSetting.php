@@ -452,10 +452,12 @@ class StoreSetting extends Model
             $adjustedTime = (int) $this->enableNextWeekHour;
             $adjustedTime = $adjustedTime - 5;
 
-            // $time = date("g:i a", strtotime($adjustedTime . ':00'));
-
-            // return $day . ' at ' . $time;
-            return $day;
+            if ($adjustedTime < 0) {
+                return $day;
+            } else {
+                $time = date("g:i a", strtotime($adjustedTime . ':00'));
+                return $day . ' at ' . $time;
+            }
         }
         if ($this->delivery_days && $this->delivery_days[0]) {
             switch ($this->delivery_days[0]) {
