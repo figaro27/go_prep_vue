@@ -80,6 +80,7 @@ export default {
       mealMixItems: "mealMixItems"
     }),
     showCategorySlider() {
+      return true;
       let { finalCategories, isRunningLazy } = this.mealMixItems;
 
       this.categories = [];
