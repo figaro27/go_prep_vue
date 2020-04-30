@@ -1,8 +1,8 @@
 <template>
   <div class="category-slider d-block d-md-none">
-    <div class="text-center">
+    <div class="text-center" v-if="showCategorySlider">
       <slick
-        v-if="showCategorySlider"
+        v-if="categories.length > 4"
         ref="categorySlider"
         :options="{
           arrows: false,
@@ -16,21 +16,20 @@
           v-for="category in categories"
           :key="category.id"
           @click.prevent="goToCategory(slugify(category.category))"
-          class="m-3"
+          class="m-2"
         >
-          <h5>{{ category.category }}</h5>
+          {{ category.category }}
         </div>
       </slick>
 
       <div v-else class="text-center">
         <span
-          v-for="category in categories.slice(0, 3)"
+          v-for="category in categories"
           :key="category.category"
           @click.prevent="goToCategory(slugify(category.category))"
-          class="d-inline-block m-3"
+          class="d-inline-block m-2"
+          >{{ category.category }}</span
         >
-          <h5>{{ category.category }}</h5>
-        </span>
       </div>
     </div>
   </div>
@@ -148,7 +147,7 @@ export default {
     goToCategory(category) {
       if ($("#xs").is(":visible") || $("#sm").is(":visible")) {
         const top = $(`#${category}`).offset().top;
-        $(document).scrollTop(top - 130);
+        $(document).scrollTop(top - 110);
       } else {
         $(".main-menu-area").scrollTop(0);
         const top = $(`#${category}`).position().top;
