@@ -90,7 +90,15 @@ export default {
           }
         });
       }
-      return true;
+      if (
+        (finalCategories.length >= 3 && this.categories.length >= 3) ||
+        finalCategories.length < 3
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+
       // return !isRunningLazy;
     },
     categoriesOld() {
