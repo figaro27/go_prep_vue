@@ -80,7 +80,6 @@ export default {
       mealMixItems: "mealMixItems"
     }),
     showCategorySlider() {
-      return true;
       let { finalCategories, isRunningLazy } = this.mealMixItems;
 
       this.categories = [];
@@ -91,8 +90,8 @@ export default {
           }
         });
       }
-
-      return !isRunningLazy;
+      return true;
+      // return !isRunningLazy;
     },
     categoriesOld() {
       let sorting = {};
