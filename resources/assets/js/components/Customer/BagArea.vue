@@ -367,6 +367,7 @@
               v-model="lineItem.title"
               placeholder="Title"
               class="mr-3"
+              required
             ></b-form-input>
           </div>
           <div class="col-md-2">
@@ -374,6 +375,7 @@
               v-model="lineItem.price"
               placeholder="Price"
               class="mr-3"
+              required
             ></b-form-input>
           </div>
           <div class="col-md-2">
@@ -835,6 +837,14 @@ export default {
       return meals;
     },
     addLineItem(existing) {
+      if (this.lineItem.title === null || this.lineItem.title === "") {
+        this.$toastr.w("Please add a title for the extra item.");
+        return;
+      }
+      if (this.lineItem.price === null || this.lineItem.price === "") {
+        this.$toastr.w("Please add a price for the extra item.");
+        return;
+      }
       let orderLineItems = this.orderLineItems;
       if (existing) {
         if (Object.keys(this.selectedLineItem).length === 0) {
@@ -855,7 +865,7 @@ export default {
           (this.lineItem.production_group_id === null ||
             this.lineItem.production_group_id === undefined)
         ) {
-          this.$toastr.e(
+          this.$toastr.w(
             "Please select a production group or the extra won't show up in your reports."
           );
           return;
