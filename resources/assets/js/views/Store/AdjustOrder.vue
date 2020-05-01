@@ -131,7 +131,7 @@ export default {
           }
 
           _.forEach(this.order.items, item => {
-            if (item.meal_package_order_id === pkgItem.id) {
+            if (item.meal_package_order_id === pkgItem.id && !item.hidden) {
               const meal = this.getMeal(item.meal_id);
               meal.meal_size_id = item.meal_size_id;
               meal.quantity = item.quantity;
@@ -152,7 +152,7 @@ export default {
       }
 
       _.forEach(this.order.items, item => {
-        if (!item.meal_package_order_id) {
+        if (!item.meal_package_order_id && !item.hidden) {
           const meal = this.getMeal(item.meal_id);
           if (!meal) {
             return;
