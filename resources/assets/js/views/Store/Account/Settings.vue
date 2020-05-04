@@ -1655,7 +1655,7 @@ export default {
           });
         }
       });
-
+      console.log(this.deliveryFeeZipCodes);
       this.deliveryFeeZipCodeModal = true;
     },
     updateDeliveryFeeZipCodes() {
