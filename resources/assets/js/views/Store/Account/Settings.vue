@@ -1648,14 +1648,14 @@ export default {
             contains = true;
           }
         });
-        if (!contains) {
+        if (!contains && zipCode != null) {
           this.deliveryFeeZipCodes.push({
             zip_code: zipCode,
             delivery_fee: this.storeSettings.deliveryFee
           });
         }
       });
-      console.log(this.deliveryFeeZipCodes);
+
       this.deliveryFeeZipCodeModal = true;
     },
     updateDeliveryFeeZipCodes() {
