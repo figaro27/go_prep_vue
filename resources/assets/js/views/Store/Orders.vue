@@ -401,7 +401,11 @@
                   params: { order: order, orderId: orderId }
                 }"
               >
-                <b-btn class="btn btn-warning mb-2 mt-1">Adjust</b-btn>
+                <b-btn
+                  class="btn btn-warning mb-2 mt-1"
+                  :disabled="mealMixItems.isRunningLazy"
+                  >Adjust</b-btn
+                >
               </router-link>
             </div>
             <div class="d-inline">
@@ -1038,7 +1042,8 @@ export default {
       storeModules: "storeModules",
       storeSettings: "storeSettings",
       getStoreMeal: "storeMeal",
-      reportSettings: "storeReportSettings"
+      reportSettings: "storeReportSettings",
+      mealMixItems: "mealMixItems"
     }),
     orders: createInstance("orders", {
       page: 1,
