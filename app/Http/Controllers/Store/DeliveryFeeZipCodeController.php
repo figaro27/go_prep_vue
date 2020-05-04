@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Store;
 
 use App\DeliveryFeeZipCode;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
+use App\StoreSetting;
 
 class DeliveryFeeZipCodeController extends StoreController
 {
@@ -87,6 +89,49 @@ class DeliveryFeeZipCodeController extends StoreController
                 $dfzc->save();
             }
         }
+    }
+
+    public function addDeliveryFeeCity(Request $request)
+    {
+        $dfc = $request->get('dfc');
+        $client = new \GuzzleHttp\Client();
+
+        $res = $client->request(
+            'GET',
+            'https://www.zipcodeapi.com/rest/wJzSps4L8CKO5NKtM08l2GDH0ZJTipdhVZHyBx6uzzdsaM4bsqgI9MVzhabsxdYw/city-zips.json/' .
+                $dfc['city'] .
+                '/' .
+                $dfc['state']
+        );
+
+        $zipCodes = json_decode((string) $res->getBody());
+
+        $settings = StoreSetting::where('store_id', $this->store->id)->first();
+        $existingZipCodes = $settings->delivery_distance_zipcodes;
+
+        foreach ($zipCodes->zip_codes as $zipCode) {
+            $dfzc = DeliveryFeeZipCode::where([
+                'zip_code' => $zipCode,
+                'store_id' => $this->store->id
+            ])->first();
+            if ($dfzc) {
+                $dfzc->delivery_fee = $dfc['rate'];
+                $dfzc->update();
+            } else {
+                $dfzc = new DeliveryFeeZipCode();
+                $dfzc->store_id = $this->store->id;
+                $dfzc->zip_code = $zipCode;
+                $dfzc->delivery_fee = $dfc['rate'];
+                $dfzc->save();
+            }
+
+            if (!in_array($zipCode, $existingZipCodes)) {
+                array_push($existingZipCodes, $zipCode);
+            }
+        }
+
+        $settings->delivery_distance_zipcodes += $existingZipCodes;
+        $settings->update();
     }
 
     /**

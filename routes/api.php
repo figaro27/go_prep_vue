@@ -511,6 +511,11 @@ foreach (
                                 'updateDeliveryFeeZipCodes',
                                 'DeliveryFeeZipCodeController@updateDeliveryFeeZipCodes'
                             );
+
+                            Route::post(
+                                'addDeliveryFeeCity',
+                                'DeliveryFeeZipCodeController@addDeliveryFeeCity'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {
