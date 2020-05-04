@@ -89,6 +89,30 @@
                   @ok="updateDeliveryFeeZipCodes"
                   @cancel="deliveryFeeZipCodes = []"
                 >
+                  <div
+                    class="d-flex m-3"
+                    style="justify-content:space-between;"
+                  >
+                    <b-form-input
+                      v-model="deliveryFeeCity.city"
+                      placeholder="City"
+                      class="mr-1"
+                    ></b-form-input>
+                    <b-select
+                      label="State"
+                      :options="getStateNames('US')"
+                      v-model="deliveryFeeCity.state"
+                      class="mr-1"
+                    ></b-select>
+                    <b-form-input
+                      v-model="deliveryFeeCity.rate"
+                      type="number"
+                      class="mr-1"
+                    ></b-form-input>
+                    <b-btn variant="primary" @click="addDeliveryFeeCity"
+                      >Add</b-btn
+                    >
+                  </div>
                   <li
                     v-for="(dfzc, i) in deliveryFeeZipCodes"
                     class="mb-1 mt-2"
@@ -1173,6 +1197,7 @@ import TermsOfService from "../../TermsOfService";
 import TermsOfAgreement from "../../TermsOfAgreement";
 import SalesTax from "sales-tax";
 import PictureInput from "vue-picture-input";
+import states from "../../../data/states.js";
 
 export default {
   components: {
@@ -1184,6 +1209,7 @@ export default {
   },
   data() {
     return {
+      deliveryFeeCity: {},
       deliveryFeeZipCodeModal: false,
       deliveryFeeZipCodes: [],
       logoUpdated: false,
@@ -1633,6 +1659,8 @@ export default {
       this.salesTax = rate * 100;
     },
     setDeliveryFeeZipCodes() {
+      this.deliveryFeeCity.state = this.storeDetails.state;
+
       if (_.isArray(this.storeDeliveryFeesZipCodes)) {
         this.storeDeliveryFeesZipCodes.forEach(dfzc => {
           this.deliveryFeeZipCodes.push({
@@ -1667,6 +1695,20 @@ export default {
       this.updateStoreSettings();
       this.deliveryFeeZipCodeModal = false;
       this.deliveryFeeZipCodes = [];
+    },
+    addDeliveryFeeCity() {
+      axios
+        .post("/api/me/addDeliveryFeeCity", { dfc: this.deliveryFeeCity })
+        .then(resp => {
+          this.refreshStoreDeliveryFeeZipCodes();
+        });
+      this.updateStoreSettings();
+      this.deliveryFeeZipCodeModal = false;
+      this.deliveryFeeCity = {};
+      this.deliveryFeeZipCodes = [];
+    },
+    getStateNames(country = "US") {
+      return states.selectOptions(country);
     }
   }
 };
