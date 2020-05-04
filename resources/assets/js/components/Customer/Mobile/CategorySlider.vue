@@ -81,8 +81,6 @@ export default {
     showCategorySlider() {
       let { finalCategories, isRunningLazy } = this.mealMixItems;
 
-      const catLength = this.categories.length;
-
       this.categories = [];
       if (finalCategories && finalCategories.length > 0) {
         finalCategories.forEach((cat, index) => {
@@ -91,13 +89,8 @@ export default {
           }
         });
       }
-      if (catLength !== this.categories.length && this.$refs.categorySlider) {
-        this.$nextTick(() => {
-          this.$refs.categorySlider.reSlick();
-        });
-      }
 
-      return true;
+      return !isRunningLazy;
     },
     categoriesOld() {
       let sorting = {};
