@@ -762,7 +762,8 @@ class CheckoutController extends UserController
 
                     $token = \Stripe\Token::create(
                         [
-                            "customer" => $this->user->stripe_id
+                            "customer" => $this->user->stripe_id,
+                            'card' => $card->stripe_id
                         ],
                         ['stripe_account' => $storeSettings->stripe_id]
                     );
