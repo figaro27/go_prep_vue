@@ -181,6 +181,14 @@
             </b-select>
           </div>
         </div>
+        <div v-if="weeklySubscriptionValue">
+          <p>
+            A subscription is a weekly recurring order. Your card will be
+            automatically charged every week. You can change the items in your
+            subscription and you can cancel the subscription after the 2nd
+            order.
+          </p>
+        </div>
       </li>
       <!-- <li class="checkout-item">
         <p>
