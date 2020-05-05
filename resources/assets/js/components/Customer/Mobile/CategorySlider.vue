@@ -3,6 +3,7 @@
     <div class="text-center" v-if="showCategorySlider">
       <slick
         v-if="categories.length > 4"
+        :key="categories.length"
         ref="categorySlider"
         :options="{
           arrows: false,
@@ -81,19 +82,12 @@ export default {
     showCategorySlider() {
       let { finalCategories, isRunningLazy } = this.mealMixItems;
 
-      const catLength = this.categories.length;
-
       this.categories = [];
       if (finalCategories && finalCategories.length > 0) {
         finalCategories.forEach((cat, index) => {
           if (this.isCategoryVisible(cat) && cat.visible) {
             this.categories.push(cat);
           }
-        });
-      }
-      if (catLength !== this.categories.length && this.$refs.categorySlider) {
-        this.$nextTick(() => {
-          this.$refs.categorySlider.reSlick();
         });
       }
 
