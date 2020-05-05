@@ -105,7 +105,7 @@ class MealOrder extends Pivot
             }
             if ($hasAddons) {
                 foreach ($this->addons as $addon) {
-                    $title .= '<li class="plus" style="font-size:14px;">';
+                    $title .= '<li class="plus" style="font-size:14px">';
                     if (isset($addon->addon->title) && $addon->addon != null) {
                         $title .= $addon->addon->title;
                     }
@@ -118,7 +118,7 @@ class MealOrder extends Pivot
 
         if ($this->special_instructions != null) {
             $title .=
-                '<p style="font-size:14px;font-weight:bold;">' .
+                '<p style="font-size:14px;font-weight:bold">' .
                 $this->special_instructions .
                 '</p>';
         }
