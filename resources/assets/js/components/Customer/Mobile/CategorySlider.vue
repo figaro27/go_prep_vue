@@ -3,6 +3,7 @@
     <div class="text-center" v-if="showCategorySlider">
       <slick
         v-if="categories.length > 4"
+        :key="categories.length"
         ref="categorySlider"
         :options="{
           arrows: false,
