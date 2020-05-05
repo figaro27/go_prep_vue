@@ -2231,7 +2231,9 @@ use next_delivery_dates
 
       let taxableAmount =
         this.afterDiscount - removableItemAmount + customSalesTaxAmount;
-
+      if (taxableAmount < 0) {
+        taxableAmount = 0;
+      }
       if (
         this.storeSettings.enableSalesTax === 0 ||
         this.storeSettings.enableSalesTax === false
