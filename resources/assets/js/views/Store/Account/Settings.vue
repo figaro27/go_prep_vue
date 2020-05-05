@@ -647,7 +647,6 @@
                     <b-form-input
                       type="text"
                       v-model="storeSettings.fbPixel"
-                      placeholder="521456601479100"
                     ></b-form-input>
                   </b-form-group>
 
