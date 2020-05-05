@@ -50,6 +50,7 @@ import "slick-carousel/slick/slick.css";
 import VueObserveVisibility from "vue-observe-visibility";
 import { PaginationPlugin } from "vuex-pagination";
 import i18n from "./i18n";
+import VueFacebookPixel from "vue-analytics-facebook-pixel";
 
 Vue.prototype.$eventBus = new Vue();
 
@@ -68,6 +69,7 @@ Vue.use(money, {
 Vue.use(vUUID);
 Vue.use(VueNumberInput);
 Vue.use(PaginationPlugin);
+Vue.use(VueFacebookPixel);
 Vue.component("input-tag", InputTag);
 Vue.component("v-select", vSelect);
 Vue.component("timepicker", VueTimepicker);

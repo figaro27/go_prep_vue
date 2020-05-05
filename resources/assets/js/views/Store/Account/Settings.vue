@@ -631,6 +631,26 @@
                     ></b-form-input>
                   </b-form-group>
 
+                  <p class="mt-2">
+                    <span class="mr-1">Facebook Pixel Code</span>
+                    <img
+                      v-b-popover.hover="
+                        'If you are running a Facebook advertising campaign, you can paste your Facebook pixel code here in order to track traffic and orders from Facebook.'
+                      "
+                      title="Facebook Pixel"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+
+                  <b-form-group :state="true" class="mt-2">
+                    <b-form-input
+                      type="text"
+                      v-model="storeSettings.fbPixel"
+                      placeholder="521456601479100"
+                    ></b-form-input>
+                  </b-form-group>
+
                   <b-button type="submit" variant="primary">Save</b-button>
                 </b-form>
                 <p class="mt-2">Timezone</p>
