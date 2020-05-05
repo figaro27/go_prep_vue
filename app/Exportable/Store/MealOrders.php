@@ -368,13 +368,45 @@ class MealOrders
             }
         }
 
+        // Removing the variations HTML from the title for CSV & XLS reports & putting it in a separate column in plain text.
+        // Possibly add on special instructions if needed.
         if ($type !== 'pdf') {
-            if (!$groupByDate) {
-                $production->prepend(['Orders', 'Size', 'Title']);
-            } else {
-                $headings = array_merge(['Title'], $this->allDates);
-                $production->prepend($headings);
+            $formattedProduction = [];
+            foreach ($production as $item) {
+                $quantity = $item[0];
+                $size = $item[1];
+                $fullTitle = $item[2];
+                $shortTitle = explode('<ul', $fullTitle)[0];
+
+                preg_match_all('/14px">([^<]+)<\/li>/i', $fullTitle, $v);
+                $variations = '';
+                foreach ($v[1] as $v) {
+                    $variations .= $v . ', ';
+                }
+                $variations = substr($variations, 0, -2);
+
+                $formattedItem = [];
+                array_push($formattedItem, $quantity);
+                array_push($formattedItem, $size);
+                array_push($formattedItem, $shortTitle);
+                array_push($formattedItem, $variations);
+
+                array_push($formattedProduction, $formattedItem);
             }
+
+            array_unshift($formattedProduction, [
+                'Orders',
+                'Size',
+                'Title',
+                'Variations'
+            ]);
+
+            if ($groupByDate) {
+                $headings = array_merge(['Title'], $this->allDates);
+                $formattedProduction->prepend($headings);
+            }
+
+            return $formattedProduction;
         }
 
         return $production->toArray();
@@ -383,5 +415,17 @@ class MealOrders
     public function exportPdfView()
     {
         return 'reports.meal_orders_pdf';
+    }
+
+    public function get_string_between($string, $start, $end)
+    {
+        $string = ' ' . $string;
+        $ini = strpos($string, $start);
+        if ($ini == 0) {
+            return '';
+        }
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+        return substr($string, $ini, $len);
     }
 }

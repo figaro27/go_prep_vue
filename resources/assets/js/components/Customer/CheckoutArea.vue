@@ -2852,6 +2852,9 @@ use next_delivery_dates
             });
           }
           this.emptyBag();
+          if (this.store.settings.fbPixel) {
+            Vue.analytics.fbq.event("track", "Purchase");
+          }
         })
         .catch(async response => {
           let error = response.response.data.message;
