@@ -91,7 +91,7 @@ export default {
         });
       }
 
-      return !isRunningLazy;
+      return true;
     },
     categoriesOld() {
       let sorting = {};
