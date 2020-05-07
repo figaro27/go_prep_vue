@@ -138,6 +138,10 @@ $hot = $order->hot;
         @else
         <p>Online Order: {{$order->created_at->format($order->store->settings->date_format)}}</p>
         @endif
+        @if ($order->staff_id)
+        <p>Taken By: {{ $order->staff_member }}</p>
+        @endif
+                      
       </div>
       
       <div class="col-4 right-text">

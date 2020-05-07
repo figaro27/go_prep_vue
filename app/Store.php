@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use App\StoreSetting;
+use App\Order;
 
 class Store extends Model
 {
@@ -95,6 +96,11 @@ class Store extends Model
     public function units()
     {
         return $this->hasMany('App\StoreUnit');
+    }
+
+    public function staff()
+    {
+        return $this->hasMany('App\Staff');
     }
 
     public function storeDetail()

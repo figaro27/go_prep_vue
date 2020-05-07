@@ -127,6 +127,7 @@ class CheckoutController extends StoreController
         $notes = $request->get('notes');
         $publicOrderNotes = $request->get('publicOrderNotes');
         $hot = $request->get('hot');
+        $staff = $request->get('staff');
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
@@ -335,6 +336,7 @@ class CheckoutController extends StoreController
             $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->isMultipleDelivery = $isMultipleDelivery;
             $order->hot = $hot;
+            $order->staff_id = $staff;
             $order->save();
 
             $orderId = $order->id;
@@ -861,6 +863,7 @@ class CheckoutController extends StoreController
             $order->originalAmount = $deposit > 0 ? $deposit : $total;
             $order->isMultipleDelivery = $isMultipleDelivery;
             $order->hot = $hot;
+            $order->staff_id = $staff;
             $order->save();
 
             $orderId = $order->id;
