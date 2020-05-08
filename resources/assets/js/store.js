@@ -2430,7 +2430,7 @@ const actions = {
     if (_.isArray(referral_settings)) {
       commit("storeReferralSettings", { referral_settings });
     } else {
-      throw new Error("Failed to retrieve referral rules");
+      throw new Error("Failed to retrieve referral settings");
     }
   },
 

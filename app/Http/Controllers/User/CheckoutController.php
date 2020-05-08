@@ -1256,7 +1256,7 @@ class CheckoutController extends UserController
                 ->count();
             if (
                 $referralSettings->frequency === 'firstOrder' &&
-                $previousOrders > 0
+                $previousOrders > 1
             ) {
                 return;
             }
@@ -1273,7 +1273,6 @@ class CheckoutController extends UserController
                         ->first();
                 }
             }
-
             // If a referral code exists in the URL or in a coupon OR the referral settings are set to all orders and the user was previously referred
             if (
                 $referralUrlCode ||
