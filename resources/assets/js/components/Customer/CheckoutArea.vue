@@ -1260,6 +1260,10 @@ export default {
     if (this.bagPickupSet) {
       this.pickup = this.bagPickup;
     }
+
+    console.log("customer: " + this.customer);
+    console.log("customerModelText: " + this.customerModel.text);
+    console.log("customerModelValue: " + this.customerModel.value);
   },
   props: {
     order: null,
@@ -1293,7 +1297,6 @@ export default {
       if (!this.existingCustomerAdded) {
         if (val) {
           this.customerModel = this.getCustomerObject(val);
-          this.customer = this.getCustomerObject(val);
         } else {
           this.customerModel = null;
         }
