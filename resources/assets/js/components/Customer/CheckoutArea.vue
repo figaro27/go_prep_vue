@@ -1302,10 +1302,9 @@ export default {
       }
     },
     customerModel: function(val) {
-      console.log("test");
-      this.customer = this.customerModel.value;
-      this.$parent.checkoutDataProp.customer = this.customerModel.value;
       this.getCards();
+
+      this.updateParentData();
     }
   },
   mounted: function() {
