@@ -1294,13 +1294,15 @@ export default {
   },
   watch: {
     customer: function(val) {
-      if (val) {
-        this.customerModel = this.getCustomerObject(val);
-      } else {
-        this.customerModel = null;
-      }
-      if (this.$route.params.manualOrder) {
-        this.getCards();
+      if (!this.existingCustomerAdded) {
+        if (val) {
+          this.customerModel = this.getCustomerObject(val);
+        } else {
+          this.customerModel = null;
+        }
+        if (this.$route.params.manualOrder) {
+          this.getCards();
+        }
       }
     },
     customerModel: function(val) {
@@ -2925,6 +2927,7 @@ use next_delivery_dates
         this.customer = user.id;
         this.customerModel = { text: user.name, value: user.id };
       } else {
+        this.customer = user.id;
         this.$parent.setCustomer(user.id);
       }
     },
