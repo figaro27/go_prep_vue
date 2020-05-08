@@ -1303,7 +1303,6 @@ export default {
     },
     customerModel: function(val) {
       this.getCards();
-
       this.updateParentData();
     }
   },
