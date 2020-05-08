@@ -1261,9 +1261,6 @@ export default {
       this.pickup = this.bagPickup;
     }
     this.customer = this.customerModel.value;
-    console.log("customer: " + this.customer);
-    console.log("customerModelText: " + this.customerModel.text);
-    console.log("customerModelValue: " + this.customerModel.value);
   },
   props: {
     order: null,
