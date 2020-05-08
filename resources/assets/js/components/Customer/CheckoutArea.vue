@@ -1260,6 +1260,10 @@ export default {
     if (this.bagPickupSet) {
       this.pickup = this.bagPickup;
     }
+
+    console.log("customer: " + this.customer);
+    console.log("customerModelText: " + this.customerModel.text);
+    console.log("customerModelValue: " + this.customerModel.value);
   },
   props: {
     order: null,
