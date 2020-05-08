@@ -1260,7 +1260,7 @@ export default {
     if (this.bagPickupSet) {
       this.pickup = this.bagPickup;
     }
-
+    this.customer = this.customerModel.value;
     console.log("customer: " + this.customer);
     console.log("customerModelText: " + this.customerModel.text);
     console.log("customerModelValue: " + this.customerModel.value);
@@ -1294,8 +1294,6 @@ export default {
   },
   watch: {
     customer: function(val) {
-      this.customer = this.customerModel.value;
-
       if (!this.existingCustomerAdded) {
         if (val) {
           this.customerModel = this.getCustomerObject(val);
