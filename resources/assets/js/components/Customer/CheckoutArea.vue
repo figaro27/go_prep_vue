@@ -1261,6 +1261,7 @@ export default {
       this.pickup = this.bagPickup;
     }
     this.customer = this.customerModel.value;
+    this.$parent.checkoutDataProp.customer = this.customerModel.value;
   },
   props: {
     order: null,
