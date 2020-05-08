@@ -1260,8 +1260,6 @@ export default {
     if (this.bagPickupSet) {
       this.pickup = this.bagPickup;
     }
-    this.customer = this.customerModel.value;
-    this.$parent.checkoutDataProp.customer = this.customerModel.value;
   },
   props: {
     order: null,
@@ -1292,6 +1290,10 @@ export default {
   },
   watch: {
     customer: function(val) {
+      console.log("test");
+      this.customer = this.customerModel.value;
+      this.$parent.checkoutDataProp.customer = this.customerModel.value;
+
       if (!this.existingCustomerAdded) {
         if (val) {
           this.customerModel = this.getCustomerObject(val);
