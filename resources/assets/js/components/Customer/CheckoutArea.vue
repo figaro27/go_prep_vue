@@ -1290,10 +1290,6 @@ export default {
   },
   watch: {
     customer: function(val) {
-      console.log("test");
-      this.customer = this.customerModel.value;
-      this.$parent.checkoutDataProp.customer = this.customerModel.value;
-
       if (!this.existingCustomerAdded) {
         if (val) {
           this.customerModel = this.getCustomerObject(val);
@@ -1306,6 +1302,9 @@ export default {
       }
     },
     customerModel: function(val) {
+      console.log("test");
+      this.customer = this.customerModel.value;
+      this.$parent.checkoutDataProp.customer = this.customerModel.value;
       this.getCards();
     }
   },
