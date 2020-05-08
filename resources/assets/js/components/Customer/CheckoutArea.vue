@@ -1294,6 +1294,8 @@ export default {
   },
   watch: {
     customer: function(val) {
+      this.customer = this.customerModel.value;
+
       if (!this.existingCustomerAdded) {
         if (val) {
           this.customerModel = this.getCustomerObject(val);
@@ -2927,7 +2929,6 @@ use next_delivery_dates
         this.customer = user.id;
         this.customerModel = { text: user.name, value: user.id };
       } else {
-        this.customer = user.id;
         this.$parent.setCustomer(user.id);
       }
     },
