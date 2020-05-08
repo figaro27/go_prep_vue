@@ -1260,10 +1260,6 @@ export default {
     if (this.bagPickupSet) {
       this.pickup = this.bagPickup;
     }
-
-    console.log("customer: " + this.customer);
-    console.log("customerModelText: " + this.customerModel.text);
-    console.log("customerModelValue: " + this.customerModel.value);
   },
   props: {
     order: null,
@@ -1294,16 +1290,16 @@ export default {
   },
   watch: {
     customer: function(val) {
-      if (!this.existingCustomerAdded) {
-        if (val) {
-          this.customerModel = this.getCustomerObject(val);
-        } else {
-          this.customerModel = null;
-        }
-        if (this.$route.params.manualOrder) {
-          this.getCards();
-        }
-      }
+      // if (!this.existingCustomerAdded) {
+      //   if (val) {
+      //     this.customerModel = this.getCustomerObject(val);
+      //   } else {
+      //     this.customerModel = null;
+      //   }
+      //   if (this.$route.params.manualOrder) {
+      //     this.getCards();
+      //   }
+      // }
     },
     customerModel: function(val) {
       this.getCards();
