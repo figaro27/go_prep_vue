@@ -579,6 +579,7 @@ export default {
     }
   },
   updated() {
+    console.log("fromBagCustomer - " + this.checkoutDataProp.customer);
     this.creditCardId = this.card;
 
     if (this.$route.params.adjustOrder) {
