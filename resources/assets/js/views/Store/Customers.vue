@@ -205,6 +205,10 @@
                   <p v-if="storeModules.dailyOrderNumbers">
                     {{ order.dailyOrderNumber }}
                   </p>
+                  <div class="mt-3" v-if="order.staff_id">
+                    <h4>Taken By</h4>
+                    <p>{{ order.staff_member }}</p>
+                  </div>
                 </div>
                 <div class="col-md-4">
                   <h4>Placed On</h4>

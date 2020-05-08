@@ -8,6 +8,7 @@ use App\LineItemOrder;
 use App\PickupLocation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use App\Staff;
 
 class Order extends Model
 {
@@ -78,7 +79,8 @@ class Order extends Model
         'customer_address',
         'customer_zip',
         'visible_items',
-        'pickup_location_name'
+        'pickup_location_name',
+        'staff_member'
         // 'balance'
     ];
 
@@ -457,5 +459,12 @@ class Order extends Model
         $order->update($props->toArray());
 
         return $order;
+    }
+
+    public function getStaffMemberAttribute()
+    {
+        return Staff::where('id', $this->staff_id)
+            ->pluck('name')
+            ->first();
     }
 }

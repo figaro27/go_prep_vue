@@ -1017,6 +1017,26 @@
           </b-form-checkbox>
         </div>
 
+        <div
+          v-if="
+            ($route.params.storeView || storeOwner) && store.modules.showStaff
+          "
+        >
+          <h4 class="mt-2 mb-3">
+            Staff Member
+          </h4>
+          <v-select
+            label="name"
+            :options="staff"
+            v-model="staffMember"
+            placeholder="Staff member taking the order."
+            :filterable="false"
+            :reduce="staff => staff.id"
+            class="mb-3"
+          >
+          </v-select>
+        </div>
+
         <b-btn
           v-if="
             // Condense all this logic / put in computed prop
@@ -1192,6 +1212,7 @@ export default {
   },
   data() {
     return {
+      staffMember: null,
       customerOptions: [],
       coupons: [],
       purchasedGiftCards: [],
@@ -1282,6 +1303,7 @@ export default {
     },
     customerModel: function(val) {
       this.getCards();
+      this.updateParentData();
     }
   },
   mounted: function() {
@@ -1303,6 +1325,14 @@ export default {
     });
 
     this.form.billingState = state[0];
+
+    if (this.$route.params.adjustOrder) {
+      this.staffMember = this.order.staff_id;
+    } else {
+      axios.get("/api/me/getLastStaffMemberId").then(resp => {
+        this.staffMember = resp.data;
+      });
+    }
   },
   mixins: [MenuBag],
   computed: {
@@ -1343,7 +1373,8 @@ export default {
       promotions: "viewedStorePromotions",
       deliveryFeeZipCodes: "viewedStoreDeliveryFeeZipCodes",
       bagPickup: "bagPickup",
-      bagPickupSet: "bagPickupSet"
+      bagPickupSet: "bagPickupSet",
+      staff: "storeStaff"
     }),
     prefix() {
       if (this.loggedIn) {
@@ -2797,7 +2828,8 @@ use next_delivery_dates
           emailCustomer: this.emailCustomer,
           referralUrl: this.$route.query.r,
           promotionPointsAmount: this.promotionPointsAmount,
-          pointsReduction: this.promotionPointsReduction
+          pointsReduction: this.promotionPointsReduction,
+          staff: this.staffMember
         })
         .then(async resp => {
           //this.checkingOut = false;

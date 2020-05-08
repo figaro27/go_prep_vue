@@ -516,6 +516,13 @@ foreach (
                                 'addDeliveryFeeCity',
                                 'DeliveryFeeZipCodeController@addDeliveryFeeCity'
                             );
+
+                            Route::resource('staff', 'StaffController');
+
+                            Route::get(
+                                'getLastStaffMemberId',
+                                'StaffController@getLastStaffMemberId'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {
