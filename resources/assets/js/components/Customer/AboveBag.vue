@@ -16,9 +16,6 @@ export default {
   props: {
     checkoutData: null
   },
-  updated() {
-    console.log("checkoutDataCustomer " + this.checkoutData.customer);
-  },
   computed: {
     order() {
       return this.$route.params.order;

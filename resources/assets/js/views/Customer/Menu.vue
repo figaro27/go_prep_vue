@@ -965,6 +965,8 @@ export default {
     if (this.$parent.pickup !== null) {
       this.pickup = this.$parent.pickup;
     }
+
+    console.log("checkoutDataCustomer " + this.checkoutData.customer);
   },
   methods: {
     ...mapActions([
