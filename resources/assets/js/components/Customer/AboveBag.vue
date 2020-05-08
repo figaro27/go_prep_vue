@@ -17,7 +17,7 @@ export default {
     checkoutData: null
   },
   updated() {
-    console.log("checkoutData " + this.checkoutData);
+    console.log("checkoutDataCustomer " + this.checkoutData.customer);
   },
   computed: {
     order() {
