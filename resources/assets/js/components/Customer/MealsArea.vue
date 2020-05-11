@@ -1116,8 +1116,7 @@ export default {
         this.addMealPackage(meal, true);
       } else {
         if (
-          meal.sizes &&
-          meal.sizes.length > 0 &&
+          meal.sizes & (meal.sizes.length > 0) &&
           meal.components &&
           meal.components.length === 0 &&
           meal.addons &&
