@@ -475,7 +475,11 @@
                     </div> -->
 
                     <b-btn
-                      v-if="!meal.meal_package && !meal.hasVariations"
+                      v-if="
+                        !meal.meal_package &&
+                          !meal.gift_card &&
+                          !meal.hasVariations
+                      "
                       @click.stop="addMeal(meal, null)"
                       class="menu-bag-btn small-buttons plus-minus"
                     >
@@ -590,7 +594,11 @@
                     <div
                       @click.stop="minusMixOne(meal)"
                       class="bag-plus-minus small-buttons gray white-text"
-                      v-if="!meal.meal_package && !meal.hasVariations"
+                      v-if="
+                        !meal.meal_package &&
+                          !meal.gift_card &&
+                          !meal.hasVariations
+                      "
                     >
                       <i>-</i>
                     </div>
@@ -1110,14 +1118,12 @@ export default {
       if (meal.gift_card) {
         this.addOne(meal);
         this.$parent.showBagClass = "shopping-cart show-right bag-area";
-        return;
       }
       if (meal.meal_package) {
         this.addMealPackage(meal, true);
       } else {
         if (
-          meal.sizes &&
-          meal.sizes.length > 0 &&
+          meal.sizes & (meal.sizes.length > 0) &&
           meal.components &&
           meal.components.length === 0 &&
           meal.addons &&
