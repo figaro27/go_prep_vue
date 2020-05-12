@@ -615,9 +615,7 @@
                     </div>
 
                     <div class="content-text-wrap">
-                      <strong style="word-break: break-all;">{{
-                        meal.title
-                      }}</strong>
+                      <strong>{{ meal.title }}</strong>
                       <div class="mt-1 content-text">
                         {{ meal.description }}
                       </div>
