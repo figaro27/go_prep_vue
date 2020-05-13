@@ -523,6 +523,11 @@ foreach (
                                 'getLastStaffMemberId',
                                 'StaffController@getLastStaffMemberId'
                             );
+
+                            Route::get(
+                                'sendTestMessage',
+                                'SMSController@SendTestMessage'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {
