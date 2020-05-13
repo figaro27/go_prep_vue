@@ -2,42 +2,78 @@
   <b-modal
     v-model="visible"
     title="Menu Categories"
-    size="md"
+    size="lg"
     @ok="$emit('ok')"
     @cancel="$emit('cancel')"
     @hidden="$emit('hidden')"
     @hide="editing = false"
     no-fade
   >
-    <div class="center-flex">
-      <b-form-group :state="true" style="max-width:100%">
-        <div class="categories">
+    <div>
+      <b-form-group :state="true">
+        <div>
+          <div class="center-flex">
+            <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
+              <b-input
+                v-model="new_category"
+                type="text"
+                placeholder="New Category..."
+              ></b-input>
+              <b-button type="submit" variant="primary ml-2">Create</b-button>
+            </b-form>
+          </div>
+          <div class="center-flex mt-3">
+            <p>
+              Click and drag to change the order the categories are shown on
+              your menu.
+            </p>
+          </div>
           <draggable
             v-model="categories"
             @change="onChangeCategories"
-            element="ol"
-            class="plain"
+            element="ul"
+            class="plain mt-2"
           >
             <li
               v-for="category in categories"
               :key="`category-${category.id}`"
-              class="category mb-3"
+              class="mb-3"
             >
-              <h5 v-if="!editing || editingId !== category.id" class="d-flex">
-                <span class="category-name">{{ category.category }}</span>
-                <i
-                  v-if="category.id"
-                  @click="editCategory(category)"
-                  class="fa fa-edit text-warning"
-                ></i>
-                <i
-                  v-if="category.id"
-                  @click="deleteCategory(category.id)"
-                  class="fa fa-minus-circle text-danger"
-                ></i>
-              </h5>
+              <div class="center-flex">
+                <h5 v-if="!editing || editingId !== category.id" class="d-flex">
+                  <i
+                    v-if="category.id"
+                    @click="editCategory(category)"
+                    class="fa fa-edit text-warning mr-2"
+                  ></i>
+                  <i
+                    v-if="category.id"
+                    @click="deleteCategory(category.id)"
+                    class="fa fa-minus-circle text-danger mr-2"
+                  ></i>
+                  <span class="category-name">{{ category.category }}</span>
+                </h5>
+              </div>
               <div v-if="editing && editingId === category.id">
-                <div class="d-flex">
+                <div class="d-flex mr-2">
+                  <div class="d-flex mr-2 pt-1">
+                    <div class="mr-1">
+                      <b-form-checkbox
+                        v-model="category.active"
+                        @change="setActive(category.active)"
+                      ></b-form-checkbox>
+                    </div>
+                    <div>Active for Customers</div>
+                  </div>
+                  <div class="d-flex mr-2 pt-1">
+                    <div class="mr-1">
+                      <b-form-checkbox
+                        v-model="category.activeForStore"
+                        @change="setActiveForStore(category.activeForStore)"
+                      ></b-form-checkbox>
+                    </div>
+                    <div>Active for You</div>
+                  </div>
                   <b-input
                     v-model="editing.category"
                     placeholder="Enter updated category name."
@@ -80,15 +116,6 @@
             </li>
           </draggable>
         </div>
-
-        <b-form class="mt-2" @submit.prevent="onAddCategory" inline>
-          <b-input
-            v-model="new_category"
-            type="text"
-            placeholder="New Category..."
-          ></b-input>
-          <b-button type="submit" variant="primary ml-2">Create</b-button>
-        </b-form>
       </b-form-group>
     </div>
   </b-modal>
@@ -211,11 +238,20 @@ export default {
       axios
         .patch("/api/me/categories/" + this.editingId, editing)
         .then(resp => {
-          this.editing = null;
           this.showCategoriesModal = false;
           this.fetchCategories();
           this.$toastr.s("Category updated.");
         });
+    },
+    setActive(value) {
+      value = !value;
+      this.editing.active = value;
+      this.updateCategory();
+    },
+    setActiveForStore(value) {
+      value = !value;
+      this.editing.activeForStore = value;
+      this.updateCategory();
     }
   }
 };

@@ -132,6 +132,9 @@ class CategoryController extends StoreController
             }
         }
 
+        $category->active = $request->get('active');
+        $category->activeForStore = $request->get('activeForStore');
+
         $category->save();
     }
 
