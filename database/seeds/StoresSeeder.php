@@ -117,6 +117,30 @@ class StoresSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]);
+
+            DB::table('referral_settings')->insert([
+                'store_id' => $i,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
+
+            DB::table('report_settings')->insert([
+                'store_id' => $i,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
+
+            DB::table('promotions')->insert([
+                'store_id' => $i,
+                'active' => 1,
+                'promotionType' => 'percent',
+                'promotionAmount' => 5.0,
+                'freeDelivery' => 0,
+                'conditionType' => 'subtotal',
+                'conditionAmount' => 100,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);
         }
     }
 }

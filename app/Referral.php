@@ -26,8 +26,16 @@ class Referral extends Model
 
     public function getReferredCustomersAttribute()
     {
-        return Order::where('referral_id', $this->id)
-            ->groupBy('user_id')
-            ->count();
+        if (
+            env('APP_ENV') === 'local' ||
+            env('APP_ENV') === 'staging' ||
+            env('APP_URL' === 'https://goprepdemo.com')
+        ) {
+            return rand(1, 4);
+        } else {
+            return Order::where('referral_id', $this->id)
+                ->groupBy('user_id')
+                ->count();
+        }
     }
 }
