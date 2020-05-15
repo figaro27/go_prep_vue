@@ -38,7 +38,12 @@ class UsersSeeder extends Seeder
                 'remember_token' => str_random(10),
                 'created_at' => now(),
                 'updated_at' => now(),
-                'accepted_tos' => 1
+                'accepted_tos' => 1,
+                'referralUrlCode' =>
+                    'R' .
+                    strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
+                    chr(rand(65, 90)) .
+                    rand(0, 9)
             ]);
         }
 

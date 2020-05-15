@@ -135,9 +135,7 @@ class Store extends Model
 
     public function categories()
     {
-        return $this->hasMany('App\Category')
-            ->where('activeForStore', 1)
-            ->orderBy('order');
+        return $this->hasMany('App\Category')->orderBy('order');
     }
 
     public function customers()

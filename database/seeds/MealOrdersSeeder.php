@@ -24,6 +24,19 @@ class MealOrdersSeeder extends Seeder
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);
+
+                if ($i > 4) {
+                    DB::table('meal_order_components')->insert([
+                        'meal_order_id' => $i * $order,
+                        'meal_component_id' => 1,
+                        'meal_component_option_id' => rand(1, 3)
+                    ]);
+
+                    DB::table('meal_order_addons')->insert([
+                        'meal_order_id' => ($i - 1) * $order,
+                        'meal_addon_id' => 1
+                    ]);
+                }
             }
         }
 
@@ -38,6 +51,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -54,6 +80,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -70,6 +109,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -86,6 +138,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -102,6 +167,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -118,6 +196,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -134,6 +225,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -150,6 +254,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -166,6 +283,18 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -182,6 +311,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -198,6 +340,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -214,6 +369,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -230,6 +398,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -246,6 +427,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -262,6 +456,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -278,6 +485,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -294,6 +514,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -310,6 +543,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -326,6 +572,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -342,6 +601,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -358,6 +630,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -374,6 +659,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -390,6 +688,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -406,6 +717,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -422,6 +746,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -438,6 +775,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -454,6 +804,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -470,6 +833,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }
@@ -486,6 +862,19 @@ class MealOrdersSeeder extends Seeder
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
+
+                    if ($i > 4) {
+                        DB::table('meal_order_components')->insert([
+                            'meal_order_id' => $i * $order,
+                            'meal_component_id' => 1,
+                            'meal_component_option_id' => rand(1, 3)
+                        ]);
+
+                        DB::table('meal_order_addons')->insert([
+                            'meal_order_id' => ($i - 1) * $order,
+                            'meal_addon_id' => 1
+                        ]);
+                    }
                 } catch (\Exception $e) {
                 }
             }

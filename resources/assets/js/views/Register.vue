@@ -697,9 +697,7 @@ export default {
             format.money(planDetails.price / 100),
             period === "monthly" ? "Per Month" : "Per Year",
             planDetails.price_upfront
-              ? ` &amp; ${format.money(
-                  planDetails.price_upfront / 100
-                )} up front`
+              ? ` - ${format.money(planDetails.price_upfront / 100)} up front`
               : ""
           ),
           value: planId
@@ -886,6 +884,11 @@ export default {
       }
     },
     async submit() {
+      if (this.form[3].plan === null) {
+        this.$toastr.w("Please pick a plan.");
+        return;
+      }
+
       if (!(await this.validate(this.step))) {
         return;
       }
@@ -917,6 +920,12 @@ export default {
         this.$toastr.w("Please include a space in your postal code.");
         return;
       }
+
+      if (this.planRequiresCard && !this.cardStatus) {
+        this.$toastr.w("Please add a credit card.");
+        return;
+      }
+
       axios
         .post("/api/auth/register", data)
         .then(async response => {
