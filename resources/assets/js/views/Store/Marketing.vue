@@ -21,8 +21,8 @@
             <b-tab title="Purchased Gift Cards">
               <gift-cards></gift-cards>
             </b-tab>
-            <b-tab title="Communication">
-              <communication></communication>
+            <b-tab title="SMS Communication">
+              <SMS></SMS>
             </b-tab>
           </b-tabs>
         </div>
@@ -43,7 +43,7 @@ import Promotions from "../../components/Marketing/Promotions";
 import Referrals from "../../components/Marketing/Referrals";
 import Coupons from "../../components/Marketing/Coupons";
 import GiftCards from "../../components/Marketing/GiftCards";
-import Communication from "../../components/Marketing/Communication";
+import SMS from "../../components/Marketing/Sms/Main";
 
 export default {
   components: {
@@ -54,7 +54,7 @@ export default {
     Promotions,
     Coupons,
     GiftCards,
-    Communication
+    SMS
   },
   mixins: [checkDateRange],
   data() {

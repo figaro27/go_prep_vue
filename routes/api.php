@@ -528,6 +528,16 @@ foreach (
                                 'sendTestMessage',
                                 'SMSController@SendTestMessage'
                             );
+
+                            Route::resource(
+                                'SMSMessages',
+                                'SMSMessagesController'
+                            );
+                            Route::resource(
+                                'SMSTemplates',
+                                'SMSTemplatesController'
+                            );
+                            Route::resource('SMSLists', 'SMSListsController');
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {
