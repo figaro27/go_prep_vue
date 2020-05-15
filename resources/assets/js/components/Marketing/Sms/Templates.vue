@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
       <b-modal
-        size="md"
+        size="lg"
         title="Add New Template"
         v-model="showCreateModal"
         v-if="showCreateModal"

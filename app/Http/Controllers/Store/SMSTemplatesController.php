@@ -31,9 +31,9 @@ class SMSTemplatesController extends StoreController
             ]);
             $body = $res->getBody();
             $template = new stdClass();
+            $template->id = json_decode($body)->id;
             $template->name = json_decode($body)->name;
             $template->content = json_decode($body)->content;
-            $template->id = json_decode($body)->id;
             array_push($templates, $template);
         }
 

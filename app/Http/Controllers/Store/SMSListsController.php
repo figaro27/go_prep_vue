@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Store;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\SmsList;
+use App\Customer;
+use stdClass;
 
 class SMSListsController extends StoreController
 {
-    protected $baseURL = 'https://rest.textmagic.com/api/v2/messages';
+    protected $baseURL = 'https://rest.textmagic.com/api/v2/lists';
     protected $headers = [
         'X-TM-Username' => 'mikesoldano',
         'X-TM-Key' => 'sYWo6q3SVtDr9ilKAIzo4XKL4lKVHg',
@@ -17,7 +19,26 @@ class SMSListsController extends StoreController
 
     public function index()
     {
-        //
+        $listIds = SmsList::where('store_id', $this->store->id)->pluck(
+            'list_id'
+        );
+
+        $lists = [];
+
+        foreach ($listIds as $listId) {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('GET', $this->baseURL . '/' . $listId, [
+                'headers' => $this->headers
+            ]);
+            $body = $res->getBody();
+            $list = new stdClass();
+            $list->id = json_decode($body)->id;
+            $list->name = json_decode($body)->name;
+            $list->membersCount = json_decode($body)->membersCount;
+            array_push($lists, $list);
+        }
+
+        return $lists;
     }
 
     /**
@@ -38,7 +59,61 @@ class SMSListsController extends StoreController
      */
     public function store(Request $request)
     {
-        //
+        $name = $request->get('name');
+        if ($name === null) {
+            $count = SmsList::where('store_id', $this->store->id)->count() + 1;
+            $name = 'Template #' . $count;
+        }
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('POST', $this->baseURL, [
+            'headers' => $this->headers,
+            'form_params' => [
+                'name' => $name
+            ]
+        ]);
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        $smsList = new SmsList();
+        $smsList->store_id = $this->store->id;
+        $smsList->name = $name;
+        $smsList->list_id = json_decode($body)->id;
+        $smsList->save();
+
+        $listId = json_decode($body)->id;
+
+        // If contact doesn't exist, add contact to Text Magic and update sms_contact_id in Customers table.
+
+        $customers = $request->get('customers');
+
+        foreach ($customers as $customer) {
+            $customer = Customer::where('id', $customer)->first();
+            if ($customer->sms_contact_id === null) {
+                $phone = (int) preg_replace('/[^0-9]/', '', $customer->phone);
+
+                $client = new \GuzzleHttp\Client();
+                $res = $client->request(
+                    'POST',
+                    'https://rest.textmagic.com/api/v2/contacts',
+                    [
+                        'headers' => $this->headers,
+                        'form_params' => [
+                            'phone' => $phone,
+                            'lists' => $listId,
+                            'firstName' => $customer->firstname,
+                            'lastName' => $customer->lastname,
+                            'email' => $customer->email
+                        ]
+                    ]
+                );
+                $status = $res->getStatusCode();
+                $body = $res->getBody();
+
+                $customer->sms_contact_id = json_decode($body)->id;
+                $customer->update();
+            }
+        }
     }
 
     /**
@@ -49,7 +124,32 @@ class SMSListsController extends StoreController
      */
     public function show($id)
     {
-        //
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', $this->baseURL . '/' . $id, [
+            'headers' => $this->headers
+        ]);
+        $body = new stdClass();
+        $body = $res->getBody();
+
+        return $body;
+    }
+
+    public function showContacts(Request $request)
+    {
+        $id = $request->get('id');
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            $this->baseURL . '/' . $id . '/contacts',
+            [
+                'headers' => $this->headers
+            ]
+        );
+        $body = new stdClass();
+        $body = $res->getBody();
+
+        return $body;
     }
 
     /**
@@ -83,6 +183,15 @@ class SMSListsController extends StoreController
      */
     public function destroy($id)
     {
-        //
+        $template = SmsList::where('list_id', $id)->first();
+        $template->delete();
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('DELETE', $this->baseURL . '/' . $id, [
+            'headers' => $this->headers
+        ]);
+        $body = $res->getBody();
+
+        return $body;
     }
 }

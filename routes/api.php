@@ -538,6 +538,10 @@ foreach (
                                 'SMSTemplatesController'
                             );
                             Route::resource('SMSLists', 'SMSListsController');
+                            Route::post(
+                                'SMSContacts',
+                                'SMSListsController@showContacts'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {
