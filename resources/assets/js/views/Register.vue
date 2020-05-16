@@ -884,7 +884,7 @@ export default {
       }
     },
     async submit() {
-      if (this.form[3].plan === null) {
+      if (this.form[0].role === "store" && this.form[3].plan === null) {
         this.$toastr.w("Please pick a plan.");
         return;
       }
@@ -921,7 +921,11 @@ export default {
         return;
       }
 
-      if (this.planRequiresCard && !this.cardStatus) {
+      if (
+        this.form[0].role === "store" &&
+        this.planRequiresCard &&
+        !this.cardStatus
+      ) {
         this.$toastr.w("Please add a credit card.");
         return;
       }
