@@ -280,6 +280,8 @@ class RegisterController extends Controller
                 'amount' => 5.0
             ]);
 
+            $storeReportSettings = $store->reportSettings()->create();
+
             try {
                 $key = new \Cloudflare\API\Auth\APIKey(
                     config('services.cloudflare.user'),
