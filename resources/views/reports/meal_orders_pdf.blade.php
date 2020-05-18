@@ -42,6 +42,11 @@
             @endif
             <th style="width:150px"><h4>Size</h4></th>
             <th><h4>Item</h4></th>
+
+            @if($params['show_daily_order_numbers'])
+            <th><h4>Daily Order Number(s)</h4></th>
+            @endif
+
             <!-- <th>Total Price</th> -->
           </tr>
         </thead>
