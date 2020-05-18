@@ -250,12 +250,7 @@ class MealOrders
                             $dailyOrderNumbersByMeal[$title] = [];
                         }
 
-                        if (
-                            !in_array(
-                                $dailyOrderNumber,
-                                $dailyOrderNumbersByMeal[$title]
-                            )
-                        ) {
+                        for ($i = 0; $i < $lineItemsOrder->quantity; $i++) {
                             $dailyOrderNumbersByMeal[
                                 $title
                             ][] = $dailyOrderNumber;
