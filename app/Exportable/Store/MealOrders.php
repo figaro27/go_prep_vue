@@ -26,6 +26,10 @@ class MealOrders
         if (!$this->params->has('group_by_date')) {
             $this->params->put('group_by_date', false);
         }
+        $this->params->put(
+            'show_daily_order_numbers',
+            $this->store->modules->dailyOrderNumbers
+        );
         $this->orientation = 'portrait';
     }
 
@@ -110,6 +114,9 @@ class MealOrders
         $production = collect();
         $mealQuantities = [];
         $lineItemQuantities = [];
+        $dailyOrderNumbersByMeal = [];
+        $showDailyOrderNumbers =
+            $this->store->modules && $this->store->modules->dailyOrderNumbers;
         $dates = $this->getDeliveryDates();
         $groupByDate = 'true' === $this->params->get('group_by_date', false);
         $store = $this->store;
@@ -138,6 +145,7 @@ class MealOrders
         $orders->map(function ($order) use (
             &$mealQuantities,
             &$lineItemQuantities,
+            &$dailyOrderNumbersByMeal,
             $groupByDate,
             &$allDates,
             $dates,
@@ -231,6 +239,28 @@ class MealOrders
                     }
 
                     $lineItemQuantities[$title] += $lineItemsOrder->quantity;
+
+                    $dailyOrderNumber =
+                        $lineItemsOrder->order->dailyOrderNumber;
+
+                    if ($dailyOrderNumber) {
+                        if (
+                            !array_key_exists($title, $dailyOrderNumbersByMeal)
+                        ) {
+                            $dailyOrderNumbersByMeal[$title] = [];
+                        }
+
+                        if (
+                            !in_array(
+                                $dailyOrderNumber,
+                                $dailyOrderNumbersByMeal[$title]
+                            )
+                        ) {
+                            $dailyOrderNumbersByMeal[
+                                $title
+                            ][] = $dailyOrderNumber;
+                        }
+                    }
                 }
             }
 
@@ -304,6 +334,27 @@ class MealOrders
                     }
 
                     $mealQuantities[$title] += $mealOrder->quantity;
+
+                    $dailyOrderNumber = $mealOrder->order->dailyOrderNumber;
+
+                    if ($dailyOrderNumber) {
+                        if (
+                            !array_key_exists($title, $dailyOrderNumbersByMeal)
+                        ) {
+                            $dailyOrderNumbersByMeal[$title] = [];
+                        }
+
+                        if (
+                            !in_array(
+                                $dailyOrderNumber,
+                                $dailyOrderNumbersByMeal[$title]
+                            )
+                        ) {
+                            $dailyOrderNumbersByMeal[
+                                $title
+                            ][] = $dailyOrderNumber;
+                        }
+                    }
                 }
             }
         });
@@ -317,18 +368,28 @@ class MealOrders
         ksort($lineItemQuantities);
 
         if (!$groupByDate) {
-            foreach ($mealQuantities as $title => $quantity) {
-                $temp = explode('<sep>', $title);
-                $title = $temp[0];
-                $size = $temp && isset($temp[1]) ? $temp[1] : "";
-                $production->push([$quantity, $size, $title]);
-            }
+            foreach (
+                array_merge($mealQuantities, $lineItemQuantities)
+                as $title => $quantity
+            ) {
+                $titleParts = explode('<sep>', $title);
+                $baseTitle = $titleParts[0];
+                $size =
+                    $titleParts && isset($titleParts[1]) ? $titleParts[1] : "";
+                $row = [$quantity, $size, $baseTitle];
 
-            foreach ($lineItemQuantities as $title => $quantity) {
-                $temp = explode('<sep>', $title);
-                $title = $temp[0];
-                $size = $temp && isset($temp[1]) ? $temp[1] : "";
-                $production->push([$quantity, $size, $title]);
+                if ($showDailyOrderNumbers) {
+                    $numbers = array_key_exists(
+                        $title,
+                        $dailyOrderNumbersByMeal
+                    )
+                        ? $dailyOrderNumbersByMeal[$title]
+                        : [];
+                    $numbers = array_sort($numbers);
+                    $row[] = implode(', ', $numbers);
+                }
+
+                $production->push($row);
             }
         } else {
             foreach ($mealQuantities as $title => $mealDates) {
