@@ -350,9 +350,11 @@ class MealOrders
                                 $dailyOrderNumbersByMeal[$title]
                             )
                         ) {
-                            $dailyOrderNumbersByMeal[
-                                $title
-                            ][] = $dailyOrderNumber;
+                            for ($i = 0; $i < $mealOrder->quantity; $i++) {
+                                $dailyOrderNumbersByMeal[
+                                    $title
+                                ][] = $dailyOrderNumber;
+                            }
                         }
                     }
                 }
