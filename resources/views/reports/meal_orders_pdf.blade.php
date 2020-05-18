@@ -32,7 +32,7 @@
         <thead>
           <tr>
             @if(!$params['group_by_date'] || $params['group_by_date'] === 'false')
-            <th><h4>Orders</h4></th>
+            <th><h4>#</h4></th>
             @else
               @foreach($dates as $i => $date)
                 <th>
@@ -44,7 +44,7 @@
             <th><h4>Item</h4></th>
 
             @if($params['show_daily_order_numbers'])
-            <th><h4>Daily Order Number(s)</h4></th>
+            <th><h4>Daily Order #</h4></th>
             @endif
 
             <!-- <th>Total Price</th> -->
