@@ -179,7 +179,7 @@ $currency = $order->store->settings->currency_symbol
                       </tr>
                       <tr>
                         @if ($order->staff_id)
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Taken By: {{ $order->staff_member }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">Order Taken By: {{ $order->staff_member }}</td>
                         @endif
                       </tr>
                       @if ($order->subscription)

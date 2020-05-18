@@ -477,7 +477,7 @@
             <h4>Placed On</h4>
             <p>{{ moment(order.paid_at).format("dddd, MMM Do") }}</p>
             <div class="mt-3" v-if="order.staff_id">
-              <h4>Taken By</h4>
+              <h4>Order Taken By</h4>
               <p>{{ order.staff_member }}</p>
             </div>
           </div>
