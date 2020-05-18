@@ -344,17 +344,10 @@ class MealOrders
                             $dailyOrderNumbersByMeal[$title] = [];
                         }
 
-                        if (
-                            !in_array(
-                                $dailyOrderNumber,
-                                $dailyOrderNumbersByMeal[$title]
-                            )
-                        ) {
-                            for ($i = 0; $i < $mealOrder->quantity; $i++) {
-                                $dailyOrderNumbersByMeal[
-                                    $title
-                                ][] = $dailyOrderNumber;
-                            }
+                        for ($i = 0; $i < $mealOrder->quantity; $i++) {
+                            $dailyOrderNumbersByMeal[
+                                $title
+                            ][] = $dailyOrderNumber;
                         }
                     }
                 }
