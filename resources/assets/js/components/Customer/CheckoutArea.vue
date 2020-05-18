@@ -801,6 +801,25 @@
           >You are outside of the delivery area.</b-alert
         >
       </div>
+      <div
+        v-if="
+          ($route.params.storeView || storeOwner) && store.modules.showStaff
+        "
+      >
+        <h4 class="mt-2 mb-3">
+          Staff Member
+        </h4>
+        <v-select
+          label="name"
+          :options="staff"
+          v-model="staffMember"
+          placeholder="Staff member taking the order."
+          :filterable="false"
+          :reduce="staff => staff.id"
+          class="mb-3"
+        >
+        </v-select>
+      </div>
       <div>
         <div v-if="$route.params.manualOrder">
           <b-form-group>
@@ -1015,26 +1034,6 @@
             class="pb-2 mediumCheckbox mt-1 mb-1 pl-5"
             >Don't Adjust Balance
           </b-form-checkbox>
-        </div>
-
-        <div
-          v-if="
-            ($route.params.storeView || storeOwner) && store.modules.showStaff
-          "
-        >
-          <h4 class="mt-2 mb-3">
-            Staff Member
-          </h4>
-          <v-select
-            label="name"
-            :options="staff"
-            v-model="staffMember"
-            placeholder="Staff member taking the order."
-            :filterable="false"
-            :reduce="staff => staff.id"
-            class="mb-3"
-          >
-          </v-select>
         </div>
 
         <b-btn
