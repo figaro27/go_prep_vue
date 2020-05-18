@@ -816,7 +816,7 @@
           placeholder="Staff member taking the order."
           :filterable="false"
           :reduce="staff => staff.id"
-          class="mb-3"
+          class="mb-2"
         >
         </v-select>
       </div>
