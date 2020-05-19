@@ -92,7 +92,11 @@
               <div class="row">
                 <p class="small strong col-6 col-md-12">Calories</p>
                 <p class="small col-6 col-md-12">
-                  <span v-if="storeSettings.macrosFromNutrition">
+                  <span
+                    v-if="
+                      storeSettings.macrosFromNutrition && !blankNutritionFacts
+                    "
+                  >
                     {{ nutritionalFacts.valueCalories }}
                   </span>
                   <span v-else>
@@ -107,7 +111,11 @@
               <div class="row">
                 <p class="small strong col-6 col-md-12">Carbs</p>
                 <p class="small col-6 col-md-12">
-                  <span v-if="storeSettings.macrosFromNutrition">
+                  <span
+                    v-if="
+                      storeSettings.macrosFromNutrition && !blankNutritionFacts
+                    "
+                  >
                     {{ nutritionalFacts.valueTotalCarb }}
                   </span>
                   <span v-else>
@@ -122,7 +130,11 @@
               <div class="row">
                 <p class="small strong col-6 col-md-12">Protein</p>
                 <p class="small col-6 col-md-12">
-                  <span v-if="storeSettings.macrosFromNutrition">
+                  <span
+                    v-if="
+                      storeSettings.macrosFromNutrition && !blankNutritionFacts
+                    "
+                  >
                     {{ nutritionalFacts.valueProteins }}
                   </span>
                   <span v-else>
@@ -137,7 +149,11 @@
               <div class="row">
                 <p class="small strong col-6 col-md-12">Fat</p>
                 <p class="small col-6 col-md-12">
-                  <span v-if="storeSettings.macrosFromNutrition">
+                  <span
+                    v-if="
+                      storeSettings.macrosFromNutrition && !blankNutritionFacts
+                    "
+                  >
                     {{ nutritionalFacts.valueTotalFat }}
                   </span>
                   <span v-else>
@@ -287,6 +303,19 @@ export default {
         let style = "background-color:";
         style += this.store.settings.color;
         return style;
+      }
+    },
+    blankNutritionFacts() {
+      let nutrition = this.nutritionalFacts;
+      if (
+        nutrition.valueCalories === "0" &&
+        nutrition.valueTotalCarb === "0" &&
+        nutrition.valueTotalFat === "0" &&
+        nutrition.valueProteins === "0"
+      ) {
+        return true;
+      } else {
+        return false;
       }
     },
     // columns() {
