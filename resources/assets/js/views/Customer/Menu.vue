@@ -254,6 +254,7 @@
                   @click="backToMenu"
                   :target="'categorySection_' + cat.id"
                 >
+                  1
                   {{ cat.title }}
                 </div>
               </div>
@@ -269,6 +270,7 @@
                   @click="backToMenu"
                   :target="'categorySection_' + cat.id"
                 >
+                  2
                   {{ cat.category }}
                 </div>
               </div>
