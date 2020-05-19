@@ -1318,13 +1318,11 @@ export default {
         : Vue.delete(this.filters.categories, i);
     },
     backToMenu() {
-      this.$nextTick(() => {
-        this.showMealsArea = true;
-        this.showMealPackagesArea = true;
-        this.mealPageView = false;
-        this.mealPackagePageView = false;
-        this.finalCategoriesSub = [];
-      });
+      this.showMealsArea = true;
+      this.showMealPackagesArea = true;
+      this.mealPageView = false;
+      this.mealPackagePageView = false;
+      this.finalCategoriesSub = [];
     },
     backFromPackagePage() {
       this.$refs.mealPackagePage.back();
