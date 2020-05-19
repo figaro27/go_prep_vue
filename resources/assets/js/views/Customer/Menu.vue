@@ -251,8 +251,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  :id="'categoryNavItem_' + cat.id"
-                  @click="backToMenu(cat.id)"
+                  @click="backToMenu"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.title }}
@@ -267,8 +266,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  @click="backToMenu(cat.id)"
-                  :id="'categoryNavItem_' + cat.id"
+                  @click="backToMenu"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.category }}
@@ -1319,17 +1317,12 @@ export default {
         ? this.filters.categories.push(category)
         : Vue.delete(this.filters.categories, i);
     },
-    backToMenu(catId = null) {
+    backToMenu() {
       this.showMealsArea = true;
       this.showMealPackagesArea = true;
       this.mealPageView = false;
       this.mealPackagePageView = false;
       this.finalCategoriesSub = [];
-
-      if (catId !== null) {
-        let element = document.getElementById("categoryNavItem_" + catId);
-        element.scrollIntoView();
-      }
     },
     backFromPackagePage() {
       this.$refs.mealPackagePage.back();
