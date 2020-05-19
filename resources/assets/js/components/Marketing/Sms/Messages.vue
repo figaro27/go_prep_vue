@@ -11,36 +11,6 @@
         hide-footer
       >
         <b-form @submit.prevent="sendMessage()">
-          <b-form-textarea
-            class="flex-grow-1 m-2"
-            v-model="message.content"
-            placeholder="Enter SMS message content here."
-            rows="3"
-            max-rows="6"
-          ></b-form-textarea>
-          <b-form-input
-            v-model="message.name"
-            placeholder="Optional message template name"
-          ></b-form-input>
-          <b-btn variant="primary" @click="saveNewTemplate"
-            >Save as Template</b-btn
-          >
-          <p @click="showTagDropdown = !showTagDropdown">Insert Tag</p>
-          <div v-if="showTagDropdown">
-            <div v-for="tag in tags" :key="tag">
-              <p @click="addTag(tag)">{{ tag }}</p>
-            </div>
-          </div>
-          <v-select
-            label="text"
-            :options="templateOptions"
-            v-model="templateId"
-            placeholder="Choose Existing Template"
-            :reduce="template => template.value"
-            @input="setTemplate"
-            class="mb-3"
-          >
-          </v-select>
           <v-select
             label="text"
             :options="listOptions"
@@ -50,6 +20,48 @@
             class="mb-3"
           >
           </v-select>
+          <v-select
+            v-if="templateOptions.length > 0"
+            label="text"
+            :options="templateOptions"
+            v-model="templateId"
+            placeholder="Choose Existing Template"
+            :reduce="template => template.value"
+            @input="setTemplate"
+            class="mb-3"
+          >
+          </v-select>
+          <b-form-textarea
+            class="flex-grow-1 m-2"
+            v-model="message.content"
+            placeholder="Enter SMS message content here."
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+          <b-form-input
+            v-if="message.content !== ''"
+            v-model="message.name"
+            placeholder="Optional message template name"
+          ></b-form-input>
+          <b-btn
+            variant="warning"
+            @click="updateTemplate"
+            v-if="templateId !== null"
+            >Update Template</b-btn
+          >
+          <b-btn
+            variant="primary"
+            @click="saveNewTemplate"
+            v-if="message.content !== ''"
+            >Save as Template</b-btn
+          >
+          <p @click="showTagDropdown = !showTagDropdown">Insert Tag</p>
+          <div v-if="showTagDropdown">
+            <div v-for="tag in tags" :key="tag">
+              <p @click="addTag(tag)">{{ tag }}</p>
+            </div>
+          </div>
+
           <b-button type="submit" variant="primary">Send Message</b-button>
         </b-form>
       </b-modal>
@@ -124,6 +136,7 @@ export default {
       message: { content: "", name: "" },
       templateOptions: [],
       templateId: null,
+      templateName: "",
       listOptions: [],
       listId: null,
       showTagDropdown: false
@@ -152,7 +165,7 @@ export default {
       }
     },
     addTag(tag) {
-      this.message.content += "{" + tag + "}";
+      this.message.content += " {" + tag + "} ";
       this.showTagDropdown = false;
     },
     createSMS() {
@@ -174,6 +187,7 @@ export default {
         });
     },
     refreshTemplates() {
+      this.templateOptions = [];
       axios.get("/api/me/SMSTemplates").then(resp => {
         resp.data.forEach(template => {
           this.templateOptions.push({
@@ -186,6 +200,7 @@ export default {
     setTemplate() {
       axios.get("/api/me/SMSTemplates/" + this.templateId).then(resp => {
         this.message.content = resp.data.content;
+        this.templateName = resp.data.name;
       });
     },
     saveNewTemplate() {
@@ -199,7 +214,19 @@ export default {
           this.refreshTemplates();
         });
     },
+    updateTemplate() {
+      axios
+        .put("/api/me/SMSTemplates/" + this.templateId, {
+          content: this.message.content,
+          name: this.templateName
+        })
+        .then(resp => {
+          this.$toastr.s("Template has been updated.", "Success");
+          this.refreshTemplates();
+        });
+    },
     refreshLists() {
+      this.listOptions = [];
       axios.get("/api/me/SMSLists").then(resp => {
         resp.data.forEach(list => {
           this.listOptions.push({

@@ -123,7 +123,21 @@ class SMSTemplatesController extends StoreController
      */
     public function update(Request $request, $id)
     {
-        //
+        $content = $request->get('content');
+        $name = $request->get('name');
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('PUT', $this->baseURL . '/' . $id, [
+            'headers' => $this->headers,
+            'form_params' => [
+                'content' => $content,
+                'name' => $name
+            ]
+        ]);
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        return $body;
     }
 
     /**
