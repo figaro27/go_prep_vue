@@ -251,8 +251,8 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
+                  @click="exitMealPage"
                   :target="'categorySection_' + cat.id"
-                  @click="exitMealPage()"
                 >
                   {{ cat.title }}
                 </div>
@@ -266,8 +266,8 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
+                  @click="exitMealPage"
                   :target="'categorySection_' + cat.id"
-                  @click="exitMealPage()"
                 >
                   {{ cat.category }}
                 </div>
