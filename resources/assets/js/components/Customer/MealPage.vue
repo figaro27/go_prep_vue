@@ -126,7 +126,9 @@
                     {{ nutritionalFacts.valueProteins }}
                   </span>
                   <span v-else>
-                    <span>{{ meal.macros.proteins }}</span>
+                    <span v-if="!isNaN(meal.macros.protein)">{{
+                      meal.macros.protein
+                    }}</span>
                   </span>
                 </p>
               </div>
