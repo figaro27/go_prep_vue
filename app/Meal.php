@@ -252,10 +252,10 @@ class Meal extends Model implements HasMedia
             }
         }
 
-        $media = $mediaItems[0];
+        $media = isset($mediaItems[0]) ? $mediaItems[0] : '';
 
         return [
-            'id' => $mediaItems[0]->id,
+            'id' => isset($mediaItems[0]) ? $mediaItems[0]->id : null,
             'url' => $this->store
                 ? $this->store->getUrl(MediaUtils::getMediaPath($media))
                 : '',
