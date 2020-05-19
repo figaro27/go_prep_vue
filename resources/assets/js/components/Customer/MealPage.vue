@@ -243,6 +243,9 @@ export default {
       selectedAddons: []
     };
   },
+  mounted() {
+    console.log(this.meal);
+  },
   components: {
     LightBox,
     MealVariationsArea
