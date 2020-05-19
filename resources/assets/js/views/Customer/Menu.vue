@@ -267,7 +267,7 @@
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
                   :target="'categorySection_' + cat.id"
-                  @click="search = ''"
+                  @click="exitMealPage()"
                 >
                   {{ cat.category }}
                 </div>
@@ -1332,6 +1332,12 @@ export default {
     },
     showDeliveryDateModal() {
       this.showDeliveryDayModal = true;
+    },
+    exitMealPage() {
+      this.search = "";
+      this.mealPageView = false;
+      this.showMealsArea = true;
+      this.showMealPackagesArea = true;
     }
   }
 };
