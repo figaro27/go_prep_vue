@@ -90,7 +90,9 @@ class SMSListsController extends StoreController
         foreach ($customers as $customer) {
             $customer = Customer::where('id', $customer)->first();
             if ($customer->sms_contact_id === null) {
-                $phone = (int) preg_replace('/[^0-9]/', '', $customer->phone);
+                // Get country prefix
+                $phone =
+                    (int) 1 . preg_replace('/[^0-9]/', '', $customer->phone);
 
                 $client = new \GuzzleHttp\Client();
                 $res = $client->request(

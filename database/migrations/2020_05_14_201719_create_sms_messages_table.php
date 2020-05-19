@@ -20,7 +20,6 @@ class CreateSmsMessagesTable extends Migration
                 ->foreign('store_id')
                 ->references('id')
                 ->on('stores');
-            $table->string('name');
             $table->unsignedInteger('message_id');
             $table->timestamps();
         });

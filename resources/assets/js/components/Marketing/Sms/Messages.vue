@@ -3,14 +3,23 @@
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
       <b-modal
-        size="md"
+        size="lg"
         title="Add New Message"
         v-model="showCreateModal"
         v-if="showCreateModal"
         no-fade
         hide-footer
       >
-        Test
+        <b-form @submit.prevent="sendMessage()">
+          <b-form-textarea
+            id="textarea"
+            v-model="message"
+            placeholder="Enter something..."
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+          <b-button type="submit" variant="primary">Send Message</b-button>
+        </b-form>
       </b-modal>
 
       <b-modal
@@ -78,7 +87,10 @@ export default {
     return {
       columns: ["test", "actions"],
       showViewModal: false,
-      showCreateModal: false
+      showCreateModal: false,
+      message: "",
+      templateId: null,
+      listId: null
     };
   },
   created() {},
@@ -99,7 +111,14 @@ export default {
     view(id) {
       this.showViewModal = true;
     },
-    destroy(id) {}
+    destroy(id) {},
+    sendMessage() {
+      axios.post("/api/me/SMSMessages", {
+        message: this.message,
+        templateId: 1499275,
+        listId: 1504827
+      });
+    }
   }
 };
 </script>

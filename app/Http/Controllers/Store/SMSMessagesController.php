@@ -38,18 +38,16 @@ class SMSMessagesController extends StoreController
      */
     public function store(Request $request)
     {
-        // $message = urlencode($request->get('message'));
-        // $phones = $request->get('phones');
-
-        $message = urlencode('Test 3');
-        $phones = 9991234567;
+        $message = urlencode($request->get('message'));
+        $listId = $request->get('listId');
+        $templateId = $request->get('templateId');
 
         $client = new \GuzzleHttp\Client();
         $res = $client->request('POST', $this->baseURL, [
             'headers' => $this->headers,
             'form_params' => [
-                'phones' => $phones,
-                'text' => $message
+                'lists' => $listId,
+                'templateId' => $templateId
             ]
         ]);
         $status = $res->getStatusCode();
