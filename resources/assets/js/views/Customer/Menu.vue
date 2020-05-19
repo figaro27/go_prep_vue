@@ -380,7 +380,6 @@ import store from "../../store";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
-  console.log(1);
 });
 
 $(function() {
@@ -388,18 +387,15 @@ $(function() {
   $("body").on("click", ".categoryNavItem", function() {
     if ($(this).hasClass("active")) {
       return;
-      console.log(2);
     }
 
     let target = $(this).attr("target");
     if (!target) {
       return;
-      console.log(3);
     }
 
     if ($(".categorySection[target='" + target + "']").length == 0) {
       return;
-      console.log(4);
     }
 
     byPassScroll = true;
@@ -419,15 +415,13 @@ $(function() {
       byPassScroll = false;
     }, 800);
   });
-  console.log(5);
+
   $(window).on("scroll", function() {
     buildCategoryScroll();
-    console.log(6);
   });
 
   function buildCategoryScroll() {
     if (byPassScroll) {
-      console.log(7);
       return;
     }
 
@@ -440,8 +434,6 @@ $(function() {
         $('.categoryNavItem[target="' + target + '"]').addClass("active");
       }
     });
-
-    console.log(8);
   }
 });
 
