@@ -251,8 +251,13 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
+                  @click="
+                    (search = ''),
+                      (mealPageView = false),
+                      (showMealsArea = true),
+                      (showMealPackagesArea = true)
+                  "
                   :target="'categorySection_' + cat.id"
-                  @click="exitMealPage()"
                 >
                   {{ cat.title }}
                 </div>
@@ -266,8 +271,13 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
+                  @click="
+                    (search = ''),
+                      (mealPageView = false),
+                      (showMealsArea = true),
+                      (showMealPackagesArea = true)
+                  "
                   :target="'categorySection_' + cat.id"
-                  @click.prevent="exitMealPage()"
                 >
                   {{ cat.category }}
                 </div>
