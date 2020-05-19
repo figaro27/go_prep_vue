@@ -229,7 +229,7 @@ class Meal extends Model implements HasMedia
     {
         $mediaItems = $this->getMedia('featured_image');
 
-        if (!count($mediaItems)) {
+        if (!count($mediaItems) && $this->store) {
             if ($this->store->settings->menuStyle === 'text') {
                 return null;
             }
@@ -256,13 +256,19 @@ class Meal extends Model implements HasMedia
 
         return [
             'id' => $mediaItems[0]->id,
-            'url' => $this->store->getUrl(MediaUtils::getMediaPath($media)),
-            'url_thumb' => $this->store->getUrl(
-                MediaUtils::getMediaPath($media, 'thumb')
-            ),
-            'url_medium' => $this->store->getUrl(
-                MediaUtils::getMediaPath($media, 'medium')
-            )
+            'url' => $this->store
+                ? $this->store->getUrl(MediaUtils::getMediaPath($media))
+                : '',
+            'url_thumb' => $this->store
+                ? $this->store->getUrl(
+                    MediaUtils::getMediaPath($media, 'thumb')
+                )
+                : '',
+            'url_medium' => $this->store
+                ? $this->store->getUrl(
+                    MediaUtils::getMediaPath($media, 'medium')
+                )
+                : ''
         ];
     }
 
