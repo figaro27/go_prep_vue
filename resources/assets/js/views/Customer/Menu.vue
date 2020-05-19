@@ -252,7 +252,7 @@
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
                   :target="'categorySection_' + cat.id"
-                  @click="search = ''"
+                  @click="exitMealPage()"
                 >
                   {{ cat.title }}
                 </div>
