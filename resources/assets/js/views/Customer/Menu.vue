@@ -251,7 +251,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  @click="exitMealPage"
+                  @click="backToMenu"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.title }}
@@ -266,7 +266,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  @click="exitMealPage"
+                  @click="backToMenu"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.category }}
@@ -1332,12 +1332,6 @@ export default {
     },
     showDeliveryDateModal() {
       this.showDeliveryDayModal = true;
-    },
-    exitMealPage() {
-      this.search = "";
-      this.mealPageView = false;
-      this.showMealsArea = true;
-      this.showMealPackagesArea = true;
     }
   }
 };
