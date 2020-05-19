@@ -251,12 +251,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  @click="
-                    (search = ''),
-                      (mealPageView = false),
-                      (showMealsArea = true),
-                      (showMealPackagesArea = true)
-                  "
+                  @click="exitMealPage"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.title }}
@@ -271,12 +266,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  @click="
-                    (search = ''),
-                      (mealPageView = false),
-                      (showMealsArea = true),
-                      (showMealPackagesArea = true)
-                  "
+                  @click="exitMealPage"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.category }}
