@@ -243,7 +243,7 @@ export default {
       selectedAddons: []
     };
   },
-  mounted() {
+  updated() {
     console.log(this.meal);
   },
   components: {
