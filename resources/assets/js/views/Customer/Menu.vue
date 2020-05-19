@@ -1320,6 +1320,7 @@ export default {
         : Vue.delete(this.filters.categories, i);
     },
     backToMenu(catId = null) {
+      console.log(catId);
       this.showMealsArea = true;
       this.showMealPackagesArea = true;
       this.mealPageView = false;
