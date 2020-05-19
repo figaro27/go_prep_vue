@@ -267,7 +267,6 @@
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
                   @click="backToMenu"
-                  :id="'categorySection_' + cat.id"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.category }}
