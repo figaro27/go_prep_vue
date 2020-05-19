@@ -111,7 +111,7 @@
                     {{ nutritionalFacts.valueTotalCarb }}
                   </span>
                   <span v-else>
-                    <span v-if="!isNaN(meal.macros.calories)">{{
+                    <span v-if="!isNaN(meal.macros.carbs)">{{
                       meal.macros.carbs
                     }}</span>
                   </span>
@@ -126,7 +126,7 @@
                     {{ nutritionalFacts.valueProteins }}
                   </span>
                   <span v-else>
-                    <span v-if="!isNaN(meal.macros.calories)">{{
+                    <span v-if="!isNaN(meal.macros.proteins)">{{
                       meal.macros.proteins
                     }}</span>
                   </span>
@@ -141,7 +141,7 @@
                     {{ nutritionalFacts.valueTotalFat }}
                   </span>
                   <span v-else>
-                    <span v-if="!isNaN(meal.macros.calories)">{{
+                    <span v-if="!isNaN(meal.macros.fat)">{{
                       meal.macros.fat
                     }}</span>
                   </span>
@@ -242,9 +242,6 @@ export default {
       selectedComponentOptions: [],
       selectedAddons: []
     };
-  },
-  updated() {
-    console.log(this.meal);
   },
   components: {
     LightBox,
