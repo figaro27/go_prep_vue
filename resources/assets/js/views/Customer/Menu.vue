@@ -251,8 +251,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  :id="'categoryNavItem_' + cat.id"
-                  @click="backToMenu(cat.id)"
+                  @click="backToMenu"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.title }}
@@ -267,8 +266,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  @click="backToMenu(cat.id)"
-                  :id="'categoryNavItem_' + cat.id"
+                  @click="backToMenu"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.category }}
@@ -382,6 +380,7 @@ import store from "../../store";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
+  console.log(1);
 });
 
 $(function() {
@@ -389,15 +388,18 @@ $(function() {
   $("body").on("click", ".categoryNavItem", function() {
     if ($(this).hasClass("active")) {
       return;
+      console.log(2);
     }
 
     let target = $(this).attr("target");
     if (!target) {
       return;
+      console.log(3);
     }
 
     if ($(".categorySection[target='" + target + "']").length == 0) {
       return;
+      console.log(4);
     }
 
     byPassScroll = true;
@@ -417,13 +419,15 @@ $(function() {
       byPassScroll = false;
     }, 800);
   });
-
+  console.log(5);
   $(window).on("scroll", function() {
     buildCategoryScroll();
+    console.log(6);
   });
 
   function buildCategoryScroll() {
     if (byPassScroll) {
+      console.log(7);
       return;
     }
 
@@ -436,6 +440,8 @@ $(function() {
         $('.categoryNavItem[target="' + target + '"]').addClass("active");
       }
     });
+
+    console.log(8);
   }
 });
 
@@ -1319,18 +1325,12 @@ export default {
         ? this.filters.categories.push(category)
         : Vue.delete(this.filters.categories, i);
     },
-    backToMenu(catId = null) {
-      console.log(catId);
+    backToMenu() {
       this.showMealsArea = true;
       this.showMealPackagesArea = true;
       this.mealPageView = false;
       this.mealPackagePageView = false;
       this.finalCategoriesSub = [];
-
-      if (catId !== null) {
-        let element = document.getElementById("categoryNavItem_" + catId);
-        element.scrollIntoView();
-      }
     },
     backFromPackagePage() {
       this.$refs.mealPackagePage.back();
