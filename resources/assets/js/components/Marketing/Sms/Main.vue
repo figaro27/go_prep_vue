@@ -2,17 +2,13 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
-      <b-tabs>
-        <b-tab title="Messages">
-          <messages></messages>
-        </b-tab>
-        <b-tab title="Templates">
-          <templates></templates>
-        </b-tab>
-        <b-tab title="Lists">
-          <lists></lists>
-        </b-tab>
-      </b-tabs>
+
+      <b-btn variant="success" @click="$refs.messages.createSMS()"
+        >Compose New SMS</b-btn
+      >
+      <messages ref="messages"></messages>
+      <!-- <templates ref="templates"></templates>
+        <lists ref="lists"></lists> -->
     </div>
   </div>
 </template>

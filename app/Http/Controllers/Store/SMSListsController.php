@@ -62,7 +62,7 @@ class SMSListsController extends StoreController
         $name = $request->get('name');
         if ($name === null) {
             $count = SmsList::where('store_id', $this->store->id)->count() + 1;
-            $name = 'Template #' . $count;
+            $name = 'List #' . $count;
         }
 
         $client = new \GuzzleHttp\Client();
@@ -185,8 +185,8 @@ class SMSListsController extends StoreController
      */
     public function destroy($id)
     {
-        $template = SmsList::where('list_id', $id)->first();
-        $template->delete();
+        $list = SmsList::where('list_id', $id)->first();
+        $list->delete();
 
         $client = new \GuzzleHttp\Client();
         $res = $client->request('DELETE', $this->baseURL . '/' . $id, [

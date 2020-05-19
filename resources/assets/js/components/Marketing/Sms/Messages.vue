@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
       <b-modal
-        size="lg"
+        size="xl"
         title="Add New Message"
         v-model="showCreateModal"
         v-if="showCreateModal"
@@ -12,12 +12,44 @@
       >
         <b-form @submit.prevent="sendMessage()">
           <b-form-textarea
-            id="textarea"
-            v-model="message"
-            placeholder="Enter something..."
+            class="flex-grow-1 m-2"
+            v-model="message.content"
+            placeholder="Enter SMS message content here."
             rows="3"
             max-rows="6"
           ></b-form-textarea>
+          <b-form-input
+            v-model="message.name"
+            placeholder="Optional message template name"
+          ></b-form-input>
+          <b-btn variant="primary" @click="saveNewTemplate"
+            >Save as Template</b-btn
+          >
+          <p @click="showTagDropdown = !showTagDropdown">Insert Tag</p>
+          <div v-if="showTagDropdown">
+            <div v-for="tag in tags" :key="tag">
+              <p @click="addTag(tag)">{{ tag }}</p>
+            </div>
+          </div>
+          <v-select
+            label="text"
+            :options="templateOptions"
+            v-model="templateId"
+            placeholder="Choose Existing Template"
+            :reduce="template => template.value"
+            @input="setTemplate"
+            class="mb-3"
+          >
+          </v-select>
+          <v-select
+            label="text"
+            :options="listOptions"
+            v-model="listId"
+            placeholder="Choose Contact List"
+            :reduce="list => list.value"
+            class="mb-3"
+          >
+          </v-select>
           <b-button type="submit" variant="primary">Send Message</b-button>
         </b-form>
       </b-modal>
@@ -32,7 +64,6 @@
       >
         Test
       </b-modal>
-
       <v-client-table
         :columns="columns"
         :data="tableData"
@@ -41,17 +72,18 @@
             column: 'id',
             ascending: true
           },
-          headings: {},
+          headings: {
+            messageTime: 'Sent On',
+            text: 'Message'
+          },
           filterable: false
         }"
       >
-        <div slot="beforeTable" class="mb-2">
-          <button
-            class="btn btn-success btn-md mb-2 mb-sm-0"
-            @click="showCreateModal = true"
-          >
-            Add New Message
-          </button>
+        <div slot="messageTime" slot-scope="props">
+          {{ moment(props.row.messageTime).format("llll") }}
+        </div>
+        <div slot="text" class="text-nowrap" slot-scope="props">
+          {{ truncate(props.row.text, 150, "...") }}
         </div>
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button
@@ -85,40 +117,107 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      columns: ["test", "actions"],
+      tableData: [],
+      columns: ["messageTime", "text", "actions"],
       showViewModal: false,
       showCreateModal: false,
-      message: "",
+      message: { content: "", name: "" },
+      templateOptions: [],
       templateId: null,
-      listId: null
+      listOptions: [],
+      listId: null,
+      showTagDropdown: false
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.refreshTable();
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
       isLoading: "isLoading",
       initialized: "initialized"
     }),
-    tableData() {
-      return [{ test: "test" }];
+    tags() {
+      return ["First name", "Last name", "Company name", "Phone", "Email"];
     }
   },
   methods: {
     ...mapActions({}),
     formatMoney: format.money,
+    truncate(text, length, suffix) {
+      if (text) {
+        return text.substring(0, length) + suffix;
+      }
+    },
+    addTag(tag) {
+      this.message.content += "{" + tag + "}";
+      this.showTagDropdown = false;
+    },
+    createSMS() {
+      this.refreshTemplates();
+      this.refreshLists();
+      this.showCreateModal = true;
+    },
+    sendMessage() {
+      axios
+        .post("/api/me/SMSMessages", {
+          message: this.message.content,
+          // templateId: this.templateId,
+          listId: this.listId
+        })
+        .then(resp => {
+          this.$toastr.s("SMS has been sent.", "Success");
+          this.refreshTable();
+          this.showCreateModal = false;
+        });
+    },
+    refreshTemplates() {
+      axios.get("/api/me/SMSTemplates").then(resp => {
+        resp.data.forEach(template => {
+          this.templateOptions.push({
+            text: template.name,
+            value: template.id
+          });
+        });
+      });
+    },
+    setTemplate() {
+      axios.get("/api/me/SMSTemplates/" + this.templateId).then(resp => {
+        this.message.content = resp.data.content;
+      });
+    },
+    saveNewTemplate() {
+      axios
+        .post("/api/me/SMSTemplates", {
+          content: this.message.content,
+          name: this.message.name
+        })
+        .then(resp => {
+          this.$toastr.s("New template has been saved.", "Success");
+          this.refreshTemplates();
+        });
+    },
+    refreshLists() {
+      axios.get("/api/me/SMSLists").then(resp => {
+        resp.data.forEach(list => {
+          this.listOptions.push({
+            text: list.name,
+            value: list.id
+          });
+        });
+      });
+    },
+    refreshTable() {
+      axios.get("/api/me/SMSMessages").then(resp => {
+        this.tableData = resp.data;
+      });
+    },
     view(id) {
       this.showViewModal = true;
     },
-    destroy(id) {},
-    sendMessage() {
-      axios.post("/api/me/SMSMessages", {
-        message: this.message,
-        templateId: 1499275,
-        listId: 1504827
-      });
-    }
+    destroy(id) {}
   }
 };
 </script>
