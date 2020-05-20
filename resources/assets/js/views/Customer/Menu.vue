@@ -265,6 +265,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
+                  @click="backToMenu('categorySection_' + cat.id)"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.category }}
@@ -380,22 +381,12 @@ window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
 });
 
+let scrollToCategory;
+
 $(function() {
   var byPassScroll = false;
-  $("body").on("click", ".categoryNavItem", function() {
-    if ($(this).hasClass("active")) {
-      return;
-    }
 
-    let target = $(this).attr("target");
-    if (!target) {
-      return;
-    }
-
-    if ($(".categorySection[target='" + target + "']").length == 0) {
-      return;
-    }
-
+  scrollToCategory = target => {
     byPassScroll = true;
 
     $(".categoryNavItem").removeClass("active");
@@ -412,6 +403,23 @@ $(function() {
     setTimeout(() => {
       byPassScroll = false;
     }, 800);
+  };
+
+  $("body").on("click", ".categoryNavItem", function() {
+    if ($(this).hasClass("active")) {
+      return;
+    }
+
+    let target = $(this).attr("target");
+    if (!target) {
+      return;
+    }
+
+    if ($(".categorySection[target='" + target + "']").length == 0) {
+      return;
+    }
+
+    scrollToCategory(target);
   });
 
   $(window).on("scroll", function() {
@@ -1315,12 +1323,18 @@ export default {
         ? this.filters.categories.push(category)
         : Vue.delete(this.filters.categories, i);
     },
-    backToMenu() {
+    backToMenu(categoryTarget = null) {
       this.showMealsArea = true;
       this.showMealPackagesArea = true;
       this.mealPageView = false;
       this.mealPackagePageView = false;
       this.finalCategoriesSub = [];
+
+      if (categoryTarget) {
+        this.$nextTick(() => {
+          scrollToCategory(categoryTarget);
+        });
+      }
     },
     backFromPackagePage() {
       this.$refs.mealPackagePage.back();
