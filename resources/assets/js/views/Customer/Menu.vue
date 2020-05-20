@@ -390,7 +390,6 @@ $(function() {
     byPassScroll = true;
 
     $(".categoryNavItem").removeClass("active");
-    $(this).addClass("active");
 
     $([document.documentElement, document.body]).animate(
       {
@@ -420,6 +419,7 @@ $(function() {
     }
 
     scrollToCategory(target);
+    $(this).addClass("active");
   });
 
   $(window).on("scroll", function() {
