@@ -20,7 +20,6 @@ class CreateSmsListsTable extends Migration
                 ->foreign('store_id')
                 ->references('id')
                 ->on('stores');
-            $table->string('name');
             $table->unsignedInteger('list_id');
             $table->timestamps();
         });

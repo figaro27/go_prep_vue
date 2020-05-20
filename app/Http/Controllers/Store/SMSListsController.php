@@ -77,7 +77,6 @@ class SMSListsController extends StoreController
 
         $smsList = new SmsList();
         $smsList->store_id = $this->store->id;
-        $smsList->name = $name;
         $smsList->list_id = json_decode($body)->id;
         $smsList->save();
 

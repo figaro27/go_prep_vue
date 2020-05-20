@@ -79,7 +79,6 @@ class SMSTemplatesController extends StoreController
 
         $smsTemplate = new SmsTemplate();
         $smsTemplate->store_id = $this->store->id;
-        $smsTemplate->name = $name;
         $smsTemplate->template_id = json_decode($body)->id;
         $smsTemplate->save();
 
