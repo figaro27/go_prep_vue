@@ -402,6 +402,8 @@ $(function() {
     setTimeout(() => {
       byPassScroll = false;
     }, 800);
+
+    $('.categoryNavItem[target="' + target + '"]').addClass("active");
   };
 
   $("body").on("click", ".categoryNavItem", function() {
@@ -417,7 +419,6 @@ $(function() {
     if ($(".categorySection[target='" + target + "']").length == 0) {
       return;
     }
-    $(this).addClass("active");
     scrollToCategory(target);
   });
 
