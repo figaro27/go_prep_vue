@@ -417,9 +417,8 @@ $(function() {
     if ($(".categorySection[target='" + target + "']").length == 0) {
       return;
     }
-
-    scrollToCategory(target);
     $(this).addClass("active");
+    scrollToCategory(target);
   });
 
   $(window).on("scroll", function() {
