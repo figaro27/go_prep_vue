@@ -251,7 +251,6 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  @click="backToMenu"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.title }}
@@ -266,7 +265,6 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  @click="backToMenu"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.category }}
