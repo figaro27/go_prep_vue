@@ -3,6 +3,17 @@
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
 
+      <b-modal
+        size="xl"
+        title="Templates"
+        v-model="showTemplateModal"
+        v-if="showTemplateModal"
+        no-fade
+        hide-footer
+      >
+        <template-modal @setTemplate="setTemplate($event)"></template-modal>
+      </b-modal>
+
       <b-btn variant="success" @click="showNewSMSArea = !showNewSMSArea"
         >Compose New SMS</b-btn
       >
@@ -57,19 +68,28 @@
                 ></b-form-textarea>
               </div>
               <div class="col-md-3 pt-3">
-                <div class="d-flex">
+                <div
+                  class="d-flex"
+                  @click="showTemplateModal = !showTemplateModal"
+                >
                   <i
                     class="far fa-file-alt d-inline pr-1 pt-1"
                     style="color:#737373"
                   ></i>
                   <p class="d-inline"><u>Insert template</u></p>
                 </div>
-                <div class="d-flex">
+                <div class="d-flex" @click="showTagDropdown = !showTagDropdown">
                   <i
                     class="fas fa-tag d-inline pr-1 pt-1"
                     style="color:#737373"
                   ></i>
                   <p class="d-inline"><u>Insert tag</u></p>
+                  <div v-if="showTagDropdown" class="tagDropdown">
+                    <li v-for="tag in tags" :key="tag" @click="addTag(tag)">
+                      <p>{{ tag }}</p>
+                      <hr />
+                    </li>
+                  </div>
                 </div>
               </div>
             </div>
@@ -128,17 +148,22 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import checkDateRange from "../../mixins/deliveryDates";
 import format from "../../lib/format";
 import store from "../../store";
+import TemplateModal from "./TemplateModal.vue";
 
 export default {
   components: {
     Spinner,
-    vSelect
+    vSelect,
+    TemplateModal
   },
   mixins: [checkDateRange],
   data() {
     return {
       showNewSMSArea: false,
       showSMSSettingsModal: false,
+      showTagDropdown: false,
+      showTemplateModal: false,
+      message: "",
       tableData: [],
       columns: ["messageTime", "text", "actions"]
     };
@@ -152,7 +177,10 @@ export default {
       store: "viewedStore",
       isLoading: "isLoading",
       initialized: "initialized"
-    })
+    }),
+    tags() {
+      return ["First name", "Last name", "Company name", "Phone", "Email"];
+    }
   },
   methods: {
     ...mapActions({}),
@@ -161,6 +189,13 @@ export default {
       axios.get("/api/me/SMSMessages").then(resp => {
         this.tableData = resp.data;
       });
+    },
+    addTag(tag) {
+      this.message += " {" + tag + "} ";
+    },
+    setTemplate(content) {
+      this.message = content;
+      this.showTemplateModal = false;
     }
   }
 };

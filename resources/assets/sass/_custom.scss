@@ -1578,3 +1578,23 @@ body.forgotresettoken {
   padding: 20px !important;
   margin-right: 20% !important;
 }
+
+.tagDropdown {
+  background-color: #ffffff !important;
+  border-radius: 15px !important;
+  margin-left: 5px !important;
+  border: 0.5px solid #d9d9d9 !important;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1) !important;
+  padding-top: 20px !important;
+  width: 175px !important;
+}
+
+.tagDropdown li {
+  margin: 0;
+  padding: 0px;
+  line-height: 0.2em;
+}
+
+.tagDropdown li p {
+  padding-left: 10px;
+}
