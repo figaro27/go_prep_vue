@@ -26,7 +26,7 @@
           <div>
             <div class="row">
               <div class="col-md-2">
-                <h5 class="pull-right pt-3">To</h5>
+                <h5 class="pull-right pt-3 gray-text">To</h5>
               </div>
               <div class="col-md-7">
                 <b-form-textarea
@@ -57,7 +57,7 @@
             </div>
             <div class="row">
               <div class="col-md-2">
-                <h5 class="pull-right pt-3">Message</h5>
+                <h5 class="pull-right pt-3 gray-text">Message</h5>
               </div>
               <div class="col-md-7">
                 <b-form-textarea
@@ -70,11 +70,17 @@
                 ></b-form-textarea>
                 <p class="pull-right">
                   Characters:
-                  <strong>{{ message.content.length }}/918</strong> | Parts:
-                  <strong>{{ messageParts }}/6</strong> | Cost:
-                  <strong>{{
+                  <span style="font-weight:bold;color:#6C6C6C"
+                    >{{ message.content.length }}/918</span
+                  >
+                  | Parts:
+                  <span style="font-weight:bold;color:#6C6C6C"
+                    >{{ messageParts }}/6</span
+                  >
+                  | Cost:
+                  <span style="font-weight:bold;color:#6C6C6C">{{
                     format.money(messageCost, this.store.settings.currency)
-                  }}</strong
+                  }}</span
                   ><img
                     v-b-popover.hover="
                       'The number of recipients times the number of parts the text will be sent in (160 characters per part) times 6 cents. Your GoPrep account will be charged via Stripe.'
@@ -149,9 +155,6 @@
             @click="view(props.row.id)"
           >
             View
-          </button>
-          <button class="btn btn-danger btn-sm" @click="destroy(props.row.id)">
-            Delete
           </button>
         </div>
       </v-client-table>

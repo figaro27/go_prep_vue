@@ -26,7 +26,7 @@
           <div v-if="showTemplateArea" class="pt-3 newTemplateArea">
             <div class="row">
               <div class="col-md-2">
-                <h6 class="float-right pt-1">Name</h6>
+                <h6 class="float-right pt-1 gray-text">Name</h6>
               </div>
               <div class="col-md-7">
                 <b-form-input
@@ -37,7 +37,7 @@
             </div>
             <div class="row">
               <div class="col-md-2">
-                <h6 class="float-right pt-1">Message</h6>
+                <h6 class="float-right pt-1 gray-text">Message</h6>
               </div>
               <div class="col-md-7">
                 <b-form-textarea
