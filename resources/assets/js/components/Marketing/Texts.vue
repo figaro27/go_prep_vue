@@ -26,7 +26,7 @@
           <div>
             <div class="row">
               <div class="col-md-2">
-                <h5 class="float-right pt-3">To</h5>
+                <h5 class="pull-right pt-3">To</h5>
               </div>
               <div class="col-md-7">
                 <b-form-textarea
@@ -36,6 +36,7 @@
                   placeholder="Type comma separated numbers or choose contacts or lists on the right."
                   rows="3"
                 ></b-form-textarea>
+                <p class="pull-right">Recipients: {{ recipientCount }}</p>
               </div>
               <div class="col-md-3 pt-3">
                 <div class="d-flex">
@@ -56,16 +57,33 @@
             </div>
             <div class="row">
               <div class="col-md-2">
-                <h5 class="float-right pt-3">Message</h5>
+                <h5 class="pull-right pt-3">Message</h5>
               </div>
               <div class="col-md-7">
                 <b-form-textarea
                   class="m-2"
                   style="overflow:auto;resize:both"
-                  v-model="message"
+                  v-model="message.content"
                   placeholder="Type your message."
                   rows="6"
+                  maxlength="918"
                 ></b-form-textarea>
+                <p class="pull-right">
+                  Characters:
+                  <strong>{{ message.content.length }}/918</strong> | Parts:
+                  <strong>{{ messageParts }}/6</strong> | Cost:
+                  <strong>{{
+                    format.money(messageCost, this.store.settings.currency)
+                  }}</strong
+                  ><img
+                    v-b-popover.hover="
+                      'The number of recipients times the number of parts the text will be sent in (160 characters per part) times 6 cents. Your GoPrep account will be charged via Stripe.'
+                    "
+                    title="Cost"
+                    src="/images/store/popover.png"
+                    class="popover-size-small ml-1 mb-1"
+                  />
+                </p>
               </div>
               <div class="col-md-3 pt-3">
                 <div
@@ -95,7 +113,7 @@
             </div>
             <div class="row">
               <div class="col-md-9">
-                <b-button type="submit" variant="primary" class="float-right"
+                <b-button type="submit" variant="primary" class="pull-right"
                   >Send Message</b-button
                 >
               </div>
@@ -163,9 +181,12 @@ export default {
       showSMSSettingsModal: false,
       showTagDropdown: false,
       showTemplateModal: false,
-      message: "",
+      message: {
+        content: ""
+      },
       tableData: [],
-      columns: ["messageTime", "text", "actions"]
+      columns: ["messageTime", "text", "actions"],
+      recipientCount: 1
     };
   },
   created() {},
@@ -180,22 +201,45 @@ export default {
     }),
     tags() {
       return ["First name", "Last name", "Company name", "Phone", "Email"];
+    },
+    messageCost() {
+      return this.messageParts * 0.06 * this.recipientCount;
+    },
+    messageParts() {
+      return Math.ceil(this.message.content.length / 160);
     }
   },
   methods: {
     ...mapActions({}),
     formatMoney: format.money,
+    truncate(text, length, suffix) {
+      if (text) {
+        return text.substring(0, length) + suffix;
+      }
+    },
     refreshTable() {
       axios.get("/api/me/SMSMessages").then(resp => {
         this.tableData = resp.data;
       });
     },
     addTag(tag) {
-      this.message += " {" + tag + "} ";
+      this.message.content += "{" + tag + "}";
     },
     setTemplate(content) {
-      this.message = content;
+      this.message.content = content;
       this.showTemplateModal = false;
+    },
+    sendMessage() {
+      axios
+        .post("/api/me/SMSMessages", {
+          message: this.message.content,
+          listId: this.listId,
+          charge: this.messageCost
+        })
+        .then(resp => {
+          this.refreshTable();
+          this.$toastr.s("SMS has been sent.", "Success");
+        });
     }
   }
 };

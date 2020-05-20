@@ -60,7 +60,7 @@ class SMSMessagesController extends StoreController
     {
         $message = $request->get('message');
         $listId = $request->get('listId');
-        // $templateId = $request->get('templateId');
+        $charge = $request->get('charge');
 
         $client = new \GuzzleHttp\Client();
         $res = $client->request('POST', $this->baseURL, [
@@ -77,6 +77,21 @@ class SMSMessagesController extends StoreController
         $smsMessage->store_id = $this->store->id;
         $smsMessage->message_id = json_decode($body)->messageId;
         $smsMessage->save();
+
+        $store = $this->store;
+        if ($charge >= 0.5) {
+            $charge = \Stripe\Charge::create([
+                'amount' => round($charge * 100),
+                'currency' => $store->settings->currency,
+                'source' => $store->settings->stripe_id,
+                'description' =>
+                    $store->storeDetail->name .
+                    ' SMS fee for SMS ID #' .
+                    $smsMessage->id .
+                    ' - ' .
+                    $smsMessage->message_id
+            ]);
+        }
 
         return $body;
     }

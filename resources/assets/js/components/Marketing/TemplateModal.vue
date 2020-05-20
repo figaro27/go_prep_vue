@@ -2,57 +2,6 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
-
-      <!-- <b-form @submit.prevent="addTemplate">
-          <b-form-input
-            v-model="template.name"
-            placeholder="optional"
-            label="Template Name"
-          ></b-form-input>
-          <b-form-textarea
-            v-model="template.content"
-            label="Text"
-          ></b-form-textarea>
-          <b-button type="submit" variant="primary">Save</b-button>
-        </b-form> -->
-
-      <!--  <b-modal
-        size="md"
-        title="Delete Template"
-        v-model="showDeleteModal"
-        v-if="showDeleteModal"
-        hide-header
-        hide-footer
-        no-fade
-      >
-        <h5 class="center-text p-2 mt-2">
-          Are you sure you want to delete this template?
-        </h5>
-        <div class="d-flex pt-2" style="justify-content:center">
-          <b-btn
-            class="d-inline mr-2"
-            variant="secondary"
-            @click="(showDeleteModal = false), (templateId = null)"
-            >Cancel</b-btn
-          >
-          <b-btn class="d-inline" variant="danger" @click="destroy(templateId)"
-            >Delete</b-btn
-          >
-        </div>
-      </b-modal>
- -->
-      <!-- <b-modal
-        size="md"
-        title="View"
-        v-model="showViewModal"
-        v-if="showViewModal"
-        no-fade
-        hide-footer
-      >
-        <p v-if="template.name">Name: {{ template.name }}</p>
-        <p v-if="template.content">Message: {{ template.content }}</p>
-      </b-modal> -->
-
       <v-client-table
         :columns="columns"
         :data="tableData"
@@ -66,13 +15,15 @@
         }"
       >
         <div slot="beforeTable" class="mb-2">
+          <h4 v-if="editingTemplate" class="center-text">Edit Template</h4>
           <button
+            v-if="!editingTemplate"
             class="btn btn-success btn-md mb-2 mb-sm-0"
-            @click="showAddTemplateArea = !showAddTemplateArea"
+            @click="showTemplateArea = !showTemplateArea"
           >
             Add Template
           </button>
-          <div v-if="showAddTemplateArea" class="pt-3">
+          <div v-if="showTemplateArea" class="pt-3 newTemplateArea">
             <div class="row">
               <div class="col-md-2">
                 <h6 class="float-right pt-1">Name</h6>
@@ -112,14 +63,23 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row pb-2">
               <div class="col-md-9">
                 <b-button
+                  v-if="!editingTemplate"
                   type="submit"
                   variant="primary"
                   class="float-right"
                   @click="addTemplate()"
                   >Save</b-button
+                >
+                <b-button
+                  v-if="editingTemplate"
+                  type="submit"
+                  variant="warning"
+                  class="float-right"
+                  @click="update()"
+                  >Update</b-button
                 >
               </div>
             </div>
@@ -135,7 +95,10 @@
           >
             Insert Template
           </button>
-          <button class="btn btn-warning btn-sm" @click="edit(props.row.id)">
+          <button
+            class="btn btn-warning btn-sm"
+            @click="edit(props.row.id, props.row.name, props.row.content)"
+          >
             Edit
           </button>
           <button class="btn btn-danger btn-sm" @click="destroy(props.row.id)">
@@ -166,14 +129,13 @@ export default {
       tableData: [],
       columns: ["name", "content", "actions"],
       template: {
+        id: null,
         content: ""
       },
-      showAddTemplateArea: false,
+      showTemplateArea: false,
       showTagDropdown: false,
       showViewModal: false,
-      showCreateModal: false,
-      showDeleteModal: false,
-      templateId: null
+      editingTemplate: false
     };
   },
   created() {},
@@ -212,6 +174,27 @@ export default {
           this.template = {};
           this.refreshTable();
           this.showCreateModal = false;
+        });
+    },
+    edit(id, name, content) {
+      this.template.id = id;
+      this.template.name = name;
+      this.template.content = content;
+      this.editingTemplate = true;
+      this.showTemplateArea = true;
+    },
+    update() {
+      axios
+        .put("/api/me/SMSTemplates/" + this.template.id, {
+          content: this.template.content,
+          name: this.template.name
+        })
+        .then(resp => {
+          this.$toastr.s("Template has been updated.", "Success");
+          this.refreshTable();
+          this.editingTemplate = false;
+          this.showTemplateArea = false;
+          this.template = { content: "" };
         });
     },
     view(id) {

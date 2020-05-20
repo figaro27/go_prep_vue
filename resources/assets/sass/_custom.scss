@@ -633,6 +633,11 @@ body.sidebar-minimized {
   height: 20px !important;
 }
 
+.popover-size-small {
+  width: 15px !important;
+  height: 15px !important;
+}
+
 .menu-bag-btn {
   width: 100% !important;
   height: 50px !important;
@@ -1577,6 +1582,11 @@ body.forgotresettoken {
   border-radius: 15px !important;
   padding: 20px !important;
   margin-right: 20% !important;
+}
+
+.newTemplateArea {
+  background-color: #f9f9f9 !important;
+  border-radius: 15px !important;
 }
 
 .tagDropdown {
