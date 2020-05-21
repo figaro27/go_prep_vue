@@ -11,17 +11,27 @@
         no-fade
         hide-footer
       >
-        <template-modal @setTemplate="setTemplate($event)"></template-modal>
+        <template-modal
+          @insertTemplate="insertTemplate($event)"
+        ></template-modal>
+      </b-modal>
+
+      <b-modal
+        size="xl"
+        title="Lists"
+        v-model="showListModal"
+        v-if="showListModal"
+        no-fade
+        hide-footer
+      >
+        <view-list-modal @insertList="insertList($event)"></view-list-modal>
       </b-modal>
 
       <b-btn variant="success" @click="showNewSMSArea = !showNewSMSArea"
         >Compose New SMS</b-btn
       >
-      <b-btn variant="primary" @click="showSMSSettingsModal = true"
-        >SMS Settings</b-btn
-      >
 
-      <div v-if="showNewSMSArea" class="newSMSArea mt-4">
+      <div class="newSMSArea mt-4" v-if="showNewSMSArea">
         <b-form @submit.prevent="sendMessage()">
           <div>
             <div class="row">
@@ -46,7 +56,7 @@
                   ></i>
                   <p class="d-inline"><u>Insert contact</u></p>
                 </div>
-                <div class="d-flex">
+                <div class="d-flex" @click="showListModal = !showListModal">
                   <i
                     class="fas fa-users d-inline pr-1 pt-1"
                     style="color:#737373"
@@ -163,19 +173,21 @@
 </template>
 
 <script>
-import Spinner from "../../components/Spinner";
+import Spinner from "../../../components/Spinner";
 import vSelect from "vue-select";
 import { mapGetters, mapActions, mapMutations } from "vuex";
-import checkDateRange from "../../mixins/deliveryDates";
-import format from "../../lib/format";
-import store from "../../store";
-import TemplateModal from "./TemplateModal.vue";
+import checkDateRange from "../../../mixins/deliveryDates";
+import format from "../../../lib/format";
+import store from "../../../store";
+import ViewTemplates from "./Modals/ViewTemplates.vue";
+import ViewLists from "./Modals/ViewLists.vue";
 
 export default {
   components: {
     Spinner,
     vSelect,
-    TemplateModal
+    ViewTemplates,
+    ViewLists
   },
   mixins: [checkDateRange],
   data() {
@@ -184,12 +196,14 @@ export default {
       showSMSSettingsModal: false,
       showTagDropdown: false,
       showTemplateModal: false,
+      showListModal: false,
       message: {
         content: ""
       },
       tableData: [],
       columns: ["messageTime", "text", "actions"],
-      recipientCount: 1
+      recipientCount: 1,
+      lists: []
     };
   },
   created() {},
@@ -228,7 +242,7 @@ export default {
     addTag(tag) {
       this.message.content += "{" + tag + "}";
     },
-    setTemplate(content) {
+    insertTemplate(content) {
       this.message.content = content;
       this.showTemplateModal = false;
     },
@@ -236,13 +250,17 @@ export default {
       axios
         .post("/api/me/SMSMessages", {
           message: this.message.content,
-          listId: this.listId,
+          lists: this.lists,
           charge: this.messageCost
         })
         .then(resp => {
           this.refreshTable();
           this.$toastr.s("SMS has been sent.", "Success");
         });
+    },
+    insertList(list) {
+      this.lists.push(list);
+      this.showListModal = false;
     }
   }
 };

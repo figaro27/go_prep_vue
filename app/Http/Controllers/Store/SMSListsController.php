@@ -117,6 +117,10 @@ class SMSListsController extends StoreController
         }
     }
 
+    public function addContactToList(Request $request)
+    {
+    }
+
     /**
      * Display the specified resource.
      *

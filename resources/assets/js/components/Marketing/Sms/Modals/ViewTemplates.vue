@@ -91,7 +91,7 @@
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button
             class="btn btn-success btn-sm"
-            @click="$emit('setTemplate', props.row.content)"
+            @click="$emit('insertTemplate', props.row.content)"
           >
             Insert Template
           </button>
@@ -111,12 +111,12 @@
 </template>
 
 <script>
-import Spinner from "../../components/Spinner";
+import Spinner from "../../../../components/Spinner";
 import vSelect from "vue-select";
 import { mapGetters, mapActions, mapMutations } from "vuex";
-import checkDateRange from "../../mixins/deliveryDates";
-import format from "../../lib/format";
-import store from "../../store";
+import checkDateRange from "../../../../mixins/deliveryDates";
+import format from "../../../../lib/format";
+import store from "../../../../store";
 
 export default {
   components: {

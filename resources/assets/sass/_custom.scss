@@ -294,6 +294,22 @@ body.sidebar-minimized {
   box-shadow: 0 0 0 0rem !important;
 }
 
+.smsFilters .btn-secondary {
+  background-color: #ffffff !important;
+  margin-right: 5px !important;
+}
+
+.smsFilters .active {
+  color: #ffffff !important;
+  border-color: #dedede !important;
+  background-color: #acb5bc !important;
+}
+
+.smsFilters .focus,
+.focus {
+  box-shadow: 0 0 0 0rem !important;
+}
+
 .nf-ingredientListDiv {
   line-height: 1em;
 }
