@@ -304,7 +304,7 @@ export default {
         window.innerWidth ||
         document.documentElement.clientWidth ||
         document.body.clientWidth;
-      if (width < 780) {
+      if (width < 900) {
         return "col-md-12";
       } else {
         return "col-md-6";
@@ -315,7 +315,7 @@ export default {
         window.innerWidth ||
         document.documentElement.clientWidth ||
         document.body.clientWidth;
-      if (width < 780) {
+      if (width < 900) {
         return true;
       } else {
         return false;
