@@ -163,6 +163,11 @@
           ></b-form-textarea>
         </div>
         <div class="row">
+          <div :class="nutritionFactsMobileClass">
+            <div id="nutritionFacts" ref="nutritionFacts"></div>
+          </div>
+        </div>
+        <div class="row">
           <div :class="variationsClass">
             <div>
               <b-form-radio-group
@@ -307,6 +312,17 @@ export default {
         return "hide";
       } else {
         return "col-md-6";
+      }
+    },
+    nutritionFactsMobileClass() {
+      const windowWidth =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+      if (windowWidth < 500) {
+        return "col-md-6";
+      } else {
+        return "hide";
       }
     },
     variationsClass() {
