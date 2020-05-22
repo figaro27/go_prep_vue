@@ -8,6 +8,8 @@ class MealMacro extends Model
 {
     public $table = 'meal_macros';
 
+    public $appends = ['macros_filled'];
+
     public function store()
     {
         return $this->belongsTo('App\Store');
@@ -21,5 +23,19 @@ class MealMacro extends Model
     public function meal_size()
     {
         return $this->belongsTo('App\MealSize');
+    }
+
+    public function getMacrosFilledAttribute()
+    {
+        if (
+            $this->calories !== null ||
+            $this->carbs !== null ||
+            $this->protein !== null ||
+            $this->fat !== null
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

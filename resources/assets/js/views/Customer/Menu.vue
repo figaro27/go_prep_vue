@@ -516,7 +516,8 @@ export default {
         prevArrow:
           '<a class="slick-prev"><i class="fa fa-chevron-left"></i></a>',
         nextArrow:
-          '<a class="slick-next"><i class="fa fa-chevron-right"></i></a>'
+          '<a class="slick-next"><i class="fa fa-chevron-right"></i></a>',
+        variableWidth: true
       },
       loaded: false,
       active: {},
@@ -1255,7 +1256,7 @@ export default {
         showCaffeine: false,
         itemName: meal.title,
         ingredientList: ingredientList,
-        showIngredients: this.showIngredients,
+        showIngredients: false,
         decimalPlacesForQuantityTextbox: 2,
         allowFDARounding: false,
         decimalPlacesForNutrition: 0,

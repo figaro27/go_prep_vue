@@ -227,7 +227,8 @@ export default {
     getComponentLabel(component) {
       let qty = "";
       if (component.minimum === component.maximum) {
-        qty = `Choose ${component.minimum}`;
+        qty = `${component.minimum -
+          this.choices[component.id].length} Remaining`;
       } else {
         qty = `Choose up to ${component.maximum}`;
       }
