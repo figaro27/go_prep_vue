@@ -8,8 +8,14 @@
           neater, more condensed version.<br />
           <a
             target="_blank"
-            href="https://gyazo.com/3fee39011cb463f5a44a92ae10dd8ef0"
-            ><b>Check out the before and after here.</b></a
+            href="https://gyazo.com/b821a54d04e24c1d27bbdd3986875bd9"
+            ><b>Before</b></a
+          >
+          &
+          <a
+            target="_blank"
+            href="https://gyazo.com/4b39f12e2408eadaf08fb2ec021c00e2"
+            ><b>After</b></a
           >
         </p>
       </b-alert>
