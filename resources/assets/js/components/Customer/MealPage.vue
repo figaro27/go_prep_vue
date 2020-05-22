@@ -299,15 +299,22 @@ export default {
       }
     },
     nutritionFactsClass() {
-      return "col-xl-6 col-md-12";
-      if (window.matchMedia("(min-width: 560px)").matches) {
-        return "col-md-5";
-      } else {
+      const width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+      if (width < 500) {
         return "hide";
+      } else {
+        return "col-md-6";
       }
     },
     variationsClass() {
-      return "col-md-6";
+      if (width > 500) {
+        return "col-md-6";
+      } else {
+        return "col-md-12";
+      }
     },
     brandColor() {
       if (this.store.settings) {
