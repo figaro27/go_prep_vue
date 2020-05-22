@@ -21,20 +21,20 @@ class Subscription extends Model
 
     protected $appends = [
         'store_name',
-        'latest_order',
-        'latest_paid_order',
-        'latest_unpaid_order',
+        // 'latest_order',
+        // 'latest_paid_order',
+        // 'latest_unpaid_order',
         'next_delivery_date',
-        'next_unpaid_delivery_date',
+        // 'next_unpaid_delivery_date',
         'next_order',
-        'meal_ids',
-        'meal_quantities',
-        'pre_coupon',
+        // 'meal_ids',
+        // 'meal_quantities',
+        // 'pre_coupon',
         'items',
         'meal_package_items',
-        'interval_title',
-        'paid_order_count',
-        'total_item_quantity'
+        'interval_title'
+        // 'paid_order_count',
+        // 'total_item_quantity'
     ];
 
     protected $casts = [

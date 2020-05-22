@@ -23,7 +23,8 @@ export default {
     return {
       isLoading: false,
       pickup: null,
-      subscription_bags: []
+      subscription_bags: [],
+      subscription: {}
     };
   },
   computed: {
@@ -42,31 +43,41 @@ export default {
   mounted() {
     if (!this.mealMixItems.isRunningLazy) {
       if (this.bag.items && this.bag.items.length === 0) {
-        this.initBag();
+        this.getSub();
       }
     }
   },
   watch: {
     mealMixItems: function() {
       if (!this.mealMixItems.isRunningLazy) {
-        if (this.bag.items && this.bag.items.length === 0) this.initBag();
+        if (this.bag.items && this.bag.items.length === 0) this.getSub();
       }
     }
   },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
+    getSub() {
+      axios.get("/api/me/subscriptions/" + this.subscriptionId).then(resp => {
+        this.subscription = resp.data;
+        this.initBag();
+      });
+    },
     async initBag() {
       this.clearAll();
-      await this.refreshSubscriptions();
-      const subscription = _.find(this.subscriptions, {
-        id: parseInt(this.subscriptionId)
-      });
+      // await this.refreshSubscriptions();
+      // const subscription = _.find(this.subscriptions, {
+      //   id: parseInt(this.subscriptionId)
+      // });
+
+      let subscription = this.subscription;
 
       if (!subscription) {
         return;
       }
       // Setting pickup here
       this.pickup = subscription.pickup;
+
+      console.log(this.pickup);
 
       let stop = false;
 
