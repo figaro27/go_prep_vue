@@ -40,7 +40,7 @@
         <h4 class="mt-2 dark-gray">
           {{ format.money(mealVariationPrice, storeSettings.currency) }}
         </h4>
-        <div class="mt-3 d-flex">
+        <div class="mt-3 d-flex" style="flex-wrap:wrap">
           <span
             class="badge badge-success d-inline mr-1 tags"
             v-for="(tag, index) in meal.tags"
