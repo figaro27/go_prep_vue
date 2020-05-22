@@ -1,7 +1,6 @@
 <template>
   <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
     <div class="row">
-      {{ width1 }}
       <div :class="imageClass">
         <thumbnail
           v-if="meal.image != null && meal.image.url"
@@ -230,7 +229,6 @@ import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 export default {
   data() {
     return {
-      width1: 0,
       defaultMealSize: {},
       mealSizes: null,
       mealSize: null,
@@ -306,7 +304,7 @@ export default {
         window.innerWidth ||
         document.documentElement.clientWidth ||
         document.body.clientWidth;
-      if (width <= 768) {
+      if (width < 1150) {
         return "col-md-12";
       } else {
         return "col-md-6";
@@ -317,7 +315,7 @@ export default {
         window.innerWidth ||
         document.documentElement.clientWidth ||
         document.body.clientWidth;
-      if (width <= 768) {
+      if (width < 1150) {
         return true;
       } else {
         return false;
@@ -410,12 +408,6 @@ export default {
     }
   },
   updated() {
-    const width =
-      window.innerWidth ||
-      document.documentElement.clientWidth ||
-      document.body.clientWidth;
-
-    this.width1 = width;
     this.getNutritionFacts();
     if (!this.sizeChanged && this.sizes && this.sizes.length > 0) {
       this.mealSize = this.sizes[0].value;
