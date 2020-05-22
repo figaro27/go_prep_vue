@@ -144,11 +144,6 @@
             Ingredients: {{ mealIngredients }}
           </p>
         </div>
-        <div class="row mt-2 mb-2">
-          <div :class="nutritionFactsMobileClass">
-            <div id="nutritionFacts1" ref="nutritionFacts1"></div>
-          </div>
-        </div>
         <div>
           <b-form-textarea
             v-if="
@@ -157,7 +152,7 @@
                 (storeModuleSettings.specialInstructionsStoreOnly &&
                   ($route.params.storeView || $route.params.orderId))
             "
-            class="mt-4"
+            class="mt-4 mb-2"
             v-model="special_instructions"
             placeholder="Special instructions"
             rows="3"
@@ -166,7 +161,7 @@
         </div>
 
         <div class="row">
-          <div :class="variationsClass">
+          <div :class="nutritionVariationsClass">
             <div>
               <b-form-radio-group
                 buttons
@@ -207,7 +202,7 @@
               </button>
             </div>
           </div>
-          <div :class="nutritionFactsClass">
+          <div :class="nutritionVariationsClass">
             <div id="nutritionFacts" ref="nutritionFacts"></div>
           </div>
         </div>
@@ -301,37 +296,15 @@ export default {
         return "hide";
       }
     },
-    nutritionFactsClass() {
+    nutritionVariationsClass() {
       const width =
         window.innerWidth ||
         document.documentElement.clientWidth ||
         document.body.clientWidth;
       if (width < 500) {
-        return "hide";
-      } else {
-        return "col-md-6";
-      }
-    },
-    nutritionFactsMobileClass() {
-      const windowWidth =
-        window.innerWidth ||
-        document.documentElement.clientWidth ||
-        document.body.clientWidth;
-      if (windowWidth < 500) {
-        return "col-md-6";
-      } else {
-        return "hide";
-      }
-    },
-    variationsClass() {
-      const width =
-        window.innerWidth ||
-        document.documentElement.clientWidth ||
-        document.body.clientWidth;
-      if (width > 500) {
-        return "col-md-6";
-      } else {
         return "col-md-12";
+      } else {
+        return "col-md-6";
       }
     },
     brandColor() {
@@ -468,9 +441,6 @@ export default {
 
       $("#nutritionFacts").nutritionLabel(null);
       $("#nutritionFacts").nutritionLabel(this.nutritionalFacts);
-
-      $("#nutritionFacts2").nutritionLabel(null);
-      $("#nutritionFacts2").nutritionLabel(this.nutritionalFacts);
       // }
     },
     getPackageBagItems() {
