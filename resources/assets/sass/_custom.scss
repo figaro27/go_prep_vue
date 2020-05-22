@@ -1571,3 +1571,35 @@ body.forgotresettoken {
     display: none !important;
   }
 }
+
+.hide {
+  display: none !important;
+}
+
+.macros li {
+  display: inline !important;
+  margin-right: 5% !important;
+}
+
+.macros li span p {
+  font-weight: bold !important;
+  color: #525252 !important;
+}
+
+.dark-gray {
+  color: #525252 !important;
+}
+
+.tags {
+  font-size: 12px !important;
+  padding: 4px !important;
+}
+
+.slick-slider .slick-list {
+  margin: 0px !important;
+}
+
+.mealPageImage {
+  border-radius: 7px !important;
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3) !important;
+}

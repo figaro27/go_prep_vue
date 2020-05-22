@@ -1,225 +1,210 @@
 <template>
   <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
-    <div class="meal-page mt-5 mb-3 flexibleRow">
-      <button
-        type="button"
-        :style="brandColor"
-        class="mobile-sticky-button btn btn-lg white-text"
-        @click="addMeal(meal)"
-      >
-        <h4 class="strong">ADD TO BAG</h4>
-      </button>
-      <div class="flexibleArea">
-        <div class="row">
-          <div class="col-md-4">
-            <h5>{{ meal.title }}</h5>
-            <thumbnail
-              v-if="meal.image != null && meal.image.url"
-              :src="meal.image.url"
-              :aspect="false"
-              width="100%"
-              @click="$refs.lightbox.showImage(0)"
-            ></thumbnail>
-            <LightBox
-              ref="lightbox"
-              :images="getMealGallery(meal)"
-              :showLightBox="false"
-            ></LightBox>
+    <div class="row">
+      <div :class="imageClass">
+        <thumbnail
+          v-if="meal.image != null && meal.image.url"
+          :src="meal.image.url"
+          :aspect="false"
+          width="100%"
+          @click="$refs.lightbox.showImage(0)"
+          class="mealPageImage"
+        ></thumbnail>
+        <LightBox
+          ref="lightbox"
+          :images="getMealGallery(meal)"
+          :showLightBox="false"
+        ></LightBox>
 
-            <slick ref="mealGallery" :options="slickOptions">
-              <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
-                <div style="image">
-                  <thumbnail
-                    v-if="image.url"
-                    :src="image.url"
-                    :aspect="true"
-                    :lazy="false"
-                    :spinner="false"
-                    :width="'70px'"
-                    @click="$refs.lightbox.showImage(i)"
-                  ></thumbnail>
-                </div>
-              </div>
-            </slick>
+        <slick ref="mealGallery" :options="slickOptions">
+          <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
+            <div style="image">
+              <thumbnail
+                v-if="image.url"
+                :src="image.url"
+                :aspect="true"
+                :lazy="false"
+                :spinner="false"
+                :width="'70px'"
+                @click="$refs.lightbox.showImage(i)"
+              ></thumbnail>
+            </div>
           </div>
-          <div class="col-md-3" v-if="meal.tags && meal.tags.length > 0">
-            <h5>Nutrition</h5>
-            <li v-bind:key="index" v-for="(tag, index) in meal.tags">
-              {{ tag.tag }}
-            </li>
-          </div>
-
-          <div
-            class="col-md-3"
-            v-if="meal.allergy_titles && meal.allergy_titles.length > 0"
+        </slick>
+      </div>
+      <!-- <div class="col-md-3">
+          <div id="nutritionFacts" ref="nutritionFacts"></div>
+        </div> -->
+      <div class="col-md-6">
+        <h2 class="dark-gray">{{ meal.title }}</h2>
+        <h4 class="mt-3 dark-gray">
+          {{ format.money(mealVariationPrice, storeSettings.currency) }}
+        </h4>
+        <div class="mt-3">
+          <span
+            class="badge badge-success d-inline mr-1 tags"
+            v-for="(tag, index) in meal.tags"
+            v-bind:key="index"
+            >{{ tag.tag }}</span
           >
-            <h5>Allergies</h5>
-            <li
-              v-bind:key="index"
-              v-for="(allergy, index) in meal.allergy_titles"
-            >
-              {{ allergy }}
-            </li>
-          </div>
-          <div class="col-md-2">
-            <b-btn @click="back">BACK</b-btn>
-          </div>
         </div>
-        <p v-html="mealDescription" class="mt-3"></p>
-
-        <b-form-radio-group
-          buttons
-          v-model="mealSize"
-          :options="sizes"
-          class="filters small flexibleButtonGroup"
-          required
-          @input="changeSize"
-          v-show="sizes && sizes.length > 1"
-        ></b-form-radio-group>
-
-        <meal-variations-area
-          id="meal-variations-area"
-          :meal="meal"
-          :sizeId="mealSize"
-          :invalid="invalid"
-          ref="componentModal"
-          :key="total"
-        ></meal-variations-area>
-
-        <div class="title mt-3" v-if="meal.macros && storeSettings.showMacros">
-          <div class="row">
-            <div class="col-6 col-md-3">
-              <div class="row">
-                <p class="small strong col-6 col-md-12">Calories</p>
-                <p class="small col-6 col-md-12">
-                  <span
-                    v-if="
-                      storeSettings.macrosFromNutrition && !blankNutritionFacts
-                    "
-                  >
-                    {{ nutritionalFacts.valueCalories }}
-                  </span>
-                  <span v-else>
-                    <span v-if="!isNaN(meal.macros.calories)">{{
-                      meal.macros.calories
-                    }}</span>
-                  </span>
-                </p>
-              </div>
-            </div>
-            <div class="col-6 col-md-3">
-              <div class="row">
-                <p class="small strong col-6 col-md-12">Carbs</p>
-                <p class="small col-6 col-md-12">
-                  <span
-                    v-if="
-                      storeSettings.macrosFromNutrition && !blankNutritionFacts
-                    "
-                  >
-                    {{ nutritionalFacts.valueTotalCarb }}
-                  </span>
-                  <span v-else>
-                    <span v-if="!isNaN(meal.macros.carbs)">{{
-                      meal.macros.carbs
-                    }}</span>
-                  </span>
-                </p>
-              </div>
-            </div>
-            <div class="col-6 col-md-3">
-              <div class="row">
-                <p class="small strong col-6 col-md-12">Protein</p>
-                <p class="small col-6 col-md-12">
-                  <span
-                    v-if="
-                      storeSettings.macrosFromNutrition && !blankNutritionFacts
-                    "
-                  >
-                    {{ nutritionalFacts.valueProteins }}
-                  </span>
-                  <span v-else>
-                    <span v-if="!isNaN(meal.macros.protein)">{{
-                      meal.macros.protein
-                    }}</span>
-                  </span>
-                </p>
-              </div>
-            </div>
-            <div class="col-6 col-md-3">
-              <div class="row">
-                <p class="small strong col-6 col-md-12">Fat</p>
-                <p class="small col-6 col-md-12">
-                  <span
-                    v-if="
-                      storeSettings.macrosFromNutrition && !blankNutritionFacts
-                    "
-                  >
-                    {{ nutritionalFacts.valueTotalFat }}
-                  </span>
-                  <span v-else>
-                    <span v-if="!isNaN(meal.macros.fat)">{{
-                      meal.macros.fat
-                    }}</span>
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
+        <div class="mt-2">
+          <span
+            class="badge badge-warning d-inline mr-1 tags dark-gray"
+            v-for="(allergy, index) in meal.allergy_titles"
+            v-bind:key="index"
+            >{{ allergy }}</span
+          >
         </div>
-
-        <b-form-textarea
+        <div
           v-if="
-            (storeModules.specialInstructions &&
-              !storeModuleSettings.specialInstructionsStoreOnly) ||
-              (storeModuleSettings.specialInstructionsStoreOnly &&
-                ($route.params.storeView || $route.params.orderId))
+            meal.macros && storeSettings.showMacros && meal.macros.macros_filled
           "
-          class="mt-4"
-          v-model="special_instructions"
-          placeholder="Special instructions"
-          rows="3"
-          max-rows="6"
-        ></b-form-textarea>
-
-        <div class="row mt-4" v-if="storeSettings.menuStyle === 'image'">
-          <div class="col-md-2">
-            <h2 class="pt-3">
-              {{ format.money(mealVariationPrice, storeSettings.currency) }}
-            </h2>
-          </div>
-          <!-- <div class="col-md-3 offset-1 hidden-sm">
-            <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
-          </div> -->
-        </div>
-        <div class="row mt-4" v-if="storeSettings.menuStyle === 'text'">
-          <div class="col-md-2">
-            <h2 class="pt-3">
-              {{ format.money(mealVariationPrice, storeSettings.currency) }}
-            </h2>
-          </div>
-          <!-- <div class="col-md-3 offset-1 hidden-sm">
-            <b-btn @click="addMeal(meal)" class="menu-bag-btn">ADD</b-btn>
-          </div> -->
-        </div>
-
-        <div class="row">
-          <div class="col-md-12 mt-3">
-            <h4
-              v-if="
-                storeSettings.mealInstructions &&
-                  meal.instructions != '' &&
-                  meal.instructions != null
-              "
+          class="macros mt-2"
+        >
+          <li>
+            <span
+              v-if="storeSettings.macrosFromNutrition && !blankNutritionFacts"
             >
-              Instructions
-            </h4>
-            <p v-if="storeSettings.mealInstructions && meal.instructions != ''">
-              {{ meal.instructions }}
-            </p>
-          </div>
+              Calories:
+              <p class="d-inline">{{ nutritionalFacts.valueCalories }}</p>
+            </span>
+            <span v-else>
+              <span
+                v-if="
+                  !isNaN(meal.macros.calories) && meal.macros.calories !== null
+                "
+                >Calories:
+                <p class="d-inline">{{ meal.macros.calories }}</p></span
+              >
+            </span>
+          </li>
+          <li>
+            <span
+              v-if="storeSettings.macrosFromNutrition && !blankNutritionFacts"
+            >
+              Carbs:
+              <p class="d-inline">{{ nutritionalFacts.valueTotalCarb }}</p>
+            </span>
+            <span v-else>
+              <span
+                v-if="
+                  !isNaN(meal.macros.calories) && meal.macros.carbs !== null
+                "
+                >Carbs:
+                <p class="d-inline">{{ meal.macros.carbs }}</p></span
+              >
+            </span>
+          </li>
+          <li>
+            <span
+              v-if="storeSettings.macrosFromNutrition && !blankNutritionFacts"
+            >
+              Protein:
+              <p class="d-inline">{{ nutritionalFacts.valueProteins }}</p>
+            </span>
+            <span v-else>
+              <span
+                v-if="
+                  !isNaN(meal.macros.protein) && meal.macros.protein !== null
+                "
+                >Protein:
+                <p class="d-inline">{{ meal.macros.protein }}</p></span
+              >
+            </span>
+          </li>
+          <li>
+            <span
+              v-if="storeSettings.macrosFromNutrition && !blankNutritionFacts"
+            >
+              Fat:
+              <p class="d-inline">{{ nutritionalFacts.valueTotalFat }}</p>
+            </span>
+            <span v-else>
+              <span v-if="!isNaN(meal.macros.fat) && meal.macros.fat !== null"
+                >Fat:
+                <p class="d-inline">{{ meal.macros.fat }}</p></span
+              >
+            </span>
+          </li>
         </div>
-        <div class="row mb-3 mt-3" v-if="storeSettings.showNutrition">
-          <div class="col-xl-3 col-lg-6">
+        <div>
+          <p v-html="mealDescription" class="mt-3"></p>
+        </div>
+        <div>
+          <p
+            v-if="
+              storeSettings.mealInstructions &&
+                meal.instructions != null &&
+                meal.instructions != ''
+            "
+          >
+            Instructions: {{ meal.instructions }}
+          </p>
+        </div>
+        <div>
+          <p v-if="store.settings.showIngredients && mealIngredients != ''">
+            Ingredients: {{ mealIngredients }}
+          </p>
+        </div>
+        <div>
+          <b-form-textarea
+            v-if="
+              (storeModules.specialInstructions &&
+                !storeModuleSettings.specialInstructionsStoreOnly) ||
+                (storeModuleSettings.specialInstructionsStoreOnly &&
+                  ($route.params.storeView || $route.params.orderId))
+            "
+            class="mt-4"
+            v-model="special_instructions"
+            placeholder="Special instructions"
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+        </div>
+        <div class="row">
+          <div :class="variationsClass">
+            <div>
+              <b-form-radio-group
+                buttons
+                v-model="mealSize"
+                :options="sizes"
+                class="filters small flexibleButtonGroup"
+                required
+                @input="changeSize"
+                v-show="sizes && sizes.length > 1"
+              ></b-form-radio-group>
+
+              <meal-variations-area
+                id="meal-variations-area"
+                :meal="meal"
+                :sizeId="mealSize"
+                :invalid="invalid"
+                ref="componentModal"
+                :key="total"
+              ></meal-variations-area>
+            </div>
+            <div>
+              <button
+                type="button"
+                :style="brandColor"
+                class="btn btn-lg white-text d-inline mr-3"
+                @click="addMeal(meal)"
+                style="width:120px"
+              >
+                <h6 class="strong pt-1">Add To Bag</h6>
+              </button>
+              <button
+                type="button"
+                class="btn btn-lg btn-secondary d-inline"
+                @click="back"
+                style="width:120px"
+              >
+                <h6 class="strong pt-1 dark-gray">Back</h6>
+              </button>
+            </div>
+          </div>
+          <div :class="nutritionFactsClass">
             <div id="nutritionFacts" ref="nutritionFacts"></div>
           </div>
         </div>
@@ -298,6 +283,32 @@ export default {
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings"
     }),
+    mealIngredients() {
+      let ingredients = "";
+      this.meal.ingredients.forEach(ingredient => {
+        ingredients += ingredient.food_name + ", ";
+      });
+      ingredients = ingredients.substring(0, ingredients.length - 2);
+      return ingredients;
+    },
+    imageClass() {
+      if (this.meal.media.length > 0) {
+        return "col-md-6";
+      } else {
+        return "hide";
+      }
+    },
+    nutritionFactsClass() {
+      return "col-xl-6 col-md-12";
+      if (window.matchMedia("(min-width: 560px)").matches) {
+        return "col-md-5";
+      } else {
+        return "hide";
+      }
+    },
+    variationsClass() {
+      return "col-md-6";
+    },
     brandColor() {
       if (this.store.settings) {
         let style = "background-color:";
