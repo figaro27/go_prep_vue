@@ -32,9 +32,6 @@
           </div>
         </slick>
       </div>
-      <!-- <div class="col-md-3">
-          <div id="nutritionFacts" ref="nutritionFacts"></div>
-        </div> -->
       <div class="col-md-6">
         <h2 class="dark-gray">{{ meal.title }}</h2>
         <h4 class="mt-3 dark-gray">
@@ -147,6 +144,11 @@
             Ingredients: {{ mealIngredients }}
           </p>
         </div>
+        <div class="row mt-2 mb-2">
+          <div :class="nutritionFactsMobileClass">
+            <div id="nutritionFacts1" ref="nutritionFacts1"></div>
+          </div>
+        </div>
         <div>
           <b-form-textarea
             v-if="
@@ -162,11 +164,7 @@
             max-rows="6"
           ></b-form-textarea>
         </div>
-        <div class="row">
-          <div :class="nutritionFactsMobileClass">
-            <div id="nutritionFacts" ref="nutritionFacts"></div>
-          </div>
-        </div>
+
         <div class="row">
           <div :class="variationsClass">
             <div>
@@ -470,6 +468,9 @@ export default {
 
       $("#nutritionFacts").nutritionLabel(null);
       $("#nutritionFacts").nutritionLabel(this.nutritionalFacts);
+
+      $("#nutritionFacts2").nutritionLabel(null);
+      $("#nutritionFacts2").nutritionLabel(this.nutritionalFacts);
       // }
     },
     getPackageBagItems() {
