@@ -5,7 +5,7 @@
         <h5>New Look</h5>
         <p>
           The individual meal page on your menu has been redesigned into a
-          neater, more condensed version.<br />
+          neater and more condensed version with some new design elements.<br />
           <a
             target="_blank"
             href="https://gyazo.com/b821a54d04e24c1d27bbdd3986875bd9"
