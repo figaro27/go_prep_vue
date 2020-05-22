@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     @if ($store != null)
     <title>{{ $store->details->name }} </title>
@@ -8,7 +8,7 @@
     @endif
 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
@@ -29,7 +29,7 @@
 
 </head>
 <body>
-    <script type="text/javascript">
+    <script type="text/javascript" language="Javascript">
         window._mfq = window._mfq || [];
         (function() {
             var mf = document.createElement("script");
@@ -72,7 +72,7 @@
           fbq('init', '{{ $store->settings->fbPixel }}');
           fbq('track', 'PageView');
         </script>
-        <noscript><img height="1" width="1" style="display:none"
+        <noscript><img height="1" width="1" style="display:none" alt="Facebook Pixel"
           src="https://www.facebook.com/tr?id={{ $store->settings->fbPixel }}&ev=PageView&noscript=1"
         /></noscript>
         @endif
