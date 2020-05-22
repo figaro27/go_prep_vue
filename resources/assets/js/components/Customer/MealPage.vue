@@ -34,10 +34,10 @@
       </div>
       <div class="col-md-6">
         <h2 class="dark-gray">{{ meal.title }}</h2>
-        <h4 class="mt-3 dark-gray">
+        <h4 class="mt-2 dark-gray">
           {{ format.money(mealVariationPrice, storeSettings.currency) }}
         </h4>
-        <div class="mt-3">
+        <div class="mt-3 mr-1">
           <span
             class="badge badge-success d-inline mr-1 tags"
             v-for="(tag, index) in meal.tags"
@@ -188,7 +188,7 @@
                 :style="brandColor"
                 class="btn btn-lg white-text d-inline mr-3"
                 @click="addMeal(meal)"
-                style="width:120px"
+                style="width:150px"
               >
                 <h6 class="strong pt-1">Add To Bag</h6>
               </button>
@@ -203,7 +203,7 @@
             </div>
           </div>
           <div :class="nutritionVariationsClass">
-            <div id="nutritionFacts" ref="nutritionFacts"></div>
+            <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
           </div>
         </div>
       </div>
@@ -301,7 +301,7 @@ export default {
         window.innerWidth ||
         document.documentElement.clientWidth ||
         document.body.clientWidth;
-      if (width < 500) {
+      if (width < 768) {
         return "col-md-12";
       } else {
         return "col-md-6";
