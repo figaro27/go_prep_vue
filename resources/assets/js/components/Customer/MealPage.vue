@@ -42,15 +42,15 @@
         </h4>
         <div class="mt-3 d-flex" style="flex-wrap:wrap">
           <span
-            class="badge badge-success d-inline mr-1 tags"
+            class="badge badge-success d-inline mr-1 mt-1 tags"
             v-for="(tag, index) in meal.tags"
             v-bind:key="index"
             >{{ tag.tag }}</span
           >
         </div>
-        <div class="mt-2">
+        <div class="mt-2 d-flex" style="flex-wrap:wrap">
           <span
-            class="badge badge-warning d-inline mr-1 tags dark-gray"
+            class="badge badge-warning d-inline mr-1 mt-1 tags dark-gray"
             v-for="(allergy, index) in meal.allergy_titles"
             v-bind:key="index"
             >{{ allergy }}</span
@@ -191,7 +191,6 @@
                 :style="brandColor"
                 class="btn btn-lg white-text d-inline mr-3"
                 @click="addMeal(meal)"
-                style="width:110px"
               >
                 <h6 class="strong pt-1">Add To Bag</h6>
               </button>
@@ -199,7 +198,6 @@
                 type="button"
                 class="btn btn-lg btn-secondary d-inline"
                 @click="back"
-                style="width:110px"
               >
                 <h6 class="strong pt-1 dark-gray">Back</h6>
               </button>
