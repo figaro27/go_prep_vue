@@ -31,7 +31,11 @@
             </div>
           </div>
         </slick>
-        <div v-if="smallScreen">
+        <div
+          v-if="
+            smallScreen && storeSettings.showNutrition && !blankNutritionFacts
+          "
+        >
           <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
         </div>
       </div>
@@ -164,7 +168,14 @@
         </div>
 
         <div class="row">
-          <div class="col-md-6" v-if="!smallScreen">
+          <div
+            class="col-md-5"
+            v-if="
+              !smallScreen &&
+                storeSettings.showNutrition &&
+                !blankNutritionFacts
+            "
+          >
             <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
           </div>
           <div :class="variationsClass">
@@ -173,7 +184,7 @@
                 buttons
                 v-model="mealSize"
                 :options="sizes"
-                class="filters small flexibleButtonGroup"
+                class="filters small flexibleButtonGroup mb-2"
                 required
                 @input="changeSize"
                 v-show="sizes && sizes.length > 1"
@@ -305,7 +316,7 @@ export default {
       if (width < 1150) {
         return "col-md-12";
       } else {
-        return "col-md-6";
+        return "col-md-7";
       }
     },
     smallScreen() {
