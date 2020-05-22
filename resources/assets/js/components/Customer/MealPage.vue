@@ -310,6 +310,10 @@ export default {
       }
     },
     variationsClass() {
+      const width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
       if (width > 500) {
         return "col-md-6";
       } else {
