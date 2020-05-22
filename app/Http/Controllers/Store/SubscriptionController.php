@@ -19,6 +19,7 @@ use App\MealPackage;
 use App\MealPackageSize;
 use App\MealPackageSubscription;
 use App\MealPackageOrder;
+use App\Subscription;
 
 class SubscriptionController extends StoreController
 {
@@ -29,12 +30,27 @@ class SubscriptionController extends StoreController
      */
     public function index()
     {
-        return $this->store
+        $subscriptions = $this->store
             ->subscriptions()
             ->where('status', 'active')
             ->with(['user:id', 'pickup_location'])
             ->orderBy('created_at')
             ->get();
+
+        $subscriptions->makeHidden([
+            'latest_order',
+            'latest_paid_order',
+            'latest_unpaid_order',
+            'next_order',
+            'meal_ids',
+            'meal_quantities',
+            'store',
+            'orders',
+            'items',
+            'meal_package_items'
+        ]);
+
+        return $subscriptions;
     }
 
     /**
@@ -45,15 +61,9 @@ class SubscriptionController extends StoreController
      */
     public function show($id)
     {
-        $subscriptions = $this->store
-            ->subscriptions()
-            ->with(['user', 'user.userDetail', 'pickup_location'])
-            ->where('id', $id)
+        return Subscription::where('id', $id)
+            ->with(['pickup_location', 'user'])
             ->first();
-
-        $subscriptions->makeHidden(['meal_ids', 'meal_quantities', 'store']);
-
-        return $subscriptions;
     }
 
     /**

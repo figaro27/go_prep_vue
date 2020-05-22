@@ -1325,12 +1325,14 @@ export default {
 
     this.form.billingState = state[0];
 
-    if (this.$route.params.adjustOrder) {
-      this.staffMember = this.order.staff_id;
-    } else {
-      axios.get("/api/me/getLastStaffMemberId").then(resp => {
-        this.staffMember = resp.data;
-      });
+    if (this.$route.params.storeView || this.storeOwner) {
+      if (this.$route.params.adjustOrder) {
+        this.staffMember = this.order.staff_id;
+      } else {
+        axios.get("/api/me/getLastStaffMemberId").then(resp => {
+          this.staffMember = resp.data;
+        });
+      }
     }
   },
   mixins: [MenuBag],

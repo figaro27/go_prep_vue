@@ -25,7 +25,8 @@ export default {
     return {
       isLoading: false,
       pickup: null,
-      subscription_bags: []
+      subscription_bags: [],
+      subscription: {}
     };
   },
   computed: {
@@ -41,14 +42,22 @@ export default {
     }
   },
   mounted() {
-    this.initBag();
+    this.getSub();
   },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
-    async initBag() {
-      const subscription = _.find(this.subscriptions, {
-        id: parseInt(this.subscriptionId)
+    getSub() {
+      axios.get("/api/me/subscriptions/" + this.subscriptionId).then(resp => {
+        this.subscription = resp.data;
+        this.initBag();
       });
+    },
+    async initBag() {
+      // const subscription = _.find(this.subscriptions, {
+      //   id: parseInt(this.subscriptionId)
+      // });
+
+      let subscription = this.subscription;
 
       if (!subscription) {
         return;

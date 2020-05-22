@@ -1629,13 +1629,13 @@ const actions = {
 
     await Promise.all([dispatch("refreshLazy"), dispatch("refreshLazyStore")]);
 
-    dispatch("refreshInactiveMeals");
-    dispatch("refreshStoreCustomers"),
+    dispatch("refreshInactiveMeals"),
+      dispatch("refreshStoreSubscriptions"),
+      dispatch("refreshStoreCustomers"),
       dispatch("refreshStoreLeads"),
       dispatch("refreshStoreStaff"),
       dispatch("refreshOrderIngredients"),
-      dispatch("refreshIngredients"),
-      dispatch("refreshStoreSubscriptions");
+      dispatch("refreshIngredients");
     // dispatch("refreshUpcomingOrders");
   },
 
