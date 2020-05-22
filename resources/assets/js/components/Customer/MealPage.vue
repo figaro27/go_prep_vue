@@ -31,6 +31,9 @@
             </div>
           </div>
         </slick>
+        <div v-if="smallScreen">
+          <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
+        </div>
       </div>
       <div class="col-md-6">
         <h2 class="dark-gray">{{ meal.title }}</h2>
@@ -161,7 +164,7 @@
         </div>
 
         <div class="row">
-          <div :class="nutritionVariationsClass">
+          <div :class="variationsClass">
             <div>
               <b-form-radio-group
                 buttons
@@ -202,7 +205,7 @@
               </button>
             </div>
           </div>
-          <div :class="nutritionVariationsClass">
+          <div class="col-md-6" v-if="!smallScreen">
             <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
           </div>
         </div>
@@ -296,7 +299,7 @@ export default {
         return "hide";
       }
     },
-    nutritionVariationsClass() {
+    variationsClass() {
       const width =
         window.innerWidth ||
         document.documentElement.clientWidth ||
@@ -305,6 +308,17 @@ export default {
         return "col-md-12";
       } else {
         return "col-md-6";
+      }
+    },
+    smallScreen() {
+      const width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+      if (width < 768) {
+        return true;
+      } else {
+        return false;
       }
     },
     brandColor() {
@@ -441,6 +455,8 @@ export default {
 
       $("#nutritionFacts").nutritionLabel(null);
       $("#nutritionFacts").nutritionLabel(this.nutritionalFacts);
+      $("#nutritionFacts1").nutritionLabel(null);
+      $("#nutritionFacts1").nutritionLabel(this.nutritionalFacts);
       // }
     },
     getPackageBagItems() {
