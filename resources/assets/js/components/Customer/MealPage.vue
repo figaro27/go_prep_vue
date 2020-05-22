@@ -164,6 +164,9 @@
         </div>
 
         <div class="row">
+          <div class="col-md-6" v-if="!smallScreen">
+            <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
+          </div>
           <div :class="variationsClass">
             <div>
               <b-form-radio-group
@@ -202,9 +205,6 @@
                 <h6 class="strong pt-1 dark-gray">Back</h6>
               </button>
             </div>
-          </div>
-          <div class="col-md-6" v-if="!smallScreen">
-            <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
           </div>
         </div>
       </div>
