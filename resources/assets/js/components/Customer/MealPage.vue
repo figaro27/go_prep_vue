@@ -40,7 +40,7 @@
         <h4 class="mt-2 dark-gray">
           {{ format.money(mealVariationPrice, storeSettings.currency) }}
         </h4>
-        <div class="mt-3 mr-1">
+        <div class="mt-3 pr-2">
           <span
             class="badge badge-success d-inline mr-1 tags"
             v-for="(tag, index) in meal.tags"
@@ -191,7 +191,7 @@
                 :style="brandColor"
                 class="btn btn-lg white-text d-inline mr-3"
                 @click="addMeal(meal)"
-                style="width:150px"
+                style="width:110px"
               >
                 <h6 class="strong pt-1">Add To Bag</h6>
               </button>
@@ -199,7 +199,7 @@
                 type="button"
                 class="btn btn-lg btn-secondary d-inline"
                 @click="back"
-                style="width:120px"
+                style="width:110px"
               >
                 <h6 class="strong pt-1 dark-gray">Back</h6>
               </button>
