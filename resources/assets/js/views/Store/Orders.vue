@@ -1,14 +1,18 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert variant="info" show>
-        <h5>New Feature</h5>
+      <b-alert variant="info" show>
+        <h5>New Look</h5>
         <p>
-          You can now set different delivery fees based on your customer's zip
-          codes. Choose <b>"Flat By Zip"</b> under <b>Delivery Fee Type</b> in
-          <b>Settings</b> and then click the button to set your rates.
+          The individual meal page on your menu has been redesigned into a
+          neater, more condensed version.<br />
+          <a
+            target="_blank"
+            href="https://gyazo.com/3fee39011cb463f5a44a92ae10dd8ef0"
+            ><b>Check out the before and after here.</b></a
+          >
         </p>
-      </b-alert> -->
+      </b-alert>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
