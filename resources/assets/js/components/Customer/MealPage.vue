@@ -1,6 +1,6 @@
 <template>
   <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
-    <div class="row">
+    <div class="row no-gutters">
       <div class="col-md-6">
         <h2 class="dark-gray">{{ meal.title }}</h2>
         <h4 class="mt-2 dark-gray">
@@ -181,7 +181,7 @@
           </div>
         </div>
       </div>
-      <div :class="imageClass" style="padding-left:0px !important;">
+      <div :class="imageClass">
         <thumbnail
           v-if="meal.image != null && meal.image.url"
           :src="meal.image.url"
