@@ -181,7 +181,7 @@
           </div>
         </div>
       </div>
-      <div :class="imageClass">
+      <div :class="imageClass" style="padding-left:0px !important;">
         <thumbnail
           v-if="meal.image != null && meal.image.url"
           :src="meal.image.url"
