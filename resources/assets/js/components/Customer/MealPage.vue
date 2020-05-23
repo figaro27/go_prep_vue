@@ -1,44 +1,6 @@
 <template>
   <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
     <div class="row">
-      <div :class="imageClass">
-        <thumbnail
-          v-if="meal.image != null && meal.image.url"
-          :src="meal.image.url"
-          :aspect="false"
-          width="100%"
-          @click="$refs.lightbox.showImage(0)"
-          class="mealPageImage"
-        ></thumbnail>
-        <LightBox
-          ref="lightbox"
-          :images="getMealGallery(meal)"
-          :showLightBox="false"
-        ></LightBox>
-
-        <slick ref="mealGallery" :options="slickOptions">
-          <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
-            <div style="image">
-              <thumbnail
-                v-if="image.url"
-                :src="image.url"
-                :aspect="true"
-                :lazy="false"
-                :spinner="false"
-                :width="'70px'"
-                @click="$refs.lightbox.showImage(i)"
-              ></thumbnail>
-            </div>
-          </div>
-        </slick>
-        <div
-          v-if="
-            smallScreen && storeSettings.showNutrition && !blankNutritionFacts
-          "
-        >
-          <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
-        </div>
-      </div>
       <div class="col-md-6">
         <h2 class="dark-gray">{{ meal.title }}</h2>
         <h4 class="mt-2 dark-gray">
@@ -217,6 +179,44 @@
               </button>
             </div>
           </div>
+        </div>
+      </div>
+      <div :class="imageClass">
+        <thumbnail
+          v-if="meal.image != null && meal.image.url"
+          :src="meal.image.url"
+          :aspect="false"
+          width="100%"
+          @click="$refs.lightbox.showImage(0)"
+          class="mealPageImage"
+        ></thumbnail>
+        <LightBox
+          ref="lightbox"
+          :images="getMealGallery(meal)"
+          :showLightBox="false"
+        ></LightBox>
+
+        <slick ref="mealGallery" :options="slickOptions">
+          <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
+            <div style="image">
+              <thumbnail
+                v-if="image.url"
+                :src="image.url"
+                :aspect="true"
+                :lazy="false"
+                :spinner="false"
+                :width="'70px'"
+                @click="$refs.lightbox.showImage(i)"
+              ></thumbnail>
+            </div>
+          </div>
+        </slick>
+        <div
+          v-if="
+            smallScreen && storeSettings.showNutrition && !blankNutritionFacts
+          "
+        >
+          <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
         </div>
       </div>
     </div>

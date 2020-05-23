@@ -14,7 +14,7 @@
           &
           <a
             target="_blank"
-            href="https://gyazo.com/4b39f12e2408eadaf08fb2ec021c00e2"
+            href="https://gyazo.com/37a4d902ed26cf41dbd36fab30267321"
             ><b>After</b></a
           >
         </p>
