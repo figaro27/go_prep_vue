@@ -7,14 +7,9 @@
           :src="meal.image.url"
           :aspect="false"
           width="100%"
-          @click="$refs.lightbox.showImage(0)"
+          @click="$emit('show-gallery', getMealGallery(meal), 0)"
           class="mealPageImage"
         ></thumbnail>
-        <LightBox
-          ref="lightbox"
-          :images="getMealGallery(meal)"
-          :showLightBox="false"
-        ></LightBox>
 
         <slick ref="mealGallery" :options="slickOptions">
           <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
@@ -26,7 +21,7 @@
                 :lazy="false"
                 :spinner="false"
                 :width="'70px'"
-                @click="$refs.lightbox.showImage(i)"
+                @click="$emit('show-gallery', getMealGallery(meal), i)"
               ></thumbnail>
             </div>
           </div>

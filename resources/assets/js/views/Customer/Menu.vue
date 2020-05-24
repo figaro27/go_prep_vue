@@ -2,6 +2,12 @@
   <div>
     <auth-modal :showAuthModal="showAuthModal"></auth-modal>
 
+    <LightBox
+      ref="lightbox"
+      :images="galleryImages"
+      :showLightBox="false"
+    ></LightBox>
+
     <category-slider ref="categorySlider"></category-slider>
 
     <div class="menu">
@@ -174,6 +180,7 @@
             :nutritionalFacts="nutritionalFacts"
             :adjustOrder="adjustOrder"
             :manualOrder="manualOrder"
+            @show-gallery="showGallery"
             ref="mealPage"
           ></meal-page>
 
@@ -548,7 +555,8 @@ export default {
       showMealPackagesArea: true,
       mealSizePrice: null,
       forceShow: false,
-      deliveryDate: null
+      deliveryDate: null,
+      galleryImages: []
     };
   },
   computed: {
@@ -974,6 +982,10 @@ export default {
     }
   },
   methods: {
+    showGallery(images, index) {
+      this.galleryImages = images;
+      this.$refs.lightbox.showImage(index);
+    },
     ...mapActions([
       "refreshSubscriptions",
       "emptyBag",
