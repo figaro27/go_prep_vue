@@ -26,17 +26,24 @@ class SMSContactController extends StoreController
         $contacts = [];
 
         foreach ($contactIds as $contactId) {
-            $client = new \GuzzleHttp\Client();
-            $res = $client->request('GET', $this->baseURL . '/' . $contactId, [
-                'headers' => $this->headers
-            ]);
-            $body = $res->getBody();
-            $contact = new stdClass();
-            $contact->id = json_decode($body)->id;
-            $contact->firstName = json_decode($body)->firstName;
-            $contact->lastName = json_decode($body)->lastName;
-            $contact->phone = json_decode($body)->phone;
-            array_push($contacts, $contact);
+            try {
+                $client = new \GuzzleHttp\Client();
+                $res = $client->request(
+                    'GET',
+                    $this->baseURL . '/' . $contactId,
+                    [
+                        'headers' => $this->headers
+                    ]
+                );
+                $body = $res->getBody();
+                $contact = new stdClass();
+                $contact->id = json_decode($body)->id;
+                $contact->firstName = json_decode($body)->firstName;
+                $contact->lastName = json_decode($body)->lastName;
+                $contact->phone = json_decode($body)->phone;
+                array_push($contacts, $contact);
+            } catch (\Exception $e) {
+            }
         }
 
         return $contacts;

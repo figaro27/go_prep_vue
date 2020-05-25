@@ -11,7 +11,7 @@
         no-fade
         hide-footer
       >
-        <create-list></create-list>
+        <create-list @addList="addList($event)"></create-list>
       </b-modal>
 
       <b-modal
@@ -22,7 +22,11 @@
         no-fade
         hide-footer
       >
-        <edit-list></edit-list>
+        <edit-list
+          :list="list"
+          :tableData="contacts"
+          @updateList="updateList($event)"
+        ></edit-list>
       </b-modal>
 
       <b-modal
@@ -72,6 +76,7 @@
             Edit
           </button>
           <button
+            v-if="props.row.name !== 'All Contacts'"
             class="btn btn-danger btn-sm"
             @click="deleteList(props.row.id)"
           >
@@ -111,7 +116,7 @@ export default {
       showCreateListModal: false,
       showDeleteListModal: false,
       list: {},
-      contacts: {}
+      contacts: null
     };
   },
   created() {},
@@ -151,20 +156,44 @@ export default {
       axios.get("/api/me/SMSLists/" + id).then(resp => {
         this.list = resp.data;
       });
+
+      axios.post("/api/me/showContactsInList", { id: id }).then(resp => {
+        this.contacts = resp.data;
+      });
+    },
+    updateList(data) {
+      let list = data.list;
+      let contacts = data.contacts;
+
+      axios
+        .post("/api/me/updateList", { list: list, contacts: contacts })
+        .then(resp => {
+          this.refreshTable();
+          this.showEditListModal = false;
+          this.$toastr.s("List has been updated.", "Success");
+        });
     },
     deleteList(id) {
       this.list.id = id;
       this.showDeleteListModal = true;
     },
-    destroy(id) {
-      axios.delete("/api/me/SMSLists/" + id).then(resp => {
+    destroy() {
+      axios.delete("/api/me/SMSLists/" + this.list.id).then(resp => {
         this.refreshTable();
+        this.showDeleteListModal = false;
         this.$toastr.s("List has been deleted.", "Success");
       });
     },
     refreshTable() {
       axios.get("/api/me/SMSLists").then(resp => {
         this.tableData = resp.data;
+      });
+    },
+    addList(list) {
+      axios.post("/api/me/SMSLists", { list: list }).then(resp => {
+        this.refreshTable();
+        this.showCreateListModal = false;
+        this.$toastr.s("List has been added.", "Success");
       });
     }
   }

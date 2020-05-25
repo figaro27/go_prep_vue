@@ -3,8 +3,7 @@
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
       <h5 class="center-text p-2 mt-2">
-        Are you sure you want to delete this list? This will also delete all the
-        contacts in that list.
+        Are you sure you want to delete this list?
       </h5>
       <div class="d-flex pt-2" style="justify-content:center">
         <b-btn

@@ -2,7 +2,41 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
-      Edit List Area
+
+      <b-button
+        @click="$emit('updateList', { list: list, contacts: tableData })"
+        variant="warning"
+        >Update</b-button
+      >
+
+      <b-form-input v-model="list.name"></b-form-input>
+
+      <v-client-table
+        :columns="columns"
+        :data="tableData"
+        :options="{
+          orderBy: {
+            column: 'id',
+            ascending: true
+          },
+          headings: {
+            add: 'Add To List',
+            firstName: 'First Name',
+            lastName: 'Last Name'
+          },
+          filterable: false
+        }"
+      >
+        <div slot="included" slot-scope="props">
+          <b-form-checkbox
+            v-model="props.row.included"
+            type="checkbox"
+            :value="true"
+            :unchecked-value="false"
+            @change="val => updateIncluded(props.row.id, val)"
+          ></b-form-checkbox>
+        </div>
+      </v-client-table>
     </div>
   </div>
 </template>
@@ -23,17 +57,15 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      tableData: [],
-      columns: ["name", "membersCount", "actions"],
-      listId: null
+      columns: ["included", "firstName", "lastName", "phone"]
     };
   },
-  created() {},
-  mounted() {
-    axios.get("/api/me/SMSLists").then(resp => {
-      this.tableData = resp.data;
-    });
+  props: {
+    list: null,
+    tableData: []
   },
+  created() {},
+  mounted() {},
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -44,7 +76,14 @@ export default {
   },
   methods: {
     ...mapActions({}),
-    formatMoney: format.money
+    formatMoney: format.money,
+    updateIncluded(id, val) {
+      this.tableData.forEach(row => {
+        if (row.id === id) {
+          row.included = val;
+        }
+      });
+    }
   }
 };
 </script>

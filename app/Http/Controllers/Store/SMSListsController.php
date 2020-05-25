@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\SmsList;
+use App\SmsContact;
 use App\Customer;
 use stdClass;
 
@@ -59,17 +60,18 @@ class SMSListsController extends StoreController
      */
     public function store(Request $request)
     {
-        $name = $request->get('name');
-        if ($name === null) {
+        $list = $request->get('list');
+
+        if ($list['name'] === null) {
             $count = SmsList::where('store_id', $this->store->id)->count() + 1;
-            $name = 'List #' . $count;
+            $list['name'] = 'List #' . $count;
         }
 
         $client = new \GuzzleHttp\Client();
         $res = $client->request('POST', $this->baseURL, [
             'headers' => $this->headers,
             'form_params' => [
-                'name' => $name
+                'name' => $list['name']
             ]
         ]);
         $status = $res->getStatusCode();
@@ -82,43 +84,20 @@ class SMSListsController extends StoreController
 
         $listId = json_decode($body)->id;
 
-        // If contact doesn't exist, add contact to Text Magic and update sms_contact_id in Customers table.
+        // Add contacts to list
+        $contacts = implode(',', $list['contacts']);
 
-        $customers = $request->get('customers');
-
-        foreach ($customers as $customer) {
-            $customer = Customer::where('id', $customer)->first();
-            if ($customer->sms_contact_id === null) {
-                // Get country prefix
-                $phone =
-                    (int) 1 . preg_replace('/[^0-9]/', '', $customer->phone);
-
-                $client = new \GuzzleHttp\Client();
-                $res = $client->request(
-                    'POST',
-                    'https://rest.textmagic.com/api/v2/contacts',
-                    [
-                        'headers' => $this->headers,
-                        'form_params' => [
-                            'phone' => $phone,
-                            'lists' => $listId,
-                            'firstName' => $customer->firstname,
-                            'lastName' => $customer->lastname,
-                            'email' => $customer->email
-                        ]
-                    ]
-                );
-                $status = $res->getStatusCode();
-                $body = $res->getBody();
-
-                $customer->sms_contact_id = json_decode($body)->id;
-                $customer->update();
-            }
-        }
-    }
-
-    public function addContactToList(Request $request)
-    {
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'PUT',
+            $this->baseURL . '/' . $listId . '/contacts',
+            [
+                'headers' => $this->headers,
+                'form_params' => [
+                    'contacts' => $contacts
+                ]
+            ]
+        );
     }
 
     /**
@@ -139,22 +118,63 @@ class SMSListsController extends StoreController
         return $body;
     }
 
-    public function showContacts(Request $request)
+    public function showContactsInList(Request $request)
     {
-        $id = $request->get('id');
+        // Get all contacts in list
+        $listId = $request->get('id');
 
         $client = new \GuzzleHttp\Client();
         $res = $client->request(
             'GET',
-            $this->baseURL . '/' . $id . '/contacts',
+            $this->baseURL . '/' . $listId . '/contacts',
             [
                 'headers' => $this->headers
             ]
         );
-        $body = new stdClass();
-        $body = $res->getBody();
 
-        return $body;
+        $body = $res->getBody();
+        $includedContacts = json_decode($body)->resources;
+        $includedContactIds = [];
+
+        foreach ($includedContacts as $contact) {
+            array_push($includedContactIds, $contact->id);
+        }
+
+        // Get all contacts & add included flag if the contact is found in the list
+
+        $contactIds = SmsContact::where('store_id', $this->store->id)->pluck(
+            'contact_id'
+        );
+
+        $allContacts = [];
+
+        foreach ($contactIds as $contactId) {
+            try {
+                $client = new \GuzzleHttp\Client();
+                $res = $client->request(
+                    'GET',
+                    'https://rest.textmagic.com/api/v2/contacts/' . $contactId,
+                    [
+                        'headers' => $this->headers
+                    ]
+                );
+                $body = $res->getBody();
+                $contact = new stdClass();
+                $contact->id = json_decode($body)->id;
+                $contact->firstName = json_decode($body)->firstName;
+                $contact->lastName = json_decode($body)->lastName;
+                $contact->phone = json_decode($body)->phone;
+                $contact->included = in_array($contact->id, $includedContactIds)
+                    ? true
+                    : false;
+                array_push($allContacts, $contact);
+            } catch (\Exception $e) {
+            }
+        }
+
+        // Return all contacts with included flag
+
+        return $allContacts;
     }
 
     /**
@@ -178,6 +198,72 @@ class SMSListsController extends StoreController
     public function update(Request $request, $id)
     {
         //
+    }
+
+    public function updateList(Request $request)
+    {
+        $list = $request->get('list');
+        $listId = $list['id'];
+        $contacts = $request->get('contacts');
+        $allContactIds = [];
+        $includedContactIds = [];
+
+        foreach ($contacts as $contact) {
+            array_push($allContactIds, $contact['id']);
+            if ($contact['included']) {
+                array_push($includedContactIds, $contact['id']);
+            }
+        }
+
+        $allContactIds = implode(',', $allContactIds);
+        $includedContactIds = implode(',', $includedContactIds);
+
+        // Update list name
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', $this->baseURL . '/' . $listId, [
+            'headers' => $this->headers,
+            'form_params' => [
+                'name' => $list['name']
+            ]
+        ]);
+        $body = new stdClass();
+        $body = $res->getBody();
+
+        // Remove all contacts from list
+        try {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'DELETE',
+                $this->baseURL . '/' . $listId . '/contacts',
+                [
+                    'headers' => $this->headers,
+                    'form_params' => [
+                        'contacts' => $allContactIds
+                    ]
+                ]
+            );
+            $body = new stdClass();
+            $body = $res->getBody();
+        } catch (\Exception $e) {
+        }
+
+        // Add included ones back in
+        try {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'PUT',
+                $this->baseURL . '/' . $listId . '/contacts',
+                [
+                    'headers' => $this->headers,
+                    'form_params' => [
+                        'contacts' => $includedContactIds
+                    ]
+                ]
+            );
+            $body = new stdClass();
+            $body = $res->getBody();
+        } catch (\Exception $e) {
+        }
     }
 
     /**

@@ -2,7 +2,41 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
-      Create List Area
+
+      <b-button @click="$emit('addList', list)" variant="primary"
+        >Save</b-button
+      >
+
+      <b-form-input
+        v-model="list.name"
+        placeholder="List Name (Optional)"
+      ></b-form-input>
+
+      <v-client-table
+        :columns="columns"
+        :data="tableData"
+        :options="{
+          orderBy: {
+            column: 'id',
+            ascending: true
+          },
+          headings: {
+            add: 'Add To List',
+            firstName: 'First Name',
+            lastName: 'Last Name'
+          },
+          filterable: false
+        }"
+      >
+        <div slot="add" slot-scope="props">
+          <b-form-checkbox
+            type="checkbox"
+            :value="1"
+            :unchecked-value="0"
+            @change="val => addContact(props.row.id, val)"
+          ></b-form-checkbox>
+        </div>
+      </v-client-table>
     </div>
   </div>
 </template>
@@ -24,12 +58,17 @@ export default {
   data() {
     return {
       tableData: [],
-      columns: ["name", "membersCount", "actions"],
-      listId: null
+      columns: ["add", "firstName", "lastName", "phone"],
+      list: {
+        name: "",
+        contacts: []
+      }
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.getContacts();
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -40,7 +79,19 @@ export default {
   },
   methods: {
     ...mapActions({}),
-    formatMoney: format.money
+    formatMoney: format.money,
+    getContacts() {
+      axios.get("/api/me/SMSContacts").then(resp => {
+        this.tableData = resp.data;
+      });
+    },
+    addContact(id, val) {
+      if (val === 1) {
+        this.list.contacts.push(id);
+      } else {
+        this.list.contacts.pop(id);
+      }
+    }
   }
 };
 </script>
