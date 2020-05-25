@@ -11,9 +11,9 @@
         no-fade
         hide-footer
       >
-        <template-modal
+        <view-templates
           @insertTemplate="insertTemplate($event)"
-        ></template-modal>
+        ></view-templates>
       </b-modal>
 
       <b-modal
@@ -24,9 +24,24 @@
         no-fade
         hide-footer
       >
-        <view-list-modal @insertList="insertList($event)"></view-list-modal>
+        <view-lists @insertList="insertList($event)"></view-lists>
       </b-modal>
 
+      <b-modal
+        size="xl"
+        title="Contacts"
+        v-model="showContactsModal"
+        v-if="showContactsModal"
+        no-fade
+        hide-footer
+      >
+        <view-contacts @insertContacts="insertContacts($event)"></view-contacts>
+      </b-modal>
+      <!-- <div>
+    <span contenteditable="true">
+      <span class="badge badge-secondary">Contact Name</span>
+    </span>
+</div> -->
       <b-btn variant="success" @click="showNewSMSArea = !showNewSMSArea"
         >Compose New SMS</b-btn
       >
@@ -49,7 +64,10 @@
                 <p class="pull-right">Recipients: {{ recipientCount }}</p>
               </div>
               <div class="col-md-3 pt-3">
-                <div class="d-flex">
+                <div
+                  class="d-flex"
+                  @click="showContactsModal = !showContactsModal"
+                >
                   <i
                     class="fas fa-user d-inline pr-1 pt-1"
                     style="color:#737373"
@@ -181,13 +199,15 @@ import format from "../../../lib/format";
 import store from "../../../store";
 import ViewTemplates from "./Modals/ViewTemplates.vue";
 import ViewLists from "./Modals/ViewLists.vue";
+import ViewContacts from "./Modals/ViewContacts.vue";
 
 export default {
   components: {
     Spinner,
     vSelect,
     ViewTemplates,
-    ViewLists
+    ViewLists,
+    ViewContacts
   },
   mixins: [checkDateRange],
   data() {
@@ -197,13 +217,15 @@ export default {
       showTagDropdown: false,
       showTemplateModal: false,
       showListModal: false,
+      showContactsModal: false,
       message: {
         content: ""
       },
       tableData: [],
       columns: ["messageTime", "text", "actions"],
       recipientCount: 1,
-      lists: []
+      lists: [],
+      contacts: []
     };
   },
   created() {},
@@ -261,6 +283,12 @@ export default {
     insertList(list) {
       this.lists.push(list);
       this.showListModal = false;
+    },
+    insertContacts(contacts) {
+      contacts.forEach(contact => {
+        this.contacts.push(contact);
+      });
+      this.showContactsModal = false;
     }
   }
 };
