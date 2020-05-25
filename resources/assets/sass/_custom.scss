@@ -1315,6 +1315,7 @@ body.forgotresettoken {
   align-items: flex-start;
   justify-content: flex-start;
   overflow-y: auto;
+  overflow-x: hidden;
 
   @media all and (max-width: 991px) {
     width: 200px;
