@@ -65,6 +65,15 @@ class CheckoutController extends UserController
         $bag = new Bag($bagItems, $store);
         $weeklyPlan = $request->get('plan');
 
+        if ($storeSettings->open === false) {
+            return response()->json(
+                [
+                    'message' => 'Ordering is currently closed.'
+                ],
+                400
+            );
+        }
+
         if ($user->has_active_subscription) {
             return response()->json(
                 [
