@@ -20,8 +20,15 @@
       >
         <div slot="beforeTable" class="mb-2">
           <button
+            class="btn btn-primary btn-md mb-2 mb-sm-0"
+            @click="selectAll"
+          >
+            Select All
+          </button>
+          <button
             class="btn btn-success btn-md mb-2 mb-sm-0"
             @click="$emit('insertContacts', selectedContacts)"
+            :disabled="selectedContacts.length === 0"
           >
             Insert Contacts
           </button>
@@ -29,6 +36,7 @@
 
         <div slot="included" slot-scope="props">
           <b-form-checkbox
+            v-model="props.row.included"
             type="checkbox"
             :value="true"
             :unchecked-value="false"
@@ -58,7 +66,8 @@ export default {
     return {
       tableData: [],
       columns: ["included", "firstName", "lastName", "phone"],
-      selectedContacts: []
+      selectedContacts: [],
+      allSelected: false
     };
   },
   created() {},
@@ -84,6 +93,18 @@ export default {
       } else {
         this.selectedContacts.pop(contact);
       }
+    },
+    selectAll() {
+      this.allSelected = !this.allSelected;
+      this.tableData.forEach(contact => {
+        if (this.allSelected) {
+          contact.included = true;
+          this.selectedContacts.push(contact);
+        } else {
+          contact.included = false;
+          this.selectedContacts.pop(contact);
+        }
+      });
     }
   }
 };

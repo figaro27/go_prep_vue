@@ -37,11 +37,7 @@
       >
         <view-contacts @insertContacts="insertContacts($event)"></view-contacts>
       </b-modal>
-      <!-- <div>
-    <span contenteditable="true">
-      <span class="badge badge-secondary">Contact Name</span>
-    </span>
-</div> -->
+
       <b-btn variant="success" @click="showNewSMSArea = !showNewSMSArea"
         >Compose New SMS</b-btn
       >
@@ -54,13 +50,32 @@
                 <h5 class="pull-right pt-3 gray-text">To</h5>
               </div>
               <div class="col-md-7">
-                <b-form-textarea
+                <b-form-input
                   class="m-2"
                   style="overflow:auto;resize:both"
-                  v-model="contacts"
-                  placeholder="Type comma separated numbers or choose contacts or lists on the right."
+                  placeholder="Type contact name or number."
                   rows="3"
-                ></b-form-textarea>
+                ></b-form-input>
+                <div class="contact-area d-flex" style="flex-wrap:wrap">
+                  <li v-for="list in lists" class="d-inline">
+                    <span
+                      class="badge badge-primary mr-1"
+                      @click="removeList(list)"
+                    >
+                      {{ list.name }}
+                    </span>
+                  </li>
+                  <li v-for="contact in contacts">
+                    <span
+                      class="badge badge-success d-inline mr-1"
+                      @click="removeContact(contact)"
+                    >
+                      {{ contact.firstName }} {{ contact.lastName }} (+{{
+                        contact.phone
+                      }})
+                    </span>
+                  </li>
+                </div>
                 <p class="pull-right">Recipients: {{ recipientCount }}</p>
               </div>
               <div class="col-md-3 pt-3">
@@ -111,7 +126,7 @@
                   }}</span
                   ><img
                     v-b-popover.hover="
-                      'The number of recipients times the number of parts the text will be sent in (160 characters per part) times 6 cents. Your GoPrep account will be charged via Stripe.'
+                      'The number of recipients times the number of parts the text will be sent in (160 characters per part) times 5 cents. Your GoPrep account will be charged via Stripe.'
                     "
                     title="Cost"
                     src="/images/store/popover.png"
@@ -223,7 +238,6 @@ export default {
       },
       tableData: [],
       columns: ["messageTime", "text", "actions"],
-      recipientCount: 1,
       lists: [],
       contacts: []
     };
@@ -238,11 +252,25 @@ export default {
       isLoading: "isLoading",
       initialized: "initialized"
     }),
+    recipientCount() {
+      let contacts = this.contacts.length;
+      let lists =
+        this.lists.length > 0
+          ? _.reduce(
+              this.lists,
+              (sum, list) => {
+                return sum + list.membersCount;
+              },
+              0
+            )
+          : 0;
+      return contacts + lists;
+    },
     tags() {
       return ["First name", "Last name", "Company name", "Phone", "Email"];
     },
     messageCost() {
-      return this.messageParts * 0.06 * this.recipientCount;
+      return this.messageParts * 0.05 * this.recipientCount;
     },
     messageParts() {
       return Math.ceil(this.message.content.length / 160);
@@ -280,8 +308,8 @@ export default {
           this.$toastr.s("SMS has been sent.", "Success");
         });
     },
-    insertList(list) {
-      this.lists.push(list);
+    insertList(selectedLists) {
+      this.lists = selectedLists;
       this.showListModal = false;
     },
     insertContacts(contacts) {
@@ -289,6 +317,14 @@ export default {
         this.contacts.push(contact);
       });
       this.showContactsModal = false;
+    },
+    removeContact(contact) {
+      let index = this.contacts.indexOf(contact);
+      this.contacts.splice(index, 1);
+    },
+    removeList(list) {
+      let index = this.contacts.indexOf(list);
+      this.lists.splice(index, 1);
     }
   }
 };

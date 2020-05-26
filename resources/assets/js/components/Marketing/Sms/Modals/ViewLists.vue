@@ -17,13 +17,30 @@
           filterable: false
         }"
       >
-        <div slot="actions" class="text-nowrap" slot-scope="props">
+        <div slot="beforeTable" class="mb-2">
           <button
-            class="btn view btn-success btn-sm"
-            @click="$emit('insertList', props.row)"
+            class="btn btn-primary btn-md mb-2 mb-sm-0"
+            @click="selectAll"
           >
-            Insert List
+            Select All
           </button>
+          <button
+            class="btn btn-success btn-md mb-2 mb-sm-0"
+            @click="$emit('insertList', selectedLists)"
+            :disabled="selectedLists.length === 0"
+          >
+            Insert Lists
+          </button>
+        </div>
+
+        <div slot="included" slot-scope="props">
+          <b-form-checkbox
+            v-model="props.row.included"
+            type="checkbox"
+            :value="true"
+            :unchecked-value="false"
+            @change="val => addToSelectedLists(props.row, val)"
+          ></b-form-checkbox>
         </div>
       </v-client-table>
     </div>
@@ -47,8 +64,9 @@ export default {
   data() {
     return {
       tableData: [],
-      columns: ["name", "membersCount", "actions"],
-      listId: null
+      columns: ["included", "name", "membersCount"],
+      selectedLists: [],
+      allSelected: false
     };
   },
   created() {},
@@ -67,7 +85,26 @@ export default {
   },
   methods: {
     ...mapActions({}),
-    formatMoney: format.money
+    formatMoney: format.money,
+    addToSelectedLists(list, val) {
+      if (val === true) {
+        this.selectedLists.push(list);
+      } else {
+        this.selectedLists.pop(list);
+      }
+    },
+    selectAll() {
+      this.allSelected = !this.allSelected;
+      this.tableData.forEach(list => {
+        if (this.allSelected) {
+          list.included = true;
+          this.selectedLists.push(list);
+        } else {
+          list.included = false;
+          this.selectedLists.pop(list);
+        }
+      });
+    }
   }
 };
 </script>
