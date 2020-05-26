@@ -61,7 +61,9 @@ export default {
     return {};
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.initSMS();
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -71,7 +73,9 @@ export default {
     })
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      initSMS: "initSMS"
+    }),
     formatMoney: format.money
   }
 };

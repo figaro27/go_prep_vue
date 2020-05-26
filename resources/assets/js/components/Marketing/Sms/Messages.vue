@@ -173,7 +173,7 @@
 
       <v-client-table
         :columns="columns"
-        :data="tableData"
+        :data="SMSMessages"
         :options="{
           orderBy: {
             column: 'id',
@@ -236,21 +236,22 @@ export default {
       message: {
         content: ""
       },
-      tableData: [],
+      // tableData: [],
       columns: ["messageTime", "text", "actions"],
       lists: [],
       contacts: []
     };
   },
   created() {},
-  mounted() {
-    this.refreshTable();
-  },
+  mounted() {},
   computed: {
     ...mapGetters({
       store: "viewedStore",
       isLoading: "isLoading",
-      initialized: "initialized"
+      initialized: "initialized",
+      SMSMessages: "SMSMessages",
+      SMSContacts: "SMSContacts",
+      SMSLists: "SMSLists"
     }),
     recipientCount() {
       let contacts = this.contacts.length;
@@ -277,7 +278,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      refreshSMSMessages: "refreshSMSMessages"
+    }),
     formatMoney: format.money,
     truncate(text, length, suffix) {
       if (text) {
@@ -285,9 +288,7 @@ export default {
       }
     },
     refreshTable() {
-      axios.get("/api/me/SMSMessages").then(resp => {
-        this.tableData = resp.data;
-      });
+      this.refreshSMSMessages();
     },
     addTag(tag) {
       this.message.content += "{" + tag + "}";
@@ -311,12 +312,19 @@ export default {
     insertList(selectedLists) {
       this.lists = selectedLists;
       this.showListModal = false;
+      this.SMSLists.forEach(list => {
+        list.included = false;
+      });
     },
     insertContacts(contacts) {
       contacts.forEach(contact => {
         this.contacts.push(contact);
       });
       this.showContactsModal = false;
+
+      this.SMSContacts.forEach(contact => {
+        contact.included = false;
+      });
     },
     removeContact(contact) {
       let index = this.contacts.indexOf(contact);

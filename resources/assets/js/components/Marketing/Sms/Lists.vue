@@ -45,7 +45,7 @@
 
       <v-client-table
         :columns="columns"
-        :data="tableData"
+        :data="SMSLists"
         :options="{
           orderBy: {
             column: 'id',
@@ -110,7 +110,6 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      tableData: [],
       columns: ["name", "membersCount", "actions"],
       showEditListModal: false,
       showCreateListModal: false,
@@ -120,19 +119,20 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    this.refreshTable();
-  },
+  mounted() {},
   computed: {
     ...mapGetters({
       store: "viewedStore",
       isLoading: "isLoading",
       initialized: "initialized",
-      customers: "storeCustomers"
+      customers: "storeCustomers",
+      SMSLists: "SMSLists"
     })
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      refreshSMSLists: "refreshSMSLists"
+    }),
     formatMoney: format.money,
     truncate(text, length, suffix) {
       if (text) {
@@ -185,9 +185,7 @@ export default {
       });
     },
     refreshTable() {
-      axios.get("/api/me/SMSLists").then(resp => {
-        this.tableData = resp.data;
-      });
+      this.refreshSMSLists();
     },
     addList(list) {
       axios.post("/api/me/SMSLists", { list: list }).then(resp => {

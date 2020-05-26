@@ -4,7 +4,7 @@
       <Spinner v-if="isLoading" />
       <v-client-table
         :columns="columns"
-        :data="tableData"
+        :data="SMSTemplates"
         :options="{
           orderBy: {
             column: 'id',
@@ -126,7 +126,6 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      tableData: [],
       columns: ["name", "content", "actions"],
       template: {
         id: null,
@@ -139,23 +138,22 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    axios.get("/api/me/SMSTemplates").then(resp => {
-      this.tableData = resp.data;
-    });
-  },
+  mounted() {},
   computed: {
     ...mapGetters({
       store: "viewedStore",
       isLoading: "isLoading",
-      initialized: "initialized"
+      initialized: "initialized",
+      SMSTemplates: "SMSTemplates"
     }),
     tags() {
       return ["First name", "Last name", "Company name", "Phone", "Email"];
     }
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      refreshSMSTemplates: "refreshSMSTemplates"
+    }),
     formatMoney: format.money,
     truncate(text, length, suffix) {
       if (text) {

@@ -44,7 +44,7 @@
       <b-btn @click="importCustomers">Import Customers Temp</b-btn>
       <v-client-table
         :columns="columns"
-        :data="tableData"
+        :data="SMSContacts"
         :options="{
           orderBy: {
             column: 'id',
@@ -109,7 +109,6 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      tableData: [],
       columns: ["firstName", "lastName", "phone", "actions"],
       showCreateContactModal: false,
       showEditContactModal: false,
@@ -118,23 +117,22 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    this.refreshTable();
-  },
+  mounted() {},
   computed: {
     ...mapGetters({
       store: "viewedStore",
       isLoading: "isLoading",
-      initialized: "initialized"
+      initialized: "initialized",
+      SMSContacts: "SMSContacts"
     })
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      refreshSMSContacts: "refreshSMSContacts"
+    }),
     formatMoney: format.money,
     refreshTable() {
-      axios.get("/api/me/SMSContacts").then(resp => {
-        this.tableData = resp.data;
-      });
+      this.refreshSMSContacts();
     },
     importCustomers() {
       axios.post("/api/me/SMSimportCustomers", {}).then(resp => {

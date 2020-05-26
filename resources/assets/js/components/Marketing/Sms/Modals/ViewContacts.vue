@@ -5,7 +5,7 @@
 
       <v-client-table
         :columns="columns"
-        :data="tableData"
+        :data="SMSContacts"
         :options="{
           orderBy: {
             column: 'id',
@@ -64,28 +64,26 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      tableData: [],
       columns: ["included", "firstName", "lastName", "phone"],
       selectedContacts: [],
       allSelected: false
     };
   },
   created() {},
-  mounted() {
-    axios.get("/api/me/SMSContacts").then(resp => {
-      this.tableData = resp.data;
-    });
-  },
+  mounted() {},
   computed: {
     ...mapGetters({
       store: "viewedStore",
       isLoading: "isLoading",
       initialized: "initialized",
-      customers: "storeCustomers"
+      customers: "storeCustomers",
+      SMSContacts: "SMSContacts"
     })
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      refreshSMSContacts: "refreshSMSContacts"
+    }),
     formatMoney: format.money,
     addToSelectedContacts(contact, val) {
       if (val === true) {
@@ -96,7 +94,7 @@ export default {
     },
     selectAll() {
       this.allSelected = !this.allSelected;
-      this.tableData.forEach(contact => {
+      this.SMSContacts.forEach(contact => {
         if (this.allSelected) {
           contact.included = true;
           this.selectedContacts.push(contact);

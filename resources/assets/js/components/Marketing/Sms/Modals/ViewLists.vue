@@ -5,7 +5,7 @@
 
       <v-client-table
         :columns="columns"
-        :data="tableData"
+        :data="SMSLists"
         :options="{
           orderBy: {
             column: 'id',
@@ -63,24 +63,20 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      tableData: [],
       columns: ["included", "name", "membersCount"],
       selectedLists: [],
       allSelected: false
     };
   },
   created() {},
-  mounted() {
-    axios.get("/api/me/SMSLists").then(resp => {
-      this.tableData = resp.data;
-    });
-  },
+  mounted() {},
   computed: {
     ...mapGetters({
       store: "viewedStore",
       isLoading: "isLoading",
       initialized: "initialized",
-      customers: "storeCustomers"
+      customers: "storeCustomers",
+      SMSLists: "SMSLists"
     })
   },
   methods: {
@@ -95,7 +91,7 @@ export default {
     },
     selectAll() {
       this.allSelected = !this.allSelected;
-      this.tableData.forEach(list => {
+      this.SMSLists.forEach(list => {
         if (this.allSelected) {
           list.included = true;
           this.selectedLists.push(list);

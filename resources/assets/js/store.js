@@ -167,6 +167,20 @@ const state = {
     },
     staff: {
       data: {}
+    },
+    sms: {
+      messages: {
+        data: {}
+      },
+      templates: {
+        data: {}
+      },
+      lists: {
+        data: {}
+      },
+      contacts: {
+        data: {}
+      }
     }
   },
   orders: {
@@ -219,6 +233,18 @@ const mutations = {
   },
   tags(state, { tags }) {
     state.tags = tags;
+  },
+  setSMSMessages(state, data) {
+    state.store.sms.messages.data = data.messages;
+  },
+  setSMSTemplates(state, data) {
+    state.store.sms.templates.data = data.templates;
+  },
+  setSMSLists(state, data) {
+    state.store.sms.lists.data = data.lists;
+  },
+  setSMSContacts(state, data) {
+    state.store.sms.contacts.data = data.contacts;
   },
   setViewedStoreWillDeliver(state, willDeliver) {
     state.viewed_store.will_deliver = willDeliver;
@@ -1619,6 +1645,34 @@ const actions = {
     });
   },
 
+  async initSMS({ commit, state, dispatch }, data = {}) {
+    dispatch("refreshSMSMessages");
+    dispatch("refreshSMSTemplates");
+    dispatch("refreshSMSLists");
+    dispatch("refreshSMSContacts");
+  },
+
+  async refreshSMSMessages({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/SMSMessages");
+    const { data } = await res;
+    commit("setSMSMessages", { messages: data });
+  },
+  async refreshSMSTemplates({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/SMSTemplates");
+    const { data } = await res;
+    commit("setSMSTemplates", { templates: data });
+  },
+  async refreshSMSLists({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/SMSLists");
+    const { data } = await res;
+    commit("setSMSLists", { lists: data });
+  },
+  async refreshSMSContacts({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/SMSContacts");
+    const { data } = await res;
+    commit("setSMSContacts", { contacts: data });
+  },
+
   async initStore({ commit, state, dispatch }, data = {}) {
     // Required actions
     if (data.store) {
@@ -2745,6 +2799,18 @@ const actions = {
 
 // getters are functions
 const getters = {
+  SMSMessages(state) {
+    return state.store.sms.messages.data;
+  },
+  SMSTemplates(state) {
+    return state.store.sms.templates.data;
+  },
+  SMSLists(state) {
+    return state.store.sms.lists.data;
+  },
+  SMSContacts(state) {
+    return state.store.sms.contacts.data;
+  },
   loggedIn(state) {
     return !_.isEmpty(state.user.data) && state.user.data.id && auth.hasToken();
   },
