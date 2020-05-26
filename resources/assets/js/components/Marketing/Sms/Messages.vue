@@ -50,12 +50,6 @@
                 <h5 class="pull-right pt-3 gray-text">To</h5>
               </div>
               <div class="col-md-7">
-                <b-form-input
-                  class="m-2"
-                  style="overflow:auto;resize:both"
-                  placeholder="Type contact name or number."
-                  rows="3"
-                ></b-form-input>
                 <div class="contact-area d-flex" style="flex-wrap:wrap">
                   <li v-for="list in lists" class="d-inline">
                     <span
@@ -239,7 +233,8 @@ export default {
       // tableData: [],
       columns: ["messageTime", "text", "actions"],
       lists: [],
-      contacts: []
+      contacts: [],
+      selectedContact: null
     };
   },
   created() {},
@@ -318,7 +313,9 @@ export default {
     },
     insertContacts(contacts) {
       contacts.forEach(contact => {
-        this.contacts.push(contact);
+        if (!this.contacts.includes(contact)) {
+          this.contacts.push(contact);
+        }
       });
       this.showContactsModal = false;
 
@@ -333,6 +330,9 @@ export default {
     removeList(list) {
       let index = this.contacts.indexOf(list);
       this.lists.splice(index, 1);
+    },
+    addContact() {
+      this.contacts.push(this.selectedContact);
     }
   }
 };
