@@ -28,6 +28,7 @@ class CreateSMSSettingsTable extends Migration
             $table
                 ->unsignedInteger('autoSendOrderConfirmationTemplateId')
                 ->nullable();
+            $table->decimal('balance')->default(0);
             $table->timestamps();
         });
     }

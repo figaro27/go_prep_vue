@@ -87,13 +87,16 @@ export default {
     formatMoney: format.money,
     addToSelectedContacts(contact, val) {
       if (val === true) {
-        this.selectedContacts.push(contact);
+        if (!this.selectedContacts.includes(contact)) {
+          this.selectedContacts.push(contact);
+        }
       } else {
         this.selectedContacts.pop(contact);
       }
     },
     selectAll() {
       this.allSelected = !this.allSelected;
+      this.selectedContacts = [];
       this.SMSContacts.forEach(contact => {
         if (this.allSelected) {
           contact.included = true;

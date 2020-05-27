@@ -84,13 +84,16 @@ export default {
     formatMoney: format.money,
     addToSelectedLists(list, val) {
       if (val === true) {
-        this.selectedLists.push(list);
+        if (!this.selectedLists.includes(list)) {
+          this.selectedLists.push(list);
+        }
       } else {
         this.selectedLists.pop(list);
       }
     },
     selectAll() {
       this.allSelected = !this.allSelected;
+      this.selectedLists = [];
       this.SMSLists.forEach(list => {
         if (this.allSelected) {
           list.included = true;
