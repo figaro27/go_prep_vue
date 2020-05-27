@@ -44,6 +44,7 @@ use App\SubscriptionBag;
 use DB;
 use Exception;
 use App\Traits\DeliveryDates;
+use App\SmsSetting;
 
 class CheckoutController extends UserController
 {
@@ -1354,6 +1355,11 @@ class CheckoutController extends UserController
             $referral = Referral::where('id', $appliedReferralId)->first();
             $referral->balance -= $referralReduction;
             $referral->update();
+        }
+
+        $smsSetting = SmsSetting::where('store_id', $storeId)->first();
+        if ($smsSetting->autoAddCustomers) {
+            $smsSetting->addNewCustomerToContacts($customer);
         }
     }
 }

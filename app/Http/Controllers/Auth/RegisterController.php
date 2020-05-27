@@ -280,6 +280,8 @@ class RegisterController extends Controller
                 'amount' => 5.0
             ]);
 
+            $storeSMSSettings = $store->smsSettings()->create();
+
             try {
                 $key = new \Cloudflare\API\Auth\APIKey(
                     config('services.cloudflare.user'),

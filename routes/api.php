@@ -558,6 +558,14 @@ foreach (
                                 'SMSimportCustomers',
                                 'SMSContactController@importCustomers'
                             );
+                            Route::resource(
+                                'smsSettings',
+                                'SMSSettingController'
+                            );
+                            Route::post(
+                                'updateSMSSettings',
+                                'SMSSettingController@update'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {

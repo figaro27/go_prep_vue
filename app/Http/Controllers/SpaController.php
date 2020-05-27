@@ -72,6 +72,7 @@ class SpaController extends Controller
                         'modules',
                         'moduleSettings',
                         'reportSettings',
+                        'smsSettings',
                         'details',
                         'coupons',
                         'giftCards',
@@ -124,6 +125,7 @@ class SpaController extends Controller
                         'modules',
                         'moduleSettings',
                         'reportSettings',
+                        'smsSettings',
                         'deliveryFeeZipCodes'
                     ])
                     ->first();
@@ -148,6 +150,7 @@ class SpaController extends Controller
                         'modules',
                         'moduleSettings',
                         'reportSettings',
+                        'smsSettings',
                         'details',
                         'coupons',
                         'giftCards',
@@ -277,6 +280,7 @@ class SpaController extends Controller
                     'modules',
                     'moduleSettings',
                     'reportSettings',
+                    'smsSettings',
                     'deliveryFeeZipCodes'
                 ])
                 ->first();
@@ -299,6 +303,7 @@ class SpaController extends Controller
                     'modules',
                     'moduleSettings',
                     'reportSettings',
+                    'smsSettings',
                     'details',
                     'giftCards',
                     'referralSettings',
@@ -1163,6 +1168,7 @@ class SpaController extends Controller
                 'modules',
                 'moduleSettings',
                 'reportSettings',
+                'smsSettings',
                 'deliveryFeeZipCodes'
             ])
                 ->without([])

@@ -123,6 +123,9 @@ const state = {
     report_settings: {
       data: {}
     },
+    sms_settings: {
+      data: {}
+    },
     referrals: {
       data: {}
     },
@@ -839,6 +842,10 @@ const mutations = {
     state.store.report_settings.data = reportSettings;
   },
 
+  storeSMSSettings(state, { smsSettings }) {
+    state.store.sms_settings.data = smsSettings;
+  },
+
   storeReferrals(state, { referrals }) {
     state.store.referrals.data = referrals;
   },
@@ -1408,6 +1415,16 @@ const actions = {
       ) {
         let reportSettings = data.store.report_settings;
         commit("storeReportSettings", { reportSettings });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.sms_settings) &&
+        _.isObject(data.store.sms_settings)
+      ) {
+        let smsSettings = data.store.sms_settings;
+        commit("storeSMSSettings", { smsSettings });
       }
     } catch (e) {}
 
@@ -2060,6 +2077,17 @@ const actions = {
       commit("storeReportSettings", { report_settings: data });
     } else {
       throw new Error("Failed to retrieve report settings");
+    }
+  },
+
+  async refreshStoreSMSSettings({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/smsSettings");
+    const { data } = await res;
+
+    if (_.isObject(data)) {
+      commit("storeSMSSettings", { sms_settings: data });
+    } else {
+      throw new Error("Failed to retrieve sms settings");
     }
   },
 
@@ -3569,6 +3597,13 @@ const getters = {
   storeReportSettings: state => {
     try {
       return state.store.report_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeSMSSettings: state => {
+    try {
+      return state.store.sms_settings.data || {};
     } catch (e) {
       return {};
     }
