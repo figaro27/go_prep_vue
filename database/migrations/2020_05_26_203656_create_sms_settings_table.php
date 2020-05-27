@@ -23,11 +23,7 @@ class CreateSMSSettingsTable extends Migration
             $table->boolean('autoAddCustomers')->default(1);
             $table->boolean('autoSendDelivery')->default(0);
             $table->unsignedInteger('autoSendDeliveryTime')->default(10);
-            $table->unsignedInteger('autoSendDeliveryTemplateId')->nullable();
             $table->boolean('autoSendOrderConfirmation')->default(0);
-            $table
-                ->unsignedInteger('autoSendOrderConfirmationTemplateId')
-                ->nullable();
             $table->decimal('balance')->default(0);
             $table->timestamps();
         });

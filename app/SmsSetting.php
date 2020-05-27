@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\SmsList;
 use App\SMSContact;
 use stdClass;
+use Carbon\Carbon;
 
 class SmsSetting extends Model
 {
@@ -21,7 +22,7 @@ class SmsSetting extends Model
         'autoSendOrderConfirmation' => 'boolean'
     ];
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     public function store()
     {
@@ -64,6 +65,62 @@ class SmsSetting extends Model
             $smsContact->store_id = $this->store->id;
             $smsContact->contact_id = $smsContactId;
             $smsContact->save();
+        } catch (\Exception $e) {
+        }
+    }
+
+    public function sendOrderConfirmationSMS($customer, $order)
+    {
+        $deliveryText = $order['pickup']
+            ? 'are available for pickup on '
+            : 'will be delivered on ';
+        $deliveryDate = new Carbon($order['delivery_date']);
+        $deliveryDate = $deliveryDate->format('l, m/d');
+
+        $message =
+            'Thank you for your order ' .
+            $customer['firstname'] .
+            '. Your items ' .
+            $deliveryText .
+            $deliveryDate;
+
+        $phone = (int) preg_replace('/[^0-9]/', '', $customer['phone']);
+        if (strlen((string) $phone) === 10) {
+            $phone = 1 . $phone;
+        }
+
+        try {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'POST',
+                'https://rest.textmagic.com/api/v2/messages',
+                [
+                    'headers' => $this->headers,
+                    'form_params' => [
+                        'phones' => $phone,
+                        'text' => $message
+                    ]
+                ]
+            );
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
+
+            $store = $this->store;
+            $this->balance += 0.05;
+            $this->update();
+            if ($this->balance >= 0.5) {
+                $charge = \Stripe\Charge::create([
+                    'amount' => round($this->balance * 100),
+                    'currency' => $store->settings->currency,
+                    'source' => $store->settings->stripe_id,
+                    'description' =>
+                        'SMS fee balance for ' . $store->storeDetail->name
+                ]);
+                $this->balance = 0;
+                $this->update();
+            }
+
+            return $body;
         } catch (\Exception $e) {
         }
     }

@@ -1361,5 +1361,9 @@ class CheckoutController extends UserController
         if ($smsSetting->autoAddCustomers) {
             $smsSetting->addNewCustomerToContacts($customer);
         }
+
+        if ($smsSetting->autoSendOrderConfirmation) {
+            $smsSetting->sendOrderConfirmationSMS($customer, $order);
+        }
     }
 }

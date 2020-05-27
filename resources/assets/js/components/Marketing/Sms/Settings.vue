@@ -24,7 +24,7 @@
         <span class="mr-1">Auto Send Delivery Text</span>
         <img
           v-b-popover.hover="
-            'On the day of order delivery or pickup, send a reminder notification text to the customer.'
+            'On the day of order delivery or pickup, send a reminder notification text to the customer. Charges apply.'
           "
           title="Auto Send Delivery Text"
           src="/images/store/popover.png"
@@ -49,7 +49,7 @@
         <span class="mr-1">Auto Send Order Confirmation Text</span>
         <img
           v-b-popover.hover="
-            'Automatically send a confirmation text immediately after a new order is placed. Customers also receive an email confirmation.'
+            'Automatically send a confirmation text immediately after a new order is placed. Customers also receive an email confirmation. Charges apply.'
           "
           title="Auto Send Order Confirmation Text"
           src="/images/store/popover.png"

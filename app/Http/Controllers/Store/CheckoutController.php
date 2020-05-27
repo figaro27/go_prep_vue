@@ -1241,6 +1241,10 @@ class CheckoutController extends StoreController
             $smsSetting->addNewCustomerToContacts($customer);
         }
 
+        if ($smsSetting->autoSendOrderConfirmation) {
+            $smsSetting->sendOrderConfirmationSMS($customer, $order);
+        }
+
         return $orderId;
     }
 }
