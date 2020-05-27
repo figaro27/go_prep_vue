@@ -554,10 +554,6 @@ foreach (
                                 'SMSContactUpdate',
                                 'SMSContactController@update'
                             );
-                            Route::post(
-                                'SMSimportCustomers',
-                                'SMSContactController@importCustomers'
-                            );
                             Route::resource(
                                 'smsSettings',
                                 'SMSSettingController'

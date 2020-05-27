@@ -76,7 +76,7 @@
             Edit
           </button>
           <button
-            v-if="props.row.name !== 'All Contacts'"
+            v-if="!isAllContactsList(props.row.id)"
             class="btn btn-danger btn-sm"
             @click="deleteList(props.row.id)"
           >
@@ -193,6 +193,13 @@ export default {
         this.showCreateListModal = false;
         this.$toastr.s("List has been added.", "Success");
       });
+    },
+    isAllContactsList(id) {
+      if (this.SMSLists[0].id === id) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 };

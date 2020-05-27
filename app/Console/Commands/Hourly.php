@@ -165,5 +165,30 @@ class Hourly extends Command
             }
         }
         $this->info($count . ' `Delivery Today` notifications sent');
+
+        // Send Order Today SMS if enabled
+        $count = 0;
+        foreach ($orders as $order) {
+            $smsSettings = $order->store->smsSettings;
+            if ($smsSettings->autoSendDelivery) {
+                try {
+                    /* Timezone */
+                    $settings = $order->store->settings;
+                    if ($settings && $settings->timezone) {
+                        $timezone = $settings->timezone;
+                        date_default_timezone_set($timezone);
+                    }
+                    /* Timezone Set */
+
+                    $currentHour = (int) date('H');
+                    if ($currentHour === $smsSettings->autoSendDeliveryTime) {
+                        $smsSettings->sendDeliverySMS($order);
+                        $count++;
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+        }
+        $this->info($count . ' `Delivery Today` SMS texts sent');
     }
 }

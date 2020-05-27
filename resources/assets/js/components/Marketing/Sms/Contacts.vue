@@ -41,7 +41,6 @@
         ></edit-contact>
       </b-modal>
 
-      <b-btn @click="importCustomers">Import Customers Temp</b-btn>
       <v-client-table
         :columns="columns"
         :data="SMSContacts"
@@ -133,12 +132,6 @@ export default {
     formatMoney: format.money,
     refreshTable() {
       this.refreshSMSContacts();
-    },
-    importCustomers() {
-      axios.post("/api/me/SMSimportCustomers", {}).then(resp => {
-        this.$toastr.s("Customers imported & added.", "Success");
-        this.refreshTable();
-      });
     },
     addContact(contact) {
       axios.post("/api/me/SMSContacts", { contact: contact }).then(resp => {
