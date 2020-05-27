@@ -117,8 +117,15 @@ h6 {
 }
 
 .nav-tabs .nav-item .nav-link {
+  color: #535353;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.3);
+}
+
+.nav-tabs .nav-link.active {
   background-color: #3082cf !important;
-  color: #fff;
+  color: #ffffff;
+  box-shadow: none;
 }
 
 .open-indicator {
