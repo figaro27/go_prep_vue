@@ -92,23 +92,26 @@ class SMSMessagesController extends StoreController
         $lists = implode(',', $lists);
         $contacts = implode(',', $contacts);
 
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request('POST', $this->baseURL, [
-            'headers' => $this->headers,
-            'form_params' => [
-                'lists' => $lists,
-                'contacts' => $contacts,
-                'text' => $message,
-                'phones' => $phones
-            ]
-        ]);
-        $status = $res->getStatusCode();
-        $body = $res->getBody();
+        try {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('POST', $this->baseURL, [
+                'headers' => $this->headers,
+                'form_params' => [
+                    'lists' => $lists,
+                    'contacts' => $contacts,
+                    'text' => $message,
+                    'phones' => $phones
+                ]
+            ]);
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
 
-        $smsMessage = new SmsMessage();
-        $smsMessage->store_id = $this->store->id;
-        $smsMessage->message_id = json_decode($body)->sessionId;
-        $smsMessage->save();
+            $smsMessage = new SmsMessage();
+            $smsMessage->store_id = $this->store->id;
+            $smsMessage->message_id = json_decode($body)->sessionId;
+            $smsMessage->save();
+        } catch (\Exception $e) {
+        }
 
         $store = $this->store;
         if ($charge >= 0.5) {
@@ -136,7 +139,18 @@ class SMSMessagesController extends StoreController
      */
     public function show($id)
     {
-        //
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            'https://rest.textmagic.com/api/v2/sessions/' . $id . '/messages',
+            [
+                'headers' => $this->headers
+            ]
+        );
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        return $body;
     }
 
     /**

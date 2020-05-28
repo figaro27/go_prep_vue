@@ -4,7 +4,7 @@
       <Spinner v-if="isLoading" />
 
       <b-modal
-        size="xl"
+        size="md"
         title="Templates"
         v-model="showTemplateModal"
         v-if="showTemplateModal"
@@ -17,7 +17,7 @@
       </b-modal>
 
       <b-modal
-        size="xl"
+        size="md"
         title="Lists"
         v-model="showListModal"
         v-if="showListModal"
@@ -28,7 +28,7 @@
       </b-modal>
 
       <b-modal
-        size="xl"
+        size="md"
         title="Contacts"
         v-model="showContactsModal"
         v-if="showContactsModal"
@@ -36,6 +36,17 @@
         hide-footer
       >
         <view-contacts @insertContacts="insertContacts($event)"></view-contacts>
+      </b-modal>
+
+      <b-modal
+        size="lg"
+        title="Message"
+        v-model="showMessageModal"
+        v-if="showMessageModal"
+        no-fade
+        hide-footer
+      >
+        <view-message :messageId="messageId"></view-message>
       </b-modal>
 
       <b-btn variant="success" @click="showNewSMSArea = !showNewSMSArea"
@@ -193,8 +204,8 @@
         :data="SMSMessages"
         :options="{
           orderBy: {
-            column: 'id',
-            ascending: true
+            column: 'messageTime',
+            ascending: desc
           },
           headings: {
             messageTime: 'Sent On',
@@ -213,7 +224,7 @@
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button
             class="btn view btn-warning btn-sm"
-            @click="view(props.row.id)"
+            @click="(messageId = props.row.id), (showMessageModal = true)"
           >
             View
           </button>
@@ -233,6 +244,7 @@ import store from "../../../store";
 import ViewTemplates from "./Modals/ViewTemplates.vue";
 import ViewLists from "./Modals/ViewLists.vue";
 import ViewContacts from "./Modals/ViewContacts.vue";
+import ViewMessage from "./Modals/ViewMessage.vue";
 
 export default {
   components: {
@@ -240,7 +252,8 @@ export default {
     vSelect,
     ViewTemplates,
     ViewLists,
-    ViewContacts
+    ViewContacts,
+    ViewMessage
   },
   mixins: [checkDateRange],
   data() {
@@ -251,6 +264,8 @@ export default {
       showTemplateModal: false,
       showListModal: false,
       showContactsModal: false,
+      showMessageModal: false,
+      messageId: null,
       message: {
         content: ""
       },
