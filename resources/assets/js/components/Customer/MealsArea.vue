@@ -71,11 +71,18 @@
             )
           }}
           more to receive
-          <span v-if="promotion.promotionType === 'flat'">{{
-            format.money(promotion.promotionAmount, storeSettings.currency)
-          }}</span>
-          <span v-else>{{ promotion.promotionAmount }}%</span>
-          off your order.
+          <span v-if="promotion.promotionAmount > 0">
+            <span v-if="promotion.promotionType === 'flat'">{{
+              format.money(promotion.promotionAmount, storeSettings.currency)
+            }}</span>
+            <span v-else>{{ promotion.promotionAmount }}%</span>
+            off your order.
+          </span>
+          <span
+            v-if="promotion.promotionAmount === 0 && promotion.freeDelivery"
+          >
+            free delivery.
+          </span>
         </h6>
       </b-alert>
       <b-alert
