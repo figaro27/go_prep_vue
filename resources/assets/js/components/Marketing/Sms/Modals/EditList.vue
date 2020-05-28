@@ -6,10 +6,11 @@
       <b-button
         @click="$emit('updateList', { list: list, contacts: tableData })"
         variant="warning"
+        class="mb-2 pull-right"
         >Update</b-button
       >
 
-      <b-form-input v-model="list.name"></b-form-input>
+      <b-form-input v-model="list.name" style="width:350px"></b-form-input>
 
       <v-client-table
         :columns="columns"
@@ -20,7 +21,6 @@
             ascending: true
           },
           headings: {
-            add: 'Add To List',
             firstName: 'First Name',
             lastName: 'Last Name'
           },

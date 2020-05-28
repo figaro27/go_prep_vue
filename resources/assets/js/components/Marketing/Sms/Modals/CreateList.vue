@@ -3,13 +3,17 @@
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
 
-      <b-button @click="$emit('addList', list)" variant="primary"
+      <b-button
+        @click="$emit('addList', list)"
+        variant="primary"
+        class="mb-2 pull-right"
         >Save</b-button
       >
 
       <b-form-input
         v-model="list.name"
         placeholder="List Name (Optional)"
+        style="width:350px"
       ></b-form-input>
 
       <v-client-table

@@ -9,6 +9,8 @@ use stdClass;
 
 class SMSMessagesController extends StoreController
 {
+    // Merging messages & sessions in one controller. Separate if needed.
+
     protected $baseURL = 'https://rest.textmagic.com/api/v2/messages';
     protected $headers = [
         'X-TM-Username' => 'mikesoldano',
@@ -26,13 +28,19 @@ class SMSMessagesController extends StoreController
 
         foreach ($messageIds as $messageId) {
             $client = new \GuzzleHttp\Client();
-            $res = $client->request('GET', $this->baseURL . '/' . $messageId, [
-                'headers' => $this->headers
-            ]);
+            $res = $client->request(
+                'GET',
+                'https://rest.textmagic.com/api/v2/sessions/' . $messageId,
+                [
+                    'headers' => $this->headers
+                ]
+            );
             $body = $res->getBody();
             $message = new stdClass();
             $message->id = json_decode($body)->id;
-            $message->messageTime = json_decode($body)->messageTime;
+            $message->price = json_decode($body)->price;
+            $message->numbersCount = json_decode($body)->numbersCount;
+            $message->messageTime = json_decode($body)->startTime;
             $message->text = json_decode($body)->text;
             array_push($messages, $message);
         }
@@ -99,7 +107,7 @@ class SMSMessagesController extends StoreController
 
         $smsMessage = new SmsMessage();
         $smsMessage->store_id = $this->store->id;
-        $smsMessage->message_id = json_decode($body)->messageId;
+        $smsMessage->message_id = json_decode($body)->sessionId;
         $smsMessage->save();
 
         $store = $this->store;

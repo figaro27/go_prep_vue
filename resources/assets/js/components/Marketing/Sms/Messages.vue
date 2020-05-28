@@ -43,148 +43,149 @@
       >
 
       <div class="newSMSArea mt-4" v-if="showNewSMSArea">
-        <b-form @submit.prevent="sendMessage()">
-          <div>
-            <div class="row">
-              <div class="col-md-2">
-                <h5 class="pull-right pt-3 gray-text">To</h5>
-              </div>
-              <div class="col-md-7">
-                <div class="d-flex pt-3">
-                  <b-form-input
-                    class="mr-1 d-inline"
-                    placeholder="Type comma separated numbers or insert contacts or lists on the right."
-                    v-model="phonesList"
-                  ></b-form-input>
-                  <button
-                    @click="addPhones"
-                    class="btn btn-primary btn-sm d-inline"
-                    style="width:100px"
-                  >
-                    Add
-                  </button>
-                </div>
-                <div class="d-flex mt-1" style="flex-wrap:wrap">
-                  <li v-for="phone in phones" class="d-inline">
-                    <span
-                      class="badge badge-warning mr-1"
-                      @click="removePhone(phone)"
-                    >
-                      {{ phone }}
-                    </span>
-                  </li>
-                  <li v-for="list in lists" class="d-inline">
-                    <span
-                      class="badge badge-primary mr-1"
-                      @click="removeList(list)"
-                    >
-                      {{ list.name }}
-                    </span>
-                  </li>
-                  <li v-for="contact in contacts">
-                    <span
-                      class="badge badge-success d-inline mr-1"
-                      @click="removeContact(contact)"
-                    >
-                      {{ contact.firstName }} {{ contact.lastName }} (+{{
-                        contact.phone
-                      }})
-                    </span>
-                  </li>
-                </div>
-                <p class="pull-right">Recipients: {{ recipientCount }}</p>
-              </div>
-              <div class="col-md-3 pt-3">
-                <div
-                  class="d-flex"
-                  @click="showContactsModal = !showContactsModal"
-                >
-                  <i
-                    class="fas fa-user d-inline pr-1 pt-1"
-                    style="color:#737373"
-                  ></i>
-                  <p class="d-inline"><u>Insert contact</u></p>
-                </div>
-                <div class="d-flex" @click="showListModal = !showListModal">
-                  <i
-                    class="fas fa-users d-inline pr-1 pt-1"
-                    style="color:#737373"
-                  ></i>
-                  <p class="d-inline"><u>Insert list</u></p>
-                </div>
-              </div>
+        <div>
+          <div class="row">
+            <div class="col-md-2">
+              <h5 class="pull-right pt-3 gray-text">To</h5>
             </div>
-            <div class="row">
-              <div class="col-md-2">
-                <h5 class="pull-right pt-3 gray-text">Message</h5>
-              </div>
-              <div class="col-md-7">
-                <b-form-textarea
-                  class="m-2"
-                  style="overflow:auto;resize:both"
-                  v-model="message.content"
-                  placeholder="Type your message."
-                  rows="6"
-                  maxlength="918"
-                ></b-form-textarea>
-                <p class="pull-right">
-                  Characters:
-                  <span style="font-weight:bold;color:#6C6C6C"
-                    >{{ message.content.length }}/918</span
-                  >
-                  | Parts:
-                  <span style="font-weight:bold;color:#6C6C6C"
-                    >{{ messageParts }}/6</span
-                  >
-                  | Cost:
-                  <span style="font-weight:bold;color:#6C6C6C">{{
-                    format.money(messageCost, this.store.settings.currency)
-                  }}</span
-                  ><img
-                    v-b-popover.hover="
-                      'The number of recipients times the number of parts the text will be sent in (160 characters per part) times 5 cents. Your GoPrep account will be charged via Stripe.'
-                    "
-                    title="Cost"
-                    src="/images/store/popover.png"
-                    class="popover-size-small ml-1 mb-1"
-                  />
-                </p>
-              </div>
-              <div class="col-md-3 pt-3">
-                <div
-                  class="d-flex"
-                  @click="showTemplateModal = !showTemplateModal"
+            <div class="col-md-7">
+              <div class="d-flex pt-3">
+                <b-form-input
+                  class="mr-1 d-inline"
+                  placeholder="Type comma separated numbers or insert contacts or lists on the right."
+                  v-model="phonesList"
+                ></b-form-input>
+                <button
+                  @click="addPhones"
+                  class="btn btn-primary btn-sm d-inline"
+                  style="width:100px"
                 >
-                  <i
-                    class="far fa-file-alt d-inline pr-1 pt-1"
-                    style="color:#737373"
-                  ></i>
-                  <p class="d-inline"><u>Insert template</u></p>
-                </div>
-                <div class="d-flex" @click="showTagDropdown = !showTagDropdown">
-                  <i
-                    class="fas fa-tag d-inline pr-1 pt-1"
-                    style="color:#737373"
-                  ></i>
-                  <p class="d-inline"><u>Insert tag</u></p>
-                  <div v-if="showTagDropdown" class="tagDropdown">
-                    <li v-for="tag in tags" :key="tag" @click="addTag(tag)">
-                      <p>{{ tag }}</p>
-                      <hr />
-                    </li>
-                  </div>
-                </div>
+                  Add
+                </button>
               </div>
+              <div class="d-flex mt-1" style="flex-wrap:wrap">
+                <li v-for="phone in phones" class="d-inline">
+                  <span
+                    class="badge badge-warning mr-1"
+                    @click="removePhone(phone)"
+                  >
+                    {{ phone }}
+                  </span>
+                </li>
+                <li v-for="list in lists" class="d-inline">
+                  <span
+                    class="badge badge-primary mr-1"
+                    @click="removeList(list)"
+                  >
+                    {{ list.name }}
+                  </span>
+                </li>
+                <li v-for="contact in contacts">
+                  <span
+                    class="badge badge-success d-inline mr-1"
+                    @click="removeContact(contact)"
+                  >
+                    {{ contact.firstName }} {{ contact.lastName }} (+{{
+                      contact.phone
+                    }})
+                  </span>
+                </li>
+              </div>
+              <p class="pull-right">Recipients: {{ recipientCount }}</p>
             </div>
-            <div class="row">
-              <div class="col-md-9">
-                <b-button type="submit" variant="primary" class="pull-right"
-                  >Send Message</b-button
-                >
+            <div class="col-md-3 pt-3">
+              <div
+                class="d-flex"
+                @click="showContactsModal = !showContactsModal"
+              >
+                <i
+                  class="fas fa-user d-inline pr-1 pt-1"
+                  style="color:#737373"
+                ></i>
+                <p class="d-inline"><u>Insert contact</u></p>
+              </div>
+              <div class="d-flex" @click="showListModal = !showListModal">
+                <i
+                  class="fas fa-users d-inline pr-1 pt-1"
+                  style="color:#737373"
+                ></i>
+                <p class="d-inline"><u>Insert list</u></p>
               </div>
             </div>
           </div>
-        </b-form>
+          <div class="row">
+            <div class="col-md-2">
+              <h5 class="pull-right pt-3 gray-text">Message</h5>
+            </div>
+            <div class="col-md-7">
+              <b-form-textarea
+                class="m-2"
+                style="overflow:auto;resize:both"
+                v-model="message.content"
+                placeholder="Type your message."
+                rows="6"
+                maxlength="918"
+              ></b-form-textarea>
+              <p class="pull-right">
+                Characters:
+                <span style="font-weight:bold;color:#6C6C6C"
+                  >{{ message.content.length }}/918</span
+                >
+                | Parts:
+                <span style="font-weight:bold;color:#6C6C6C"
+                  >{{ messageParts }}/6</span
+                >
+                | Cost:
+                <span style="font-weight:bold;color:#6C6C6C">{{
+                  format.money(messageCost, this.store.settings.currency)
+                }}</span
+                ><img
+                  v-b-popover.hover="
+                    'The number of recipients times the number of parts the text will be sent in (160 characters per part) times 5 cents. Your GoPrep account will be charged via Stripe.'
+                  "
+                  title="Cost"
+                  src="/images/store/popover.png"
+                  class="popover-size-small ml-1 mb-1"
+                />
+              </p>
+            </div>
+            <div class="col-md-3 pt-3">
+              <div
+                class="d-flex"
+                @click="showTemplateModal = !showTemplateModal"
+              >
+                <i
+                  class="far fa-file-alt d-inline pr-1 pt-1"
+                  style="color:#737373"
+                ></i>
+                <p class="d-inline"><u>Insert template</u></p>
+              </div>
+              <div class="d-flex" @click="showTagDropdown = !showTagDropdown">
+                <i
+                  class="fas fa-tag d-inline pr-1 pt-1"
+                  style="color:#737373"
+                ></i>
+                <p class="d-inline"><u>Insert tag</u></p>
+                <div v-if="showTagDropdown" class="tagDropdown">
+                  <li v-for="tag in tags" :key="tag" @click="addTag(tag)">
+                    <p>{{ tag }}</p>
+                    <hr />
+                  </li>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-9">
+              <b-button
+                @click="sendMessage"
+                variant="primary"
+                class="pull-right"
+                >Send Message</b-button
+              >
+            </div>
+          </div>
+        </div>
       </div>
 
       <v-client-table
@@ -197,6 +198,7 @@
           },
           headings: {
             messageTime: 'Sent On',
+            numbersCount: 'Recipients',
             text: 'Message'
           },
           filterable: false
@@ -253,7 +255,7 @@ export default {
         content: ""
       },
       // tableData: [],
-      columns: ["messageTime", "text", "actions"],
+      columns: ["messageTime", "numbersCount", "text", "actions"],
       lists: [],
       contacts: [],
       phonesList: "",
@@ -311,6 +313,11 @@ export default {
       this.refreshSMSMessages();
     },
     addTag(tag) {
+      if (this.phones.length > 0) {
+        this.$toastr.w(
+          "You are sending this to phone numbers that may not be in your contacts. Tags will show blank to these recipients."
+        );
+      }
       this.message.content += "{" + tag + "}";
     },
     insertTemplate(content) {
@@ -362,6 +369,10 @@ export default {
       this.contacts.push(this.selectedContact);
     },
     addPhones() {
+      if (this.phonesList === "") {
+        this.$toastr.w("Please add at least one phone number.");
+        return;
+      }
       this.phones = this.phonesList.split(",");
       this.phonesList = "";
     },

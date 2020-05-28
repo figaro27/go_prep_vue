@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
       <b-modal
-        size="xl"
+        size="md"
         title="Create Contact"
         v-model="showCreateContactModal"
         v-if="showCreateContactModal"
@@ -74,12 +74,12 @@
           >
             Edit
           </button>
-          <button
+          <!-- <button
             class="btn btn-danger btn-sm"
             @click="deleteContact(props.row.id)"
           >
             Delete
-          </button>
+          </button> -->
         </div>
       </v-client-table>
     </div>

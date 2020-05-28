@@ -4,7 +4,7 @@
       <Spinner v-if="isLoading" />
 
       <b-modal
-        size="xl"
+        size="md"
         title="Create List"
         v-model="showCreateListModal"
         v-if="showCreateListModal"
@@ -15,7 +15,7 @@
       </b-modal>
 
       <b-modal
-        size="xl"
+        size="md"
         title="Edit List"
         v-model="showEditListModal"
         v-if="showEditListModal"
@@ -48,7 +48,7 @@
         :data="SMSLists"
         :options="{
           orderBy: {
-            column: 'id',
+            column: 'created_at',
             ascending: true
           },
           headings: {
@@ -70,6 +70,7 @@
         </div>
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button
+            v-if="!isAllContactsList(props.row.id)"
             class="btn view btn-warning btn-sm"
             @click="edit(props.row.id)"
           >
@@ -195,7 +196,7 @@ export default {
       });
     },
     isAllContactsList(id) {
-      if (this.SMSLists[0].id === id) {
+      if (this.SMSLists[this.SMSLists.length - 1].id === id) {
         return true;
       } else {
         return false;

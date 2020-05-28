@@ -18,7 +18,7 @@
           <h4 v-if="editingTemplate" class="center-text">Edit Template</h4>
           <button
             v-if="!editingTemplate"
-            class="btn btn-success btn-md mb-2 mb-sm-0"
+            class="btn btn-success btn-md mb-2 mb-sm-0 mb-1 pull-right"
             @click="showTemplateArea = !showTemplateArea"
           >
             Add Template
@@ -41,7 +41,7 @@
               </div>
               <div class="col-md-7">
                 <b-form-textarea
-                  class="m-2"
+                  class="mt-2"
                   style="overflow:auto;resize:both"
                   v-model="template.content"
                   rows="5"
@@ -69,7 +69,7 @@
                   v-if="!editingTemplate"
                   type="submit"
                   variant="primary"
-                  class="float-right"
+                  class="float-right mt-2"
                   @click="addTemplate()"
                   >Save</b-button
                 >
