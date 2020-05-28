@@ -183,6 +183,9 @@ const state = {
       },
       contacts: {
         data: {}
+      },
+      chats: {
+        data: {}
       }
     }
   },
@@ -248,6 +251,9 @@ const mutations = {
   },
   setSMSContacts(state, data) {
     state.store.sms.contacts.data = data.contacts;
+  },
+  setSMSChats(state, data) {
+    state.store.sms.chats.data = data.chats;
   },
   setViewedStoreWillDeliver(state, willDeliver) {
     state.viewed_store.will_deliver = willDeliver;
@@ -1663,6 +1669,7 @@ const actions = {
   },
 
   async initSMS({ commit, state, dispatch }, data = {}) {
+    dispatch("refreshSMSChats");
     dispatch("refreshSMSMessages");
     dispatch("refreshSMSTemplates");
     dispatch("refreshSMSLists");
@@ -1688,6 +1695,11 @@ const actions = {
     const res = await axios.get("/api/me/SMSContacts");
     const { data } = await res;
     commit("setSMSContacts", { contacts: data });
+  },
+  async refreshSMSChats({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/SMSChats");
+    const { data } = await res;
+    commit("setSMSChats", { chats: data });
   },
 
   async initStore({ commit, state, dispatch }, data = {}) {
@@ -2838,6 +2850,9 @@ const getters = {
   },
   SMSContacts(state) {
     return state.store.sms.contacts.data;
+  },
+  SMSChats(state) {
+    return state.store.sms.chats.data;
   },
   loggedIn(state) {
     return !_.isEmpty(state.user.data) && state.user.data.id && auth.hasToken();

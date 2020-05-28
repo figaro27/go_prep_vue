@@ -562,6 +562,7 @@ foreach (
                                 'updateSMSSettings',
                                 'SMSSettingController@update'
                             );
+                            Route::resource('SMSChats', 'SMSChatController');
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {
