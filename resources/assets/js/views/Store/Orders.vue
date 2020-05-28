@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <b-alert variant="info" show>
+      <!-- <b-alert variant="info" show>
         <h5>New Look</h5>
         <p>
           The individual meal page on your menu has been redesigned into a
@@ -18,7 +18,7 @@
             ><b>After</b></a
           >
         </p>
-      </b-alert>
+      </b-alert> -->
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
