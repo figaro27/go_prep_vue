@@ -50,7 +50,29 @@
                 <h5 class="pull-right pt-3 gray-text">To</h5>
               </div>
               <div class="col-md-7">
-                <div class="contact-area d-flex" style="flex-wrap:wrap">
+                <div class="d-flex pt-3">
+                  <b-form-input
+                    class="mr-1 d-inline"
+                    placeholder="Type comma separated numbers or insert contacts or lists on the right."
+                    v-model="phonesList"
+                  ></b-form-input>
+                  <button
+                    @click="addPhones"
+                    class="btn btn-primary btn-sm d-inline"
+                    style="width:100px"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div class="d-flex mt-1" style="flex-wrap:wrap">
+                  <li v-for="phone in phones" class="d-inline">
+                    <span
+                      class="badge badge-warning mr-1"
+                      @click="removePhone(phone)"
+                    >
+                      {{ phone }}
+                    </span>
+                  </li>
                   <li v-for="list in lists" class="d-inline">
                     <span
                       class="badge badge-primary mr-1"
@@ -234,6 +256,8 @@ export default {
       columns: ["messageTime", "text", "actions"],
       lists: [],
       contacts: [],
+      phonesList: "",
+      phones: [],
       selectedContact: null
     };
   },
@@ -249,6 +273,7 @@ export default {
       SMSLists: "SMSLists"
     }),
     recipientCount() {
+      let phones = this.phones.length;
       let contacts = this.contacts.length;
       let lists =
         this.lists.length > 0
@@ -260,7 +285,7 @@ export default {
               0
             )
           : 0;
-      return contacts + lists;
+      return phones + contacts + lists;
     },
     tags() {
       return ["First name", "Last name", "Company name", "Phone", "Email"];
@@ -297,6 +322,8 @@ export default {
         .post("/api/me/SMSMessages", {
           message: this.message.content,
           lists: this.lists,
+          contacts: this.contacts,
+          phones: this.phones,
           charge: this.messageCost
         })
         .then(resp => {
@@ -333,6 +360,13 @@ export default {
     },
     addContact() {
       this.contacts.push(this.selectedContact);
+    },
+    addPhones() {
+      this.phones = this.phonesList.split(",");
+      this.phonesList = "";
+    },
+    removePhone(phone) {
+      this.phones.pop(phone);
     }
   }
 };

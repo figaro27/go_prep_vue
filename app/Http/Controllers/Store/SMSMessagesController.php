@@ -59,15 +59,39 @@ class SMSMessagesController extends StoreController
     public function store(Request $request)
     {
         $message = $request->get('message');
-        $listId = $request->get('listId');
         $charge = $request->get('charge');
+
+        $phones = json_decode(
+            collect($request->get('phones'))->map(function ($phone) {
+                $phone = (int) 1 . preg_replace('/[^0-9]/', '', $phone);
+                return $phone;
+            })
+        );
+
+        $lists = json_decode(
+            collect($request->get('lists'))->map(function ($list) {
+                return $list['id'];
+            })
+        );
+
+        $contacts = json_decode(
+            collect($request->get('contacts'))->map(function ($contact) {
+                return $contact['id'];
+            })
+        );
+
+        $phones = implode(',', $phones);
+        $lists = implode(',', $lists);
+        $contacts = implode(',', $contacts);
 
         $client = new \GuzzleHttp\Client();
         $res = $client->request('POST', $this->baseURL, [
             'headers' => $this->headers,
             'form_params' => [
-                'lists' => $listId,
-                'text' => $message
+                'lists' => $lists,
+                'contacts' => $contacts,
+                'text' => $message,
+                'phones' => $phones
             ]
         ]);
         $status = $res->getStatusCode();
