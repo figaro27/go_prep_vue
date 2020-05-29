@@ -26,12 +26,6 @@ class Orders
             ->getOrders(null, $this->getDeliveryDates())
             ->filter(function ($order) use ($params) {
                 if (
-                    $params->has('has_notes') &&
-                    $order->has_notes != $params->get('has_notes')
-                ) {
-                    return false;
-                }
-                if (
                     $params->has('fulfilled') &&
                     $order->fulfilled != $params->get('fulfilled')
                 ) {
