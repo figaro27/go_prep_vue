@@ -441,6 +441,7 @@ export default {
       editingPrice: {},
       showLineItemModal: false,
       lineItem: {
+        id: null,
         title: "",
         price: null,
         quantity: 1,
@@ -571,6 +572,7 @@ export default {
       let options = [];
       this.lineItems.forEach(lineItem => {
         options.push({
+          id: lineItem.id,
           text: lineItem.full_title,
           price: lineItem.price,
           title: lineItem.title,
@@ -837,28 +839,37 @@ export default {
       return meals;
     },
     addLineItem(existing) {
-      if (this.lineItem.title === null || this.lineItem.title === "") {
+      if (
+        !existing &&
+        (this.lineItem.title === null || this.lineItem.title === "")
+      ) {
         this.$toastr.w("Please add a title for the extra item.");
         return;
       }
-      if (this.lineItem.price === null || this.lineItem.price === "") {
+      if (
+        !existing &&
+        (this.lineItem.price === null || this.lineItem.price === "")
+      ) {
         this.$toastr.w("Please add a price for the extra item.");
         return;
       }
-      let orderLineItems = this.orderLineItems;
+
       if (existing) {
         if (Object.keys(this.selectedLineItem).length === 0) {
           this.$toastr.w("Please select an extra from the dropdown.");
           return;
         }
-        if (orderLineItems.includes(this.selectedLineItem)) {
-          let index = _.findIndex(orderLineItems, orderLineItem => {
+        if (this.orderLineItems.includes(this.selectedLineItem)) {
+          let index = _.findIndex(this.orderLineItems, orderLineItem => {
             return orderLineItem.title === this.selectedLineItem.title;
           });
-          orderLineItems[index].quantity += 1;
+          this.orderLineItems[index].quantity += 1;
         } else {
-          orderLineItems.push(this.selectedLineItem);
+          this.orderLineItems.push(this.selectedLineItem);
         }
+        this.showLineItemModal = false;
+        this.lineItem = { title: "", price: null, quantity: 1 };
+        this.selectedLineItem = { title: "", price: null, quantity: 1 };
       } else {
         if (
           this.store.modules.productionGroups &&
@@ -871,16 +882,15 @@ export default {
           return;
         }
 
-        orderLineItems.push(this.lineItem);
-
         axios.post("/api/me/lineItems", this.lineItem).then(resp => {
+          this.lineItem.id = resp.data.id;
           this.lineItem.production_group_id = null;
+          this.orderLineItems.push(this.lineItem);
+          this.showLineItemModal = false;
+          this.lineItem = { title: "", price: null, quantity: 1 };
+          this.selectedLineItem = { title: "", price: null, quantity: 1 };
         });
       }
-
-      this.showLineItemModal = false;
-      this.lineItem = { title: "", price: null, quantity: 1 };
-      this.selectedLineItem = { title: "", price: null, quantity: 1 };
     },
     updateLineItems(orderLineItem, increment) {
       orderLineItem.quantity += increment;

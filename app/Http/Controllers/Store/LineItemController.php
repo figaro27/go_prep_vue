@@ -53,6 +53,8 @@ class LineItemController extends StoreController
             $props->get('price') !== null ? $props->get('price') : 0.0;
         $lineItem->production_group_id = $props->get('production_group_id');
         $lineItem->save();
+
+        return $lineItem;
     }
 
     /**
