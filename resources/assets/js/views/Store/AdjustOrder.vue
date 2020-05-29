@@ -157,7 +157,6 @@ export default {
           if (!meal) {
             return;
           }
-
           let components = _.mapValues(
             _.groupBy(item.components, "meal_component_id"),
             choices => {
@@ -185,6 +184,14 @@ export default {
             );
           }
         }
+      });
+
+      _.forEach(this.order.purchased_gift_cards, item => {
+        item.price = item.amount;
+        item.image = { url_thumb: item.image };
+        item.gift_card = true;
+
+        this.addOne(item, null);
       });
     }
   }

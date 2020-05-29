@@ -1067,7 +1067,17 @@
           class="menu-bag-btn mb-4"
           >CHECKOUT</b-btn
         >
-
+        <b-alert
+          variant="warning"
+          show
+          v-if="$route.params.adjustOrder && bagContainsGiftCard"
+        >
+          This order adjustment shows the gift card(s) purchased for the sake of
+          keeping the order amount consistent. However removing the gift card
+          won't remove the purchased gift card code the customer has access to.
+          And if you want to add a new gift card, a new separate order needs to
+          be created.
+        </b-alert>
         <b-btn
           v-if="$route.params.adjustOrder"
           @click="adjust"
@@ -1387,6 +1397,15 @@ export default {
       bagPickupSet: "bagPickupSet",
       staff: "storeStaff"
     }),
+    bagContainsGiftCard() {
+      let containsGiftCard = false;
+      this.bag.forEach(item => {
+        if (item.meal.gift_card) {
+          containsGiftCard = true;
+        }
+      });
+      return containsGiftCard;
+    },
     prefix() {
       if (this.loggedIn) {
         return "/api/me/";
@@ -2221,51 +2240,53 @@ use next_delivery_dates
       let removableItemAmount = 0;
       let customSalesTaxAmount = 0;
       this.bag.forEach(item => {
-        // Remove the meal from the total amount of the bag, and then add it back in using its custom sales tax rate.
-        if (!item.meal_package) {
-          if (item.meal.salesTax !== null) {
-            removableItemAmount += item.price * item.quantity;
-            customSalesTaxAmount +=
-              item.price * item.quantity * item.meal.salesTax;
-          }
-          if (
-            item.size !== null &&
-            item.size.salesTax !== null &&
-            item.size.salesTax !== undefined
-          ) {
-            removableItemAmount += item.size.price * item.quantity;
-            customSalesTaxAmount += item.quantity * item.size.salesTax;
-          }
-        } else {
-          // Meal packages size (top level) meals don't affect the package price, so not included below.
-          if (item.addons !== null) {
-            if (item.addons && item.addons.length > 0) {
-              item.addons.forEach(addonItem => {
-                if (addonItem.meal.salesTax !== null) {
-                  removableItemAmount += addonItem.price * addonItem.quantity;
-                  customSalesTaxAmount +=
-                    addonItem.price *
-                    addonItem.quantity *
-                    addonItem.meal.salesTax;
-                }
-              });
+        if (!item.meal.gift_card === true) {
+          // Remove the meal from the total amount of the bag, and then add it back in using its custom sales tax rate.
+          if (!item.meal_package) {
+            if (item.meal.salesTax !== null) {
+              removableItemAmount += item.price * item.quantity;
+              customSalesTaxAmount +=
+                item.price * item.quantity * item.meal.salesTax;
             }
-          }
-          if (item.components !== null) {
-            if (Object.entries(item.components).length > 0) {
-              Object.values(item.components).forEach(component => {
-                Object.values(component).forEach(componentOption => {
-                  if (componentOption.length > 0) {
-                    if (componentOption[0].meal.salesTax !== null) {
-                      removableItemAmount += componentOption[0].price;
-                      customSalesTaxAmount +=
-                        componentOption[0].price *
-                        componentOption[0].quantity *
-                        componentOption[0].meal.salesTax;
-                    }
+            if (
+              item.size !== null &&
+              item.size.salesTax !== null &&
+              item.size.salesTax !== undefined
+            ) {
+              removableItemAmount += item.size.price * item.quantity;
+              customSalesTaxAmount += item.quantity * item.size.salesTax;
+            }
+          } else {
+            // Meal packages size (top level) meals don't affect the package price, so not included below.
+            if (item.addons !== null) {
+              if (item.addons && item.addons.length > 0) {
+                item.addons.forEach(addonItem => {
+                  if (addonItem.meal.salesTax !== null) {
+                    removableItemAmount += addonItem.price * addonItem.quantity;
+                    customSalesTaxAmount +=
+                      addonItem.price *
+                      addonItem.quantity *
+                      addonItem.meal.salesTax;
                   }
                 });
-              });
+              }
+            }
+            if (item.components !== null) {
+              if (Object.entries(item.components).length > 0) {
+                Object.values(item.components).forEach(component => {
+                  Object.values(component).forEach(componentOption => {
+                    if (componentOption.length > 0) {
+                      if (componentOption[0].meal.salesTax !== null) {
+                        removableItemAmount += componentOption[0].price;
+                        customSalesTaxAmount +=
+                          componentOption[0].price *
+                          componentOption[0].quantity *
+                          componentOption[0].meal.salesTax;
+                      }
+                    }
+                  });
+                });
+              }
             }
           }
         }
@@ -2273,6 +2294,7 @@ use next_delivery_dates
 
       let taxableAmount =
         this.afterDiscount - removableItemAmount + customSalesTaxAmount;
+
       if (taxableAmount < 0) {
         taxableAmount = 0;
       }

@@ -458,6 +458,7 @@ class CheckoutController extends UserController
                     for ($i = 0; $i < $quantity; $i++) {
                         $purchasedGiftCard = new PurchasedGiftCard();
                         $purchasedGiftCard->store_id = $store->id;
+                        $purchasedGiftCard->gift_card_id = $item['meal']['id'];
                         $purchasedGiftCard->user_id = $user->id;
                         $purchasedGiftCard->order_id = $order->id;
                         $purchasedGiftCard->code = strtoupper(
