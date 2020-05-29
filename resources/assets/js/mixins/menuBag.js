@@ -417,7 +417,10 @@ export default {
         }
       } catch (e) {
         if (!_.isEmpty(e.response.data.error)) {
-          this.$toastr.e(e.response.data.error);
+          this.$toastr.w(e.response.data.error);
+        }
+        if (!_.isEmpty(e.response.data.message)) {
+          this.$toastr.w(e.response.data.message);
         } else {
           this.$toastr.e(
             "Please try again or contact our support team",

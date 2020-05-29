@@ -233,6 +233,24 @@ class SubscriptionController extends UserController
 
         $bagItems = $request->get('bag');
         $bag = new Bag($request->get('bag'), $store);
+
+        // Don't allow gift cards on subscription adjustments
+        foreach ($bag->getItems() as $item) {
+            if (
+                isset($item['meal']) &&
+                isset($item['meal']['gift_card']) &&
+                $item['meal']['gift_card'] === true
+            ) {
+                return response()->json(
+                    [
+                        'message' =>
+                            'Gift cards are not allowed on subscriptions since the subscription will renew and charge you for this gift card again next week. Please contact the store if you would like to purchase a one time gift card.'
+                    ],
+                    400
+                );
+            }
+        }
+
         $weeklyPlan = $request->get('plan');
         $pickup = $request->get('pickup');
         $deliveryDay = $sub->delivery_day;
