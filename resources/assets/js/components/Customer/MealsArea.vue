@@ -32,7 +32,11 @@
       </p>
     </b-alert>
 
-    <b-alert variant="warning" show v-if="isAdjustOrder && bagContainsGiftCard">
+    <b-alert
+      variant="warning"
+      show
+      v-if="isAdjustOrder() && bagContainsGiftCard"
+    >
       This order adjustment shows the gift card(s) purchased for the sake of
       keeping the order amount consistent. However removing the gift card won't
       remove the purchased gift card code the customer has access to. And if you
