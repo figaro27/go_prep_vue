@@ -26,13 +26,13 @@
             </div>
           </div>
         </slick>
-        <div
-          v-if="
-            smallScreen && storeSettings.showNutrition && !blankNutritionFacts
-          "
-        >
-          <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
-        </div>
+      </div>
+      <div
+        v-if="
+          smallScreen && storeSettings.showNutrition && !blankNutritionFacts
+        "
+      >
+        <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
       </div>
 
       <div class="col-md-6">
