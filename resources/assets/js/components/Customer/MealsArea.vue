@@ -32,6 +32,13 @@
       </p>
     </b-alert>
 
+    <b-alert variant="warning" show v-if="isAdjustOrder && bagContainsGiftCard">
+      This order adjustment shows the gift card(s) purchased for the sake of
+      keeping the order amount consistent. However removing the gift card won't
+      remove the purchased gift card code the customer has access to. And if you
+      want to add a new gift card, a new separate order needs to be created.
+    </b-alert>
+
     <div
       class="col-md-12"
       v-for="promotion in activePromotions"
@@ -801,6 +808,15 @@ export default {
         quantity += item.quantity;
       });
       return quantity;
+    },
+    bagContainsGiftCard() {
+      let containsGiftCard = false;
+      this.bag.forEach(item => {
+        if (item.meal.gift_card) {
+          containsGiftCard = true;
+        }
+      });
+      return containsGiftCard;
     },
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
