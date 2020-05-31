@@ -313,8 +313,12 @@ class StoreSetting extends Model
             $deliveryDay = null; //$this->store->getDeliveryDayByWeekIndex($date->format('w'));
             $cutoff = $this->getCutoffDate($date, $deliveryDay);
 
+            // Temp adjustment for Living Fit
             return [
-                'date' => $date->toDateTimeString(),
+                'date' =>
+                    $this->store_id === 112
+                        ? $date->addWeeks(1)->toDateTimeString()
+                        : $date->toDateTimeString(),
                 'date_passed' => $date->isPast(),
                 'cutoff' => $cutoff->toDateTimeString(),
                 'cutoff_passed' => $cutoff->isPast(),
