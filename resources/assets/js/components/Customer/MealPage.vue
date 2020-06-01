@@ -420,7 +420,7 @@ export default {
     },
     mealPageClass() {
       if (this.storeSettings.showNutrition) {
-        return "main-customer-container box-shadow ";
+        return "main-customer-container box-shadow";
       } else return "main-customer-container box-shadow full-height";
     }
   },
