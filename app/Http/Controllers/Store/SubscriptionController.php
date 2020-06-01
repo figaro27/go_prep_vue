@@ -166,7 +166,7 @@ class SubscriptionController extends StoreController
         if (!$sub) {
             return response()->json(
                 [
-                    'error' => 'Subscription not found'
+                    'error' => 'Subscription not found.'
                 ],
                 404
             );
@@ -181,7 +181,7 @@ class SubscriptionController extends StoreController
         } catch (\Exception $e) {
             return response()->json(
                 [
-                    'error' => 'Subscription not found at payment gateway'
+                    'error' => 'Subscription not found at payment gateway.'
                 ],
                 404
             );
