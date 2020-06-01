@@ -216,9 +216,6 @@
                       <div class="title d-none d-md-block center-text pt-2">
                         <strong>{{ meal.title }}</strong>
                       </div>
-                      <!-- <div class="title d-none d-md-block center-text">
-                        <strong>{{ format.money(meal.price, storeSettings.currency) }}</strong>
-                      </div> -->
                       <div
                         class="title macrosArea"
                         v-if="meal.macros && storeSettings.showMacros"
@@ -257,7 +254,7 @@
                           <div class="col-12 col-md-3">
                             <div class="row">
                               <p class="col-6 col-md-12">
-                                Fat<br />
+                                Fat<<br />
                                 <span class="normal-weight">{{
                                   meal.macros.fat
                                 }}</span>
