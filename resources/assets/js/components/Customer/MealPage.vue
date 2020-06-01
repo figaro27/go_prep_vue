@@ -2,13 +2,6 @@
   <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
     <div class="row">
       <div :class="imageClass">
-        <button
-          type="button"
-          class="btn btn-lg btn-secondary d-inline mb-2 width-100"
-          @click="back"
-        >
-          <h6 class="strong pt-1 dark-gray">Back</h6>
-        </button>
         <thumbnail
           v-if="meal.image != null && meal.image.url"
           :src="meal.image.url"
@@ -67,7 +60,7 @@
           v-if="
             meal.macros && storeSettings.showMacros && meal.macros.macros_filled
           "
-          class="macros mt-2 meal-page-text"
+          class="macros mt-2"
         >
           <li>
             <span
@@ -135,10 +128,10 @@
             </span>
           </li>
         </div>
-        <div class="meal-page-text">
+        <div>
           <p v-html="mealDescription" class="mt-3"></p>
         </div>
-        <div class="meal-page-text">
+        <div>
           <p
             v-if="
               storeSettings.mealInstructions &&
@@ -149,14 +142,9 @@
             Instructions: {{ meal.instructions }}
           </p>
         </div>
-        <div class="meal-page-text">
+        <div>
           <p v-if="store.settings.showIngredients && mealIngredients != ''">
             Ingredients: {{ mealIngredients }}
-          </p>
-        </div>
-        <div class="meal-page-text">
-          <p v-if="meal.expirationDays">
-            Consume within {{ meal.expirationDays }} days.
           </p>
         </div>
         <div>
@@ -216,13 +204,13 @@
               >
                 <h6 class="strong pt-1">Add To Bag</h6>
               </button>
-              <!-- <button
+              <button
                 type="button"
                 class="btn btn-md btn-secondary d-inline"
                 @click="back"
               >
                 <h6 class="strong pt-1 dark-gray">Back</h6>
-              </button> -->
+              </button>
             </div>
           </div>
         </div>
