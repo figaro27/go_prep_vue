@@ -43,6 +43,15 @@
       want to add a new gift card, a new separate order needs to be created.
     </b-alert>
 
+    <outside-delivery-area
+      v-if="
+        !$route.params.storeView &&
+          !$parent.storeView &&
+          !store.modules.hideDeliveryOption
+      "
+      :storeView="$parent.storeView"
+    ></outside-delivery-area>
+
     <div
       class="col-md-12"
       v-for="promotion in activePromotions"
@@ -755,7 +764,8 @@ export default {
   },
   components: {
     MealVariationsArea,
-    MealPackageComponentsModal
+    MealPackageComponentsModal,
+    OutsideDeliveryArea
   },
   props: {
     meals: "",

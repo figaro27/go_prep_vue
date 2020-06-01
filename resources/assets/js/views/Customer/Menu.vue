@@ -143,14 +143,6 @@
         <div :class="`col-md-12 main-menu-area menu-page`">
           <Spinner v-if="showSpinner || forceShow" position="fixed" />
 
-          <outside-delivery-area
-            v-if="
-              !$route.params.storeView &&
-                !storeView &&
-                !store.modules.hideDeliveryOption
-            "
-            :storeView="storeView"
-          ></outside-delivery-area>
           <!--<meals-area
             :meals="mealsMix"
             :card="card"
@@ -367,7 +359,6 @@ import "vue-image-lightbox/src/components/style.css";
 import { Carousel, Slide } from "vue-carousel";
 
 import CategorySlider from "../../components/Customer/Mobile/CategorySlider";
-import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import StoreClosed from "../../components/Customer/StoreClosed";
 import StoreDescriptionModal from "../../components/Customer/StoreDescriptionModal";
 import MealFilterModal from "../../components/Customer/MealFilterModal";
@@ -460,7 +451,6 @@ export default {
     MealVariationsArea,
     MealPackageComponentsModal,
     CategorySlider,
-    OutsideDeliveryArea,
     StoreClosed,
     StoreDescriptionModal,
     MealFilterModal,
