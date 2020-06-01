@@ -351,6 +351,8 @@ body.sidebar-minimized {
 
 .menu-item-img {
   width: 100%;
+  border-radius: 7px !important;
+  -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
 .cart-item {
@@ -609,13 +611,12 @@ body.sidebar-minimized {
 }
 
 .switch-slider {
-  height: 20px !important;
-  border: 1px solid #cbd1d5 !important;
+  border: 2px solid #cbd1d5 !important;
 }
 
 .switch-slider::before {
-  border: 1px solid #cbd1d5 !important;
-  height: 15px !important;
+  border: 2px solid #cbd1d5 !important;
+  top: 1px !important;
 }
 
 .contact-subject {
@@ -1347,6 +1348,7 @@ body.forgotresettoken {
         margin-bottom: 10px;
         padding-bottom: 10px;
         border-bottom: 1px solid #efefef;
+        font-size: 16px;
 
         &.active {
           font-weight: bold;
@@ -1583,7 +1585,6 @@ body.forgotresettoken {
 }
 
 .macros li span p {
-  font-weight: bold !important;
   color: #525252 !important;
 }
 
@@ -1603,4 +1604,13 @@ body.forgotresettoken {
 .mealPageImage {
   border-radius: 7px !important;
   -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.meal-page-text p,
+.meal-page-text span {
+  font-size: 17px;
+}
+
+.normal-weight {
+  font-weight: normal !important;
 }

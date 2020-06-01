@@ -216,6 +216,9 @@
                       <div class="title d-none d-md-block center-text">
                         <strong>{{ meal.title }}</strong>
                       </div>
+                      <!-- <div class="title d-none d-md-block center-text">
+                        <strong>{{ format.money(meal.price, storeSettings.currency) }}</strong>
+                      </div> -->
                       <div
                         class="title"
                         v-if="meal.macros && storeSettings.showMacros"
@@ -223,40 +226,40 @@
                         <div class="row">
                           <div class="col-12 col-md-3">
                             <div class="row">
-                              <p class="small strong col-6 col-md-12">
+                              <p class="col-6 col-md-12">
                                 Calories
                               </p>
-                              <p class="small col-6 col-md-12">
+                              <p class="col-6 col-md-12 normal-weight">
                                 {{ meal.macros.calories }}
                               </p>
                             </div>
                           </div>
                           <div class="col-12 col-md-3">
                             <div class="row">
-                              <p class="small strong col-6 col-md-12">
+                              <p class="col-6 col-md-12">
                                 Carbs
                               </p>
-                              <p class="small col-6 col-md-12">
+                              <p class="col-6 col-md-12 normal-weight">
                                 {{ meal.macros.carbs }}
                               </p>
                             </div>
                           </div>
                           <div class="col-12 col-md-3">
                             <div class="row">
-                              <p class="small strong col-6 col-md-12">
+                              <p class="col-6 col-md-12">
                                 Protein
                               </p>
-                              <p class="small col-6 col-md-12">
+                              <p class="col-6 col-md-12 normal-weight">
                                 {{ meal.macros.protein }}
                               </p>
                             </div>
                           </div>
                           <div class="col-12 col-md-3">
                             <div class="row">
-                              <p class="small strong col-6 col-md-12">
+                              <p class="col-6 col-md-12">
                                 Fat
                               </p>
-                              <p class="small col-6 col-md-12">
+                              <p class="col-6 col-md-12 normal-weight">
                                 {{ meal.macros.fat }}
                               </p>
                             </div>
