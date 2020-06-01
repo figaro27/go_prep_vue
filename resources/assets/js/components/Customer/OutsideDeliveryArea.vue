@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="!willDeliver && loggedIn && !storeView"
-      class="main-customer-container customer-menu-container left-right-box-shadow"
+      class="main-customer-container customer-menu-container"
     >
       <div class="row">
         <div class="col-sm-12">
