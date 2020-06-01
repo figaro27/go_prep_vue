@@ -163,7 +163,7 @@
                   variant="pill"
                   size="lg"
                   :checked="weeklySubscription"
-                  class="pt-3"
+                  class="pt-2"
                   @change="
                     val => {
                       setWeeklySubscriptionValue(val);
