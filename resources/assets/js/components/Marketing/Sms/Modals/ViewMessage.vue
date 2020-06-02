@@ -55,7 +55,8 @@ export default {
     };
   },
   props: {
-    messageId: null
+    messageId: null,
+    text: null
   },
   created() {},
   mounted() {
@@ -70,9 +71,6 @@ export default {
       initialized: "initialized",
       customers: "storeCustomers"
     }),
-    text() {
-      return this.message != null ? this.message[0].text : "";
-    },
     cost() {
       let total =
         this.message !== null

@@ -46,7 +46,7 @@
         no-fade
         hide-footer
       >
-        <view-message :messageId="messageId"></view-message>
+        <view-message :messageId="messageId" :text="text"></view-message>
       </b-modal>
 
       <b-btn variant="success" @click="showNewSMSArea = !showNewSMSArea"
@@ -224,7 +224,11 @@
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button
             class="btn view btn-warning btn-sm"
-            @click="(messageId = props.row.id), (showMessageModal = true)"
+            @click="
+              (messageId = props.row.id),
+                (text = props.row.text),
+                (showMessageModal = true)
+            "
           >
             View
           </button>
@@ -275,7 +279,8 @@ export default {
       contacts: [],
       phonesList: "",
       phones: [],
-      selectedContact: null
+      selectedContact: null,
+      text: ""
     };
   },
   created() {},
@@ -351,8 +356,15 @@ export default {
         })
         .then(resp => {
           this.refreshTable();
+          this.resetMessage();
           this.$toastr.s("SMS has been sent.", "Success");
         });
+    },
+    resetMessage() {
+      this.message.content = "";
+      this.lists = [];
+      this.contacts = [];
+      this.phones = [];
     },
     insertList(selectedLists) {
       this.lists = selectedLists;
