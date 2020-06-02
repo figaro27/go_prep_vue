@@ -563,6 +563,10 @@ foreach (
                                 'SMSSettingController@update'
                             );
                             Route::resource('SMSChats', 'SMSChatController');
+                            Route::post(
+                                'getChatMessages',
+                                'SMSChatController@getChatMessages'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {

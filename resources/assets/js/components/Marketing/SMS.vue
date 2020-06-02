@@ -8,12 +8,14 @@
         v-model="pageView"
         class="smsFilters"
         :options="[
+          { value: 'chats', text: 'Chats' },
           { value: 'messages', text: 'Messages' },
           { value: 'contacts', text: 'Contacts' },
           { value: 'lists', text: 'Lists' },
           { value: 'settings', text: 'Settings' }
         ]"
       ></b-form-radio-group>
+      <chats v-if="pageView === 'chats'"></chats>
       <messages v-if="pageView === 'messages'"></messages>
       <contacts v-if="pageView === 'contacts'"></contacts>
       <lists v-if="pageView === 'lists'"></lists>
@@ -30,6 +32,7 @@ import checkDateRange from "../../mixins/deliveryDates";
 import format from "../../lib/format";
 import store from "../../store";
 import Messages from "./Sms/Messages.vue";
+import Chats from "./Sms/Chats.vue";
 import Contacts from "./Sms/Contacts.vue";
 import Lists from "./Sms/Lists.vue";
 import Settings from "./Sms/Settings.vue";
@@ -39,6 +42,7 @@ export default {
     Spinner,
     vSelect,
     Messages,
+    Chats,
     Contacts,
     Lists,
     Settings
@@ -46,7 +50,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      pageView: "messages"
+      pageView: "chats"
     };
   },
   created() {},

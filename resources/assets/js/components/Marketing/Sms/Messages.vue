@@ -346,6 +346,18 @@ export default {
       this.showTemplateModal = false;
     },
     sendMessage() {
+      if (
+        this.phones.length == 0 &&
+        this.contacts.length == 0 &&
+        this.lists.length == 0
+      ) {
+        this.$toastr.w("Please add at least one recipient.");
+        return;
+      }
+      if (this.message.content === "") {
+        this.$toastr.w("Please add a message.");
+        return;
+      }
       axios
         .post("/api/me/SMSMessages", {
           message: this.message.content,

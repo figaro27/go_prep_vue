@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use stdClass;
 use App\SmsSetting;
 use Carbon\Carbon;
+use App\SmsContact;
 
 class SmsChatController extends StoreController
 {
@@ -26,35 +27,48 @@ class SmsChatController extends StoreController
         $body = $res->getBody();
         $chats = json_decode($body)->resources;
 
-        $smsSetting = SmsSetting::where('store_id', $this->store->id)->first();
-        $lastChatsFetch = $smsSetting->last_chats_fetch;
-
         foreach ($chats as $chat) {
-            if ($chat->updatedAt > $lastChatsFetch) {
-                $smsChat = new SmsChat();
-                $smsChat->store_id = $this->store->id;
-                $smsChat->chat_id = $chat->id;
-                $smsChat->created_at = Carbon::now('UTC');
-                $smsChat->updated_at = Carbon::now('UTC');
-                $smsChat->save();
+            $chatStoreId = SmsContact::where(
+                'contact_id',
+                $chat->contact ? $chat->contact->id : null
+            )
+                ->pluck('store_id')
+                ->first();
+
+            if ($chatStoreId) {
+                $smsChat = SmsChat::where('chat_id', $chat->id)->first();
+                if ($smsChat) {
+                    if (
+                        $chat->direction === 'i' &&
+                        $chat->updatedAt > $smsChat->updatedAt
+                    ) {
+                        $smsChat->unreadMessages = 1;
+                        $smsChat->updatedAt = $chat->updatedAt;
+                        $smsChat->update();
+                    }
+                } else {
+                    $smsChat = new SmsChat();
+                    $smsChat->store_id = $chatStoreId;
+                    $smsChat->chat_id = $chat->id;
+                    $smsChat->unreadMessages = 1;
+                    $smsChat->updatedAt = $chat->updatedAt;
+                    $smsChat->save();
+                }
             }
         }
-
-        $smsSetting->last_chats_fetch = Carbon::now('UTC');
-        $smsSetting->update();
     }
 
     public function index()
     {
         $this->getNewChats();
 
-        $chatIds = SmsChat::where('store_id', $this->store->id)->pluck(
-            'chat_id'
-        );
+        $smsChats = SmsChat::where('store_id', $this->store->id)->get();
 
         $chats = [];
 
-        foreach ($chatIds as $chatId) {
+        foreach ($smsChats as $smsChat) {
+            $chatId = $smsChat['chat_id'];
+            $unreadMessages = $smsChat['unreadMessages'];
             try {
                 $client = new \GuzzleHttp\Client();
                 $res = $client->request('GET', $this->baseURL . '/' . $chatId, [
@@ -66,6 +80,8 @@ class SmsChatController extends StoreController
                 $chat->firstName = json_decode($body)->contact->firstName;
                 $chat->lastName = json_decode($body)->contact->lastName;
                 $chat->lastMessage = json_decode($body)->lastMessage;
+                $chat->phone = json_decode($body)->phone;
+                $chat->unreadMessages = $unreadMessages;
                 $chat->updatedAt = json_decode($body)->updatedAt;
                 array_push($chats, $chat);
             } catch (\Exception $e) {
@@ -93,7 +109,45 @@ class SmsChatController extends StoreController
      */
     public function store(Request $request)
     {
-        //
+        $message = $request->get('message');
+        $phone = (int) $request->get('phone');
+
+        try {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'POST',
+                'https://rest.textmagic.com/api/v2/messages',
+                [
+                    'headers' => $this->headers,
+                    'form_params' => [
+                        'phones' => $phone,
+                        'text' => $message
+                    ]
+                ]
+            );
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
+        } catch (\Exception $e) {
+        }
+
+        $store = $this->store;
+
+        $smsSettings = SmsSetting::where('store_id', $store->id)->first();
+        $smsSettings->balance += 0.05;
+        $smsSettings->update();
+        if ($smsSettings->balance >= 0.5) {
+            $charge = \Stripe\Charge::create([
+                'amount' => round($smsSettings->balance * 100),
+                'currency' => $store->settings->currency,
+                'source' => $store->settings->stripe_id,
+                'description' =>
+                    'SMS fee balance for ' . $store->storeDetail->name
+            ]);
+            $smsSettings->balance = 0;
+            $smsSettings->update();
+        }
+
+        return $body;
     }
 
     /**
@@ -105,6 +159,25 @@ class SmsChatController extends StoreController
     public function show(SmsChat $smsChat)
     {
         //
+    }
+
+    public function getChatMessages(Request $request)
+    {
+        $phone = $request->get('phone');
+        $chatId = $request->get('id');
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', $this->baseURL . '/' . $phone, [
+            'headers' => $this->headers
+        ]);
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        $smsChat = SmsChat::where('chat_id', $chatId)->first();
+        $smsChat->unreadMessages = 0;
+        $smsChat->update();
+
+        return $body;
     }
 
     /**

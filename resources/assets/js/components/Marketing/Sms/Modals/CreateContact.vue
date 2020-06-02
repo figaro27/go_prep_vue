@@ -51,8 +51,7 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       isLoading: "isLoading",
-      initialized: "initialized",
-      customers: "storeCustomers"
+      initialized: "initialized"
     })
   },
   methods: {

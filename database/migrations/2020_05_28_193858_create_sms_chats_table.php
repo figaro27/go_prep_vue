@@ -21,6 +21,8 @@ class CreateSmsChatsTable extends Migration
                 ->references('id')
                 ->on('stores');
             $table->unsignedInteger('chat_id');
+            $table->boolean('unreadMessages')->default(1);
+            $table->string('updatedAt');
             $table->timestamps();
         });
     }
