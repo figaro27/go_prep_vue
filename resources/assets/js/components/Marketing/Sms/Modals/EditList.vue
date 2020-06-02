@@ -4,7 +4,7 @@
       <Spinner v-if="isLoading" />
 
       <b-button
-        @click="$emit('updateList', { list: list, contacts: tableData })"
+        @click="$emit('updateList', { list: list, contacts: SMSContacts })"
         variant="warning"
         class="mb-2 pull-right"
         >Update</b-button
@@ -14,7 +14,7 @@
 
       <v-client-table
         :columns="columns"
-        :data="tableData"
+        :data="SMSContacts"
         :options="{
           orderBy: {
             column: 'id',
@@ -57,28 +57,47 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      columns: ["included", "firstName", "lastName", "phone"]
+      columns: ["firstName", "lastName", "phone"],
+      includedContacts: []
     };
   },
   props: {
-    list: null,
-    tableData: []
+    list: null
   },
   created() {},
-  mounted() {},
+  mounted() {
+    axios
+      .post("/api/me/showContactsInList", { id: this.list.id })
+      .then(resp => {
+        this.includedContacts = resp.data;
+        this.SMSContacts.forEach(contact => {
+          if (
+            this.includedContacts.some(
+              includedContact => includedContact.id === contact.id
+            )
+          ) {
+            contact.included = true;
+          } else {
+            contact.included = false;
+          }
+        });
+        this.columns.unshift("included");
+      });
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
       isLoading: "isLoading",
       initialized: "initialized",
-      customers: "storeCustomers"
+      customers: "storeCustomers",
+      SMSContacts: "SMSContacts"
     })
   },
   methods: {
     ...mapActions({}),
     formatMoney: format.money,
     updateIncluded(id, val) {
-      this.tableData.forEach(row => {
+      this.SMSContacts.forEach(row => {
         if (row.id === id) {
           row.included = val;
         }

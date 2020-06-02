@@ -72,7 +72,7 @@
           <button
             v-if="!isAllContactsList(props.row.id)"
             class="btn view btn-warning btn-sm"
-            @click="edit(props.row.id)"
+            @click="(list = props.row), (showEditListModal = true)"
           >
             Edit
           </button>
@@ -127,7 +127,8 @@ export default {
       isLoading: "isLoading",
       initialized: "initialized",
       customers: "storeCustomers",
-      SMSLists: "SMSLists"
+      SMSLists: "SMSLists",
+      SMSContacts: "SMSContacts"
     })
   },
   methods: {
@@ -152,22 +153,24 @@ export default {
           this.refreshTable();
         });
     },
-    edit(id) {
-      this.showEditListModal = true;
-      axios.get("/api/me/SMSLists/" + id).then(resp => {
-        this.list = resp.data;
-      });
-
-      axios.post("/api/me/showContactsInList", { id: id }).then(resp => {
-        this.contacts = resp.data;
-      });
-    },
     updateList(data) {
       let list = data.list;
-      let contacts = data.contacts;
-
+      let includedContactIds = "";
+      let allContactIds = "";
+      data.contacts.forEach(contact => {
+        if (contact.included) {
+          includedContactIds = includedContactIds + contact.id + ",";
+        }
+      });
+      this.SMSContacts.forEach(contact => {
+        allContactIds = allContactIds + contact.id + ",";
+      });
       axios
-        .post("/api/me/updateList", { list: list, contacts: contacts })
+        .post("/api/me/updateList", {
+          list: list,
+          includedContactIds: includedContactIds,
+          allContactIds: allContactIds
+        })
         .then(resp => {
           this.refreshTable();
           this.showEditListModal = false;
@@ -196,7 +199,7 @@ export default {
       });
     },
     isAllContactsList(id) {
-      if (this.SMSLists[this.SMSLists.length - 1].id === id) {
+      if (this.SMSLists[0].id === id) {
         return true;
       } else {
         return false;
