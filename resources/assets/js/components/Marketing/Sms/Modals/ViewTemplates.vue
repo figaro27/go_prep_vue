@@ -18,7 +18,7 @@
           <h4 v-if="editingTemplate" class="center-text">Edit Template</h4>
           <button
             v-if="!editingTemplate"
-            class="btn btn-success btn-md mb-2 mb-sm-0 mb-1 pull-right"
+            class="btn btn-success btn-md mb-2"
             @click="showTemplateArea = !showTemplateArea"
           >
             Add Template
@@ -46,6 +46,22 @@
                   v-model="template.content"
                   rows="5"
                 ></b-form-textarea>
+                <b-button
+                  v-if="!editingTemplate"
+                  type="submit"
+                  variant="primary"
+                  class="float-right mt-2 mb-2"
+                  @click="addTemplate()"
+                  >Save</b-button
+                >
+                <b-button
+                  v-if="editingTemplate"
+                  type="submit"
+                  variant="warning"
+                  class="float-right mt-2 mb-2"
+                  @click="update()"
+                  >Update</b-button
+                >
               </div>
               <div class="col-md-3">
                 <div class="d-flex" @click="showTagDropdown = !showTagDropdown">
@@ -54,33 +70,13 @@
                     style="color:#737373"
                   ></i>
                   <p class="d-inline"><u>Insert tag</u></p>
-                  <div v-if="showTagDropdown" class="tagDropdown">
-                    <li v-for="tag in tags" :key="tag" @click="addTag(tag)">
-                      <p>{{ tag }}</p>
-                      <hr />
-                    </li>
-                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="row pb-2">
-              <div class="col-md-9">
-                <b-button
-                  v-if="!editingTemplate"
-                  type="submit"
-                  variant="primary"
-                  class="float-right mt-2"
-                  @click="addTemplate()"
-                  >Save</b-button
-                >
-                <b-button
-                  v-if="editingTemplate"
-                  type="submit"
-                  variant="warning"
-                  class="float-right"
-                  @click="update()"
-                  >Update</b-button
-                >
+                <div v-if="showTagDropdown" class="tagDropdown">
+                  <li v-for="tag in tags" :key="tag" @click="addTag(tag)">
+                    <p>{{ tag }}</p>
+                    <hr />
+                  </li>
+                </div>
               </div>
             </div>
           </div>
@@ -168,9 +164,9 @@ export default {
           content: template.content
         })
         .then(resp => {
+          this.refreshSMSTemplates();
           this.$toastr.s("New template has been saved.", "Success");
           this.template = {};
-          this.refreshTable();
           this.showCreateModal = false;
         });
     },
@@ -188,8 +184,8 @@ export default {
           name: this.template.name
         })
         .then(resp => {
+          this.refreshSMSTemplates();
           this.$toastr.s("Template has been updated.", "Success");
-          this.refreshTable();
           this.editingTemplate = false;
           this.showTemplateArea = false;
           this.template = { content: "" };
@@ -203,19 +199,14 @@ export default {
     },
     destroy(id) {
       axios.delete("/api/me/SMSTemplates/" + id).then(resp => {
-        this.refreshTable();
+        this.refreshSMSTemplates();
         this.showDeleteModal = false;
         this.$toastr.s("Template has been deleted.", "Success");
       });
     },
-    refreshTable() {
-      axios.get("/api/me/SMSTemplates").then(resp => {
-        this.tableData = resp.data;
-      });
-    },
     addTag(tag) {
-      console.log(this.template.content);
       this.template.content += " {" + tag + "} ";
+      this.showTagDropdown = false;
     }
   }
 };

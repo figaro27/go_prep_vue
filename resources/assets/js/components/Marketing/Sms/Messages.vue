@@ -4,7 +4,7 @@
       <Spinner v-if="isLoading" />
 
       <b-modal
-        size="md"
+        size="lg"
         title="Templates"
         v-model="showTemplateModal"
         v-if="showTemplateModal"
@@ -177,12 +177,12 @@
                   style="color:#737373"
                 ></i>
                 <p class="d-inline"><u>Insert tag</u></p>
-                <div v-if="showTagDropdown" class="tagDropdown">
-                  <li v-for="tag in tags" :key="tag" @click="addTag(tag)">
-                    <p>{{ tag }}</p>
-                    <hr />
-                  </li>
-                </div>
+              </div>
+              <div v-if="showTagDropdown" class="tagDropdown">
+                <li v-for="tag in tags" :key="tag" @click="addTag(tag)">
+                  <p>{{ tag }}</p>
+                  <hr />
+                </li>
               </div>
             </div>
           </div>
@@ -334,6 +334,7 @@ export default {
         );
       }
       this.message.content += "{" + tag + "}";
+      this.showTagDropdown = false;
     },
     insertTemplate(content) {
       this.message.content = content;

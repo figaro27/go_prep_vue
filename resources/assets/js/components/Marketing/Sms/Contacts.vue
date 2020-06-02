@@ -64,8 +64,8 @@
             Add New Contact
           </button>
         </div>
-        <div slot="content" class="text-nowrap" slot-scope="props">
-          {{ truncate(props.row.content, 150, "...") }}
+        <div slot="firstName" class="text-nowrap" slot-scope="props">
+          {{ getFirstName(props.row.id) }}
         </div>
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button
@@ -141,6 +141,9 @@ export default {
       });
     },
     editContact(contact) {
+      if (contact.firstName === contact.phone) {
+        contact.firstName = "";
+      }
       this.contact = contact;
       this.showEditContactModal = true;
     },
@@ -163,6 +166,12 @@ export default {
         this.showDeleteContactModal = false;
         this.$toastr.s("Contact Deleted.", "Success");
       });
+    },
+    getFirstName(id) {
+      let contact = this.SMSContacts.find(contact => {
+        return contact.id === id;
+      });
+      return contact.firstName !== contact.phone ? contact.firstName : "";
     }
   }
 };

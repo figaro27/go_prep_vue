@@ -89,8 +89,12 @@ class SMSContactController extends StoreController
                     'form_params' => [
                         'phone' => $phone,
                         'lists' => $listId,
-                        'firstName' => $contact['firstName'],
-                        'lastName' => $contact['lastName']
+                        'firstName' => isset($contact['firstName'])
+                            ? $contact['firstName']
+                            : '',
+                        'lastName' => isset($contact['lastName'])
+                            ? $contact['lastName']
+                            : ''
                     ]
                 ]
             );
@@ -102,46 +106,11 @@ class SMSContactController extends StoreController
             $smsContact->contact_id = json_decode($body)->id;
             $smsContact->save();
         } catch (\Exception $e) {
-        }
-    }
-
-    public function importCustomers(Request $request)
-    {
-        // $customers = $request->get('customers');
-        $customers = Customer::where('store_id', $this->store->id)->get();
-
-        // Assign all newly added customers to the first list which is the master list of all contacts.
-        $listId = SmsList::where('store_id', $this->store->id)
-            ->pluck('list_id')
-            ->first();
-
-        foreach ($customers as $customer) {
-            // Get country prefix
-            $phone = (int) 1 . preg_replace('/[^0-9]/', '', $customer->phone);
-            try {
-                $client = new \GuzzleHttp\Client();
-                $res = $client->request(
-                    'POST',
-                    'https://rest.textmagic.com/api/v2/contacts',
-                    [
-                        'headers' => $this->headers,
-                        'form_params' => [
-                            'phone' => $phone,
-                            'lists' => $listId,
-                            'firstName' => $customer->firstname,
-                            'lastName' => $customer->lastname,
-                            'email' => $customer->email
-                        ]
-                    ]
-                );
-                $status = $res->getStatusCode();
-                $body = $res->getBody();
-
-                $smsContact = new SmsContact();
-                $smsContact->store_id = $this->store->id;
-                $smsContact->contact_id = json_decode($body)->id;
-                $smsContact->save();
-            } catch (\Exception $e) {
+            if (
+                strpos($e, 'Phone number already exists in your contacts.') !==
+                false
+            ) {
+                $this->updateExistingContact($contact);
             }
         }
     }
@@ -187,6 +156,40 @@ class SMSContactController extends StoreController
         $res = $client->request(
             'PUT',
             'https://rest.textmagic.com/api/v2/contacts/' . $contact['id'],
+            [
+                'headers' => $this->headers,
+                'form_params' => [
+                    'phone' => $phone,
+                    'firstName' => $contact['firstName'],
+                    'lastName' => $contact['lastName']
+                ]
+            ]
+        );
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+    }
+
+    public function updateExistingContact($contact)
+    {
+        $phone = (int) preg_replace('/[^0-9]/', '', $contact['phone']);
+        if (strlen((string) $phone) === 10) {
+            $phone = 1 . $phone;
+        }
+
+        // Get contact ID
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            'https://rest.textmagic.com/api/v2/contacts/phone/' . $phone,
+            ['headers' => $this->headers]
+        );
+        $body = $res->getBody();
+        $contactId = json_decode($body)->id;
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'PUT',
+            'https://rest.textmagic.com/api/v2/contacts/' . $contactId,
             [
                 'headers' => $this->headers,
                 'form_params' => [
