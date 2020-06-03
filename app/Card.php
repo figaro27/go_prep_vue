@@ -28,7 +28,8 @@ class Card extends Model
         'last4',
         'country',
         'payment_gateway',
-        'store_id'
+        'store_id',
+        'saveCard'
     ];
 
     /**
@@ -37,8 +38,6 @@ class Card extends Model
      * @var array
      */
     protected $hidden = [];
-
-    protected $casts = [];
 
     public function user()
     {
