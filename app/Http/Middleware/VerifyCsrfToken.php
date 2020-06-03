@@ -18,7 +18,5 @@ class VerifyCsrfToken extends Middleware
      *
      * @var array
      */
-    protected $except = [
-        '/stripe/event'
-    ];
+    protected $except = ['/stripe/event', '/textmagic/incomingSMS'];
 }

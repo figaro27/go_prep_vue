@@ -41,6 +41,7 @@ Route::get('/mail/storeNewOrder', 'EmailTestController@storeNewOrder');
 
 foreach ([config('app.domain')] as $domain) {
     Route::any('/stripe/event', 'Billing\\StripeController@event');
+    Route::any('/textmagic/incomingSMS', 'Store\\StoreDetailController@test');
     //Auth::routes();
     Route::fallback('SpaController@index');
 
