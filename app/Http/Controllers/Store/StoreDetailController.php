@@ -176,9 +176,4 @@ class StoreDetailController extends StoreController
     {
         return $this->store->accepted_toa;
     }
-
-    public function test()
-    {
-        return;
-    }
 }
