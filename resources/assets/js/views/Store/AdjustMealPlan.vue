@@ -42,7 +42,9 @@ export default {
     }
   },
   mounted() {
-    this.getSub();
+    if (!this.$route.query.back) {
+      this.getSub();
+    }
   },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
