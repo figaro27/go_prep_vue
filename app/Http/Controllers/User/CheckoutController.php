@@ -688,7 +688,7 @@ class CheckoutController extends UserController
             }
 
             // Delete the credit card if the user unchecked save for future use
-            if (!$card->saveCard) {
+            if ($card && !$card->saveCard) {
                 $card->delete();
             }
 
