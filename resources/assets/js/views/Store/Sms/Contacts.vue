@@ -42,6 +42,7 @@
       </b-modal>
 
       <v-client-table
+        v-show="initialized"
         :columns="columns"
         :data="SMSContacts"
         :options="{
@@ -52,8 +53,7 @@
           headings: {
             firstName: 'First Name',
             lastName: 'Last Name'
-          },
-          filterable: false
+          }
         }"
       >
         <div slot="beforeTable" class="mb-2">
@@ -122,7 +122,8 @@ export default {
       store: "viewedStore",
       isLoading: "isLoading",
       initialized: "initialized",
-      SMSContacts: "SMSContacts"
+      SMSContacts: "SMSContacts",
+      initialized: "initialized"
     })
   },
   methods: {

@@ -21,9 +21,6 @@
             <b-tab title="Purchased Gift Cards">
               <gift-cards></gift-cards>
             </b-tab>
-            <b-tab title="SMS Communication">
-              <SMS></SMS>
-            </b-tab>
           </b-tabs>
         </div>
       </div>
@@ -43,7 +40,6 @@ import Promotions from "../../components/Marketing/Promotions";
 import Referrals from "../../components/Marketing/Referrals";
 import Coupons from "../../components/Marketing/Coupons";
 import GiftCards from "../../components/Marketing/GiftCards";
-import SMS from "../../components/Marketing/SMS";
 
 export default {
   components: {
@@ -53,17 +49,14 @@ export default {
     Referrals,
     Promotions,
     Coupons,
-    GiftCards,
-    SMS
+    GiftCards
   },
   mixins: [checkDateRange],
   data() {
     return {};
   },
   created() {},
-  mounted() {
-    this.initSMS();
-  },
+  mounted() {},
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -73,9 +66,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions({
-      initSMS: "initSMS"
-    }),
+    ...mapActions({}),
     formatMoney: format.money
   }
 };

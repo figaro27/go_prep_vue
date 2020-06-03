@@ -1719,6 +1719,7 @@ const actions = {
       dispatch("refreshOrderIngredients"),
       dispatch("refreshIngredients"),
       dispatch("refreshStoreSubscriptions");
+    dispatch("initSMS");
     // dispatch("refreshUpcomingOrders");
   },
 

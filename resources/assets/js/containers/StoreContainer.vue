@@ -154,11 +154,30 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["initialized", "isLoading", "storeSettings", "viewedStore"]),
+    ...mapGetters([
+      "initialized",
+      "isLoading",
+      "storeSettings",
+      "viewedStore",
+      "SMSChats"
+    ]),
     classes() {
       let classes = ["app"];
       classes.push(this.$route.name);
       return classes;
+    },
+    unreadSMSMessages() {
+      return this.SMSChats.length > 0
+        ? _.reduce(
+            this.SMSChats,
+            (sum, chat) => {
+              if (chat.unreadMessages === true) {
+                return sum + 1;
+              }
+            },
+            0
+          )
+        : 0;
     },
     navItems() {
       return nav.items.map(item => {
@@ -172,6 +191,14 @@ export default {
 
         if (item.url === this.$route.path) {
           item.class += " active";
+        }
+
+        if (
+          item.name === "SMS" &&
+          this.unreadSMSMessages > 0 &&
+          this.unreadSMSMessages !== undefined
+        ) {
+          item.badge = { variant: "primary", text: this.unreadSMSMessages };
         }
 
         return item;

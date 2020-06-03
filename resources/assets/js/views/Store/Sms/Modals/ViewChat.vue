@@ -37,7 +37,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      message
+      message: ""
     };
   },
   props: {

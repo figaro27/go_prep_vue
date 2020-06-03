@@ -63,6 +63,12 @@ export default {
       // class: 'nav-child',
     },
     {
+      name: "SMS",
+      url: "/store/SMS",
+      icon: "fas fa-comments"
+      // class: 'nav-child',
+    },
+    {
       name: "Settings",
       url: "/store/account/settings",
       icon: "fa fa-cog"

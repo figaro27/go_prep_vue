@@ -200,19 +200,19 @@
       </div>
 
       <v-client-table
+        v-show="initialized"
         :columns="columns"
         :data="SMSMessages"
         :options="{
           orderBy: {
             column: 'messageTime',
-            ascending: desc
+            ascending: 'desc'
           },
           headings: {
             messageTime: 'Sent On',
             numbersCount: 'Recipients',
             text: 'Message'
-          },
-          filterable: false
+          }
         }"
       >
         <div slot="messageTime" slot-scope="props">
@@ -292,7 +292,8 @@ export default {
       initialized: "initialized",
       SMSMessages: "SMSMessages",
       SMSContacts: "SMSContacts",
-      SMSLists: "SMSLists"
+      SMSLists: "SMSLists",
+      initialized: "initialized"
     }),
     recipientCount() {
       let phones = this.phones.length;

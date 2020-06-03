@@ -2,24 +2,23 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
-
-      <b-form-radio-group
-        buttons
-        v-model="pageView"
-        class="smsFilters"
-        :options="[
-          { value: 'chats', text: 'Chats' },
-          { value: 'messages', text: 'Messages' },
-          { value: 'contacts', text: 'Contacts' },
-          { value: 'lists', text: 'Lists' },
-          { value: 'settings', text: 'Settings' }
-        ]"
-      ></b-form-radio-group>
-      <chats v-if="pageView === 'chats'"></chats>
-      <messages v-if="pageView === 'messages'"></messages>
-      <contacts v-if="pageView === 'contacts'"></contacts>
-      <lists v-if="pageView === 'lists'"></lists>
-      <settings v-if="pageView === 'settings'"></settings>
+      <b-tabs>
+        <b-tab title="Chats">
+          <chats></chats>
+        </b-tab>
+        <b-tab title="Messages">
+          <messages></messages>
+        </b-tab>
+        <b-tab title="Contacts">
+          <contacts></contacts>
+        </b-tab>
+        <b-tab title="Lists">
+          <lists></lists>
+        </b-tab>
+        <b-tab title="Settings">
+          <settings></settings>
+        </b-tab>
+      </b-tabs>
     </div>
   </div>
 </template>
@@ -73,3 +72,9 @@ export default {
   }
 };
 </script>
+
+<style>
+.VueTables__search {
+  display: none !important;
+}
+</style>

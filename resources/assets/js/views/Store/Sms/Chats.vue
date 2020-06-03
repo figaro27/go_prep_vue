@@ -9,6 +9,7 @@
         v-if="showViewChatModal"
         no-fade
         hide-footer
+        id="viewChatModal"
       >
         <view-chat
           :chat="chat"
@@ -109,9 +110,13 @@ export default {
             }
           });
         });
+    },
+    test() {
+      axios.get("/api/me/chatTest").then(resp => {
+        this.refreshSMSChats();
+      });
     }
   }
 };
 </script>
-
 <style lang="scss"></style>
