@@ -47,7 +47,13 @@ export default {
   },
   created() {},
   mounted() {
-    // Scroll to bottom
+    const modal = document.querySelector(".modal");
+
+    modal.scrollTo({
+      top: modal.scrollHeight,
+      left: 0,
+      behavior: "smooth"
+    });
   },
   computed: {
     ...mapGetters({

@@ -176,7 +176,6 @@ class SMSContactController extends StoreController
             $phone = 1 . $phone;
         }
 
-        // Get contact ID
         $client = new \GuzzleHttp\Client();
         $res = $client->request(
             'GET',
@@ -186,6 +185,37 @@ class SMSContactController extends StoreController
         $body = $res->getBody();
         $contactId = json_decode($body)->id;
 
+        $firstName = isset($contact['firstName'])
+            ? $contact['firstName']
+            : json_decode($body)->firstName;
+        $lastName = isset($contact['lastName'])
+            ? $contact['lastName']
+            : json_decode($body)->lastName;
+
+        // Get all lists in which the existing contact is included
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            'https://rest.textmagic.com/api/v2/contacts/' .
+                $contactId .
+                '/lists',
+            ['headers' => $this->headers]
+        );
+        $body = $res->getBody();
+        $existingLists = json_decode($body)->resources;
+        $lists = [];
+        foreach ($existingLists as $list) {
+            array_push($lists, $list->id);
+        }
+        array_push(
+            $lists,
+            SMSList::where('store_id', $this->store->id)
+                ->pluck('list_id')
+                ->first()
+        );
+
+        $lists = implode(',', $lists);
+
         $client = new \GuzzleHttp\Client();
         $res = $client->request(
             'PUT',
@@ -194,13 +224,26 @@ class SMSContactController extends StoreController
                 'headers' => $this->headers,
                 'form_params' => [
                     'phone' => $phone,
-                    'firstName' => $contact['firstName'],
-                    'lastName' => $contact['lastName']
+                    'lists' => $lists,
+                    'firstName' => $firstName,
+                    'lastName' => $lastName
                 ]
             ]
         );
         $status = $res->getStatusCode();
         $body = $res->getBody();
+
+        // Add existing contact to the store
+        $contactExists = SMSContact::where([
+            'store_id' => $this->store->id,
+            'contact_id' => $contactId
+        ])->first();
+        if (!$contactExists) {
+            $newContact = new SMSContact();
+            $newContact->store_id = $this->store->id;
+            $newContact->contact_id = $contactId;
+            $newContact->save();
+        }
     }
 
     /**
