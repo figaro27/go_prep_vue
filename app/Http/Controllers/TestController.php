@@ -230,4 +230,9 @@ class TestController extends Controller
 
         return $test;
     }
+
+    public function testSMS()
+    {
+        return;
+    }
 }
