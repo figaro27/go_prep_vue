@@ -741,6 +741,29 @@
                   </div> -->
                 </b-form>
               </b-form>
+
+              <p>
+                Menu Style
+                <img
+                  v-b-popover.hover="
+                    'Choose image based if you have images of your meals and want to showcase your meals visually. Choose text based if you don\'t have many images and want to emphasize descriptions more. Text based still shows images of your meals but in a smaller size.'
+                  "
+                  title="Menu Style"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+              <b-form-radio-group
+                buttons
+                v-model="storeSettings.menuStyle"
+                class="storeFilters"
+                @input="updateStoreSettings"
+                :options="[
+                  { value: 'image', text: 'Image Based' },
+                  { value: 'text', text: 'Text Based' }
+                ]"
+              ></b-form-radio-group>
+
               <p>
                 <span class="mr-1">Show Nutrition Facts</span>
                 <img
@@ -807,30 +830,6 @@
                   />
                 </b-form-group>
               </b-form>
-
-              <!-- <p>
-                <span class="mr-1">Allow Meal Packages</span>
-                <img
-                  v-b-popover.hover="
-                    'Enables a button on your menu page which lets you create meal packages. These are groupings of individual meals and quantities on your menu and are displayed to your customer on your menu through a scrolling carousel. Enabling this also adds a Packages category to your menu.'
-                  "
-                  title="Allow Meal Packages"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p> -->
-
-              <!-- <b-form @submit.prevent="updateStoreSettings">
-                <b-form-group :state="true">
-                  <c-switch
-                    color="success"
-                    variant="pill"
-                    size="lg"
-                    v-model="storeSettings.meal_packages"
-                    @change.native="updateStoreSettings"
-                  />
-                </b-form-group>
-              </b-form> -->
 
               <p>
                 <span class="mr-1">Allow Weekly Subscriptions</span>
@@ -913,26 +912,13 @@
                     placeholder="Example: http://goprep.com"
                   ></b-form-input>
                 </b-form-group>
-                <p>Menu Style</p>
-                <b-form-radio-group
-                  buttons
-                  v-model="storeSettings.menuStyle"
-                  class="storeFilters"
-                  @input="updateStoreSettings"
-                  :options="[
-                    { value: 'image', text: 'Image Based' },
-                    { value: 'text', text: 'Text Based' }
-                  ]"
-                ></b-form-radio-group>
-                <img
-                  v-b-popover.hover="
-                    'Choose image based if you have images of your meals and want to showcase your meals visually. Choose text based if you don\'t have many images and want to emphasize descriptions more. Text based still shows images of your meals but in a smaller size.'
-                  "
-                  title="Menu Style"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-                <br /><br />
+                <b-form-group
+                  label="About (Shown at the top of your menu)"
+                  :state="true"
+                >
+                  <wysiwyg v-model="storeDetails.description" />
+                </b-form-group>
+
                 <router-link
                   v-if="!storeURLcheck"
                   :to="'/store/menu/preview'"
@@ -1436,6 +1422,8 @@ export default {
           error = error.join(" ");
           this.$toastr.w(error);
         });
+
+      axios.patch("/api/me/details", { ...this.storeDetails });
     },
     updateStoreModules() {
       let modules = { ...this.storeModules };
