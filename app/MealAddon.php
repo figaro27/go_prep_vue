@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Ingredient;
 use App\MealSubscriptionAddon;
+use App\Utils\Data\Format;
 
 class MealAddon extends Model
 {

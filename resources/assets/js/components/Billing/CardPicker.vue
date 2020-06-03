@@ -36,13 +36,18 @@
         @change="evt => onChangeNewCard(evt)"
       ></inline-credit-card-field>
     </b-form-group>
-    <b-btn
-      variant="primary"
-      @click="onClickCreateCard()"
-      :disabled="addingCard"
-      class="mb-3"
-      >Add Card</b-btn
-    >
+    <div class="d-flex">
+      <b-btn
+        variant="primary"
+        @click="onClickCreateCard()"
+        :disabled="addingCard"
+        class="mb-3 mr-2 d-inline"
+        >Add Card</b-btn
+      >
+      <b-form-checkbox v-model="saveCard" class="d-inline pt-1"
+        >Save card for future use</b-form-checkbox
+      >
+    </div>
     <!-- <b-btn variant="primary" @click="onClickCreateCard()" class="mb-3"
       >Add Card</b-btn
     > -->
@@ -156,7 +161,8 @@ export default {
       // stripeOptions,
       addingCard: false,
       card: null,
-      newCard: null
+      newCard: null,
+      saveCard: true
     };
   },
   computed: {
@@ -215,7 +221,8 @@ export default {
           token,
           card,
           customer: customer,
-          payment_gateway: this.gateway
+          payment_gateway: this.gateway,
+          saveCard: this.saveCard
         })
         .then(async resp => {
           if (this.manualOrder || this.$route.params.manualOrder) {

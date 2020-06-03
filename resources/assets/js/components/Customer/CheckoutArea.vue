@@ -2369,7 +2369,8 @@ use next_delivery_dates
       "refreshUpcomingOrders",
       "refreshUpcomingOrdersWithoutItems",
       "refreshStoreCustomers",
-      "refreshStorePurchasedGiftCards"
+      "refreshStorePurchasedGiftCards",
+      "refreshCards"
     ]),
     ...mapActions("resources", ["refreshResource"]),
     ...mapMutations([
@@ -2857,6 +2858,7 @@ use next_delivery_dates
           this.setBagPurchasedGiftCard(null);
           this.setBagReferral(null);
           this.clearBagDeliveryDate();
+          this.refreshCards();
 
           if (this.isManualOrder) {
             this.refreshResource("orders");

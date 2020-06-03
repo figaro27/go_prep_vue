@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\MealSubscription;
 use App\MealMealPackage;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Utils\Data\Format;
 
 class MealSize extends Model
 {

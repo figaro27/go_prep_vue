@@ -85,10 +85,11 @@ class StoreDetailController extends StoreController
         ];
 
         $this->validate($request, $rules);
-
-        $newLogo =
-            $request->has('logo') &&
-            substr($request->get('logo'), 0, 4) === 'data';
+        if (!is_array($request->get('logo'))) {
+            $newLogo =
+                $request->has('logo') &&
+                substr($request->get('logo'), 0, 4) === 'data';
+        }
 
         // Disabling 1:1 aspect ratio check
         /*if ($newLogo) {
@@ -107,7 +108,7 @@ class StoreDetailController extends StoreController
 
         $store->update($request->except('logo'));
 
-        if ($newLogo) {
+        if (isset($newLogo)) {
             $imagePath = Images::uploadB64($request->get('logo'), 'path');
 
             if ($imagePath) {

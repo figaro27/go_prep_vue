@@ -661,6 +661,11 @@ class CheckoutController extends StoreController
                 }
             }
 
+            // Delete the credit card if the user unchecked save for future use
+            if (!$card->saveCard) {
+                $card->delete();
+            }
+
             if ($request->get('emailCustomer')) {
                 try {
                     $customerUser->sendNotification('new_order', [

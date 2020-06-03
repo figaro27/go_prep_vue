@@ -132,27 +132,12 @@
               ></b-form-input>
             </b-form-group>
 
-            <b-form-group
-              label="About (Shown at the top of your menu)"
-              :state="true"
-            >
-              <wysiwyg v-model="storeDetail.description" />
-            </b-form-group>
-
             <b-button type="submit" variant="primary">Save</b-button>
-
-            <p v-if="store.id === 13">
-              <b-btn @click="testChargeDescriptor"
-                >TEST CHARGE DESCRIPTOR</b-btn
-              >
-            </p>
           </b-form>
 
-          <p v-if="store.id === 13">
-            <b-btn @click="testChargeDescriptor">TEST CHARGE DESCRIPTOR</b-btn>
-          </p>
-
           <!--
+            <b-btn @click="testChargeDescriptor">TEST CHARGE DESCRIPTOR</b-btn>
+
             <p><b-btn @click="testRenewSubscription">TEST RENEW SUBSCRIPTION</b-btn></p>
             
             <p><b-btn @click="testDeleteMealOrders">TEST DELETE MEAL ORDERS</b-btn></p>

@@ -143,7 +143,8 @@ class CardController extends UserController
             'last4' => $card['last4'],
             'country' => $card['country'],
             'payment_gateway' => $gateway,
-            'store_id' => $this->store->id
+            'store_id' => $this->store->id,
+            'saveCard' => $request->get('saveCard')
         ]);
     }
 
