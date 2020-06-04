@@ -366,6 +366,8 @@ class Order extends Model
                     'base_size' => $mealOrder->base_size,
                     'meal_size_id' => $mealOrder->meal_size_id,
                     'meal_title' => $mealOrder->title,
+                    'customTitle' => $mealOrder->customTitle,
+                    'customSize' => $mealOrder->customSize,
                     'instructions' => $mealOrder->instructions,
                     'title' => $mealOrder->title,
                     'html_title' => $mealOrder->html_title,

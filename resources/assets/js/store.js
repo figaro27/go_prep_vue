@@ -2880,11 +2880,23 @@ const getters = {
         components = null,
         addons = null,
         special_instructions = null,
-        showSize = true
+        showSize = true,
+        customTitle = null,
+        customSize = null
       ) => {
-        let title = meal.title;
-        if (_.isObject(size) && showSize) {
-          title = size.full_title;
+        let title = "";
+
+        if (customTitle && customSize) {
+          title = customTitle + " - " + customSize;
+        } else if (customTitle && !customSize) {
+          title = customTitle + " - " + size.title;
+        } else if (!customTitle && customSize) {
+          title = meal.title + " - " + customSize;
+        } else {
+          title = meal.title;
+          if (_.isObject(size) && showSize) {
+            title = size.full_title;
+          }
         }
 
         let hasComponents = _.isArray(components) && components.length;
