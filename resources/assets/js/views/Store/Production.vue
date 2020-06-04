@@ -118,8 +118,19 @@
       v-model="productionGroupModal"
       v-if="productionGroupModal"
     >
-      <div class="center-flex mt-2">
+      <div class="center-flex mt-1">
         <div style="max-width:100%">
+          <b-form class="mt-1 mb-2 d-flex" @submit.prevent="onAddGroup">
+            <b-input
+              v-model="new_group"
+              type="text"
+              placeholder="Production group name"
+              class="d-inline"
+            ></b-input>
+            <b-button type="submit" variant="primary ml-2 d-inline"
+              >Add</b-button
+            >
+          </b-form>
           <ol>
             <li
               v-for="group in storeProductionGroups"
@@ -128,37 +139,29 @@
               <h5 v-if="editingId !== group.id">
                 <i
                   @click="editingId = group.id"
-                  class="fa fa-edit text-warning mr-2"
+                  class="fa fa-edit text-warning mr-2 font-12"
                 ></i>
                 <span class="category-name">{{ group.title }}</span>
               </h5>
               <div v-if="editingId === group.id">
-                <div>
-                  <b-form @submit.prevent="updateGroup">
+                <div class="d-flex">
+                  <b-form @submit.prevent="updateGroup(group.title)">
                     <b-input
-                      v-model="groupTitle"
+                      v-model="group.title"
                       required
-                      class="w-50 mr-2"
+                      class="w-50 mr-2 d-inline"
                     ></b-input>
-                    <b-btn type="submit" variant="primary" class="mb-1 mt-1"
-                      >Save</b-btn
+                    <b-btn
+                      type="submit"
+                      variant="primary"
+                      class="mb-1 mt-1 d-inline"
+                      >Update</b-btn
                     >
                   </b-form>
                 </div>
               </div>
             </li>
           </ol>
-          <b-form class="mt-2 d-flex" @submit.prevent="onAddGroup">
-            <b-input
-              v-model="new_group"
-              type="text"
-              placeholder="New Group..."
-              class="d-inline"
-            ></b-input>
-            <b-button type="submit" variant="primary ml-2 d-inline"
-              >Create</b-button
-            >
-          </b-form>
         </div>
       </div>
     </b-modal>
@@ -183,7 +186,6 @@ export default {
   data() {
     return {
       productionGroupModal: false,
-      groupTitle: null,
       editingId: null,
       productionGroupId: null,
       new_group: null,
@@ -499,15 +501,14 @@ export default {
       this.filters.delivery_dates.end = null;
       this.$refs.deliveryDates.clearDates();
     },
-    updateGroup() {
+    updateGroup(groupTitle) {
       axios
         .post("/api/me/updateProdGroups", {
           id: this.editingId,
-          title: this.groupTitle
+          title: groupTitle
         })
         .then(resp => {
           this.editingId = null;
-          this.groupTitle = null;
           this.refreshStoreProductionGroups();
           this.$toastr.s("Group updated.");
         });
