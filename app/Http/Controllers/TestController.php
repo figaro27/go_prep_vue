@@ -233,6 +233,6 @@ class TestController extends Controller
 
     public function testSMS()
     {
-        return;
+        return [];
     }
 }
