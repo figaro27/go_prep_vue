@@ -1,6 +1,16 @@
 <template>
-  <div class="row mt-3">
+  <div class="row mt-2">
     <div class="col-md-12">
+      <div>
+        <img
+          v-b-popover.rightbottom.hover="
+            'If a client responds to one of your messages, a chat begins and will show in the table below. You can view the chat and see the conversation history and send your reply.'
+          "
+          title="Chats"
+          src="/images/store/popover.png"
+          class="popover-size mb-3"
+        />
+      </div>
       <Spinner v-if="isLoading" />
       <b-modal
         size="md"
@@ -9,6 +19,7 @@
         v-if="showViewChatModal"
         no-fade
         hide-footer
+        @hide="enableSpinner(), (modalOpened = false)"
         id="viewChatModal"
       >
         <view-chat
@@ -16,6 +27,7 @@
           :phone="phone"
           :row="row"
           @refreshChatMessage="refreshChatMessage($event)"
+          @disableSpinner="disableSpinner"
         ></view-chat>
       </b-modal>
 
@@ -52,6 +64,7 @@ export default {
   data() {
     return {
       showViewChatModal: false,
+      modalOpened: false,
       chat: null,
       phone: null,
       row: null,
@@ -60,7 +73,7 @@ export default {
         headings: { lastMessage: "Last Message" },
         rowClassCallback: function(row) {
           let classes = `chat-${row.id}`;
-          classes += row.unreadMessages ? " strong" : "";
+          classes += row.unread ? " strong" : "";
           return classes;
         }
       }
@@ -78,19 +91,25 @@ export default {
   },
   methods: {
     ...mapActions({
-      refreshSMSChats: "refreshSMSChats"
+      refreshSMSChats: "refreshSMSChats",
+      disableSpinner: "disableSpinner",
+      enableSpinner: "enableSpinner"
     }),
     formatMoney: format.money,
     view(row) {
       this.phone = row.phone;
       this.row = row;
       this.refreshChatMessage(row);
+      this.modalOpened = true;
     },
     refreshChatMessage(row) {
       axios
         .post("/api/me/getChatMessages", { phone: row.phone, id: row.id })
         .then(resp => {
-          this.showViewChatModal = true;
+          if (this.modalOpened) {
+            this.showViewChatModal = true;
+          }
+
           this.chat = resp.data.resources;
           let lastIncomingId = "";
           let lastOutgoingId = "";
@@ -110,11 +129,6 @@ export default {
             }
           });
         });
-    },
-    test() {
-      axios.get("/api/me/chatTest").then(resp => {
-        this.refreshSMSChats();
-      });
     }
   }
 };

@@ -42,7 +42,7 @@ class SmsChatController extends StoreController
                         $chat->direction === 'i' &&
                         $chat->updatedAt > $smsChat->updatedAt
                     ) {
-                        $smsChat->unreadMessages = 1;
+                        $smsChat->unread = 1;
                         $smsChat->updatedAt = $chat->updatedAt;
                         $smsChat->update();
                     }
@@ -50,7 +50,7 @@ class SmsChatController extends StoreController
                     $smsChat = new SmsChat();
                     $smsChat->store_id = $chatStoreId;
                     $smsChat->chat_id = $chat->id;
-                    $smsChat->unreadMessages = 1;
+                    $smsChat->unread = 1;
                     $smsChat->updatedAt = $chat->updatedAt;
                     $smsChat->save();
                 }
@@ -68,7 +68,7 @@ class SmsChatController extends StoreController
 
         foreach ($smsChats as $smsChat) {
             $chatId = $smsChat['chat_id'];
-            $unreadMessages = $smsChat['unreadMessages'];
+            $unread = $smsChat['unread'];
             try {
                 $client = new \GuzzleHttp\Client();
                 $res = $client->request('GET', $this->baseURL . '/' . $chatId, [
@@ -81,7 +81,7 @@ class SmsChatController extends StoreController
                 $chat->lastName = json_decode($body)->contact->lastName;
                 $chat->lastMessage = json_decode($body)->lastMessage;
                 $chat->phone = json_decode($body)->phone;
-                $chat->unreadMessages = $unreadMessages;
+                $chat->unread = $unread;
                 $chat->updatedAt = json_decode($body)->updatedAt;
                 array_push($chats, $chat);
             } catch (\Exception $e) {
@@ -174,7 +174,7 @@ class SmsChatController extends StoreController
         $body = $res->getBody();
 
         $smsChat = SmsChat::where('chat_id', $chatId)->first();
-        $smsChat->unreadMessages = 0;
+        $smsChat->unread = 0;
         $smsChat->update();
 
         return $body;

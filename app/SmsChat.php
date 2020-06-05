@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SmsChat extends Model
 {
     protected $casts = [
-        'unreadMessages' => 'boolean'
+        'unread' => 'boolean'
     ];
 
     public function store()

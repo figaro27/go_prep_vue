@@ -1,6 +1,16 @@
 <template>
-  <div class="row mt-3">
+  <div class="row mt-2">
     <div class="col-md-12">
+      <div>
+        <img
+          v-b-popover.rightbottom.hover="
+            'Contacts are all possible recipients you can send a message to. By default, all past customers are added to your contacts. New customers will be automatically added as a contact as long as you keep that enabled in Settings.'
+          "
+          title="Messages"
+          src="/images/store/popover.png"
+          class="popover-size mb-3"
+        />
+      </div>
       <Spinner v-if="isLoading" />
       <b-modal
         size="md"
@@ -41,6 +51,13 @@
         ></edit-contact>
       </b-modal>
 
+      <button
+        class="btn btn-success btn-md mb-2 mb-sm-0"
+        @click="showCreateContactModal = true"
+      >
+        Add New Contact
+      </button>
+
       <v-client-table
         v-show="initialized"
         :columns="columns"
@@ -56,14 +73,6 @@
           }
         }"
       >
-        <div slot="beforeTable" class="mb-2">
-          <button
-            class="btn btn-success btn-md mb-2 mb-sm-0"
-            @click="showCreateContactModal = true"
-          >
-            Add New Contact
-          </button>
-        </div>
         <div slot="firstName" class="text-nowrap" slot-scope="props">
           {{ getFirstName(props.row.id) }}
         </div>

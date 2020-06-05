@@ -2,23 +2,35 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
-      <b-tabs>
-        <b-tab title="Chats">
-          <chats></chats>
-        </b-tab>
-        <b-tab title="Messages">
-          <messages></messages>
-        </b-tab>
-        <b-tab title="Contacts">
-          <contacts></contacts>
-        </b-tab>
-        <b-tab title="Lists">
-          <lists></lists>
-        </b-tab>
-        <b-tab title="Settings">
-          <settings></settings>
-        </b-tab>
-      </b-tabs>
+      <b-card no-body>
+        <b-tabs>
+          <b-tab title="Messages">
+            <messages></messages>
+          </b-tab>
+          <b-tab>
+            <template v-slot:title>
+              <b-spinner
+                type="grow"
+                small
+                variant="primary"
+                v-if="unreadSMSMessages"
+              ></b-spinner
+              >Chats
+              <!-- <span class="badge badge-primary" v-if="unreadSMSMessages">{{ unreadSMSMessages }}</span>Chats -->
+            </template>
+            <chats></chats>
+          </b-tab>
+          <b-tab title="Contacts">
+            <contacts></contacts>
+          </b-tab>
+          <b-tab title="Lists">
+            <lists></lists>
+          </b-tab>
+          <b-tab title="Settings">
+            <settings></settings>
+          </b-tab>
+        </b-tabs>
+      </b-card>
     </div>
   </div>
 </template>
@@ -58,8 +70,22 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       isLoading: "isLoading",
-      initialized: "initialized"
-    })
+      initialized: "initialized",
+      SMSChats: "SMSChats"
+    }),
+    unreadSMSMessages() {
+      return this.SMSChats.length > 0
+        ? _.reduce(
+            this.SMSChats,
+            (sum, chat) => {
+              if (chat.unread === true) {
+                return sum + 1;
+              }
+            },
+            0
+          )
+        : 0;
+    }
   },
   methods: {
     ...mapActions({}),

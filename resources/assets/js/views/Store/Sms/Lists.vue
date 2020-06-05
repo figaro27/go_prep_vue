@@ -1,8 +1,17 @@
 <template>
-  <div class="row mt-3">
+  <div class="row mt-2">
     <div class="col-md-12">
+      <div>
+        <img
+          v-b-popover.rightbottom.hover="
+            'A list is a group of contacts to make it easier to choose recipients when you send a new message. By default you will have a master list which is made up of all your past customers.'
+          "
+          title="Lists"
+          src="/images/store/popover.png"
+          class="popover-size mb-3"
+        />
+      </div>
       <Spinner v-if="isLoading" />
-
       <b-modal
         size="md"
         title="Create List"
@@ -43,6 +52,13 @@
         ></delete-list>
       </b-modal>
 
+      <button
+        class="btn btn-success btn-md mb-2 mb-sm-0"
+        @click="showCreateListModal = true"
+      >
+        Add New List
+      </button>
+
       <v-client-table
         v-show="initialized"
         :columns="columns"
@@ -57,14 +73,6 @@
           }
         }"
       >
-        <div slot="beforeTable" class="mb-2">
-          <button
-            class="btn btn-success btn-md mb-2 mb-sm-0"
-            @click="showCreateListModal = true"
-          >
-            Add New List
-          </button>
-        </div>
         <div slot="content" class="text-nowrap" slot-scope="props">
           {{ truncate(props.row.content, 150, "...") }}
         </div>

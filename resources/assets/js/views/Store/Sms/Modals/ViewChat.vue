@@ -54,6 +54,14 @@ export default {
       left: 0,
       behavior: "smooth"
     });
+
+    // Fetch / refresh chat every 10 seconds
+    this.$nextTick(function() {
+      window.setInterval(() => {
+        this.$emit("disableSpinner");
+        this.$emit("refreshChatMessage", this.row);
+      }, 10000);
+    });
   },
   computed: {
     ...mapGetters({

@@ -171,7 +171,7 @@ export default {
         ? _.reduce(
             this.SMSChats,
             (sum, chat) => {
-              if (chat.unreadMessages === true) {
+              if (chat.unread === true) {
                 return sum + 1;
               }
             },

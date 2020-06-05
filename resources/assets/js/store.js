@@ -25,6 +25,7 @@ const state = {
   isLazyDD: {},
   isLazyDDLoading: {},
   jobs: {},
+  hideSpinner: false,
   viewed_store: {
     delivery_days: [],
     delivery_day: null,
@@ -946,6 +947,14 @@ const mutations = {
 
   hideSpinner(state, {}) {
     state.isLoading = false;
+  },
+
+  enableSpinner(state, {}) {
+    state.hideSpinner = false;
+  },
+
+  disableSpinner(state, {}) {
+    state.hideSpinner = true;
   }
 };
 
@@ -2835,6 +2844,14 @@ const actions = {
 
   async hideSpinner({ commit, state }, args = {}) {
     commit("hideSpinner", {});
+  },
+
+  async enableSpinner({ commit, state }, args = {}) {
+    commit("enableSpinner", {});
+  },
+
+  async disableSpinner({ commit, state }, args = {}) {
+    commit("disableSpinner", {});
   }
 };
 
@@ -3202,7 +3219,11 @@ const getters = {
     return state.viewed_store.delivery_day || {};
   },
   isLoading(state) {
-    return state.isLoading || !_.isEmpty(state.jobs);
+    if (!state.hideSpinner) {
+      return state.isLoading || !_.isEmpty(state.jobs);
+    } else {
+      return false;
+    }
   },
   initialized(state) {
     return state.initialized;

@@ -1,6 +1,16 @@
 <template>
-  <div class="row mt-3">
+  <div class="row mt-2">
     <div class="col-md-12">
+      <div>
+        <img
+          v-b-popover.rightbottom.hover="
+            'Here is where you can send a new custom SMS message to your clients. You can personalize the message by adding tags like their first name. The table below will then show you all messages you have sent in the past. Your message will send from an (855) number.'
+          "
+          title="Messages"
+          src="/images/store/popover.png"
+          class="popover-size mb-3"
+        />
+      </div>
       <Spinner v-if="isLoading" />
 
       <b-modal
@@ -336,7 +346,7 @@ export default {
     addTag(tag) {
       if (this.phones.length > 0) {
         this.$toastr.w(
-          "You are sending this to phone numbers that may not be in your contacts. Tags will show blank to these recipients."
+          "You are sending this to phone numbers that may not be in your contacts. Tags like their first name will show blank to these recipients."
         );
       }
       this.message.content += "{" + tag + "}";
