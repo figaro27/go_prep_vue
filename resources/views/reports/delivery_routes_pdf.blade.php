@@ -9,14 +9,18 @@
   <div id="print-area" class="unbreakable">
     <h1>Delivery Routes</h1>
      <div class="delivery-part">
-      @if ($delivery_dates)
-        <h1>
-          {{ $delivery_dates['from']->format('D, m/d/Y') }} -
-          {{ $delivery_dates['to']->format('D, m/d/Y') }}
-        </h1>
-      @else
-        <h1>All Delivery Dates</h1>
-      @endif
+      <h2 style="font-size:22px">
+        @if ($delivery_dates)
+          @if ($delivery_dates['from']->format($params->date_format) === $delivery_dates['to']->format($params->date_format))
+            {{ $delivery_dates['from']->format($params->date_format) }}
+          @else
+            {{ $delivery_dates['from']->format($params->date_format) }} -{{ $delivery_dates['to']->format($params->date_format) }}
+          @endif
+        @else
+          All Delivery Dates
+        @endif
+      </h2>
+
 
       <!-- <h2>{{ date('m/d/Y h:i:a')}}</h2> -->
       <div style="clear:both"></div>

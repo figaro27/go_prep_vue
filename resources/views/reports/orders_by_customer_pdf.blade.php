@@ -10,15 +10,17 @@
   <div id="print-area">
     <h1>Orders Summary</h1>
     <div class="delivery-part">
-      @if ($delivery_dates)
-        <h2>
-          Delivery Days:
-          {{ $delivery_dates['from']->format($params->date_format) }} -
-          {{ $delivery_dates['to']->format($params->date_format) }}
-        </h2>
-      @else
-        <h2>All Delivery Dates</h2>
-      @endif
+      <h2 style="font-size:22px">
+        @if ($delivery_dates)
+          @if ($delivery_dates['from']->format($params->date_format) === $delivery_dates['to']->format($params->date_format))
+            {{ $delivery_dates['from']->format($params->date_format) }}
+          @else
+            {{ $delivery_dates['from']->format($params->date_format) }} -{{ $delivery_dates['to']->format($params->date_format) }}
+          @endif
+        @else
+          All Delivery Dates
+        @endif
+      </h2>
 
       <h2>{{ date('m/d/Y h:i:a')}}</h2>
       <div style="clear:both"></div>
