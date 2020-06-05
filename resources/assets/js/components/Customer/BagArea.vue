@@ -87,12 +87,13 @@
                 ></thumbnail>
               </div>
               <div class="mr-2">
-                <span v-if="editingPrice[item.guid] ? true : false">
+                <span v-if="enablingEdit[item.guid] ? true : false">
                   <b-form-input
                     placeholder="Title"
                     v-model="customTitle[item.guid]"
                   ></b-form-input>
                   <b-form-input
+                    v-if="item.size"
                     placeholder="Size"
                     v-model="customSize[item.guid]"
                   ></b-form-input>
@@ -100,10 +101,6 @@
                     type="number"
                     v-model="customPrice[item.guid]"
                   ></b-form-input>
-                  <i
-                    class="fas fa-check-circle text-primary pt-2 pl-1"
-                    @click="endEditPrice(item)"
-                  ></i>
                 </span>
 
                 <span v-else>
@@ -136,7 +133,7 @@
                   <span v-else>{{ item.meal.item_title }}</span>
                   <div class="w-100 pt-1">
                     <input
-                      v-if="!editingPrice[item.guid]"
+                      v-if="enablingEdit[item.guid] ? false : true"
                       type="checkbox"
                       :id="`checkox_${mealId}`"
                       v-model="item.free"
@@ -144,7 +141,7 @@
                     />
                     <label
                       :for="`checkox_${mealId}`"
-                      v-if="!editingPrice[item.guid]"
+                      v-if="enablingEdit[item.guid] ? false : true"
                       >Free</label
                     >
                     <span>{{
@@ -186,13 +183,25 @@
                 <i
                   v-if="
                     ($route.params.storeView || storeView) &&
-                      !editingPrice[item.guid]
+                    enablingEdit[item.guid]
+                      ? false
+                      : true
                   "
-                  @click="enableEditPrice(item)"
-                  class="fa fa-edit text-warning font-14 pt-1"
+                  @click="enableEdit(item)"
+                  class="fa fa-edit text-warning font-15 pt-1"
                 ></i>
                 <i
-                  class="fas fa-times-circle clear-meal dark-gray font-14"
+                  v-if="
+                    ($route.params.storeView || storeView) &&
+                    enablingEdit[item.guid]
+                      ? true
+                      : false
+                  "
+                  class="fas fa-check-circle text-primary pt-1 font-15"
+                  @click="endEdit(item)"
+                ></i>
+                <i
+                  class="fas fa-times-circle clear-meal dark-gray font-15"
                   @click="clearFromBag(item)"
                 ></i>
               </div>
@@ -446,12 +455,12 @@ import store from "../../store";
 export default {
   data() {
     return {
+      enablingEdit: {},
       customTitle: {},
       customSize: {},
       customPrice: {},
       orderNotes: null,
       publicOrderNotes: null,
-      editingPrice: {},
       showLineItemModal: false,
       lineItem: {
         id: null,
@@ -604,7 +613,7 @@ export default {
   mounted() {
     if (this.bag) {
       this.bag.forEach(item => {
-        this.editingPrice[item.guid] = false;
+        this.enablingEdit[item.guid] = false;
       });
     }
 
@@ -922,52 +931,36 @@ export default {
       item.free = event.target.checked;
       this.updateBagItem(item);
     },
-    enableEditPrice(item) {
-      this.editingPrice[item.guid] = true;
-
-      this.editingPrice = {
-        ...this.editingPrice,
-        updated: true
-      };
+    enableEdit(item) {
+      this.$nextTick(() => {
+        this.enablingEdit[item.guid] = true;
+      });
+      this.customTitle[item.guid] = item.meal.title;
+      this.customSize[item.guid] = item.size ? item.size.title : null;
+      this.customPrice[item.guid] = item.price;
     },
-    endEditPrice(item) {
-      item.meal.item_title = this.customTitle[item.guid];
+    endEdit(item) {
+      item.meal.title = this.customTitle[item.guid];
       item.customTitle = this.customTitle[item.guid];
       item.size ? (item.size.title = this.customSize[item.guid]) : null;
       item.customSize = this.customSize[item.guid];
-      item.meal.item_title = this.getFullItemTitle(item);
-      item.meal.full_title = this.getFullItemTitle(item);
-      item.meal.title = this.getFullItemTitle(item);
+
+      if (this.customSize[item.guid]) {
+        item.size.title = this.customSize[item.guid];
+        item.size.full_title =
+          this.customTitle[item.guid] + " - " + this.customSize[item.guid];
+      } else {
+        item.meal.item_title = this.customTitle[item.guid];
+      }
+
       item.price = this.customPrice[item.guid];
       this.updateBagItem(item);
-      this.customTitle[item.guid] = null;
-      this.customSize[item.guid] = null;
-      this.customPrice[item.guid] = null;
 
-      this.editingPrice[item.guid] = false;
+      this.$nextTick(() => {
+        this.enablingEdit[item.guid] = false;
+      });
+    },
 
-      this.editingPrice = {
-        ...this.editingPrice,
-        updated: true
-      };
-    },
-    getFullItemTitle(item) {
-      if (this.customTitle[item.guid] && this.customSize[item.guid]) {
-        return this.customTitle[item.guid] + " - " + this.customSize[item.guid];
-      } else if (this.customTitle[item.guid] && !this.customSize[item.guid]) {
-        let size = "";
-        if (item.size && item.size.title) {
-          size = item.size.title;
-        } else {
-          size = "Medium";
-        }
-        return this.customTitle[item.guid] + " - " + size;
-      } else if (!this.customTitle[item.guid] && this.customSize[item.guid]) {
-        return item.meal.title + " - " + this.customSize[item.guid];
-      } else {
-        return item.meal.full_title;
-      }
-    },
     passOrderNotes() {
       this.$emit("passOrderNotes", this.orderNotes);
     },

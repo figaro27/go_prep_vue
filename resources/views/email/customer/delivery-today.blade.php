@@ -316,10 +316,8 @@ $currency = $order->store->settings->currency_symbol
                 @foreach($order->meal_package_items as $mealPackageItem)
 
                 <tr>
-                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">{{ $mealPackageItem->meal_package->title }} 
-                    @if ($mealPackageItem->meal_package_size)
-                    - {{ $mealPackageItem->meal_package_size->title }}
-                    @endif
+                  <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">
+                  {{ $mealPackageItem->full_title }} 
                   </td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">
                     {{$currency}}{{ number_format($mealPackageItem->price, 2) }}
