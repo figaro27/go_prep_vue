@@ -25,17 +25,22 @@
     <h1>Payments</h1>
      <div class="delivery-part">
       @if ($delivery_dates)
-        <h2>
+        <h2 style="font-size:22px">
           @if (isset($params['byOrderDate']) && $params['byOrderDate'])
           Order Dates:
           @else
           Delivery Dates:
           @endif
-          {{ $delivery_dates['from']->format($params->date_format) }} -
-          {{ $delivery_dates['to']->format($params->date_format) }}
+        </h2>
+        <h2 style="font-size:22px">
+          @if ($delivery_dates['from']->format($params->date_format) === $delivery_dates['to']->format($params->date_format))
+            {{ $delivery_dates['from']->format($params->date_format) }}
+          @else
+            {{ $delivery_dates['from']->format($params->date_format) }} -{{ $delivery_dates['to']->format($params->date_format) }}
+          @endif
         </h2>
       @else
-        <h2>All Dates</h2>
+        <h2 style="font-size:22px">All Dates</h2>
       @endif
 
       <h2>{{ date('m/d/Y h:i:a')}}</h2>
