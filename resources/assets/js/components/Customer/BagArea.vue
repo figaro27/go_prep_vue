@@ -613,7 +613,7 @@ export default {
   mounted() {
     if (this.bag) {
       this.bag.forEach(item => {
-        this.enablingEdit[item.guid] = false;
+        this.$set(this.enablingEdit, item.guid, false);
       });
     }
 
@@ -933,7 +933,7 @@ export default {
     },
     enableEdit(item) {
       this.$nextTick(() => {
-        this.enablingEdit[item.guid] = true;
+        this.$set(this.enablingEdit, item.guid, true);
       });
       this.customTitle[item.guid] = item.meal.title;
       this.customSize[item.guid] = item.size ? item.size.title : null;
@@ -957,7 +957,7 @@ export default {
       this.updateBagItem(item);
 
       this.$nextTick(() => {
-        this.enablingEdit[item.guid] = false;
+        this.$set(this.enablingEdit, item.guid, false);
       });
     },
 
