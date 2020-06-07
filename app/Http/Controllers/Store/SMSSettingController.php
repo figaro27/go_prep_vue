@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Store;
 
-use App\SMSSetting;
+use App\SmsSetting;
 use Illuminate\Http\Request;
 
 class SMSSettingController extends StoreController
@@ -41,7 +41,7 @@ class SMSSettingController extends StoreController
     /**
      * Display the specified resource.
      *
-     * @param  \App\SMSSetting  $sMSSetting
+     * @param  \App\SmsSetting  $sMSSetting
      * @return \Illuminate\Http\Response
      */
     public function show(SMSSetting $sMSSetting)
@@ -52,7 +52,7 @@ class SMSSettingController extends StoreController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\SMSSetting  $sMSSetting
+     * @param  \App\SmsSetting  $sMSSetting
      * @return \Illuminate\Http\Response
      */
     public function edit(SMSSetting $sMSSetting)
@@ -64,7 +64,7 @@ class SMSSettingController extends StoreController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\SMSSetting  $sMSSetting
+     * @param  \App\SmsSetting  $sMSSetting
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -78,7 +78,7 @@ class SMSSettingController extends StoreController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\SMSSetting  $sMSSetting
+     * @param  \App\SmsSetting  $sMSSetting
      * @return \Illuminate\Http\Response
      */
     public function destroy(SMSSetting $sMSSetting)

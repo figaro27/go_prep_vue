@@ -128,6 +128,9 @@ export default {
               text.innerCSS += "last";
             }
           });
+
+          // Refresh chats
+          this.refreshSMSChats();
         });
     }
   }

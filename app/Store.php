@@ -135,7 +135,7 @@ class Store extends Model
 
     public function smsSettings()
     {
-        return $this->hasOne('App\SMSSetting');
+        return $this->hasOne('App\SmsSetting');
     }
 
     public function categories()

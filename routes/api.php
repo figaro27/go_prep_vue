@@ -562,10 +562,10 @@ foreach (
                                 'updateSMSSettings',
                                 'SMSSettingController@update'
                             );
-                            Route::resource('SMSChats', 'SMSChatController');
+                            Route::resource('SMSChats', 'SmsChatController');
                             Route::post(
                                 'getChatMessages',
-                                'SMSChatController@getChatMessages'
+                                'SmsChatController@getChatMessages'
                             );
                         }
                     );

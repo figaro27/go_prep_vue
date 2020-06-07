@@ -193,12 +193,13 @@ export default {
           item.class += " active";
         }
 
-        if (
-          item.name === "SMS" &&
-          this.unreadSMSMessages > 0 &&
-          this.unreadSMSMessages !== undefined
-        ) {
-          item.badge = { variant: "primary", text: this.unreadSMSMessages };
+        if (item.name === "SMS") {
+          const hasUnread =
+            this.unreadSMSMessages !== undefined && this.unreadSMSMessages > 0;
+
+          item.badge = hasUnread
+            ? { variant: "primary", text: this.unreadSMSMessages }
+            : null;
         }
 
         return item;
