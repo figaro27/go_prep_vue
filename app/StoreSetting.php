@@ -315,10 +315,7 @@ class StoreSetting extends Model
 
             // Temp adjustment for Living Fit
             return [
-                'date' =>
-                    $this->store_id === 112
-                        ? $date->addWeeks(1)->toDateTimeString()
-                        : $date->toDateTimeString(),
+                'date' => $date->toDateTimeString(),
                 'date_passed' => $date->isPast(),
                 'cutoff' => $cutoff->toDateTimeString(),
                 'cutoff_passed' => $cutoff->isPast(),
@@ -335,10 +332,7 @@ class StoreSetting extends Model
             $cutoff = $this->getCutoffDate($date, $deliveryDay);
 
             return [
-                'date' =>
-                    $this->store_id === 112
-                        ? $date->addWeeks(1)->toDateTimeString()
-                        : $date->toDateTimeString(),
+                'date' => $date->toDateTimeString(),
                 'date_passed' => $date->isPast(),
                 'cutoff' => $cutoff->toDateTimeString(),
                 'cutoff_passed' => $cutoff->isPast(),
