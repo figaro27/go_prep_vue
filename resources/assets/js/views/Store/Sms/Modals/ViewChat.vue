@@ -47,13 +47,15 @@ export default {
   },
   created() {},
   mounted() {
-    const modal = document.querySelector(".modal");
-
-    modal.scrollTo({
-      top: modal.scrollHeight,
-      left: 0,
-      behavior: "smooth"
-    });
+    // Scroll modal to bottom
+    setTimeout(() => {
+      const modal = document.querySelector(".modal-content");
+      modal.scrollTo({
+        top: modal.scrollHeight,
+        left: 0,
+        behavior: "smooth"
+      });
+    }, 100);
 
     // Fetch / refresh chat every 10 seconds
     this.$nextTick(function() {
