@@ -8,15 +8,17 @@
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <h1>Orders</h1>
-    @if ($delivery_dates)
-      <h2>
-        Delivery Days:
-        {{ $delivery_dates['from']->format('D, m/d/Y') }} -
-        {{ $delivery_dates['to']->format('D, m/d/Y') }}
+    <h2 style="font-size:22px">
+        @if ($delivery_dates)
+          @if ($delivery_dates['from']->format('D, m/d/Y') === $delivery_dates['to']->format('D, m/d/Y'))
+            {{ $delivery_dates['from']->format('D, m/d/Y') }}
+          @else
+            {{ $delivery_dates['from']->format('D, m/d/Y') }} -{{ $delivery_dates['to']->format('D, m/d/Y') }}
+          @endif
+        @else
+          All Delivery Dates
+        @endif
       </h2>
-    @else
-      <h2>All Delivery Dates</h2>
-    @endif
     <div class="unbreakable">
       <table border="1" width="100" class="orders-report">
         <thead>

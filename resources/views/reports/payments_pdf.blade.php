@@ -23,22 +23,25 @@
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <h1>Payments</h1>
-     <div class="delivery-part">
-      @if ($delivery_dates)
-        <h2>
-          @if (isset($params['byOrderDate']) && $params['byOrderDate'])
+    <div class="delivery-part">
+      <h2 style="font-size:22px">
+        @if (isset($params['byOrderDate']) && $params['byOrderDate'])
           Order Dates:
           @else
           Delivery Dates:
           @endif
-          {{ $delivery_dates['from']->format($params->date_format) }} -
-          {{ $delivery_dates['to']->format($params->date_format) }}
-        </h2>
-      @else
-        <h2>All Dates</h2>
-      @endif
+        @if ($delivery_dates)
+          @if ($delivery_dates['from']->format($params->date_format) === $delivery_dates['to']->format($params->date_format))
+            {{ $delivery_dates['from']->format($params->date_format) }}
+          @else
+            {{ $delivery_dates['from']->format($params->date_format) }} -{{ $delivery_dates['to']->format($params->date_format) }}
+          @endif
+        @else
+          All Delivery Dates
+        @endif
+      </h2>
 
-      <h2>{{ date('m/d/Y h:i:a')}}</h2>
+      <h2 style="font-size:15px;position:relative;top:10px">{{ date('m/d/Y h:i:a')}}</h2>
       <div style="clear:both"></div>
     </div>
     <div class="unbreakable">
