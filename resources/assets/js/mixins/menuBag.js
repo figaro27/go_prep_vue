@@ -154,11 +154,16 @@ export default {
         meal.price = 0;
       }
 
+      let custom = {};
       if (item && item.customTitle) {
         meal.item_title = item.full_title;
+        meal.title = item.customTitle;
+        custom.title = item.customTitle;
       }
       if (item && item.customSize) {
         size.full_title = item.full_title;
+        size.title = item.customSize;
+        custom.size = item.customSize;
       }
 
       this.$store.commit("addToBag", {
@@ -169,7 +174,8 @@ export default {
         components,
         addons,
         special_instructions,
-        free
+        free,
+        custom
       });
       this.mealModal = false;
       this.mealPackageModal = false;

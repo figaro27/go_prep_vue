@@ -467,7 +467,8 @@ const mutations = {
       components = null,
       addons = null,
       special_instructions = null,
-      free = null
+      free = null,
+      custom = null
     }
   ) {
     /* Remove Mutation - This is temporary solution. Not professional code. */
@@ -537,6 +538,9 @@ const mutations = {
     if (!item.added) {
       item.added = moment().unix();
     }
+
+    item.customTitle = custom.title;
+    item.customSize = custom.size;
 
     /* Adjustments */
     let price = item.size ? item.size.price : item.meal.price;

@@ -7,7 +7,15 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class MealSubscription extends Pivot
 {
     protected $table = 'meal_subscriptions';
-    protected $appends = ['title', 'html_title', 'unit_price', 'price'];
+    protected $appends = [
+        'title',
+        'html_title',
+        'fullTitle',
+        'short_title',
+        'base_size',
+        'unit_price',
+        'price'
+    ];
     protected $casts = [
         'delivery_date' => 'date:Y-m-d'
     ];
@@ -171,5 +179,30 @@ class MealSubscription extends Pivot
     public function getPriceAttribute()
     {
         return $this->unit_price * $this->quantity;
+    }
+
+    public function getBaseSizeAttribute()
+    {
+        if ($this->customSize) {
+            return $this->customSize;
+        }
+        if ($this->meal_size_id && $this->meal_size) {
+            return $this->meal_size->title;
+        } else {
+            if ($this->meal->default_size_title != null) {
+                return $this->meal->default_size_title;
+            }
+        }
+    }
+
+    public function getShortTitleAttribute()
+    {
+        return $this->customTitle ? $this->customTitle : $this->meal->title;
+    }
+
+    public function getFullTitleAttribute()
+    {
+        $size = $this->base_size ? ' - ' . $this->base_size : null;
+        return $this->short_title . $size;
     }
 }

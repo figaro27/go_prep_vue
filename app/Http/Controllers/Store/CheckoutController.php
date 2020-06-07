@@ -1106,6 +1106,14 @@ class CheckoutController extends StoreController
                 if ($item['meal_package']) {
                     $mealSub->meal_package = $item['meal_package'];
                 }
+                if (!$item['meal_package']) {
+                    $mealSub->customTitle = isset($item['customTitle'])
+                        ? $item['customTitle']
+                        : null;
+                    $mealSub->customSize = isset($item['customSize'])
+                        ? $item['customSize']
+                        : null;
+                }
                 if ($item['meal_package'] === true) {
                     if (
                         MealPackageSubscription::where([
@@ -1129,6 +1137,16 @@ class CheckoutController extends StoreController
                             $item['package_quantity'];
                         $mealPackageSubscription->price =
                             $item['package_price'];
+                        $mealPackageSubscription->customTitle = isset(
+                            $item['customTitle']
+                        )
+                            ? $item['customTitle']
+                            : null;
+                        $mealPackageSubscription->customSize = isset(
+                            $item['customSize']
+                        )
+                            ? $item['customSize']
+                            : null;
                         $mealPackageSubscription->save();
 
                         $mealSub->meal_package_subscription_id =
