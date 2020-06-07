@@ -302,13 +302,15 @@ export default {
               if (meal.production_group_id !== this.productionGroupId)
                 return null;
             }
-            let size = meal.getSize(item.meal_size_id);
+            let size = meal.getSize(item.meal_size_id, item.customSize);
             let title = meal.getTitle(
               true,
               size,
               item.components,
               item.addons,
-              item.special_instructions
+              item.special_instructions,
+              true,
+              item.customTitle
             );
             let base_title = meal.getTitle(
               true,
@@ -316,7 +318,8 @@ export default {
               item.components,
               item.addons,
               item.special_instructions,
-              false
+              false,
+              item.customTitle
             );
 
             if (!mealCounts[title]) {

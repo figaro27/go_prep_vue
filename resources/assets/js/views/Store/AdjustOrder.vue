@@ -180,7 +180,8 @@ export default {
               components,
               addons,
               special_instructions,
-              free
+              free,
+              item
             );
           }
         }

@@ -80,7 +80,8 @@ export default {
       components = null,
       addons = null,
       special_instructions = null,
-      free = false
+      free = false,
+      item = {}
     ) {
       if (meal.gift_card) {
         this.$store.commit("addToBag", {
@@ -152,6 +153,14 @@ export default {
       if (free) {
         meal.price = 0;
       }
+
+      if (item && item.customTitle) {
+        meal.item_title = item.full_title;
+      }
+      if (item && item.customSize) {
+        size.full_title = item.full_title;
+      }
+
       this.$store.commit("addToBag", {
         meal,
         quantity: 1,

@@ -3603,7 +3603,10 @@ const getters = {
         return null;
       }
 
-      meal.getSize = sizeId => {
+      meal.getSize = (sizeId, customSize = null) => {
+        if (customSize) {
+          return customSize;
+        }
         return _.find(meal.sizes, ["id", parseInt(sizeId)]);
       };
 
@@ -3613,7 +3616,8 @@ const getters = {
         components = null,
         addons = null,
         special_instructions = null,
-        showSize = true
+        showSize = true,
+        customTitle = null
       ) => {
         let title = meal.title;
 
@@ -3631,6 +3635,10 @@ const getters = {
 
         let hasComponents = _.isArray(components) && components.length;
         let hasAddons = _.isArray(addons) && addons.length;
+
+        if (customTitle) {
+          title = customTitle;
+        }
 
         if (!html) {
           if (hasComponents) {
