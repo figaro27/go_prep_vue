@@ -225,6 +225,15 @@
                 ></b-input>
               </b-form-group>
 
+              <b-form-group horizontal label="House / Unit #">
+                <b-input
+                  v-model="form[1].unit"
+                  type="text"
+                  placeholder="Optional"
+                  autocomplete="new-password"
+                ></b-input>
+              </b-form-group>
+
               <b-form-group horizontal label="City" :state="state(1, 'city')">
                 <b-input
                   v-model="form[1].city"
@@ -634,6 +643,7 @@ export default {
         },
         1: {
           address: null,
+          unit: null,
           city: null,
           state: null,
           zip: null,
@@ -895,6 +905,14 @@ export default {
 
       if (!(await this.validate(this.step))) {
         return;
+      }
+
+      if (
+        this.form[1].unit !== null &&
+        this.form[1].unit !== "" &&
+        !this.form[1].unit.includes("#")
+      ) {
+        this.form[1].unit = "#" + this.form[1].unit;
       }
 
       if (this.store.modules.pickupOnly) {
