@@ -230,14 +230,14 @@
               <b-tab title="General" active>
                 <h4>Meal Title</h4>
                 <b-form-group label-for="meal-title" :state="true">
-                  <b-form-input
+                  <b-form-textarea
                     id="meal-title"
                     type="text"
                     v-model="meal.title"
                     placeholder="Item Name"
                     required
                     @change="val => updateMeal(meal.id, { title: val }, true)"
-                  ></b-form-input>
+                  ></b-form-textarea>
                 </b-form-group>
                 <h4>Meal Description</h4>
                 <b-form-group label-for="meal-description" :state="true">

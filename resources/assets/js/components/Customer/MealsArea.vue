@@ -203,7 +203,7 @@
                 <div :class="cardBody">
                   <div class="item-wrap">
                     <div class="title d-md-none">
-                      <strong>{{ meal.title }}</strong>
+                      <p v-html="meal.title"></p>
                     </div>
 
                     <div class="image">
@@ -223,7 +223,7 @@
 
                     <div class="meta">
                       <div class="title d-none d-md-block center-text pt-2">
-                        <strong>{{ meal.title }}</strong>
+                        <p v-html="meal.title"></p>
                       </div>
                       <!-- <div class="title d-none d-md-block center-text">
                         <strong>{{ format.money(meal.price, storeSettings.currency) }}</strong>
@@ -645,7 +645,7 @@
                     </div>
 
                     <div class="content-text-wrap">
-                      <strong>{{ meal.title }}</strong>
+                      <p v-html="meal.title"></p>
                       <div class="mt-1 content-text">
                         {{ meal.description }}
                       </div>
@@ -655,9 +655,10 @@
                     <div class="content-text-wrap d-flex">
                       <!--<div v-else class="col-md-11">!-->
                       <div style="flex-basis:85%">
-                        <strong style="word-break: break-all;">{{
-                          meal.title
-                        }}</strong>
+                        <p
+                          style="word-break: break-all;"
+                          v-html="meal.title"
+                        ></p>
                         <span class="content-text">
                           {{ meal.description }}
                         </span>
@@ -783,6 +784,8 @@ export default {
     if (this.meals[0].meals.length === 0) {
       this.$parent.finalCategories.shift();
     }
+
+        this.addLineBreaksToMealTitles();
   },
   watch: {
     subscriptions: function() {
@@ -1241,7 +1244,13 @@ export default {
         }
         return conditionAmount - this.user.orderCount;
       }
-    }
+    },
+    addLineBreaksToMealTitles() {
+      this.meals.forEach(category => {
+        category.meals.forEach(meal => {
+          meal.title = meal.title.replace(/(\r\n|\n|\r)/gm, "<br />");
+        });
+      });
   }
 };
 </script>
