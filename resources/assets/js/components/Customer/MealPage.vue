@@ -1,24 +1,7 @@
 <template>
-  <div
-    :class="mealPageClass"
-    v-if="showPage"
-    style="min-height: 100%;margin-bottom:-40px"
-  >
+  <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
     <div class="row">
-      <div class="col-md-6 d-flex pb-3">
-        <div v-if="!smallScreen" class="mr-2 d-inline">
-          <img
-            :src="meal.image.url_thumb"
-            style="width:70px;height:70px"
-            v-if="showNutritionFacts"
-            @click="showcaseNutrition = false"
-          />
-          <img
-            src="/images/nutrition-thumb.jpg"
-            v-if="showNutritionFacts"
-            @click="showcaseNutrition = true"
-          />
-        </div>
+      <div class="col-md-6">
         <div>
           <button
             type="button"
@@ -41,18 +24,37 @@
     </div>
     <div class="row">
       <div :class="imageClass">
-        <thumbnail
-          v-if="meal.image != null && meal.image.url && !showcaseNutrition"
-          :src="meal.image.url"
-          :aspect="false"
-          width="100%"
-          @click="$emit('show-gallery', getMealGallery(meal), 0)"
-          class="mealPageImage"
-        ></thumbnail>
-        <div style="width:323px" v-if="showcaseNutrition">
-          <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
+        <div class="d-flex">
+          <div v-if="!smallScreen" style="width:80px" class="pr-1 d-inline">
+            <img
+              :src="meal.image.url_thumb"
+              style="width:60px;height:60px"
+              v-if="showNutritionFacts"
+              @click="showcaseNutrition = false"
+            />
+            <img
+              src="/images/nutrition-thumb.jpg"
+              v-if="showNutritionFacts"
+              @click="showcaseNutrition = true"
+              class="pt-1"
+            />
+          </div>
+          <thumbnail
+            v-if="meal.image != null && meal.image.url && !showcaseNutrition"
+            :src="meal.image.url"
+            :aspect="false"
+            width="100%"
+            @click="$emit('show-gallery', getMealGallery(meal), 0)"
+            class="mealPageImage d-inline"
+          ></thumbnail>
+          <div style="width:323px" v-if="showcaseNutrition">
+            <div
+              id="nutritionFacts"
+              ref="nutritionFacts"
+              class="pt-2 d-inline"
+            ></div>
+          </div>
         </div>
-
         <slick ref="mealGallery" :options="slickOptions" class="pt-1">
           <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
             <div style="image">
