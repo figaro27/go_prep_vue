@@ -232,22 +232,29 @@
                         style="background-color:#ffffff"
                         @click="showMeal(meal, group)"
                       ></thumbnail>
-
-                      <div class="price">
+                      <!-- Hard coding price difference for now for Eat Fresh until new menu design table is required-->
+                      <div class="price" v-if="store.id !== 148">
                         {{ format.money(meal.price, storeSettings.currency) }}
                       </div>
                     </div>
 
                     <div class="meta">
-                      <div class="title d-none d-md-block center-text pt-2">
+                      <div
+                        class="title d-none d-md-block center-text pt-2 pb-1"
+                      >
                         <p
                           v-html="getMealTitle(meal.title)"
-                          style="line-height:normal"
+                          style="line-height:normal;"
                         ></p>
+                        <!-- Hard coding price difference for now for Eat Fresh until new menu design table is required-->
+                        <strong
+                          v-if="store.id === 148"
+                          style="position:relative;bottom:10px"
+                          >{{
+                            format.money(meal.price, storeSettings.currency)
+                          }}</strong
+                        >
                       </div>
-                      <!-- <div class="title d-none d-md-block center-text">
-                        <strong>{{ format.money(meal.price, storeSettings.currency) }}</strong>
-                      </div> -->
 
                       <div class="description d-md-none">
                         {{ truncate(meal.description, 150, "...") }}
