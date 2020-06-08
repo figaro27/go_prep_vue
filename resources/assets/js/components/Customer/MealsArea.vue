@@ -785,7 +785,7 @@ export default {
       this.$parent.finalCategories.shift();
     }
 
-        this.addLineBreaksToMealTitles();
+    this.addLineBreaksToMealTitles();
   },
   watch: {
     subscriptions: function() {
@@ -1251,6 +1251,7 @@ export default {
           meal.title = meal.title.replace(/(\r\n|\n|\r)/gm, "<br />");
         });
       });
+    }
   }
 };
 </script>
