@@ -24,6 +24,14 @@
       ></i>
     </div>
     <div :class="shoppingCartClass" style="overflow-y: auto">
+      <b-alert
+        v-if="bag.length == 0"
+        variant="secondary"
+        show
+        class="d-flex d-center"
+      >
+        <span class="small strong">Please add items to your bag.</span>
+      </b-alert>
       <ul class="list-group">
         <li
           v-for="(groupItem, indexGroup) in groupBag"

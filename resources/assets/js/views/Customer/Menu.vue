@@ -499,7 +499,7 @@ export default {
       adjustMealModal_components: null,
       adjustMealModal_addons: null,
       adjustMealModal_index: 0,
-      showBagClass: "shopping-cart show-right bag-area d-none",
+      showBagClass: "shopping-cart show-right bag-area",
       showFilterClass: "shopping-cart hidden-left bag-area",
       search: "",
       showAuthModal: false,
@@ -923,9 +923,9 @@ export default {
     } else {
     }
 
-    if (this.bag.length > 0 || this.subscriptionId !== undefined) {
-      this.showBagClass = "shopping-cart show-right bag-area";
-    } else this.showBagClass = "shopping-cart hidden-right bag-area";
+    // if (this.bag.length > 0 || this.subscriptionId !== undefined) {
+    //   this.showBagClass = "shopping-cart show-right bag-area";
+    // } else this.showBagClass = "shopping-cart hidden-right bag-area";
 
     if (this.storeView || this.$route.params.storeView) {
       /* Sidebar Check */
