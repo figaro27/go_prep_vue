@@ -51,7 +51,7 @@
               src="/images/nutrition-thumb.jpg"
               v-if="showNutritionFacts"
               @click="showcaseNutrition = true"
-              class="pt-1"
+              class="pt-2"
             />
           </div>
         </div>
