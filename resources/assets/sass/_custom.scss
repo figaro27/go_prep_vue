@@ -1650,3 +1650,9 @@ body.forgotresettoken {
 .d-center {
   justify-content: center !important;
 }
+
+.checkoutArea li input,
+.delivery-select {
+  -webkit-box-shadow: 0 0 1px #6e6e6e;
+  box-shadow: 0 0 1px #6e6e6e;
+}
