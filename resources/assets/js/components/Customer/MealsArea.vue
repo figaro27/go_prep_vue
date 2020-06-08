@@ -203,7 +203,7 @@
                 <div :class="cardBody">
                   <div class="item-wrap">
                     <div class="title d-md-none">
-                      <p v-html="meal.title"></p>
+                      <p v-html="getMealTitle(meal.title)"></p>
                     </div>
 
                     <div class="image">
@@ -223,61 +223,47 @@
 
                     <div class="meta">
                       <div class="title d-none d-md-block center-text pt-2">
-                        <p v-html="meal.title"></p>
+                        <p
+                          v-html="getMealTitle(meal.title)"
+                          style="line-height:normal"
+                        ></p>
                       </div>
                       <!-- <div class="title d-none d-md-block center-text">
                         <strong>{{ format.money(meal.price, storeSettings.currency) }}</strong>
                       </div> -->
-                      <div
-                        class="title macrosArea"
-                        v-if="meal.macros && storeSettings.showMacros"
-                      >
-                        <div class="row">
-                          <div class="col-12 col-md-3">
-                            <div class="row">
-                              <p class="col-6 col-md-12">
-                                Calories<br />
-                                <span class="normal-weight">{{
-                                  meal.macros.calories
-                                }}</span>
-                              </p>
-                            </div>
-                          </div>
-                          <div class="col-12 col-md-3">
-                            <div class="row">
-                              <p class="col-6 col-md-12">
-                                Carbs<br />
-                                <span class="normal-weight">{{
-                                  meal.macros.carbs
-                                }}</span>
-                              </p>
-                            </div>
-                          </div>
-                          <div class="col-12 col-md-3">
-                            <div class="row">
-                              <p class="col-6 col-md-12">
-                                Protein<br />
-                                <span class="normal-weight">{{
-                                  meal.macros.protein
-                                }}</span>
-                              </p>
-                            </div>
-                          </div>
-                          <div class="col-12 col-md-3">
-                            <div class="row">
-                              <p class="col-6 col-md-12">
-                                Fat<br />
-                                <span class="normal-weight">{{
-                                  meal.macros.fat
-                                }}</span>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
 
                       <div class="description d-md-none">
                         {{ truncate(meal.description, 150, "...") }}
+                      </div>
+
+                      <div
+                        :class="macroClass"
+                        v-if="meal.macros && storeSettings.showMacros"
+                      >
+                        <div class="d-inline mr-4">
+                          <p>
+                            Calories<br />
+                            <span>{{ meal.macros.calories }}</span>
+                          </p>
+                        </div>
+                        <div class="d-inline mr-4">
+                          <p>
+                            Carbs<br />
+                            <span>{{ meal.macros.carbs }}</span>
+                          </p>
+                        </div>
+                        <div class="d-inline mr-4">
+                          <p>
+                            Protein<br />
+                            <span>{{ meal.macros.protein }}</span>
+                          </p>
+                        </div>
+                        <div class="d-inline">
+                          <p>
+                            Fat<br />
+                            <span>{{ meal.macros.fat }}</span>
+                          </p>
+                        </div>
                       </div>
 
                       <div class="actions">
@@ -645,7 +631,7 @@
                     </div>
 
                     <div class="content-text-wrap">
-                      <p v-html="meal.title"></p>
+                      <p v-html="getMealTitle(meal.title)"></p>
                       <div class="mt-1 content-text">
                         {{ meal.description }}
                       </div>
@@ -657,10 +643,44 @@
                       <div style="flex-basis:85%">
                         <p
                           style="word-break: break-all;"
-                          v-html="meal.title"
+                          v-html="getMealTitle(meal.title)"
                         ></p>
                         <span class="content-text">
                           {{ meal.description }}
+                          <div
+                            class="title"
+                            v-if="meal.macros && storeSettings.showMacros"
+                          >
+                            <div
+                              :class="macroClass"
+                              v-if="meal.macros && storeSettings.showMacros"
+                            >
+                              <div class="d-inline mr-4">
+                                <p>
+                                  Calories<br />
+                                  <span>{{ meal.macros.calories }}</span>
+                                </p>
+                              </div>
+                              <div class="d-inline mr-4">
+                                <p>
+                                  Carbs<br />
+                                  <span>{{ meal.macros.carbs }}</span>
+                                </p>
+                              </div>
+                              <div class="d-inline mr-4">
+                                <p>
+                                  Protein<br />
+                                  <span>{{ meal.macros.protein }}</span>
+                                </p>
+                              </div>
+                              <div class="d-inline">
+                                <p>
+                                  Fat<br />
+                                  <span>{{ meal.macros.fat }}</span>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
                         </span>
                       </div>
                       <div style="flex-basis:15%">
@@ -693,53 +713,6 @@
                       {{ format.money(meal.price, storeSettings.currency) }}
                     </div>
                   </div>!-->
-                </div>
-                <div
-                  class="title"
-                  v-if="meal.macros && storeSettings.showMacros"
-                >
-                  <div class="row">
-                    <div class="col-12 col-md-3">
-                      <div class="row">
-                        <p class="small strong col-6 col-md-12">
-                          Calories
-                        </p>
-                        <p class="small col-6 col-md-12">
-                          {{ meal.macros.calories }}
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                      <div class="row">
-                        <p class="small strong col-6 col-md-12">
-                          Carbs
-                        </p>
-                        <p class="small col-6 col-md-12">
-                          {{ meal.macros.carbs }}
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                      <div class="row">
-                        <p class="small strong col-6 col-md-12">
-                          Protein
-                        </p>
-                        <p class="small col-6 col-md-12">
-                          {{ meal.macros.protein }}
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                      <div class="row">
-                        <p class="small strong col-6 col-md-12">
-                          Fat
-                        </p>
-                        <p class="small col-6 col-md-12">
-                          {{ meal.macros.fat }}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -784,8 +757,6 @@ export default {
     if (this.meals[0].meals.length === 0) {
       this.$parent.finalCategories.shift();
     }
-
-    this.addLineBreaksToMealTitles();
   },
   watch: {
     subscriptions: function() {
@@ -822,6 +793,20 @@ export default {
       loggedIn: "loggedIn",
       totalBagPricePreFees: "totalBagPricePreFees"
     }),
+    macroClass() {
+      if (this.store.settings.menuStyle === "text") {
+        return "title macrosArea d-flex pt-2";
+      }
+      const width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+      if (width > 1150) {
+        return "title macrosArea d-flex d-center";
+      } else {
+        return "title macrosArea d-flex pt-2";
+      }
+    },
     totalBagQuantity() {
       let quantity = 0;
       this.bag.forEach(item => {
@@ -1245,12 +1230,8 @@ export default {
         return conditionAmount - this.user.orderCount;
       }
     },
-    addLineBreaksToMealTitles() {
-      this.meals.forEach(category => {
-        category.meals.forEach(meal => {
-          meal.title = meal.title.replace(/(\r\n|\n|\r)/gm, "<br />");
-        });
-      });
+    getMealTitle(title) {
+      return title.replace(/(\r\n|\n|\r)/gm, "<br />");
     }
   }
 };
