@@ -54,12 +54,12 @@
             :src="meal.image.url_thumb"
             style="width:70px;height:70px"
             v-if="showNutritionFacts"
-            @mouseover="showcaseNutrition = false"
+            @click="showcaseNutrition = false"
           />
           <img
             src="/images/nutrition-thumb.jpg"
             v-if="showNutritionFacts"
-            @mouseover="showcaseNutrition = true"
+            @click="showcaseNutrition = true"
           />
         </div>
       </div>
