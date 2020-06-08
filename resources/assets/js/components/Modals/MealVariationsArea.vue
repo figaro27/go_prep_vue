@@ -1,6 +1,6 @@
 <template>
   <div v-if="meal">
-    <b-row v-if="components.length && sizeCheck" class="my-3">
+    <b-row v-if="components.length && sizeCheck" class="my-1 pt-3">
       <b-col>
         <div
           v-for="component in components"
@@ -43,7 +43,7 @@
       </b-col>
     </b-row>
 
-    <b-row v-if="mealAddons.length" class="my-3">
+    <b-row v-if="mealAddons.length" class="my-1">
       <b-col>
         <h6>Add-ons</h6>
         <b-form-group label>
@@ -56,6 +56,22 @@
         </b-form-group>
       </b-col>
     </b-row>
+
+    <div v-if="fromMealsArea" class="d-flex d-center">
+      <h4 class="mb-3 dark-gray ">
+        {{ format.money(mealVariationPrice, storeSettings.currency) }}
+      </h4>
+    </div>
+    <div v-if="fromMealsArea" class="d-flex d-center">
+      <button
+        type="button"
+        :style="brandColor"
+        class="btn btn-lg white-text d-inline mb-2"
+        @click="addMeal(meal)"
+      >
+        <h6 class="strong pt-1">Add To Bag</h6>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -64,22 +80,26 @@ import modal from "../../mixins/modal";
 import format from "../../lib/format";
 import { required, minLength } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
+import MenuBag from "../../mixins/menuBag";
 
 export default {
   props: {
     meal: {},
     sizeId: null,
-    invalid: false
+    fromMealsArea: false,
+    mealVariationPrice: null,
+    totalAddonPrice: null,
+    totalComponentPrice: null
   },
-  mixins: [modal],
+  mixins: [modal, MenuBag],
   data() {
     return {
-      test: {},
       mealPackage: false,
       size: null,
       choices: {},
       addons: [],
-      validated: false
+      validated: false,
+      invalid: false
     };
   },
   mounted() {
@@ -97,9 +117,28 @@ export default {
     } else {
       this.$parent.invalidCheck = false;
     }
+    this.getMealVariationPrice();
+    if (!this.fromMealsArea) {
+      this.totalAddonPrice = 0;
+      this.totalComponentPrice = 0;
+    }
   },
   computed: {
-    ...mapGetters(["storeSettings"]),
+    ...mapGetters({
+      storeSettings: "storeSettings",
+      getMeal: "viewedStoreMeal"
+    }),
+    hasVariations() {
+      if (this.meal.components && this.meal.components.length > 0) return true;
+      else return false;
+    },
+    brandColor() {
+      if (this.storeSettings) {
+        let style = "background-color:";
+        style += this.storeSettings.color;
+        return style;
+      }
+    },
     sizeCriteria() {
       return !this.mealPackage
         ? { meal_size_id: this.sizeId }
@@ -226,7 +265,10 @@ export default {
     },
     getComponentLabel(component) {
       let qty = "";
-      if (component.minimum === component.maximum) {
+      if (
+        component.minimum === component.maximum &&
+        this.choices[component.id]
+      ) {
         qty = `${component.minimum -
           this.choices[component.id].length} Remaining`;
       } else {
@@ -236,30 +278,149 @@ export default {
       return `${component.title} - ${qty}`;
     },
     setChoices() {
-      if (this.sizeCheck) {
-        this.$parent.invalidCheck = this.$v.$invalid;
-      } else {
-        this.$parent.invalidCheck = false;
-        this.$parent.invalid = false;
+      if (!this.fromMealsArea) {
+        if (this.sizeCheck) {
+          this.$parent.invalidCheck = this.$v.$invalid;
+        } else {
+          this.$parent.invalidCheck = false;
+          this.$parent.invalid = false;
+        }
+
+        this.$parent.components = this.choices;
+        this.$parent.addons = this.addons;
+        this.$parent.totalAddonPrice = this.totalAddonPrice;
+        this.$parent.totalComponentPrice = this.totalComponentPrice;
+
+        this.$parent.getMealVariationPrice();
+        this.$parent.selectedComponentOptions = [];
+        this.$parent.selectedAddons = [];
+        this.$parent.getComponentIngredients();
+        this.$parent.getAddonIngredients();
+        this.$parent.refreshNutritionFacts();
+
+        if (this.fromMealsArea) {
+          this.getMealVariationPrice();
+        }
       }
-
-      this.$parent.components = this.choices;
-      this.$parent.addons = this.addons;
-      this.$parent.totalAddonPrice = this.totalAddonPrice;
-
-      this.$parent.totalComponentPrice = this.totalComponentPrice;
-
-      this.$parent.getMealVariationPrice();
-      this.$parent.selectedComponentOptions = [];
-      this.$parent.selectedAddons = [];
-      this.$parent.getComponentIngredients();
-      this.$parent.getAddonIngredients();
-      this.$parent.refreshNutritionFacts();
     },
     resetVariations() {
       //this.choices = {};
       this.addons = [];
       this.initializeChoiceCheckbox();
+    },
+    isAdjustOrder() {
+      if (
+        this.adjustOrder ||
+        this.$route.params.adjustOrder ||
+        this.$route.name == "store-adjust-order"
+      ) {
+        return true;
+      }
+      return false;
+    },
+    isManualOrder() {
+      if (
+        this.manualOrder ||
+        this.$route.params.manualOrder ||
+        this.$route.name == "store-manual-order"
+      ) {
+        return true;
+      }
+      return false;
+    },
+    getMealVariationPrice() {
+      let selectedMealSize = null;
+
+      if (this.sizeId) {
+        selectedMealSize = _.find(this.meal.sizes, size => {
+          return size.id === this.sizeId;
+        });
+      }
+
+      if (selectedMealSize) {
+        this.mealVariationPrice =
+          selectedMealSize.price +
+          this.totalAddonPrice +
+          this.totalComponentPrice;
+      } else {
+        this.mealVariationPrice =
+          this.meal.price + this.totalAddonPrice + this.totalComponentPrice;
+      }
+    },
+    getPackageBagItems() {
+      const items = [];
+      const bag = this.bag;
+
+      if (bag) {
+        bag.forEach(item => {
+          if (item.meal_package) {
+            if (!this.isMultipleDelivery) {
+              items.push(item);
+            } else {
+              if (
+                item.delivery_day &&
+                this.store.delivery_day &&
+                item.delivery_day.id == this.store.delivery_day.id
+              ) {
+                items.push(item);
+              }
+            }
+          }
+        });
+      }
+
+      return items;
+    },
+    addMeal(meal) {
+      if (this.$v.$invalid && this.hasVariations) {
+        this.invalid = true;
+        this.$toastr.w("Please select the minimum/maximum required choices.");
+        return;
+      }
+
+      let size = this.sizeId;
+
+      if (this.isAdjustOrder() || this.isManualOrder()) {
+        const items = this.getPackageBagItems();
+        if (items && items.length > 0) {
+          this.$parent.showAdjustModal(
+            meal,
+            size,
+            this.choices,
+            this.addons,
+            this.special_instructions,
+            items
+          );
+          return;
+        } else {
+          this.addOne(
+            meal,
+            false,
+            size,
+            this.choices,
+            this.addons,
+            this.special_instructions
+          );
+        }
+      } else {
+        this.addOne(
+          meal,
+          false,
+          size,
+          this.choices,
+          this.addons,
+          this.special_instructions
+        );
+      }
+
+      this.sizeId = null;
+      this.choices = null;
+      this.addons = [];
+      this.defaultMealSize = null;
+      this.special_instructions = null;
+      this.invalid = false;
+      this.showcaseNutrition = false;
+      this.$emit("closeVariationsModal");
     }
   }
 };

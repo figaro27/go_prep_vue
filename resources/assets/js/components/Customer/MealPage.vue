@@ -563,9 +563,7 @@ export default {
       if (this.invalidCheck && this.hasVariations) {
         this.invalid = true;
         this.scrollToValidations();
-        this.$toastr.w(
-          "Please select the minimum/maximum required meal variations."
-        );
+        this.$toastr.w("Please select the minimum/maximum required choices.");
         return;
       }
 
