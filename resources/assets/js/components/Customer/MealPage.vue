@@ -1,7 +1,7 @@
 <template>
   <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
     <div class="row">
-      <div :class="imageClass">
+      <div class="col-md-6">
         <button
           type="button"
           class="btn btn-lg btn-secondary d-inline mb-2 width-100 mr-2"
@@ -18,14 +18,21 @@
         >
           <h6 class="strong pt-1">Add To Bag</h6>
         </button>
+      </div>
+    </div>
+    <div class="row">
+      <div :class="imageClass">
         <thumbnail
-          v-if="meal.image != null && meal.image.url"
+          v-if="meal.image != null && meal.image.url && !showcaseNutrition"
           :src="meal.image.url"
           :aspect="false"
           width="100%"
           @click="$emit('show-gallery', getMealGallery(meal), 0)"
           class="mealPageImage"
         ></thumbnail>
+        <div style="width:323px" v-if="showcaseNutrition">
+          <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
+        </div>
 
         <slick ref="mealGallery" :options="slickOptions">
           <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
@@ -42,13 +49,20 @@
             </div>
           </div>
         </slick>
-        Test
+        <div v-if="!smallScreen">
+          <img
+            src="/images/nutrition-thumb.jpg"
+            v-if="showNutritionFacts"
+            @mouseover="switchNutrition(true)"
+          />
+          <img
+            :src="meal.image.url_thumb"
+            v-if="showNutritionFacts"
+            @mouseover="switchNutrition(false)"
+          />
+        </div>
       </div>
-      <div
-        v-if="
-          smallScreen && storeSettings.showNutrition && !blankNutritionFacts
-        "
-      >
+      <div v-if="smallScreen && showNutritionFacts">
         <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
       </div>
 
@@ -193,10 +207,8 @@
                 storeSettings.showNutrition &&
                 !blankNutritionFacts
             "
-          >
-            <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
-          </div>
-          <div :class="variationsClass">
+          ></div>
+          <div class="col-md-12">
             <div>
               <b-form-radio-group
                 buttons
@@ -277,7 +289,8 @@ export default {
       totalAddonPrice: null,
       totalComponentPrice: null,
       selectedComponentOptions: [],
-      selectedAddons: []
+      selectedAddons: [],
+      showcaseNutrition: false
     };
   },
   components: {
@@ -319,6 +332,11 @@ export default {
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings"
     }),
+    showNutritionFacts() {
+      if (this.storeSettings.showNutrition && !this.blankNutritionFacts) {
+        return true;
+      } else return false;
+    },
     mealIngredients() {
       let ingredients = "";
       this.meal.ingredients.forEach(ingredient => {
@@ -332,17 +350,6 @@ export default {
         return "col-md-6";
       } else {
         return "hide";
-      }
-    },
-    variationsClass() {
-      const width =
-        window.innerWidth ||
-        document.documentElement.clientWidth ||
-        document.body.clientWidth;
-      if (width < 1150) {
-        return "col-md-12";
-      } else {
-        return "col-md-7";
       }
     },
     smallScreen() {
@@ -572,6 +579,7 @@ export default {
       this.defaultMealSize = null;
       this.special_instructions = null;
       this.invalid = false;
+      this.showcaseNutrition = false;
     },
     back() {
       let viewedMeal = {};
@@ -598,6 +606,7 @@ export default {
       this.$parent.mealPageView = false;
       this.mealSizePrice = null;
       this.invalidCheck = false;
+      this.showcaseNutrition = false;
     },
     getMealVariationPrice() {
       let selectedMealSize = null;
@@ -724,6 +733,13 @@ export default {
       let element = document.getElementById("meal-variations-area");
       element.scrollIntoView();
       window.scrollBy(0, -130);
+    },
+    switchNutrition(condition) {
+      if (condition) {
+        this.showcaseNutrition = true;
+      } else {
+        this.showcaseNutrition = false;
+      }
     }
   }
 };
