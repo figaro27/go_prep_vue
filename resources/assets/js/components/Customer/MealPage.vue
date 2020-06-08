@@ -4,7 +4,7 @@
       <div :class="imageClass">
         <button
           type="button"
-          class="btn btn-lg btn-secondary d-inline width-100 pr-2"
+          class="btn btn-lg btn-secondary d-inline mb-2 width-100 pr-2"
           @click="back"
         >
           <h6 class="strong pt-1 dark-gray">Back</h6>
@@ -12,7 +12,7 @@
         <button
           type="button"
           :style="brandColor"
-          class="btn btn-lg white-text d-inline"
+          class="btn btn-lg white-text d-inline mb-2"
           @click="addMeal(meal)"
           v-if="smallScreen"
         >
@@ -228,7 +228,7 @@
               <button
                 type="button"
                 :style="brandColor"
-                class="btn btn-lg white-text d-inline"
+                class="btn btn-lg white-text mb-2 d-inline"
                 @click="addMeal(meal)"
               >
                 <h6 class="strong pt-1">Add To Bag</h6>
