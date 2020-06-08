@@ -54,12 +54,12 @@
             :src="meal.image.url_thumb"
             style="width:70px;height:70px"
             v-if="showNutritionFacts"
-            @mouseover="switchNutrition(false)"
+            @mouseover="showcaseNutrition = false"
           />
           <img
             src="/images/nutrition-thumb.jpg"
             v-if="showNutritionFacts"
-            @mouseover="switchNutrition(true)"
+            @mouseover="showcaseNutrition = true"
           />
         </div>
       </div>
@@ -182,6 +182,24 @@
         <div class="meal-page-text">
           <p v-if="meal.expirationDays">
             Consume within {{ meal.expirationDays }} days.
+          </p>
+        </div>
+        <div v-if="!smallScreen">
+          <p
+            class="font-12 strong"
+            :style="brandColorText"
+            @click="showcaseNutrition = !showcaseNutrition"
+            v-if="!showcaseNutrition"
+          >
+            Show Nutrition
+          </p>
+          <p
+            class="font-12 strong"
+            :style="brandColorText"
+            @click="showcaseNutrition = !showcaseNutrition"
+            v-if="showcaseNutrition"
+          >
+            Show Meal
           </p>
         </div>
         <div>
@@ -367,6 +385,13 @@ export default {
     brandColor() {
       if (this.store.settings) {
         let style = "background-color:";
+        style += this.store.settings.color;
+        return style;
+      }
+    },
+    brandColorText() {
+      if (this.store.settings) {
+        let style = "color:";
         style += this.store.settings.color;
         return style;
       }
@@ -734,13 +759,6 @@ export default {
       let element = document.getElementById("meal-variations-area");
       element.scrollIntoView();
       window.scrollBy(0, -130);
-    },
-    switchNutrition(condition) {
-      if (condition) {
-        this.showcaseNutrition = true;
-      } else {
-        this.showcaseNutrition = false;
-      }
     }
   }
 };
