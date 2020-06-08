@@ -192,7 +192,7 @@
             Consume within {{ meal.expirationDays }} days.
           </p>
         </div>
-        <div v-if="!smallScreen">
+        <div v-if="!smallScreen && showNutritionFacts">
           <p
             class="font-12 strong"
             :style="brandColorText"
