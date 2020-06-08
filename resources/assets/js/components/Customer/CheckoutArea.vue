@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="checkoutArea">
     <ul class="list-group">
       <li class="bag-item" v-if="activePromotions.length > 0">
         <div
@@ -185,7 +185,10 @@
             <strong>Billing Period:</strong>
           </div>
           <div class="d-inline pl-3">
-            <b-select v-model="subscriptionInterval" class="mb-1">
+            <b-select
+              v-model="subscriptionInterval"
+              class="mb-1 delivery-select"
+            >
               <option value="week">Weekly</option>
               <option value="month">Monthly</option>
             </b-select>
