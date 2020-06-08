@@ -1103,7 +1103,7 @@
                   <span class="mr-1 mt-2">Meal Expiration</span>
                   <img
                     v-b-popover.hover="
-                      'Set expiration periods on your meals and show expiration dates on your labels.'
+                      'Set expiration periods on your meals and show expiration dates on your menu & labels.'
                     "
                     title="Meal Expiration"
                     src="/images/store/popover.png"
