@@ -51,14 +51,15 @@
         </slick>
         <div v-if="!smallScreen">
           <img
+            :src="meal.image.url_thumb"
+            style="width:70px;height:70px"
+            v-if="showNutritionFacts"
+            @mouseover="switchNutrition(false)"
+          />
+          <img
             src="/images/nutrition-thumb.jpg"
             v-if="showNutritionFacts"
             @mouseover="switchNutrition(true)"
-          />
-          <img
-            :src="meal.image.url_thumb"
-            v-if="showNutritionFacts"
-            @mouseover="switchNutrition(false)"
           />
         </div>
       </div>
