@@ -228,7 +228,7 @@
               <button
                 type="button"
                 :style="brandColor"
-                class="btn btn-lg white-text mb-2 d-inline"
+                class="btn btn-lg white-text mb-2 d-inline pl-2"
                 @click="addMeal(meal)"
               >
                 <h6 class="strong pt-1">Add To Bag</h6>
