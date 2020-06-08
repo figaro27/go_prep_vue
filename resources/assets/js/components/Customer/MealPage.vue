@@ -12,7 +12,7 @@
         <button
           type="button"
           :style="brandColor"
-          class="btn btn-md white-text d-inline mr-2"
+          class="btn btn-lg white-text d-inline mr-2"
           @click="addMeal(meal)"
           v-if="smallScreen"
         >
@@ -217,6 +217,14 @@
               ></meal-variations-area>
             </div>
             <div class="d-flex">
+              <button
+                v-if="smallScreen"
+                type="button"
+                class="btn btn-lg btn-secondary d-inline mb-2 width-100 pr-2"
+                @click="back"
+              >
+                <h6 class="strong pt-1 dark-gray">Back</h6>
+              </button>
               <button
                 type="button"
                 :style="brandColor"
