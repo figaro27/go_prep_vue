@@ -4,7 +4,7 @@
       <div :class="imageClass">
         <button
           type="button"
-          class="btn btn-lg btn-secondary d-inline mb-2 width-100 pr-2"
+          class="btn btn-lg btn-secondary d-inline mb-2 width-100 mr-2"
           @click="back"
         >
           <h6 class="strong pt-1 dark-gray">Back</h6>
