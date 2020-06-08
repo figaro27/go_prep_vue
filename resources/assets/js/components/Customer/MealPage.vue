@@ -220,7 +220,7 @@
             <div class="d-flex">
               <button
                 type="button"
-                class="btn btn-lg btn-secondary d-inline mb-2 width-100 pr-2"
+                class="btn btn-lg btn-secondary d-inline mb-2 width-100 mr-2"
                 @click="back"
                 v-if="smallScreen"
               >
