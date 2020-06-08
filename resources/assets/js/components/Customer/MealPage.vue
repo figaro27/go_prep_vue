@@ -1,23 +1,42 @@
 <template>
-  <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
+  <div
+    :class="mealPageClass"
+    v-if="showPage"
+    style="min-height: 100%;margin-bottom:-40px"
+  >
     <div class="row">
-      <div class="col-md-6">
-        <button
-          type="button"
-          class="btn btn-lg btn-secondary d-inline mb-2 width-100 mr-2"
-          @click="back"
-        >
-          <h6 class="strong pt-1 dark-gray">Back</h6>
-        </button>
-        <button
-          type="button"
-          :style="brandColor"
-          class="btn btn-lg white-text d-inline mb-2"
-          @click="addMeal(meal)"
-          v-if="smallScreen"
-        >
-          <h6 class="strong pt-1">Add To Bag</h6>
-        </button>
+      <div class="col-md-6 d-flex pb-3">
+        <div v-if="!smallScreen" class="mr-2 d-inline">
+          <img
+            :src="meal.image.url_thumb"
+            style="width:70px;height:70px"
+            v-if="showNutritionFacts"
+            @click="showcaseNutrition = false"
+          />
+          <img
+            src="/images/nutrition-thumb.jpg"
+            v-if="showNutritionFacts"
+            @click="showcaseNutrition = true"
+          />
+        </div>
+        <div>
+          <button
+            type="button"
+            class="btn btn-lg btn-secondary d-inline mb-2 width-100 mr-2"
+            @click="back"
+          >
+            <h6 class="strong pt-1 dark-gray">Back</h6>
+          </button>
+          <button
+            type="button"
+            :style="brandColor"
+            class="btn btn-lg white-text d-inline mb-2"
+            @click="addMeal(meal)"
+            v-if="smallScreen"
+          >
+            <h6 class="strong pt-1">Add To Bag</h6>
+          </button>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -34,7 +53,7 @@
           <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
         </div>
 
-        <slick ref="mealGallery" :options="slickOptions">
+        <slick ref="mealGallery" :options="slickOptions" class="pt-1">
           <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
             <div style="image">
               <thumbnail
@@ -49,19 +68,6 @@
             </div>
           </div>
         </slick>
-        <div v-if="!smallScreen">
-          <img
-            :src="meal.image.url_thumb"
-            style="width:70px;height:70px"
-            v-if="showNutritionFacts"
-            @click="showcaseNutrition = false"
-          />
-          <img
-            src="/images/nutrition-thumb.jpg"
-            v-if="showNutritionFacts"
-            @click="showcaseNutrition = true"
-          />
-        </div>
       </div>
       <div v-if="smallScreen && showNutritionFacts">
         <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
