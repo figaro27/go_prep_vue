@@ -254,25 +254,25 @@
                         :class="macroClass"
                         v-if="meal.macros && storeSettings.showMacros"
                       >
-                        <div :class="macroItemClass">
+                        <div class="d-inline mr-4">
                           <p>
                             {{ getMacros().calories }}<br />
                             <span>{{ meal.macros.calories }}</span>
                           </p>
                         </div>
-                        <div :class="macroItemClass">
+                        <div class="d-inline mr-4">
                           <p>
                             {{ getMacros().carbs }}<br />
                             <span>{{ meal.macros.carbs }}</span>
                           </p>
                         </div>
-                        <div :class="macroItemClass">
+                        <div class="d-inline mr-4">
                           <p>
                             {{ getMacros().protein }}<br />
                             <span>{{ meal.macros.protein }}</span>
                           </p>
                         </div>
-                        <div :class="macroItemClass">
+                        <div class="d-inline mr-4">
                           <p>
                             {{ getMacros().fat }}<br />
                             <span>{{ meal.macros.fat }}</span>
@@ -824,13 +824,6 @@ export default {
         return "title macrosArea d-flex d-center";
       } else {
         return "title macrosArea d-flex pt-2";
-      }
-    },
-    macroItemClass() {
-      if (!this.smallScreen) {
-        return "d-inline mr-4";
-      } else {
-        return "d-inline mr-1";
       }
     },
     totalBagQuantity() {
