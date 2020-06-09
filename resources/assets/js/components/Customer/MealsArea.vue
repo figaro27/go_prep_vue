@@ -204,6 +204,13 @@
                   <div class="item-wrap">
                     <div class="title d-md-none">
                       <p v-html="getMealTitle(meal.title)"></p>
+                      <strong
+                        v-if="store.id === 148"
+                        style="position:relative;bottom:10px"
+                        >{{
+                          format.money(meal.price, storeSettings.currency)
+                        }}</strong
+                      >
                     </div>
 
                     <div class="image">
@@ -247,27 +254,27 @@
                         :class="macroClass"
                         v-if="meal.macros && storeSettings.showMacros"
                       >
-                        <div class="d-inline mr-4">
+                        <div :class="macroItemClass">
                           <p>
-                            Calories<br />
+                            {{ getMacros().calories }}<br />
                             <span>{{ meal.macros.calories }}</span>
                           </p>
                         </div>
-                        <div class="d-inline mr-4">
+                        <div :class="macroItemClass">
                           <p>
-                            Carbs<br />
+                            {{ getMacros().carbs }}<br />
                             <span>{{ meal.macros.carbs }}</span>
                           </p>
                         </div>
-                        <div class="d-inline mr-4">
+                        <div :class="macroItemClass">
                           <p>
-                            Protein<br />
+                            {{ getMacros().protein }}<br />
                             <span>{{ meal.macros.protein }}</span>
                           </p>
                         </div>
-                        <div class="d-inline">
+                        <div :class="macroItemClass">
                           <p>
-                            Fat<br />
+                            {{ getMacros().fat }}<br />
                             <span>{{ meal.macros.fat }}</span>
                           </p>
                         </div>
@@ -798,18 +805,32 @@ export default {
       loggedIn: "loggedIn",
       totalBagPricePreFees: "totalBagPricePreFees"
     }),
-    macroClass() {
-      if (this.store.settings.menuStyle === "text") {
-        return "title macrosArea d-flex pt-2";
-      }
+    smallScreen() {
       const width =
         window.innerWidth ||
         document.documentElement.clientWidth ||
         document.body.clientWidth;
-      if (width > 1150) {
+      if (width < 1150) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    macroClass() {
+      if (this.store.settings.menuStyle === "text") {
+        return "title macrosArea d-flex pt-2";
+      }
+      if (!this.smallScreen) {
         return "title macrosArea d-flex d-center";
       } else {
         return "title macrosArea d-flex pt-2";
+      }
+    },
+    macroItemClass() {
+      if (!this.smallScreen) {
+        return "d-inline mr-4";
+      } else {
+        return "d-inline mr-1";
       }
     },
     totalBagQuantity() {
@@ -1242,6 +1263,22 @@ export default {
     },
     getMealTitle(title) {
       return title.replace(/(\r\n|\n|\r)/gm, "<br />");
+    },
+    getMacros() {
+      let macros = {};
+      if (!this.smallScreen) {
+        macros.calories = "Calories";
+        macros.carbs = "Carbs";
+        macros.protein = "Protein";
+        macros.fat = "Fat";
+      } else {
+        macros.calories = "Cal";
+        macros.carbs = "C";
+        macros.protein = "P";
+        macros.fat = "F";
+      }
+
+      return macros;
     }
   }
 };
