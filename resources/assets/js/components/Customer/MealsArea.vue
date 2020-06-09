@@ -1153,7 +1153,7 @@ export default {
     },
     hasVariations(meal, size) {
       if (size == null) {
-        if (meal.hasVariations) {
+        if (meal.components.length > 0 || meal.addons.length > 0) {
           return true;
         }
       }
