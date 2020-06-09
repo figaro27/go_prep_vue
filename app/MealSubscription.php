@@ -13,8 +13,7 @@ class MealSubscription extends Pivot
         'fullTitle',
         'short_title',
         'base_size',
-        'unit_price',
-        'price'
+        'unit_price'
     ];
     protected $casts = [
         'delivery_date' => 'date:Y-m-d'
@@ -146,39 +145,35 @@ class MealSubscription extends Pivot
 
     public function getUnitPriceAttribute()
     {
-        $price = $this->meal->price;
+        return $this->price / $this->quantity;
+        // $price = $this->meal->price;
 
-        if (
-            $this->meal->has('sizes') &&
-            $this->meal_size_id &&
-            $this->meal_size
-        ) {
-            $price = $this->meal_size->price;
-        }
+        // if (
+        //     $this->meal->has('sizes') &&
+        //     $this->meal_size_id &&
+        //     $this->meal_size
+        // ) {
+        //     $price = $this->meal_size->price;
+        // }
 
-        if ($this->meal->has('components') && $this->components) {
-            foreach ($this->components as $component) {
-                if (
-                    isset($component->option) &&
-                    $component->option != null &&
-                    isset($component->option->price)
-                ) {
-                    $price += $component->option->price;
-                }
-            }
-        }
-        if ($this->meal->has('addons') && $this->addons) {
-            foreach ($this->addons as $addon) {
-                $price += $addon->addon->price;
-            }
-        }
+        // if ($this->meal->has('components') && $this->components) {
+        //     foreach ($this->components as $component) {
+        //         if (
+        //             isset($component->option) &&
+        //             $component->option != null &&
+        //             isset($component->option->price)
+        //         ) {
+        //             $price += $component->option->price;
+        //         }
+        //     }
+        // }
+        // if ($this->meal->has('addons') && $this->addons) {
+        //     foreach ($this->addons as $addon) {
+        //         $price += $addon->addon->price;
+        //     }
+        // }
 
-        return $price;
-    }
-
-    public function getPriceAttribute()
-    {
-        return $this->unit_price * $this->quantity;
+        // return $price;
     }
 
     public function getBaseSizeAttribute()

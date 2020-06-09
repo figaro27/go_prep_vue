@@ -542,70 +542,71 @@ const mutations = {
     item.customTitle = custom.title;
     item.customSize = custom.size;
 
-    /* Adjustments */
-    let price = item.size ? item.size.price : item.meal.price;
-    if (item.components) {
-      _.forEach(item.components, (choices, componentId) => {
-        let component = _.find(item.meal.components, {
-          id: parseInt(componentId)
-        });
+    // /* Adjustments */
+    // let price = item.size ? item.size.price : item.meal.price;
+    // if (item.components) {
+    //   _.forEach(item.components, (choices, componentId) => {
+    //     let component = _.find(item.meal.components, {
+    //       id: parseInt(componentId)
+    //     });
 
-        if (!item.meal_package) {
-          _.forEach(choices, optionId => {
-            let option = component
-              ? _.find(component.options, {
-                  id: parseInt(optionId)
-                })
-              : null;
-            price += option ? option.price : 0;
-          });
-        } else {
-          if (component.price) {
-            price += component.price;
-          }
-          _.forEach(choices, (choices, optionId) => {
-            let option = _.find(component.options, {
-              id: parseInt(optionId)
-            });
-            price += option ? option.price : 0;
+    //     if (!item.meal_package) {
+    //       _.forEach(choices, optionId => {
+    //         let option = component
+    //           ? _.find(component.options, {
+    //               id: parseInt(optionId)
+    //             })
+    //           : null;
+    //         price += option ? option.price : 0;
+    //       });
+    //     } else {
+    //       if (component.price) {
+    //         price += component.price;
+    //       }
+    //       _.forEach(choices, (choices, optionId) => {
+    //         let option = _.find(component.options, {
+    //           id: parseInt(optionId)
+    //         });
+    //         price += option ? option.price : 0;
 
-            _.forEach(choices, choice => {
-              if (choice.price) {
-                price += choice.price;
-              }
-            });
-          });
-        }
-      });
-    } // End If
+    //         _.forEach(choices, choice => {
+    //           if (choice.price) {
+    //             price += choice.price;
+    //           }
+    //         });
+    //       });
+    //     }
+    //   });
+    // } // End If
 
-    if (item.addons) {
-      if (!item.meal_package) {
-        _.forEach(item.addons, addonId => {
-          let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
-          price += addon ? addon.price : 0;
-        });
-      } else {
-        _.forEach(item.addons, (choices, addonId) => {
-          let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
+    // if (item.addons) {
+    //   if (!item.meal_package) {
+    //     _.forEach(item.addons, addonId => {
+    //       let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
+    //       price += addon ? addon.price : 0;
+    //     });
+    //   } else {
+    //     _.forEach(item.addons, (choices, addonId) => {
+    //       let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
 
-          // Add base addon price * choices selected
-          if (addon.price) {
-            price += addon ? addon.price * Math.max(1, choices.length) : 0;
-          }
+    //       // Add base addon price * choices selected
+    //       if (addon.price) {
+    //         price += addon ? addon.price * Math.max(1, choices.length) : 0;
+    //       }
 
-          // Add addon choice prices
-          _.forEach(choices, choice => {
-            if (choice.price) {
-              price += choice ? choice.price : 0;
-            }
-          });
-        });
-      }
-    } // End IF
+    //       // Add addon choice prices
+    //       _.forEach(choices, choice => {
+    //         if (choice.price) {
+    //           price += choice ? choice.price : 0;
+    //         }
+    //       });
+    //     });
+    //   }
+    // } // End IF
 
-    item.original_price = parseFloat(parseFloat(price).toFixed(2));
-    item.price = item.original_price + 0;
+    // item.original_price = parseFloat(parseFloat(price).toFixed(2));
+    // item.price = item.original_price + 0;
+    item.price = meal.price;
     item.delivery_day = delivery_day;
 
     if (isNew) {
@@ -613,7 +614,6 @@ const mutations = {
       item.guid = guid;
     }
     /* Adjustments End */
-
     Vue.set(state.bag.items, guid, item);
   },
   removeFromBagFromAdjust(state, order_bag) {
