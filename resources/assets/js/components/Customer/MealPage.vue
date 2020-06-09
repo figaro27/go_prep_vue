@@ -25,7 +25,11 @@
     <div class="row">
       <div :class="imageClass">
         <div class="d-flex">
-          <div v-if="!smallScreen" style="width:80px" class="pr-2 d-inline">
+          <div
+            v-if="!smallScreen && showNutritionFacts"
+            style="width:80px"
+            class="pr-2 d-inline"
+          >
             <img
               :src="meal.image.url_thumb"
               style="width:60px;height:60px"
