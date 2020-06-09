@@ -159,7 +159,16 @@ export default {
           }
 
           for (let i = 0; i < pkgItem.quantity; i++) {
-            this.addOne(meal_package, true, pkgItem.meal_package_size_id);
+            this.addOne(
+              meal_package,
+              true,
+              pkgItem.meal_package_size_id,
+              null,
+              null,
+              null,
+              null,
+              pkgItem
+            );
           }
         });
       }
