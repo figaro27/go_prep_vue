@@ -24,7 +24,7 @@
     </div>
     <div class="row">
       <div :class="imageClass">
-        <div class="d-flex">
+        <div class="d-flex d-center">
           <div
             v-if="!smallScreen && showNutritionFacts"
             style="width:80px"
@@ -51,11 +51,11 @@
             @click="$emit('show-gallery', getMealGallery(meal), 0)"
             class="mealPageImage d-inline"
           ></thumbnail>
-          <div style="width:323px" v-if="showcaseNutrition">
+          <div style="width:323px;margin:auto" v-if="showcaseNutrition">
             <div
               id="nutritionFacts"
               ref="nutritionFacts"
-              class="pt-2 d-inline"
+              class="d-inline"
             ></div>
           </div>
         </div>
@@ -64,6 +64,7 @@
           :options="slickOptions"
           class="pt-2"
           :style="galleryStyle"
+          v-if="!showcaseNutrition"
         >
           <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
             <div style="image">
