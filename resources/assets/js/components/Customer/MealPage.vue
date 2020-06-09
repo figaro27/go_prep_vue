@@ -25,6 +25,20 @@
     <div class="row">
       <div :class="imageClass">
         <div class="d-flex">
+          <div v-if="!smallScreen" style="width:80px" class="pr-2 d-inline">
+            <img
+              :src="meal.image.url_thumb"
+              style="width:60px;height:60px"
+              v-if="showNutritionFacts"
+              @click="showcaseNutrition = false"
+            />
+            <img
+              src="/images/nutrition-thumb.jpg"
+              v-if="showNutritionFacts"
+              @click="showcaseNutrition = true"
+              class="pt-2"
+            />
+          </div>
           <thumbnail
             v-if="meal.image != null && meal.image.url && !showcaseNutrition"
             :src="meal.image.url"
@@ -39,20 +53,6 @@
               ref="nutritionFacts"
               class="pt-2 d-inline"
             ></div>
-          </div>
-          <div v-if="!smallScreen" style="width:80px" class="pl-2 d-inline">
-            <img
-              :src="meal.image.url_thumb"
-              style="width:60px;height:60px"
-              v-if="showNutritionFacts"
-              @click="showcaseNutrition = false"
-            />
-            <img
-              src="/images/nutrition-thumb.jpg"
-              v-if="showNutritionFacts"
-              @click="showcaseNutrition = true"
-              class="pt-2"
-            />
           </div>
         </div>
         <slick ref="mealGallery" :options="slickOptions" class="pt-1">
