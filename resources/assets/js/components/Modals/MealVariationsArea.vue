@@ -108,7 +108,7 @@ export default {
     } else {
       this.$parent.invalidCheck = false;
     }
-
+    this.getMealVariationPrice();
     this.initializeChoiceCheckbox();
   },
   updated() {
@@ -326,7 +326,6 @@ export default {
     },
     getMealVariationPrice() {
       let selectedMealSize = null;
-
       if (this.sizeId) {
         selectedMealSize = _.find(this.meal.sizes, size => {
           return size.id === this.sizeId;

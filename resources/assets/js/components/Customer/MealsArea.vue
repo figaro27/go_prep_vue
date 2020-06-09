@@ -1151,6 +1151,26 @@ export default {
       }
       this.$parent.search = "";
     },
+    hasVariations(meal, size) {
+      if (size == null) {
+        if (meal.hasVariations) {
+          return true;
+        }
+      }
+      meal.addons.forEach(addon => {
+        if (addon.meal_size_id == size.id) {
+          return true;
+        }
+      });
+      meal.components.forEach(component => {
+        component.options.forEach(option => {
+          if (option.meal_size_id == size.id) {
+            return true;
+          }
+        });
+      });
+      return false;
+    },
     async addMeal(meal, mealPackage, size) {
       if (meal.gift_card) {
         this.addOne(meal);
@@ -1182,10 +1202,7 @@ export default {
           }
         }
 
-        if (
-          (meal.components && meal.components.length > 0) ||
-          (meal.addons && meal.addons.length > 0)
-        ) {
+        if (this.hasVariations(meal, size)) {
           let data = {};
           data.meal = meal;
           data.sizeId = size ? size.id : null;
