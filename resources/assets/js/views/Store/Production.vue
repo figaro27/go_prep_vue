@@ -378,7 +378,7 @@ export default {
         _.forEach(order.line_items_order, lineItem => {
           let item = lineItem;
           if (item) {
-            if (!this.productionGroupIds.includes(meal.production_group_id))
+            if (!this.productionGroupIds.includes(lineItem.production_group_id))
               return null;
             let size = lineItem.size;
             let title = lineItem.title;
