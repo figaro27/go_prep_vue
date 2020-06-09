@@ -64,7 +64,7 @@ class MealSubscription extends Pivot
 
     public function getTitleAttribute()
     {
-        $title = $this->meal->title;
+        $title = $this->customTitle ? $this->customTitle : $this->meal->title;
 
         if ($this->meal_size_id && $this->meal_size) {
             $title = $this->meal_size->full_title;
@@ -95,11 +95,7 @@ class MealSubscription extends Pivot
 
     public function getHtmlTitleAttribute()
     {
-        $title = $this->meal->title;
-
-        if ($this->meal_size_id && $this->meal_size) {
-            $title = $this->meal_size->full_title;
-        }
+        $title = $this->fullTitle;
 
         $hasComponents = count($this->components);
         $hasAddons = count($this->addons);
