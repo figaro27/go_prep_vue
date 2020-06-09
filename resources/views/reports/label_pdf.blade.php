@@ -44,10 +44,10 @@ font-size:10px !important;
         @endif
   <center>
           @if ($reportSettings->lab_logo)
-      <img src="{{$logo}}"/ style="width:32vh;height:32vh;margin-top:8px;margin-bottom:4px">
+      <img src="{{$logo}}"/ style="width:25vh;height:25vh;margin-top:8px;margin-bottom:4px">
       @else
       <!-- Temporary solution as only image tags work to prevent labels being misaligned & cut off. -->
-      <img src="{{$whiteSpace}}"/ style="width:32vh;height:15vh;margin-top:8px;margin-bottom:4px">
+      <img src="{{$whiteSpace}}"/ style="width:25vh;height:15vh;margin-top:8px;margin-bottom:4px">
       @endif
 
       <p class="text-11" style="font-weight:bold"> {!! $mealOrder->html_title !!}
@@ -68,7 +68,7 @@ font-size:10px !important;
   
  @if ($reportSettings->lab_customer)
 
-        <p class="text-11" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
+        <p class="text-13" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
 
         @endif
 @if ($reportSettings->lab_ingredients && strlen($mealOrder['ingredientList']) > 0)
