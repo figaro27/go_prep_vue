@@ -335,21 +335,32 @@ export default {
           if (meal) {
             if (!this.productionGroupIds.includes(meal.production_group_id))
               return null;
-            let size = meal.getSize(item.meal_size_id);
+
+            if (this.productionGroupId != null) {
+              if (meal.production_group_id !== this.productionGroupId)
+                return null;
+            }
+            let size = meal.getSize(item.meal_size_id, item.customSize);
+
             let title = meal.getTitle(
               true,
               size,
               item.components,
               item.addons,
-              item.special_instructions
+              item.special_instructions,
+              true,
+              item.customTitle,
+              item.customSize
             );
+
             let base_title = meal.getTitle(
               true,
               size,
               item.components,
               item.addons,
               item.special_instructions,
-              false
+              false,
+              item.customTitle
             );
 
             if (!mealCounts[title]) {

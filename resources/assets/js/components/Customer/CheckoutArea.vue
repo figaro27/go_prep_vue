@@ -854,8 +854,8 @@
               v-model="customerModel"
               @input="inputCustomer"
             >
-            </v-select>
- -->
+            </v-select> -->
+
             <v-select
               label="text"
               :options="customerOptions"

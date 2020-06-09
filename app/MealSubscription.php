@@ -7,7 +7,14 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class MealSubscription extends Pivot
 {
     protected $table = 'meal_subscriptions';
-    protected $appends = ['title', 'html_title', 'unit_price', 'price'];
+    protected $appends = [
+        'title',
+        'html_title',
+        'fullTitle',
+        'short_title',
+        'base_size',
+        'unit_price'
+    ];
     protected $casts = [
         'delivery_date' => 'date:Y-m-d'
     ];
@@ -57,7 +64,7 @@ class MealSubscription extends Pivot
 
     public function getTitleAttribute()
     {
-        $title = $this->meal->title;
+        $title = $this->customTitle ? $this->customTitle : $this->meal->title;
 
         if ($this->meal_size_id && $this->meal_size) {
             $title = $this->meal_size->full_title;
@@ -88,11 +95,7 @@ class MealSubscription extends Pivot
 
     public function getHtmlTitleAttribute()
     {
-        $title = $this->meal->title;
-
-        if ($this->meal_size_id && $this->meal_size) {
-            $title = $this->meal_size->full_title;
-        }
+        $title = $this->fullTitle;
 
         $hasComponents = count($this->components);
         $hasAddons = count($this->addons);
@@ -138,38 +141,59 @@ class MealSubscription extends Pivot
 
     public function getUnitPriceAttribute()
     {
-        $price = $this->meal->price;
+        return $this->price / $this->quantity;
+        // $price = $this->meal->price;
 
-        if (
-            $this->meal->has('sizes') &&
-            $this->meal_size_id &&
-            $this->meal_size
-        ) {
-            $price = $this->meal_size->price;
-        }
+        // if (
+        //     $this->meal->has('sizes') &&
+        //     $this->meal_size_id &&
+        //     $this->meal_size
+        // ) {
+        //     $price = $this->meal_size->price;
+        // }
 
-        if ($this->meal->has('components') && $this->components) {
-            foreach ($this->components as $component) {
-                if (
-                    isset($component->option) &&
-                    $component->option != null &&
-                    isset($component->option->price)
-                ) {
-                    $price += $component->option->price;
-                }
-            }
-        }
-        if ($this->meal->has('addons') && $this->addons) {
-            foreach ($this->addons as $addon) {
-                $price += $addon->addon->price;
-            }
-        }
+        // if ($this->meal->has('components') && $this->components) {
+        //     foreach ($this->components as $component) {
+        //         if (
+        //             isset($component->option) &&
+        //             $component->option != null &&
+        //             isset($component->option->price)
+        //         ) {
+        //             $price += $component->option->price;
+        //         }
+        //     }
+        // }
+        // if ($this->meal->has('addons') && $this->addons) {
+        //     foreach ($this->addons as $addon) {
+        //         $price += $addon->addon->price;
+        //     }
+        // }
 
-        return $price;
+        // return $price;
     }
 
-    public function getPriceAttribute()
+    public function getBaseSizeAttribute()
     {
-        return $this->unit_price * $this->quantity;
+        if ($this->customSize) {
+            return $this->customSize;
+        }
+        if ($this->meal_size_id && $this->meal_size) {
+            return $this->meal_size->title;
+        } else {
+            if ($this->meal->default_size_title != null) {
+                return $this->meal->default_size_title;
+            }
+        }
+    }
+
+    public function getShortTitleAttribute()
+    {
+        return $this->customTitle ? $this->customTitle : $this->meal->title;
+    }
+
+    public function getFullTitleAttribute()
+    {
+        $size = $this->base_size ? ' - ' . $this->base_size : null;
+        return $this->short_title . $size;
     }
 }

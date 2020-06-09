@@ -221,8 +221,14 @@ $hot = $order->hot;
         @foreach($order->meal_package_items as $i => $mealPackageItem)
         <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
           <td style="text-align:center">{{$mealPackageItem->quantity}}</td>
-          <td>{{ isset($mealPackageItem->meal_package_size) && $mealPackageItem->meal_package_size? $mealPackageItem->meal_package_size->title:$mealPackageItem->meal_package->default_size_title }}</td>
-          <td>{{ $mealPackageItem->meal_package->title }}</td>
+          <td>
+            @if ($mealPackageItem->customSize)
+            {{ $mealPackageItem->customSize }}
+            @else
+            {{ isset($mealPackageItem->meal_package_size) && $mealPackageItem->meal_package_size? $mealPackageItem->meal_package_size->title : $mealPackageItem->meal_package->default_size_title }}
+            @endif
+          </td>
+          <td>{{ $mealPackageItem->customTitle ? $mealPackageItem->customTitle : $mealPackageItem->meal_package->title }}</td>
           <td style="text-align:right;padding-right:12px">{{$currency}}{{number_format($mealPackageItem->price * $mealPackageItem->quantity, 2)}}</td>
         </tr>
 

@@ -30,7 +30,9 @@ class MealOrder extends Pivot
         'addonsFormat',
         'expirationDate',
         'ingredientList',
-        'allergyList'
+        'allergyList',
+        'hasCustomName',
+        'fullTitle'
     ];
     protected $with = ['components', 'addons'];
 
@@ -76,12 +78,12 @@ class MealOrder extends Pivot
 
     public function getShortTitleAttribute()
     {
-        return $this->meal->title;
+        return $this->customTitle ? $this->customTitle : $this->meal->title;
     }
 
     public function getBaseTitleAttribute()
     {
-        $title = $this->meal->title;
+        $title = $this->customTitle ? $this->customTitle : $this->meal->title;
 
         $hasComponents = count($this->components);
         $hasAddons = count($this->addons);
@@ -140,6 +142,9 @@ class MealOrder extends Pivot
 
     public function getBaseSizeAttribute()
     {
+        if ($this->customSize) {
+            return $this->customSize;
+        }
         if ($this->meal_size_id && $this->meal_size) {
             return $this->meal_size->title;
         } else {
@@ -151,7 +156,7 @@ class MealOrder extends Pivot
 
     public function getTitleAttribute()
     {
-        $title = $this->meal->title;
+        $title = $this->customTitle ? $this->customTitle : $this->meal->title;
 
         if ($this->meal_size_id && $this->meal_size) {
             $title = $this->meal_size->full_title;
@@ -236,6 +241,10 @@ class MealOrder extends Pivot
             }
         }
 
+        if ($this->hasCustomName) {
+            $title = $this->customTitle;
+        }
+
         if (count($this->components)) {
             if (
                 isset($component->option) &&
@@ -281,21 +290,22 @@ class MealOrder extends Pivot
 
     public function getHtmlTitleAttribute()
     {
-        $title = $this->meal->title;
+        // $title = $this->meal->title;
 
-        if ($this->meal_size_id && $this->meal_size) {
-            $title = $this->meal_size->full_title;
-        } else {
-            if (
-                $this->meal->default_size_title != 'Medium' &&
-                $this->meal->default_size_title != null
-            ) {
-                $title =
-                    $this->meal->title .
-                    ' - ' .
-                    $this->meal->default_size_title;
-            }
-        }
+        // if ($this->meal_size_id && $this->meal_size) {
+        //     $title = $this->meal_size->full_title;
+        // } else {
+        //     if (
+        //         $this->meal->default_size_title != 'Medium' &&
+        //         $this->meal->default_size_title != null
+        //     ) {
+        //         $title =
+        //             $this->meal->title .
+        //             ' - ' .
+        //             $this->meal->default_size_title;
+        //     }
+        // }
+        $title = $this->fullTitle;
 
         $hasComponents = count($this->components);
         $hasAddons = count($this->addons);
@@ -455,5 +465,20 @@ class MealOrder extends Pivot
         }
         $allergyList = rtrim($allergyList, ', ');
         return $allergyList;
+    }
+
+    public function getHasCustomNameAttribute()
+    {
+        if ($this->customTitle || $this->customSize) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getFullTitleAttribute()
+    {
+        $size = $this->base_size ? ' - ' . $this->base_size : null;
+        return $this->short_title . $size;
     }
 }

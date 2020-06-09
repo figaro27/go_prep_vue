@@ -701,8 +701,12 @@ export default {
       subscription.meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
           data.push({
-            size: meal_package_item.meal_package.default_size_title,
-            meal: meal_package_item.meal_package.title,
+            size: meal_package_item.customSize
+              ? meal_package_item.customSize
+              : meal_package_item.meal_package.default_size_title,
+            meal: meal_package_item.customTitle
+              ? meal_package_item.customTitle
+              : meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
             unit_price: format.money(
               meal_package_item.price,
@@ -715,8 +719,12 @@ export default {
           });
         } else {
           data.push({
-            size: meal_package_item.meal_package_size.title,
-            meal: meal_package_item.meal_package.title,
+            size: meal_package_item.customSize
+              ? meal_package_item.customSize
+              : meal_package_item.meal_package_size.title,
+            meal: meal_package_item.customTitle
+              ? meal_package_item.customTitle
+              : meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
             unit_price: format.money(
               meal_package_item.price,
@@ -742,7 +750,9 @@ export default {
               item.components,
               item.addons,
               item.special_instructions,
-              false
+              false,
+              item.customTitle,
+              item.customSize
             );
 
             data.push({
@@ -763,15 +773,21 @@ export default {
           if (!meal) {
             return null;
           }
-          const size = meal.getSize(item.meal_size_id);
-          const title = meal.getTitle(
-            true,
-            size,
-            item.components,
-            item.addons,
-            item.special_instructions,
-            false
-          );
+          const size = item.customSize
+            ? { title: item.customSize }
+            : meal.getSize(item.meal_size_id);
+          const title = item.customTitle
+            ? item.customTitle
+            : meal.getTitle(
+                true,
+                size,
+                item.components,
+                item.addons,
+                item.special_instructions,
+                false,
+                item.customTitle,
+                item.customSize
+              );
 
           data.push({
             size: size ? size.title : meal.default_size_title,

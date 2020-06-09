@@ -113,7 +113,12 @@ class Bag
             if (isset($item['meal_package']) && $item['meal_package']) {
                 // Repeat for item quantity
                 $mappingId = $this->getMealPackageMappingId($item);
-
+                $customTitle = isset($item['customTitle'])
+                    ? $item['customTitle']
+                    : null;
+                $customSize = isset($item['customSize'])
+                    ? $item['customSize']
+                    : null;
                 if (!isset($meal_package_mapping[$mappingId])) {
                     $meal_package_mapping[$mappingId] = 0;
                 }
@@ -221,6 +226,12 @@ class Bag
                                         $title .=
                                             ' - ' . $item['size']['title'];
                                     }
+                                    $customTitle = isset($item['customTitle'])
+                                        ? $item['customTitle']
+                                        : null;
+                                    $customSize = isset($item['customSize'])
+                                        ? $item['customSize']
+                                        : null;
 
                                     $mealItem = [
                                         'meal' => $meal['meal'],
@@ -255,7 +266,9 @@ class Bag
                                             : null,
                                         'meal_package_variation' =>
                                             $meal['meal_package_variation'],
-                                        'mappingId' => $mappingId
+                                        'mappingId' => $mappingId,
+                                        'customTitle' => $customTitle,
+                                        'customSize' => $customSize
                                     ];
 
                                     $mealItemId = $this->getItemId($mealItem);
@@ -358,6 +371,13 @@ class Bag
                                     $title .= ' - ' . $item['size']['title'];
                                 }
 
+                                $customTitle = isset($item['customTitle'])
+                                    ? $item['customTitle']
+                                    : null;
+                                $customSize = isset($item['customSize'])
+                                    ? $item['customSize']
+                                    : null;
+
                                 $mealItem = [
                                     'meal' => $meal['meal'],
                                     'meal_package' => true,
@@ -385,7 +405,9 @@ class Bag
                                             : null,
                                     'meal_package_variation' =>
                                         $meal['meal_package_variation'],
-                                    'mappingId' => $mappingId
+                                    'mappingId' => $mappingId,
+                                    'customTitle' => $customTitle,
+                                    'customSize' => $customSize
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);
@@ -443,7 +465,9 @@ class Bag
                                     ? $item['emailRecipient']
                                     : null,
                                 'meal_package_variation' => false,
-                                'mappingId' => $mappingId
+                                'mappingId' => $mappingId,
+                                'customTitle' => $customTitle,
+                                'customSize' => $customSize
                             ];
 
                             $mealItemId = $this->getItemId($mealItem);
@@ -504,7 +528,9 @@ class Bag
                                         ? $item['emailRecipient']
                                         : null,
                                     'meal_package_variation' => false,
-                                    'mappingId' => $mappingId
+                                    'mappingId' => $mappingId,
+                                    'customTitle' => $customTitle,
+                                    'customSize' => $customSize
                                 ];
 
                                 $mealItemId = $this->getItemId($mealItem);

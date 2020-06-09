@@ -145,8 +145,30 @@ export default {
               }
             }
           });
+
+          meal_package.title = pkgItem.customTitle
+            ? pkgItem.customTitle
+            : meal_package.title;
+
+          if (pkgItem.customSize) {
+            let sizeId = pkgItem.meal_package_size_id;
+            let size = meal_package.sizes.find(size => {
+              return (size.id = sizeId);
+            });
+            size.title = pkgItem.customSize;
+          }
+
           for (let i = 0; i < pkgItem.quantity; i++) {
-            this.addOne(meal_package, true, pkgItem.meal_package_size_id);
+            this.addOne(
+              meal_package,
+              true,
+              pkgItem.meal_package_size_id,
+              null,
+              null,
+              null,
+              null,
+              pkgItem
+            );
           }
         });
       }
@@ -180,7 +202,8 @@ export default {
               components,
               addons,
               special_instructions,
-              free
+              free,
+              item
             );
           }
         }

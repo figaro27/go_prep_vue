@@ -729,6 +729,14 @@ class OrderController extends StoreController
             $mealOrder->meal_id = $item['meal']['id'];
             $mealOrder->quantity = $item['quantity'];
             $mealOrder->price = $item['price'] * $item['quantity'];
+            if (!$item['meal_package']) {
+                $mealOrder->customTitle = isset($item['customTitle'])
+                    ? $item['customTitle']
+                    : null;
+                $mealOrder->customSize = isset($item['customSize'])
+                    ? $item['customSize']
+                    : null;
+            }
             if (isset($item['delivery_day']) && $item['delivery_day']) {
                 $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
                     $item['delivery_day']['day'],
@@ -783,6 +791,12 @@ class OrderController extends StoreController
                             $isMultipleDelivery
                         );
                     }
+                    $mealPackageOrder->customTitle = isset($item['customTitle'])
+                        ? $item['customTitle']
+                        : null;
+                    $mealPackageOrder->customSize = isset($item['customSize'])
+                        ? $item['customSize']
+                        : null;
                     $mealPackageOrder->save();
 
                     $mealOrder->meal_package_order_id = $mealPackageOrder->id;

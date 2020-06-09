@@ -80,7 +80,8 @@ export default {
       components = null,
       addons = null,
       special_instructions = null,
-      free = false
+      free = false,
+      item = {}
     ) {
       if (meal.gift_card) {
         this.$store.commit("addToBag", {
@@ -152,6 +153,19 @@ export default {
       if (free) {
         meal.price = 0;
       }
+
+      let custom = {};
+      if (item && item.customTitle) {
+        meal.item_title = item.full_title;
+        meal.title = item.customTitle;
+        custom.title = item.customTitle;
+      }
+      if (item && item.customSize) {
+        size.full_title = item.full_title;
+        size.title = item.customSize;
+        custom.size = item.customSize;
+      }
+
       this.$store.commit("addToBag", {
         meal,
         quantity: 1,
@@ -160,7 +174,8 @@ export default {
         components,
         addons,
         special_instructions,
-        free
+        free,
+        custom
       });
       this.mealModal = false;
       this.mealPackageModal = false;

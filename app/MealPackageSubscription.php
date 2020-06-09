@@ -8,7 +8,7 @@ class MealPackageSubscription extends Pivot
 {
     protected $table = 'meal_package_subscriptions';
 
-    protected $appends = [];
+    protected $appends = ['hasCustomName', 'full_title'];
 
     public function store()
     {
@@ -28,5 +28,29 @@ class MealPackageSubscription extends Pivot
     public function meal_package_size()
     {
         return $this->belongsTo('App\MealPackageSize');
+    }
+
+    public function getHasCustomNameAttribute()
+    {
+        if ($this->customTitle || $this->customSize) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getFullTitleAttribute()
+    {
+        $title = $this->customTitle
+            ? $this->customTitle
+            : $this->meal_package_title;
+        $size = $this->meal_package_size
+            ? ' - ' . $this->meal_package_size->title
+            : null;
+        if ($this->customSize) {
+            $size = ' - ' . $this->customSize;
+        }
+
+        return $title . $size;
     }
 }
