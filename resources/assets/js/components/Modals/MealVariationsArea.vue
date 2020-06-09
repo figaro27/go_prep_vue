@@ -7,7 +7,8 @@
           :key="meal.id + component.id"
           class
         >
-          <h6>{{ getComponentLabel(component) }}</h6>
+          <h6>{{ component.title }}</h6>
+          <p class="font-13">{{ getComponentLabel(component) }}</p>
           <b-form-group :label="null">
             <b-checkbox-group
               v-model="choices[component.id]"
@@ -270,7 +271,7 @@ export default {
         qty = `Choose up to ${component.maximum}`;
       }
 
-      return `${component.title} - ${qty}`;
+      return `(${qty})`;
     },
     setChoices() {
       if (!this.fromMealsArea) {
