@@ -24,24 +24,52 @@
 
                 <div
                   v-if="storeModules.productionGroups"
-                  class="width-40 row pt-1"
+                  class="d-flex ml-4"
+                  v-click-outside="hideGroups"
                 >
-                  <p class="col-md-2 ml-3 pt-1">Group:</p>
-                  <v-select
-                    class="col-md-6"
-                    v-model="productionGroupId"
-                    label="text"
-                    :options="productionGroupOptions"
-                    :reduce="group => group.value"
+                  <b-btn
+                    variant="primary"
+                    @click="showGroups = !showGroups"
+                    class="d-inline mr-2"
+                    >Select Groups</b-btn
                   >
-                  </v-select>
+                  <div class="prodGroupCheckbox d-inline" v-if="showGroups">
+                    <div class="d-flex mb-2">
+                      <b-btn
+                        @click="addAllGroups"
+                        class="btn btn-success btn-sm d-inline mr-1"
+                        >Add All</b-btn
+                      >
+                      <b-btn
+                        @click="removeAllGroups"
+                        class="btn btn-danger btn-sm d-inline"
+                        >Remove All</b-btn
+                      >
+                    </div>
+                    <b-form-checkbox-group
+                      v-model="productionGroupIds"
+                      :options="productionGroupOptions"
+                      :reduce="group => group.value"
+                      stacked
+                    ></b-form-checkbox-group>
+                  </div>
+
                   <button
-                    class="btn btn-warning btn-sm mb-2 col-md-2"
+                    class="btn btn-warning d-inline"
                     @click="productionGroupModal = true"
                     v-if="storeModules.productionGroups"
                   >
                     Edit Groups
                   </button>
+                  <!-- <v-select
+                    class="col-md-6"
+                    v-model="productionGroupIds"
+                    label="text"
+                    :options="productionGroupOptions"
+                    :reduce="group => group.value"
+                  >
+                  </v-select> -->
+                  <!-- <b-form-select class="col-md-6" v-model="productionGroupIds" :options="productionGroupOptions" multiple :reduce="group => group.value" :select-size="1"></b-form-select> -->
                 </div>
               </div>
             </div>
@@ -76,37 +104,42 @@
             </div>
 
             <span slot="beforeLimit">
-              <b-form-checkbox
-                v-model="filters.group_by_date"
-                :value="true"
-                :unchecked-value="false"
-              >
-                Group By Day
-              </b-form-checkbox>
-              <b-btn
-                variant="success"
-                v-if="storeModules.productionGroups"
-                @click="exportData('meal_orders_all', 'pdf', true)"
-              >
-                <i class="fa fa-print"></i>&nbsp; Print All Groups
-              </b-btn>
-              <b-btn
-                variant="primary"
-                @click="exportData('meal_orders', 'pdf', true)"
-              >
-                <i class="fa fa-print"></i>&nbsp; Print
-              </b-btn>
-              <b-dropdown class="mx-1" right text="Export as">
-                <b-dropdown-item @click="exportData('meal_orders', 'csv')"
-                  >CSV</b-dropdown-item
+              <div class="d-flex">
+                <b-form-checkbox
+                  v-model="filters.group_by_date"
+                  :value="true"
+                  :unchecked-value="false"
+                  class="d-inline mr-2 pt-2"
                 >
-                <b-dropdown-item @click="exportData('meal_orders', 'xls')"
-                  >XLS</b-dropdown-item
+                  Group By Day
+                </b-form-checkbox>
+                <b-btn
+                  class="d-inline mr-1"
+                  variant="success"
+                  v-if="storeModules.productionGroups"
+                  @click="exportData('meal_orders_all', 'pdf', true)"
                 >
-                <b-dropdown-item @click="exportData('meal_orders', 'pdf')"
-                  >PDF</b-dropdown-item
+                  <i class="fa fa-print"></i>&nbsp; Print All Groups
+                </b-btn>
+                <b-btn
+                  class="d-inline mr-1"
+                  variant="primary"
+                  @click="exportData('meal_orders', 'pdf', true)"
                 >
-              </b-dropdown>
+                  <i class="fa fa-print"></i>&nbsp; Print
+                </b-btn>
+                <b-dropdown class="mx-1 d-inline" right text="Export as">
+                  <b-dropdown-item @click="exportData('meal_orders', 'csv')"
+                    >CSV</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('meal_orders', 'xls')"
+                    >XLS</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('meal_orders', 'pdf')"
+                    >PDF</b-dropdown-item
+                  >
+                </b-dropdown>
+              </div>
             </span>
           </v-client-table>
         </div>
@@ -176,6 +209,7 @@ import vSelect from "vue-select";
 import Spinner from "../../components/Spinner";
 import checkDateRange from "../../mixins/deliveryDates";
 import store from "../../store";
+import ClickOutside from "vue-click-outside";
 
 export default {
   components: {
@@ -185,9 +219,10 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      showGroups: false,
       productionGroupModal: false,
       editingId: null,
-      productionGroupId: null,
+      productionGroupIds: [],
       new_group: null,
       ordersByDate: [],
       filters: {
@@ -266,8 +301,8 @@ export default {
       //   _.forEach(order.newItems, item => {
       //     let meal = this.getMeal(item.meal_id);
       //     if (meal) {
-      //       if (this.productionGroupId != null) {
-      //         if (meal.production_group_id !== this.productionGroupId)
+      //       if (this.productionGroupIds != null) {
+      //         if (meal.production_group_id !== this.productionGroupIds)
       //           return null;
       //       }
 
@@ -298,10 +333,8 @@ export default {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
           if (meal) {
-            if (this.productionGroupId != null) {
-              if (meal.production_group_id !== this.productionGroupId)
-                return null;
-            }
+            if (!this.productionGroupIds.includes(meal.production_group_id))
+              return null;
             let size = meal.getSize(item.meal_size_id);
             let title = meal.getTitle(
               true,
@@ -334,10 +367,8 @@ export default {
         _.forEach(order.line_items_order, lineItem => {
           let item = lineItem;
           if (item) {
-            if (this.productionGroupId != null) {
-              if (item.production_group_id !== this.productionGroupId)
-                return null;
-            }
+            if (!this.productionGroupIds.includes(meal.production_group_id))
+              return null;
             let size = lineItem.size;
             let title = lineItem.title;
             let base_title = lineItem.title;
@@ -384,7 +415,7 @@ export default {
     },
     productionGroupOptions() {
       let prodGroups = this.storeProductionGroups;
-      let prodGroupOptions = [{ text: "All", value: null }];
+      let prodGroupOptions = [];
 
       if (prodGroups.length > 0) {
         prodGroups.forEach(prodGroup => {
@@ -425,6 +456,12 @@ export default {
     let vue_select = document.createElement("script");
     vue_select.setAttribute("src", "https://unpkg.com/vue-select@latest");
     document.head.appendChild(vue_select);
+    this.productionGroupOptions.forEach(option => {
+      this.productionGroupIds.push(option.value);
+    });
+  },
+  directives: {
+    ClickOutside
   },
   methods: {
     ...mapActions({
@@ -449,9 +486,7 @@ export default {
         group_by_date: this.filters.group_by_date
       };
 
-      if (this.productionGroupId !== null) {
-        params.productionGroupId = this.productionGroupId;
-      }
+      params.productionGroupIds = this.productionGroupIds;
 
       if (
         this.filters.delivery_dates.start &&
@@ -523,7 +558,31 @@ export default {
           this.refreshStoreProductionGroups();
           this.new_group = "";
         });
+    },
+    addAllGroups() {
+      this.productionGroupIds = [];
+      this.productionGroupOptions.forEach(option => {
+        this.productionGroupIds.push(option.value);
+      });
+    },
+    removeAllGroups() {
+      this.productionGroupIds = [];
+    },
+    hideGroups() {
+      this.showGroups = false;
     }
   }
 };
 </script>
+
+<style>
+.prodGroupCheckbox {
+  background-color: #ffffff;
+  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
+  position: absolute;
+  top: 115px;
+  width: 190px;
+  padding: 20px;
+}
+</style>

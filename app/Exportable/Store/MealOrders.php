@@ -85,8 +85,9 @@ class MealOrders
 
         if ($groups && count($groups) > 0) {
             foreach ($groups as $group) {
-                $productionGroupId = (int) $group['id'];
-                $data = $this->exportData($type, $productionGroupId);
+                $productionGroupIds = [];
+                array_push($productionGroupIds, (int) $group['id']);
+                $data = $this->exportData($type, $productionGroupIds);
 
                 if (!$data || count($data) == 0) {
                     continue;
@@ -124,20 +125,30 @@ class MealOrders
         $params->date_format = $this->store->settings->date_format;
         $allDates = [];
 
-        $productionGroupId = $this->params->get('productionGroupId', null);
+        $productionGroupIds = $this->params->get('productionGroupIds', null);
         if ($default_productionGroupId != 0) {
-            $productionGroupId = $default_productionGroupId;
+            $productionGroupIds = $default_productionGroupId;
         }
 
-        if ($productionGroupId != null) {
-            $productionGroupTitle = ProductionGroup::where(
-                'id',
-                $productionGroupId
-            )->first()->title;
-            $params->productionGroupTitle = $productionGroupTitle;
+        if ($productionGroupIds != null) {
+            $productionGroupTitles = [];
+            foreach ($productionGroupIds as $productionGroupId) {
+                array_push(
+                    $productionGroupTitles,
+                    ProductionGroup::where('id', $productionGroupId)->first()
+                        ->title
+                );
+            }
+            $productionGroupTitles = implode(', ', $productionGroupTitles);
+            $params->productionGroupTitle = $productionGroupTitles;
         } else {
             $params->productionGroupTitle = null;
         }
+
+        count($productionGroupIds) ===
+        ProductionGroup::where('store_id', $this->store->id)->count()
+            ? ($params->productionGroupTitle = null)
+            : null;
 
         $orders = $this->store->getOrders(null, $dates, true);
         $orders = $orders->where('voided', 0);
@@ -149,7 +160,7 @@ class MealOrders
             $groupByDate,
             &$allDates,
             $dates,
-            $productionGroupId
+            $productionGroupIds
         ) {
             $date = "";
             if ($order->delivery_date) {
@@ -189,19 +200,19 @@ class MealOrders
             $mealOrders = $order->meal_orders()->with('meal');
             $lineItemsOrders = $order->lineItemsOrders()->with('lineItem');
 
-            if ($productionGroupId) {
+            if ($productionGroupIds) {
                 $mealOrders = $mealOrders->whereHas('meal', function (
                     $query
-                ) use ($productionGroupId) {
-                    $query->where('production_group_id', $productionGroupId);
+                ) use ($productionGroupIds) {
+                    $query->whereIn('production_group_id', $productionGroupIds);
                 });
 
                 $lineItemsOrders = $lineItemsOrders->whereHas(
                     'lineItem',
-                    function ($query) use ($productionGroupId) {
-                        $query->where(
+                    function ($query) use ($productionGroupIds) {
+                        $query->whereIn(
                             'production_group_id',
-                            $productionGroupId
+                            $productionGroupIds
                         );
                     }
                 );
@@ -213,9 +224,11 @@ class MealOrders
             // Line Items
             foreach ($lineItemsOrders as $i => $lineItemsOrder) {
                 if (
-                    $productionGroupId &&
-                    $lineItemsOrder->lineItem->production_group_id !==
-                        intval($productionGroupId)
+                    $productionGroupIds &&
+                    !in_array(
+                        $lineItemsOrder->lineItem->production_group_id,
+                        $productionGroupIds
+                    )
                 ) {
                     return null;
                 }
@@ -262,9 +275,11 @@ class MealOrders
             // Meals
             foreach ($mealOrders as $i => $mealOrder) {
                 if (
-                    $productionGroupId &&
-                    $mealOrder->meal->production_group_id !==
-                        intval($productionGroupId)
+                    $productionGroupIds &&
+                    !in_array(
+                        $mealOrder->meal->production_group_id,
+                        $productionGroupIds
+                    )
                 ) {
                     return null;
                 }
