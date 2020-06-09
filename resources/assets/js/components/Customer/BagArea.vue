@@ -192,7 +192,9 @@
                   v-if="
                     $route.params.storeView &&
                       storeView !== undefined &&
-                      enablingEdit[item.guid] === false
+                      (enablingEdit[item.guid]
+                        ? enablingEdit[item.guid] === false
+                        : true)
                   "
                   @click="enableEdit(item)"
                   class="fa fa-edit text-warning font-15 pt-1"
