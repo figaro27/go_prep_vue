@@ -1202,12 +1202,7 @@ export default {
           }
         }
 
-        if (
-          (meal.components && meal.components.length > 0) ||
-          (meal.addons && meal.addons.length > 0 && size)
-            ? this.hasVariations(meal, size)
-            : true
-        ) {
+        if (this.hasVariations(meal, size)) {
           let data = {};
           data.meal = meal;
           data.sizeId = size ? size.id : null;
