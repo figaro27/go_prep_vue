@@ -162,6 +162,23 @@
       ref="packageComponentModal"
       :packageTitle="packageTitle"
     ></meal-package-components-modal>
+    <b-modal
+      v-model="showVariationsModal"
+      v-if="showVariationsModal"
+      size="sm"
+      no-fade
+      hide-header
+      hide-footer
+    >
+      <div class="d-flex d-center">
+        <meal-variations-area
+          :meal="meal"
+          :sizeId="sizeId"
+          :fromMealsArea="true"
+          @closeVariationsModal="showVariationsModal = false"
+        ></meal-variations-area>
+      </div>
+    </b-modal>
 
     <div
       v-for="(group, catIndex) in meals"
@@ -747,7 +764,10 @@ import store from "../../store";
 export default {
   data() {
     return {
-      packageTitle: null
+      packageTitle: null,
+      showVariationsModal: false,
+      meal: null,
+      sizeId: null
     };
   },
   components: {
@@ -1188,7 +1208,10 @@ export default {
           (meal.components && meal.components.length > 0) ||
           (meal.addons && meal.addons.length > 0)
         ) {
-          this.showMeal(meal, null, size);
+          this.meal = meal;
+          this.sizeId = size ? size.id : null;
+          this.showVariationsModal = true;
+          // this.showMeal(meal, null, size);
           return;
         } else {
           if (size === undefined) {
