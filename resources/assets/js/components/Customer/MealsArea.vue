@@ -162,23 +162,6 @@
       ref="packageComponentModal"
       :packageTitle="packageTitle"
     ></meal-package-components-modal>
-    <b-modal
-      v-model="showVariationsModal"
-      v-if="showVariationsModal"
-      size="sm"
-      no-fade
-      hide-header
-      hide-footer
-    >
-      <div class="d-flex d-center">
-        <meal-variations-area
-          :meal="meal"
-          :sizeId="sizeId"
-          :fromMealsArea="true"
-          @closeVariationsModal="showVariationsModal = false"
-        ></meal-variations-area>
-      </div>
-    </b-modal>
 
     <div
       v-for="(group, catIndex) in meals"
@@ -750,21 +733,16 @@
 import MenuBag from "../../mixins/menuBag";
 import { mapGetters, mapActions } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
-import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 import store from "../../store";
 
 export default {
   data() {
     return {
-      packageTitle: null,
-      showVariationsModal: false,
-      meal: null,
-      sizeId: null
+      packageTitle: null
     };
   },
   components: {
-    MealVariationsArea,
     MealPackageComponentsModal,
     OutsideDeliveryArea
   },
@@ -1194,9 +1172,11 @@ export default {
           (meal.components && meal.components.length > 0) ||
           (meal.addons && meal.addons.length > 0)
         ) {
-          this.meal = meal;
-          this.sizeId = size ? size.id : null;
-          this.showVariationsModal = true;
+          let data = {};
+          data.meal = meal;
+          data.sizeId = size ? size.id : null;
+          this.$emit("showVariations", data);
+          // this.showVariationsModal = true;
           // this.showMeal(meal, null, size);
           return;
         } else {

@@ -18,7 +18,7 @@
               @input="setChoices"
             ></b-checkbox-group>
 
-            <div v-if="invalid">
+            <div v-if="invalid || modalInvalid">
               <div
                 v-if="false === $v.choices[component.id].required"
                 class="invalid-feedback d-block"
@@ -87,9 +87,7 @@ export default {
     meal: {},
     sizeId: null,
     fromMealsArea: false,
-    mealVariationPrice: null,
-    totalAddonPrice: null,
-    totalComponentPrice: null
+    invalid: false
   },
   mixins: [modal, MenuBag],
   data() {
@@ -99,7 +97,8 @@ export default {
       choices: {},
       addons: [],
       validated: false,
-      invalid: false
+      mealVariationPrice: null,
+      modalInvalid: null
     };
   },
   mounted() {
@@ -118,10 +117,6 @@ export default {
       this.$parent.invalidCheck = false;
     }
     this.getMealVariationPrice();
-    if (!this.fromMealsArea) {
-      this.totalAddonPrice = 0;
-      this.totalComponentPrice = 0;
-    }
   },
   computed: {
     ...mapGetters({
@@ -373,7 +368,7 @@ export default {
     },
     addMeal(meal) {
       if (this.$v.$invalid && this.hasVariations) {
-        this.invalid = true;
+        this.modalInvalid = true;
         this.$toastr.w("Please select the minimum/maximum required choices.");
         return;
       }
@@ -413,12 +408,11 @@ export default {
         );
       }
 
-      this.sizeId = null;
       this.choices = null;
       this.addons = [];
       this.defaultMealSize = null;
       this.special_instructions = null;
-      this.invalid = false;
+
       this.showcaseNutrition = false;
       this.$emit("closeVariationsModal");
     }
