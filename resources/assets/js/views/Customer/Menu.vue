@@ -31,6 +31,24 @@
 
       <meal-components-modal ref="componentModal"></meal-components-modal>
 
+      <b-modal
+        v-model="showVariationsModal"
+        v-if="showVariationsModal"
+        size="sm"
+        no-fade
+        hide-header
+        hide-footer
+      >
+        <div class="d-flex d-center">
+          <meal-variations-area
+            :meal="meal"
+            :sizeId="sizeId"
+            :fromMealsArea="true"
+            @closeVariationsModal="showVariationsModal = false"
+          ></meal-variations-area>
+        </div>
+      </b-modal>
+
       <!--<meal-package-components-modal
         ref="packageComponentModal"
       ></meal-package-components-modal>!-->
@@ -161,6 +179,7 @@
             :adjustOrder="adjustOrder"
             :manualOrder="manualOrder"
             @onCategoryVisible="onCategoryVisible($event)"
+            @showVariations="showVariations($event)"
           ></meals-area>
 
           <meal-page
@@ -465,7 +484,8 @@ export default {
     MealPage,
     MealPackagePage,
     MealComponentsModal,
-    DeliveryDateModal
+    DeliveryDateModal,
+    MealVariationsArea
   },
   mixins: [MenuBag],
   props: {
@@ -490,6 +510,7 @@ export default {
   },
   data() {
     return {
+      showVariationsModal: false,
       bagPageURL: "/customer/bag",
       adjustMealModal: false,
       adjustMealModal_meal: null,
@@ -499,7 +520,7 @@ export default {
       adjustMealModal_components: null,
       adjustMealModal_addons: null,
       adjustMealModal_index: 0,
-      showBagClass: "shopping-cart show-right bag-area d-none",
+      showBagClass: "shopping-cart show-right bag-area",
       showFilterClass: "shopping-cart hidden-left bag-area",
       search: "",
       showAuthModal: false,
@@ -546,7 +567,8 @@ export default {
       mealSizePrice: null,
       forceShow: false,
       deliveryDate: null,
-      galleryImages: []
+      galleryImages: [],
+      sizeId: null
     };
   },
   computed: {
@@ -923,9 +945,9 @@ export default {
     } else {
     }
 
-    if (this.bag.length > 0 || this.subscriptionId !== undefined) {
-      this.showBagClass = "shopping-cart show-right bag-area";
-    } else this.showBagClass = "shopping-cart hidden-right bag-area";
+    // if (this.bag.length > 0 || this.subscriptionId !== undefined) {
+    //   this.showBagClass = "shopping-cart show-right bag-area";
+    // } else this.showBagClass = "shopping-cart hidden-right bag-area";
 
     if (this.storeView || this.$route.params.storeView) {
       /* Sidebar Check */
@@ -1347,6 +1369,11 @@ export default {
     },
     showDeliveryDateModal() {
       this.showDeliveryDayModal = true;
+    },
+    showVariations(data) {
+      this.meal = data.meal;
+      this.sizeId = data.sizeId;
+      this.showVariationsModal = true;
     }
   }
 };

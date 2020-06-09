@@ -178,7 +178,11 @@ class RegisterController extends Controller
             'firstname' => $data['user']['first_name'],
             'lastname' => $data['user']['last_name'],
             'phone' => $data['user']['phone'],
-            'address' => $data['user_details']['address'],
+            'address' => isset($data['user_details']['unit'])
+                ? $data['user_details']['address'] .
+                    ' ' .
+                    $data['user_details']['unit']
+                : $data['user_details']['address'],
             'city' => $data['user_details']['city'],
             'state' => $data['user_details']['state'],
             'zip' => $data['user_details']['zip'],

@@ -1,24 +1,70 @@
 <template>
   <div :class="mealPageClass" v-if="showPage" style="min-height: 100%;">
     <div class="row">
+      <div class="col-md-6">
+        <div>
+          <button
+            type="button"
+            class="btn btn-lg btn-secondary d-inline mb-2 width-100 mr-2"
+            @click="back"
+          >
+            <h6 class="strong pt-1 dark-gray">Back</h6>
+          </button>
+          <button
+            type="button"
+            :style="brandColor"
+            class="btn btn-lg white-text d-inline mb-2"
+            @click="addMeal(meal)"
+            v-if="smallScreen"
+          >
+            <h6 class="strong pt-1">Add To Bag</h6>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div :class="imageClass">
-        <button
-          type="button"
-          class="btn btn-lg btn-secondary d-inline mb-2 width-100"
-          @click="back"
+        <div class="d-flex">
+          <div
+            v-if="!smallScreen && showNutritionFacts"
+            style="width:80px"
+            class="pr-2 d-inline"
+          >
+            <img
+              :src="meal.image.url_thumb"
+              style="width:60px;height:60px"
+              v-if="showNutritionFacts"
+              @mouseover="showcaseNutrition = false"
+            />
+            <img
+              src="/images/nutrition-thumb.jpg"
+              v-if="showNutritionFacts"
+              @mouseover="showcaseNutrition = true"
+              class="pt-2"
+            />
+          </div>
+          <thumbnail
+            v-if="meal.image != null && meal.image.url && !showcaseNutrition"
+            :src="meal.image.url"
+            :aspect="false"
+            width="100%"
+            @click="$emit('show-gallery', getMealGallery(meal), 0)"
+            class="mealPageImage d-inline"
+          ></thumbnail>
+          <div style="width:323px" v-if="showcaseNutrition">
+            <div
+              id="nutritionFacts"
+              ref="nutritionFacts"
+              class="pt-2 d-inline"
+            ></div>
+          </div>
+        </div>
+        <slick
+          ref="mealGallery"
+          :options="slickOptions"
+          class="pt-2"
+          :style="galleryStyle"
         >
-          <h6 class="strong pt-1 dark-gray">Back</h6>
-        </button>
-        <thumbnail
-          v-if="meal.image != null && meal.image.url"
-          :src="meal.image.url"
-          :aspect="false"
-          width="100%"
-          @click="$emit('show-gallery', getMealGallery(meal), 0)"
-          class="mealPageImage"
-        ></thumbnail>
-
-        <slick ref="mealGallery" :options="slickOptions">
           <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
             <div style="image">
               <thumbnail
@@ -34,11 +80,7 @@
           </div>
         </slick>
       </div>
-      <div
-        v-if="
-          smallScreen && storeSettings.showNutrition && !blankNutritionFacts
-        "
-      >
+      <div v-if="smallScreen && showNutritionFacts">
         <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
       </div>
 
@@ -159,6 +201,24 @@
             Consume within {{ meal.expirationDays }} days.
           </p>
         </div>
+        <div v-if="!smallScreen && showNutritionFacts">
+          <p
+            class="font-12 strong"
+            :style="brandColorText"
+            @click="showcaseNutrition = !showcaseNutrition"
+            v-if="!showcaseNutrition"
+          >
+            Show Nutrition
+          </p>
+          <p
+            class="font-12 strong"
+            :style="brandColorText"
+            @click="showcaseNutrition = !showcaseNutrition"
+            v-if="showcaseNutrition"
+          >
+            Show Meal
+          </p>
+        </div>
         <div>
           <b-form-textarea
             v-if="
@@ -183,10 +243,8 @@
                 storeSettings.showNutrition &&
                 !blankNutritionFacts
             "
-          >
-            <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
-          </div>
-          <div :class="variationsClass">
+          ></div>
+          <div class="col-md-12">
             <div>
               <b-form-radio-group
                 buttons
@@ -210,8 +268,16 @@
             <div class="d-flex">
               <button
                 type="button"
+                class="btn btn-lg btn-secondary d-inline mb-2 width-100 mr-2"
+                @click="back"
+                v-if="smallScreen"
+              >
+                <h6 class="strong pt-1 dark-gray">Back</h6>
+              </button>
+              <button
+                type="button"
                 :style="brandColor"
-                class="btn btn-md white-text d-inline mr-2"
+                class="btn btn-lg white-text d-inline mb-2"
                 @click="addMeal(meal)"
               >
                 <h6 class="strong pt-1">Add To Bag</h6>
@@ -259,7 +325,8 @@ export default {
       totalAddonPrice: null,
       totalComponentPrice: null,
       selectedComponentOptions: [],
-      selectedAddons: []
+      selectedAddons: [],
+      showcaseNutrition: false
     };
   },
   components: {
@@ -301,6 +368,16 @@ export default {
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings"
     }),
+    galleryStyle() {
+      if (this.showNutritionFacts) {
+        return "margin-left:70px;";
+      } else return "";
+    },
+    showNutritionFacts() {
+      if (this.storeSettings.showNutrition && !this.blankNutritionFacts) {
+        return true;
+      } else return false;
+    },
     mealIngredients() {
       let ingredients = "";
       this.meal.ingredients.forEach(ingredient => {
@@ -314,17 +391,6 @@ export default {
         return "col-md-6";
       } else {
         return "hide";
-      }
-    },
-    variationsClass() {
-      const width =
-        window.innerWidth ||
-        document.documentElement.clientWidth ||
-        document.body.clientWidth;
-      if (width < 1150) {
-        return "col-md-12";
-      } else {
-        return "col-md-7";
       }
     },
     smallScreen() {
@@ -341,6 +407,13 @@ export default {
     brandColor() {
       if (this.store.settings) {
         let style = "background-color:";
+        style += this.store.settings.color;
+        return style;
+      }
+    },
+    brandColorText() {
+      if (this.store.settings) {
+        let style = "color:";
         style += this.store.settings.color;
         return style;
       }
@@ -504,9 +577,7 @@ export default {
       if (this.invalidCheck && this.hasVariations) {
         this.invalid = true;
         this.scrollToValidations();
-        this.$toastr.w(
-          "Please select the minimum/maximum required meal variations."
-        );
+        this.$toastr.w("Please select the minimum/maximum required choices.");
         return;
       }
 
@@ -554,6 +625,7 @@ export default {
       this.defaultMealSize = null;
       this.special_instructions = null;
       this.invalid = false;
+      this.showcaseNutrition = false;
     },
     back() {
       let viewedMeal = {};
@@ -580,6 +652,7 @@ export default {
       this.$parent.mealPageView = false;
       this.mealSizePrice = null;
       this.invalidCheck = false;
+      this.showcaseNutrition = false;
     },
     getMealVariationPrice() {
       let selectedMealSize = null;

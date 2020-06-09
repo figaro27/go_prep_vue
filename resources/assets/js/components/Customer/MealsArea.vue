@@ -203,7 +203,7 @@
                 <div :class="cardBody">
                   <div class="item-wrap">
                     <div class="title d-md-none">
-                      <strong>{{ meal.title }}</strong>
+                      <p v-html="getMealTitle(meal.title)"></p>
                     </div>
 
                     <div class="image">
@@ -215,69 +215,62 @@
                         style="background-color:#ffffff"
                         @click="showMeal(meal, group)"
                       ></thumbnail>
-
-                      <div class="price">
+                      <!-- Hard coding price difference for now for Eat Fresh until new menu design table is required-->
+                      <div class="price" v-if="store.id !== 148">
                         {{ format.money(meal.price, storeSettings.currency) }}
                       </div>
                     </div>
 
                     <div class="meta">
-                      <div class="title d-none d-md-block center-text pt-2">
-                        <strong>{{ meal.title }}</strong>
-                      </div>
-                      <!-- <div class="title d-none d-md-block center-text">
-                        <strong>{{ format.money(meal.price, storeSettings.currency) }}</strong>
-                      </div> -->
                       <div
-                        class="title macrosArea"
-                        v-if="meal.macros && storeSettings.showMacros"
+                        class="title d-none d-md-block center-text pt-2 pb-1"
                       >
-                        <div class="row">
-                          <div class="col-12 col-md-3">
-                            <div class="row">
-                              <p class="col-6 col-md-12">
-                                Calories<br />
-                                <span class="normal-weight">{{
-                                  meal.macros.calories
-                                }}</span>
-                              </p>
-                            </div>
-                          </div>
-                          <div class="col-12 col-md-3">
-                            <div class="row">
-                              <p class="col-6 col-md-12">
-                                Carbs<br />
-                                <span class="normal-weight">{{
-                                  meal.macros.carbs
-                                }}</span>
-                              </p>
-                            </div>
-                          </div>
-                          <div class="col-12 col-md-3">
-                            <div class="row">
-                              <p class="col-6 col-md-12">
-                                Protein<br />
-                                <span class="normal-weight">{{
-                                  meal.macros.protein
-                                }}</span>
-                              </p>
-                            </div>
-                          </div>
-                          <div class="col-12 col-md-3">
-                            <div class="row">
-                              <p class="col-6 col-md-12">
-                                Fat<br />
-                                <span class="normal-weight">{{
-                                  meal.macros.fat
-                                }}</span>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
+                        <p
+                          v-html="getMealTitle(meal.title)"
+                          style="line-height:normal;"
+                        ></p>
+                        <!-- Hard coding price difference for now for Eat Fresh until new menu design table is required-->
+                        <strong
+                          v-if="store.id === 148"
+                          style="position:relative;bottom:10px"
+                          >{{
+                            format.money(meal.price, storeSettings.currency)
+                          }}</strong
+                        >
                       </div>
 
                       <div class="description d-md-none">
                         {{ truncate(meal.description, 150, "...") }}
+                      </div>
+
+                      <div
+                        :class="macroClass"
+                        v-if="meal.macros && storeSettings.showMacros"
+                      >
+                        <div class="d-inline mr-4">
+                          <p>
+                            Calories<br />
+                            <span>{{ meal.macros.calories }}</span>
+                          </p>
+                        </div>
+                        <div class="d-inline mr-4">
+                          <p>
+                            Carbs<br />
+                            <span>{{ meal.macros.carbs }}</span>
+                          </p>
+                        </div>
+                        <div class="d-inline mr-4">
+                          <p>
+                            Protein<br />
+                            <span>{{ meal.macros.protein }}</span>
+                          </p>
+                        </div>
+                        <div class="d-inline">
+                          <p>
+                            Fat<br />
+                            <span>{{ meal.macros.fat }}</span>
+                          </p>
+                        </div>
                       </div>
 
                       <div class="actions">
@@ -645,7 +638,7 @@
                     </div>
 
                     <div class="content-text-wrap">
-                      <strong>{{ meal.title }}</strong>
+                      <p v-html="getMealTitle(meal.title)"></p>
                       <div class="mt-1 content-text">
                         {{ meal.description }}
                       </div>
@@ -655,11 +648,46 @@
                     <div class="content-text-wrap d-flex">
                       <!--<div v-else class="col-md-11">!-->
                       <div style="flex-basis:85%">
-                        <strong style="word-break: break-all;">{{
-                          meal.title
-                        }}</strong>
+                        <p
+                          style="word-break: break-all;"
+                          v-html="getMealTitle(meal.title)"
+                        ></p>
                         <span class="content-text">
                           {{ meal.description }}
+                          <div
+                            class="title"
+                            v-if="meal.macros && storeSettings.showMacros"
+                          >
+                            <div
+                              :class="macroClass"
+                              v-if="meal.macros && storeSettings.showMacros"
+                            >
+                              <div class="d-inline mr-4">
+                                <p>
+                                  Calories<br />
+                                  <span>{{ meal.macros.calories }}</span>
+                                </p>
+                              </div>
+                              <div class="d-inline mr-4">
+                                <p>
+                                  Carbs<br />
+                                  <span>{{ meal.macros.carbs }}</span>
+                                </p>
+                              </div>
+                              <div class="d-inline mr-4">
+                                <p>
+                                  Protein<br />
+                                  <span>{{ meal.macros.protein }}</span>
+                                </p>
+                              </div>
+                              <div class="d-inline">
+                                <p>
+                                  Fat<br />
+                                  <span>{{ meal.macros.fat }}</span>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
                         </span>
                       </div>
                       <div style="flex-basis:15%">
@@ -693,53 +721,6 @@
                     </div>
                   </div>!-->
                 </div>
-                <div
-                  class="title"
-                  v-if="meal.macros && storeSettings.showMacros"
-                >
-                  <div class="row">
-                    <div class="col-12 col-md-3">
-                      <div class="row">
-                        <p class="small strong col-6 col-md-12">
-                          Calories
-                        </p>
-                        <p class="small col-6 col-md-12">
-                          {{ meal.macros.calories }}
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                      <div class="row">
-                        <p class="small strong col-6 col-md-12">
-                          Carbs
-                        </p>
-                        <p class="small col-6 col-md-12">
-                          {{ meal.macros.carbs }}
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                      <div class="row">
-                        <p class="small strong col-6 col-md-12">
-                          Protein
-                        </p>
-                        <p class="small col-6 col-md-12">
-                          {{ meal.macros.protein }}
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                      <div class="row">
-                        <p class="small strong col-6 col-md-12">
-                          Fat
-                        </p>
-                        <p class="small col-6 col-md-12">
-                          {{ meal.macros.fat }}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -752,7 +733,6 @@
 import MenuBag from "../../mixins/menuBag";
 import { mapGetters, mapActions } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
-import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 import store from "../../store";
 
@@ -763,7 +743,6 @@ export default {
     };
   },
   components: {
-    MealVariationsArea,
     MealPackageComponentsModal,
     OutsideDeliveryArea
   },
@@ -819,6 +798,20 @@ export default {
       loggedIn: "loggedIn",
       totalBagPricePreFees: "totalBagPricePreFees"
     }),
+    macroClass() {
+      if (this.store.settings.menuStyle === "text") {
+        return "title macrosArea d-flex pt-2";
+      }
+      const width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+      if (width > 1150) {
+        return "title macrosArea d-flex d-center";
+      } else {
+        return "title macrosArea d-flex pt-2";
+      }
+    },
     totalBagQuantity() {
       let quantity = 0;
       this.bag.forEach(item => {
@@ -1179,7 +1172,12 @@ export default {
           (meal.components && meal.components.length > 0) ||
           (meal.addons && meal.addons.length > 0)
         ) {
-          this.showMeal(meal, null, size);
+          let data = {};
+          data.meal = meal;
+          data.sizeId = size ? size.id : null;
+          this.$emit("showVariations", data);
+          // this.showVariationsModal = true;
+          // this.showMeal(meal, null, size);
           return;
         } else {
           if (size === undefined) {
@@ -1241,6 +1239,9 @@ export default {
         }
         return conditionAmount - this.user.orderCount;
       }
+    },
+    getMealTitle(title) {
+      return title.replace(/(\r\n|\n|\r)/gm, "<br />");
     }
   }
 };

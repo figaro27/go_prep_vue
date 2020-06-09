@@ -1619,6 +1619,20 @@ body.forgotresettoken {
   font-size: 13px !important;
 }
 
+.macrosArea span {
+  font-weight: normal !important;
+}
+
 .font-12 {
   font-size: 12px !important;
+}
+
+.checkoutArea li input,
+.delivery-select {
+  -webkit-box-shadow: 0 0 1px #6e6e6e;
+  box-shadow: 0 0 1px #6e6e6e;
+}
+
+.d-center {
+  justify-content: center !important;
 }

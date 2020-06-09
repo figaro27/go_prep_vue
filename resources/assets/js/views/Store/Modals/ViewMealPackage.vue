@@ -15,13 +15,13 @@
             <b-tab title="General" active>
               <h4>Package Title</h4>
               <b-form-group label-for="meal-title" :state="true">
-                <b-form-input
+                <b-form-textarea
                   id="meal-title"
                   type="text"
                   v-model="mealPackage.title"
                   placeholder="Item Name"
                   required
-                ></b-form-input>
+                ></b-form-textarea>
               </b-form-group>
               <h4>Package Description</h4>
               <b-form-group label-for="meal-description" :state="true">
