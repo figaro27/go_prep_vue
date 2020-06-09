@@ -781,15 +781,16 @@ class Subscription extends Model
 
         $items = $this->fresh()->meal_subscriptions->map(function ($meal) {
             if (!$meal->meal_package) {
-                $price = $meal->meal_size
-                    ? $meal->meal_size->price
-                    : $meal->meal->price;
-                foreach ($meal->components as $component) {
-                    $price += $component->option->price;
-                }
-                foreach ($meal->addons as $addon) {
-                    $price += $addon->addon->price;
-                }
+                // $price = $meal->meal_size
+                //     ? $meal->meal_size->price
+                //     : $meal->meal->price;
+                // foreach ($meal->components as $component) {
+                //     $price += $component->option->price;
+                // }
+                // foreach ($meal->addons as $addon) {
+                //     $price += $addon->addon->price;
+                // }
+                $price = $meal->price;
                 return [
                     'quantity' => $meal->quantity,
                     'meal' => $meal->meal,

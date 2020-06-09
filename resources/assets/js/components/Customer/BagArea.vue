@@ -182,20 +182,17 @@
               <div class="flex-grow-0">
                 <i
                   v-if="
-                    ($route.params.storeView || storeView) &&
-                    enablingEdit[item.guid]
-                      ? false
-                      : true
+                    $route.params.storeView &&
+                      storeView !== undefined &&
+                      enablingEdit[item.guid] === false
                   "
                   @click="enableEdit(item)"
                   class="fa fa-edit text-warning font-15 pt-1"
                 ></i>
                 <i
                   v-if="
-                    ($route.params.storeView || storeView) &&
-                    enablingEdit[item.guid]
-                      ? true
-                      : false
+                    ($route.params.storeView || storeView !== undefined) &&
+                      enablingEdit[item.guid] === true
                   "
                   class="fas fa-check-circle text-primary pt-1 font-15"
                   @click="endEdit(item)"
