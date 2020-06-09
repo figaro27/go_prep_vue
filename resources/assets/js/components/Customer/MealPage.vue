@@ -30,12 +30,12 @@
               :src="meal.image.url_thumb"
               style="width:60px;height:60px"
               v-if="showNutritionFacts"
-              @onmouseover="showcaseNutrition = false"
+              @mouseover="showcaseNutrition = false"
             />
             <img
               src="/images/nutrition-thumb.jpg"
               v-if="showNutritionFacts"
-              @onmouseover="showcaseNutrition = true"
+              @mouseover="showcaseNutrition = true"
               class="pt-2"
             />
           </div>
@@ -55,7 +55,12 @@
             ></div>
           </div>
         </div>
-        <slick ref="mealGallery" :options="slickOptions" class="pt-1">
+        <slick
+          ref="mealGallery"
+          :options="slickOptions"
+          class="pt-2"
+          :style="galleryStyle"
+        >
           <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
             <div style="image">
               <thumbnail
@@ -359,6 +364,11 @@ export default {
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings"
     }),
+    galleryStyle() {
+      if (this.showNutritionFacts) {
+        return "margin-left:70px;";
+      } else return "";
+    },
     showNutritionFacts() {
       if (this.storeSettings.showNutrition && !this.blankNutritionFacts) {
         return true;
