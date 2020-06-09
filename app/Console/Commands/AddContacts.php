@@ -22,7 +22,7 @@ class AddContacts extends Command
      *
      * @var string
      */
-    protected $description = 'Creates GoPrep master list, master list for each store, and puts all store\'s customers in their master list. One time job.';
+    protected $description = 'Creates GoPrep master list, master list for each store, and puts all store\'s customers in their store lists. One time job.';
 
     /**
      * Create a new command instance.
@@ -67,40 +67,6 @@ class AddContacts extends Command
 
         $masterListId = json_decode($body)->id;
 
-        // Add all customers as contacts and into the master list
-
-        $customers = Customer::all();
-
-        foreach ($customers as $customer) {
-            // Get country prefix
-            $phone = (int) 1 . preg_replace('/[^0-9]/', '', $customer->phone);
-            try {
-                $client = new \GuzzleHttp\Client();
-                $res = $client->request(
-                    'POST',
-                    'https://rest.textmagic.com/api/v2/contacts',
-                    [
-                        'headers' => $this->headers,
-                        'form_params' => [
-                            'phone' => $phone,
-                            'lists' => $masterListId,
-                            'firstName' => $customer->firstname,
-                            'lastName' => $customer->lastname,
-                            'email' => $customer->email
-                        ]
-                    ]
-                );
-                $status = $res->getStatusCode();
-                $body = $res->getBody();
-
-                $smsContact = new SmsContact();
-                $smsContact->store_id = $customer->store_id;
-                $smsContact->contact_id = json_decode($body)->id;
-                $smsContact->save();
-            } catch (\Exception $e) {
-            }
-        }
-
         // Create master list for each store
 
         $stores = Store::get()->take(3);
@@ -121,31 +87,132 @@ class AddContacts extends Command
             $smsList->save();
 
             $listId = json_decode($body)->id;
+        }
 
-            // Assign contacts to store
+        // Add all customers as contacts and into the master list and store list they belong to
 
-            $contacts = SMSContact::where('store_id', $store->id)->get();
-            $contactIds = [];
-            foreach ($contacts as $contact) {
-                array_push($contactIds, $contact->contact_id);
-            }
-            $contactIds = implode(',', $contactIds);
+        $customers = Customer::all();
+
+        foreach ($customers as $customer) {
+            $storeListId = SmsList::where('store_id', $customer->store_id)
+                ->pluck('list_id')
+                ->first();
+            $storeId = SmsList::where('store_id', $customer->store_id)
+                ->pluck('store_id')
+                ->first();
+            $lists = $masterListId . ',' . $storeListId;
+            // Get country prefix
+            $phone = (int) 1 . preg_replace('/[^0-9]/', '', $customer->phone);
             try {
                 $client = new \GuzzleHttp\Client();
                 $res = $client->request(
-                    'PUT',
-                    $this->baseURL . '/' . $listId . '/contacts',
+                    'POST',
+                    'https://rest.textmagic.com/api/v2/contacts',
                     [
                         'headers' => $this->headers,
                         'form_params' => [
-                            'contacts' => $contactIds
+                            'phone' => $phone,
+                            'lists' => $lists,
+                            'firstName' => $customer->firstname,
+                            'lastName' => $customer->lastname,
+                            'email' => $customer->email
                         ]
                     ]
                 );
                 $status = $res->getStatusCode();
                 $body = $res->getBody();
+
+                $smsContact = new SmsContact();
+                $smsContact->store_id = $customer->store_id;
+                $smsContact->contact_id = json_decode($body)->id;
+                $smsContact->save();
             } catch (\Exception $e) {
+                if (
+                    strpos(
+                        $e,
+                        'Phone number already exists in your contacts.'
+                    ) !== false
+                ) {
+                    $this->updateExistingContact($customer, $storeId);
+                }
             }
+        }
+    }
+
+    public function updateExistingContact($contact, $storeId)
+    {
+        $phone = (int) preg_replace('/[^0-9]/', '', $contact['phone']);
+        if (strlen((string) $phone) === 10) {
+            $phone = 1 . $phone;
+        }
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            'https://rest.textmagic.com/api/v2/contacts/phone/' . $phone,
+            ['headers' => $this->headers]
+        );
+        $body = $res->getBody();
+        $contactId = json_decode($body)->id;
+
+        $firstName = isset($contact['firstName'])
+            ? $contact['firstName']
+            : json_decode($body)->firstName;
+        $lastName = isset($contact['lastName'])
+            ? $contact['lastName']
+            : json_decode($body)->lastName;
+
+        // Get all lists in which the existing contact is included
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            'https://rest.textmagic.com/api/v2/contacts/' .
+                $contactId .
+                '/lists',
+            ['headers' => $this->headers]
+        );
+        $body = $res->getBody();
+        $existingLists = json_decode($body)->resources;
+        $lists = [];
+        foreach ($existingLists as $list) {
+            array_push($lists, $list->id);
+        }
+        array_push(
+            $lists,
+            SMSList::where('store_id', $storeId)
+                ->pluck('list_id')
+                ->first()
+        );
+
+        $lists = implode(',', $lists);
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'PUT',
+            'https://rest.textmagic.com/api/v2/contacts/' . $contactId,
+            [
+                'headers' => $this->headers,
+                'form_params' => [
+                    'phone' => $phone,
+                    'lists' => $lists,
+                    'firstName' => $firstName,
+                    'lastName' => $lastName
+                ]
+            ]
+        );
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        // Add existing contact to the store
+        $contactExists = SMSContact::where([
+            'store_id' => $storeId,
+            'contact_id' => $contactId
+        ])->first();
+        if (!$contactExists) {
+            $newContact = new SMSContact();
+            $newContact->store_id = $storeId;
+            $newContact->contact_id = $contactId;
+            $newContact->save();
         }
     }
 }
