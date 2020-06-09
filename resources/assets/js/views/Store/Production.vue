@@ -349,8 +349,10 @@ export default {
               item.addons,
               item.special_instructions,
               true,
-              item.customTitle
+              item.customTitle,
+              item.customSize
             );
+
             let base_title = meal.getTitle(
               true,
               size,

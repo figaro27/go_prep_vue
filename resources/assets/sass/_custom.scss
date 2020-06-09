@@ -1640,9 +1640,15 @@ body.forgotresettoken {
 }
 
 .checkoutArea li input,
-.delivery-select {
+.delivery-select,
+.vs__dropdown-toggle {
   -webkit-box-shadow: 0 0 2px #000000;
   box-shadow: 0 0 2px #000000;
+}
+
+.vs__search {
+  -webkit-box-shadow: 0 0 0px #000000 !important;
+  box-shadow: 0 0 0px #000000 !important;
 }
 
 .d-center {

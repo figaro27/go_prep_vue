@@ -3621,7 +3621,8 @@ const getters = {
         addons = null,
         special_instructions = null,
         showSize = true,
-        customTitle = null
+        customTitle = null,
+        customSize = null
       ) => {
         let title = meal.title;
 
@@ -3633,7 +3634,7 @@ const getters = {
           title = title + " - " + meal.default_size_title;
         }
 
-        if (_.isObject(size) && showSize) {
+        if (_.isObject(size) && showSize && !customSize) {
           title = size.full_title;
         }
 
@@ -3642,6 +3643,10 @@ const getters = {
 
         if (customTitle) {
           title = customTitle;
+        }
+
+        if (customTitle && customSize) {
+          title = title + " - " + customSize;
         }
 
         if (!html) {
