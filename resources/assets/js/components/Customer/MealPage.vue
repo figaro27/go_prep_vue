@@ -30,12 +30,12 @@
               :src="meal.image.url_thumb"
               style="width:60px;height:60px"
               v-if="showNutritionFacts"
-              @onmouseover="showcaseNutrition = false"
+              @mouseover="showcaseNutrition = false"
             />
             <img
               src="/images/nutrition-thumb.jpg"
               v-if="showNutritionFacts"
-              @onmouseover="showcaseNutrition = true"
+              @mouseover="showcaseNutrition = true"
               class="pt-2"
             />
           </div>
@@ -54,22 +54,22 @@
               class="pt-2 d-inline"
             ></div>
           </div>
-        </div>
-        <slick ref="mealGallery" :options="slickOptions" class="pt-1">
-          <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
-            <div style="image">
-              <thumbnail
-                v-if="image.url"
-                :src="image.url"
-                :aspect="true"
-                :lazy="false"
-                :spinner="false"
-                :width="'70px'"
-                @click="$emit('show-gallery', getMealGallery(meal), i)"
-              ></thumbnail>
+          <slick ref="mealGallery" :options="slickOptions" class="pt-1">
+            <div v-for="(image, i) in getMealGallery(meal)" :key="image.id">
+              <div style="image">
+                <thumbnail
+                  v-if="image.url"
+                  :src="image.url"
+                  :aspect="true"
+                  :lazy="false"
+                  :spinner="false"
+                  :width="'70px'"
+                  @click="$emit('show-gallery', getMealGallery(meal), i)"
+                ></thumbnail>
+              </div>
             </div>
-          </div>
-        </slick>
+          </slick>
+        </div>
       </div>
       <div v-if="smallScreen && showNutritionFacts">
         <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
