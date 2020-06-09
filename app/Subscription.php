@@ -295,8 +295,11 @@ class Subscription extends Model
                     'meal_id' => $mealSub->meal_id,
                     'meal_size_id' => $mealSub->meal_size_id,
                     'meal_title' => $mealSub->title,
+                    'full_title' => $mealSub->full_title,
                     'title' => $mealSub->title,
                     'html_title' => $mealSub->html_title,
+                    'customTitle' => $mealSub->customTitle,
+                    'customSize' => $mealSub->customSize,
                     'quantity' => $mealSub->quantity,
                     'unit_price' => $mealSub->unit_price,
                     'price' => $mealSub->price
@@ -495,6 +498,8 @@ class Subscription extends Model
                 $mealPackageSub->meal_package_size_id;
             $mealPackageOrder->quantity = $mealPackageSub->quantity;
             $mealPackageOrder->price = $mealPackageSub->price;
+            $mealPackageOrder->customTitle = $mealPackageSub->customTitle;
+            $mealPackageOrder->customSize = $mealPackageSub->customSize;
             $mealPackageOrder->save();
         }
 
@@ -512,6 +517,8 @@ class Subscription extends Model
                 ? $mealSub->meal_package
                 : 0;
             $mealOrder->free = $mealSub->free ? $mealSub->free : 0;
+            $mealOrder->customTitle = $mealSub->customTitle;
+            $mealOrder->customSize = $mealSub->customSize;
 
             if ($mealSub->meal_package_subscription_id !== null) {
                 $mealPackageSub = MeaLPackageSubscription::where(
@@ -774,15 +781,16 @@ class Subscription extends Model
 
         $items = $this->fresh()->meal_subscriptions->map(function ($meal) {
             if (!$meal->meal_package) {
-                $price = $meal->meal_size
-                    ? $meal->meal_size->price
-                    : $meal->meal->price;
-                foreach ($meal->components as $component) {
-                    $price += $component->option->price;
-                }
-                foreach ($meal->addons as $addon) {
-                    $price += $addon->addon->price;
-                }
+                // $price = $meal->meal_size
+                //     ? $meal->meal_size->price
+                //     : $meal->meal->price;
+                // foreach ($meal->components as $component) {
+                //     $price += $component->option->price;
+                // }
+                // foreach ($meal->addons as $addon) {
+                //     $price += $addon->addon->price;
+                // }
+                $price = $meal->price;
                 return [
                     'quantity' => $meal->quantity,
                     'meal' => $meal->meal,

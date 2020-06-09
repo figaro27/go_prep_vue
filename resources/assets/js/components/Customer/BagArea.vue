@@ -94,32 +94,74 @@
                   width="80px"
                 ></thumbnail>
               </div>
-              <div class="flex-grow-1 mr-2">
-                <span v-if="item.meal_package || item.meal.gift_card">
-                  {{ item.meal.title }}
-                  <span v-if="item.size && item.size.title !== 'Regular'">
-                    - {{ item.size.title }}
-                  </span>
+              <div class="mr-2">
+                <span v-if="enablingEdit[item.guid] ? true : false">
                   <b-form-input
-                    v-if="
-                      item.meal.gift_card &&
-                        ($route.name === 'customer-bag' ||
-                          $route.name === 'store-bag')
-                    "
-                    placeholder="Optional Email Recipient"
-                    @input="
-                      val => {
-                        item.emailRecipient = val;
-                      }
-                    "
+                    placeholder="Title"
+                    v-model="customTitle[item.guid]"
+                  ></b-form-input>
+                  <b-form-input
+                    v-if="item.size"
+                    placeholder="Size"
+                    v-model="customSize[item.guid]"
+                  ></b-form-input>
+                  <b-form-input
+                    type="number"
+                    v-model="customPrice[item.guid]"
                   ></b-form-input>
                 </span>
-                <span v-else-if="item.size && item.size.title !== 'Regular'">{{
-                  item.size.full_title
-                }}</span>
-                <span v-else>{{ item.meal.item_title }}</span>
-                <p class="small">{{ item.special_instructions }}</p>
 
+                <span v-else>
+                  <span v-if="item.meal_package || item.meal.gift_card">
+                    {{ item.meal.title }}
+                    <span v-if="item.size && item.size.title !== 'Regular'">
+                      - {{ item.size.title }}
+                    </span>
+
+                    <b-form-input
+                      v-if="
+                        item.meal.gift_card &&
+                          ($route.name === 'customer-bag' ||
+                            $route.name === 'store-bag')
+                      "
+                      placeholder="Optional Email Recipient"
+                      @input="
+                        val => {
+                          item.emailRecipient = val;
+                        }
+                      "
+                    >
+                    </b-form-input>
+                  </span>
+
+                  <span
+                    v-else-if="item.size && item.size.title !== 'Regular'"
+                    >{{ item.size.full_title }}</span
+                  >
+                  <span v-else>{{ item.meal.item_title }}</span>
+                  <div class="w-100 pt-1">
+                    <input
+                      v-if="enablingEdit[item.guid] ? false : true"
+                      type="checkbox"
+                      :id="`checkox_${mealId}`"
+                      v-model="item.free"
+                      @change="e => makeFree(item, e)"
+                    />
+                    <label
+                      :for="`checkox_${mealId}`"
+                      v-if="enablingEdit[item.guid] ? false : true"
+                      >Free</label
+                    >
+                    <span>{{
+                      format.money(
+                        item.price * item.quantity,
+                        storeSettings.currency
+                      )
+                    }}</span>
+                  </div>
+                </span>
+
+                <p class="small">{{ item.special_instructions }}</p>
                 <ul
                   v-if="!item.meal_package && (item.components || item.addons)"
                   class="plain"
@@ -139,58 +181,32 @@
                     {{ addon }}
                   </li>
                 </ul>
-                <div v-if="$route.params.storeView || storeView">
-                  <input
-                    type="checkbox"
-                    :id="`checkox_${mealId}`"
-                    v-model="item.free"
-                    @change="e => makeFree(item, e)"
-                  />
-                  <label :for="`checkox_${mealId}`">Free</label>
 
-                  <span
-                    v-if="editingPrice[item.guid] ? true : false"
-                    class="d-flex"
-                  >
-                    <b-form-input
-                      style="flex-basis:70%"
-                      type="number"
-                      v-model="item.price"
-                      @input="v => changePrice(item, v)"
-                    ></b-form-input>
-                    <i
-                      style="flex-basis:30%"
-                      class="fas fa-check-circle text-primary pt-2 pl-1"
-                      @click="endEditPrice(item)"
-                    ></i>
-                  </span>
-                  <span v-else>{{
-                    format.money(
-                      item.price * item.quantity,
-                      storeSettings.currency
-                    )
-                  }}</span>
-                  <i
-                    v-if="
-                      ($route.params.storeView || storeView) &&
-                        !editingPrice[item.guid]
-                    "
-                    @click="enableEditPrice(item)"
-                    class="fa fa-edit text-warning"
-                  ></i>
-                </div>
-                <div v-if="!$route.params.storeView && !storeView">
-                  <span>{{
-                    format.money(
-                      item.price * item.quantity,
-                      storeSettings.currency
-                    )
-                  }}</span>
-                </div>
+                <!-- <div v-if="!$route.params.storeView && !storeView">
+                  <span>{{format.money(item.price * item.quantity, storeSettings.currency ) }}</span>
+                </div> -->
               </div>
+
               <div class="flex-grow-0">
                 <i
-                  class="fas fa-times-circle clear-meal dark-gray pt-2"
+                  v-if="
+                    $route.params.storeView &&
+                      storeView !== undefined &&
+                      enablingEdit[item.guid] === false
+                  "
+                  @click="enableEdit(item)"
+                  class="fa fa-edit text-warning font-15 pt-1"
+                ></i>
+                <i
+                  v-if="
+                    ($route.params.storeView || storeView !== undefined) &&
+                      enablingEdit[item.guid] === true
+                  "
+                  class="fas fa-check-circle text-primary pt-1 font-15"
+                  @click="endEdit(item)"
+                ></i>
+                <i
+                  class="fas fa-times-circle clear-meal dark-gray font-15"
                   @click="clearFromBag(item)"
                 ></i>
               </div>
@@ -444,9 +460,12 @@ import store from "../../store";
 export default {
   data() {
     return {
+      enablingEdit: {},
+      customTitle: {},
+      customSize: {},
+      customPrice: {},
       orderNotes: null,
       publicOrderNotes: null,
-      editingPrice: {},
       showLineItemModal: false,
       lineItem: {
         id: null,
@@ -599,7 +618,7 @@ export default {
   mounted() {
     if (this.bag) {
       this.bag.forEach(item => {
-        this.editingPrice[item.guid] = false;
+        this.$set(this.enablingEdit, item.guid, false);
       });
     }
 
@@ -917,28 +936,36 @@ export default {
       item.free = event.target.checked;
       this.updateBagItem(item);
     },
-    changePrice(item, v) {
-      if (!isNaN(v) && parseFloat(v) > 0) {
-        item.price = parseFloat(parseFloat(v).toFixed(2));
-        this.updateBagItem(item);
+    enableEdit(item) {
+      this.$nextTick(() => {
+        this.$set(this.enablingEdit, item.guid, true);
+      });
+      this.customTitle[item.guid] = item.meal.title;
+      this.customSize[item.guid] = item.size ? item.size.title : null;
+      this.customPrice[item.guid] = item.price;
+    },
+    endEdit(item) {
+      item.meal.title = this.customTitle[item.guid];
+      item.customTitle = this.customTitle[item.guid];
+      item.size ? (item.size.title = this.customSize[item.guid]) : null;
+      item.customSize = this.customSize[item.guid];
+
+      if (this.customSize[item.guid]) {
+        item.size.title = this.customSize[item.guid];
+        item.size.full_title =
+          this.customTitle[item.guid] + " - " + this.customSize[item.guid];
+      } else {
+        item.meal.item_title = this.customTitle[item.guid];
       }
-    },
-    enableEditPrice(item) {
-      this.editingPrice[item.guid] = true;
 
-      this.editingPrice = {
-        ...this.editingPrice,
-        updated: true
-      };
-    },
-    endEditPrice(item) {
-      this.editingPrice[item.guid] = false;
+      item.price = this.customPrice[item.guid];
+      this.updateBagItem(item);
 
-      this.editingPrice = {
-        ...this.editingPrice,
-        updated: true
-      };
+      this.$nextTick(() => {
+        this.$set(this.enablingEdit, item.guid, false);
+      });
     },
+
     passOrderNotes() {
       this.$emit("passOrderNotes", this.orderNotes);
     },

@@ -570,8 +570,15 @@ export default {
       order.meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
           data.push({
-            size: meal_package_item.meal_package.default_size_title,
-            meal: meal_package_item.meal_package.title,
+            delivery_date: moment(meal_package_item.delivery_date).format(
+              "dddd, MMM Do"
+            ),
+            size: meal_package_item.customSize
+              ? meal_package_item.customSize
+              : meal_package_item.meal_package.default_size_title,
+            meal: meal_package_item.customTitle
+              ? meal_package_item.customTitle
+              : meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
             unit_price: format.money(meal_package_item.price, order.currency),
             subtotal: format.money(
@@ -581,8 +588,15 @@ export default {
           });
         } else {
           data.push({
-            size: meal_package_item.meal_package_size.title,
-            meal: meal_package_item.meal_package.title,
+            delivery_date: moment(meal_package_item.delivery_date).format(
+              "dddd, MMM Do"
+            ),
+            size: meal_package_item.customSize
+              ? meal_package_item.customSize
+              : meal_package_item.meal_package_size.title,
+            meal: meal_package_item.customTitle
+              ? meal_package_item.customTitle
+              : meal_package_item.meal_package.title,
             quantity: meal_package_item.quantity,
             unit_price: format.money(meal_package_item.price, order.currency),
             subtotal: format.money(
@@ -607,12 +621,17 @@ export default {
               item.components,
               item.addons,
               item.special_instructions,
-              false
+              false,
+              item.customTitle,
+              item.customSize
             );
 
             data.push({
-              size: size ? size.title : meal.default_size_title,
+              delivery_date: item.delivery_date
+                ? moment(item.delivery_date.date).format("dddd, MMM Do")
+                : null,
               //meal: meal.title,
+              size: size ? size.title : meal.default_size_title,
               meal: title,
               quantity: item.quantity,
               unit_price: "In Package",
@@ -635,17 +654,26 @@ export default {
           if (!meal) {
             return null;
           }
-          const size = meal.getSize(item.meal_size_id);
-          const title = meal.getTitle(
-            true,
-            size,
-            item.components,
-            item.addons,
-            item.special_instructions,
-            false
-          );
+          const size = item.customSize
+            ? { title: item.customSize }
+            : meal.getSize(item.meal_size_id);
+          const title = item.customTitle
+            ? item.customTitle
+            : meal.getTitle(
+                true,
+                size,
+                item.components,
+                item.addons,
+                item.special_instructions,
+                false,
+                item.customTitle,
+                item.customSize
+              );
 
           data.push({
+            delivery_date: item.delivery_date
+              ? moment(item.delivery_date.date).format("dddd, MMM Do")
+              : null,
             //meal: meal.title,
             size: size ? size.title : meal.default_size_title,
             meal: title,
@@ -678,21 +706,16 @@ export default {
         });
       });
 
-      if (order.purchased_gift_cards && order.purchased_gift_cards.length > 0) {
-        order.purchased_gift_cards.forEach(purchasedGiftCard => {
-          if (purchasedGiftCard.length === 5) {
-            data.push({
-              meal: "Gift Card Code: " + purchasedGiftCard.code,
-              quantity: 1,
-              unit_price: format.money(
-                purchasedGiftCard.amount,
-                order.currency
-              ),
-              subtotal: format.money(purchasedGiftCard.amount, order.currency)
-            });
-          }
-        });
-      }
+      order.purchased_gift_cards.forEach(purchasedGiftCard => {
+        if (purchasedGiftCard.length === 5) {
+          data.push({
+            meal: "Gift Card Code: " + purchasedGiftCard.code,
+            quantity: 1,
+            unit_price: format.money(purchasedGiftCard.amount, order.currency),
+            subtotal: format.money(purchasedGiftCard.amount, order.currency)
+          });
+        }
+      });
 
       return _.filter(data);
     },

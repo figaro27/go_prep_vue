@@ -145,7 +145,7 @@ export default {
           _.forEach(subscription.items, item => {
             if (item.meal_package_subscription_id === pkgItem.id) {
               const meal = this.getMeal(item.meal_id);
-              meal.meal_size_id = item.meal_size_id;
+              meal.meal_size_id = item.meal_size_id ? item.meal_size_id : null;
               meal.quantity = item.quantity;
               meal.special_instructions = item.special_instructions;
 
@@ -158,7 +158,16 @@ export default {
             }
           });
           for (let i = 0; i < pkgItem.quantity; i++) {
-            this.addOne(meal_package, true, pkgItem.meal_package_size_id);
+            this.addOne(
+              meal_package,
+              true,
+              pkgItem.meal_package_size_id,
+              null,
+              null,
+              null,
+              null,
+              pkgItem
+            );
           }
         });
       }
@@ -193,7 +202,8 @@ export default {
               components,
               addons,
               special_instructions,
-              free
+              free,
+              item
             );
           }
         }
