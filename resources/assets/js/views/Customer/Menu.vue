@@ -31,24 +31,6 @@
 
       <meal-components-modal ref="componentModal"></meal-components-modal>
 
-      <b-modal
-        v-model="showVariationsModal"
-        v-if="showVariationsModal"
-        size="sm"
-        no-fade
-        hide-header
-        hide-footer
-      >
-        <div class="d-flex d-center">
-          <meal-variations-area
-            :meal="meal"
-            :sizeId="sizeId"
-            :fromMealsArea="true"
-            @closeVariationsModal="showVariationsModal = false"
-          ></meal-variations-area>
-        </div>
-      </b-modal>
-
       <!--<meal-package-components-modal
         ref="packageComponentModal"
       ></meal-package-components-modal>!-->
@@ -179,7 +161,6 @@
             :adjustOrder="adjustOrder"
             :manualOrder="manualOrder"
             @onCategoryVisible="onCategoryVisible($event)"
-            @showVariations="showVariations($event)"
           ></meals-area>
 
           <meal-page
@@ -484,8 +465,7 @@ export default {
     MealPage,
     MealPackagePage,
     MealComponentsModal,
-    DeliveryDateModal,
-    MealVariationsArea
+    DeliveryDateModal
   },
   mixins: [MenuBag],
   props: {
@@ -510,7 +490,6 @@ export default {
   },
   data() {
     return {
-      showVariationsModal: false,
       bagPageURL: "/customer/bag",
       adjustMealModal: false,
       adjustMealModal_meal: null,
@@ -567,8 +546,7 @@ export default {
       mealSizePrice: null,
       forceShow: false,
       deliveryDate: null,
-      galleryImages: [],
-      sizeId: null
+      galleryImages: []
     };
   },
   computed: {
@@ -1369,11 +1347,6 @@ export default {
     },
     showDeliveryDateModal() {
       this.showDeliveryDayModal = true;
-    },
-    showVariations(data) {
-      this.meal = data.meal;
-      this.sizeId = data.sizeId;
-      this.showVariationsModal = true;
     }
   }
 };
