@@ -22,7 +22,11 @@
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
 
-                <div v-if="storeModules.productionGroups" class="d-flex ml-4">
+                <div
+                  v-if="storeModules.productionGroups"
+                  class="d-flex ml-4"
+                  v-click-outside="hideGroups"
+                >
                   <b-btn
                     variant="primary"
                     @click="showGroups = !showGroups"
@@ -46,7 +50,6 @@
                       v-model="productionGroupIds"
                       :options="productionGroupOptions"
                       :reduce="group => group.value"
-                      @change="val => removeAllGroupsOption(val)"
                       stacked
                     ></b-form-checkbox-group>
                   </div>
@@ -206,6 +209,7 @@ import vSelect from "vue-select";
 import Spinner from "../../components/Spinner";
 import checkDateRange from "../../mixins/deliveryDates";
 import store from "../../store";
+import ClickOutside from "vue-click-outside";
 
 export default {
   components: {
@@ -456,6 +460,9 @@ export default {
       this.productionGroupIds.push(option.value);
     });
   },
+  directives: {
+    ClickOutside
+  },
   methods: {
     ...mapActions({
       refreshStoreProductionGroups: "refreshStoreProductionGroups"
@@ -560,6 +567,9 @@ export default {
     },
     removeAllGroups() {
       this.productionGroupIds = [];
+    },
+    hideGroups() {
+      this.showGroups = false;
     }
   }
 };

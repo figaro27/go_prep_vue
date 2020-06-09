@@ -125,6 +125,7 @@
     "v-money": "^0.8.1",
     "vue-analytics-facebook-pixel": "^1.0.1",
     "vue-carousel": "^0.18.0",
+    "vue-click-outside": "^1.1.0",
     "vue-credit-card-field": "^0.3.14",
     "vue-disable-autocomplete": "^0.0.4",
     "vue-image-lightbox": "^6.2.0",
