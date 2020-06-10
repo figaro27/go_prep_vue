@@ -139,7 +139,10 @@
                     >{{ item.size.full_title }}</span
                   >
                   <span v-else>{{ item.meal.item_title }}</span>
-                  <div class="w-100 pt-1">
+                  <div
+                    class="w-100 pt-1"
+                    v-if="$route.params.storeView || storeView"
+                  >
                     <input
                       v-if="enablingEdit[item.guid] ? false : true"
                       type="checkbox"
