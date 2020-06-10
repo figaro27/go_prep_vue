@@ -1,7 +1,6 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      Chats: {{ SMSChats }}
       <Spinner v-if="isLoading" />
       <b-card no-body>
         <b-tabs>
@@ -10,13 +9,7 @@
           </b-tab>
           <b-tab>
             <template v-slot:title>
-              <b-spinner
-                type="grow"
-                small
-                variant="primary"
-                v-if="unreadSMSMessages"
-              ></b-spinner
-              >Chats
+              <b-spinner type="grow" small variant="primary"></b-spinner>Chats
               <!-- <span class="badge badge-primary" v-if="unreadSMSMessages">{{ unreadSMSMessages }}</span>Chats -->
             </template>
             <chats></chats>
