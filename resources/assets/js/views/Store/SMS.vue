@@ -96,7 +96,7 @@ export default {
       }
     },
     unreadSMSMessages() {
-      if (_.isArray(this.SMSMessages)) {
+      if (_.isArray(this.SMSChats)) {
         console.log(1);
         console.log(this.SMSChats.length);
         return this.SMSChats.length > 0
