@@ -7,10 +7,9 @@
           <b-tab title="Messages">
             <messages></messages>
           </b-tab>
-          <b-tab>
+          <b-tab title="Chats">
             <template v-slot:title>
               <b-spinner type="grow" small variant="primary"></b-spinner>Chats
-              <!-- <span class="badge badge-primary" v-if="unreadSMSMessages">{{ unreadSMSMessages }}</span>Chats -->
             </template>
             <chats></chats>
           </b-tab>
