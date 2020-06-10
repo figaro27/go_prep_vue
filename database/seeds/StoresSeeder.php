@@ -137,7 +137,11 @@ class StoresSeeder extends Seeder
                 'promotionAmount' => 5.0,
                 'freeDelivery' => 0,
                 'conditionType' => 'subtotal',
-                'conditionAmount' => 100,
+                'conditionAmount' => 100
+            ]);
+
+            DB::table('sms_settings')->insert([
+                'store_id' => $i,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]);

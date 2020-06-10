@@ -44,6 +44,7 @@ use Illuminate\Http\Request;
 use DB;
 use App\Traits\DeliveryDates;
 use App\Referral;
+use App\SmsSetting;
 
 class CheckoutController extends StoreController
 {
@@ -1293,6 +1294,16 @@ class CheckoutController extends StoreController
             $referral = Referral::where('id', $appliedReferralId)->first();
             $referral->balance -= $referralReduction;
             $referral->update();
+        }
+
+        // Auto add new customer to SMS Contacts
+        $smsSetting = SmsSetting::where('store_id', $storeId)->first();
+        if ($smsSetting->autoAddCustomers) {
+            $smsSetting->addNewCustomerToContacts($customer);
+        }
+
+        if ($smsSetting->autoSendOrderConfirmation) {
+            $smsSetting->sendOrderConfirmationSMS($customer, $order);
         }
 
         return $orderId;
