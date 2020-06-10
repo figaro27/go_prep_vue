@@ -82,25 +82,26 @@ class MealOrders
         }
 
         $pdf = new Pdf($pdfConfig);
+        if ($this->store->modules->productionGroups) {
+            if ($groups && count($groups) > 0) {
+                foreach ($groups as $group) {
+                    $productionGroupIds = [];
+                    array_push($productionGroupIds, (int) $group['id']);
+                    $data = $this->exportData($type, $productionGroupIds);
 
-        if ($groups && count($groups) > 0) {
-            foreach ($groups as $group) {
-                $productionGroupIds = [];
-                array_push($productionGroupIds, (int) $group['id']);
-                $data = $this->exportData($type, $productionGroupIds);
+                    if (!$data || count($data) == 0) {
+                        continue;
+                    }
 
-                if (!$data || count($data) == 0) {
-                    continue;
+                    $vars['category_header'] =
+                        'Production Group: ' . $group['title'];
+                    $vars['data'] = $data;
+                    $vars = $this->filterVars($vars);
+
+                    $html = view($this->exportPdfView(), $vars)->render();
+
+                    $pdf->addPage($html);
                 }
-
-                $vars['category_header'] =
-                    'Production Group: ' . $group['title'];
-                $vars['data'] = $data;
-                $vars = $this->filterVars($vars);
-
-                $html = view($this->exportPdfView(), $vars)->render();
-
-                $pdf->addPage($html);
             }
         }
 
