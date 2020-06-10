@@ -7,7 +7,7 @@
           <b-tab title="Messages">
             <messages></messages>
           </b-tab>
-          <b-tab title="Chats">
+          <b-tab>
             <template v-slot:title>
               <span
                 class="badge badge-primary unreadBadge"
