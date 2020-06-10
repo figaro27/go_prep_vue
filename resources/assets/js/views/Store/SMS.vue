@@ -1,7 +1,6 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <b-spinner type="grow" small variant="primary"></b-spinner>Test
       <Spinner v-if="isLoading" />
       <b-card no-body>
         <b-tabs>
@@ -10,7 +9,8 @@
           </b-tab>
           <b-tab title="Chats">
             <template v-slot:title>
-              <b-spinner type="grow" small variant="primary"></b-spinner>Chats
+              <div class="spinner-grow text-primary mr-1" role="status"></div>
+              Chats
             </template>
             <chats></chats>
           </b-tab>
@@ -96,5 +96,9 @@ export default {
 <style>
 .VueTables__search {
   display: none !important;
+}
+.spinner-grow {
+  width: 15px;
+  height: 15px;
 }
 </style>
