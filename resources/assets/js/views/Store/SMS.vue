@@ -101,9 +101,9 @@ export default {
     },
     chatsText() {
       if (this.unreadSMSMessages === 1) {
-        return "New Chat";
+        return "Unread Chat";
       } else {
-        return "New Chats";
+        return "Unread Chats";
       }
     }
   },
