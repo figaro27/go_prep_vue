@@ -77,7 +77,10 @@ export default {
     formatMoney: format.money,
     sendMessage() {
       axios
-        .post("/api/me/SMSChats", { message: this.message, phone: this.phone })
+        .post("/api/me/SMSChats", {
+          message: this.message,
+          chatId: this.row.id
+        })
         .then(resp => {
           this.$emit("showChat", this.row);
           this.$toastr.s("Message sent.", "Success");
