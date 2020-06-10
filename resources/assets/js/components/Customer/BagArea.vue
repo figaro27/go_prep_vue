@@ -942,7 +942,9 @@ export default {
       this.$nextTick(() => {
         this.$set(this.enablingEdit, item.guid, true);
       });
-      this.customTitle[item.guid] = item.meal.title;
+      this.customTitle[item.guid] = item.size
+        ? item.meal.title
+        : item.meal.full_title;
       this.customSize[item.guid] = item.size ? item.size.title : null;
       this.customPrice[item.guid] = item.price;
     },
