@@ -136,6 +136,8 @@
           </b-form>
 
           <!--
+            <b-btn @click="testIncomingSMS">TEST INCOMING SMS</b-btn>
+            
             <b-btn @click="testChargeDescriptor">TEST CHARGE DESCRIPTOR</b-btn>
 
             <p><b-btn @click="testRenewSubscription">TEST RENEW SUBSCRIPTION</b-btn></p>
@@ -352,6 +354,9 @@ export default {
     },
     testChargeDescriptor() {
       axios.get("/testChargeDescriptor");
+    },
+    testIncomingSMS() {
+      axios.get("/testIncomingSMS");
     }
   }
 };

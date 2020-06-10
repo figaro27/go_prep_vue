@@ -20,6 +20,8 @@ Route::get('testRenewSubscription', 'TestController@testRenewSubscription');
 
 Route::get('testChargeDescriptor', 'TestController@testChargeDescriptor');
 
+Route::get('testIncomingSMS', 'TestController@testIncomingSMS');
+
 Route::get(
     '/mail/cancelledSubscription',
     'EmailTestController@storeCancelledSubscription'

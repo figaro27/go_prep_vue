@@ -80,7 +80,6 @@ class SmsChatController extends StoreController
                 $chat->firstName = json_decode($body)->contact->firstName;
                 $chat->lastName = json_decode($body)->contact->lastName;
                 $chat->lastMessage = json_decode($body)->lastMessage;
-                $chat->phone = json_decode($body)->phone;
                 $chat->unread = $unread;
                 $chat->updatedAt = json_decode($body)->updatedAt;
                 array_push($chats, $chat);
@@ -217,63 +216,49 @@ class SmsChatController extends StoreController
     public function incomingSMS(Request $request)
     {
         $phone = $request->get('sender');
-        $smsContact = SmsContact::where('phone', $phone)->first();
-        $smsChat = SmsChat::where('phone', $smsContact->phone)->first();
-
-        if ($smsChat) {
-            // Create new chat
-            $smsChat->updatedAt = $request->get('messageTime');
-            $smsChat->unread = 1;
-            $smsChat->update();
-        } else {
-            // Get existing chat ID
-            $client = new \GuzzleHttp\Client();
-            $res = $client->request('GET', $this->baseURL . '/' . $phone, [
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            $this->baseURL . '/' . $phone . '/by/phone',
+            [
                 'headers' => $this->headers
-            ]);
+            ]
+        );
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+        $chatId = json_decode($body)->id;
+
+        $chat = SmsChat::where('chat_id', $chatId)->first();
+
+        if ($chat) {
+            // Update existing chat
+            $chat->unread = 1;
+            $chat->updatedAt = $request->get('messageTime');
+            $chat->update();
+        } else {
+            // Get store ID from looking up the contact by their phone number
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'GET',
+                'https://rest.textmagic.com/api/v2/contacts/phone/' . $phone,
+                [
+                    'headers' => $this->headers
+                ]
+            );
             $status = $res->getStatusCode();
             $body = $res->getBody();
-            $chatId = json_decode($body)->id;
+            $contactId = json_decode($body)->id;
+            $storeId = SmsContact::where('contact_id', $contactId)
+                ->pluck('store_id')
+                ->first();
 
-            // Update chat
-            $smsChat = new SmsChat();
-            $smsChat->store_id = $smsContact->store_id;
-            $smsChat->chat_id = $chatId;
-            $smsChat->unread = 1;
-            $smsChat->updatedAt = $request->get('messageTime');
-            $smsChat->save();
+            // Add new chat
+            $chat = new SmsChat();
+            $chat->store_id = $storeId;
+            $chat->chat_id = $chatId;
+            $chat->unread = 1;
+            $chat->updatedAt = $request->get('messageTime');
+            $chat->save();
         }
-
-        // Look for an existing chat ID by checking the sender phone number (make new column in chats).
-        // Update messageTime as updatedAt & unread to 1
-        // If no existing chat, add new one.
-
-        // $chatStoreId = SmsContact::where(
-        //     'contact_id',
-        //     $chat->contact ? $chat->contact->id : null
-        // )
-        //     ->pluck('store_id')
-        //     ->first();
-
-        // if ($chatStoreId) {
-        //     $smsChat = SmsChat::where('chat_id', $chat->id)->first();
-        //     if ($smsChat) {
-        //         if (
-        //             $chat->direction === 'i' &&
-        //             $chat->updatedAt > $smsChat->updatedAt
-        //         ) {
-        //             $smsChat->unread = 1;
-        //             $smsChat->updatedAt = $chat->updatedAt;
-        //             $smsChat->update();
-        //         }
-        //     } else {
-        //         $smsChat = new SmsChat();
-        //         $smsChat->store_id = $chatStoreId;
-        //         $smsChat->chat_id = $chat->id;
-        //         $smsChat->unread = 1;
-        //         $smsChat->updatedAt = $chat->updatedAt;
-        //         $smsChat->save();
-        //     }
-        // }
     }
 }
