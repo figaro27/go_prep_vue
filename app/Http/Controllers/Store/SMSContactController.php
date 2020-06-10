@@ -39,6 +39,7 @@ class SMSContactController extends StoreController
                 $contact = new stdClass();
                 $contact->id = json_decode($body)->id;
                 $contact->firstName = json_decode($body)->firstName;
+                $contact->phone = json_decode($body)->phone;
                 $contact->lastName = json_decode($body)->lastName;
                 array_push($contacts, $contact);
             } catch (\Exception $e) {

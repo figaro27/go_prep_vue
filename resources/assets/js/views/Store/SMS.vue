@@ -5,13 +5,13 @@
       <b-card no-body>
         <b-tabs>
           <b-tab title="Messages">
-            <div class="badge badge-primary" v-if="unreadSMSMessages">
+            <div class="badge badge-primary" v-if="hasUnreadSMSMessages">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
             <messages></messages>
           </b-tab>
           <b-tab title="Chats">
-            <div class="badge badge-primary" v-if="unreadSMSMessages">
+            <div class="badge badge-primary" v-if="hasUnreadSMSMessages">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
             <!-- <template v-slot:title>
@@ -25,19 +25,19 @@
             <chats></chats>
           </b-tab>
           <b-tab title="Contacts">
-            <div class="badge badge-primary" v-if="unreadSMSMessages">
+            <div class="badge badge-primary" v-if="hasUnreadSMSMessages">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
             <contacts></contacts>
           </b-tab>
           <b-tab title="Lists">
-            <div class="badge badge-primary" v-if="unreadSMSMessages">
+            <div class="badge badge-primary" v-if="hasUnreadSMSMessages">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
             <lists></lists>
           </b-tab>
           <b-tab title="Settings">
-            <div class="badge badge-primary" v-if="unreadSMSMessages">
+            <div class="badge badge-primary" v-if="hasUnreadSMSMessages">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
             <settings></settings>
@@ -86,6 +86,13 @@ export default {
       initialized: "initialized",
       SMSChats: "SMSChats"
     }),
+    hasUnreadSMSMessages() {
+      if (this.unreadSMSMessages.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     unreadSMSMessages() {
       return this.SMSChats.length > 0
         ? _.reduce(
