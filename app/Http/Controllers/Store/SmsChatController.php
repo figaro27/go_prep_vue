@@ -213,4 +213,9 @@ class SmsChatController extends StoreController
     {
         //
     }
+
+    public function incomingSMS(Request $request)
+    {
+        return;
+    }
 }
