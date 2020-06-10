@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <p>{{ unreadSMSMessages }}</p>
+      <p>Unread Messages: {{ unreadSMSMessages }}</p>
       <p>{{ SMSChats }}</p>
       <Spinner v-if="isLoading" />
       <b-card no-body>
@@ -89,17 +89,24 @@ export default {
       SMSChats: "SMSChats"
     }),
     unreadSMSMessages() {
-      return this.SMSChats.length > 0
-        ? _.reduce(
-            this.SMSChats,
-            (sum, chat) => {
-              if (chat.unread === true) {
-                return sum + 1;
-              }
-            },
-            0
-          )
-        : 0;
+      let count = 0;
+      this.SMSChats.forEach(chat => {
+        if (chat.unread) {
+          count++;
+        }
+      });
+      return count;
+      // return this.SMSChats.length > 0
+      //   ? _.reduce(
+      //       this.SMSChats,
+      //       (sum, chat) => {
+      //         if (chat.unread === true) {
+      //           return sum + 1;
+      //         }
+      //       },
+      //       0
+      //     )
+      //   : 0;
     },
     chatsText() {
       if (this.unreadSMSMessages === 1) {
