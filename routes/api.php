@@ -523,6 +523,50 @@ foreach (
                                 'getLastStaffMemberId',
                                 'StaffController@getLastStaffMemberId'
                             );
+
+                            Route::get(
+                                'sendTestMessage',
+                                'SMSController@SendTestMessage'
+                            );
+
+                            Route::resource(
+                                'SMSMessages',
+                                'SMSMessagesController'
+                            );
+                            Route::resource(
+                                'SMSTemplates',
+                                'SMSTemplatesController'
+                            );
+                            Route::resource('SMSLists', 'SMSListsController');
+                            Route::post(
+                                'showContactsInList',
+                                'SMSListsController@showContactsInList'
+                            );
+                            Route::post(
+                                'updateList',
+                                'SMSListsController@updateList'
+                            );
+                            Route::resource(
+                                'SMSContacts',
+                                'SMSContactController'
+                            );
+                            Route::post(
+                                'SMSContactUpdate',
+                                'SMSContactController@update'
+                            );
+                            Route::resource(
+                                'smsSettings',
+                                'SMSSettingController'
+                            );
+                            Route::post(
+                                'updateSMSSettings',
+                                'SMSSettingController@update'
+                            );
+                            Route::resource('SMSChats', 'SmsChatController');
+                            Route::post(
+                                'getChatMessages',
+                                'SmsChatController@getChatMessages'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {

@@ -25,6 +25,7 @@ const state = {
   isLazyDD: {},
   isLazyDDLoading: {},
   jobs: {},
+  hideSpinner: false,
   viewed_store: {
     delivery_days: [],
     delivery_day: null,
@@ -123,6 +124,9 @@ const state = {
     report_settings: {
       data: {}
     },
+    sms_settings: {
+      data: {}
+    },
     referrals: {
       data: {}
     },
@@ -167,6 +171,23 @@ const state = {
     },
     staff: {
       data: {}
+    },
+    sms: {
+      messages: {
+        data: {}
+      },
+      templates: {
+        data: {}
+      },
+      lists: {
+        data: {}
+      },
+      contacts: {
+        data: {}
+      },
+      chats: {
+        data: {}
+      }
     }
   },
   orders: {
@@ -219,6 +240,21 @@ const mutations = {
   },
   tags(state, { tags }) {
     state.tags = tags;
+  },
+  setSMSMessages(state, data) {
+    state.store.sms.messages.data = data.messages;
+  },
+  setSMSTemplates(state, data) {
+    state.store.sms.templates.data = data.templates;
+  },
+  setSMSLists(state, data) {
+    state.store.sms.lists.data = data.lists;
+  },
+  setSMSContacts(state, data) {
+    state.store.sms.contacts.data = data.contacts;
+  },
+  setSMSChats(state, data) {
+    state.store.sms.chats.data = data.chats;
   },
   setViewedStoreWillDeliver(state, willDeliver) {
     state.viewed_store.will_deliver = willDeliver;
@@ -813,6 +849,10 @@ const mutations = {
     state.store.report_settings.data = reportSettings;
   },
 
+  storeSMSSettings(state, { smsSettings }) {
+    state.store.sms_settings.data = smsSettings;
+  },
+
   storeReferrals(state, { referrals }) {
     state.store.referrals.data = referrals;
   },
@@ -907,6 +947,14 @@ const mutations = {
 
   hideSpinner(state, {}) {
     state.isLoading = false;
+  },
+
+  enableSpinner(state, {}) {
+    state.hideSpinner = false;
+  },
+
+  disableSpinner(state, {}) {
+    state.hideSpinner = true;
   }
 };
 
@@ -1387,6 +1435,16 @@ const actions = {
 
     try {
       if (
+        !_.isEmpty(data.store.sms_settings) &&
+        _.isObject(data.store.sms_settings)
+      ) {
+        let smsSettings = data.store.sms_settings;
+        commit("storeSMSSettings", { smsSettings });
+      }
+    } catch (e) {}
+
+    try {
+      if (
         !_.isEmpty(data.store.module_settings) &&
         _.isObject(data.store.module_settings)
       ) {
@@ -1619,6 +1677,40 @@ const actions = {
     });
   },
 
+  async initSMS({ commit, state, dispatch }, data = {}) {
+    dispatch("refreshSMSChats");
+    dispatch("refreshSMSMessages");
+    dispatch("refreshSMSTemplates");
+    dispatch("refreshSMSLists");
+    dispatch("refreshSMSContacts");
+  },
+
+  async refreshSMSMessages({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/SMSMessages");
+    const { data } = await res;
+    commit("setSMSMessages", { messages: data });
+  },
+  async refreshSMSTemplates({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/SMSTemplates");
+    const { data } = await res;
+    commit("setSMSTemplates", { templates: data });
+  },
+  async refreshSMSLists({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/SMSLists");
+    const { data } = await res;
+    commit("setSMSLists", { lists: data });
+  },
+  async refreshSMSContacts({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/SMSContacts");
+    const { data } = await res;
+    commit("setSMSContacts", { contacts: data });
+  },
+  async refreshSMSChats({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/SMSChats");
+    const { data } = await res;
+    commit("setSMSChats", { chats: data });
+  },
+
   async initStore({ commit, state, dispatch }, data = {}) {
     // Required actions
     if (data.store) {
@@ -1636,6 +1728,8 @@ const actions = {
       dispatch("refreshStoreStaff"),
       dispatch("refreshOrderIngredients"),
       dispatch("refreshIngredients");
+    dispatch("refreshStoreSubscriptions");
+    dispatch("initSMS");
     // dispatch("refreshUpcomingOrders");
   },
 
@@ -2006,6 +2100,17 @@ const actions = {
       commit("storeReportSettings", { report_settings: data });
     } else {
       throw new Error("Failed to retrieve report settings");
+    }
+  },
+
+  async refreshStoreSMSSettings({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/smsSettings");
+    const { data } = await res;
+
+    if (_.isObject(data)) {
+      commit("storeSMSSettings", { sms_settings: data });
+    } else {
+      throw new Error("Failed to retrieve sms settings");
     }
   },
 
@@ -2740,11 +2845,34 @@ const actions = {
 
   async hideSpinner({ commit, state }, args = {}) {
     commit("hideSpinner", {});
+  },
+
+  async enableSpinner({ commit, state }, args = {}) {
+    commit("enableSpinner", {});
+  },
+
+  async disableSpinner({ commit, state }, args = {}) {
+    commit("disableSpinner", {});
   }
 };
 
 // getters are functions
 const getters = {
+  SMSMessages(state) {
+    return state.store.sms.messages.data;
+  },
+  SMSTemplates(state) {
+    return state.store.sms.templates.data;
+  },
+  SMSLists(state) {
+    return state.store.sms.lists.data;
+  },
+  SMSContacts(state) {
+    return state.store.sms.contacts.data;
+  },
+  SMSChats(state) {
+    return state.store.sms.chats.data;
+  },
   loggedIn(state) {
     return !_.isEmpty(state.user.data) && state.user.data.id && auth.hasToken();
   },
@@ -3104,7 +3232,11 @@ const getters = {
     return state.viewed_store.delivery_day || {};
   },
   isLoading(state) {
-    return state.isLoading || !_.isEmpty(state.jobs);
+    if (!state.hideSpinner) {
+      return state.isLoading || !_.isEmpty(state.jobs);
+    } else {
+      return false;
+    }
   },
   initialized(state) {
     return state.initialized;
@@ -3515,6 +3647,13 @@ const getters = {
   storeReportSettings: state => {
     try {
       return state.store.report_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeSMSSettings: state => {
+    try {
+      return state.store.sms_settings.data || {};
     } catch (e) {
       return {};
     }

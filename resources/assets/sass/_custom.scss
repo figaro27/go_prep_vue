@@ -78,6 +78,10 @@ h6 {
   line-height: 25px;
 }
 
+.nav-link .badge-primary {
+  width: 15px !important;
+}
+
 .customer-nav {
   max-width: 60% !important;
   width: 100% !important;
@@ -117,8 +121,15 @@ h6 {
 }
 
 .nav-tabs .nav-item .nav-link {
+  color: #535353;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.3);
+}
+
+.nav-tabs .nav-link.active {
   background-color: #3082cf !important;
-  color: #fff;
+  color: #ffffff;
+  box-shadow: none;
 }
 
 .open-indicator {
@@ -290,6 +301,22 @@ body.sidebar-minimized {
 }
 
 .storeFilters .focus,
+.focus {
+  box-shadow: 0 0 0 0rem !important;
+}
+
+.smsFilters .btn-secondary {
+  background-color: #ffffff !important;
+  margin-right: 5px !important;
+}
+
+.smsFilters .active {
+  color: #ffffff !important;
+  border-color: #dedede !important;
+  background-color: #3082cf !important;
+}
+
+.smsFilters .focus,
 .focus {
   box-shadow: 0 0 0 0rem !important;
 }
@@ -632,6 +659,11 @@ body.sidebar-minimized {
 .popover-size {
   width: 20px !important;
   height: 20px !important;
+}
+
+.popover-size-small {
+  width: 15px !important;
+  height: 15px !important;
 }
 
 .menu-bag-btn {
@@ -1649,6 +1681,49 @@ body.forgotresettoken {
 .vs__search {
   -webkit-box-shadow: 0 0 0px #000000 !important;
   box-shadow: 0 0 0px #000000 !important;
+}
+
+.newSMSArea {
+  background-color: #f9f9f9 !important;
+  border-radius: 15px !important;
+  padding: 20px !important;
+  margin-right: 20% !important;
+}
+
+.newTemplateArea {
+  background-color: #f9f9f9 !important;
+  border-radius: 15px !important;
+}
+
+.tagDropdown {
+  background-color: #ffffff !important;
+  border-radius: 15px !important;
+  margin-left: 5px !important;
+  border: 0.5px solid #d9d9d9 !important;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1) !important;
+  padding-top: 20px !important;
+  width: 135px !important;
+}
+
+.tagDropdown li {
+  margin: 0;
+  padding: 0px;
+  line-height: 0.2em;
+}
+
+.tagDropdown li p {
+  padding-left: 10px;
+}
+
+.gray-text {
+  color: #6c6c6c !important;
+}
+
+.contact-area {
+  background-color: #ffffff !important;
+  min-height: 50px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1) !important;
 }
 
 .d-center {
