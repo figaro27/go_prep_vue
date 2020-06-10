@@ -62,7 +62,7 @@
       <v-client-table
         v-show="initialized"
         :columns="columns"
-        :data="SMSLists"
+        :data="SMSListsData"
         :options="{
           orderBy: {
             column: 'created_at',
@@ -138,7 +138,14 @@ export default {
       SMSLists: "SMSLists",
       SMSContacts: "SMSContacts",
       initialized: "initialized"
-    })
+    }),
+    SMSListsData() {
+      if (_.isArray(this.SMSLists)) {
+        return this.SMSLists;
+      } else {
+        return [];
+      }
+    }
   },
   methods: {
     ...mapActions({

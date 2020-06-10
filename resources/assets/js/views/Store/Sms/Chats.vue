@@ -31,7 +31,11 @@
         ></view-chat>
       </b-modal>
 
-      <v-client-table :columns="columns" :data="SMSChats" :options="options">
+      <v-client-table
+        :columns="columns"
+        :data="SMSChatsData"
+        :options="options"
+      >
         <div slot="name" class="text-nowrap" slot-scope="props">
           {{ props.row.firstName }} {{ props.row.lastName }}
         </div>
@@ -91,7 +95,14 @@ export default {
       isLoading: "isLoading",
       initialized: "initialized",
       SMSChats: "SMSChats"
-    })
+    }),
+    SMSChatsData() {
+      if (_.isArray(this.SMSChats)) {
+        return this.SMSChats;
+      } else {
+        return [];
+      }
+    }
   },
   methods: {
     ...mapActions({

@@ -212,7 +212,7 @@
       <v-client-table
         v-show="initialized"
         :columns="columns"
-        :data="SMSMessages"
+        :data="SMSMessagesData"
         :options="{
           orderBy: {
             column: 'messageTime',
@@ -305,6 +305,13 @@ export default {
       SMSLists: "SMSLists",
       initialized: "initialized"
     }),
+    SMSMessagesData() {
+      if (_.isArray(this.SMSMessages)) {
+        return this.SMSMessages;
+      } else {
+        return [];
+      }
+    },
     recipientCount() {
       let phones = this.phones.length;
       let contacts = this.contacts.length;

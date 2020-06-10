@@ -61,7 +61,7 @@
       <v-client-table
         v-show="initialized"
         :columns="columns"
-        :data="SMSContacts"
+        :data="SMSContactsData"
         :options="{
           orderBy: {
             column: 'id',
@@ -133,7 +133,14 @@ export default {
       initialized: "initialized",
       SMSContacts: "SMSContacts",
       initialized: "initialized"
-    })
+    }),
+    SMSContactsData() {
+      if (_.isArray(this.SMSContacts)) {
+        return this.SMSContacts;
+      } else {
+        return [];
+      }
+    }
   },
   methods: {
     ...mapActions({
