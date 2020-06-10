@@ -61,7 +61,7 @@ export default {
     this.$nextTick(function() {
       window.setInterval(() => {
         this.$emit("disableSpinner");
-        this.$emit("refreshChatMessage", this.row);
+        this.$emit("showChat", this.row);
       }, 10000);
     });
   },
@@ -79,7 +79,7 @@ export default {
       axios
         .post("/api/me/SMSChats", { message: this.message, phone: this.phone })
         .then(resp => {
-          this.$emit("refreshChatMessage", this.row);
+          this.$emit("showChat", this.row);
           this.$toastr.s("Message sent.", "Success");
         });
     }

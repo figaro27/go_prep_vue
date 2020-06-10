@@ -155,16 +155,18 @@ class SmsChatController extends StoreController
      * @param  \App\SmsChat  $smsChat
      * @return \Illuminate\Http\Response
      */
-    public function show(SmsChat $smsChat)
+    public function show($chatId)
     {
-        //
-    }
+        // Get the phone number from the chat ID so you can get the chat...
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', $this->baseURL . '/' . $chatId, [
+            'headers' => $this->headers
+        ]);
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+        $phone = json_decode($body)->phone;
 
-    public function getChatMessages(Request $request)
-    {
-        $phone = $request->get('phone');
-        $chatId = $request->get('id');
-
+        // Get the chat
         $client = new \GuzzleHttp\Client();
         $res = $client->request('GET', $this->baseURL . '/' . $phone, [
             'headers' => $this->headers
