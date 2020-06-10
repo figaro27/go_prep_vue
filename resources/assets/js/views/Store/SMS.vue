@@ -90,11 +90,15 @@ export default {
     }),
     unreadSMSMessages() {
       let count = 0;
-      this.SMSChats.forEach(chat => {
-        if (chat.unread) {
-          count++;
-        }
-      });
+      if (_.isArray(this.SMSChats)) {
+        this.SMSChats.forEach(chat => {
+          console.log(chat);
+          if (chat.unread) {
+            count++;
+          }
+        });
+      }
+
       return count;
       // return this.SMSChats.length > 0
       //   ? _.reduce(
