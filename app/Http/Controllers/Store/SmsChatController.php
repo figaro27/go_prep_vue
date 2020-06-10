@@ -216,12 +216,33 @@ class SmsChatController extends StoreController
 
     public function incomingSMS(Request $request)
     {
-        $smsChat = new SmsChat();
-        $smsChat->store_id = 13;
-        $smsChat->chat_id = $request->get('id');
-        $smsChat->unread = 1;
-        $smsChat->updatedAt = $request->get('messageTime');
-        $smsChat->save();
+        $phone = $request->get('sender');
+        $smsContact = SmsContact::where('phone', $phone)->first();
+        $smsChat = SmsChat::where('phone', $smsContact->phone)->first();
+
+        if ($smsChat) {
+            // Create new chat
+            $smsChat->updatedAt = $request->get('messageTime');
+            $smsChat->unread = 1;
+            $smsChat->update();
+        } else {
+            // Get existing chat ID
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('GET', $this->baseURL . '/' . $phone, [
+                'headers' => $this->headers
+            ]);
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
+            $chatId = json_decode($body)->id;
+
+            // Update chat
+            $smsChat = new SmsChat();
+            $smsChat->store_id = $smsContact->store_id;
+            $smsChat->chat_id = $chatId;
+            $smsChat->unread = 1;
+            $smsChat->updatedAt = $request->get('messageTime');
+            $smsChat->save();
+        }
 
         // Look for an existing chat ID by checking the sender phone number (make new column in chats).
         // Update messageTime as updatedAt & unread to 1
