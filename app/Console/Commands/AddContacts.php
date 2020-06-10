@@ -48,6 +48,27 @@ class AddContacts extends Command
 
     public function handle()
     {
+        // Just add MQS store list for testing
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('POST', $this->baseURL, [
+            'headers' => $this->headers,
+            'form_params' => [
+                'name' => 'All Contacts - MQS'
+            ]
+        ]);
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        $smsList = new SmsList();
+        $smsList->store_id = 13;
+        $smsList->list_id = json_decode($body)->id;
+        $smsList->save();
+
+        $listId = json_decode($body)->id;
+
+        return;
+
         // Create GoPrep Master list
 
         $client = new \GuzzleHttp\Client();
