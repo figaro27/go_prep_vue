@@ -97,6 +97,10 @@ class SMSMessagesController extends StoreController
         $lists = implode(',', $lists);
         $contacts = implode(',', $contacts);
 
+        $fromNumber = SmsSetting::where('store_id', $this->store->id)
+            ->pluck('phone')
+            ->first();
+
         try {
             $client = new \GuzzleHttp\Client();
             $res = $client->request('POST', $this->baseURL, [
@@ -105,7 +109,8 @@ class SMSMessagesController extends StoreController
                     'lists' => $lists,
                     'contacts' => $contacts,
                     'text' => $message,
-                    'phones' => $phones
+                    'phones' => $phones,
+                    'from' => $fromNumber
                 ]
             ]);
             $status = $res->getStatusCode();

@@ -562,6 +562,10 @@ foreach (
                                 'updateSMSSettings',
                                 'SMSSettingController@update'
                             );
+                            Route::get(
+                                'findAvailableNumbers',
+                                'SMSSettingController@findAvailableNumbers'
+                            );
                             Route::resource('SMSChats', 'SmsChatController');
                         }
                     );

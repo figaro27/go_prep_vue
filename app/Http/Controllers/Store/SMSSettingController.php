@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Store;
 
 use App\SmsSetting;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class SMSSettingController extends StoreController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $baseURL = 'https://rest.textmagic.com/api/v2/numbers';
+    protected $headers = [
+        'X-TM-Username' => 'mikesoldano',
+        'X-TM-Key' => 'sYWo6q3SVtDr9ilKAIzo4XKL4lKVHg',
+        'Content-Type' => 'application/x-www-form-urlencoded'
+    ];
+
     public function index()
     {
         return $this->store->smsSettings();
@@ -84,5 +87,21 @@ class SMSSettingController extends StoreController
     public function destroy(SMSSetting $sMSSetting)
     {
         //
+    }
+
+    public function findAvailableNumbers()
+    {
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            'https://rest.textmagic.com/api/v2/numbers/available/US/',
+            [
+                'headers' => $this->headers
+            ]
+        );
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        return $body;
     }
 }

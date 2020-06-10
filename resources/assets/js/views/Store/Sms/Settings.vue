@@ -2,6 +2,16 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
+      <b-modal
+        size="md"
+        title="Activate"
+        v-model="showActivateModal"
+        v-if="showActivateModal"
+        no-fade
+        hide-footer
+      >
+        <activate></activate>
+      </b-modal>
       <p>
         <span class="mr-1">Add New Customers to Contacts</span>
         <img
@@ -36,6 +46,7 @@
         variant="pill"
         size="lg"
         v-model="smsSettings.autoSendOrderConfirmation"
+        @change.native="checkIfActivated"
       />
 
       <p>
@@ -56,6 +67,7 @@
           size="lg"
           v-model="smsSettings.autoSendDelivery"
           class="d-inline mr-2 pt-1"
+          @change.native="checkIfActivated"
         />
 
         <b-form-select
@@ -78,15 +90,19 @@ import checkDateRange from "../../../mixins/deliveryDates";
 import format from "../../../lib/format";
 import store from "../../../store";
 import times from "../../../data/times";
+import Activate from "./Modals/Activate.vue";
 
 export default {
   components: {
     Spinner,
-    vSelect
+    vSelect,
+    Activate
   },
   mixins: [checkDateRange],
   data() {
-    return {};
+    return {
+      showActivateModal: false
+    };
   },
   created() {},
   mounted() {},
@@ -110,6 +126,14 @@ export default {
         .then(resp => {
           this.$toastr.s("Your settings have been saved.", "Success");
         });
+    },
+    checkIfActivated() {
+      if (!this.smsSettings.phone) {
+        this.smsSettings.autoSendDelivery = false;
+        this.smsSettings.autoSendOrderConfirmation = false;
+        this.showActivateModal = true;
+        return;
+      }
     }
   }
 };

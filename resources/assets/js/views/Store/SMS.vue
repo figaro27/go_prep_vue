@@ -90,7 +90,6 @@ export default {
       let count = 0;
       if (_.isArray(this.SMSChats)) {
         this.SMSChats.forEach(chat => {
-          console.log(chat);
           if (chat.unread) {
             count++;
           }

@@ -1,6 +1,7 @@
 <template>
   <div class="row mt-2">
     <div class="col-md-12">
+      <b-btn @click="findAvailableNumbers">TEST</b-btn>
       <div>
         <img
           v-b-popover.rightbottom.hover="
@@ -35,6 +36,17 @@
         hide-footer
       >
         <view-lists @insertList="insertList($event)"></view-lists>
+      </b-modal>
+
+      <b-modal
+        size="md"
+        title="Activate"
+        v-model="showActivateModal"
+        v-if="showActivateModal"
+        no-fade
+        hide-footer
+      >
+        <activate></activate>
       </b-modal>
 
       <b-modal
@@ -260,6 +272,7 @@ import ViewTemplates from "./Modals/ViewTemplates.vue";
 import ViewLists from "./Modals/ViewLists.vue";
 import ViewContacts from "./Modals/ViewContacts.vue";
 import ViewMessage from "./Modals/ViewMessage.vue";
+import Activate from "./Modals/Activate.vue";
 
 export default {
   components: {
@@ -268,13 +281,14 @@ export default {
     ViewTemplates,
     ViewLists,
     ViewContacts,
-    ViewMessage
+    ViewMessage,
+    Activate
   },
   mixins: [checkDateRange],
   data() {
     return {
+      showActivateModal: false,
       showNewSMSArea: false,
-      showSMSSettingsModal: false,
       showTagDropdown: false,
       showTemplateModal: false,
       showListModal: false,
@@ -304,6 +318,7 @@ export default {
       SMSMessages: "SMSMessages",
       SMSContacts: "SMSContacts",
       SMSLists: "SMSLists",
+      smsSettings: "storeSMSSettings",
       initialized: "initialized"
     }),
     SMSMessagesData() {
@@ -365,6 +380,10 @@ export default {
       this.showTemplateModal = false;
     },
     sendMessage() {
+      if (!this.smsSettings.phone) {
+        this.showActivateModal = true;
+        return;
+      }
       if (
         this.phones.length == 0 &&
         this.contacts.length == 0 &&
@@ -437,6 +456,9 @@ export default {
     },
     removePhone(phone) {
       this.phones.pop(phone);
+    },
+    findAvailableNumbers() {
+      axios.get("/api/me/findAvailableNumbers");
     }
   }
 };
