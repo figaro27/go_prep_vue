@@ -9,7 +9,11 @@
           </b-tab>
           <b-tab title="Chats">
             <template v-slot:title>
-              <div class="spinner-grow text-primary mr-1" role="status"></div>
+              <span
+                class="badge badge-primary unreadBadge"
+                v-if="unreadSMSMessages"
+                >{{ unreadSMSMessages }}</span
+              >
               Chats
             </template>
             <chats></chats>
@@ -97,8 +101,7 @@ export default {
 .VueTables__search {
   display: none !important;
 }
-.spinner-grow {
+.unreadBadge {
   width: 15px;
-  height: 15px;
 }
 </style>

@@ -197,9 +197,7 @@ export default {
           const hasUnread =
             this.unreadSMSMessages !== undefined && this.unreadSMSMessages > 0;
 
-          item.badge = hasUnread
-            ? { variant: "primary", text: this.unreadSMSMessages }
-            : null;
+          item.badge = hasUnread ? { variant: "primary", text: "New" } : null;
         }
 
         return item;
