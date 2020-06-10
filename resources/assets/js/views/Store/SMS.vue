@@ -1,6 +1,8 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
+      <p>{{ hasUnreadSMSMessages }}</p>
+      <p>{{ unreadSMSMessages }}</p>
       <Spinner v-if="isLoading" />
       <b-card no-body>
         <b-tabs>
