@@ -5,26 +5,41 @@
       <b-card no-body>
         <b-tabs>
           <b-tab title="Messages">
+            <div class="badge badge-primary" v-if="unreadSMSMessages">
+              {{ unreadSMSMessages }} {{ chatsText }}
+            </div>
             <messages></messages>
           </b-tab>
-          <b-tab>
-            <template v-slot:title>
+          <b-tab title="Chats">
+            <div class="badge badge-primary" v-if="unreadSMSMessages">
+              {{ unreadSMSMessages }} {{ chatsText }}
+            </div>
+            <!-- <template v-slot:title>
               <span
                 class="badge badge-primary unreadBadge"
                 v-if="unreadSMSMessages"
                 >{{ unreadSMSMessages }}</span
               >
               Chats
-            </template>
+            </template> -->
             <chats></chats>
           </b-tab>
           <b-tab title="Contacts">
+            <div class="badge badge-primary" v-if="unreadSMSMessages">
+              {{ unreadSMSMessages }} {{ chatsText }}
+            </div>
             <contacts></contacts>
           </b-tab>
           <b-tab title="Lists">
+            <div class="badge badge-primary" v-if="unreadSMSMessages">
+              {{ unreadSMSMessages }} {{ chatsText }}
+            </div>
             <lists></lists>
           </b-tab>
           <b-tab title="Settings">
+            <div class="badge badge-primary" v-if="unreadSMSMessages">
+              {{ unreadSMSMessages }} {{ chatsText }}
+            </div>
             <settings></settings>
           </b-tab>
         </b-tabs>
@@ -83,6 +98,13 @@ export default {
             0
           )
         : 0;
+    },
+    chatsText() {
+      if (this.unreadSMSMessages === 1) {
+        return "New Chat";
+      } else {
+        return "New Chats";
+      }
     }
   },
   methods: {
