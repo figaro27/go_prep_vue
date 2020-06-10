@@ -108,8 +108,9 @@ class SmsChatController extends StoreController
      */
     public function store(Request $request)
     {
+        $chatId = $request->get('chatId');
         $message = $request->get('message');
-        $phone = (int) $request->get('phone');
+        $phone = $this->getPhoneNumber($chatId);
 
         try {
             $client = new \GuzzleHttp\Client();
@@ -158,13 +159,7 @@ class SmsChatController extends StoreController
     public function show($chatId)
     {
         // Get the phone number from the chat ID so you can get the chat...
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request('GET', $this->baseURL . '/' . $chatId, [
-            'headers' => $this->headers
-        ]);
-        $status = $res->getStatusCode();
-        $body = $res->getBody();
-        $phone = json_decode($body)->phone;
+        $phone = $this->getPhoneNumber($chatId);
 
         // Get the chat
         $client = new \GuzzleHttp\Client();
@@ -213,6 +208,19 @@ class SmsChatController extends StoreController
     public function destroy(SmsChat $smsChat)
     {
         //
+    }
+
+    public function getPhoneNumber($chatId)
+    {
+        // Get the phone number from the chat ID so you can get the chat...
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', $this->baseURL . '/' . $chatId, [
+            'headers' => $this->headers
+        ]);
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+        $phone = json_decode($body)->phone;
+        return $phone;
     }
 
     public function incomingSMS(Request $request)
