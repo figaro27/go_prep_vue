@@ -67,7 +67,6 @@ export default {
       SMSChats: "SMSChats"
     }),
     unreadSMSMessages() {
-      return 5;
       return this.SMSChats.length > 0
         ? _.reduce(
             this.SMSChats,
