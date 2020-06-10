@@ -7,7 +7,7 @@
           :key="meal.id + component.id"
           class
         >
-          <h6>{{ component.title }}</h6>
+          <h6 :class="headingClass">{{ component.title }}</h6>
           <p class="font-13">{{ getComponentLabel(component) }}</p>
           <b-form-group :label="null">
             <b-checkbox-group
@@ -46,7 +46,7 @@
 
     <b-row v-if="mealAddons.length" class="my-1 pt-3">
       <b-col>
-        <h6 class="center-text">Add-ons</h6>
+        <h6 :class="headingClass">Add-ons</h6>
         <b-form-group label>
           <b-checkbox-group
             v-model="addons"
@@ -124,6 +124,11 @@ export default {
       storeSettings: "storeSettings",
       getMeal: "viewedStoreMeal"
     }),
+    headingClass() {
+      if (this.fromMealsArea) {
+        return "center-text";
+      } else return "";
+    },
     hasVariations() {
       if (this.meal.components && this.meal.components.length > 0) return true;
       else return false;
