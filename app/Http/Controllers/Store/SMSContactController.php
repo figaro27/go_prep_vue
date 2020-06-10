@@ -79,40 +79,40 @@ class SMSContactController extends StoreController
         if (strlen((string) $phone) === 10) {
             $phone = 1 . $phone;
         }
-        // try {
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request(
-            'POST',
-            'https://rest.textmagic.com/api/v2/contacts',
-            [
-                'headers' => $this->headers,
-                'form_params' => [
-                    'phone' => $phone,
-                    'lists' => $listId,
-                    'firstName' => isset($contact['firstName'])
-                        ? $contact['firstName']
-                        : '',
-                    'lastName' => isset($contact['lastName'])
-                        ? $contact['lastName']
-                        : ''
+        try {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'POST',
+                'https://rest.textmagic.com/api/v2/contacts',
+                [
+                    'headers' => $this->headers,
+                    'form_params' => [
+                        'phone' => $phone,
+                        'lists' => $listId,
+                        'firstName' => isset($contact['firstName'])
+                            ? $contact['firstName']
+                            : '',
+                        'lastName' => isset($contact['lastName'])
+                            ? $contact['lastName']
+                            : ''
+                    ]
                 ]
-            ]
-        );
-        $status = $res->getStatusCode();
-        $body = $res->getBody();
+            );
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
 
-        $smsContact = new SmsContact();
-        $smsContact->store_id = $this->store->id;
-        $smsContact->contact_id = json_decode($body)->id;
-        $smsContact->save();
-        // } catch (\Exception $e) {
-        //     if (
-        //         strpos($e, 'Phone number already exists in your contacts.') !==
-        //         false
-        //     ) {
-        //         $this->updateExistingContact($contact);
-        //     }
-        // }
+            $smsContact = new SmsContact();
+            $smsContact->store_id = $this->store->id;
+            $smsContact->contact_id = json_decode($body)->id;
+            $smsContact->save();
+        } catch (\Exception $e) {
+            if (
+                strpos($e, 'Phone number already exists in your contacts.') !==
+                false
+            ) {
+                $this->updateExistingContact($contact);
+            }
+        }
     }
 
     /**
