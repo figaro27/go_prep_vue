@@ -87,7 +87,7 @@ export default {
       SMSChats: "SMSChats"
     }),
     hasUnreadSMSMessages() {
-      if (this.unreadSMSMessages.length > 0) {
+      if (this.unreadSMSMessages && this.unreadSMSMessages.length > 0) {
         return true;
       } else {
         return false;
