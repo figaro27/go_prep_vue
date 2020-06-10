@@ -88,9 +88,36 @@ class AddContacts extends Command
 
         $masterListId = json_decode($body)->id;
 
-        // Create master list for each store
-
-        $stores = Store::get()->take(3);
+        // Create master list for each active store
+        $stores = Store::whereIn('id', array(
+            // 40,
+            // 74,
+            // 88,
+            // 111,
+            // 112,
+            // 116,
+            // 118,
+            // 119,
+            // 120,
+            // 121,
+            // 123,
+            // 125,
+            // 127,
+            // 131,
+            // 132,
+            // 136,
+            // 137,
+            // 139,
+            // 140,
+            // 141,
+            // 144,
+            // 146,
+            // 148,
+            // 149,
+            // 150,
+            // 151
+            13
+        ))->get();
         foreach ($stores as $store) {
             $client = new \GuzzleHttp\Client();
             $res = $client->request('POST', $this->baseURL, [
@@ -108,54 +135,54 @@ class AddContacts extends Command
             $smsList->save();
 
             $listId = json_decode($body)->id;
-        }
 
-        // Add all customers as contacts and into the master list and store list they belong to
+            // Add all customers as contacts and into the master list and store list they belong to
+            $customers = Customer::where('store_id', $store->id)->get();
 
-        $customers = Customer::all();
-
-        foreach ($customers as $customer) {
-            $storeListId = SmsList::where('store_id', $customer->store_id)
-                ->pluck('list_id')
-                ->first();
-            $storeId = SmsList::where('store_id', $customer->store_id)
-                ->pluck('store_id')
-                ->first();
-            $lists = $masterListId . ',' . $storeListId;
-            // Get country prefix
-            $phone = (int) 1 . preg_replace('/[^0-9]/', '', $customer->phone);
-            try {
-                $client = new \GuzzleHttp\Client();
-                $res = $client->request(
-                    'POST',
-                    'https://rest.textmagic.com/api/v2/contacts',
-                    [
-                        'headers' => $this->headers,
-                        'form_params' => [
-                            'phone' => $phone,
-                            'lists' => $lists,
-                            'firstName' => $customer->firstname,
-                            'lastName' => $customer->lastname,
-                            'email' => $customer->email
+            foreach ($customers as $customer) {
+                $storeListId = SmsList::where('store_id', $customer->store_id)
+                    ->pluck('list_id')
+                    ->first();
+                $storeId = SmsList::where('store_id', $customer->store_id)
+                    ->pluck('store_id')
+                    ->first();
+                $lists = $masterListId . ',' . $storeListId;
+                // Get country prefix
+                $phone =
+                    (int) 1 . preg_replace('/[^0-9]/', '', $customer->phone);
+                try {
+                    $client = new \GuzzleHttp\Client();
+                    $res = $client->request(
+                        'POST',
+                        'https://rest.textmagic.com/api/v2/contacts',
+                        [
+                            'headers' => $this->headers,
+                            'form_params' => [
+                                'phone' => $phone,
+                                'lists' => $lists,
+                                'firstName' => $customer->firstname,
+                                'lastName' => $customer->lastname,
+                                'email' => $customer->email
+                            ]
                         ]
-                    ]
-                );
-                $status = $res->getStatusCode();
-                $body = $res->getBody();
+                    );
+                    $status = $res->getStatusCode();
+                    $body = $res->getBody();
 
-                $smsContact = new SmsContact();
-                $smsContact->store_id = $customer->store_id;
-                $smsContact->contact_id = json_decode($body)->id;
-                $smsContact->phone = $phone;
-                $smsContact->save();
-            } catch (\Exception $e) {
-                if (
-                    strpos(
-                        $e,
-                        'Phone number already exists in your contacts.'
-                    ) !== false
-                ) {
-                    $this->updateExistingContact($customer, $storeId);
+                    $smsContact = new SmsContact();
+                    $smsContact->store_id = $customer->store_id;
+                    $smsContact->contact_id = json_decode($body)->id;
+                    $smsContact->phone = $phone;
+                    $smsContact->save();
+                } catch (\Exception $e) {
+                    if (
+                        strpos(
+                            $e,
+                            'Phone number already exists in your contacts.'
+                        ) !== false
+                    ) {
+                        $this->updateExistingContact($customer, $storeId);
+                    }
                 }
             }
         }
