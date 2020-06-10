@@ -1,8 +1,6 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <p>Unread Messages: {{ unreadSMSMessages }}</p>
-      <p>{{ SMSChats }}</p>
       <Spinner v-if="isLoading" />
       <b-card no-body>
         <b-tabs>
@@ -100,17 +98,6 @@ export default {
       }
 
       return count;
-      // return this.SMSChats.length > 0
-      //   ? _.reduce(
-      //       this.SMSChats,
-      //       (sum, chat) => {
-      //         if (chat.unread === true) {
-      //           return sum + 1;
-      //         }
-      //       },
-      //       0
-      //     )
-      //   : 0;
     },
     chatsText() {
       if (this.unreadSMSMessages === 1) {
