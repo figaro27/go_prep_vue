@@ -333,13 +333,16 @@ export default {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
           if (meal) {
-            if (!this.productionGroupIds.includes(meal.production_group_id))
-              return null;
-
-            if (this.productionGroupId != null) {
-              if (meal.production_group_id !== this.productionGroupId)
+            if (this.storeModules.productionGroups) {
+              if (!this.productionGroupIds.includes(meal.production_group_id))
                 return null;
+
+              if (this.productionGroupId != null) {
+                if (meal.production_group_id !== this.productionGroupId)
+                  return null;
+              }
             }
+
             let size = meal.getSize(item.meal_size_id, item.customSize);
 
             let title = meal.getTitle(
@@ -378,8 +381,11 @@ export default {
         _.forEach(order.line_items_order, lineItem => {
           let item = lineItem;
           if (item) {
-            if (!this.productionGroupIds.includes(lineItem.production_group_id))
+            if (
+              !this.productionGroupIds.includes(lineItem.production_group_id)
+            ) {
               return null;
+            }
             let size = lineItem.size;
             let title = lineItem.title;
             let base_title = lineItem.title;
