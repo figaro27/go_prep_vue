@@ -111,7 +111,7 @@ export default {
             )
           : 0;
       } else {
-        console.log(2):
+        console.log(2);
         return 0;
       }
     },
