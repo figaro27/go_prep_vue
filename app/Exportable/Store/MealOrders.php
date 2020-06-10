@@ -145,11 +145,12 @@ class MealOrders
         } else {
             $params->productionGroupTitle = null;
         }
-
-        count($productionGroupIds) ===
-        ProductionGroup::where('store_id', $this->store->id)->count()
-            ? ($params->productionGroupTitle = null)
-            : null;
+        if ($this->store->modules->productionGroups) {
+            count($productionGroupIds) ===
+            ProductionGroup::where('store_id', $this->store->id)->count()
+                ? ($params->productionGroupTitle = null)
+                : null;
+        }
 
         $orders = $this->store->getOrders(null, $dates, true);
         $orders = $orders->where('voided', 0);
