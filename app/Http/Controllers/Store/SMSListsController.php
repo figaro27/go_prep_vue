@@ -83,21 +83,22 @@ class SMSListsController extends StoreController
         $smsList->save();
 
         $listId = json_decode($body)->id;
-
         // Add contacts to list
-        $contacts = implode(',', $list['contacts']);
+        if (count($list['contacts']) > 0) {
+            $contacts = implode(',', $list['contacts']);
 
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request(
-            'PUT',
-            $this->baseURL . '/' . $listId . '/contacts',
-            [
-                'headers' => $this->headers,
-                'form_params' => [
-                    'contacts' => $contacts
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'PUT',
+                $this->baseURL . '/' . $listId . '/contacts',
+                [
+                    'headers' => $this->headers,
+                    'form_params' => [
+                        'contacts' => $contacts
+                    ]
                 ]
-            ]
-        );
+            );
+        }
     }
 
     /**
