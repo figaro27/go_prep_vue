@@ -981,7 +981,6 @@ export default {
       this.orderLineItems = this.$route.params.adjustOrder
         ? this.$parent.order.line_items_order
         : extras;
-
       this.$emit("updateLineItems", this.orderLineItems);
     }
   }

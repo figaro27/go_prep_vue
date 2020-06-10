@@ -112,7 +112,8 @@ class AddIndexesToTables extends Migration
             $table
                 ->foreign('meal_order_id')
                 ->references('id')
-                ->on('meal_orders');
+                ->on('meal_orders')
+                ->onDelete('cascade');
             $table
                 ->foreign('meal_component_id')
                 ->references('id')
@@ -136,7 +137,8 @@ class AddIndexesToTables extends Migration
             $table
                 ->foreign('meal_order_id')
                 ->references('id')
-                ->on('meal_orders');
+                ->on('meal_orders')
+                ->onDelete('cascade');
             $table
                 ->foreign('meal_addon_id')
                 ->references('id')

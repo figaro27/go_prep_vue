@@ -210,7 +210,7 @@ export default {
   computed: {
     ...mapGetters({
       user: "user",
-      store: "store",
+      store: "viewedStore",
       storeDetail: "storeDetail",
       storeSetting: "storeSetting",
       storeSettings: "storeSettings"

@@ -194,15 +194,19 @@ class CustomerController extends StoreController
     public function searchCustomer(Request $request)
     {
         $query = strtolower($request->get('query'));
+        $queryEscaped = addslashes(str_replace('@', ' ', $query));
 
         if ($query) {
             $customers = Customer::where('store_id', $this->store->id)
-                ->whereHas('user', function ($q) use ($query) {
+                ->whereHas('user', function ($q) use ($query, $queryEscaped) {
                     $q
                         ->where('email', 'LIKE', "%$query%")
-                        ->orWhereHas('userDetail', function ($q) use ($query) {
+                        ->orWhereHas('userDetail', function ($q) use (
+                            $query,
+                            $queryEscaped
+                        ) {
                             $q->whereRaw(
-                                "MATCH(firstname, lastname, phone, address) AGAINST('\"{$query}\"' IN BOOLEAN MODE)"
+                                "MATCH(firstname, lastname, phone, address) AGAINST('*{$queryEscaped}*' IN BOOLEAN MODE)"
                             );
                         });
                 })
