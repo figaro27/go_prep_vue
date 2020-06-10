@@ -97,6 +97,8 @@ export default {
     },
     unreadSMSMessages() {
       if (_.isArray(this.SMSMessages)) {
+        console.log(1);
+        console.log(this.SMSChats.length);
         return this.SMSChats.length > 0
           ? _.reduce(
               this.SMSChats,
@@ -109,6 +111,7 @@ export default {
             )
           : 0;
       } else {
+        console.log(2):
         return 0;
       }
     },
