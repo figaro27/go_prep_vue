@@ -44,9 +44,9 @@
       </b-col>
     </b-row>
 
-    <b-row v-if="mealAddons.length" class="my-1">
+    <b-row v-if="mealAddons.length" class="my-1 pt-3">
       <b-col>
-        <h6>Add-ons</h6>
+        <h6 class="center-text">Add-ons</h6>
         <b-form-group label>
           <b-checkbox-group
             v-model="addons"
