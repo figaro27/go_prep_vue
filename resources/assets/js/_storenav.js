@@ -62,12 +62,12 @@ export default {
       icon: "fa fa-bullhorn"
       // class: 'nav-child',
     },
-    {
-      name: "SMS",
-      url: "/store/SMS",
-      icon: "fas fa-comments"
-      // class: 'nav-child',
-    },
+    // {
+    //   name: "SMS",
+    //   url: "/store/SMS",
+    //   icon: "fas fa-comments"
+    //   // class: 'nav-child',
+    // },
     {
       name: "Settings",
       url: "/store/account/settings",
