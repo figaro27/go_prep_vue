@@ -96,17 +96,21 @@ export default {
       }
     },
     unreadSMSMessages() {
-      return this.SMSChats.length > 0
-        ? _.reduce(
-            this.SMSChats,
-            (sum, chat) => {
-              if (chat.unread === true) {
-                return sum + 1;
-              }
-            },
-            0
-          )
-        : 0;
+      if (_.isArray(this.SMSMessages)) {
+        return this.SMSChats.length > 0
+          ? _.reduce(
+              this.SMSChats,
+              (sum, chat) => {
+                if (chat.unread === true) {
+                  return sum + 1;
+                }
+              },
+              0
+            )
+          : 0;
+      } else {
+        return 0;
+      }
     },
     chatsText() {
       if (this.unreadSMSMessages === 1) {
