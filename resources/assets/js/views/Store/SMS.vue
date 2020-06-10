@@ -120,9 +120,6 @@ export default {
 </script>
 
 <style>
-.VueTables__search {
-  display: none !important;
-}
 .unreadBadge {
   width: 15px;
 }

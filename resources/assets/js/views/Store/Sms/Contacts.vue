@@ -70,7 +70,8 @@
           headings: {
             firstName: 'First Name',
             lastName: 'Last Name'
-          }
+          },
+          filterable: false
         }"
       >
         <div slot="firstName" class="text-nowrap" slot-scope="props">

@@ -70,7 +70,8 @@
           },
           headings: {
             membersCount: 'Contacts'
-          }
+          },
+          filterable: false
         }"
       >
         <div slot="content" class="text-nowrap" slot-scope="props">

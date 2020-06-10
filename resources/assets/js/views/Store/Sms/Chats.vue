@@ -83,7 +83,8 @@ export default {
         orderBy: {
           column: "updated_at",
           ascending: true
-        }
+        },
+        filterable: false
       }
     };
   },

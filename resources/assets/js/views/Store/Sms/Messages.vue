@@ -222,7 +222,8 @@
             messageTime: 'Sent On',
             numbersCount: 'Recipients',
             text: 'Message'
-          }
+          },
+          filterable: false
         }"
       >
         <div slot="messageTime" slot-scope="props">
