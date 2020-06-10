@@ -75,6 +75,10 @@ export default {
           let classes = `chat-${row.id}`;
           classes += row.unread ? " strong" : "";
           return classes;
+        },
+        orderBy: {
+          column: "updated_at",
+          ascending: true
         }
       }
     };

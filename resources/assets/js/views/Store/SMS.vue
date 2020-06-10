@@ -1,6 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
+      <b-spinner type="grow" small variant="primary"></b-spinner>Test
       <Spinner v-if="isLoading" />
       <b-card no-body>
         <b-tabs>
