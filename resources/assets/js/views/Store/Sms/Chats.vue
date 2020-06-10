@@ -26,7 +26,7 @@
           :chat="chat"
           :phone="phone"
           :row="row"
-          @refreshChatMessage="refreshChatMessage($event)"
+          @showChat="showChat($event)"
           @disableSpinner="disableSpinner"
         ></view-chat>
       </b-modal>
@@ -99,39 +99,38 @@ export default {
     view(row) {
       this.phone = row.phone;
       this.row = row;
-      this.refreshChatMessage(row);
+      this.showChat(row);
       this.modalOpened = true;
     },
-    refreshChatMessage(row) {
-      axios
-        .post("/api/me/getChatMessages", { phone: row.phone, id: row.id })
-        .then(resp => {
-          if (this.modalOpened) {
-            this.showViewChatModal = true;
-          }
+    showChat(chat) {
+      let chatId = chat.id;
+      axios.get("/api/me/SMSChats/" + chatId).then(resp => {
+        if (this.modalOpened) {
+          this.showViewChatModal = true;
+        }
 
-          this.chat = resp.data.resources;
-          let lastIncomingId = "";
-          let lastOutgoingId = "";
-          this.chat.forEach(text => {
-            text.css = "";
-            text.direction == "o"
-              ? (text.css += "mine ")
-              : (text.css += "yours ");
-            text.css += "messages ";
-            text.direction == "o" ? (lastOutgoingId = text.id) : null;
-            text.direction == "i" ? (lastIncomingId = text.id) : null;
-          });
-          this.chat.forEach(text => {
-            text.innerCSS = "message ";
-            if (text.id === lastIncomingId || text.id === lastOutgoingId) {
-              text.innerCSS += "last";
-            }
-          });
-
-          // Refresh chats
-          this.refreshSMSChats();
+        this.chat = resp.data.resources;
+        let lastIncomingId = "";
+        let lastOutgoingId = "";
+        this.chat.forEach(text => {
+          text.css = "";
+          text.direction == "o"
+            ? (text.css += "mine ")
+            : (text.css += "yours ");
+          text.css += "messages ";
+          text.direction == "o" ? (lastOutgoingId = text.id) : null;
+          text.direction == "i" ? (lastIncomingId = text.id) : null;
         });
+        this.chat.forEach(text => {
+          text.innerCSS = "message ";
+          if (text.id === lastIncomingId || text.id === lastOutgoingId) {
+            text.innerCSS += "last";
+          }
+        });
+
+        // Refresh chats
+        this.refreshSMSChats();
+      });
     }
   }
 };
