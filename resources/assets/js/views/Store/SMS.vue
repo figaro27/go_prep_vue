@@ -1,19 +1,19 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <p>{{ hasUnreadSMSMessages }}</p>
       <p>{{ unreadSMSMessages }}</p>
+      <p>{{ SMSChats }}</p>
       <Spinner v-if="isLoading" />
       <b-card no-body>
         <b-tabs>
           <b-tab title="Messages">
-            <div class="badge badge-primary" v-if="hasUnreadSMSMessages">
+            <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
             <messages></messages>
           </b-tab>
           <b-tab title="Chats">
-            <div class="badge badge-primary" v-if="hasUnreadSMSMessages">
+            <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
             <!-- <template v-slot:title>
@@ -27,19 +27,19 @@
             <chats></chats>
           </b-tab>
           <b-tab title="Contacts">
-            <div class="badge badge-primary" v-if="hasUnreadSMSMessages">
+            <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
             <contacts></contacts>
           </b-tab>
           <b-tab title="Lists">
-            <div class="badge badge-primary" v-if="hasUnreadSMSMessages">
+            <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
             <lists></lists>
           </b-tab>
           <b-tab title="Settings">
-            <div class="badge badge-primary" v-if="hasUnreadSMSMessages">
+            <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
             <settings></settings>
@@ -88,32 +88,18 @@ export default {
       initialized: "initialized",
       SMSChats: "SMSChats"
     }),
-    hasUnreadSMSMessages() {
-      if (this.unreadSMSMessages && this.unreadSMSMessages.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    },
     unreadSMSMessages() {
-      if (_.isArray(this.SMSChats)) {
-        console.log(1);
-        console.log(this.SMSChats.length);
-        return this.SMSChats.length > 0
-          ? _.reduce(
-              this.SMSChats,
-              (sum, chat) => {
-                if (chat.unread === true) {
-                  return sum + 1;
-                }
-              },
-              0
-            )
-          : 0;
-      } else {
-        console.log(2);
-        return 0;
-      }
+      return this.SMSChats.length > 0
+        ? _.reduce(
+            this.SMSChats,
+            (sum, chat) => {
+              if (chat.unread === true) {
+                return sum + 1;
+              }
+            },
+            0
+          )
+        : 0;
     },
     chatsText() {
       if (this.unreadSMSMessages === 1) {
