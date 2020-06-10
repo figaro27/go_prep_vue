@@ -14,9 +14,18 @@ use App\MealOrder;
 use App\MealOrderComponent;
 use App\MealOrderAddon;
 use App\Bag;
+use App\SmsContact;
+use App\SmsChat;
 
 class TestController extends Controller
 {
+    protected $baseURL = 'https://rest.textmagic.com/api/v2/chats';
+    protected $headers = [
+        'X-TM-Username' => 'mikesoldano',
+        'X-TM-Key' => 'sYWo6q3SVtDr9ilKAIzo4XKL4lKVHg',
+        'Content-Type' => 'application/x-www-form-urlencoded'
+    ];
+
     public function test_mail()
     {
         echo "We are testing emails here...<br/>";
@@ -234,5 +243,57 @@ class TestController extends Controller
     public function testSMS()
     {
         return [];
+    }
+
+    public function testIncomingSMS()
+    {
+        // $phone = $request->get('sender');
+        $phone = '13475269628';
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            $this->baseURL . '/' . $phone . '/by/phone',
+            [
+                'headers' => $this->headers
+            ]
+        );
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+        $chatId = json_decode($body)->id;
+
+        $chat = SmsChat::where('chat_id', $chatId)->first();
+
+        if ($chat) {
+            // Update existing chat
+            $chat->unread = 1;
+            // $chat->updatedAt = $request->get('messageTime');
+            $chat->updatedAt = '2020-06-12T01:04:48+0000';
+            $chat->update();
+        } else {
+            // Get store ID from looking up the contact by their phone number
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'GET',
+                'https://rest.textmagic.com/api/v2/contacts/phone/' . $phone,
+                [
+                    'headers' => $this->headers
+                ]
+            );
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
+            $contactId = json_decode($body)->id;
+            $storeId = SmsContact::where('contact_id', $contactId)
+                ->pluck('store_id')
+                ->first();
+
+            // Add new chat
+            $chat = new SmsChat();
+            $chat->store_id = $storeId;
+            $chat->chat_id = $chatId;
+            $chat->unread = 1;
+            // $chat->updatedAt = $request->get('messageTime');
+            $chat->updatedAt = '2020-06-10T01:04:48+0000';
+            $chat->save();
+        }
     }
 }
