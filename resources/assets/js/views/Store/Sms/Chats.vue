@@ -68,7 +68,7 @@ export default {
       chat: null,
       phone: null,
       row: null,
-      columns: ["name", "phone", "lastMessage", "actions"],
+      columns: ["name", "lastMessage", "actions"],
       options: {
         headings: { lastMessage: "Last Message" },
         rowClassCallback: function(row) {
