@@ -104,6 +104,7 @@ class SMSContactController extends StoreController
             $smsContact = new SmsContact();
             $smsContact->store_id = $this->store->id;
             $smsContact->contact_id = json_decode($body)->id;
+            $smsContact->phone = $phone;
             $smsContact->save();
         } catch (\Exception $e) {
             if (
@@ -242,6 +243,7 @@ class SMSContactController extends StoreController
             $newContact = new SMSContact();
             $newContact->store_id = $this->store->id;
             $newContact->contact_id = $contactId;
+            $newContact->phone = $phone;
             $newContact->save();
         }
     }

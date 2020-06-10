@@ -146,6 +146,7 @@ class AddContacts extends Command
                 $smsContact = new SmsContact();
                 $smsContact->store_id = $customer->store_id;
                 $smsContact->contact_id = json_decode($body)->id;
+                $smsContact->phone = $phone;
                 $smsContact->save();
             } catch (\Exception $e) {
                 if (
@@ -233,6 +234,7 @@ class AddContacts extends Command
             $newContact = new SMSContact();
             $newContact->store_id = $storeId;
             $newContact->contact_id = $contactId;
+            $newContact->phone = $phone;
             $newContact->save();
         }
     }
