@@ -82,6 +82,7 @@ class SmsChatController extends StoreController
                 $chat->lastMessage = json_decode($body)->lastMessage;
                 $chat->unread = $unread;
                 $chat->updatedAt = json_decode($body)->updatedAt;
+                $chat->updated_at = $smsChat->updated_at;
                 array_push($chats, $chat);
             } catch (\Exception $e) {
             }
