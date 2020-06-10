@@ -216,6 +216,43 @@ class SmsChatController extends StoreController
 
     public function incomingSMS(Request $request)
     {
-        return;
+        $smsChat = new SmsChat();
+        $smsChat->store_id = 13;
+        $smsChat->chat_id = $request->get('id');
+        $smsChat->unread = 1;
+        $smsChat->updatedAt = $request->get('messageTime');
+        $smsChat->save();
+
+        // Look for an existing chat ID by checking the sender phone number (make new column in chats).
+        // Update messageTime as updatedAt & unread to 1
+        // If no existing chat, add new one.
+
+        // $chatStoreId = SmsContact::where(
+        //     'contact_id',
+        //     $chat->contact ? $chat->contact->id : null
+        // )
+        //     ->pluck('store_id')
+        //     ->first();
+
+        // if ($chatStoreId) {
+        //     $smsChat = SmsChat::where('chat_id', $chat->id)->first();
+        //     if ($smsChat) {
+        //         if (
+        //             $chat->direction === 'i' &&
+        //             $chat->updatedAt > $smsChat->updatedAt
+        //         ) {
+        //             $smsChat->unread = 1;
+        //             $smsChat->updatedAt = $chat->updatedAt;
+        //             $smsChat->update();
+        //         }
+        //     } else {
+        //         $smsChat = new SmsChat();
+        //         $smsChat->store_id = $chatStoreId;
+        //         $smsChat->chat_id = $chat->id;
+        //         $smsChat->unread = 1;
+        //         $smsChat->updatedAt = $chat->updatedAt;
+        //         $smsChat->save();
+        //     }
+        // }
     }
 }
