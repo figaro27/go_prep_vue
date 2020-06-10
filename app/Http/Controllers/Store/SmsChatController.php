@@ -18,49 +18,49 @@ class SmsChatController extends StoreController
         'Content-Type' => 'application/x-www-form-urlencoded'
     ];
 
-    public function getNewChats()
-    {
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request('GET', $this->baseURL, [
-            'headers' => $this->headers
-        ]);
-        $body = $res->getBody();
-        $chats = json_decode($body)->resources;
+    // public function getNewChats()
+    // {
+    //     $client = new \GuzzleHttp\Client();
+    //     $res = $client->request('GET', $this->baseURL, [
+    //         'headers' => $this->headers
+    //     ]);
+    //     $body = $res->getBody();
+    //     $chats = json_decode($body)->resources;
 
-        foreach ($chats as $chat) {
-            $chatStoreId = SmsContact::where(
-                'contact_id',
-                $chat->contact ? $chat->contact->id : null
-            )
-                ->pluck('store_id')
-                ->first();
+    //     foreach ($chats as $chat) {
+    //         $chatStoreId = SmsContact::where(
+    //             'contact_id',
+    //             $chat->contact ? $chat->contact->id : null
+    //         )
+    //             ->pluck('store_id')
+    //             ->first();
 
-            if ($chatStoreId) {
-                $smsChat = SmsChat::where('chat_id', $chat->id)->first();
-                if ($smsChat) {
-                    if (
-                        $chat->direction === 'i' &&
-                        $chat->updatedAt > $smsChat->updatedAt
-                    ) {
-                        $smsChat->unread = 1;
-                        $smsChat->updatedAt = $chat->updatedAt;
-                        $smsChat->update();
-                    }
-                } else {
-                    $smsChat = new SmsChat();
-                    $smsChat->store_id = $chatStoreId;
-                    $smsChat->chat_id = $chat->id;
-                    $smsChat->unread = 1;
-                    $smsChat->updatedAt = $chat->updatedAt;
-                    $smsChat->save();
-                }
-            }
-        }
-    }
+    //         if ($chatStoreId) {
+    //             $smsChat = SmsChat::where('chat_id', $chat->id)->first();
+    //             if ($smsChat) {
+    //                 if (
+    //                     $chat->direction === 'i' &&
+    //                     $chat->updatedAt > $smsChat->updatedAt
+    //                 ) {
+    //                     $smsChat->unread = 1;
+    //                     $smsChat->updatedAt = $chat->updatedAt;
+    //                     $smsChat->update();
+    //                 }
+    //             } else {
+    //                 $smsChat = new SmsChat();
+    //                 $smsChat->store_id = $chatStoreId;
+    //                 $smsChat->chat_id = $chat->id;
+    //                 $smsChat->unread = 1;
+    //                 $smsChat->updatedAt = $chat->updatedAt;
+    //                 $smsChat->save();
+    //             }
+    //         }
+    //     }
+    // }
 
     public function index()
     {
-        $this->getNewChats();
+        // $this->getNewChats();
 
         $smsChats = SmsChat::where('store_id', $this->store->id)->get();
 
