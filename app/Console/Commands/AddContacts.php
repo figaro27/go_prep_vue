@@ -119,6 +119,7 @@ class AddContacts extends Command
             13
         ))->get();
         foreach ($stores as $store) {
+            // Create store master list
             $client = new \GuzzleHttp\Client();
             $res = $client->request('POST', $this->baseURL, [
                 'headers' => $this->headers,

@@ -80,7 +80,6 @@ class SmsChatController extends StoreController
                 $chat->firstName = json_decode($body)->contact->firstName;
                 $chat->lastName = json_decode($body)->contact->lastName;
                 $chat->lastMessage = json_decode($body)->lastMessage;
-                $chat->phone = json_decode($body)->phone;
                 $chat->unread = $unread;
                 $chat->updatedAt = json_decode($body)->updatedAt;
                 array_push($chats, $chat);
