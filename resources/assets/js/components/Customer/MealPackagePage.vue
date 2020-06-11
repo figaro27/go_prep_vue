@@ -1350,18 +1350,15 @@ export default {
         if (remaining < 0) {
           this.$toastr.w("You have selected the maximum number of options.");
           let truncated = choices.slice(0, remaining);
-          console.log(this.choices[component.id]);
-          console.log(this.choices[component.id][component.id]);
-          if (
-            this.choices[component.id][component.id].length >
-              component.maximum &&
-            component.minimum === 0
-          ) {
-            truncated = choices.slice(
-              0,
-              component.maximum -
-                this.choices[component.id][component.id].length
-            );
+
+          let length = 0;
+          if (this.choices[component.id][component.id]) {
+            length = this.choices[component.id][component.id].length;
+          } else {
+            length = this.choices[component.id].length;
+          }
+          if (length > component.maximum && component.minimum === 0) {
+            truncated = choices.slice(0, component.maximum - length);
           }
           this.$set(this.choices[component.id], option.id, truncated);
         } else if (remaining == 0) {
