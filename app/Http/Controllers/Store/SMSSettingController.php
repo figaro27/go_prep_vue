@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Store;
 use App\SmsSetting;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Carbon\Carbon;
 
 class SMSSettingController extends StoreController
 {
@@ -118,6 +119,22 @@ class SMSSettingController extends StoreController
         return $body;
     }
 
+    public function smsAccountInfo()
+    {
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            'https://rest.textmagic.com/api/v2/user',
+            [
+                'headers' => $this->headers
+            ]
+        );
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        return $body;
+    }
+
     public function buyNumber(Request $request)
     {
         $phone = $request->get('phone');
@@ -136,22 +153,17 @@ class SMSSettingController extends StoreController
 
         $smsSettings = SMSSetting::where('store_id', $this->store->id)->first();
         $smsSettings->phone = $phone;
+
+        // Charge the first $4.00 and record payment date.
+        $charge = \Stripe\Charge::create([
+            'amount' => 400,
+            'currency' => $this->store->settings->currency,
+            'source' => $this->store->settings->stripe_id,
+            'description' =>
+                'Monthly SMS phone number fee ' .
+                $this->store->storeDetail->name
+        ]);
+        $smsSettings->last_payment = Carbon::now();
         $smsSettings->update();
-    }
-
-    public function smsAccountInfo()
-    {
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request(
-            'GET',
-            'https://rest.textmagic.com/api/v2/user',
-            [
-                'headers' => $this->headers
-            ]
-        );
-        $status = $res->getStatusCode();
-        $body = $res->getBody();
-
-        return $body;
     }
 }
