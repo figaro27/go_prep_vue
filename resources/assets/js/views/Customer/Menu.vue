@@ -602,7 +602,7 @@ export default {
     showSpinner() {
       const { items } = this.mealMixItems;
 
-      if (!items || items.length == 0) {
+      if (!items || items.length == 0 || this.finalCategories.length == 0) {
         return true;
       }
 
