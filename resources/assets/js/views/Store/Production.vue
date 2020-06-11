@@ -46,7 +46,7 @@
                         >Remove All</b-btn
                       >
                     </div>
-                    <p v-if="productionGroupOptions.length == 0">
+                    <p v-if="productionGroupOptions.length == 0" class="small">
                       Add Production Groups using the yellow button on the
                       right, then assign each meal to a group on the Menu page.
                     </p>
