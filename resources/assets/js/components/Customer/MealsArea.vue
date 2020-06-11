@@ -810,7 +810,7 @@ export default {
         window.innerWidth ||
         document.documentElement.clientWidth ||
         document.body.clientWidth;
-      if (width < 1150) {
+      if (width < 1750) {
         return true;
       } else {
         return false;
@@ -1279,11 +1279,7 @@ export default {
     },
     getMacros() {
       let macros = {};
-      const width =
-        window.innerWidth ||
-        document.documentElement.clientWidth ||
-        document.body.clientWidth;
-      if (width > 1750) {
+      if (!this.smallScreen) {
         macros.calories = "Calories";
         macros.carbs = "Carbs";
         macros.protein = "Protein";
