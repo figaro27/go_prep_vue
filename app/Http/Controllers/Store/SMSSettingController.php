@@ -91,10 +91,60 @@ class SMSSettingController extends StoreController
 
     public function findAvailableNumbers()
     {
+        $phone = (int) preg_replace(
+            '/[^0-9]/',
+            '',
+            $this->store->details->phone
+        );
+        if (strlen((string) $phone) === 10) {
+            $phone = 1 . $phone;
+        }
+        $prefix = substr($phone, 0, 4);
         $client = new \GuzzleHttp\Client();
         $res = $client->request(
             'GET',
-            'https://rest.textmagic.com/api/v2/numbers/available/US/',
+            'https://rest.textmagic.com/api/v2/numbers/available',
+            [
+                'headers' => $this->headers,
+                'query' => [
+                    'country' => 'US',
+                    'prefix' => $prefix
+                ]
+            ]
+        );
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        return $body;
+    }
+
+    public function buyNumber(Request $request)
+    {
+        $phone = $request->get('phone');
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('POST', $this->baseURL, [
+            'headers' => $this->headers,
+            'form_params' => [
+                'phone' => $phone,
+                'country' => 'US',
+                'userId' => 309951
+            ]
+        ]);
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        $smsSettings = SMSSetting::where('store_id', $this->store->id)->first();
+        $smsSettings->phone = $phone;
+        $smsSettings->update();
+    }
+
+    public function smsAccountInfo()
+    {
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            'https://rest.textmagic.com/api/v2/user',
             [
                 'headers' => $this->headers
             ]

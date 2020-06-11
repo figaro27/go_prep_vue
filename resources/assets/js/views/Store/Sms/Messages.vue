@@ -1,7 +1,6 @@
 <template>
   <div class="row mt-2">
     <div class="col-md-12">
-      <b-btn @click="findAvailableNumbers">TEST</b-btn>
       <div>
         <img
           v-b-popover.rightbottom.hover="
@@ -46,7 +45,7 @@
         no-fade
         hide-footer
       >
-        <activate></activate>
+        <activate @closeModal="showActivateModal = false"></activate>
       </b-modal>
 
       <b-modal
@@ -456,9 +455,6 @@ export default {
     },
     removePhone(phone) {
       this.phones.pop(phone);
-    },
-    findAvailableNumbers() {
-      axios.get("/api/me/findAvailableNumbers");
     }
   }
 };

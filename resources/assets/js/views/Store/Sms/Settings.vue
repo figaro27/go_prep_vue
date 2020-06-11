@@ -10,7 +10,7 @@
         no-fade
         hide-footer
       >
-        <activate></activate>
+        <activate @closeModal="showActivateModal = false"></activate>
       </b-modal>
       <p>
         <span class="mr-1">Add New Customers to Contacts</span>

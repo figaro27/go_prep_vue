@@ -2,24 +2,33 @@
   <div class="row mt-3">
     <div class="col-md-12 pb-3">
       <Spinner v-if="isLoading" />
-      <p>
+      <p class="center-text">
         Please select an available phone number from the choices below.
-        Activating this feature and choosing a phone number will charge your
-        connected account $4.00 per month. This is a reimbursement for what we
-        are charged monthly from our integrated service provided (TextMagic). We
-        do not take a markup on this.
       </p>
-      <p>
-        There is a .05 cent charge per every 160 character message that gets
-        sent out.
-      </p>
-      <p>
-        Example: You send out a 300 character message to 50 recipients. 100
-        texts will be sent out (50 recipients times 2 texts). .05 cents times
-        100 texts will be a charge of $5.00.
+      <p class="center-text pb-2">
+        Your account will be charged $4.00 per month.
       </p>
 
-      <p>Available Numbers list</p>
+      <div v-if="numbers.length > 0">
+        <h5 class="center-text pb-3">Available Numbers</h5>
+        <b-form-radio-group
+          buttons
+          v-model="selectedNumber"
+          class="storeFilters d-flex"
+          style="flex-wrap:wrap"
+          :options="numbers"
+        ></b-form-radio-group>
+        <div class="d-flex d-center mt-3">
+          <b-btn variant="primary" @click="buyNumber" v-if="selectedNumber"
+            >Activate Number</b-btn
+          >
+        </div>
+      </div>
+      <div v-else>
+        <b-alert variant="secondary" show>
+          <h5 class="center-text">Loading Numbers...</h5>
+        </b-alert>
+      </div>
     </div>
   </div>
 </template>
@@ -39,11 +48,22 @@ export default {
   },
   mixins: [checkDateRange],
   data() {
-    return {};
+    return {
+      numbers: [],
+      selectedNumber: null
+    };
   },
   props: {},
   created() {},
-  mounted() {},
+  mounted() {
+    axios.get("/api/me/findAvailableNumbers").then(resp => {
+      resp.data.numbers.forEach(number => {
+        this.numbers.length < 8
+          ? this.numbers.push({ value: number, text: number })
+          : null;
+      });
+    });
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -54,7 +74,15 @@ export default {
   },
   methods: {
     ...mapActions({}),
-    formatMoney: format.money
+    formatMoney: format.money,
+    buyNumber() {
+      axios
+        .post("/api/me/buyNumber", { phone: this.selectedNumber })
+        .then(resp => {
+          this.$emit("closeModal");
+          this.$toastr.s("Number activated.");
+        });
+    }
   }
 };
 </script>

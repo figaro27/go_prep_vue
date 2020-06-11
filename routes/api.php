@@ -566,6 +566,15 @@ foreach (
                                 'findAvailableNumbers',
                                 'SMSSettingController@findAvailableNumbers'
                             );
+                            Route::post(
+                                'buyNumber',
+                                'SMSSettingController@buyNumber'
+                            );
+
+                            Route::get(
+                                'smsAccountInfo',
+                                'SMSSettingController@smsAccountInfo'
+                            );
                             Route::resource('SMSChats', 'SmsChatController');
                         }
                     );
