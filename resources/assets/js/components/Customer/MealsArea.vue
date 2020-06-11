@@ -1279,7 +1279,11 @@ export default {
     },
     getMacros() {
       let macros = {};
-      if (!this.smallScreen) {
+      const width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+      if (width > 1750) {
         macros.calories = "Calories";
         macros.carbs = "Carbs";
         macros.protein = "Protein";
