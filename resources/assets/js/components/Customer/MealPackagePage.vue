@@ -1361,7 +1361,7 @@ export default {
                 this.choices[component.id][component.id].length
             );
           }
-
+          console.log(truncated);
           this.$set(this.choices[component.id], option.id, truncated);
         } else if (remaining == 0) {
           // Next Part
