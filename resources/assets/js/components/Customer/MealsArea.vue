@@ -820,7 +820,7 @@ export default {
       if (this.store.settings.menuStyle === "text") {
         return "title macrosArea d-flex pt-2";
       }
-      if (!this.smallScreen) {
+      if (this.smallScreen) {
         return "title macrosArea d-flex d-center";
       } else {
         return "title macrosArea d-flex pt-2";
