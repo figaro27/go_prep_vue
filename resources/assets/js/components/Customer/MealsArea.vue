@@ -251,7 +251,7 @@
                       </div>
 
                       <div
-                        :class="macroClass"
+                        class="title macrosArea d-flex d-center"
                         v-if="meal.macros && storeSettings.showMacros"
                       >
                         <div class="d-inline mr-4">
@@ -666,7 +666,7 @@
                             v-if="meal.macros && storeSettings.showMacros"
                           >
                             <div
-                              :class="macroClass"
+                              class="title macrosArea d-flex d-center"
                               v-if="meal.macros && storeSettings.showMacros"
                             >
                               <div class="d-inline mr-4">
@@ -814,16 +814,6 @@ export default {
         return true;
       } else {
         return false;
-      }
-    },
-    macroClass() {
-      if (this.store.settings.menuStyle === "text") {
-        return "title macrosArea d-flex pt-2";
-      }
-      if (this.smallScreen) {
-        return "title macrosArea d-flex d-center";
-      } else {
-        return "title macrosArea d-flex pt-2";
       }
     },
     totalBagQuantity() {
