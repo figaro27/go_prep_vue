@@ -1355,7 +1355,11 @@ export default {
               component.maximum &&
             component.minimum === 0
           ) {
-            truncated = choices.slice(0, 1);
+            truncated = choices.slice(
+              0,
+              component.maximum -
+                this.choices[component.id][component.id].length
+            );
           }
 
           this.$set(this.choices[component.id], option.id, truncated);
