@@ -46,6 +46,10 @@
                         >Remove All</b-btn
                       >
                     </div>
+                    <p v-if="productionGroupOptions.length == 0">
+                      Add Production Groups using the yellow button on the
+                      right, then assign each meal to a group on the Menu page.
+                    </p>
                     <b-form-checkbox-group
                       v-model="productionGroupIds"
                       :options="productionGroupOptions"
