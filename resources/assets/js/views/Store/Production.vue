@@ -333,7 +333,10 @@ export default {
         _.forEach(order.items, item => {
           let meal = this.getMeal(item.meal_id);
           if (meal) {
-            if (this.storeModules.productionGroups) {
+            if (
+              this.storeModules.productionGroups &&
+              this.productionGroupIds.length > 0
+            ) {
               if (!this.productionGroupIds.includes(meal.production_group_id))
                 return null;
 

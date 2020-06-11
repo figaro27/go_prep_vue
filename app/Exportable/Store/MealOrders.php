@@ -82,7 +82,10 @@ class MealOrders
         }
 
         $pdf = new Pdf($pdfConfig);
-        if ($this->store->modules->productionGroups) {
+        if (
+            $this->store->modules->productionGroups &&
+            count($this->store->productionGroups) > 0
+        ) {
             if ($groups && count($groups) > 0) {
                 foreach ($groups as $group) {
                     $productionGroupIds = [];
@@ -145,7 +148,10 @@ class MealOrders
         } else {
             $params->productionGroupTitle = null;
         }
-        if ($this->store->modules->productionGroups) {
+        if (
+            $this->store->modules->productionGroups &&
+            count($this->store->productionGroups) > 0
+        ) {
             count($productionGroupIds) ===
             ProductionGroup::where('store_id', $this->store->id)->count()
                 ? ($params->productionGroupTitle = null)
