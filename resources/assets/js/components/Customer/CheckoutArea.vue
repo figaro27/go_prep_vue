@@ -2727,14 +2727,37 @@ use next_delivery_dates
         this.pickupLocationOptions.length > 0 &&
         !this.selectedPickupLocation
       ) {
-        this.$toastr.w("Please select a pickup location.");
+        this.$toastr.w("Please select a pickup location from the dropdown.");
         return;
       }
       if (!this.isMultipleDelivery) {
         if (!this.bagDeliveryDate) {
-          this.$toastr.w("Please select a delivery/pickup date.");
+          if (this.pickup === 1) {
+            this.$toastr.w("Please select a pickup date from the dropdown.");
+          }
+          if (this.pickup === 0) {
+            this.$toastr.w("Please select a delivery date from the dropdown.");
+          }
           return;
         }
+      }
+
+      if (
+        this.store.modules.pickupHours &&
+        this.pickup === 1 &&
+        this.transferTime === null
+      ) {
+        this.$toastr.w("Please select a pickup time from the dropdown.");
+        return;
+      }
+
+      if (
+        this.store.modules.deliveryHours &&
+        this.pickup === 0 &&
+        this.transferTime === null
+      ) {
+        this.$toastr.w("Please select a delivery time from the dropdown.");
+        return;
       }
 
       // if (this.creditCardId === null && this.card === null && !this.cashOrder) {
