@@ -7,6 +7,7 @@ use App\SmsList;
 use App\SMSContact;
 use stdClass;
 use Carbon\Carbon;
+use App\Order;
 
 class SmsSetting extends Model
 {
@@ -65,6 +66,76 @@ class SmsSetting extends Model
             $smsContact->store_id = $this->store->id;
             $smsContact->contact_id = $smsContactId;
             $smsContact->save();
+        } catch (\Exception $e) {
+        }
+    }
+
+    public function sendOrderReminderSMS($store)
+    {
+        $list = SmsList::where('store_id', $store->id)
+            ->pluck('list_id')
+            ->first();
+
+        $nextDeliveryDate = $store->getNextDeliveryDate();
+        $cutoffDay = $store->settings
+            ->getCutoffDate($nextDeliveryDate)
+            ->format('l');
+        $now = Carbon::now();
+        $today = $now->format('l');
+        if ($cutoffDay === $today) {
+            $cutoffDay === 'Today';
+        }
+
+        $cutoffTime = $store->settings
+            ->getCutoffDate($nextDeliveryDate)
+            ->format('g a');
+        $storeUrl = 'http://' . $store->details->domain . '.goprep.com';
+
+        $message =
+            'Last chance to order for ' .
+            $nextDeliveryDate->format('l, F jS') .
+            '. Our cutoff time is ' .
+            $cutoffDay .
+            ' at ' .
+            $cutoffTime .
+            '. Please order at ' .
+            $storeUrl;
+
+        try {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'POST',
+                'https://rest.textmagic.com/api/v2/messages',
+                [
+                    'headers' => $this->headers,
+                    'form_params' => [
+                        'lists' => $list,
+                        'text' => $message
+                    ]
+                ]
+            );
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
+
+            $contacts = SMSContact::where('store_id', $store->id)
+                ->get()
+                ->count();
+            $this->balance += $contacts * 0.05;
+            $this->update();
+
+            if ($this->balance >= 0.5) {
+                $charge = \Stripe\Charge::create([
+                    'amount' => round($this->balance * 100),
+                    'currency' => $store->settings->currency,
+                    'source' => $store->settings->stripe_id,
+                    'description' =>
+                        'SMS fee balance for ' . $store->storeDetail->name
+                ]);
+                $this->balance = 0;
+                $this->update();
+            }
+
+            return $body;
         } catch (\Exception $e) {
         }
     }

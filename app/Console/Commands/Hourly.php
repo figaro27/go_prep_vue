@@ -8,6 +8,7 @@ use App\Order;
 use App\StoreSetting;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use App\SmsSetting;
 
 class Hourly extends Command
 {
@@ -190,5 +191,25 @@ class Hourly extends Command
             }
         }
         $this->info($count . ' `Delivery Today` SMS texts sent');
+
+        $this->sendSMSReminders();
+    }
+
+    public function sendSMSReminders()
+    {
+        $stores = Store::with(['settings', 'details'])->get();
+
+        foreach ($stores as $store) {
+            $smsSettings = SmsSetting::where('store_id', $store->id)->first();
+            if ($smsSettings->autoSendOrderReminder) {
+                $reminderHours = $smsSettings->autoSendOrderReminderHours;
+                $diff = Carbon::now()->diffInhours(
+                    $store->getNextDeliveryDate()
+                );
+                if ($reminderHours === $diff) {
+                    $smsSettings->sendOrderReminderSMS($store);
+                }
+            }
+        }
     }
 }
