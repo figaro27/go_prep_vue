@@ -289,7 +289,6 @@ export default {
         this.smsSettings.autoSendDelivery = false;
         this.smsSettings.autoSendOrderConfirmation = false;
         this.showActivateModal = true;
-        return;
       }
     }
   }
