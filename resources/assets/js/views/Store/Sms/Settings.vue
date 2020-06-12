@@ -208,6 +208,7 @@
         </div>
         <div>
           <b-btn
+            v-if="smsSettings.autoSendDelivery"
             @click="deliveryTemplateModal = true"
             class="mt-3"
             variant="warning"
