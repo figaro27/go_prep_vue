@@ -15,19 +15,19 @@ class AddTemplatesColumnsToSmsSettingsTable extends Migration
     {
         Schema::table('sms_settings', function (Blueprint $table) {
             $table
-                ->text('autoSendOrderReminderTemplate')
+                ->string('autoSendOrderReminderTemplate')
                 ->after('autoSendOrderReminderHours')
                 ->default(
                     'Last chance to order for {next delivery}. Our cutoff time is {cutoff}. Please order at {URL}.'
                 );
             $table
-                ->text('autoSendDeliveryTemplate')
+                ->string('autoSendDeliveryTemplate')
                 ->after('autoSendDeliveryTime')
                 ->default(
                     'Your order from {store name} {pickup/delivery} today.'
                 );
             $table
-                ->text('autoSendOrderConfirmationTemplate')
+                ->string('autoSendOrderConfirmationTemplate')
                 ->after('autoSendOrderConfirmation')
                 ->default(
                     'Thank you for your order. Your order {pickup/delivery} on {delivery date}.'
