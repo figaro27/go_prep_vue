@@ -706,16 +706,21 @@ export default {
         });
       });
 
-      order.purchased_gift_cards.forEach(purchasedGiftCard => {
-        if (purchasedGiftCard.length === 5) {
-          data.push({
-            meal: "Gift Card Code: " + purchasedGiftCard.code,
-            quantity: 1,
-            unit_price: format.money(purchasedGiftCard.amount, order.currency),
-            subtotal: format.money(purchasedGiftCard.amount, order.currency)
-          });
-        }
-      });
+      if (order.purchased_gift_cards) {
+        order.purchased_gift_cards.forEach(purchasedGiftCard => {
+          if (purchasedGiftCard.length === 5) {
+            data.push({
+              meal: "Gift Card Code: " + purchasedGiftCard.code,
+              quantity: 1,
+              unit_price: format.money(
+                purchasedGiftCard.amount,
+                order.currency
+              ),
+              subtotal: format.money(purchasedGiftCard.amount, order.currency)
+            });
+          }
+        });
+      }
 
       return _.filter(data);
     },
