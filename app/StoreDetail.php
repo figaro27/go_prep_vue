@@ -26,7 +26,7 @@ class StoreDetail extends Model implements HasMedia
         'social'
     ];
 
-    protected $appends = ['logo'];
+    protected $appends = ['logo', 'full_url'];
 
     public static function boot()
     {
@@ -95,5 +95,11 @@ class StoreDetail extends Model implements HasMedia
     public function store()
     {
         return $this->belongsTo('App\Store');
+    }
+
+    public function getFullURLAttribute()
+    {
+        $host = $this->host ? $this->host : 'goprep';
+        return 'https://' . $this->domain . '.' . $host . '.com';
     }
 }

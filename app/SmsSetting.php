@@ -24,7 +24,25 @@ class SmsSetting extends Model
         'autoSendOrderConfirmation' => 'boolean'
     ];
 
-    protected $guarded = ['id'];
+    public $appends = [
+        'nextDeliveryDate',
+        'nextCutoff',
+        'orderReminderTime',
+        'orderReminderTemplatePreview',
+        'orderConfirmationTemplatePreview',
+        'deliveryTemplatePreview'
+    ];
+
+    protected $guarded = [
+        'id',
+        'nextDeliveryDate',
+        'nextCutoff',
+        'orderReminderTime',
+        'orderReminderTemplatePreview',
+        'orderConfirmationTemplatePreview',
+        'deliveryTemplatePreview',
+        'store'
+    ];
 
     public function store()
     {
@@ -77,30 +95,10 @@ class SmsSetting extends Model
             ->pluck('list_id')
             ->first();
 
-        $nextDeliveryDate = $store->getNextDeliveryDate();
-        $cutoffDay = $store->settings
-            ->getCutoffDate($nextDeliveryDate)
-            ->format('l');
-        $now = Carbon::now();
-        $today = $now->format('l');
-        if ($cutoffDay === $today) {
-            $cutoffDay === 'Today';
-        }
-
-        $cutoffTime = $store->settings
-            ->getCutoffDate($nextDeliveryDate)
-            ->format('g a');
-        $storeUrl = 'http://' . $store->details->domain . '.goprep.com';
-
-        $message =
-            'Last chance to order for ' .
-            $nextDeliveryDate->format('l, F jS') .
-            '. Our cutoff time is ' .
-            $cutoffDay .
-            ' at ' .
-            $cutoffTime .
-            '. Please order at ' .
-            $storeUrl;
+        $message = $this->processTags(
+            $this->autoSendOrderReminderTemplate,
+            false
+        );
 
         try {
             $client = new \GuzzleHttp\Client();
@@ -138,18 +136,16 @@ class SmsSetting extends Model
 
     public function sendOrderConfirmationSMS($customer, $order)
     {
-        $deliveryText = $order['pickup']
-            ? 'are available for pickup on '
-            : 'will be delivered on ';
+        $pickup = $order['pickup'] ? true : false;
         $deliveryDate = new Carbon($order['delivery_date']);
         $deliveryDate = $deliveryDate->format('l, m/d');
 
-        $message =
-            'Thank you for your order ' .
-            $customer['firstname'] .
-            '. Your items ' .
-            $deliveryText .
-            $deliveryDate;
+        $message = $this->processTags(
+            $this->autoSendOrderConfirmationTemplate,
+            false,
+            $pickup,
+            $deliveryDate
+        );
 
         $phone = (int) preg_replace('/[^0-9]/', '', $customer['phone']);
         if (strlen((string) $phone) === 10) {
@@ -182,13 +178,14 @@ class SmsSetting extends Model
 
     public function sendDeliverySMS($order)
     {
-        $deliveryText = $order['pickup']
-            ? ' is available for pickup today.'
-            : ' will be delivered to you today.';
-        $storeName = $order->store->details->name;
         $customer = $order->customer;
+        $pickup = $order['pickup'] ? true : false;
 
-        $message = 'Your order from ' . $storeName . $deliveryText;
+        $message = $this->processTags(
+            $this->autoSendDeliveryTemplate,
+            false,
+            $pickup
+        );
 
         $phone = (int) preg_replace('/[^0-9]/', '', $customer['phone']);
         if (strlen((string) $phone) === 10) {
@@ -235,5 +232,104 @@ class SmsSetting extends Model
             $this->balance = 0;
             $this->update();
         }
+    }
+
+    public function getNextDeliveryDateAttribute()
+    {
+        return $this->store->getNextDeliveryDate();
+    }
+
+    public function getNextCutoffAttribute()
+    {
+        $storeSettings = $this->store->settings;
+        return $storeSettings
+            ->getCutoffDate($this->nextDeliveryDate)
+            ->setTimezone($storeSettings->timezone);
+    }
+
+    public function getOrderReminderTimeAttribute()
+    {
+        return $this->nextCutoff->subHours($this->autoSendOrderReminderHours);
+    }
+
+    public function getOrderReminderTemplatePreviewAttribute()
+    {
+        return $this->processTags($this->autoSendOrderReminderTemplate);
+    }
+
+    public function getOrderConfirmationTemplatePreviewAttribute()
+    {
+        return $this->processTags($this->autoSendOrderConfirmationTemplate);
+    }
+
+    public function getDeliveryTemplatePreviewAttribute()
+    {
+        return $this->processTags($this->autoSendDeliveryTemplate);
+    }
+
+    public function processTags(
+        $template,
+        $preview = true,
+        $pickup = false,
+        $deliveryDate = null
+    ) {
+        if (strpos($template, '{store name}')) {
+            $processedTag = $this->store->details->name;
+            $template = str_replace('{store name}', $processedTag, $template);
+        }
+
+        if (strpos($template, '{URL}')) {
+            $processedTag = $this->store->details->full_URL;
+            $template = str_replace('{URL}', $processedTag, $template);
+        }
+
+        if (strpos($template, '{cutoff}')) {
+            $processedTag =
+                $this->nextCutoff->format('l, M d') .
+                ' at ' .
+                $this->nextCutoff->format('g a');
+            $template = str_replace('{cutoff}', $processedTag, $template);
+        }
+
+        if (strpos($template, '{next delivery}')) {
+            $processedTag = $this->nextDeliveryDate->format('l, M d');
+            $template = str_replace(
+                '{next delivery}',
+                $processedTag,
+                $template
+            );
+        }
+
+        if (strpos($template, '{delivery date}')) {
+            $processedTag = $deliveryDate;
+            if ($preview) {
+                $processedTag = '(delivery date)';
+            }
+            $template = str_replace(
+                '{delivery date}',
+                $processedTag,
+                $template
+            );
+        }
+
+        if (strpos($template, '{pickup/delivery}')) {
+            $processedTag = '';
+            if ($preview) {
+                $processedTag = '(is available for pickup / will be delivered)';
+            } else {
+                if ($pickup) {
+                    $processedTag = 'is available for pickup';
+                } else {
+                    $processedTag = 'will be delivered';
+                }
+            }
+            $template = str_replace(
+                '{pickup/delivery}',
+                $processedTag,
+                $template
+            );
+        }
+
+        return $template;
     }
 }

@@ -203,9 +203,7 @@ class Hourly extends Command
             $smsSettings = SmsSetting::where('store_id', $store->id)->first();
             if ($smsSettings->autoSendOrderReminder) {
                 $reminderHours = $smsSettings->autoSendOrderReminderHours;
-                $diff = Carbon::now()->diffInhours(
-                    $store->getNextDeliveryDate()
-                );
+                $diff = Carbon::now()->diffInhours($smsSettings->nextCutoff);
                 if ($reminderHours === $diff) {
                     $smsSettings->sendOrderReminderSMS($store);
                 }
