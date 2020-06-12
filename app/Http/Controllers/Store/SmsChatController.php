@@ -135,18 +135,9 @@ class SmsChatController extends StoreController
 
         $smsSettings = SmsSetting::where('store_id', $store->id)->first();
         $smsSettings->balance += 0.05;
+        $smsSettings->total_spent += 0.05;
         $smsSettings->update();
-        if ($smsSettings->balance >= 0.5) {
-            $charge = \Stripe\Charge::create([
-                'amount' => round($smsSettings->balance * 100),
-                'currency' => $store->settings->currency,
-                'source' => $store->settings->stripe_id,
-                'description' =>
-                    'SMS fee balance for ' . $store->storeDetail->name
-            ]);
-            $smsSettings->balance = 0;
-            $smsSettings->update();
-        }
+        $smsSettings->chargeBalance($store);
 
         return $body;
     }

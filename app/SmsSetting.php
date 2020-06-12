@@ -20,6 +20,7 @@ class SmsSetting extends Model
     protected $casts = [
         'autoAddCustomers' => 'boolean',
         'autoSendDelivery' => 'boolean',
+        'autoSendOrderReminder' => 'boolean',
         'autoSendOrderConfirmation' => 'boolean'
     ];
 
@@ -117,23 +118,18 @@ class SmsSetting extends Model
             $status = $res->getStatusCode();
             $body = $res->getBody();
 
-            $contacts = SMSContact::where('store_id', $store->id)
-                ->get()
-                ->count();
-            $this->balance += $contacts * 0.05;
-            $this->update();
+            // Get number of contacts in the list to calculate charge
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('GET', $this->baseURL . '/' . $list, [
+                'headers' => $this->headers
+            ]);
+            $body = $res->getBody();
+            $contacts = json_decode($body)->membersCount;
 
-            if ($this->balance >= 0.5) {
-                $charge = \Stripe\Charge::create([
-                    'amount' => round($this->balance * 100),
-                    'currency' => $store->settings->currency,
-                    'source' => $store->settings->stripe_id,
-                    'description' =>
-                        'SMS fee balance for ' . $store->storeDetail->name
-                ]);
-                $this->balance = 0;
-                $this->update();
-            }
+            $this->balance += $contacts * 0.05;
+            $this->total_spent += $contacts * 0.05;
+            $this->update();
+            $this->chargeBalance($store);
 
             return $body;
         } catch (\Exception $e) {
@@ -177,19 +173,7 @@ class SmsSetting extends Model
             $body = $res->getBody();
 
             $store = $this->store;
-            $this->balance += 0.05;
-            $this->update();
-            if ($this->balance >= 0.5) {
-                $charge = \Stripe\Charge::create([
-                    'amount' => round($this->balance * 100),
-                    'currency' => $store->settings->currency,
-                    'source' => $store->settings->stripe_id,
-                    'description' =>
-                        'SMS fee balance for ' . $store->storeDetail->name
-                ]);
-                $this->balance = 0;
-                $this->update();
-            }
+            $this->chargeBalance($store);
 
             return $body;
         } catch (\Exception $e) {
@@ -229,21 +213,27 @@ class SmsSetting extends Model
 
             $store = $this->store;
             $this->balance += 0.05;
+            $this->total_spent += 0.05;
             $this->update();
-            if ($this->balance >= 0.5) {
-                $charge = \Stripe\Charge::create([
-                    'amount' => round($this->balance * 100),
-                    'currency' => $store->settings->currency,
-                    'source' => $store->settings->stripe_id,
-                    'description' =>
-                        'SMS fee balance for ' . $store->storeDetail->name
-                ]);
-                $this->balance = 0;
-                $this->update();
-            }
+            $this->chargeBalance($store);
 
             return $body;
         } catch (\Exception $e) {
+        }
+    }
+
+    public function chargeBalance($store)
+    {
+        if ($this->balance >= 5) {
+            $charge = \Stripe\Charge::create([
+                'amount' => round($this->balance * 100),
+                'currency' => $store->settings->currency,
+                'source' => $store->settings->stripe_id,
+                'description' =>
+                    'SMS fee balance for ' . $store->storeDetail->name
+            ]);
+            $this->balance = 0;
+            $this->update();
         }
     }
 }

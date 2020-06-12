@@ -73,12 +73,15 @@ export default {
     })
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      refreshSMSSettings: "refreshStoreSMSSettings"
+    }),
     formatMoney: format.money,
     buyNumber() {
       axios
         .post("/api/me/buyNumber", { phone: this.selectedNumber })
         .then(resp => {
+          this.refreshSMSSettings();
           this.$emit("closeModal");
           this.$toastr.s("Number activated.");
         });

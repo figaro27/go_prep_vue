@@ -124,34 +124,12 @@ class SMSMessagesController extends StoreController
         }
 
         $store = $this->store;
-        if ($charge >= 0.5) {
-            $charge = \Stripe\Charge::create([
-                'amount' => round($charge * 100),
-                'currency' => $store->settings->currency,
-                'source' => $store->settings->stripe_id,
-                'description' =>
-                    $store->storeDetail->name .
-                    ' SMS fee for SMS ID #' .
-                    $smsMessage->id .
-                    ' - ' .
-                    $smsMessage->message_id
-            ]);
-        } else {
-            $smsSettings = SmsSetting::where('store_id', $store->id)->first();
-            $smsSettings->balance += 0.05;
-            $smsSettings->update();
-            if ($smsSettings->balance >= 0.5) {
-                $charge = \Stripe\Charge::create([
-                    'amount' => round($smsSettings->balance * 100),
-                    'currency' => $store->settings->currency,
-                    'source' => $store->settings->stripe_id,
-                    'description' =>
-                        'SMS fee balance for ' . $store->storeDetail->name
-                ]);
-                $smsSettings->balance = 0;
-                $smsSettings->update();
-            }
-        }
+
+        $smsSettings = SmsSetting::where('store_id', $store->id)->first();
+        $smsSettings->balance += $charge * 100;
+        $smsSettings->total_spent += $charge * 100;
+        $smsSettings->update();
+        $smsSettings->chargeBalance($this->store);
 
         return $body;
     }

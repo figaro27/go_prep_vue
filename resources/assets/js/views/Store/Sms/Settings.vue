@@ -12,6 +12,14 @@
       >
         <activate @closeModal="showActivateModal = false"></activate>
       </b-modal>
+      <div class="pb-3">
+        <p v-if="smsSettings.phone" class="strong">
+          Sending Number - {{ smsSettings.phone }}
+        </p>
+        <b-btn v-else variant="primary" @click="showActivateModal = true"
+          >Buy Phone Number</b-btn
+        >
+      </div>
       <p>
         <span class="mr-1">Add New Customers to Contacts</span>
         <img
@@ -29,7 +37,26 @@
         size="lg"
         v-model="smsSettings.autoAddCustomers"
       />
-
+      <br />
+      <p>
+        <span class="mr-1">Auto Send Order Reminder Texts</span>
+        <img
+          v-b-popover.hover="
+            'Automatically send an automatic reminder to all of your customers to order a certain period before your cutoff time.'
+          "
+          title="Auto Send Order Reminder Texts"
+          src="/images/store/popover.png"
+          class="popover-size"
+        />
+      </p>
+      <c-switch
+        color="success"
+        variant="pill"
+        size="lg"
+        v-model="smsSettings.autoSendOrderReminder"
+        @change.native="checkIfActivated"
+      />
+      <br />
       <p>
         <span class="mr-1">Auto Send Order Confirmation Text</span>
         <img
@@ -48,7 +75,7 @@
         v-model="smsSettings.autoSendOrderConfirmation"
         @change.native="checkIfActivated"
       />
-
+      <br />
       <p>
         <span class="mr-1">Auto Send Delivery Text</span>
         <img
@@ -118,12 +145,15 @@ export default {
     }
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      refreshSMSSettings: "refreshStoreSMSSettings"
+    }),
     formatMoney: format.money,
     updateSettings() {
       axios
         .post("/api/me/updateSMSSettings", { settings: this.smsSettings })
         .then(resp => {
+          this.refreshSMSSettings();
           this.$toastr.s("Your settings have been saved.", "Success");
         });
     },

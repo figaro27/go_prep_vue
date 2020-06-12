@@ -18,7 +18,7 @@ class SMSSettingController extends StoreController
 
     public function index()
     {
-        return $this->store->smsSettings();
+        return $this->store->smsSettings;
     }
 
     /**

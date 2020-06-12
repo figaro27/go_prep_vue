@@ -2108,7 +2108,7 @@ const actions = {
     const { data } = await res;
 
     if (_.isObject(data)) {
-      commit("storeSMSSettings", { sms_settings: data });
+      commit("storeSMSSettings", { smsSettings: data });
     } else {
       throw new Error("Failed to retrieve sms settings");
     }
