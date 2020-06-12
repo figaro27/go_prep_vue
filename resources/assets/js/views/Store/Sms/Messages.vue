@@ -4,7 +4,7 @@
       <div>
         <img
           v-b-popover.rightbottom.hover="
-            'Here is where you can send a new custom SMS message to your clients. You can personalize the message by adding tags like their first name. The table below will then show you all messages you have sent in the past. Your message will send from an (855) number.'
+            'Here is where you can send a new custom SMS message to your clients. You can personalize the message by adding tags like their first name. The table below will then show you all messages you have sent in the past.'
           "
           title="Messages"
           src="/images/store/popover.png"
