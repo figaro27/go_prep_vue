@@ -173,7 +173,7 @@
                 }}</span
                 ><img
                   v-b-popover.hover="
-                    'The number of recipients times the number of parts the text will be sent in (160 characters per part) times 5 cents. Your GoPrep account will be charged via Stripe.'
+                    'The number of recipients times the number of parts the text will be sent in (160 characters per part) times 5 cents. Your GoPrep account will be charged via Stripe every time your balance reaches a $5.00 threshold.'
                   "
                   title="Cost"
                   src="/images/store/popover.png"
