@@ -63,6 +63,9 @@ return [
     'domains' => [
         'fresh2gohealthymeals.com' => [
             'front_url' => 'https://menu.fresh2gohealthymeals.com/customer/menu'
+        ],
+        'healthychefphx.com' => [
+            'front_url' => 'https://meals.healthychefphx.com/customer/menu'
         ]
     ],
 
