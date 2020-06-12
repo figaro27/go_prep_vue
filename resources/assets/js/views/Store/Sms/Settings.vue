@@ -65,7 +65,7 @@
       </div>
       <div class="mb-5">
         <p class="strong">
-          <span class="mr-1">Add New Customers to Contacts</span>
+          <span class="mr-1">Auto Add New Customers to Contacts</span>
           <img
             v-b-popover.hover="
               'Automatically add new customers to your All Contacts list.'
@@ -88,7 +88,7 @@
           <span class="mr-1">Auto Send Order Reminder Texts</span>
           <img
             v-b-popover.hover="
-              'Automatically send an automatic reminder to all of your customers to order a certain period before your cutoff time.'
+              'Automatically send an reminder to all of your customers to order a certain period before your cutoff time(s).'
             "
             title="Auto Send Order Reminder Texts"
             src="/images/store/popover.png"
