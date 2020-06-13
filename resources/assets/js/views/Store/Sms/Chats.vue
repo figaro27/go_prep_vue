@@ -114,10 +114,13 @@ export default {
     ...mapActions({
       refreshSMSChats: "refreshSMSChats",
       disableSpinner: "disableSpinner",
-      enableSpinner: "enableSpinner"
+      enableSpinner: "enableSpinner",
+      showSpinner: "showSpinner",
+      hideSpinner: "hideSpinner"
     }),
     formatMoney: format.money,
     view(row) {
+      this.showSpinner();
       this.phone = row.phone;
       this.row = row;
       this.showChat(row);
@@ -126,6 +129,7 @@ export default {
     showChat(chat) {
       let chatId = chat.id;
       axios.get("/api/me/SMSChats/" + chatId).then(resp => {
+        this.hideSpinner();
         if (this.modalOpened) {
           this.showViewChatModal = true;
         }
