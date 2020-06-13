@@ -156,7 +156,7 @@ export default {
             text.innerCSS += "last";
           }
         });
-
+        this.conflict = false;
         // Refresh chats
         this.refreshSMSChats();
       });
