@@ -133,7 +133,8 @@ export default {
         if (this.modalOpened) {
           this.showViewChatModal = true;
         }
-        if (resp.data.conflict) {
+        if (resp.data.conflict && resp.data.conflict == true) {
+          console.log(resp.data);
           this.conflict = true;
           this.phone = resp.data.phone;
           return;
