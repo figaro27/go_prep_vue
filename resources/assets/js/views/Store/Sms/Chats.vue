@@ -29,6 +29,7 @@
           :conflict="conflict"
           @showChat="showChat($event)"
           @disableSpinner="disableSpinner"
+          @resetConflict="resetConflict"
         ></view-chat>
       </b-modal>
 
@@ -160,6 +161,9 @@ export default {
         // Refresh chats
         this.refreshSMSChats();
       });
+    },
+    resetConflict() {
+      this.conflict = false;
     }
   }
 };

@@ -61,6 +61,7 @@ export default {
   mounted() {
     // Scroll modal to bottom
     setTimeout(() => {
+      this.$emit("resetConflict");
       const modal = document.querySelector(".modal-content");
       modal.scrollTo({
         top: modal.scrollHeight,
