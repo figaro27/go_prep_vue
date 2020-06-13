@@ -174,7 +174,7 @@ class SmsChatController extends StoreController
             if (!in_array($resource->sender, $numbers)) {
                 array_push($numbers, $resource->sender);
             }
-            if ($resource->direction === 'o') {
+            if ($resource->direction === 'i') {
                 $contactPhone = $resource->sender;
             }
         }
