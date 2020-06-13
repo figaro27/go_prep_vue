@@ -40,7 +40,7 @@ class ContactFormController extends Controller
             $data
         ) {
             $message->from($data['email']);
-            $message->to('support@goprep.com');
+            $message->to('help@goprep.com');
         });
     }
 

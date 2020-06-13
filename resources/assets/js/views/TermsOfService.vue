@@ -365,8 +365,8 @@
     <p>
       <span style="font-weight: 400;"
         >For cancellation of services, the Customer must contact their sales
-        representative or support@goprep.com before their scheduled charge date
-        has renewed.</span
+        representative or help@goprep.com before their scheduled charge date has
+        renewed.</span
       >
     </p>
     <p>&nbsp;</p>
@@ -945,7 +945,7 @@
     </ol>
     <p>
       <span style="font-weight: 400;"
-        >&nbsp;&nbsp;Email address: support@goprep.com</span
+        >&nbsp;&nbsp;Email address: help@goprep.com</span
       >
     </p>
     <p>&nbsp;</p>

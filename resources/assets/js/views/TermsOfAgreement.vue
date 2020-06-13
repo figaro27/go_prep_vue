@@ -203,8 +203,8 @@
       <span style="font-weight: 400;"
         >3.7 For cancellation of services, the Customer must contact their sales
         representative or </span
-      ><a href="mailto:support@goprep.com"
-        ><span style="font-weight: 400;">support@goprep.com</span></a
+      ><a href="mailto:help@goprep.com"
+        ><span style="font-weight: 400;">help@goprep.com</span></a
       ><span style="font-weight: 400;">
         before their scheduled charge date has renewed.</span
       >
