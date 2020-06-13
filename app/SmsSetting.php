@@ -138,7 +138,7 @@ class SmsSetting extends Model
     {
         $pickup = $order['pickup'] ? true : false;
         $deliveryDate = new Carbon($order['delivery_date']);
-        $deliveryDate = $deliveryDate->format('l, m/d');
+        $deliveryDate = $deliveryDate->format('l, M d');
 
         $message = $this->processTags(
             $this->autoSendOrderConfirmationTemplate,
@@ -301,10 +301,12 @@ class SmsSetting extends Model
         }
 
         if (strpos($template, '{delivery date}')) {
-            $processedTag = $deliveryDate;
             if ($preview) {
                 $processedTag = '(delivery date)';
+            } else {
+                $processedTag = $deliveryDate;
             }
+
             $template = str_replace(
                 '{delivery date}',
                 $processedTag,

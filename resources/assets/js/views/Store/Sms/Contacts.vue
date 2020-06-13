@@ -4,9 +4,9 @@
       <div>
         <img
           v-b-popover.rightbottom.hover="
-            'Contacts are all possible recipients you can send a message to. By default, all past customers are added to your contacts. New customers will be automatically added as a contact as long as you keep that enabled in Settings.'
+            'Contacts are recipients you can send a message to along with their names so you can personalize the message to them using tags. By default, all past customers are added to your contacts. New customers will be automatically added as a contact as long as you keep that enabled in Settings.'
           "
-          title="Messages"
+          title="Contacts"
           src="/images/store/popover.png"
           class="popover-size mb-3"
         />

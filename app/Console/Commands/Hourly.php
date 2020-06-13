@@ -165,9 +165,9 @@ class Hourly extends Command
             } catch (\Exception $e) {
             }
         }
-        $this->info($count . ' `Delivery Today` notifications sent');
+        $this->info($count . ' `Delivery Today` emails sent');
 
-        // Send Order Today SMS if enabled
+        // Send Delivery Today SMS if enabled
         $count = 0;
         foreach ($orders as $order) {
             $smsSettings = $order->store->smsSettings;
@@ -192,22 +192,27 @@ class Hourly extends Command
         }
         $this->info($count . ' `Delivery Today` SMS texts sent');
 
+        // Send Order Reminder SMS if enabled
         $this->sendSMSReminders();
     }
 
     public function sendSMSReminders()
     {
         $stores = Store::with(['settings', 'details'])->get();
-
+        $count = 0;
         foreach ($stores as $store) {
             $smsSettings = SmsSetting::where('store_id', $store->id)->first();
             if ($smsSettings->autoSendOrderReminder) {
                 $reminderHours = $smsSettings->autoSendOrderReminderHours;
+
                 $diff = Carbon::now()->diffInhours($smsSettings->nextCutoff);
+
                 if ($reminderHours === $diff) {
                     $smsSettings->sendOrderReminderSMS($store);
+                    $count++;
                 }
             }
         }
+        $this->info($count . ' `Order Reminder` SMS texts sent');
     }
 }

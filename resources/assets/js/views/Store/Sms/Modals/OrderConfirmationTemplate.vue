@@ -10,6 +10,7 @@
         <div style="flex-basis:85%">
           <b-form-textarea
             v-model="smsSettings.autoSendOrderConfirmationTemplate"
+            rows="3"
           ></b-form-textarea>
           <b-btn
             @click="$emit('closeModal'), $emit('update')"
@@ -66,13 +67,7 @@ export default {
       smsSettings: "storeSMSSettings"
     }),
     tags() {
-      return [
-        "store name",
-        "URL",
-        "pickup/delivery",
-        "delivery date",
-        "cutoff"
-      ];
+      return ["store name", "URL", "pickup/delivery", "delivery date"];
     }
   },
   methods: {

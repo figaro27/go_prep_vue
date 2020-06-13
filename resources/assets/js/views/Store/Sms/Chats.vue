@@ -4,7 +4,7 @@
       <div>
         <img
           v-b-popover.rightbottom.hover="
-            'If a client responds to one of your messages, a chat begins and will show in the table below. You can view the chat and see the conversation history and send your reply.'
+            'If a client responds to one of your messages, a chat begins and will show in the table below. You can view the chat and see the conversation history and send your reply directly from this platform.'
           "
           title="Chats"
           src="/images/store/popover.png"

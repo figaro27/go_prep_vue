@@ -205,7 +205,7 @@ export default {
       });
     },
     addTag(tag) {
-      this.template.content += " {" + tag + "} ";
+      this.template.content += "{" + tag + "}";
       this.showTagDropdown = false;
     }
   }

@@ -13,7 +13,7 @@
         </div>
         <b-form-textarea
           v-model="message"
-          placeholder="New message.."
+          placeholder="New message"
         ></b-form-textarea>
         <b-btn variant="primary" @click="sendMessage" class="mt-2 pull-right"
           >Send</b-btn

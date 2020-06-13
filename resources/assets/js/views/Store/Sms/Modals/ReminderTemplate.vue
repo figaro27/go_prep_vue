@@ -10,6 +10,7 @@
         <div style="flex-basis:85%">
           <b-form-textarea
             v-model="smsSettings.autoSendOrderReminderTemplate"
+            rows="3"
           ></b-form-textarea>
           <b-btn
             @click="$emit('closeModal'), $emit('update')"

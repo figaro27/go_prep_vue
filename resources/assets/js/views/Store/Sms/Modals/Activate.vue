@@ -6,7 +6,7 @@
         Please select an available phone number from the choices below.
       </p>
       <p class="center-text pb-2">
-        Your account will be charged $4.00 per month.
+        Your account will be charged $4.00 / month plus $.05 cents per text.
       </p>
 
       <div v-if="numbers.length > 0">
@@ -18,10 +18,15 @@
           style="flex-wrap:wrap"
           :options="numbers"
         ></b-form-radio-group>
-        <div class="d-flex d-center mt-3">
-          <b-btn variant="primary" @click="buyNumber" v-if="selectedNumber"
-            >Activate Number</b-btn
-          >
+        <div class="mt-3" v-if="selectedNumber">
+          <p class="small">
+            By activating a number and using the SMS feature you agree that your
+            customers gave you permission to send them SMS messages and you also
+            agree to remove them from your list if requested to do so by them.
+          </p>
+          <div style="text-align:center">
+            <b-btn variant="primary" @click="buyNumber">Activate Number</b-btn>
+          </div>
         </div>
       </div>
       <div v-else>

@@ -216,11 +216,12 @@ export default {
       });
     },
     isAllContactsList(id) {
-      if (this.SMSLists[0].id === id) {
+      let list = this.SMSLists.find(list => {
+        return list.id === id;
+      });
+      if (list.name === "All Contacts - " + this.store.details.name) {
         return true;
-      } else {
-        return false;
-      }
+      } else return false;
     }
   }
 };

@@ -55,20 +55,35 @@
         ></delivery-template>
       </b-modal>
 
-      <div class="mb-5">
+      <div class="mb-4">
         <p v-if="smsSettings.phone" class="strong">
-          Sending Number - {{ smsSettings.phone }}
+          Your Number - {{ smsSettings.phone }}
         </p>
-        <b-btn v-else variant="primary" @click="showActivateModal = true"
+        <span v-if="smsSettings.phone" class="strong">
+          Balance -
+          {{ format.money(smsSettings.balance, store.settings.currency) }}
+        </span>
+        <img
+          v-b-popover.hover="
+            'Your connected Stripe account will be charged every time it reaches a $5.00 threshold.'
+          "
+          title="Balance"
+          src="/images/store/popover.png"
+          class="popover-size"
+        />
+        <b-btn
+          v-if="!smsSettings.phone"
+          variant="primary"
+          @click="showActivateModal = true"
           >Buy Phone Number</b-btn
         >
       </div>
-      <div class="mb-5">
+      <div class="mb-4">
         <p class="strong">
           <span class="mr-1">Auto Add New Customers to Contacts</span>
           <img
             v-b-popover.hover="
-              'Automatically add new customers to your All Contacts list.'
+              'Automatically add new customers that place orders to your All Contacts list.'
             "
             title="Add New Customers to Contacts"
             src="/images/store/popover.png"
@@ -83,7 +98,7 @@
           @change.native="updateSettings"
         />
       </div>
-      <div class="mb-5">
+      <div class="mb-4">
         <p class="strong">
           <span class="mr-1">Auto Send Order Reminder Texts</span>
           <img
@@ -103,19 +118,19 @@
           @change.native="updateSettings"
         />
         <div v-if="smsSettings.autoSendOrderReminder">
-          <p class="font-11">
+          <p class="small">
             Next Delivery Date:
             {{
               moment(smsSettings.nextDeliveryDate.date).format("dddd, MMM Do")
             }}
           </p>
-          <p class="font-11">
+          <p class="small">
             Next Cutoff Time:
             {{
               moment(smsSettings.nextCutoff.date).format("dddd, MMM Do, h:mm a")
             }}
           </p>
-          <p class="font-11">
+          <p class="small">
             Next Reminder Text:
             {{
               moment(smsSettings.orderReminderTime.date).format(
@@ -147,12 +162,12 @@
           >
         </div>
       </div>
-      <div class="mb-5">
+      <div class="mb-4">
         <p class="strong">
           <span class="mr-1">Auto Send Order Confirmation Text</span>
           <img
             v-b-popover.hover="
-              'Automatically send a confirmation text immediately after a new order is placed. Customers also receive an email confirmation. Charges apply.'
+              'Automatically send a confirmation text to the customer immediately after a new order is placed.'
             "
             title="Auto Send Order Confirmation Text"
             src="/images/store/popover.png"
@@ -176,12 +191,12 @@
           >
         </div>
       </div>
-      <div class="mb-5">
+      <div class="mb-4">
         <p class="strong">
           <span class="mr-1">Auto Send Delivery Text</span>
           <img
             v-b-popover.hover="
-              'On the day of order delivery or pickup, send a reminder notification text to the customer. Charges apply.'
+              'On the day of delivery or pickup, automatically send a reminder notification text to the customer at a certain time.'
             "
             title="Auto Send Delivery Text"
             src="/images/store/popover.png"
@@ -204,6 +219,7 @@
             :options="deliveryTimeOptions"
             class="d-inline"
             style="height:30px"
+            @change.native="updateSettings"
           ></b-form-select>
         </div>
         <div>

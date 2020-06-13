@@ -90,33 +90,32 @@ class AddContacts extends Command
 
         // Create master list for each active store
         $stores = Store::whereIn('id', array(
-            // 40,
-            // 74,
-            // 88,
-            // 111,
-            // 112,
-            // 116,
-            // 118,
-            // 119,
-            // 120,
-            // 121,
-            // 123,
-            // 125,
-            // 127,
-            // 131,
-            // 132,
-            // 136,
-            // 137,
-            // 139,
-            // 140,
-            // 141,
-            // 144,
-            // 146,
-            // 148,
-            // 149,
-            // 150,
-            // 151
-            13
+            40,
+            74,
+            88,
+            111,
+            112,
+            116,
+            118,
+            119,
+            120,
+            121,
+            123,
+            125,
+            127,
+            131,
+            132,
+            136,
+            137,
+            139,
+            140,
+            141,
+            144,
+            146,
+            148,
+            149,
+            150,
+            151
         ))->get();
         foreach ($stores as $store) {
             // Create store master list
@@ -173,7 +172,6 @@ class AddContacts extends Command
                     $smsContact = new SmsContact();
                     $smsContact->store_id = $customer->store_id;
                     $smsContact->contact_id = json_decode($body)->id;
-                    $smsContact->phone = $phone;
                     $smsContact->save();
                 } catch (\Exception $e) {
                     if (
@@ -262,7 +260,6 @@ class AddContacts extends Command
             $newContact = new SMSContact();
             $newContact->store_id = $storeId;
             $newContact->contact_id = $contactId;
-            $newContact->phone = $phone;
             $newContact->save();
         }
     }
