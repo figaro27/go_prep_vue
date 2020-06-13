@@ -193,7 +193,7 @@
       </div>
       <div class="mb-4">
         <p class="strong">
-          <span class="mr-1">Auto Send Delivery Text</span>
+          <span class="mr-1">Auto Send Delivery / Pickup Text</span>
           <img
             v-b-popover.hover="
               'On the day of delivery or pickup, automatically send a reminder notification text to the customer at a certain time.'
