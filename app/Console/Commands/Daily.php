@@ -10,7 +10,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use App\Facades\StorePlanService;
 use Carbon\Carbon;
-use App\SMSSetting;
+use App\SmsSetting;
 
 class Daily extends Command
 {
@@ -95,7 +95,7 @@ class Daily extends Command
         $stores = Store::all();
 
         foreach ($stores as $store) {
-            $smsSettings = SMSSetting::where('store_id', $store->id)->first();
+            $smsSettings = SmsSetting::where('store_id', $store->id)->first();
 
             if ($smsSettings->last_payment !== null) {
                 $lastPayment = new Carbon($smsSettings->last_payment);
