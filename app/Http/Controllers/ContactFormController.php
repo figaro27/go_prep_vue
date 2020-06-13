@@ -40,7 +40,9 @@ class ContactFormController extends Controller
             $data
         ) {
             $message->from($data['email']);
-            $message->to('help@goprep.com');
+            $message
+                ->to('help@goprep.com')
+                ->subject('GoPrep - Contact Form Inquiry from Store');
         });
     }
 
