@@ -26,6 +26,7 @@
           :chat="chat"
           :phone="phone"
           :row="row"
+          :conflict="conflict"
           @showChat="showChat($event)"
           @disableSpinner="disableSpinner"
         ></view-chat>
@@ -38,6 +39,9 @@
       >
         <div slot="name" class="text-nowrap" slot-scope="props">
           {{ props.row.firstName }} {{ props.row.lastName }}
+        </div>
+        <div slot="updatedAt" class="text-nowrap" slot-scope="props">
+          {{ moment(props.row.updatedAt).format("dddd h:mm a") }}
         </div>
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button class="btn view btn-warning btn-sm" @click="view(props.row)">
@@ -72,9 +76,10 @@ export default {
       chat: null,
       phone: null,
       row: null,
-      columns: ["name", "lastMessage", "actions"],
+      conflict: false,
+      columns: ["name", "phone", "updatedAt", "actions"],
       options: {
-        headings: { lastMessage: "Last Message" },
+        headings: { updatedAt: "Last Message" },
         rowClassCallback: function(row) {
           let classes = `chat-${row.id}`;
           classes += row.unread ? " strong" : "";
@@ -124,7 +129,11 @@ export default {
         if (this.modalOpened) {
           this.showViewChatModal = true;
         }
-
+        if (resp.data.conflict) {
+          this.conflict = true;
+          this.phone = resp.data.phone;
+          return;
+        }
         this.chat = resp.data.resources;
         let lastIncomingId = "";
         let lastOutgoingId = "";

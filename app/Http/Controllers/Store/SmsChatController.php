@@ -80,6 +80,7 @@ class SmsChatController extends StoreController
                 $chat->firstName = json_decode($body)->contact->firstName;
                 $chat->lastName = json_decode($body)->contact->lastName;
                 $chat->lastMessage = json_decode($body)->lastMessage;
+                $chat->phone = json_decode($body)->contact->phone;
                 $chat->unread = $unread;
                 $chat->updatedAt = json_decode($body)->updatedAt;
                 $chat->updated_at = $smsChat->updated_at;
@@ -164,6 +165,26 @@ class SmsChatController extends StoreController
         $smsChat = SmsChat::where('chat_id', $chatId)->first();
         $smsChat->unread = 0;
         $smsChat->update();
+
+        // Avoid conflicts with multiple stores texting the same contact. Text Magic doesn't allow separation even if the FROM numbers are different. You have to get different API keys for each store.
+        $numbers = [];
+        $resources = json_decode($body)->resources;
+        $contactPhone = '';
+        foreach ($resources as $resource) {
+            if (!in_array($resource->sender, $numbers)) {
+                array_push($numbers, $resource->sender);
+            }
+            if ($resource->direction === 'o') {
+                $contactPhone = $resource->sender;
+            }
+        }
+
+        if (count($numbers) > 2) {
+            return [
+                'conflict' => true,
+                'phone' => $contactPhone
+            ];
+        }
 
         return $body;
     }

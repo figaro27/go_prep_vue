@@ -1,22 +1,33 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <div class="chatArea">
-        <div class="chat">
-          <div v-for="text in chat" :class="text.css">
-            <div :class="text.innerCSS">
-              {{ text.text }}
+      <div v-if="!conflict">
+        <div class="chatArea">
+          <div class="chat">
+            <div v-for="text in chat" :class="text.css">
+              <div :class="text.innerCSS">
+                {{ text.text }}
+              </div>
             </div>
           </div>
         </div>
+        <b-form-textarea
+          v-model="message"
+          placeholder="New message.."
+        ></b-form-textarea>
+        <b-btn variant="primary" @click="sendMessage" class="mt-2 pull-right"
+          >Send</b-btn
+        >
       </div>
-      <b-form-textarea
-        v-model="message"
-        placeholder="New message.."
-      ></b-form-textarea>
-      <b-btn variant="primary" @click="sendMessage" class="mt-2 pull-right"
-        >Send</b-btn
-      >
+      <div v-else>
+        <b-alert variant="warning" show>
+          <p class="center-text">There is a conflict with this chat.</p>
+          <p class="center-text">
+            Please message the contact directly:
+            <span class="strong">{{ phone }}</span>
+          </p>
+        </b-alert>
+      </div>
     </div>
   </div>
 </template>
@@ -43,7 +54,8 @@ export default {
   props: {
     chat: null,
     phone: null,
-    row: null
+    row: null,
+    conflict: null
   },
   created() {},
   mounted() {
@@ -84,6 +96,7 @@ export default {
         .then(resp => {
           this.$emit("showChat", this.row);
           this.$toastr.s("Message sent.", "Success");
+          this.message = "";
         });
     }
   }
