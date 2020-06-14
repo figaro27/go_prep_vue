@@ -19,32 +19,34 @@ class SMSContactController extends StoreController
 
     public function index()
     {
-        $listId = SmsList::where('store_id', $this->store->id)
-            ->pluck('list_id')
-            ->first();
-        return $listId;
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request(
-            'GET',
-            'https://rest.textmagic.com/api/v2/lists' .
-                '/' .
-                $listId .
-                '/contacts',
-            [
-                'headers' => $this->headers
-            ]
+        $contactIds = SmsContact::where('store_id', $this->store->id)->pluck(
+            'contact_id'
         );
 
-        $body = $res->getBody();
-        $includedContacts = json_decode($body)->resources;
-        return collect($includedContacts)->map(function ($contact) {
-            return [
-                'id' => $contact->id,
-                'firstName' => $contact->firstName,
-                'lastName' => $contact->lastName,
-                'phone' => $contact->phone
-            ];
-        });
+        $contacts = [];
+
+        foreach ($contactIds as $contactId) {
+            try {
+                $client = new \GuzzleHttp\Client();
+                $res = $client->request(
+                    'GET',
+                    $this->baseURL . '/' . $contactId,
+                    [
+                        'headers' => $this->headers
+                    ]
+                );
+                $body = $res->getBody();
+                $contact = new stdClass();
+                $contact->id = json_decode($body)->id;
+                $contact->firstName = json_decode($body)->firstName;
+                $contact->phone = json_decode($body)->phone;
+                $contact->lastName = json_decode($body)->lastName;
+                array_push($contacts, $contact);
+            } catch (\Exception $e) {
+            }
+        }
+
+        return $contacts;
     }
 
     /**
