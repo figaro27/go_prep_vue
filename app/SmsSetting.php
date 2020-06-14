@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\SmsList;
-use App\SMSContact;
+use App\SmsContact;
 use stdClass;
 use Carbon\Carbon;
 use App\Order;
@@ -271,7 +271,7 @@ class SmsSetting extends Model
 
     public function getAbove50ContactsAttribute()
     {
-        $count = SMSContact::where('store_id', $this->store->id)->count();
+        $count = SmsContact::where('store_id', $this->store->id)->count();
         if ($count > 50) {
             return true;
         } else {
