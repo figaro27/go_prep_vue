@@ -23,7 +23,7 @@
       >
         <reminder-template
           @closeModal="reminderTemplateModal = false"
-          @update="updateSettings(false, true)"
+          @update="updateSettings(true)"
         ></reminder-template>
       </b-modal>
 
@@ -144,7 +144,7 @@
               v-model="smsSettings.autoSendOrderReminderHours"
               placeholder="Hours before cutoff to send"
               class="w-180 d-inline"
-              v-on:keyup="updateSettings(false)"
+              v-on:keyup="updateSettings"
             ></b-form-input>
             <img
               v-b-popover.hover="
@@ -288,29 +288,20 @@ export default {
       enableSpinner: "enableSpinner"
     }),
     formatMoney: format.money,
-    updateSettings(fromModal = false, nextTick = true) {
+    updateSettings(fromModal = false) {
       if (fromModal == true) {
         this.$toastr.s("Template updated.");
       }
       this.disableSpinner();
       this.checkIfActivated();
-      if (nextTick) {
-        this.$nextTick(() => {
-          axios
-            .post("/api/me/updateSMSSettings", { settings: this.smsSettings })
-            .then(resp => {
-              this.refreshSMSSettings();
-              this.enableSpinner();
-            });
-        });
-      } else {
+      this.$nextTick(() => {
         axios
           .post("/api/me/updateSMSSettings", { settings: this.smsSettings })
           .then(resp => {
             this.refreshSMSSettings();
             this.enableSpinner();
           });
-      }
+      });
     },
     checkIfActivated() {
       if (!this.smsSettings.phone) {
