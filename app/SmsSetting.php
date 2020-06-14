@@ -242,7 +242,11 @@ class SmsSetting extends Model
 
     public function getNextDeliveryDateAttribute()
     {
-        return $this->store->getNextDeliveryDate();
+        $nextDeliveryDate = $this->store->getNextDeliveryDate();
+        if ($nextDeliveryDate->isPast()) {
+            $nextDeliveryDate->addWeeks(1);
+        }
+        return $nextDeliveryDate;
     }
 
     public function getNextCutoffAttribute()
