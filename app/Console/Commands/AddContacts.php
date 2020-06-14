@@ -90,6 +90,8 @@ class AddContacts extends Command
 
         // Create master list for each active store
         $stores = Store::whereIn('id', array(
+            13,
+            16,
             40,
             74,
             88,
