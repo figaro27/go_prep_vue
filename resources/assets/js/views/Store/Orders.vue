@@ -1,24 +1,30 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert variant="info" show>
-        <h5>New Look</h5>
-        <p>
-          The individual meal page on your menu has been redesigned into a
-          neater and more condensed version with some new design elements.<br />
-          <a
-            target="_blank"
-            href="https://gyazo.com/b821a54d04e24c1d27bbdd3986875bd9"
-            ><b>Before</b></a
-          >
-          &
-          <a
-            target="_blank"
-            href="https://gyazo.com/0c4abfbe8a6008c343fa8c279cfc7de6"
-            ><b>After</b></a
-          >
-        </p>
-      </b-alert> -->
+      <b-alert style="background-color:#EBFAFF" show>
+        <router-link to="/store/SMS">
+          <h5 style="color:#23282C;text-decoration:underline">
+            New Feature - SMS
+          </h5>
+        </router-link>
+        <ul class="smsUL" style="position:relative;right:25px">
+          <li>Send bulk text messages to all or select customers.</li>
+          <li>Engage in live chats with any customer who responds.</li>
+          <li>
+            Create templates for your messages and personalize them using tags
+            like the customer's name.
+          </li>
+          <li>
+            Set up automated texts to your customers for certain events:<br />
+            -Send a confirmation text to your customers after an order or
+            subscription is placed.<br />
+            -Notify your customers that their order is being delivered or
+            available for pickup today.<br />
+            -Remind your customers to order a certain time before your next
+            delivery day's cutoff.
+          </li>
+        </ul>
+      </b-alert>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
@@ -1663,4 +1669,8 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.smsUL li {
+  list-style-type: square;
+}
+</style>
