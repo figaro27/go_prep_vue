@@ -31,7 +31,7 @@ class SmsSetting extends Model
         'orderReminderTemplatePreview',
         'orderConfirmationTemplatePreview',
         'deliveryTemplatePreview',
-        'aboveFityContacts'
+        'above50contacts'
     ];
 
     protected $guarded = [
@@ -43,7 +43,7 @@ class SmsSetting extends Model
         'orderReminderTemplatePreview',
         'orderConfirmationTemplatePreview',
         'deliveryTemplatePreview',
-        'aboveFityContacts'
+        'above50Contacts'
     ];
 
     public function store()
@@ -279,7 +279,7 @@ class SmsSetting extends Model
         return $this->processTags($this->autoSendDeliveryTemplate);
     }
 
-    public function getAboveFiftyContactsAttribute()
+    public function getAbove50ContactsAttribute()
     {
         $count = SmsContact::where('store_id', $this->store->id)->count();
         if ($count > 50) {
