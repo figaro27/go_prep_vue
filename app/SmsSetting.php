@@ -30,18 +30,20 @@ class SmsSetting extends Model
         'orderReminderTime',
         'orderReminderTemplatePreview',
         'orderConfirmationTemplatePreview',
-        'deliveryTemplatePreview'
+        'deliveryTemplatePreview',
+        'above50contacts'
     ];
 
     protected $guarded = [
         'id',
+        'store',
         'nextDeliveryDate',
         'nextCutoff',
         'orderReminderTime',
         'orderReminderTemplatePreview',
         'orderConfirmationTemplatePreview',
         'deliveryTemplatePreview',
-        'store'
+        'above50Contacts'
     ];
 
     public function store()
@@ -265,6 +267,18 @@ class SmsSetting extends Model
     public function getDeliveryTemplatePreviewAttribute()
     {
         return $this->processTags($this->autoSendDeliveryTemplate);
+    }
+
+    public function getAbove50ContactsAttribute()
+    {
+        $count = SMSContact::where('store_id', $this->store->id)
+            ->get()
+            ->count();
+        if ($count > 50) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function processTags(

@@ -1,6 +1,9 @@
 <template>
   <div class="row mt-2">
     <div class="col-md-12">
+      <p class="center-text small" v-if="smsSettings.above50contacts">
+        Contacts take about 10 seconds to load per 50. Thanks for your patience.
+      </p>
       <b-form-radio-group
         buttons
         v-model="page"
@@ -150,7 +153,8 @@ export default {
       isLoading: "isLoading",
       initialized: "initialized",
       SMSContacts: "SMSContacts",
-      initialized: "initialized"
+      initialized: "initialized",
+      smsSettings: "storeSMSSettings"
     }),
     SMSContactsData() {
       if (_.isArray(this.SMSContacts)) {

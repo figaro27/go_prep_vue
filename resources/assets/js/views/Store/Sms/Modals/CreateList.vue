@@ -2,7 +2,6 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
-
       <b-button
         @click="$emit('addList', list)"
         variant="primary"
@@ -18,7 +17,7 @@
 
       <v-client-table
         :columns="columns"
-        :data="tableData"
+        :data="SMSContactsData"
         :options="{
           orderBy: {
             column: 'id',
@@ -61,7 +60,6 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      tableData: [],
       columns: ["add", "firstName", "lastName", "phone"],
       list: {
         name: "",
@@ -70,25 +68,26 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    this.getContacts();
-  },
+  mounted() {},
   computed: {
     ...mapGetters({
       store: "viewedStore",
       isLoading: "isLoading",
       initialized: "initialized",
-      customers: "storeCustomers"
-    })
+      customers: "storeCustomers",
+      SMSContacts: "SMSContacts"
+    }),
+    SMSContactsData() {
+      if (_.isArray(this.SMSContacts)) {
+        return this.SMSContacts;
+      } else {
+        return [];
+      }
+    }
   },
   methods: {
     ...mapActions({}),
     formatMoney: format.money,
-    getContacts() {
-      axios.get("/api/me/SMSContacts").then(resp => {
-        this.tableData = resp.data;
-      });
-    },
     addContact(id, val) {
       if (val === 1) {
         this.list.contacts.push(id);

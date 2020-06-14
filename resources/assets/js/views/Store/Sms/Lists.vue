@@ -13,7 +13,7 @@
       </div>
       <Spinner v-if="isLoading" />
       <b-modal
-        size="md"
+        size="lg"
         title="Create List"
         v-model="showCreateListModal"
         v-if="showCreateListModal"
