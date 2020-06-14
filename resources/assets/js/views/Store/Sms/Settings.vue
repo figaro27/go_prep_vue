@@ -294,12 +294,14 @@ export default {
       }
       this.disableSpinner();
       this.checkIfActivated();
-      axios
-        .post("/api/me/updateSMSSettings", { settings: this.smsSettings })
-        .then(resp => {
-          this.refreshSMSSettings();
-          this.enableSpinner();
-        });
+      this.$nextTick(() => {
+        axios
+          .post("/api/me/updateSMSSettings", { settings: this.smsSettings })
+          .then(resp => {
+            this.refreshSMSSettings();
+            this.enableSpinner();
+          });
+      });
     },
     checkIfActivated() {
       if (!this.smsSettings.phone) {
