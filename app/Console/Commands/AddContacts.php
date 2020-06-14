@@ -115,8 +115,7 @@ class AddContacts extends Command
             148,
             149,
             150,
-            151,
-            16
+            151
         ))->get();
         foreach ($stores as $store) {
             // Create store master list
