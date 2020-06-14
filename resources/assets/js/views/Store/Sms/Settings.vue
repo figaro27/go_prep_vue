@@ -144,7 +144,7 @@
               v-model="smsSettings.autoSendOrderReminderHours"
               placeholder="Hours before cutoff to send"
               class="w-180 d-inline"
-              v-on:keyup="updateSettings"
+              @keydown="updateSettings"
             ></b-form-input>
             <img
               v-b-popover.hover="
