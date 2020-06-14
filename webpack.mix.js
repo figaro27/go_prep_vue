@@ -26,13 +26,11 @@ mix.extract();
 mix
   .js("resources/assets/js/app.js", "public/js")
   .js("resources/assets/js/print.js", "public/js")
-  .sourceMaps(true)
   .version();
 
 mix
   .sass("resources/assets/sass/app.scss", "public/css")
   .sass("resources/assets/sass/print.scss", "public/css")
-  .sourceMaps(true)
   .version();
 
 /*
