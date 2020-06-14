@@ -253,10 +253,9 @@ class SmsSetting extends Model
     {
         if ($this->nextDeliveryDate) {
             $storeSettings = $this->store->settings;
-            $cutoff = $storeSettings
+            return $storeSettings
                 ->getCutoffDate($this->nextDeliveryDate)
                 ->setTimezone($storeSettings->timezone);
-            return $cutoff;
         }
     }
 
