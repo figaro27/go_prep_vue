@@ -130,8 +130,8 @@ class SmsSetting extends Model
             $body = $res->getBody();
             $contacts = json_decode($body)->membersCount;
 
-            $this->balance += $contacts * 0.05;
-            $this->total_spent += $contacts * 0.05;
+            $this->balance += $contacts * 0.06;
+            $this->total_spent += $contacts * 0.06;
             $this->update();
             $this->chargeBalance($store);
 
@@ -215,8 +215,8 @@ class SmsSetting extends Model
             $body = $res->getBody();
 
             $store = $this->store;
-            $this->balance += 0.05;
-            $this->total_spent += 0.05;
+            $this->balance += 0.06;
+            $this->total_spent += 0.06;
             $this->update();
             $this->chargeBalance($store);
 

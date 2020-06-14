@@ -173,7 +173,7 @@
                 }}</span
                 ><img
                   v-b-popover.hover="
-                    'The number of recipients times the number of parts the text will be sent in (160 characters per part) times 5 cents. Your GoPrep account will be charged via Stripe every time your balance reaches a $5.00 threshold. This applies to automatic texts sent out if you have them turned on in settings.'
+                    'The number of recipients times the number of parts the text will be sent in (160 characters per part) times .06 cents. Your GoPrep account will be charged via Stripe every time your balance reaches a $5.00 threshold. This applies to automatic texts sent out if you have them turned on in settings.'
                   "
                   title="Cost"
                   src="/images/store/popover.png"
@@ -346,7 +346,7 @@ export default {
       return ["First name", "Last name", "Company name", "Phone", "Email"];
     },
     messageCost() {
-      return this.messageParts * 0.05 * this.recipientCount;
+      return this.messageParts * 0.06 * this.recipientCount;
     },
     messageParts() {
       return Math.ceil(this.message.content.length / 160);

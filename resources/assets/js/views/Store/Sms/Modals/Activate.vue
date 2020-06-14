@@ -6,7 +6,7 @@
         Please select an available phone number from the choices below.
       </p>
       <p class="center-text pb-2">
-        Your account will be charged $4.00 / month plus $.05 cents per text.
+        Your account will be charged $4.00 / month plus $.06 cents per text.
       </p>
 
       <div v-if="numbers.length > 0">
