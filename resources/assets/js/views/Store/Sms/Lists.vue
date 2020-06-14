@@ -3,7 +3,7 @@
     <div>
       <img
         v-b-popover.rightbottom.hover="
-          'A list is a group of contacts to make it easier to choose recipients when you send a new message. By default you will have a master list which is made up of all your past customers.'
+          'A list is a group of contacts to make it easier to choose recipients when you send a new message. By default you will have a master list which is made up of all your past customers. You can\'t edit or delete your master list.'
         "
         title="Lists"
         src="/images/store/popover.png"
