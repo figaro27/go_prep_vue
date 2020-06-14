@@ -117,6 +117,17 @@ class AddContacts extends Command
         // 150,
         // 151,
         // Newly added
+        // 70,
+        // 99,
+        // 117,
+        // 122,
+        // 128,
+        // 152,
+        // 153,
+        // 154,
+        // 155,
+        // 156,
+        // 157
         // Ignore list
         // 14,
         // 108,
@@ -125,19 +136,7 @@ class AddContacts extends Command
         // 98,
         // 100,
         // 105
-        $stores = Store::whereIn('id', array(
-            70,
-            99,
-            117,
-            122,
-            128,
-            152,
-            153,
-            154,
-            155,
-            156,
-            157
-        ))->get();
+        $stores = Store::whereIn('id', array(16))->get();
         foreach ($stores as $store) {
             // Create store master list
             $client = new \GuzzleHttp\Client();
