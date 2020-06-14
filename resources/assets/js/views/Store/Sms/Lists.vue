@@ -78,14 +78,14 @@
       </div>
       <div slot="actions" class="text-nowrap" slot-scope="props">
         <button
-          v-if="!isAllContactsList(props.row.id)"
+          :disabled="!isAllContactsList(props.row.id)"
           class="btn view btn-warning btn-sm"
           @click="(list = props.row), (showEditListModal = true)"
         >
           Edit
         </button>
         <button
-          v-if="!isAllContactsList(props.row.id)"
+          disabled="!isAllContactsList(props.row.id)"
           class="btn btn-danger btn-sm"
           @click="deleteList(props.row.id)"
         >
