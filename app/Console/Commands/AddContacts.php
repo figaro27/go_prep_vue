@@ -82,7 +82,7 @@ class AddContacts extends Command
         $body = $res->getBody();
 
         $smsList = new SmsList();
-        $smsList->store_id = 0;
+        $smsList->store_id = 13;
         $smsList->list_id = json_decode($body)->id;
         $smsList->save();
 
@@ -116,8 +116,6 @@ class AddContacts extends Command
             149,
             150,
             151,
-
-            13,
             16
         ))->get();
         foreach ($stores as $store) {
