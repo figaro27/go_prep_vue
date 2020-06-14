@@ -220,7 +220,7 @@
             :options="deliveryTimeOptions"
             class="d-inline"
             style="height:30px"
-            @change.native="updateSettings"
+            @change="updateSettings"
           ></b-form-select>
         </div>
         <div>
