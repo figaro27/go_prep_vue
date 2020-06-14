@@ -30,12 +30,12 @@
             </div>
             <contacts></contacts>
           </b-tab>
-          <b-tab title="Lists">
+          <!-- <b-tab title="Lists">
             <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
             <lists></lists>
-          </b-tab>
+          </b-tab> -->
           <b-tab title="Settings">
             <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
               {{ unreadSMSMessages }} {{ chatsText }}

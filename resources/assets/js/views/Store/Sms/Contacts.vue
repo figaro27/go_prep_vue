@@ -1,6 +1,17 @@
 <template>
   <div class="row mt-2">
     <div class="col-md-12">
+      <b-form-radio-group
+        buttons
+        v-model="page"
+        class="storeFilters pb-3"
+        :options="[
+          { value: 'contacts', text: 'Contacts' },
+          { value: 'lists', text: 'Lists' }
+        ]"
+      ></b-form-radio-group>
+    </div>
+    <div class="col-md-12" v-if="page == 'contacts'">
       <div>
         <img
           v-b-popover.rightbottom.hover="
@@ -93,6 +104,9 @@
         </div>
       </v-client-table>
     </div>
+    <div class="col-md-12" v-if="page == 'lists'">
+      <lists></lists>
+    </div>
   </div>
 </template>
 
@@ -106,6 +120,7 @@ import store from "../../../store";
 import CreateContact from "./Modals/CreateContact.vue";
 import DeleteContact from "./Modals/DeleteContact.vue";
 import EditContact from "./Modals/EditContact.vue";
+import Lists from "./Lists.vue";
 
 export default {
   components: {
@@ -113,11 +128,13 @@ export default {
     vSelect,
     CreateContact,
     DeleteContact,
-    EditContact
+    EditContact,
+    Lists
   },
   mixins: [checkDateRange],
   data() {
     return {
+      page: "contacts",
       columns: ["firstName", "lastName", "phone", "actions"],
       showCreateContactModal: false,
       showEditContactModal: false,
