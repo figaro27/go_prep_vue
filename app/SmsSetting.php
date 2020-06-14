@@ -271,9 +271,7 @@ class SmsSetting extends Model
 
     public function getAbove50ContactsAttribute()
     {
-        $count = SMSContact::where('store_id', $this->store->id)
-            ->get()
-            ->count();
+        $count = SMSContact::where('store_id', $this->store->id)->count();
         if ($count > 50) {
             return true;
         } else {
