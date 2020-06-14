@@ -64,6 +64,7 @@
           {{ format.money(smsSettings.balance, store.settings.currency) }}
         </span>
         <img
+          v-if="smsSettings.phone"
           v-b-popover.hover="
             'Your connected Stripe account will be charged every time it reaches a $5.00 threshold.'
           "

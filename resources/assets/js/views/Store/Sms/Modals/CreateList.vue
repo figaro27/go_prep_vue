@@ -2,19 +2,20 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
-      <b-button
-        @click="$emit('addList', list)"
-        variant="primary"
-        class="mb-2 pull-right"
-        >Save</b-button
-      >
+      <div class="d-flex">
+        <b-form-input
+          v-model="list.name"
+          placeholder="List Name (Optional)"
+          style="width:350px"
+        ></b-form-input>
 
-      <b-form-input
-        v-model="list.name"
-        placeholder="List Name (Optional)"
-        style="width:350px"
-      ></b-form-input>
-
+        <b-button
+          @click="$emit('addList', list)"
+          variant="primary"
+          class="mb-2 float-left ml-4"
+          >Save</b-button
+        >
+      </div>
       <v-client-table
         :columns="columns"
         :data="SMSContactsData"
