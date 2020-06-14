@@ -149,7 +149,7 @@
             ></b-form-select>
             <img
               v-b-popover.hover="
-                'Insert the number of hours before your next cutoff that you want the order reminder text to be sent. The time above will update.'
+                'Select the number of hours before your next cutoff that you want the order reminder text to be sent. The time above will update.'
               "
               title="Hours Before Cutoff"
               src="/images/store/popover.png"
