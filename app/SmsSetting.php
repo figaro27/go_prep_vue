@@ -31,7 +31,7 @@ class SmsSetting extends Model
         'orderReminderTemplatePreview',
         'orderConfirmationTemplatePreview',
         'deliveryTemplatePreview',
-        'above50contacts'
+        'aboveFiftyContacts'
     ];
 
     protected $guarded = [
@@ -43,7 +43,7 @@ class SmsSetting extends Model
         'orderReminderTemplatePreview',
         'orderConfirmationTemplatePreview',
         'deliveryTemplatePreview',
-        'above50Contacts'
+        'aboveFiftyContacts'
     ];
 
     public function store()
@@ -242,16 +242,21 @@ class SmsSetting extends Model
 
     public function getNextDeliveryDateAttribute()
     {
-        return $this->store->getNextDeliveryDate();
+        $nextDelivery = $this->store->getNextDeliveryDate();
+        if ($nextDelivery->isPast()) {
+            $nextDelivery->addWeeks(1);
+        }
+        return $nextDelivery;
     }
 
     public function getNextCutoffAttribute()
     {
         if ($this->nextDeliveryDate) {
             $storeSettings = $this->store->settings;
-            return $storeSettings
+            $cutoff = $storeSettings
                 ->getCutoffDate($this->nextDeliveryDate)
                 ->setTimezone($storeSettings->timezone);
+            return $cutoff;
         }
     }
 
@@ -279,7 +284,7 @@ class SmsSetting extends Model
         return $this->processTags($this->autoSendDeliveryTemplate);
     }
 
-    public function getAbove50ContactsAttribute()
+    public function getAboveFiftyContactsAttribute()
     {
         $count = SmsContact::where('store_id', $this->store->id)->count();
         if ($count > 50) {
