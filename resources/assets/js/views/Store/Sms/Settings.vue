@@ -140,12 +140,13 @@
             }}
           </p>
           <div class="d-flex">
-            <b-form-input
+            <b-form-select
               v-model="smsSettings.autoSendOrderReminderHours"
-              placeholder="Hours before cutoff to send"
-              class="w-180 d-inline"
-              @keydown="updateSettings"
-            ></b-form-input>
+              :options="reminderHoursOptions"
+              class="d-inline"
+              style="height:30px"
+              @change="updateSettings"
+            ></b-form-select>
             <img
               v-b-popover.hover="
                 'Insert the number of hours before your next cutoff that you want the order reminder text to be sent. The time above will update.'
@@ -279,6 +280,58 @@ export default {
     }),
     deliveryTimeOptions() {
       return times;
+    },
+    reminderHoursOptions() {
+      return [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
+      ];
     }
   },
   methods: {
