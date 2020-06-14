@@ -242,8 +242,8 @@ class SmsSetting extends Model
 
     public function getNextDeliveryDateAttribute()
     {
+        $nextDeliveryDate = $this->store->getNextDeliveryDate();
         if ($this->nextDeliveryDate) {
-            $nextDeliveryDate = $this->store->getNextDeliveryDate();
             if ($nextDeliveryDate->isPast()) {
                 $nextDeliveryDate->addWeeks(1);
             }
