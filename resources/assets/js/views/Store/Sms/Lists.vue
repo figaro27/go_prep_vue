@@ -23,7 +23,7 @@
     </b-modal>
 
     <b-modal
-      size="md"
+      size="lg"
       title="Edit List"
       v-model="showEditListModal"
       v-if="showEditListModal"

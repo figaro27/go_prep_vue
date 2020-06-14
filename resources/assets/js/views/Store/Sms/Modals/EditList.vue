@@ -2,16 +2,15 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
-
-      <b-button
-        @click="$emit('updateList', { list: list, contacts: SMSContacts })"
-        variant="warning"
-        class="mb-2 pull-right"
-        >Update</b-button
-      >
-
-      <b-form-input v-model="list.name" style="width:350px"></b-form-input>
-
+      <div class="d-flex">
+        <b-form-input v-model="list.name" style="width:350px"></b-form-input>
+        <b-button
+          @click="$emit('updateList', { list: list, contacts: SMSContacts })"
+          variant="warning"
+          class="mb-2 float-left ml-4"
+          >Update</b-button
+        >
+      </div>
       <v-client-table
         :columns="columns"
         :data="SMSContacts"
