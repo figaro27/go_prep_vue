@@ -1,9 +1,6 @@
 <template>
   <div class="row mt-2">
     <div class="col-md-12">
-      <p class="small" v-if="smsSettings.aboveFiftyContacts">
-        Contacts take about 10 seconds to load per 50. Thanks for your patience.
-      </p>
       <b-form-radio-group
         buttons
         v-model="page"
