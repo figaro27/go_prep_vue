@@ -7,7 +7,7 @@
       <b-form-radio-group
         buttons
         v-model="page"
-        class="storeFilters"
+        class="storeFilters pb-3"
         :options="[
           { value: 'contacts', text: 'Contacts' },
           { value: 'lists', text: 'Lists' }

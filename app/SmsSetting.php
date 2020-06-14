@@ -59,6 +59,10 @@ class SmsSetting extends Model
             ->pluck('list_id')
             ->first();
 
+        if (!$listId) {
+            $listId = $this->createMasterList();
+        }
+
         $phone = (int) preg_replace('/[^0-9]/', '', $contact['phone']);
         if (strlen((string) $phone) === 10) {
             $phone = 1 . $phone;
@@ -243,15 +247,21 @@ class SmsSetting extends Model
 
     public function getNextCutoffAttribute()
     {
-        $storeSettings = $this->store->settings;
-        return $storeSettings
-            ->getCutoffDate($this->nextDeliveryDate)
-            ->setTimezone($storeSettings->timezone);
+        if ($this->nextDeliveryDate) {
+            $storeSettings = $this->store->settings;
+            return $storeSettings
+                ->getCutoffDate($this->nextDeliveryDate)
+                ->setTimezone($storeSettings->timezone);
+        }
     }
 
     public function getOrderReminderTimeAttribute()
     {
-        return $this->nextCutoff->subHours($this->autoSendOrderReminderHours);
+        if ($this->nextCutoff) {
+            return $this->nextCutoff->subHours(
+                $this->autoSendOrderReminderHours
+            );
+        }
     }
 
     public function getOrderReminderTemplatePreviewAttribute()
@@ -279,71 +289,101 @@ class SmsSetting extends Model
         }
     }
 
+    public function createMasterList()
+    {
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'POST',
+            'https://rest.textmagic.com/api/v2/lists',
+            [
+                'headers' => $this->headers,
+                'form_params' => [
+                    'name' => 'All Contacts - ' . $this->store->details->name
+                ]
+            ]
+        );
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        $smsList = new SmsList();
+        $smsList->store_id = $this->store->id;
+        $smsList->list_id = json_decode($body)->id;
+        $smsList->save();
+
+        return json_decode($body)->id;
+    }
+
     public function processTags(
         $template,
         $preview = true,
         $pickup = false,
         $deliveryDate = null
     ) {
-        if (strpos($template, '{store name}')) {
-            $processedTag = $this->store->details->name;
-            $template = str_replace('{store name}', $processedTag, $template);
-        }
-
-        if (strpos($template, '{URL}')) {
-            $processedTag = $this->store->details->full_URL;
-            $template = str_replace('{URL}', $processedTag, $template);
-        }
-
-        if (strpos($template, '{cutoff}')) {
-            $processedTag =
-                $this->nextCutoff->format('l, M d') .
-                ' at ' .
-                $this->nextCutoff->format('g a');
-            $template = str_replace('{cutoff}', $processedTag, $template);
-        }
-
-        if (strpos($template, '{next delivery}')) {
-            $processedTag = $this->nextDeliveryDate->format('l, M d');
-            $template = str_replace(
-                '{next delivery}',
-                $processedTag,
-                $template
-            );
-        }
-
-        if (strpos($template, '{delivery date}')) {
-            if ($preview) {
-                $processedTag = '(delivery date)';
-            } else {
-                $processedTag = $deliveryDate;
+        if ($this->nextDeliveryDate) {
+            if (strpos($template, '{store name}')) {
+                $processedTag = $this->store->details->name;
+                $template = str_replace(
+                    '{store name}',
+                    $processedTag,
+                    $template
+                );
             }
 
-            $template = str_replace(
-                '{delivery date}',
-                $processedTag,
-                $template
-            );
-        }
+            if (strpos($template, '{URL}')) {
+                $processedTag = $this->store->details->full_URL;
+                $template = str_replace('{URL}', $processedTag, $template);
+            }
 
-        if (strpos($template, '{pickup/delivery}')) {
-            $processedTag = '';
-            if ($preview) {
-                $processedTag = '(is available for pickup / will be delivered)';
-            } else {
-                if ($pickup) {
-                    $processedTag = 'is available for pickup';
+            if (strpos($template, '{cutoff}')) {
+                $processedTag =
+                    $this->nextCutoff->format('l, M d') .
+                    ' at ' .
+                    $this->nextCutoff->format('g a');
+                $template = str_replace('{cutoff}', $processedTag, $template);
+            }
+
+            if (strpos($template, '{next delivery}')) {
+                $processedTag = $this->nextDeliveryDate->format('l, M d');
+                $template = str_replace(
+                    '{next delivery}',
+                    $processedTag,
+                    $template
+                );
+            }
+
+            if (strpos($template, '{delivery date}')) {
+                if ($preview) {
+                    $processedTag = '(delivery date)';
                 } else {
-                    $processedTag = 'will be delivered';
+                    $processedTag = $deliveryDate;
                 }
-            }
-            $template = str_replace(
-                '{pickup/delivery}',
-                $processedTag,
-                $template
-            );
-        }
 
-        return $template;
+                $template = str_replace(
+                    '{delivery date}',
+                    $processedTag,
+                    $template
+                );
+            }
+
+            if (strpos($template, '{pickup/delivery}')) {
+                $processedTag = '';
+                if ($preview) {
+                    $processedTag =
+                        '(is available for pickup / will be delivered)';
+                } else {
+                    if ($pickup) {
+                        $processedTag = 'is available for pickup';
+                    } else {
+                        $processedTag = 'will be delivered';
+                    }
+                }
+                $template = str_replace(
+                    '{pickup/delivery}',
+                    $processedTag,
+                    $template
+                );
+            }
+            return $template;
+        }
     }
 }
