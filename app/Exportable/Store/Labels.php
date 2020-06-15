@@ -150,12 +150,17 @@ class Labels
             $logo = $this->store->details->logo['url'];
         }
 
+        // Temporary solution
+        $testStore = Store::where('id', 13)->first();
+        $whiteSpace = $testStore->details->logo['url'];
+
         $vars = [
             'mealOrders' => $mealOrders,
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
             'body_classes' => implode(' ', [$this->orientation]),
-            'logo' => $logo
+            'logo' => $logo,
+            'whiteSpace' => $whiteSpace
         ];
 
         $html = view($this->exportPdfView(), $vars)->render();
