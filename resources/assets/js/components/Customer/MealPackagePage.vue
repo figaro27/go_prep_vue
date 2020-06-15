@@ -110,7 +110,37 @@
                       >
                         <div class="item-wrap">
                           <div class="title d-md-none center-text">
-                            {{ mealOption.title }}
+                            <div>
+                              <p class="d-flex d-center strong mt-3">
+                                {{ mealOption.title }}
+                              </p>
+                              <div class="d-flex d-center mt-1">
+                                <p class="d-inline mr-4 font-11">
+                                  {{ getMacros().calories }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.calories }}
+                                  </center>
+                                </p>
+                                <p class="d-inline mr-4 font-11">
+                                  {{ getMacros().carbs }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.carbs }}
+                                  </center>
+                                </p>
+                                <p class="d-inline mr-4 font-11">
+                                  {{ getMacros().protein }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.protein }}
+                                  </center>
+                                </p>
+                                <p class="d-inline font-11">
+                                  {{ getMacros().fat }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.fat }}
+                                  </center>
+                                </p>
+                              </div>
+                            </div>
                           </div>
 
                           <div class="image">
@@ -144,8 +174,36 @@
                           <!-- Image End !-->
 
                           <div class="meta">
-                            <div class="title d-none d-md-block center-text">
-                              {{ mealOption.title }}
+                            <div>
+                              <p class="d-flex d-center strong mt-3">
+                                {{ mealOption.title }}
+                              </p>
+                              <div class="d-flex d-center mt-1">
+                                <p class="d-inline mr-4 font-11">
+                                  {{ getMacros().calories }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.calories }}
+                                  </center>
+                                </p>
+                                <p class="d-inline mr-4 font-11">
+                                  {{ getMacros().carbs }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.carbs }}
+                                  </center>
+                                </p>
+                                <p class="d-inline mr-4 font-11">
+                                  {{ getMacros().protein }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.protein }}
+                                  </center>
+                                </p>
+                                <p class="d-inline font-11">
+                                  {{ getMacros().fat }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.fat }}
+                                  </center>
+                                </p>
+                              </div>
                             </div>
 
                             <b-form-textarea
@@ -307,7 +365,29 @@
                               <!-- Image Area End !-->
 
                               <div class="content-text-wrap">
-                                <strong>{{ mealOption.title }}</strong>
+                                <div>
+                                  <p class="d-flex strong ">
+                                    {{ mealOption.title }}
+                                  </p>
+                                  <div class="d-flex mt-1">
+                                    <p class="d-inline mr-4 font-11">
+                                      {{ getMacros().calories }}<br />
+                                      {{ mealOption.meal.macros.calories }}
+                                    </p>
+                                    <p class="d-inline mr-4 font-11">
+                                      {{ getMacros().carbs }}<br />
+                                      {{ mealOption.meal.macros.carbs }}
+                                    </p>
+                                    <p class="d-inline mr-4 font-11">
+                                      {{ getMacros().protein }}<br />
+                                      {{ mealOption.meal.macros.protein }}
+                                    </p>
+                                    <p class="d-inline font-11">
+                                      {{ getMacros().fat }}<br />
+                                      {{ mealOption.meal.macros.fat }}
+                                    </p>
+                                  </div>
+                                </div>
                                 <div class="mt-1 content-text">
                                   {{ mealOption.meal.description }}
                                 </div>
@@ -337,7 +417,29 @@
                               style="position: relative;"
                             >
                               <div class="content-text-wrap">
-                                <strong>{{ mealOption.title }}</strong>
+                                <div>
+                                  <p class="d-flex strong">
+                                    {{ mealOption.title }}
+                                  </p>
+                                  <div class="d-flex mt-1">
+                                    <p class="d-inline mr-4 font-11">
+                                      {{ getMacros().calories }}<br />
+                                      {{ mealOption.meal.macros.calories }}
+                                    </p>
+                                    <p class="d-inline mr-4 font-11">
+                                      {{ getMacros().carbs }}<br />
+                                      {{ mealOption.meal.macros.carbs }}
+                                    </p>
+                                    <p class="d-inline mr-4 font-11">
+                                      {{ getMacros().protein }}<br />
+                                      {{ mealOption.meal.macros.protein }}
+                                    </p>
+                                    <p class="d-inline font-11">
+                                      {{ getMacros().fat }}<br />
+                                      {{ mealOption.meal.macros.fat }}
+                                    </p>
+                                  </div>
+                                </div>
                                 <div class="mt-1 content-text">
                                   {{ mealOption.meal.description }}
                                 </div>
@@ -462,7 +564,37 @@
                     >
                       <div class="item-wrap">
                         <div class="title d-md-none center-text">
-                          {{ mealOption.title }}
+                          <div>
+                            <p class="d-flex d-center strong">
+                              {{ mealOption.title }}
+                            </p>
+                            <div class="d-flex d-center mt-1">
+                              <p class="d-inline mr-4 font-11">
+                                {{ getMacros().calories }}<br />
+                                <center>
+                                  {{ mealOption.meal.macros.calories }}
+                                </center>
+                              </p>
+                              <p class="d-inline mr-4 font-11">
+                                {{ getMacros().carbs }}<br />
+                                <center>
+                                  {{ mealOption.meal.macros.carbs }}
+                                </center>
+                              </p>
+                              <p class="d-inline mr-4 font-11">
+                                {{ getMacros().protein }}<br />
+                                <center>
+                                  {{ mealOption.meal.macros.protein }}
+                                </center>
+                              </p>
+                              <p class="d-inline font-11">
+                                {{ getMacros().fat }}<br />
+                                <center>
+                                  {{ mealOption.meal.macros.fat }}
+                                </center>
+                              </p>
+                            </div>
+                          </div>
                         </div>
 
                         <div class="image">
@@ -497,7 +629,37 @@
 
                         <div class="meta">
                           <div class="title d-none d-md-block center-text">
-                            {{ mealOption.title }}
+                            <div>
+                              <p class="d-flex d-center strong">
+                                {{ mealOption.title }}
+                              </p>
+                              <div class="d-flex d-center mt-1">
+                                <p class="d-inline mr-4 font-11">
+                                  {{ getMacros().calories }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.calories }}
+                                  </center>
+                                </p>
+                                <p class="d-inline mr-4 font-11">
+                                  {{ getMacros().carbs }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.carbs }}
+                                  </center>
+                                </p>
+                                <p class="d-inline mr-4 font-11">
+                                  {{ getMacros().protein }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.protein }}
+                                  </center>
+                                </p>
+                                <p class="d-inline font-11">
+                                  {{ getMacros().fat }}<br />
+                                  <center>
+                                    {{ mealOption.meal.macros.fat }}
+                                  </center>
+                                </p>
+                              </div>
+                            </div>
                           </div>
 
                           <b-form-textarea
@@ -565,7 +727,29 @@
                             <!-- Image Area End !-->
 
                             <div class="content-text-wrap">
-                              <strong>{{ mealOption.title }}</strong>
+                              <div>
+                                <p class="d-flex strong">
+                                  {{ mealOption.title }}
+                                </p>
+                                <div class="d-flex mt-1">
+                                  <p class="d-inline mr-4 font-11">
+                                    {{ getMacros().calories }}<br />
+                                    {{ mealOption.meal.macros.calories }}
+                                  </p>
+                                  <p class="d-inline mr-4 font-11">
+                                    {{ getMacros().carbs }}<br />
+                                    {{ mealOption.meal.macros.carbs }}
+                                  </p>
+                                  <p class="d-inline mr-4 font-11">
+                                    {{ getMacros().protein }}<br />
+                                    {{ mealOption.meal.macros.protein }}
+                                  </p>
+                                  <p class="d-inline font-11">
+                                    {{ getMacros().fat }}<br />
+                                    {{ mealOption.meal.macros.fat }}
+                                  </p>
+                                </div>
+                              </div>
                               <div class="mt-1 content-text">
                                 {{ mealOption.meal.description }}
                               </div>
@@ -595,7 +779,29 @@
                             style="position: relative;"
                           >
                             <div class="content-text-wrap">
-                              <strong>{{ mealOption.title }}</strong>
+                              <div>
+                                <p class="d-flex strong">
+                                  {{ mealOption.title }}
+                                </p>
+                                <div class="d-flex mt-1">
+                                  <p class="d-inline mr-4 font-11">
+                                    {{ getMacros().calories }}<br />
+                                    {{ mealOption.meal.macros.calories }}
+                                  </p>
+                                  <p class="d-inline mr-4 font-11">
+                                    {{ getMacros().carbs }}<br />
+                                    {{ mealOption.meal.macros.carbs }}
+                                  </p>
+                                  <p class="d-inline mr-4 font-11">
+                                    {{ getMacros().protein }}<br />
+                                    {{ mealOption.meal.macros.protein }}
+                                  </p>
+                                  <p class="d-inline font-11">
+                                    {{ getMacros().fat }}<br />
+                                    {{ mealOption.meal.macros.fat }}
+                                  </p>
+                                </div>
+                              </div>
                               <div class="mt-1 content-text">
                                 {{ mealOption.meal.description }}
                               </div>
@@ -1402,6 +1608,22 @@ export default {
       this.mealDescription = description.replace(/(\r\n|\n|\r)/gm, "<br />");
       this.mealTitle = title;
       this.mealPackageMealModal = true;
+    },
+    getMacros() {
+      let macros = {};
+      if (!this.smallScreen) {
+        macros.calories = "Calories";
+        macros.carbs = "Carbs";
+        macros.protein = "Protein";
+        macros.fat = "Fat";
+      } else {
+        macros.calories = "Cal";
+        macros.carbs = "C";
+        macros.protein = "P";
+        macros.fat = "F";
+      }
+
+      return macros;
     }
   }
 };
