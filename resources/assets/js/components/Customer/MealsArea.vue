@@ -660,10 +660,7 @@
                     <div class="content-text-wrap d-flex">
                       <!--<div v-else class="col-md-11">!-->
                       <div style="flex-basis:75%">
-                        <p
-                          style="word-break: break-all;"
-                          v-html="getMealTitle(meal.title)"
-                        ></p>
+                        <p v-html="getMealTitle(meal.title)"></p>
                         <span class="content-text">
                           {{ meal.description }}
                           <div
