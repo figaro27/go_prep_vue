@@ -2,7 +2,7 @@
   <div class="row mt-3">
     <div class="col-md-12">
       <p class="small mb-2">
-        *This does not change your customer's account info. Customers and
+        *This does not change your customer's account info. Customers and SMS
         contacts are separate.
       </p>
     </div>
