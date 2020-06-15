@@ -647,7 +647,10 @@
                     </div>
 
                     <div class="content-text-wrap">
-                      <p v-html="getMealTitle(meal.title)"></p>
+                      <p
+                        style="word-break: break-all;"
+                        v-html="getMealTitle(meal.title)"
+                      ></p>
                       <div class="mt-1 content-text">
                         {{ meal.description }}
                       </div>
