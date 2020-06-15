@@ -144,6 +144,7 @@ class OrdersByCustomer
                         $mealOrder->order->user->details->firstname .
                         ' ' .
                         $mealOrder->order->user->details->lastname,
+                    'phone' => $mealOrder->order->user->details->phone,
                     'address' => $mealOrder->order->user->details->address,
                     'city' => $mealOrder->order->user->details->city,
                     'state' => $mealOrder->order->user->details->state,
@@ -174,6 +175,7 @@ class OrdersByCustomer
                 'Order Placed',
                 'Delivery Date',
                 'Customer',
+                'Phone',
                 'Address',
                 'City',
                 'State',
@@ -212,6 +214,7 @@ class OrdersByCustomer
                             return [
                                 'id' => $order->id,
                                 'order_number' => $order->order_number,
+                                'phone' => $order->user->details->phone,
                                 'address' => $order->user->userDetail->address,
                                 'city' => $order->user->userDetail->city,
                                 'state' => $order->user->userDetail->state,
