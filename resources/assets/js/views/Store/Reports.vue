@@ -350,21 +350,20 @@
           printers using a common label size of 4" by 2.33" inches. Please
           adjust the dimensions & margins below to see if it prints correctly
           for you. You can also try adjusting Printer Preferences on your
-          computer. If it still doesn't come out perfectly, please contact us
-          and we will work it into our development pipeline to get it right for
-          your printer. We may need you to temporarily ship us your printer so
-          we can use it to test.
+          computer. Try not to check all the boxes below as not everything can
+          fit on the label. Utilize the Preview Label button to check.
         </p>
       </b-alert>
       <b-alert variant="info" show>
         <h6 class="center-text">Setup Instructions</h6>
         <p>
-          #1 Visit this
-          <a href="https://qz.io/download/" target="_blank" class="strong"
-            >link</a
+          #1
+          <a
+            href="https://github.com/qzind/tray/releases/download/v2.1.1/qz-tray-2.1.1.exe"
+            target="_blank"
+            class="strong"
+            >Download QZ tray</a
           >
-          and install the one on the left. If you have a Mac instead of Windows,
-          click "Show All Systems" and download the Apple OS X version.
         </p>
         <p>
           #2 Run the installer on your computer and make sure the QZ Tray
