@@ -44,10 +44,10 @@
 
 
 @if ($order['isMultipleDelivery'] === 0)
-          <span style="font-weight:bold">DELIVERY</span> - {{ $order['delivery_date']->format($params->date_format) }}
+          <span style="font-weight:bold">DELIVERY:</span> {{ $order['delivery_date']->format($params->date_format) }}
             @endif
           @if ($order['isMultipleDelivery'] === 1)
-         <span style="font-weight:bold">DELIVERY</span> - {{ $order['multipleDates'] }}
+         <span style="font-weight:bold">DELIVERY:</span> {{ $order['multipleDates'] }}
             @endif
 
 
@@ -55,10 +55,10 @@
           @endif
           @if ($order['pickup'] === 1)
             @if ($order['isMultipleDelivery'] === 0)
-          <span style="font-weight:bold">PICKUP</span> - {{ $order['delivery_date']->format($params->date_format) }}
+          <span style="font-weight:bold">PICKUP:</span> {{ $order['delivery_date']->format($params->date_format) }}
             @endif
           @if ($order['isMultipleDelivery'] === 1)
-         <span style="font-weight:bold">PICKUP</span> - {{ $order['multipleDates'] }}
+         <span style="font-weight:bold">PICKUP:</span> {{ $order['multipleDates'] }}
             @endif
           @endif
           @if ($order['transferTime'])
