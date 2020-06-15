@@ -125,6 +125,13 @@ class Ingredient extends Model
             throw new \Exception('No serving unit provided.');
         }
 
+        // Converting format
+        if ($mealArr['serving_unit'] === 'fl-oz') {
+            $mealArr['serving_unit'] = 'fl oz';
+        }
+        if ($mealArr['serving_unit'] === 'pnt') {
+            $mealArr['serving_unit'] = 'pt';
+        }
         // Find unit type
         $mealArr['unit_type'] = Unit::getType($mealArr['serving_unit']);
 
