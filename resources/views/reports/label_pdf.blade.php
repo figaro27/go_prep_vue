@@ -43,11 +43,10 @@ font-size:10px !important;
 <div style="width:50%;float:left;margin-left:10px">
         @endif
   <center>
-          @if ($reportSettings->lab_logo)
+      @if ($reportSettings->lab_logo)
       <img src="{{$logo}}"/ style="width:25vh;height:25vh;margin-top:8px;margin-bottom:4px">
       @else
-      <!-- Temporary solution as only image tags work to prevent labels being misaligned & cut off. -->
-      <img src="{{$whiteSpace}}"/ style="width:25vh;height:15vh;margin-top:8px;margin-bottom:4px">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/ style="width:25vh;height:15vh;margin-top:8px;margin-bottom:4px">
       @endif
 
       <p class="text-11" style="font-weight:bold"> {!! $mealOrder->html_title !!}
@@ -65,7 +64,7 @@ font-size:10px !important;
         Consume Before: {!! $mealOrder->expirationDate !!}
         </p>
         @endif
-  
+
  @if ($reportSettings->lab_customer)
 
         <p class="text-13" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
