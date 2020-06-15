@@ -108,6 +108,7 @@
                       v-model="deliveryFeeCity.rate"
                       type="number"
                       class="mr-1"
+                      placeholder="Rate"
                     ></b-form-input>
                     <b-btn variant="primary" @click="addDeliveryFeeCity"
                       >Add</b-btn
@@ -1704,6 +1705,12 @@ export default {
       this.deliveryFeeZipCodes = [];
     },
     addDeliveryFeeCity() {
+      if (this.deliveryFeeCity.rate == null) {
+        this.$toastr.w(
+          "Please add the rate you want to charge for the city/town."
+        );
+        return;
+      }
       axios
         .post("/api/me/addDeliveryFeeCity", { dfc: this.deliveryFeeCity })
         .then(resp => {
