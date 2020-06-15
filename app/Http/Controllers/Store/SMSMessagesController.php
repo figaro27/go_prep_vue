@@ -126,8 +126,8 @@ class SMSMessagesController extends StoreController
         $store = $this->store;
 
         $smsSettings = SmsSetting::where('store_id', $store->id)->first();
-        $smsSettings->balance += $charge * 100;
-        $smsSettings->total_spent += $charge * 100;
+        $smsSettings->balance += $charge;
+        $smsSettings->total_spent += $charge;
         $smsSettings->update();
         $smsSettings->chargeBalance($this->store);
 
