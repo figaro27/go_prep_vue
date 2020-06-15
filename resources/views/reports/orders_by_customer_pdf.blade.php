@@ -44,10 +44,10 @@
 
 
 @if ($order['isMultipleDelivery'] === 0)
-          DELIVERY - {{ $order['delivery_date']->format($params->date_format) }}
+          <span style="font-weight:bold">DELIVERY</span> - {{ $order['delivery_date']->format($params->date_format) }}
             @endif
           @if ($order['isMultipleDelivery'] === 1)
-         DELIVERY - {{ $order['multipleDates'] }}
+         <span style="font-weight:bold">DELIVERY</span> - {{ $order['multipleDates'] }}
             @endif
 
 
@@ -55,28 +55,29 @@
           @endif
           @if ($order['pickup'] === 1)
             @if ($order['isMultipleDelivery'] === 0)
-          PICKUP - {{ $order['delivery_date']->format($params->date_format) }}
+          <span style="font-weight:bold">PICKUP</span> - {{ $order['delivery_date']->format($params->date_format) }}
             @endif
           @if ($order['isMultipleDelivery'] === 1)
-         PICKUP - {{ $order['multipleDates'] }}
+         <span style="font-weight:bold">PICKUP</span> - {{ $order['multipleDates'] }}
             @endif
           @endif
           @if ($order['transferTime'])
             {{ $order['transferTime'] }}
           @endif
         </h5>
-        <h5>Order ID - {{$order['order_number']}}</h5>
-        <h5>Customer: {{$orderGroup['user']->name }}</h5>
+        <h5><span style="font-weight:bold">Order ID:</span> {{$order['order_number']}}</h5>
+        <h5><span style="font-weight:bold">Customer:</span> {{$orderGroup['user']->name }}</h5>
         @if ($order['address'] !== 'N/A')
-        <h5>Address: {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h5>
+        <h5><span style="font-weight:bold">Address:</span> {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h5>
         @endif
+        <h5><span style="font-weight:bold">Phone:</span> {{$order['phone']}}</h5>
         @if ($order['pickup'] === 0)
         @if ($order['delivery'])
-        <h5>Delivery Instructions: {{$order['delivery']}}</h5>
+        <h5><span style="font-weight:bold">Delivery Instructions:</span> {{$order['delivery']}}</h5>
         @endif
         @endif
         @if ($order['pickup_location_id'] != null)
-        <h5>Pickup Location:
+        <h5><span style="font-weight:bold">Pickup Location:</span>
           {{ $order['pickup_location']->name }}<br>
           {{ $order['pickup_location']->address }},
           {{ $order['pickup_location']->city }},
@@ -86,7 +87,7 @@
         @endif
 
         @if ($order['notes'] != null)
-        <h5>Order Notes - {{ $order['notes'] }}</h5>
+        <h5><span style="font-weight:bold">Order Notes:</span> {{ $order['notes'] }}</h5>
         @endif
 
           @if(!count($order['meal_quantities']))
