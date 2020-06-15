@@ -19,34 +19,64 @@ class SMSContactController extends StoreController
 
     public function index()
     {
-        $contactIds = SmsContact::where('store_id', $this->store->id)->pluck(
-            'contact_id'
+        // Get master list ID
+        $listId = SmsList::where('store_id', $this->store->id)
+            ->pluck('list_id')
+            ->first();
+
+        // Get number of recipients in the list so you can loop through the page count of 100 each
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            'https://rest.textmagic.com/api/v2/lists' . '/' . $listId,
+            [
+                'headers' => $this->headers
+            ]
         );
+        $body = $res->getBody();
+        $membersCount = json_decode($body)->membersCount;
+        $pages = ceil($membersCount / 100);
 
-        $contacts = [];
+        // Loop through the number of pages and get the contacts (100 per page. 100 max in one request allowed.)
+        $contactsPages = [];
 
-        foreach ($contactIds as $contactId) {
-            try {
-                $client = new \GuzzleHttp\Client();
-                $res = $client->request(
-                    'GET',
-                    $this->baseURL . '/' . $contactId,
-                    [
-                        'headers' => $this->headers
+        for ($i = 1; $i <= $pages; $i++) {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'GET',
+                'https://rest.textmagic.com/api/v2/lists' .
+                    '/' .
+                    $listId .
+                    '/contacts',
+                [
+                    'headers' => $this->headers,
+                    'query' => [
+                        'page' => $i,
+                        'limit' => 100
                     ]
-                );
-                $body = $res->getBody();
-                $contact = new stdClass();
-                $contact->id = json_decode($body)->id;
-                $contact->firstName = json_decode($body)->firstName;
-                $contact->phone = json_decode($body)->phone;
-                $contact->lastName = json_decode($body)->lastName;
-                array_push($contacts, $contact);
-            } catch (\Exception $e) {
+                ]
+            );
+
+            $body = $res->getBody();
+            array_push($contactsPages, json_decode($body)->resources);
+        }
+
+        $allContacts = [];
+
+        foreach ($contactsPages as $contacts) {
+            foreach ($contacts as $contact) {
+                array_push($allContacts, $contact);
             }
         }
 
-        return $contacts;
+        return collect($allContacts)->map(function ($contact) {
+            return [
+                'id' => $contact->id,
+                'firstName' => $contact->firstName,
+                'lastName' => $contact->lastName,
+                'phone' => $contact->phone
+            ];
+        });
     }
 
     /**
