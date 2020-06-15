@@ -114,7 +114,13 @@
                               <p class="d-flex d-center strong mt-3">
                                 {{ mealOption.title }}
                               </p>
-                              <div class="d-flex d-center mt-1">
+                              <div
+                                class="d-flex d-center mt-1"
+                                v-if="
+                                  storeSettings.showMacros &&
+                                    mealOption.meal.macros
+                                "
+                              >
                                 <p class="d-inline mr-4 font-11">
                                   {{ getMacros().calories }}<br />
                                   <center>
@@ -178,7 +184,13 @@
                               <p class="d-flex d-center strong mt-3">
                                 {{ mealOption.title }}
                               </p>
-                              <div class="d-flex d-center mt-1">
+                              <div
+                                class="d-flex d-center mt-1"
+                                v-if="
+                                  storeSettings.showMacros &&
+                                    mealOption.meal.macros
+                                "
+                              >
                                 <p class="d-inline mr-4 font-11">
                                   {{ getMacros().calories }}<br />
                                   <center>
@@ -568,7 +580,13 @@
                             <p class="d-flex d-center strong">
                               {{ mealOption.title }}
                             </p>
-                            <div class="d-flex d-center mt-1">
+                            <div
+                              class="d-flex d-center mt-1"
+                              v-if="
+                                storeSettings.showMacros &&
+                                  mealOption.meal.macros
+                              "
+                            >
                               <p class="d-inline mr-4 font-11">
                                 {{ getMacros().calories }}<br />
                                 <center>
@@ -633,7 +651,13 @@
                               <p class="d-flex d-center strong">
                                 {{ mealOption.title }}
                               </p>
-                              <div class="d-flex d-center mt-1">
+                              <div
+                                class="d-flex d-center mt-1"
+                                v-if="
+                                  storeSettings.showMacros &&
+                                    mealOption.meal.macros
+                                "
+                              >
                                 <p class="d-inline mr-4 font-11">
                                   {{ getMacros().calories }}<br />
                                   <center>
