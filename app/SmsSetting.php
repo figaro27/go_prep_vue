@@ -130,6 +130,7 @@ class SmsSetting extends Model
             $body = $res->getBody();
             $contacts = json_decode($body)->membersCount;
 
+            // Should figure out the parts
             $this->balance += $contacts * 0.06;
             $this->total_spent += $contacts * 0.06;
             $this->update();

@@ -150,7 +150,8 @@ class MealOrders
         }
         if (
             $this->store->modules->productionGroups &&
-            count($this->store->productionGroups) > 0
+            count($this->store->productionGroups) > 0 &&
+            $productionGroupIds
         ) {
             count($productionGroupIds) ===
             ProductionGroup::where('store_id', $this->store->id)->count()
