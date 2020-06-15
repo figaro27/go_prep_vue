@@ -659,7 +659,7 @@
                   <div v-else class="content-area" style="position: relative;">
                     <div class="content-text-wrap d-flex">
                       <!--<div v-else class="col-md-11">!-->
-                      <div style="flex-basis:80%">
+                      <div style="flex-basis:75%">
                         <p
                           style="word-break: break-all;"
                           v-html="getMealTitle(meal.title)"
@@ -702,7 +702,7 @@
                           </div>
                         </span>
                       </div>
-                      <div style="flex-basis:20%">
+                      <div style="flex-basis:25%">
                         <div
                           class="price-no-bg"
                           style="top: 0 !important; right: 0 !important;"
