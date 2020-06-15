@@ -11,8 +11,7 @@ let map = {
   milligrammes: "mg",
   liter: "l",
   liters: "l",
-  "fl oz": "fl oz",
-  pint: "pint"
+  "fl oz": "fl-oz"
 };
 convert()
   .list()
@@ -47,9 +46,9 @@ let units = {
       // Imperial
       tsp: "tsp",
       Tbs: "tbsp",
-      "fl oz": "fl oz",
+      "fl-oz": "fl. oz.",
       cup: "cup",
-      pt: "pint",
+      pnt: "pint",
       qt: "quart",
       gal: "gallon",
 
