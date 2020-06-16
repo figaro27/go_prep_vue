@@ -143,7 +143,7 @@ export default {
       SMSTemplates: "SMSTemplates"
     }),
     tags() {
-      return ["First name", "Last name", "Company name", "Phone", "Email"];
+      return ["First name", "Last name", "Phone", "Email"];
     }
   },
   methods: {

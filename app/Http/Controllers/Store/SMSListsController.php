@@ -121,23 +121,53 @@ class SMSListsController extends StoreController
 
     public function showContactsInList(Request $request)
     {
-        // Get all contacts in list
         $listId = $request->get('id');
 
+        // Get number of contacts in list
         $client = new \GuzzleHttp\Client();
-        $res = $client->request(
-            'GET',
-            $this->baseURL . '/' . $listId . '/contacts',
-            [
-                'headers' => $this->headers
-            ]
-        );
+        $res = $client->request('GET', $this->baseURL . '/' . $listId, [
+            'headers' => $this->headers
+        ]);
 
         $body = $res->getBody();
-        $includedContacts = json_decode($body)->resources;
+        $membersCount = json_decode($body)->membersCount;
+        $pages = ceil($membersCount / 100);
+
+        // Get all contacts in list
+        $contactsPages = [];
+
+        for ($i = 1; $i <= $pages; $i++) {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'GET',
+                $this->baseURL . '/' . $listId . '/contacts',
+                [
+                    'headers' => $this->headers,
+                    'query' => [
+                        'page' => $i,
+                        'limit' => 100
+                    ]
+                ]
+            );
+
+            $body = $res->getBody();
+            array_push($contactsPages, json_decode($body)->resources);
+        }
+
+        $includedContacts = [];
+
+        foreach ($contactsPages as $contacts) {
+            foreach ($contacts as $contact) {
+                array_push($includedContacts, $contact);
+            }
+        }
+
         return collect($includedContacts)->map(function ($contact) {
             return [
-                'id' => $contact->id
+                'id' => $contact->id,
+                'firstName' => $contact->firstName,
+                'lastName' => $contact->lastName,
+                'phone' => $contact->phone
             ];
         });
     }
