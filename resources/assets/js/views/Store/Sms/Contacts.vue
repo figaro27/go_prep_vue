@@ -98,12 +98,12 @@
           >
             Edit
           </button>
-          <!-- <button
+          <button
             class="btn btn-danger btn-sm"
             @click="deleteContact(props.row.id)"
           >
             Delete
-          </button> -->
+          </button>
         </div>
       </v-client-table>
     </div>
