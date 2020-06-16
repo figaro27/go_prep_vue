@@ -259,29 +259,33 @@ class SmsChatController extends StoreController
             $chat->updatedAt = $request->get('messageTime');
             $chat->update();
         } else {
-            // Get store ID from looking up the contact by their phone number
-            $client = new \GuzzleHttp\Client();
-            $res = $client->request(
-                'GET',
-                'https://rest.textmagic.com/api/v2/contacts/phone/' . $phone,
-                [
-                    'headers' => $this->headers
-                ]
-            );
-            $status = $res->getStatusCode();
-            $body = $res->getBody();
-            $contactId = json_decode($body)->id;
-            $storeId = SmsContact::where('contact_id', $contactId)
-                ->pluck('store_id')
-                ->first();
+            try {
+                // Get store ID from looking up the contact by their phone number
+                $client = new \GuzzleHttp\Client();
+                $res = $client->request(
+                    'GET',
+                    'https://rest.textmagic.com/api/v2/contacts/phone/' .
+                        $phone,
+                    [
+                        'headers' => $this->headers
+                    ]
+                );
+                $status = $res->getStatusCode();
+                $body = $res->getBody();
+                $contactId = json_decode($body)->id;
+                $storeId = SmsContact::where('contact_id', $contactId)
+                    ->pluck('store_id')
+                    ->first();
 
-            // Add new chat
-            $chat = new SmsChat();
-            $chat->store_id = $storeId;
-            $chat->chat_id = $chatId;
-            $chat->unread = 1;
-            $chat->updatedAt = $request->get('messageTime');
-            $chat->save();
+                // Add new chat
+                $chat = new SmsChat();
+                $chat->store_id = $storeId;
+                $chat->chat_id = $chatId;
+                $chat->unread = 1;
+                $chat->updatedAt = $request->get('messageTime');
+                $chat->save();
+            } catch (\Exception $e) {
+            }
         }
     }
 }
