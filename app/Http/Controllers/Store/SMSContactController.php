@@ -284,15 +284,28 @@ class SMSContactController extends StoreController
      */
     public function destroy($id)
     {
+        // Instead of deleting the contact entirely from TextMagic as it will delete it for other stores that use the same contact, just remove contact from the database and remove from all existing lists associated with the store.
+
+        $lists = SmsList::where('store_id', $this->store->id)->get();
+
+        foreach ($lists as $list) {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'DELETE',
+                'https://rest.textmagic.com/api/v2/lists' .
+                    '/' .
+                    $list->list_id .
+                    '/contacts',
+                [
+                    'headers' => $this->headers,
+                    'form_params' => [
+                        'contacts' => $id
+                    ]
+                ]
+            );
+        }
+
         $contact = SmsContact::where('contact_id', $id)->first();
         $contact->delete();
-
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request('DELETE', $this->baseURL . '/' . $id, [
-            'headers' => $this->headers
-        ]);
-        $body = $res->getBody();
-
-        return $body;
     }
 }
