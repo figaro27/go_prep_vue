@@ -142,18 +142,59 @@ class SMSMessagesController extends StoreController
      */
     public function show($id)
     {
+        // Get recipient count
         $client = new \GuzzleHttp\Client();
         $res = $client->request(
             'GET',
-            'https://rest.textmagic.com/api/v2/sessions/' . $id . '/messages',
+            'https://rest.textmagic.com/api/v2/sessions/' . $id,
             [
                 'headers' => $this->headers
             ]
         );
-        $status = $res->getStatusCode();
         $body = $res->getBody();
+        $numbersCount = json_decode($body)->numbersCount;
+        $pages = ceil($numbersCount / 100);
 
-        return $body;
+        // Get recipients
+        $recipientsPages = [];
+
+        for ($i = 1; $i <= $pages; $i++) {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'GET',
+                'https://rest.textmagic.com/api/v2/sessions/' .
+                    $id .
+                    '/messages',
+                [
+                    'headers' => $this->headers,
+                    'query' => [
+                        'page' => 1,
+                        'limit' => 100
+                    ]
+                ]
+            );
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
+            array_push($recipientsPages, json_decode($body)->resources);
+        }
+
+        $allRecipients = [];
+
+        foreach ($recipientsPages as $recipients) {
+            foreach ($recipients as $recipient) {
+                array_push($allRecipients, $recipient);
+            }
+        }
+
+        return collect($allRecipients)->map(function ($recipient) {
+            return [
+                'id' => $recipient->id,
+                'phone' => $recipient->receiver,
+                'firstName' => $recipient->firstName,
+                'lastName' => $recipient->lastName,
+                'status' => $recipient->status
+            ];
+        });
     }
 
     /**

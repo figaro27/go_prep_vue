@@ -18,7 +18,7 @@
         :options="{
           orderBy: {},
           headings: {
-            receiver: 'Number'
+            phone: 'Phone'
           },
           filterable: false
         }"
@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       message: null,
-      columns: ["recipient", "receiver", "status"]
+      columns: ["recipient", "phone", "status"]
     };
   },
   props: {
@@ -61,7 +61,7 @@ export default {
   created() {},
   mounted() {
     axios.get("/api/me/SMSMessages/" + this.messageId).then(resp => {
-      this.message = resp.data.resources;
+      this.message = resp.data;
     });
   },
   computed: {
