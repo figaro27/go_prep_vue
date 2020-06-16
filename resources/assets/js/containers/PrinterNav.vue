@@ -98,7 +98,6 @@ export default {
   mixins: [printer],
   async mounted() {
     await this.printerConnect();
-    this.printerFindDevices();
   },
   computed: {
     ...mapGetters(["viewedStore"]),

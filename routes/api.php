@@ -41,6 +41,7 @@ foreach (
     //Auth::routes();
     Route::get('test/mail', 'TestController@test_mail');
     Route::get('test/print', 'TestController@test_print');
+
     // Auth routes
     Route::group(
         [
@@ -467,6 +468,13 @@ foreach (
                             Route::get(
                                 'print/{report}/{type}',
                                 'PrintController@print'
+                            );
+
+                            Route::get('print/sign', 'PrintController@sign');
+
+                            Route::get(
+                                'print/certificate',
+                                'PrintController@certficate'
                             );
 
                             Route::get(
