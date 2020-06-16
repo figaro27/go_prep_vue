@@ -1287,7 +1287,7 @@ export default {
       return macros;
     },
     logImg(meal) {
-      console.log(meal.image.url_thumb);
+      console.log(meal);
     }
   }
 };
