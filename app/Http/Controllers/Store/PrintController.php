@@ -21,6 +21,7 @@ use App\Exportable\Store\Payments;
 use App\Exportable\Store\Labels;
 use App\Exportable\Store\Leads;
 use App\Exportable\Store\Referrals;
+use Illuminate\Support\Facades\Storage;
 
 class PrintController extends StoreController
 {
@@ -116,5 +117,45 @@ class PrintController extends StoreController
                 500
             );
         }
+    }
+
+    /**
+     * Signs QZ messages with private key
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function sign(Request $request)
+    {
+        $key = config('qz.keyFile');
+        $keyContents = Storage::disk('local')->get($key);
+
+        $req = $request->get('request');
+        $privateKey = openssl_get_privatekey($keyContents, null);
+
+        $signature = null;
+        openssl_sign($req, $signature, $privateKey, "sha512");
+
+        if ($signature) {
+            return response(base64_encode($signature))->header(
+                'Content-type',
+                'text/plain'
+            );
+        }
+
+        return response()->json(
+            [
+                'error' => 'Failed to sign message'
+            ],
+            500
+        );
+    }
+
+    public function certficate(Request $request)
+    {
+        $key = config('qz.certificateFile');
+        $keyContents = Storage::disk('local')->get($key);
+
+        return response($keyContents)->header('Content-type', 'text/plain');
     }
 }
