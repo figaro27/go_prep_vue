@@ -635,6 +635,7 @@
                     style="position: relative;"
                   >
                     <div class="image-area" style="position: relative;">
+                      <p class="small">{{ logImg(meal) }}</p>
                       <thumbnail
                         class="text-menu-image"
                         v-if="meal.image != null"
@@ -1284,6 +1285,9 @@ export default {
       }
 
       return macros;
+    },
+    logImg(meal) {
+      console.log(meal.image.url_thumb);
     }
   }
 };
