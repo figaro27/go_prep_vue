@@ -227,12 +227,18 @@ class Store extends Model
         if (starts_with($append, config('app.url'))) {
             $append = str_replace(config('app.url'), '', $append);
         }
-        $url =
-            $protocol .
-            $this->details->domain .
-            '.' .
-            config('app.domain') .
-            $append;
+        if (!$this->details->host) {
+            $url =
+                $protocol .
+                $this->details->domain .
+                '.' .
+                config('app.domain') .
+                $append;
+        } else {
+            $append = str_replace('https//goprep.com', '', $append);
+            $url = $append;
+        }
+
         return $url;
     }
 
