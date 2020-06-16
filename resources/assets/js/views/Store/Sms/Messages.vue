@@ -241,7 +241,7 @@
           {{ moment(props.row.messageTime).format("llll") }}
         </div>
         <div slot="text" class="text-nowrap" slot-scope="props">
-          {{ truncate(props.row.text, 150, "...") }}
+          {{ truncate(props.row.text, 50, "...") }}
         </div>
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button

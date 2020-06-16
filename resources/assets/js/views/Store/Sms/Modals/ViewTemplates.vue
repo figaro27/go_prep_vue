@@ -82,7 +82,7 @@
           </div>
         </div>
         <div slot="content" class="text-nowrap" slot-scope="props">
-          {{ truncate(props.row.content, 150, "...") }}
+          {{ truncate(props.row.content, 50, "...") }}
         </div>
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button
