@@ -46,7 +46,7 @@ font-size:10px !important;
       @if ($reportSettings->lab_logo)
       <img src="{{$logo}}"/ style="width:25vh;height:25vh;margin-top:8px;margin-bottom:4px">
       @else
-      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg=="/ style="width:25vh;height:15vh;margin-top:8px;margin-bottom:4px">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="/ style="width:25vh;height:15vh;margin-top:8px;margin-bottom:4px">
       @endif
 
       <p class="text-11" style="font-weight:bold"> {!! $mealOrder->html_title !!}
