@@ -4,12 +4,12 @@
       <Spinner v-if="isLoading" />
       <div class="d-flex">
         <b-form-input v-model="list.name" style="width:350px"></b-form-input>
-        <b-button
+        <!-- <b-button
           @click="$emit('updateList', { list: list, contacts: SMSContacts })"
           variant="warning"
           class="mb-2 float-left ml-4"
           >Update</b-button
-        >
+        > -->
       </div>
       <v-client-table
         :columns="columns"
@@ -101,6 +101,7 @@ export default {
           row.included = val;
         }
       });
+      this.$emit("updateList", { list: this.list, contacts: this.SMSContacts });
     }
   }
 };

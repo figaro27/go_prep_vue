@@ -197,7 +197,7 @@ export default {
         })
         .then(resp => {
           this.refreshTable();
-          this.showEditListModal = false;
+          // this.showEditListModal = false;
           this.$toastr.s("List has been updated.", "Success");
         });
     },
