@@ -24,59 +24,61 @@ class SMSContactController extends StoreController
             ->pluck('list_id')
             ->first();
 
-        // Get number of recipients in the list so you can loop through the page count of 100 each
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request(
-            'GET',
-            'https://rest.textmagic.com/api/v2/lists' . '/' . $listId,
-            [
-                'headers' => $this->headers
-            ]
-        );
-        $body = $res->getBody();
-        $membersCount = json_decode($body)->membersCount;
-        $pages = ceil($membersCount / 100);
-
-        // Loop through the number of pages and get the contacts (100 per page. 100 max in one request allowed.)
-        $contactsPages = [];
-
-        for ($i = 1; $i <= $pages; $i++) {
+        if ($listId) {
+            // Get number of recipients in the list so you can loop through the page count of 100 each
             $client = new \GuzzleHttp\Client();
             $res = $client->request(
                 'GET',
-                'https://rest.textmagic.com/api/v2/lists' .
-                    '/' .
-                    $listId .
-                    '/contacts',
+                'https://rest.textmagic.com/api/v2/lists' . '/' . $listId,
                 [
-                    'headers' => $this->headers,
-                    'query' => [
-                        'page' => $i,
-                        'limit' => 100
-                    ]
+                    'headers' => $this->headers
                 ]
             );
-
             $body = $res->getBody();
-            array_push($contactsPages, json_decode($body)->resources);
-        }
+            $membersCount = json_decode($body)->membersCount;
+            $pages = ceil($membersCount / 100);
 
-        $allContacts = [];
+            // Loop through the number of pages and get the contacts (100 per page. 100 max in one request allowed.)
+            $contactsPages = [];
 
-        foreach ($contactsPages as $contacts) {
-            foreach ($contacts as $contact) {
-                array_push($allContacts, $contact);
+            for ($i = 1; $i <= $pages; $i++) {
+                $client = new \GuzzleHttp\Client();
+                $res = $client->request(
+                    'GET',
+                    'https://rest.textmagic.com/api/v2/lists' .
+                        '/' .
+                        $listId .
+                        '/contacts',
+                    [
+                        'headers' => $this->headers,
+                        'query' => [
+                            'page' => $i,
+                            'limit' => 100
+                        ]
+                    ]
+                );
+
+                $body = $res->getBody();
+                array_push($contactsPages, json_decode($body)->resources);
             }
-        }
 
-        return collect($allContacts)->map(function ($contact) {
-            return [
-                'id' => $contact->id,
-                'firstName' => $contact->firstName,
-                'lastName' => $contact->lastName,
-                'phone' => $contact->phone
-            ];
-        });
+            $allContacts = [];
+
+            foreach ($contactsPages as $contacts) {
+                foreach ($contacts as $contact) {
+                    array_push($allContacts, $contact);
+                }
+            }
+
+            return collect($allContacts)->map(function ($contact) {
+                return [
+                    'id' => $contact->id,
+                    'firstName' => $contact->firstName,
+                    'lastName' => $contact->lastName,
+                    'phone' => $contact->phone
+                ];
+            });
+        }
     }
 
     /**
