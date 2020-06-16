@@ -66,6 +66,9 @@ return [
         ],
         'healthychefphx.com' => [
             'front_url' => 'https://meals.healthychefphx.com/customer/menu'
+        ],
+        'myquickstartup.com' => [
+            'front_url' => 'https://test.myquickstartup.com/customer/menu'
         ]
     ],
 
