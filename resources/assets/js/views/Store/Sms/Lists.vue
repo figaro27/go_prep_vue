@@ -3,7 +3,7 @@
     <div>
       <img
         v-b-popover.rightbottom.hover="
-          'A list is a group of contacts to make it easier to choose recipients when you send a new message. By default you will have a master list which is made up of all your past customers. You can\'t edit or delete your master list.'
+          'A list is a group of contacts to make it easier to choose recipients when you send a new message. By default you will have a master list which is made up of all your past customers.'
         "
         title="Lists"
         src="/images/store/popover.png"
@@ -77,7 +77,7 @@
         {{ truncate(props.row.content, 150, "...") }}
       </div>
       <div slot="actions" class="text-nowrap" slot-scope="props">
-        <button
+        <!-- <button
           disabled="!isAllContactsList(props.row.id)"
           class="btn view btn-warning btn-sm"
           @click="(list = props.row), (showEditListModal = true)"
@@ -89,6 +89,15 @@
           class="btn btn-danger btn-sm"
           @click="deleteList(props.row.id)"
         >
+          Delete
+        </button> -->
+        <button
+          class="btn view btn-warning btn-sm"
+          @click="(list = props.row), (showEditListModal = true)"
+        >
+          Edit
+        </button>
+        <button class="btn btn-danger btn-sm" @click="deleteList(props.row.id)">
           Delete
         </button>
       </div>
@@ -212,15 +221,15 @@ export default {
         this.showCreateListModal = false;
         this.$toastr.s("List has been added.", "Success");
       });
-    },
-    isAllContactsList(id) {
-      let list = this.SMSLists.find(list => {
-        return list.id === id;
-      });
-      if (list.name === "All Contacts - " + this.store.details.name) {
-        return true;
-      } else return false;
     }
+    // isAllContactsList(id) {
+    //   let list = this.SMSLists.find(list => {
+    //     return list.id === id;
+    //   });
+    //   if (list.name === "All Contacts - " + this.store.details.name) {
+    //     return true;
+    //   } else return false;
+    // }
   }
 };
 </script>
