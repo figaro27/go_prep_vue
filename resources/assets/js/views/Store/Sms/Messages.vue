@@ -343,7 +343,7 @@ export default {
       return phones + contacts + lists;
     },
     tags() {
-      return ["First name", "Last name", "Company name", "Phone", "Email"];
+      return ["First name", "Last name", "Phone", "Email"];
     },
     messageCost() {
       return this.messageParts * 0.06 * this.recipientCount;
