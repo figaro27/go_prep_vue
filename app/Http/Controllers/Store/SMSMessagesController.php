@@ -168,7 +168,7 @@ class SMSMessagesController extends StoreController
                 [
                     'headers' => $this->headers,
                     'query' => [
-                        'page' => 1,
+                        'page' => $i,
                         'limit' => 100
                     ]
                 ]
