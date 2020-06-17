@@ -205,13 +205,13 @@
 
           <div @click="backFromPackagePage">
             <floating-action-button
-              class="d-md-none mb-4"
+              class="d-md-none mb-5"
               style="background-color:#808080"
               v-if="mealPackagePageView"
             >
               <div class="d-flex flex-column h-100">
                 <i class="fas fa-arrow-circle-left text-white"></i>
-                <i v-if="total" class="text-white mt-1">Back</i>
+                <i v-if="total" class="text-white mt-1"></i>
               </div>
             </floating-action-button>
           </div>
