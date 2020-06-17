@@ -343,7 +343,7 @@ export default {
       return phones + contacts + lists;
     },
     tags() {
-      return ["First name", "Last name", "Phone", "Email"];
+      return ["First name", "Last name", "Phone", "Email", "Unsubscribe"];
     },
     messageCost() {
       return this.messageParts * 0.06 * this.recipientCount;
@@ -371,7 +371,9 @@ export default {
           "You are sending this to phone numbers that may not be in your contacts. Tags like their first name will show blank to these recipients."
         );
       }
-      this.message.content += "{" + tag + "}";
+      tag == "Unsubscribe"
+        ? (this.message.content += "To opt out, reply STOP or UNSUBSCRIBE.")
+        : (this.message.content += "{" + tag + "}");
       this.showTagDropdown = false;
     },
     insertTemplate(content) {
