@@ -1342,10 +1342,10 @@ export default {
       if (this.$route.params.adjustOrder) {
         this.staffMember = this.order.staff_id;
       } else {
-        axios.get("/api/me/getLastStaffMemberId").then(resp => {
-          this.staffMember = resp.data;
-          console.log(this.staffMember);
-        });
+        // Apparently more of a nuisance than convenience to auto select the last staff member
+        // axios.get("/api/me/getLastStaffMemberId").then(resp => {
+        //   this.staffMember = resp.data;
+        // });
       }
     }
   },
