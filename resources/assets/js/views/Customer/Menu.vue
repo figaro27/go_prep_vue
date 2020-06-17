@@ -205,7 +205,7 @@
 
           <div @click="backFromPackagePage">
             <floating-action-button
-              class="d-md-none mb-5"
+              class="d-md-none mb-4"
               style="background-color:#808080"
               v-if="mealPackagePageView"
             >
