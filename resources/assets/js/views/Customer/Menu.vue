@@ -204,6 +204,18 @@
           ></meal-package-page>
           <floating-action-button
             class="d-md-none"
+            style="background-color:#808080"
+            @click="backFromPackagePage"
+            v-if="mealPackagePageView"
+          >
+            <div class="d-flex flex-column h-100">
+              <i class="fas fa-arrow-circle-left text-white"></i>
+              <i v-if="total" class="text-white mt-1">Back</i>
+            </div>
+          </floating-action-button>
+
+          <floating-action-button
+            class="d-md-none"
             :style="brandColor"
             :to="bagPageURL"
             v-if="(!subscriptionId || !adjustOrder) && !mealPackagePageView"
