@@ -1344,6 +1344,7 @@ export default {
       } else {
         axios.get("/api/me/getLastStaffMemberId").then(resp => {
           this.staffMember = resp.data;
+          console.log(this.staffMember);
         });
       }
     }
