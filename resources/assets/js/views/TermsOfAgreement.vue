@@ -157,17 +157,17 @@
       <span style="font-weight: 400;"
         >3.2 The Company fee is a percentage based on an aforementioned
         agreement between the Company and the Service Provider based on the
-        gross order amount, minus the processing and shipping fees. There is an
+        gross order amount, minus the processing and delivery fees. There is an
         additional two and nine-tenth percent (2.9%) and .30 cents credit card
-        processing fee per transaction if the Customer is using the standard
-        Stripe Connect payment processing.&nbsp;</span
+        processing/application fee per transaction.&nbsp;</span
       >
     </p>
     <p>
       <span style="font-weight: 400;"
-        >3.3 100% minus 2.9% and .30 cents plus the transaction fee percentage
-        agreed upon by the Company and the Service Provider shall be paid to
-        Service Provider at the time of payment by the customer.&nbsp;</span
+        >3.3 100% minus 2.9% and .30 cents plus any additional application fee
+        percentage agreed upon by the Company and the Service Provider shall be
+        paid to Service Provider at the time of payment by the
+        customer.&nbsp;</span
       >
     </p>
     <p>
@@ -180,11 +180,11 @@
       <span style="font-weight: 400;"
         >3.5 The Customer may also choose to pay a flat monthly fee based on the
         amount of monthly orders collected, with no additional percentage per
-        transaction with the exception of credit card processing fees from
-        Stripe or the Customer&rsquo;s preferred payment processor. Flat monthly
-        fees are billed automatically from the Customer&rsquo;s connected Stripe
-        account balance per month or with a provided credit card that will be
-        kept on file.&nbsp;</span
+        transaction with the exception of the two and nine-tenth percent (2.9%)
+        and .30 cents credit card processing/application fee per transaction.
+        Flat monthly fees are billed automatically from the Customer&rsquo;s
+        connected Stripe account balance per month or with a provided credit
+        card that will be kept on file.&nbsp;</span
       >
     </p>
     <p>
@@ -212,13 +212,13 @@
     <p>
       <span style="font-weight: 400;"
         >3.8 Sales Tax. GoPrep automatically determines each store's state sales
-        tax based on an external node module integrated from npmjs.com. Each
-        store on our&nbsp; platform has the ability to override this
-        automatically determined rate with their own rate as well as remove the
-        sales tax rate entirely. GoPrep is not responsible or liable for any
-        discrepancies involving the incorrect use of sales tax as set by the
-        store if the store decides to override the automatically determined
-        rate. Store&rsquo;s are responsible for reporting their proper sales tax
+        tax based on an external module integrated from npmjs.com. Each store on
+        our&nbsp; platform has the ability to override this automatically
+        determined rate with their own rate as well as remove the sales tax rate
+        entirely. GoPrep is not responsible or liable for any discrepancies
+        involving the incorrect use of sales tax as set by the store if the
+        store decides to override the automatically determined rate.
+        Store&rsquo;s are responsible for reporting their proper sales tax
         documents to the IRS and for paying all taxes that are due.&nbsp;</span
       >
     </p>

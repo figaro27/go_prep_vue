@@ -3,7 +3,7 @@
     <p><span style="font-weight: 400;">GOPREP</span></p>
     <p><span style="font-weight: 400;">TERMS OF SERVICE</span></p>
     <p>
-      <span style="font-weight: 400;">Last Updated: January 14th, 2020</span>
+      <span style="font-weight: 400;">Last Updated: June 17th, 2020</span>
     </p>
     <p>
       <span style="font-weight: 400;"
@@ -73,7 +73,7 @@
         <strong>3. Privacy Policy. </strong
         ><span style="font-weight: 400;"
           >Use of the Company Service is subject to the terms of our </span
-        ><a href="https://www.goprep.com/privacy-policy/"
+        ><a target="_blank" href="https://www.goprep.com/privacy-policy/"
           ><span style="font-weight: 400;">Privacy Policy</span></a
         ><span style="font-weight: 400;">
           which is hereby incorporated into and made part of these Terms of
@@ -197,7 +197,10 @@
       <li style="font-weight: 400;">
         <span style="font-weight: 400;"
           >D. That by creating an account, you agree to receive certain
-          communications in connection with the Service.</span
+          communications in connection with the Service. This includes automated
+          and manual direct emails and SMS messages from the Company Service or
+          Third Party Provider. You will be able to unsubscribe from any and all
+          emails and SMS messages.</span
         >
       </li>
     </ul>
@@ -341,11 +344,11 @@
       <span style="font-weight: 400;"
         >7.6 The Third-Party Provider may opt in to pay a flat monthly fee based
         on the amount of monthly orders collected, with no additional percentage
-        per transaction with the exception of credit card processing fees from
-        Stripe or the Customer&rsquo;s preferred payment processor. Flat monthly
-        fees are billed automatically from the Customer&rsquo;s connected Stripe
-        account balance per month or with a provided credit card that will be
-        kept on file.&nbsp;</span
+        per transaction with the exception of the two and nine-tenth (2.9%) and
+        .30 cents per transaction credit card processing / application fee. Flat
+        monthly fees are billed automatically from the Customer&rsquo;s
+        connected Stripe account balance per month or with a provided credit
+        card that will be kept on file.&nbsp;</span
       >
     </p>
     <p>&nbsp;</p>
@@ -374,14 +377,14 @@
       <span style="font-weight: 400;">7.7 Sales Tax</span><strong>: </strong
       ><span style="font-weight: 400;"
         >GoPrep automatically determines each store's state sales tax based on
-        an external node module integrated from npmjs.com. Each store on
-        our&nbsp; platform has the ability to override this automatically
-        determined rate with their own rate as well as remove the sales tax rate
-        entirely. GoPrep is not responsible or liable for any discrepancies
-        involving the incorrect use of sales tax as set by the store if the
-        store decides to override the automatically determined rate.
-        Store&rsquo;s are responsible for reporting their proper sales tax
-        documents to the IRS and for paying all taxes that are due.&nbsp;</span
+        an external module integrated from npmjs.com. Each store on our&nbsp;
+        platform has the ability to override this automatically determined rate
+        with their own rate as well as remove the sales tax rate entirely.
+        GoPrep is not responsible or liable for any discrepancies involving the
+        incorrect use of sales tax as set by the store if the store decides to
+        override the automatically determined rate. Store&rsquo;s are
+        responsible for reporting their proper sales tax documents to the IRS
+        and for paying all taxes that are due.&nbsp;</span
       >
     </p>
     <p>&nbsp;</p>
