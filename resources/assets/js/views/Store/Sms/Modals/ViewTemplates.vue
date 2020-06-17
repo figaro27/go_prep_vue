@@ -143,7 +143,7 @@ export default {
       SMSTemplates: "SMSTemplates"
     }),
     tags() {
-      return ["First name", "Last name", "Phone", "Email"];
+      return ["First name", "Last name", "Phone", "Email", "Unsubscribe"];
     }
   },
   methods: {
@@ -205,7 +205,9 @@ export default {
       });
     },
     addTag(tag) {
-      this.template.content += "{" + tag + "}";
+      tag == "Unsubscribe"
+        ? (this.template.content += "To opt out, reply STOP or UNSUBSCRIBE.")
+        : (this.template.content += "{" + tag + "}");
       this.showTagDropdown = false;
     }
   }
