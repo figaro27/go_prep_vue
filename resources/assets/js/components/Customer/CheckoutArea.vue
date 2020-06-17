@@ -2225,7 +2225,7 @@ use next_delivery_dates
       let removableItemAmount = 0;
       let customSalesTaxAmount = 0;
       this.bag.forEach(item => {
-        if (!item.meal.gift_card === true) {
+        if (!item.meal.gift_card === true && !item.free) {
           // Remove the meal from the total amount of the bag, and then add it back in using its custom sales tax rate.
           if (!item.meal_package) {
             if (item.meal.salesTax !== null) {

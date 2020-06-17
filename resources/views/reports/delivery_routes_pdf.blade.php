@@ -11,10 +11,10 @@
      <div class="delivery-part">
       <h2 style="font-size:22px">
         @if ($delivery_dates)
-          @if ($delivery_dates['from']->format($params->date_format) === $delivery_dates['to']->format($params->date_format))
-            {{ $delivery_dates['from']->format($params->date_format) }}
+          @if ($delivery_dates['from']->format('D, m/d/Y') === $delivery_dates['to']->format('D, m/d/Y'))
+            {{ $delivery_dates['from']->format('D, m/d/Y') }}
           @else
-            {{ $delivery_dates['from']->format($params->date_format) }} -{{ $delivery_dates['to']->format($params->date_format) }}
+            {{ $delivery_dates['from']->format('D, m/d/Y') }} -{{ $delivery_dates['to']->format('D, m/d/Y') }}
           @endif
         @else
           All Delivery Dates
@@ -47,3 +47,4 @@
 </body>
 
 </html>
+
