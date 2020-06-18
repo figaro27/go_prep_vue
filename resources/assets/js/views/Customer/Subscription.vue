@@ -201,8 +201,6 @@ export default {
 
           let free = item.free;
 
-          meal.price = item.price / item.quantity;
-
           for (let i = 0; i < item.quantity; i++) {
             this.addOne(
               meal,
