@@ -1614,7 +1614,8 @@ class Meal extends Model implements HasMedia
 
                 $subscriptionMeal->last_meal_id = $subscriptionMeal->meal_id;
                 $subscriptionMeal->meal_id = $subId;
-                $subscriptionMeal->price = $price;
+
+                $subscriptionMeal->price = $price * $subscriptionMeal->quantity;
 
                 try {
                     $subscriptionMeal->save();

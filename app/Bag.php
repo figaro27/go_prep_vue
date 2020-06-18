@@ -612,4 +612,30 @@ class Bag
 
         return $total;
     }
+
+    public function getTotalSync()
+    {
+        $total = 0.0;
+
+        foreach ($this->getItems() as $item) {
+            $price = $item['price'];
+            if (isset($item['components']) && $item['components']) {
+                foreach ($item['components'] as $componentId => $choices) {
+                    foreach ($choices as $optionId) {
+                        $option = MealComponentOption::find($optionId);
+                        $price += $option ? $option->price : 0;
+                    }
+                }
+            }
+            if (isset($item['addons']) && $item['addons']) {
+                foreach ($item['addons'] as $addonId) {
+                    $addon = MealAddon::find($addonId);
+                    $price += $addon ? $addon->price : 0;
+                }
+            }
+            $total += $price;
+        }
+
+        return $total;
+    }
 }
