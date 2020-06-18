@@ -725,6 +725,10 @@ let states = {
         abbreviation: "WA"
       },
       {
+        name: "Washington DC",
+        abbreviation: "DC"
+      },
+      {
         name: "West Virginia",
         abbreviation: "WV"
       },
