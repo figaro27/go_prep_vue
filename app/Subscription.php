@@ -803,7 +803,7 @@ class Subscription extends Model
 
         $bag = new Bag($items, $store);
 
-        $prePackagePrice = $bag->getTotalSync();
+        $prePackagePrice = $bag->getTotal();
 
         $totalPackagePrice = 0;
         foreach (
