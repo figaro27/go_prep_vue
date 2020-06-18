@@ -194,6 +194,16 @@ class SubscriptionController extends StoreController
         $bagItems = $request->get('bag');
         $bag = new Bag($request->get('bag'), $store);
 
+        if (count($bagItems) == 0) {
+            return response()->json(
+                [
+                    'message' =>
+                        'Your subscription must have at least one item. If you are trying to pause the subscription, please cancel the subscription and create a new one when ready. We are adding subscription pausing soon.'
+                ],
+                400
+            );
+        }
+
         // Don't allow gift cards on subscription adjustments
         foreach ($bag->getItems() as $item) {
             if (
