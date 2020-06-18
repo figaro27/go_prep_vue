@@ -527,7 +527,8 @@ class Store extends Model
                                         'id' => $ingredient->id,
                                         'ingredient' => $ingredient,
                                         'quantity' => $quantity_base,
-                                        'adjuster' => $adjuster
+                                        'adjuster' =>
+                                            $ingredient->adjuster / 100
                                     ];
                                 } else {
                                     $ingredients[$key][
@@ -574,7 +575,8 @@ class Store extends Model
                                         'id' => $ingredient->id,
                                         'ingredient' => $ingredient,
                                         'quantity' => $quantity_base,
-                                        'adjuster' => $adjuster
+                                        'adjuster' =>
+                                            $ingredient->adjuster / 100
                                     ];
                                 } else {
                                     $ingredients[$key][
