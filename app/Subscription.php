@@ -790,6 +790,8 @@ class Subscription extends Model
                 // foreach ($meal->addons as $addon) {
                 //     $price += $addon->addon->price;
                 // }
+
+                // If errors, comment this line out below and uncomment out above. Then do the same with $prePackagePrice below
                 $price = $meal->price;
                 return [
                     'quantity' => $meal->quantity,
@@ -803,6 +805,8 @@ class Subscription extends Model
 
         $bag = new Bag($items, $store);
 
+        // If errors reverse this
+        // $prePackagePrice = $bag->getTotal();
         $prePackagePrice = $bag->getTotalSync();
 
         $totalPackagePrice = 0;
