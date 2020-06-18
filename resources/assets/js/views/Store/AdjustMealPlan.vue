@@ -173,7 +173,6 @@ export default {
       }
 
       _.forEach(subscription.items, item => {
-        console.log(item);
         if (!item.meal_package_subscription_id) {
           const meal = this.getMeal(item.meal_id);
           if (!meal) {
