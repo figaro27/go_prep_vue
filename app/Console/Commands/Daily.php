@@ -102,7 +102,7 @@ class Daily extends Command
                 $lastPaymentDay = $lastPayment->format('d');
                 if ($today === $lastPaymentDay) {
                     $charge = \Stripe\Charge::create([
-                        'amount' => 400,
+                        'amount' => 795,
                         'currency' => $store->settings->currency,
                         'source' => $store->settings->stripe_id,
                         'description' =>
