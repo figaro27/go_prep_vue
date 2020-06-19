@@ -154,9 +154,9 @@ class SMSSettingController extends StoreController
         $smsSettings = SMSSetting::where('store_id', $this->store->id)->first();
         $smsSettings->phone = $phone;
 
-        // Charge the first $4.00 and record payment date.
+        // Charge the first $7.95 and record payment date.
         $charge = \Stripe\Charge::create([
-            'amount' => 400,
+            'amount' => 795,
             'currency' => $this->store->settings->currency,
             'source' => $this->store->settings->stripe_id,
             'description' =>

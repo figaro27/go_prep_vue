@@ -19,10 +19,18 @@
       >
         <div slot="beforeTable" class="mb-2">
           <button
+            v-if="!allSelected"
             class="btn btn-primary btn-md mb-2 mb-sm-0"
             @click="selectAll"
           >
             Select All
+          </button>
+          <button
+            v-if="allSelected"
+            class="btn btn-danger btn-md mb-2 mb-sm-0"
+            @click="selectAll"
+          >
+            Deselect All
           </button>
           <button
             class="btn btn-success btn-md mb-2 mb-sm-0"
