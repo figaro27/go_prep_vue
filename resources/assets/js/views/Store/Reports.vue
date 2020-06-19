@@ -228,22 +228,6 @@
             </p>
             <div class="row">
               <div class="col-md-12">
-                <b-dropdown
-                  variant="warning"
-                  class="center mt-2"
-                  right
-                  text="Export as"
-                >
-                  <b-dropdown-item @click="exportData('delivery_routes', 'csv')"
-                    >CSV</b-dropdown-item
-                  >
-                  <b-dropdown-item @click="exportData('delivery_routes', 'xls')"
-                    >XLS</b-dropdown-item
-                  >
-                  <b-dropdown-item @click="exportData('delivery_routes', 'pdf')"
-                    >PDF</b-dropdown-item
-                  >
-                </b-dropdown>
                 <button
                   @click="print('delivery_routes', 'pdf')"
                   class="btn btn-primary btn-md center mt-2 center"
