@@ -174,7 +174,7 @@ export default {
       }
 
       _.forEach(this.order.items, item => {
-        if (!item.meal_package_order_id && !item.hidden) {
+        if (!item.meal_package_order_id && !item.hidden && !item.attached) {
           const meal = this.getMeal(item.meal_id);
           if (!meal) {
             return;
