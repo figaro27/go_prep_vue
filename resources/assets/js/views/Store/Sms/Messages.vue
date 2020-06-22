@@ -308,7 +308,11 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    let host = this.store.details.host ? this.store.details.host : "goprep";
+    this.message.content =
+      "Order now at https://" + this.store.details.domain + "." + host + ".com";
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
