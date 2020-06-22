@@ -120,18 +120,18 @@ class SMSMessagesController extends StoreController
             $smsMessage->store_id = $this->store->id;
             $smsMessage->message_id = json_decode($body)->sessionId;
             $smsMessage->save();
+
+            $store = $this->store;
+
+            $smsSettings = SmsSetting::where('store_id', $store->id)->first();
+            $smsSettings->balance += $charge;
+            $smsSettings->total_spent += $charge;
+            $smsSettings->update();
+            $smsSettings->chargeBalance($this->store);
+
+            return $body;
         } catch (\Exception $e) {
         }
-
-        $store = $this->store;
-
-        $smsSettings = SmsSetting::where('store_id', $store->id)->first();
-        $smsSettings->balance += $charge;
-        $smsSettings->total_spent += $charge;
-        $smsSettings->update();
-        $smsSettings->chargeBalance($this->store);
-
-        return $body;
     }
 
     /**
