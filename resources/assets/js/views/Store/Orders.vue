@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <b-alert style="background-color:#EBFAFF" show>
+      <!-- <b-alert style="background-color:#EBFAFF" show>
         <router-link to="/store/SMS">
           <h5 style="color:#23282C;text-decoration:underline">
             New Feature - SMS
@@ -24,7 +24,7 @@
             delivery day's cutoff.
           </li>
         </ul>
-      </b-alert>
+      </b-alert> -->
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
