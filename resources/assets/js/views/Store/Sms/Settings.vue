@@ -99,7 +99,7 @@
           @change.native="updateSettings"
         />
       </div>
-      <div class="mb-4">
+      <!-- <div class="mb-4">
         <p class="strong">
           <span class="mr-1">Auto Send Order Reminder Texts</span>
           <img
@@ -163,7 +163,7 @@
             >Edit Template</b-btn
           >
         </div>
-      </div>
+      </div> -->
       <div class="mb-4">
         <p class="strong">
           <span class="mr-1">Auto Send Order Confirmation Text</span>
