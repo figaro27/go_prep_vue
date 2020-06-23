@@ -148,10 +148,14 @@
       "
     >
       <h5 class="center-text">Referral Program</h5>
-      <p class="center-text">
-        Give out your referral link to customers and if they order using your
-        link, you will receive {{ referralAmount }} on each order that comes
-        in.<br />
+      <p class="center-text" v-if="referralFrequency !== 'firstOrder'">
+        Share this link with friends and family to get back
+        {{ referralAmount }} for every order they place.<br />
+        Your referral link is <a :href="referralUrl">{{ referralUrl }}</a>
+      </p>
+      <p class="center-text" v-if="referralFrequency == 'firstOrder'">
+        Share this link with friends and family to get back
+        {{ referralAmount }} for every first time order.<br />
         Your referral link is <a :href="referralUrl">{{ referralUrl }}</a>
       </p>
     </div>
@@ -852,6 +856,9 @@ export default {
     },
     referralUrl() {
       return this.store.referral_settings.url + this.user.referralUrlCode;
+    },
+    referralFrequency() {
+      return this.store.referral_settings.frequency;
     },
     promotionPointsAmount() {
       let promotion = this.promotions.find(promotion => {
