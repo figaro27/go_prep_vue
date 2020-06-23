@@ -1723,7 +1723,7 @@ const actions = {
 
     dispatch("refreshInactiveMeals"),
       dispatch("refreshStoreSubscriptions"),
-      dispatch("refreshStoreCustomers"),
+      // dispatch("refreshStoreCustomers"),
       dispatch("refreshStoreLeads"),
       dispatch("refreshStoreStaff"),
       dispatch("refreshOrderIngredients"),
