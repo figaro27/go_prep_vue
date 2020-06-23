@@ -17,16 +17,18 @@ class CustomerController extends StoreController
      */
     public function index()
     {
-        // return $this->store
-        //     ->customers()
-        //     ->without(['user', 'orders', 'paid_orders'])
-        //     ->get();
-        $customers = $this->store->customers;
-        $customers->makeHidden(['first_order', 'paid_orders']);
+        if (
+            $this->store->id !== 108 &&
+            $this->store->id !== 109 &&
+            $this->store->id !== 110
+        ) {
+            $customers = $this->store->customers;
+            $customers->makeHidden(['first_order', 'paid_orders']);
 
-        if ($customers && count($customers) > 0) {
-            $customers = $customers->unique('user_id');
-            return $customers->values();
+            if ($customers && count($customers) > 0) {
+                $customers = $customers->unique('user_id');
+                return $customers->values();
+            }
         }
 
         return [];
@@ -34,32 +36,40 @@ class CustomerController extends StoreController
 
     public function customersNoOrders()
     {
-        $customers = $this->store->customers;
-        $customers->makeHidden([
-            'first_order',
-            'last_order',
-            'total_payments',
-            'total_paid',
-            'paid_orders',
-            'phone',
-            'address',
-            'city',
-            'zip',
-            'delivery',
-            'currency',
-            'store_id',
-            'created_at',
-            'updated_at',
-            'joined',
-            'added_by_store_id',
-            'total_payments',
-            'total_paid',
-            'state',
-            'payment_gateway'
-        ]);
+        if (
+            $this->store->id !== 108 &&
+            $this->store->id !== 109 &&
+            $this->store->id !== 110
+        ) {
+            $customers = $this->store->customers;
+            $customers->makeHidden([
+                'first_order',
+                'last_order',
+                'total_payments',
+                'total_paid',
+                'paid_orders',
+                'phone',
+                'address',
+                'city',
+                'zip',
+                'delivery',
+                'currency',
+                'store_id',
+                'created_at',
+                'updated_at',
+                'joined',
+                'added_by_store_id',
+                'total_payments',
+                'total_paid',
+                'state',
+                'payment_gateway'
+            ]);
 
-        $customers = $customers->last();
-        return [$customers];
+            $customers = $customers->last();
+            return [$customers];
+        } else {
+            return [];
+        }
     }
 
     /**
