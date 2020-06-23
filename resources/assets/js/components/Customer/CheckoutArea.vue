@@ -2722,7 +2722,11 @@ use next_delivery_dates
         return;
       }
 
-      if (this.staffMember == null && this.store.modules.showStaff) {
+      if (
+        this.staffMember == null &&
+        this.store.modules.showStaff &&
+        this.$route.params.manualOrder
+      ) {
         this.$toastr.w("Please select a staff member.");
         return;
       }
