@@ -81,7 +81,18 @@ class Customer extends Model
 
     public function getPaidOrdersAttribute()
     {
-        return $this->user->orders->where('paid', 1);
+        if (
+            $this->user->last_viewed_store_id === 108 ||
+            $this->user->last_viewed_store_id === 109 ||
+            $this->user->last_viewed_store_id === 110 ||
+            $this->user->added_by_store_id === 108 ||
+            $this->user->added_by_store_id === 109 ||
+            $this->user->added_by_store_id === 110
+        ) {
+            return null;
+        } else {
+            return $this->user->orders->where('paid', 1);
+        }
     }
 
     public function getJoinedAttribute()
@@ -91,37 +102,81 @@ class Customer extends Model
 
     public function getFirstOrderAttribute()
     {
-        if (count($this->user->order) === 0) {
-            return $this->user->created_at->format('m/d/Y');
+        if (
+            $this->user->last_viewed_store_id === 108 ||
+            $this->user->last_viewed_store_id === 109 ||
+            $this->user->last_viewed_store_id === 110 ||
+            $this->user->added_by_store_id === 108 ||
+            $this->user->added_by_store_id === 109 ||
+            $this->user->added_by_store_id === 110
+        ) {
+            return null;
+        } else {
+            if (count($this->user->order) === 0) {
+                return $this->user->created_at->format('m/d/Y');
+            }
+            $date = $this->user->order
+                ->where('store_id', $this->getStoreID())
+                ->min("created_at");
+            return $date ? $date->format('F d, Y') : null;
         }
-        $date = $this->user->order
-            ->where('store_id', $this->getStoreID())
-            ->min("created_at");
-        return $date ? $date->format('F d, Y') : null;
     }
 
     public function getLastOrderAttribute()
     {
-        $date = $this->user->order
-            ->where('store_id', $this->getStoreID())
-            ->max("created_at");
-        return $date ? $date->format('m/d/Y') : null;
+        if (
+            $this->user->last_viewed_store_id === 108 ||
+            $this->user->last_viewed_store_id === 109 ||
+            $this->user->last_viewed_store_id === 110 ||
+            $this->user->added_by_store_id === 108 ||
+            $this->user->added_by_store_id === 109 ||
+            $this->user->added_by_store_id === 110
+        ) {
+            return null;
+        } else {
+            $date = $this->user->order
+                ->where('store_id', $this->getStoreID())
+                ->max("created_at");
+            return $date ? $date->format('m/d/Y') : null;
+        }
     }
 
     public function getTotalPaymentsAttribute()
     {
-        return $this->user->order
-            ->where('store_id', $this->getStoreID())
-            ->where('paid', 1)
-            ->count();
+        if (
+            $this->user->last_viewed_store_id === 108 ||
+            $this->user->last_viewed_store_id === 109 ||
+            $this->user->last_viewed_store_id === 110 ||
+            $this->user->added_by_store_id === 108 ||
+            $this->user->added_by_store_id === 109 ||
+            $this->user->added_by_store_id === 110
+        ) {
+            return null;
+        } else {
+            return $this->user->order
+                ->where('store_id', $this->getStoreID())
+                ->where('paid', 1)
+                ->count();
+        }
     }
 
     public function getTotalPaidAttribute()
     {
-        return $this->user->order
-            ->where('store_id', $this->getStoreID())
-            ->where('paid', 1)
-            ->sum("amount");
+        if (
+            $this->user->last_viewed_store_id === 108 ||
+            $this->user->last_viewed_store_id === 109 ||
+            $this->user->last_viewed_store_id === 110 ||
+            $this->user->added_by_store_id === 108 ||
+            $this->user->added_by_store_id === 109 ||
+            $this->user->added_by_store_id === 110
+        ) {
+            return null;
+        } else {
+            return $this->user->order
+                ->where('store_id', $this->getStoreID())
+                ->where('paid', 1)
+                ->sum("amount");
+        }
     }
 
     public function getNameAttribute()
