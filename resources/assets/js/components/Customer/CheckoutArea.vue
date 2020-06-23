@@ -2722,6 +2722,11 @@ use next_delivery_dates
         return;
       }
 
+      if (this.staffMember == null && this.store.modules.showStaff) {
+        this.$toastr.w("Please select a staff member.");
+        return;
+      }
+
       if (
         this.pickup === 1 &&
         this.store.modules.pickupLocations &&
