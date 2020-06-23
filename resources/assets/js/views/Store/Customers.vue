@@ -397,12 +397,10 @@ export default {
         "created_at",
         "total_payments",
         "total_paid",
-        "last_order",
         "actions"
       ],
       options: {
         headings: {
-          last_order: "Last Order",
           total_payments: "Total Orders",
           total_paid: "Total Paid",
           Name: "Name",
@@ -432,14 +430,6 @@ export default {
             return function(a, b) {
               var numA = moment(a.Joined);
               var numB = moment(b.Joined);
-              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
-              return numA.isAfter(numB, "day") ? 1 : -1;
-            };
-          },
-          LastOrder: function(ascending) {
-            return function(a, b) {
-              var numA = moment(a.LastOrder);
-              var numB = moment(b.LastOrder);
               if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
               return numA.isAfter(numB, "day") ? 1 : -1;
             };

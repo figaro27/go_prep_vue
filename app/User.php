@@ -204,9 +204,6 @@ class User extends Authenticatable implements JWTSubject
                     "FirstOrder" => optional(
                         $user->order->min("created_at")
                     )->format('m-d-Y'),
-                    "LastOrder" => optional(
-                        $user->order->max("created_at")
-                    )->format('m-d-Y'),
                     "TotalPayments" => $user->order->count(),
                     "TotalPaid" =>
                         '$' .
@@ -244,12 +241,6 @@ class User extends Authenticatable implements JWTSubject
                     "state" => $user->userDetail->state,
                     "joined" => $user->created_at->format('m-d-Y'),
                     "Joined" => $user->created_at->format('m-d-Y'),
-                    "last_order" => $user->order
-                        ->max("created_at")
-                        ->format('m-d-Y'),
-                    "LastOrder" => $user->order
-                        ->max("created_at")
-                        ->format('m-d-Y'),
                     "total_payments" => $user->order->count(),
                     "TotalPayments" => $user->order->count(),
                     "total_paid" => $user->order->sum("amount"),
