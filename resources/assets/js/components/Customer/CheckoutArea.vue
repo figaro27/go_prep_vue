@@ -865,6 +865,7 @@
               :filterable="false"
             >
             </v-select>
+            {{ customerModel }}
           </b-form-group>
 
           <b-btn
