@@ -100,14 +100,6 @@ export default {
               if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
               return numA.isAfter(numB, "day") ? 1 : -1;
             };
-          },
-          LastOrder: function(ascending) {
-            return function(a, b) {
-              var numA = moment(a.LastOrder);
-              var numB = moment(b.LastOrder);
-              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
-              return numA.isAfter(numB, "day") ? 1 : -1;
-            };
           }
         },
         orderBy: {
