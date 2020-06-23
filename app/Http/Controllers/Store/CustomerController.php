@@ -17,59 +17,43 @@ class CustomerController extends StoreController
      */
     public function index()
     {
-        if (
-            $this->store->id !== 108 &&
-            $this->store->id !== 109 &&
-            $this->store->id !== 110
-        ) {
-            $customers = $this->store->customers;
-            $customers->makeHidden(['first_order', 'paid_orders']);
+        $customers = $this->store->customers;
+        $customers->makeHidden(['first_order', 'paid_orders']);
 
-            if ($customers && count($customers) > 0) {
-                $customers = $customers->unique('user_id');
-                return $customers->values();
-            }
+        if ($customers && count($customers) > 0) {
+            $customers = $customers->unique('user_id');
+            return $customers->values();
         }
-
-        return [];
     }
 
     public function customersNoOrders()
     {
-        if (
-            $this->store->id !== 108 &&
-            $this->store->id !== 109 &&
-            $this->store->id !== 110
-        ) {
-            $customers = $this->store->customers;
-            $customers->makeHidden([
-                'first_order',
-                'last_order',
-                'total_payments',
-                'total_paid',
-                'paid_orders',
-                'phone',
-                'address',
-                'city',
-                'zip',
-                'delivery',
-                'currency',
-                'store_id',
-                'created_at',
-                'updated_at',
-                'joined',
-                'added_by_store_id',
-                'total_payments',
-                'total_paid',
-                'state',
-                'payment_gateway'
-            ]);
+        $customers = $this->store->customers;
+        $customers->makeHidden([
+            'first_order',
+            'last_order',
+            'total_payments',
+            'total_paid',
+            'paid_orders',
+            'phone',
+            'address',
+            'city',
+            'zip',
+            'delivery',
+            'currency',
+            'store_id',
+            'created_at',
+            'updated_at',
+            'joined',
+            'added_by_store_id',
+            'total_payments',
+            'total_paid',
+            'state',
+            'payment_gateway'
+        ]);
 
-            $customers = $customers->last();
-            return [$customers];
-        } else {
-            return [];
-        }
+        $customers = $customers->last();
+        return [$customers];
     }
 
     /**
