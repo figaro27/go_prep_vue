@@ -41,7 +41,7 @@
           {{ props.row.firstName }} {{ props.row.lastName }}
         </div>
         <div slot="updatedAt" class="text-nowrap" slot-scope="props">
-          {{ moment(props.row.updated_at).format("dddd h:mm a") }}
+          {{ moment(props.row.updated_at.date).format("dddd h:mm a") }}
         </div>
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button class="btn view btn-warning btn-sm" @click="view(props.row)">
