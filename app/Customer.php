@@ -28,6 +28,7 @@ class Customer extends Model
         'joined',
         'added_by_store_id',
         'first_order',
+        'last_order',
         'total_payments',
         'total_paid',
         'firstname',
@@ -97,6 +98,14 @@ class Customer extends Model
             ->where('store_id', $this->getStoreID())
             ->min("created_at");
         return $date ? $date->format('F d, Y') : null;
+    }
+
+    public function getLastOrderAttribute()
+    {
+        $date = $this->user->order
+            ->where('store_id', $this->getStoreID())
+            ->max("created_at");
+        return $date ? $date->format('m/d/Y') : null;
     }
 
     public function getTotalPaymentsAttribute()
