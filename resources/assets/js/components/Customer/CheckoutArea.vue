@@ -472,11 +472,11 @@
       <li class="checkout-item" v-if="storeModules.gratuity">
         <div class="row">
           <div class="col-6 col-md-4">
-            <strong>Gratuity</strong>
+            <strong>Tip</strong>
             <b-form-select
               :options="gratuityOptions"
               v-model="gratuityType"
-              class="ml-2"
+              class="ml-2 w-80px"
             ></b-form-select>
           </div>
           <div class="col-6 col-md-3 offset-md-5 d-flex">
