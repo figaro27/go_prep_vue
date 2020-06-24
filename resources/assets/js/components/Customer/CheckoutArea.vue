@@ -1582,6 +1582,9 @@ export default {
       return !_.isNull(this.purchasedGiftCard);
     },
     customers() {
+      if (this.customerOptions.length > 0) {
+        return this.customerOptions;
+      }
       let customers = this.storeCustomers;
       if (_.isEmpty(customers)) {
         return [];
