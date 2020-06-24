@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Store;
 use App\StoreModuleSettings;
+use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Http\Request;
 
@@ -86,5 +87,20 @@ class StoreModuleSettingController extends StoreController
     public function destroy($id)
     {
         //
+    }
+
+    public function submitMultiAuthPassword(Request $request)
+    {
+        $moduleSetting = StoreModuleSettings::where(
+            'store_id',
+            $this->store->id
+        )->first();
+
+        $hashedPW = $moduleSetting->multiAuthPassword;
+
+        if (Hash::check($request->get('password'), $hashedPW)) {
+            return 1;
+        }
+        return 0;
     }
 }

@@ -584,6 +584,11 @@ foreach (
                                 'SMSSettingController@smsAccountInfo'
                             );
                             Route::resource('SMSChats', 'SmsChatController');
+
+                            Route::post(
+                                'submitMultiAuthPassword',
+                                'StoreModuleSettingController@submitMultiAuthPassword'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {
