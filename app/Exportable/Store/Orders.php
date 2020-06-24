@@ -47,7 +47,8 @@ class Orders
                         $order->user->details->phone,
                         $order->transferTime,
                         '$' . number_format($order->amount, 2),
-                        '$' . number_format($order->balance, 2)
+                        '$' . number_format($order->balance, 2),
+                        $order->pickup ? 'Pickup' : 'Delivery'
                     ];
                 } else {
                     return [
@@ -81,7 +82,8 @@ class Orders
                     'Phone',
                     'Time',
                     'Amount',
-                    'Balance'
+                    'Balance',
+                    'Type'
                 ]);
             } else {
                 $orders->prepend([
