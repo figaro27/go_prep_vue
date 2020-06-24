@@ -43,7 +43,8 @@
             pickup: pickup,
             inSub: inSub,
             weeklySubscriptionValue: weeklySubscriptionValue,
-            lineItemOrders: lineItemOrders
+            lineItemOrders: lineItemOrders,
+            subscription: subscription
           },
           query: {
             r: $route.query.r,
@@ -75,7 +76,8 @@
             forceValue: forceValue,
             inSub: inSub,
             weeklySubscriptionValue: weeklySubscriptionValue,
-            lineItemOrders: lineItemOrders
+            lineItemOrders: lineItemOrders,
+            subscription: subscription
           }
         }"
         class="menu-bag-btn bottom-margin"
@@ -177,6 +179,9 @@ export default {
       return this.$route.params.subscriptionId
         ? this.$route.params.subscriptionId
         : this.$route.query.subscriptionId;
+    },
+    subscription() {
+      return this.$parent.subscription;
     },
     isMultipleDelivery() {
       return this.storeModules.multipleDeliveryDays == 1 ? true : false;

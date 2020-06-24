@@ -661,6 +661,7 @@ class OrderController extends StoreController
         $deliveryFee = $request->get('deliveryFee');
         $processingFee = $request->get('processingFee');
         $cashOrder = $request->get('cashOrder');
+        $gratuity = $request->get('gratuity');
         $grandTotal = $request->get('grandTotal');
         $adjustedDifference = $request->get('grandTotal') - $order->amount;
         $balance = $request->get('dontAffectBalance')
@@ -688,6 +689,7 @@ class OrderController extends StoreController
         $order->isMultipleDelivery = $isMultipleDelivery;
         $order->salesTax = $salesTax;
         $order->customSalesTax = $customSalesTax;
+        $order->gratuity = $gratuity;
         $order->amount = $grandTotal;
         // $order->deposit = $deposit;
         $order->adjustedDifference += $adjustedDifference;

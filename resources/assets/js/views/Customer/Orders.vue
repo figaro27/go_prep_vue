@@ -195,6 +195,10 @@
                 format.money(order.pointsReduction, order.currency)
               }})
             </p>
+            <p v-if="order.gratuity > 0">
+              Gratuity:
+              {{ format.money(order.gratuity, order.currency) }}
+            </p>
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
             </p>
@@ -274,6 +278,10 @@
                   Sales Tax:
                   {{ format.money(order.salesTax, order.currency) }}
                 </p>
+                <p v-if="order.gratuity > 0">
+                  Gratuity:
+                  {{ format.money(order.gratuity, order.currency) }}
+                </p>
                 <p class="strong">
                   Total:
                   {{ format.money(order.amount, order.currency) }}
@@ -322,6 +330,10 @@
                 <p v-if="order.salesTax > 0">
                   Sales Tax:
                   {{ format.money(order.salesTax, order.currency) }}
+                </p>
+                <p v-if="order.gratuity > 0">
+                  Gratuity:
+                  {{ format.money(order.gratuity, order.currency) }}
                 </p>
                 <p class="strong">
                   Total:

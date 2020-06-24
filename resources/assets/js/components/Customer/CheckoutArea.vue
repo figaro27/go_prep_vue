@@ -469,6 +469,30 @@
         </div>
       </li>
 
+      <li class="checkout-item" v-if="storeModules.gratuity">
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <strong>Gratuity</strong>
+            <b-form-select
+              :options="gratuityOptions"
+              v-model="gratuityType"
+              class="ml-2"
+            ></b-form-select>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5 d-flex">
+            <b-form-input
+              v-model="gratuity"
+              placeholder="Gratuity"
+              class="w-80px"
+              v-if="gratuityType == 'custom'"
+            ></b-form-input>
+            <span v-else>{{
+              format.money(gratuity, storeSettings.currency)
+            }}</span>
+          </div>
+        </div>
+      </li>
+
       <li class="checkout-item">
         <div class="row">
           <div class="col-6 col-md-4">
@@ -1224,6 +1248,8 @@ export default {
   },
   data() {
     return {
+      gratuity: null,
+      gratuityType: 0,
       staffMember: null,
       customerOptions: [],
       coupons: [],
@@ -1271,6 +1297,10 @@ export default {
     // });
     if (this.bagPickupSet) {
       this.pickup = this.bagPickup;
+    }
+
+    if (this.gratuityType !== "custom") {
+      this.gratuity = this.afterDiscount * (this.gratuityType / 100);
     }
   },
   props: {
@@ -1341,12 +1371,16 @@ export default {
     if (this.$route.params.storeView || this.storeOwner) {
       if (this.$route.params.adjustOrder) {
         this.staffMember = this.order.staff_id;
+        this.gratuity = this.order.gratuity;
       } else {
         // Apparently more of a nuisance than convenience to auto select the last staff member
         // axios.get("/api/me/getLastStaffMemberId").then(resp => {
         //   this.staffMember = resp.data;
         // });
       }
+    }
+    if (this.$route.params.adjustMealPlan || this.$route.params.subscription) {
+      this.gratuity = this.$parent.$route.params.subscription.gratuity;
     }
   },
   mixins: [MenuBag],
@@ -1391,6 +1425,22 @@ export default {
       bagPickupSet: "bagPickupSet",
       staff: "storeStaff"
     }),
+    gratuityOptions() {
+      return [
+        { value: 0, text: "None" },
+        { value: 2, text: "2%" },
+        { value: 4, text: "4%" },
+        { value: 6, text: "6%" },
+        { value: 8, text: "8%" },
+        { value: 10, text: "10%" },
+        { value: 12, text: "12%" },
+        { value: 14, text: "14%" },
+        { value: 16, text: "16%" },
+        { value: 18, text: "18%" },
+        { value: 20, text: "20%" },
+        { value: "custom", text: "Custom" }
+      ];
+    },
     prefix() {
       if (this.loggedIn) {
         return "/api/me/";
@@ -2111,8 +2161,15 @@ use next_delivery_dates
       }
       return this.pointsReduction;
     },
+    tip() {
+      let gratuity = 0;
+      if (this.gratuity !== "" && this.gratuity !== null) {
+        gratuity = parseFloat(this.gratuity);
+      }
+      return gratuity;
+    },
     grandTotal() {
-      return this.afterFeesAndTax - this.totalDiscountReduction;
+      return this.afterFeesAndTax - this.totalDiscountReduction + this.tip;
     },
     totalDiscountReduction() {
       return (
@@ -2673,6 +2730,7 @@ use next_delivery_dates
           deposit: deposit,
           cashOrder: this.cashOrder,
           lineItemsOrder: this.orderLineItems,
+          gratuity: this.tip,
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer,
           customSalesTax: this.customSalesTax !== null ? 1 : 0,
@@ -2878,6 +2936,7 @@ use next_delivery_dates
           hot: this.hot ? this.hot : false,
           transferTime: this.transferTime,
           lineItemsOrder: this.orderLineItems,
+          gratuity: this.tip,
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer,
           referralUrl: this.$route.query.r,

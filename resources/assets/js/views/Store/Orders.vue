@@ -1,30 +1,17 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show>
-        <router-link to="/store/SMS">
-          <h5 style="color:#23282C;text-decoration:underline">
-            New Feature - SMS
-          </h5>
-        </router-link>
-        <ul class="smsUL" style="position:relative;right:25px">
-          <li>Send bulk text messages to all or select customers.</li>
-          <li>Engage in live chats with any customer who responds.</li>
-          <li>
-            Create templates for your messages and personalize them using tags
-            like the customer's name.
-          </li>
-          <li>
-            Set up automated texts to your customers for certain events:<br />
-            -Send a confirmation text to your customers after an order or
-            subscription is placed.<br />
-            -Notify your customers that their order is being delivered or
-            available for pickup today.<br />
-            -Remind your customers to order a certain time before your next
-            delivery day's cutoff.
-          </li>
-        </ul>
-      </b-alert> -->
+      <b-alert style="background-color:#EBFAFF" show>
+        <h5>
+          New Feature - Gratuity
+        </h5>
+        <p>
+          Allow your customers to optionally leave a tip on the checkout page
+          before they place an order. You can enable this in the Advanced tab on
+          the
+          <router-link to="/store/account/settings">Settings</router-link> page.
+        </p>
+      </b-alert>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
@@ -547,6 +534,10 @@
                 format.money(order.pointsReduction, order.currency)
               }})
             </p>
+            <p v-if="order.gratuity > 0">
+              Gratuity:
+              {{ format.money(order.gratuity, order.currency) }}
+            </p>
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
             </p>
@@ -829,6 +820,10 @@
                   Sales Tax:
                   {{ format.money(order.salesTax, order.currency) }}
                 </p>
+                <p v-if="order.gratuity > 0">
+                  Gratuity:
+                  {{ format.money(order.gratuity, order.currency) }}
+                </p>
                 <p class="strong">
                   Total:
                   {{ format.money(order.amount, order.currency) }}
@@ -877,6 +872,10 @@
                 <p v-if="order.salesTax > 0">
                   Sales Tax:
                   {{ format.money(order.salesTax, order.currency) }}
+                </p>
+                <p v-if="order.gratuity > 0">
+                  Gratuity:
+                  {{ format.money(order.gratuity, order.currency) }}
                 </p>
                 <p class="strong">
                   Total:

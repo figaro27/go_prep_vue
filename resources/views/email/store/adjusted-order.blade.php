@@ -354,6 +354,7 @@ $currency = $order->store->settings->currency_symbol
                         $subtotal = $order->preFeePreDiscount;
                         $mealPlanDiscount = $order->mealPlanDiscount;
                         $deliveryFee = $order->deliveryFee;
+                        $gratuity = $order->gratuity;
                         $processingFee = $order->processingFee;
                         $salesTax = $order->salesTax;
                         $coupon = $order->couponReduction;
@@ -377,7 +378,10 @@ $currency = $order->store->settings->currency_symbol
                         @if ($processingFee > 0)
                         Processing Fee<br>
                         @endif
-                        <br>
+                        @if ($gratuity > 0)
+Gratuity<br>
+@endif
+<br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span><br>
                         @if ($balance > 0)
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Paid</span><br>
@@ -404,7 +408,9 @@ $currency = $order->store->settings->currency_symbol
                           @if ($processingFee > 0)
                           {{$currency}}{{ number_format($processingFee, 2) }}<br>
                           @endif
-                          
+                          @if ($gratuity > 0)
+{{$currency}}{{ number_format($gratuity, 2) }}<br>
+@endif
                           <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold; ">{{$currency}}{{ number_format($order->amount, 2) }}
                             @if ($order->cashOrder)

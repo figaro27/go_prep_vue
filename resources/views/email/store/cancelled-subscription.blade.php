@@ -299,6 +299,7 @@ $currency = $subscription->store->settings->currency_symbol
                         $subtotal = $subscription->preFeePreDiscount;
                         $mealPlanDiscount = $subscription->mealPlanDiscount;
                         $deliveryFee = $subscription->deliveryFee;
+                        $gratuity = $subscription->gratuity;
                         $processingFee = $subscription->processingFee;
                         $salesTax = $subscription->salesTax;
                         $coupon = $subscription->couponReduction;
@@ -333,6 +334,9 @@ $currency = $subscription->store->settings->currency_symbol
                         @if ($pointsReduction > 0)
                         Points Discount<br>
                         @endif
+                        @if ($gratuity > 0)
+Gratuity<br>
+@endif
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span>
                       </td>
@@ -365,7 +369,9 @@ $currency = $subscription->store->settings->currency_symbol
                           @if ($pointsReduction > 0)
                           {{$currency}}{{ number_format($pointsReduction, 2) }}<br>
                           @endif
-                          
+                          @if ($gratuity > 0)
+{{$currency}}{{ number_format($gratuity, 2) }}<br>
+@endif
                           <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">{{$currency}}{{ number_format($subscription->amount, 2) }}</span>
                         </td>

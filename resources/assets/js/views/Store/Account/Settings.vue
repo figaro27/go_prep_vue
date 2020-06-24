@@ -1137,6 +1137,25 @@
                   v-model="storeModules.cashOrderNoBalance"
                   @change.native="updateStoreModules"
                 />
+
+                <p class="mt-2">
+                  <span class="mr-1 mt-2">Gratuity</span>
+                  <img
+                    v-b-popover.hover="
+                      'Add an area on the checkout page for customer\'s to optionally add a tip to their order.'
+                    "
+                    title="Gratuity"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeModules.gratuity"
+                  @change.native="updateStoreModules"
+                />
               </b-form>
             </b-tab>
           </b-tabs>
