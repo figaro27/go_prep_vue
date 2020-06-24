@@ -476,7 +476,7 @@
             <b-form-select
               :options="gratuityOptions"
               v-model="gratuityType"
-              class="ml-2 w-80px"
+              class="ml-2 w-100px"
             ></b-form-select>
           </div>
           <div class="col-6 col-md-3 offset-md-5 d-flex">
@@ -1428,6 +1428,7 @@ export default {
     gratuityOptions() {
       return [
         { value: 0, text: "None" },
+        { value: "custom", text: "Custom" },
         { value: 2, text: "2%" },
         { value: 4, text: "4%" },
         { value: 6, text: "6%" },
@@ -1437,8 +1438,7 @@ export default {
         { value: 14, text: "14%" },
         { value: 16, text: "16%" },
         { value: 18, text: "18%" },
-        { value: 20, text: "20%" },
-        { value: "custom", text: "Custom" }
+        { value: 20, text: "20%" }
       ];
     },
     prefix() {
