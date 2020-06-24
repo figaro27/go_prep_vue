@@ -31,11 +31,13 @@
             <th>Zip</th>
             <th>Phone</th>
             <th style="width:100px">Email</th>
+            @if (!$params['livotis'])
             <th>Total</th>
             <th>Balance</th>
             <th style="width:100px">Order Placed</th>
             <th style="width:100px">Delivery Date</th>
             <th>Time</th>
+            @endif
           </tr>
         </thead>
 

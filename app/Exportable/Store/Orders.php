@@ -22,6 +22,14 @@ class Orders
     {
         $params = $this->params;
 
+        if (
+            $this->store->id == 108 ||
+            $this->store->id == 109 ||
+            $this->store->id == 110
+        ) {
+            $params->put('livotis', true);
+        }
+
         $orders = $this->store
             ->getOrders(null, $this->getDeliveryDates())
             ->filter(function ($order) use ($params) {
@@ -35,11 +43,7 @@ class Orders
                 return true;
             })
             ->map(function ($order) {
-                if (
-                    $this->store->id === 108 ||
-                    $this->store->id === 109 ||
-                    $this->store->id === 110
-                ) {
+                if ($this->params->get('livotis')) {
                     return [
                         $order->dailyOrderNumber,
                         $order->user->details->lastname,
@@ -70,11 +74,7 @@ class Orders
             });
 
         if ($type !== 'pdf') {
-            if (
-                $this->store->id === 108 ||
-                $this->store->id === 109 ||
-                $this->store->id === 110
-            ) {
+            if ($this->params->get('livotis')) {
                 $orders->prepend([
                     'Daily Order #',
                     'Last Name',
