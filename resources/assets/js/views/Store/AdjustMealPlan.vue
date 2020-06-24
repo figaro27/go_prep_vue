@@ -5,6 +5,7 @@
     :adjustMealPlan="true"
     :weeklySubscriptionValue="1"
     :pickup="pickup"
+    :subscription="subscription"
   ></customer-menu>
 </template>
 

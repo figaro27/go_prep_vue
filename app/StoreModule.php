@@ -23,7 +23,8 @@ class StoreModule extends Model
         'autoPrintPackingSlip' => 'boolean',
         'showHotCheckbox' => 'boolean',
         'mealExpiration' => 'boolean',
-        'pickupOnly' => 'boolean'
+        'pickupOnly' => 'boolean',
+        'gratuity' => 'boolean'
     ];
 
     protected $guarded = [];

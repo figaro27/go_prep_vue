@@ -52,7 +52,7 @@ class Order extends Model
         'referralReduction' => 'float',
         'promotionReduction' => 'float',
         'pointsReduction' => 'float',
-        'hot' => 'float'
+        'gratuity' => 'float'
         //'created_at' => 'date:F d, Y'
     ];
 

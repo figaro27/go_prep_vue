@@ -406,7 +406,8 @@ export default {
             mealPlanDiscount: this.mealPlanDiscount,
             referralReduction: this.referralReduction,
             promotionReduction: this.promotionReduction,
-            pointsReduction: this.promotionPointsReduction
+            pointsReduction: this.promotionPointsReduction,
+            gratuity: this.gratuity
           }
         );
         await this.refreshSubscriptions();

@@ -3,6 +3,7 @@
     :subscription-id="$route.params.id"
     :weeklySubscriptionValue="1"
     :pickup="pickup"
+    :subscription="subscription"
   ></customer-menu>
 </template>
 
@@ -76,8 +77,6 @@ export default {
       }
       // Setting pickup here
       this.pickup = subscription.pickup;
-
-      console.log(this.pickup);
 
       let stop = false;
 

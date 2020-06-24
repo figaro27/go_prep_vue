@@ -232,6 +232,7 @@ class SubscriptionController extends StoreController
         //$stripeToken = $request->get('token');
 
         $application_fee = $store->settings->application_fee;
+        $gratuity = $request->get('gratuity');
         $total = $request->get('subtotal');
         $subtotal = $request->get('subtotal');
         $afterDiscountBeforeFees = $request->get('afterDiscount');
@@ -469,6 +470,7 @@ class SubscriptionController extends StoreController
         $sub->deliveryFee = $deliveryFee;
         $sub->processingFee = $processingFee;
         $sub->salesTax = $salesTax;
+        $sub->gratuity = $gratuity;
         $sub->amount = $total;
         $sub->pickup = $request->get('pickup', 0);
         $sub->delivery_day = $deliveryDay;
@@ -509,6 +511,7 @@ class SubscriptionController extends StoreController
             $order->referralReduction = $referralReduction;
             $order->promotionReduction = $promotionReduction;
             $order->pointsReduction = $pointsReduction;
+            $order->gratuity = $gratuity;
             $order->amount = $total;
             $order->save();
 

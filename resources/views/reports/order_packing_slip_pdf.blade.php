@@ -5,6 +5,7 @@ $currency = $order->store->settings->currency_symbol;
 $subtotal = $currency . number_format($order->preFeePreDiscount, 2);
 $mealPlanDiscount = $currency . number_format($order->mealPlanDiscount, 2);
 $deliveryFee = $currency . number_format($order->deliveryFee, 2);
+$gratuity = $currency . number_format($order->gratuity, 2);
 $processingFee = $currency . number_format($order->processingFee, 2);
 $salesTax = $currency . number_format($order->salesTax, 2);
 $coupon = $currency . number_format($order->couponReduction, 2);
@@ -354,6 +355,10 @@ $hot = $order->hot;
             @if ($order->pointsReduction > 0)<tr>
               <td style="border:none"><b>Promotional Discount</b></td>
               <td style="border:none;text-align:right;position:relative;right:8px">(Points Used) {{$currency}}{{number_format($pointsReduction, 2)}}</td>
+            </tr>@endif
+            @if ($order->gratuity > 0)<tr>
+              <td style="border:none"><b>Gratuity</b></td>
+              <td style="border:none;text-align:right;position:relative;right:8px">{{ $gratuity }}</td>
             </tr>@endif
             @if ($order->balance > 0)<tr>
             <td style="border:none"><b>Total</b></td>

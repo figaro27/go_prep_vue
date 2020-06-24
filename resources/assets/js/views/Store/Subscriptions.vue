@@ -194,6 +194,11 @@
               }})
             </p>
 
+            <p v-if="subscription.gratuity > 0">
+              Gratuity:
+              {{ format.money(subscription.gratuity, subscription.currency) }}
+            </p>
+
             <p class="strong">
               Total:
               {{ format.money(subscription.amount, subscription.currency) }}
@@ -349,6 +354,12 @@
                   Sales Tax:
                   {{
                     format.money(subscription.salesTax, subscription.currency)
+                  }}
+                </p>
+                <p v-if="subscription.gratuity > 0">
+                  Gratuity:
+                  {{
+                    format.money(subscription.gratuity, subscription.currency)
                   }}
                 </p>
                 <p class="strong">

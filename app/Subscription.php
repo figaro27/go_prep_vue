@@ -47,7 +47,8 @@ class Subscription extends Model
         'salesTax' => 'float',
         'mealPlanDiscount' => 'float',
         'monthlyPrepay' => 'boolean',
-        'mealsReplaced' => 'boolean'
+        'mealsReplaced' => 'boolean',
+        'gratuity' => 'float'
     ];
 
     public function user()
@@ -463,6 +464,7 @@ class Subscription extends Model
         $newOrder->mealPlanDiscount = $this->mealPlanDiscount;
         $newOrder->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
         $newOrder->deliveryFee = $this->deliveryFee;
+        $newOrder->gratuity = $this->gratuity;
         $newOrder->processingFee = $this->processingFee;
         $newOrder->salesTax = $this->salesTax;
         $newOrder->coupon_id = $this->coupon_id;
@@ -852,6 +854,8 @@ class Subscription extends Model
         //     $total += $this->store->settings->deliveryFee;
         //     $deliveryFee += $this->store->settings->deliveryFee;
         // }
+        $gratuity = $this->gratuity;
+        $total += $gratuity;
         $total += $deliveryFee;
 
         if ($this->store->settings->applyProcessingFee) {
@@ -885,6 +889,7 @@ class Subscription extends Model
         $total -= $this->referralReduction;
         $total -= $this->promotionReduction;
         $total -= $this->pointsReduction;
+        $this->gratuity = $gratuity;
         $this->amount = $total;
         $this->save();
 
@@ -968,6 +973,7 @@ class Subscription extends Model
             $order->referralReduction = $this->referralReduction;
             $order->promotionReduction = $this->promotionReduction;
             $order->pointsReduction = $this->pointsReduction;
+            $order->gratuity = $this->gratuity;
             $order->amount = $this->amount;
             $order->save();
 

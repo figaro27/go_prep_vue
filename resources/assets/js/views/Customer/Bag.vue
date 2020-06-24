@@ -153,7 +153,8 @@ export default {
     order: null,
     checkoutDataProp: null,
     adjustMealPlan: null,
-    lineItemOrders: null
+    lineItemOrders: null,
+    subscription: null
   },
   mixins: [MenuBag],
   data() {
@@ -189,6 +190,7 @@ export default {
       couponCode: "",
       couponClass: "checkout-item",
       deliveryFee: 0,
+      gratuity: null,
       amounts: {},
       salesTax: 0,
       orderLineItems: null,
@@ -718,6 +720,7 @@ export default {
           couponReduction: this.couponReduction,
           couponCode: this.couponApplied ? this.coupon.code : null,
           deliveryFee: this.deliveryFee,
+          gratuity: this.gratuity,
           pickupLocation: this.selectedPickupLocation,
           customer: this.customer,
           deposit: deposit,

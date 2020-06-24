@@ -120,6 +120,7 @@ class CheckoutController extends StoreController
         $appliedReferralId = $request->get('applied_referral_id');
         $referralReduction = $request->get('referralReduction');
         $deliveryFee = $request->get('deliveryFee');
+        $gratuity = $request->get('gratuity');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
         $monthlyPrepay = $request->get('monthlyPrepay');
@@ -302,6 +303,7 @@ class CheckoutController extends StoreController
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
             $order->deliveryFee = $deliveryFee;
+            $order->gratuity = $gratuity;
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->customSalesTax = $customSalesTax;
@@ -825,6 +827,7 @@ class CheckoutController extends StoreController
             $userSubscription->afterDiscountBeforeFees = $afterDiscountBeforeFees;
             $userSubscription->processingFee = $processingFee;
             $userSubscription->deliveryFee = $deliveryFee;
+            $userSubscription->gratuity = $gratuity;
             $userSubscription->salesTax = $salesTax;
             $userSubscription->amount = $total;
             $userSubscription->pickup = $request->get('pickup', 0);
@@ -866,6 +869,7 @@ class CheckoutController extends StoreController
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
             $order->deliveryFee = $deliveryFee;
+            $order->gratuity = $gratuity;
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->customSalesTax = $customSalesTax;
