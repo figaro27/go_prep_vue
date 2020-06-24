@@ -1,6 +1,36 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
+      <b-modal
+        size="sm"
+        title="Enter Password"
+        v-model="showMultiAuthModal"
+        v-if="showMultiAuthModal"
+        no-fade
+        no-close-on-backdrop
+        hide-header
+        hide-footer
+      >
+        <b-form
+          @submit.prevent="submitMultiAuthPassword"
+          class="pt-3 pl-3 pr-3"
+        >
+          <p class="center-text strong">Enter Password</p>
+          <b-form-group horizontal>
+            <b-input
+              v-model="multiAuthPassword"
+              type="password"
+              required
+            ></b-input>
+          </b-form-group>
+          <b-form-group horizontal class="center-text">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </b-form-group>
+        </b-form>
+        <b-form-group horizontal class="center-text">
+          <button class="btn btn-warning" @click="cancel">Go Back</button>
+        </b-form-group>
+      </b-modal>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="isLoading" />
@@ -313,6 +343,8 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      showMultiAuthModal: false,
+      multiAuthPassword: null,
       upcomingOrdersByOrderDate: [],
       goPrepFee: 0.05,
       stripeFee: 0.029,
@@ -384,6 +416,9 @@ export default {
   },
   mounted() {
     this.getApplicationFee();
+    if (this.store.modules.multiAuth) {
+      this.showMultiAuthModal = true;
+    }
   },
   computed: {
     ...mapGetters({
@@ -730,6 +765,24 @@ export default {
         .then(response => {
           this.ordersByDate = response.data;
         });
+    },
+    submitMultiAuthPassword() {
+      axios
+        .post("/api/me/submitMultiAuthPassword", {
+          password: this.multiAuthPassword
+        })
+        .then(resp => {
+          if (resp.data == 1) {
+            this.showMultiAuthModal = false;
+          } else {
+            this.$toastr.e("Incorrect password. Please try again.");
+          }
+        });
+    },
+    cancel() {
+      this.$router.push({
+        path: "/store/orders"
+      });
     }
   }
 };
