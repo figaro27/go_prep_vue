@@ -164,6 +164,7 @@ export default {
         size.full_title = item.full_title;
         size.title = item.customSize;
         custom.size = item.customSize;
+        size.price = item.price;
       }
 
       this.$store.commit("addToBag", {
