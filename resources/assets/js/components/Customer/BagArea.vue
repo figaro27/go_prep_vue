@@ -194,7 +194,6 @@
                 <i
                   v-if="
                     $route.params.storeView &&
-                      storeView !== undefined &&
                       (enablingEdit[item.guid]
                         ? enablingEdit[item.guid] === false
                         : true)
