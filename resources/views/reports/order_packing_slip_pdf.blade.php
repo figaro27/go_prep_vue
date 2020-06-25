@@ -212,7 +212,7 @@ $hot = $order->hot;
     <table class="no-border table-heading" style="border-style:none;">
       <thead>
           <th class="top-left-border-radius drop-shadow no-border" style="text-align:center">Quantity</th>
-          <th class="drop-shadow no-border">Size</th>
+          <th class="drop-shadow no-border" style="width:75px">Size</th>
           <th class="drop-shadow no-border">Item</th>
           <th class="top-right-border-radius drop-shadow no-border" style="text-align:right;padding-right:12px">Price</th>
       </thead>

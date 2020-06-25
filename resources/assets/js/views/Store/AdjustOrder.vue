@@ -193,6 +193,8 @@ export default {
           let free = item.free;
 
           meal.price = item.price / item.quantity;
+          console.log(item);
+          console.log(meal.price);
 
           for (let i = 0; i < item.quantity; i++) {
             this.addOne(
