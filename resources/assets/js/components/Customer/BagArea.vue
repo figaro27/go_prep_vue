@@ -193,7 +193,7 @@
               <div class="flex-grow-0">
                 <i
                   v-if="
-                    $route.params.storeView &&
+                    ($route.params.storeView || storeView !== undefined) &&
                       (enablingEdit[item.guid]
                         ? enablingEdit[item.guid] === false
                         : true)
