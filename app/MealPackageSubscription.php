@@ -43,7 +43,7 @@ class MealPackageSubscription extends Pivot
     {
         $title = $this->customTitle
             ? $this->customTitle
-            : $this->meal_package_title;
+            : $this->meal_package->title;
         $size = $this->meal_package_size
             ? ' - ' . $this->meal_package_size->title
             : null;
