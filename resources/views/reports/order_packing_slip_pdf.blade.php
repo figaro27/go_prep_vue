@@ -14,6 +14,7 @@ $purchasedGiftCard = $order->purchased_gift_card_code;
 $purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
 $promotionReduction = $order->promotionReduction;
 $pointsReduction = $order->pointsReduction;
+$referralReduction $order->referralReduction;
 $amount = $currency . number_format($order->amount, 2);
 $deposit = $currency . number_format($order->deposit, 2);
 $cashOrder = $order->cashOrder;
