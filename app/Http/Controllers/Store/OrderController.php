@@ -883,27 +883,16 @@ class OrderController extends StoreController
         $lineItemsOrder = $request->get('lineItemsOrder');
         if ($lineItemsOrder != null) {
             foreach ($lineItemsOrder as $lineItemOrder) {
-                $title = $lineItemOrder['title'];
-                $id = LineItem::where('title', $title)
-                    ->pluck('id')
-                    ->first();
-                $quantity = $lineItemOrder['quantity'];
-                $existingLineItem = LineItemOrder::where([
-                    'line_item_id' => $id,
-                    'order_id' => $order->id
-                ])->first();
-
-                if ($existingLineItem) {
-                    $existingLineItem->quantity = $quantity;
-                    $existingLineItem->save();
-                } else {
-                    $lineItemOrder = new LineItemOrder();
-                    $lineItemOrder->store_id = $store->id;
-                    $lineItemOrder->line_item_id = $id;
-                    $lineItemOrder->order_id = $order->id;
-                    $lineItemOrder->quantity = $quantity;
-                    $lineItemOrder->save();
-                }
+                $newLineItemOrder = new LineItemOrder();
+                $newLineItemOrder->store_id = $store->id;
+                $newLineItemOrder->line_item_id = isset(
+                    $lineItemOrder['line_item']
+                )
+                    ? $lineItemOrder['line_item']['id']
+                    : $lineItemOrder['id'];
+                $newLineItemOrder->order_id = $order->id;
+                $newLineItemOrder->quantity = $lineItemOrder['quantity'];
+                $newLineItemOrder->save();
             }
         }
 
