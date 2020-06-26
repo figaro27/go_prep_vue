@@ -382,7 +382,10 @@ export default {
     mealIngredients() {
       let ingredients = "";
       this.meal.ingredients.forEach(ingredient => {
-        ingredients += ingredient.food_name + ", ";
+        // Don't show custom entered nutrition as an ingredient
+        if (!ingredient.food_name.includes("ID -")) {
+          ingredients += ingredient.food_name + ", ";
+        }
       });
       ingredients = ingredients.substring(0, ingredients.length - 2);
       return ingredients;
