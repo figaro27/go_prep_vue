@@ -884,7 +884,9 @@ class OrderController extends StoreController
         if ($lineItemsOrder != null) {
             foreach ($lineItemsOrder as $lineItemOrder) {
                 $title = $lineItemOrder['title'];
-                $id = $lineItemOrder['id'];
+                $id = LineItem::where('title', $title)
+                    ->pluck('id')
+                    ->first();
                 $quantity = $lineItemOrder['quantity'];
                 $existingLineItem = LineItemOrder::where([
                     'line_item_id' => $id,
