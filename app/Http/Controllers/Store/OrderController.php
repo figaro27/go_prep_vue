@@ -673,15 +673,13 @@ class OrderController extends StoreController
             'paid',
             'paid_at',
             'pickup_location',
-            'purchased_gift_card_code',
-            'purchased_gift_card_id',
             'stripe_id',
             'user_id',
             'visible_items'
         ]);
 
         if (!$this->store->modules->multipleDeliveryDays) {
-            $order->makeHIdden(['delivery_dates_array', 'isMultipleDelivery']);
+            $order->makeHidden(['delivery_dates_array', 'isMultipleDelivery']);
         }
 
         return $order;

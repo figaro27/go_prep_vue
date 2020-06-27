@@ -1382,6 +1382,20 @@ export default {
     if (this.$route.params.adjustMealPlan || this.$route.params.subscription) {
       this.gratuity = this.$parent.$route.params.subscription.gratuity;
     }
+
+    if (
+      this.$route.params.adjustOrder &&
+      this.order.purchasedGiftCardReduction > 0
+    ) {
+      axios
+        .post("/api/me/findPurchasedGiftCard", {
+          store_id: this.store.id,
+          purchasedGiftCardCode: this.order.purchased_gift_card_code
+        })
+        .then(resp => {
+          this.setBagPurchasedGiftCard(resp.data);
+        });
+    }
   },
   mixins: [MenuBag],
   computed: {
@@ -2089,6 +2103,12 @@ use next_delivery_dates
       return this.afterFees + this.tax;
     },
     purchasedGiftCardReduction() {
+      if (
+        this.$route.params.adjustOrder &&
+        this.order.purchasedGiftCardReduction > 0
+      ) {
+        return this.order.purchasedGiftCardReduction;
+      }
       if (!this.purchasedGiftCardApplied) {
         return 0;
       }
