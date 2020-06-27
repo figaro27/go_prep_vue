@@ -92,23 +92,6 @@ class OrdersByCustomer
             );
         }
 
-        // Disabled Old Workflow
-        /*if (isset($dateRange['from'])) {
-            $from = Carbon::parse($dateRange['from']);
-            $orders = $orders->where(
-                'delivery_date',
-                '>=',
-                $from->format('Y-m-d')
-            );
-        }
-        if (isset($dateRange['to'])) {
-            $to = Carbon::parse($dateRange['to']);
-            $orders = $orders->where(
-                'delivery_date',
-                '<=',
-                $to->format('Y-m-d')
-            );
-        }*/
         if ($type === 'csv' || $type === 'xls') {
             $mealOrders = MealOrder::where('store_id', $this->store->id)
                 ->get()
@@ -126,10 +109,15 @@ class OrdersByCustomer
                     if (isset($dateRange['to'])) {
                         $to = Carbon::parse($dateRange['to']);
                     }
-                    return $mealOrder->order->delivery_date >=
-                        $from->format('Y-m-d') &&
-                        $mealOrder->order->delivery_date <=
-                            $to->addDays(1)->format('Y-m-d');
+
+                    return !$mealOrder->order->isMultipleDelivery
+                        ? $mealOrder->order->delivery_date >=
+                                $from->format('Y-m-d') &&
+                                $mealOrder->order->delivery_date <=
+                                    $to->addDays(1)->format('Y-m-d')
+                        : $mealOrder->delivery_date >= $from->format('Y-m-d') &&
+                                $mealOrder->delivery_date <=
+                                    $to->addDays(1)->format('Y-m-d');
                 });
             $customerMealOrders = $mealOrders->map(function ($mealOrder) {
                 return [
@@ -137,9 +125,9 @@ class OrdersByCustomer
                     'order_placed' => $mealOrder->order->created_at->format(
                         'Y-m-d'
                     ),
-                    'delivery_date' => $mealOrder->order->delivery_date->format(
-                        'Y-m-d'
-                    ),
+                    'delivery_date' => !$mealOrder->order->isMultipleDelivery
+                        ? $mealOrder->order->delivery_date->format('Y-m-d')
+                        : $mealOrder->delivery_date->format('Y-m-d'),
                     'customer' =>
                         $mealOrder->order->user->details->firstname .
                         ' ' .

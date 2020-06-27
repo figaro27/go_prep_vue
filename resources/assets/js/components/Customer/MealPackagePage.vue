@@ -473,54 +473,69 @@
 
       <b-row
         v-if="mealAddons.length"
-        class="categorySection my-3"
+        class="categorySection my-3 mb-5"
+        style="padding-bottom:200px"
         :target="'categorySection_addons'"
       >
         <b-col>
           <h3 class="center-text mb-3">Add-ons</h3>
+          <div class="row">
+            <div v-for="addon in mealAddons" :key="addon.id" class="col-md-3">
+              <b-btn
+                @click="toggleAddon(addon.id)"
+                :style="brandColor"
+                style="color:#ffffff;width:140px;height:60px"
+              >
+                <h5 class="pt-1">
+                  {{ addon.title }}
+                  <p class="small pt-1" v-if="addon.price > 0">
+                    +{{ format.money(addon.price, storeSettings.currency) }}
+                  </p>
+                </h5>
+              </b-btn>
 
-          <div v-for="addon in mealAddons" :key="addon.id">
-            <b-checkbox @input="toggleAddon(addon.id)">
+              <!-- <b-checkbox @input="toggleAddon(addon.id)">
               {{ addon.title }}
               <small v-if="addon.price > 0"
                 >+{{ format.money(addon.price, storeSettings.currency) }}</small
               >
-            </b-checkbox>
+            </b-checkbox> -->
 
-            <div
-              v-if="addon.selectable && addonSelected(addon.id)"
-              class="my-2 px-2 py-2 px-lg-3 py-lg-3 bg-light"
-            >
-              <b-checkbox-group
-                class="meal-checkboxes"
-                v-model="addons[addon.id]"
-                stacked
-                @input.native="e => e"
-                @change="choices => onChangeAddonChoices(addon, choices)"
+              <div
+                v-if="addon.selectable && addonSelected(addon.id)"
+                class="my-2 px-2 py-2 px-lg-3 py-lg-3 bg-light"
               >
-                <b-checkbox
-                  v-for="(option, index) in getMealOptions(addon.meals)"
-                  :value="option.value"
-                  v-bind:key="index"
+                <b-checkbox-group
+                  class="meal-checkboxes"
+                  v-model="addons[addon.id]"
+                  stacked
+                  @input.native="e => e"
+                  @change="choices => onChangeAddonChoices(addon, choices)"
                 >
-                  {{ option.text }}
+                  <b-checkbox
+                    v-for="(option, index) in getMealOptions(addon.meals)"
+                    :value="option.value"
+                    v-bind:key="index"
+                  >
+                    {{ option.text }}
 
-                  <b-form-textarea
-                    v-if="
-                      (storeModules.specialInstructions &&
-                        !storeModuleSettings.specialInstructionsStoreOnly) ||
-                        (storeModuleSettings.specialInstructionsStoreOnly &&
-                          isStoreView)
-                    "
-                    style="width: 100%;"
-                    class="mb-2"
-                    v-model="special_instructions[option.id]"
-                    placeholder="Special instructions"
-                    rows="3"
-                    max-rows="6"
-                  ></b-form-textarea>
-                </b-checkbox>
-              </b-checkbox-group>
+                    <b-form-textarea
+                      v-if="
+                        (storeModules.specialInstructions &&
+                          !storeModuleSettings.specialInstructionsStoreOnly) ||
+                          (storeModuleSettings.specialInstructionsStoreOnly &&
+                            isStoreView)
+                      "
+                      style="width: 100%;"
+                      class="mb-2"
+                      v-model="special_instructions[option.id]"
+                      placeholder="Special instructions"
+                      rows="3"
+                      max-rows="6"
+                    ></b-form-textarea>
+                  </b-checkbox>
+                </b-checkbox-group>
+              </div>
             </div>
           </div>
         </b-col>
@@ -1111,79 +1126,142 @@ export default {
           }
         }
         /* Checking Special Instructions End */
-
         if (this.isMultipleDelivery) {
           const deliveryDays = this.deliveryDays;
-          const deliveryDay = this.deliveryDay;
 
-          if (components && deliveryDays && deliveryDay) {
-            for (let i in components) {
-              if (i && !isNaN(i)) {
-                const component = this.getComponent(parseInt(i));
-                if (component && component.maximum) {
-                  const max = component.maximum;
-                  const dayLength = deliveryDays.length;
-                  const count = parseInt(max / dayLength);
+          deliveryDays.forEach(day => {
+            // Split package by looking at the components & addons delivery_day_ids
 
-                  const deliveryDaysNew = [];
-                  deliveryDaysNew.push(deliveryDay);
-                  deliveryDays.forEach(day => {
-                    if (day.id != deliveryDay.id) {
-                      deliveryDaysNew.push(day);
-                    }
-                  });
+            let newMealPackage = { ...this.mealPackage };
 
-                  for (let option in components[i]) {
-                    const items = components[i][option];
+            newMealPackage.delivery_day = day;
 
-                    if (items && items.length > 0) {
-                      for (let index = 0; index < dayLength; index++) {
-                        const startIndex = count * index;
-                        const endIndex = count * (index + 1) - 1;
-                        if (i == dayLength - 1 || endIndex >= items.length) {
-                          endIndex = items.length - 1;
-                        }
+            // Components
+            let includedComponentIds = [];
+            let newComponents = { ...components };
 
-                        if (
-                          startIndex < items.length &&
-                          endIndex < items.length &&
-                          startIndex <= endIndex
-                        ) {
-                          const itemsNew = items.slice(
-                            startIndex,
-                            endIndex + 1
-                          );
-
-                          if (itemsNew && itemsNew.length > 0) {
-                            const mealPackageNew = JSON.parse(
-                              JSON.stringify(this.mealPackage)
-                            );
-                            const componentsNew = {};
-                            componentsNew[i] = {};
-                            componentsNew[i][option] = itemsNew;
-
-                            mealPackageNew.delivery_day =
-                              deliveryDaysNew[index];
-
-                            mealPackageNew.price = mealPackageNew.price / 2;
-
-                            this.addOne(
-                              mealPackageNew,
-                              true,
-                              this.mealPackageSize,
-                              componentsNew,
-                              addons,
-                              null
-                            );
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
+            newMealPackage.components.forEach(component => {
+              if (component.delivery_day_id == day.id) {
+                includedComponentIds.push(component.id);
               }
+            });
+            if (includedComponentIds.length > 0) {
+              Object.keys(newComponents).forEach(newComponent => {
+                if (!includedComponentIds.includes(parseInt(newComponent))) {
+                  delete newComponents[newComponent];
+                }
+              });
+            } else {
+              newComponents = [];
             }
-          }
+
+            // Addons
+            let includedAddonIds = [];
+            let newAddons = { ...addons };
+
+            newMealPackage.addons.forEach(addon => {
+              if (addon.delivery_day_id == day.id) {
+                includedAddonIds.push(addon.id);
+              }
+            });
+            if (includedAddonIds.length > 0) {
+              Object.keys(newAddons).forEach(newAddon => {
+                if (!includedAddonIds.includes(parseInt(newAddon))) {
+                  delete newAddons[newAddon];
+                }
+              });
+            } else {
+              newAddons = [];
+            }
+
+            // Adjust for top level meals in the future
+            // Adjust logic w addons
+
+            newMealPackage.customTitle =
+              newMealPackage.title + " - " + day.day_long;
+            newMealPackage.title = newMealPackage.title + " - " + day.day_long;
+
+            if (!_.isArray(newComponents) && !_.isArray(newComponents)) {
+              this.addOne(
+                newMealPackage,
+                true,
+                this.mealPackageSize,
+                newComponents,
+                newAddons,
+                null
+              );
+            }
+          });
+
+          // Old way of splitting the meal package. Would just split it in half based on the order meals were chosen. Replacing with variation by day above.
+
+          // if (components && deliveryDays && deliveryDay) {
+          //   for (let i in components) {
+          //     if (i && !isNaN(i)) {
+          //       const component = this.getComponent(parseInt(i));
+          //       if (component && component.maximum) {
+          //         const max = component.maximum;
+          //         const dayLength = deliveryDays.length;
+          //         const count = parseInt(max / dayLength);
+
+          //         const deliveryDaysNew = [];
+          //         deliveryDaysNew.push(deliveryDay);
+          //         deliveryDays.forEach(day => {
+          //           if (day.id != deliveryDay.id) {
+          //             deliveryDaysNew.push(day);
+          //           }
+          //         });
+
+          //         for (let option in components[i]) {
+          //           const items = components[i][option];
+
+          //           if (items && items.length > 0) {
+          //             for (let index = 0; index < dayLength; index++) {
+          //               const startIndex = count * index;
+          //               const endIndex = count * (index + 1) - 1;
+
+          //               if (i == dayLength - 1 || endIndex >= items.length) {
+          //                 endIndex = items.length - 1;
+          //               }
+          //               if (
+          //                 startIndex < items.length &&
+          //                 endIndex < items.length &&
+          //                 startIndex <= endIndex
+          //               ) {
+          //                 const itemsNew = items.slice(
+          //                   startIndex,
+          //                   endIndex + 1
+          //                 );
+          //                 if (itemsNew && itemsNew.length > 0) {
+
+          //                   const mealPackageNew = JSON.parse(
+          //                     JSON.stringify(this.mealPackage)
+          //                   );
+          //                   const componentsNew = {};
+          //                   componentsNew[i] = {};
+          //                   componentsNew[i][option] = itemsNew;
+
+          //                   mealPackageNew.delivery_day =
+          //                     deliveryDaysNew[index];
+
+          //                   mealPackageNew.price = mealPackageNew.price / 2;
+          //                   this.addOne(
+          //                     mealPackageNew,
+          //                     true,
+          //                     this.mealPackageSize,
+          //                     componentsNew,
+          //                     addons,
+          //                     null
+          //                   );
+          //                 }
+          //               }
+          //             }
+          //           }
+          //         }
+          //       }
+          //     }
+          //   }
+          // }
         } else {
           this.addOne(
             this.mealPackage,

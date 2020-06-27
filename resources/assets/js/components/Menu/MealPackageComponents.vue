@@ -60,6 +60,19 @@
               <b-input v-model="component.maximum"></b-input>
             </b-form-group>
           </b-col>
+          <b-col>
+            <b-form-group label="Price" class="font-weight-bold">
+              <b-input type="number" v-model="component.price"></b-input>
+            </b-form-group>
+          </b-col>
+          <b-col v-if="storeModules.multipleDeliveryDays">
+            <b-form-group label="Delivery Day" class="font-weight-bold">
+              <b-form-select
+                v-model="component.delivery_day_id"
+                :options="deliveryDayOptions"
+              ></b-form-select>
+            </b-form-group>
+          </b-col>
           <b-col class="d-flex align-items-center">
             <b-btn
               variant="danger"
@@ -156,7 +169,7 @@
                   variant="warning"
                   v-if="meal_package.sizes.length > 0"
                   @click="duplicateOptions(component)"
-                  :disabled="duplicated"
+                  :disabled="duplicated[component.id]"
                   >Duplicate Options for All Sizes</b-btn
                 >
               </td>
@@ -209,14 +222,22 @@ export default {
       meal_picker_option_id: null,
       meal_picker_meals: [],
       meal_picker_selectable: false,
-      duplicated: false
+      duplicated: {}
     };
   },
   computed: {
     ...mapGetters({
       storeCurrencySymbol: "storeCurrencySymbol",
-      storeModules: "storeModules"
+      storeModules: "storeModules",
+      store: "viewedStore"
     }),
+    deliveryDayOptions() {
+      let options = [];
+      this.store.delivery_days.forEach(day => {
+        options.push({ value: day.id, text: day.day_long });
+      });
+      return options;
+    },
     sizeOptions() {
       return _.concat(
         {
@@ -243,7 +264,11 @@ export default {
   created() {
     this.onChangeComponents = _.debounce(this.onChangeComponents, 2000);
   },
-  mounted() {},
+  mounted() {
+    this.mealPackageComponents.forEach(component => {
+      this.duplicated[component.id] = false;
+    });
+  },
   methods: {
     addComponent() {
       this.meal_package.components.push({
@@ -251,6 +276,7 @@ export default {
         title: "",
         minimum: 1,
         maximum: 1,
+        price: 0,
         options: [
           {
             id: 0,
@@ -417,7 +443,7 @@ export default {
           });
         });
       });
-      this.duplicated = true;
+      this.duplicated[component.id] = true;
     }
   }
 };

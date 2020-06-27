@@ -62,6 +62,7 @@
                   v-model="filters.byOrderDate"
                   :value="1"
                   :unchecked-value="0"
+                  v-if="!store.modules.multipleDeliveryDays"
                   @input="toggleByOrderDate"
                   ><span class="paragraph">By Order Date</span></b-form-checkbox
                 >
@@ -415,6 +416,11 @@ export default {
     });
   },
   mounted() {
+    // Defaulting to payments by order date & hiding the checkbox for mult delivery stores
+    if (this.store.modules.multipleDeliveryDays) {
+      this.filters.byOrderDate = true;
+      this.toggleByOrderDate();
+    }
     this.getApplicationFee();
     if (this.store.modules.multiAuth) {
       this.showMultiAuthModal = true;
@@ -763,7 +769,11 @@ export default {
           removeCashOrders: this.filters.removeCashOrders
         })
         .then(response => {
+          this.ordersByDate = [];
+          this.upcomingOrdersWithoutItems = [];
+          this.upcomingOrdersByOrderDate = [];
           this.ordersByDate = response.data;
+          this.upcomingOrdersByOrderDate = response.data;
         });
     },
     submitMultiAuthPassword() {

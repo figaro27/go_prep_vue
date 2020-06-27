@@ -10,7 +10,12 @@ class DeliveryDay extends Model
 {
     use DeliveryDates;
 
-    protected $appends = ['day_friendly', 'day_short', 'pickup_location_ids'];
+    protected $appends = [
+        'day_friendly',
+        'day_short',
+        'day_long',
+        'pickup_location_ids'
+    ];
 
     protected $casts = [
         'day' => 'number',
@@ -19,6 +24,11 @@ class DeliveryDay extends Model
         'cutoff_hours' => 'number',
         'fee' => 'float'
     ];
+
+    public function store()
+    {
+        return $this->belongsTo('App\Store');
+    }
 
     public function meals()
     {
@@ -50,12 +60,37 @@ class DeliveryDay extends Model
 
     public function getDayFriendlyAttribute()
     {
-        return $this->getDeliveryDateMultipleDelivery($this->day);
+        $nextDate = '';
+        foreach (
+            $this->store->settings->next_orderable_delivery_dates
+            as $date
+        ) {
+            if ($date['week_index'] == $this->day) {
+                $nextDate = $date['day_friendly'];
+            }
+        }
+
+        return $nextDate;
+
+        // return $this->getDeliveryDateMultipleDelivery($this->day);
     }
 
     public function getDayShortAttribute()
     {
         return ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][$this->day];
+    }
+
+    public function getDayLongAttribute()
+    {
+        return [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday'
+        ][$this->day];
     }
 
     public function getPickupLocationIdsAttribute()

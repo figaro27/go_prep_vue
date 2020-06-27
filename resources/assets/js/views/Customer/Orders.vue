@@ -238,64 +238,10 @@
             <h4>Items</h4>
             <hr />
             <v-client-table
-              v-if="!order.isMultipleDelivery"
               striped
               stacked="sm"
-              :columns="columnsMeal"
+              :columns="mealColumns"
               :options="optionsMeal"
-              :data="getMealTableData(order)"
-              ref="mealsTable"
-              foot-clone
-            >
-              <template slot="meal" slot-scope="props">
-                <div v-html="props.row.meal"></div>
-              </template>
-
-              <template slot="FOOT_subtotal" slot-scope="row">
-                <p>
-                  Subtotal:
-                  {{ format.money(order.preFeePreDiscount, order.currency) }}
-                </p>
-                <p class="text-success" v-if="order.couponReduction > 0">
-                  Coupon {{ order.couponCode }}: ({{
-                    format.money(order.couponReduction, order.currency)
-                  }})
-                </p>
-                <p v-if="order.mealPlanDiscount > 0" class="text-success">
-                  Subscription Discount: ({{
-                    format.money(order.mealPlanDiscount, order.currency)
-                  }})
-                </p>
-                <p v-if="order.deliveryFee > 0">
-                  Delivery Fee:
-                  {{ format.money(order.deliveryFee, order.currency) }}
-                </p>
-                <p v-if="order.processingFee > 0">
-                  Processing Fee:
-                  {{ format.money(order.processingFee, order.currency) }}
-                </p>
-                <p v-if="order.salesTax > 0">
-                  Sales Tax:
-                  {{ format.money(order.salesTax, order.currency) }}
-                </p>
-                <p v-if="order.gratuity > 0">
-                  Gratuity:
-                  {{ format.money(order.gratuity, order.currency) }}
-                </p>
-                <p class="strong">
-                  Total:
-                  {{ format.money(order.amount, order.currency) }}
-                </p>
-              </template>
-
-              <template slot="table-caption"></template>
-            </v-client-table>
-
-            <v-client-table
-              v-if="order.isMultipleDelivery"
-              striped
-              stacked="sm"
-              :columns="columnsMealMultipleDelivery"
               :data="getMealTableData(order)"
               ref="mealsTable"
               foot-clone
@@ -403,6 +349,11 @@ export default {
       optionsMeal: {
         headings: {
           unit_price: "Unit Price"
+        },
+        rowClassCallback: function(row) {
+          let classes = `order-${row.id}`;
+          classes += row.meal_package ? " strong" : "";
+          return classes;
         }
       },
       columnsMealMultipleDelivery: [
@@ -442,6 +393,13 @@ export default {
       //}
 
       return _.isArray(orders) ? orders : [];
+    },
+    mealColumns() {
+      if (!this.order.isMultipleDelivery) {
+        return this.columnsMeal;
+      } else {
+        return this.columnsMealMultipleDelivery;
+      }
     },
     customerAddress() {
       let detail = this.user.user_detail;
@@ -487,7 +445,8 @@ export default {
             subtotal: format.money(
               meal_package_item.price * meal_package_item.quantity,
               order.currency
-            )
+            ),
+            meal_package: true
           });
         } else {
           data.push({
@@ -505,7 +464,8 @@ export default {
             subtotal: format.money(
               meal_package_item.price * meal_package_item.quantity,
               order.currency
-            )
+            ),
+            meal_package: true
           });
         }
         order.items.forEach(item => {
@@ -530,9 +490,10 @@ export default {
             );
 
             data.push({
-              delivery_date: item.delivery_date
-                ? moment(item.delivery_date.date).format("dddd, MMM Do")
-                : null,
+              // delivery_date: item.delivery_date
+              //   ? moment(item.delivery_date.date).format("dddd, MMM Do")
+              //   : null,
+              delivery_date: null,
               //meal: meal.title,
               size: size ? size.title : meal.default_size_title,
               meal: title,

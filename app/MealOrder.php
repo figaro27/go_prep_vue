@@ -22,6 +22,7 @@ class MealOrder extends Pivot
         'short_title',
         'title',
         'html_title',
+        'base_title_without_date',
         'base_title',
         'base_size',
         'unit_price',
@@ -134,7 +135,65 @@ class MealOrder extends Pivot
             $this->delivery_date
         ) {
             $deliveryDate = new Carbon($this->delivery_date);
-            $title = '(' . $deliveryDate->format('D') . ') ' . $title;
+            $title = '(' . $deliveryDate->format('l') . ') ' . $title;
+        }
+
+        return $title;
+    }
+
+    public function getBaseTitleWithoutDateAttribute()
+    {
+        $title = $this->customTitle ? $this->customTitle : $this->meal->title;
+
+        $hasComponents = count($this->components);
+        $hasAddons = count($this->addons);
+
+        if ($hasComponents || $hasAddons) {
+            $title .= '<ul class="plain mb-0 pb-0">';
+
+            if ($hasComponents) {
+                foreach ($this->components as $component) {
+                    if (
+                        isset($component->option) &&
+                        $component->option != null &&
+                        isset($component->option->title)
+                    ) {
+                        $title .=
+                            '<li class="plain" style="font-size:14px">' .
+                            $component->option->title .
+                            '</li>';
+                    }
+                }
+            }
+            if ($hasAddons) {
+                foreach ($this->addons as $addon) {
+                    $title .= '<li class="plus" style="font-size:14px">';
+                    if (isset($addon->addon->title) && $addon->addon != null) {
+                        $title .= $addon->addon->title;
+                    }
+                    $title .= '</li>';
+                }
+            }
+
+            $title .= '</ul>';
+        }
+
+        if ($this->special_instructions != null) {
+            $title .=
+                '<p style="font-size:14px;font-weight:bold">' .
+                $this->special_instructions .
+                '</p>';
+        }
+
+        if (
+            //$this->order->store->modules->multipleDeliveryDays &&
+            isset($this->order) &&
+            isset($this->order->store) &&
+            isset($this->order->store->modules) &&
+            (int) $this->order->isMultipleDelivery == 1 &&
+            $this->delivery_date
+        ) {
+            $deliveryDate = new Carbon($this->delivery_date);
         }
 
         return $title;
@@ -290,21 +349,6 @@ class MealOrder extends Pivot
 
     public function getHtmlTitleAttribute()
     {
-        // $title = $this->meal->title;
-
-        // if ($this->meal_size_id && $this->meal_size) {
-        //     $title = $this->meal_size->full_title;
-        // } else {
-        //     if (
-        //         $this->meal->default_size_title != 'Medium' &&
-        //         $this->meal->default_size_title != null
-        //     ) {
-        //         $title =
-        //             $this->meal->title .
-        //             ' - ' .
-        //             $this->meal->default_size_title;
-        //     }
-        // }
         $title = $this->fullTitle;
 
         $hasComponents = count($this->components);
@@ -356,7 +400,7 @@ class MealOrder extends Pivot
             $this->delivery_date
         ) {
             $deliveryDate = new Carbon($this->delivery_date);
-            $title = '(' . $deliveryDate->format('D, m/d/Y') . ') ' . $title;
+            $title = '(' . $deliveryDate->format('l, F jS') . ') ' . $title;
         }
 
         return $title;

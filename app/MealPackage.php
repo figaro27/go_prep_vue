@@ -255,6 +255,14 @@ class MealPackage extends Model implements HasMedia
                 $mealPackageComponent->title = $component['title'];
                 $mealPackageComponent->minimum = $component['minimum'];
                 $mealPackageComponent->maximum = $component['maximum'];
+                $mealPackageComponent->price = $component['price']
+                    ? $component['price']
+                    : 0;
+                $mealPackageComponent->delivery_day_id = isset(
+                    $component['delivery_day_id']
+                )
+                    ? $component['delivery_day_id']
+                    : null;
                 $mealPackageComponent->save();
 
                 foreach ($component['options'] as $optionArr) {
@@ -336,6 +344,11 @@ class MealPackage extends Model implements HasMedia
                     $addon['meal_package_size_id']
                 );
                 $mealPackageAddon->selectable = $addon['selectable'] ?? false;
+                $mealPackageAddon->delivery_day_id = isset(
+                    $addon['delivery_day_id']
+                )
+                    ? $addon['delivery_day_id']
+                    : null;
                 $mealPackageAddon->save();
 
                 $meals = [];
@@ -467,10 +480,17 @@ class MealPackage extends Model implements HasMedia
                     $mealPackageComponent->meal_package_id = $this->id;
                     $mealPackageComponent->store_id = $this->store_id;
                 }
-
                 $mealPackageComponent->title = $component['title'];
                 $mealPackageComponent->minimum = $component['minimum'];
                 $mealPackageComponent->maximum = $component['maximum'];
+                $mealPackageComponent->price = $component['price']
+                    ? $component['price']
+                    : 0;
+                $mealPackageComponent->delivery_day_id = isset(
+                    $component['delivery_day_id']
+                )
+                    ? $component['delivery_day_id']
+                    : 69;
                 $mealPackageComponent->save();
 
                 $optionIdMap = [];
@@ -586,6 +606,11 @@ class MealPackage extends Model implements HasMedia
                     $addon['meal_package_size_id']
                 );
                 $mealPackageAddon->selectable = $addon['selectable'] ?? false;
+                $mealPackageAddon->delivery_day_id = isset(
+                    $addon['delivery_day_id']
+                )
+                    ? $addon['delivery_day_id']
+                    : null;
                 $mealPackageAddon->save();
 
                 $meals = [];

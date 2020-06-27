@@ -63,7 +63,9 @@ class Payments
 
                     $paymentsRows = [
                         $payment->created_at->format('D, m/d/Y'),
-                        $payment->delivery_date->format('D, m/d/Y'),
+                        !$payment->isMultipleDelivery
+                            ? $payment->delivery_date->format('D, m/d/Y')
+                            : 'Multiple',
                         '$' . number_format($payment->preFeePreDiscount, 2),
                         '$' . number_format($payment->couponReduction, 2),
                         '$' . number_format($payment->mealPlanDiscount, 2),
@@ -81,7 +83,6 @@ class Payments
                         '$' . number_format($payment->amount, 2),
                         '$' . number_format($payment->balance, 2)
                     ];
-
                     return $paymentsRows;
                 });
         } else {
@@ -144,10 +145,11 @@ class Payments
                     $created_at
                 )->format('D, M d, Y');
 
-                $deliveryDay = Carbon::createFromFormat(
-                    'm d',
-                    $delivery_date
-                )->format('D, M d, Y');
+                $deliveryDay = !$order->isMultipleDelivery
+                    ? Carbon::createFromFormat('m d', $delivery_date)->format(
+                        'D, M d, Y'
+                    )
+                    : 'Multiple';
                 array_push($dailySums, [
                     $byOrderDate ? $orderDay : $deliveryDay,
                     $totalOrders,
@@ -276,6 +278,7 @@ class Payments
                 $filteredPayments
             );
         }
+
         return $filteredPayments;
     }
 

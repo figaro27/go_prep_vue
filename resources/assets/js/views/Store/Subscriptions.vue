@@ -295,7 +295,8 @@
             <v-client-table
               striped
               stacked="sm"
-              :columns="columnsMeal"
+              :options="optionsMeal"
+              :columns="mealColumns"
               :data="getMealTableData(subscription)"
               foot-clone
             >
@@ -407,6 +408,14 @@ export default {
       user_detail: {},
       meals: {},
       columnsMeal: ["size", "quantity", "meal", "unit_price", "subtotal"],
+      columnsMealMultipleDelivery: [
+        "delivery_date",
+        "size",
+        "meal",
+        "quantity",
+        "unit_price",
+        "subtotal"
+      ],
       columns: [
         // "notes",
         "stripe_id",
@@ -464,6 +473,16 @@ export default {
         },
         orderBy: {
           column: "created_at"
+        }
+      },
+      optionsMeal: {
+        headings: {
+          unit_price: "Unit Price"
+        },
+        rowClassCallback: function(row) {
+          let classes = `subscription-${row.id}`;
+          classes += row.meal_package ? " strong" : "";
+          return classes;
         }
       },
       deliveryNote: ""
@@ -546,6 +565,13 @@ export default {
       });
 
       return activeSubs;
+    },
+    mealColumns() {
+      if (!this.subscription.isMultipleDelivery) {
+        return this.columnsMeal;
+      } else {
+        return this.columnsMealMultipleDelivery;
+      }
     },
     deliveryDays() {
       let grouped = [];
@@ -712,6 +738,9 @@ export default {
       subscription.meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
           data.push({
+            delivery_date: moment(meal_package_item.delivery_date).format(
+              "dddd, MMM Do"
+            ),
             size: meal_package_item.customSize
               ? meal_package_item.customSize
               : meal_package_item.meal_package.default_size_title,
@@ -726,10 +755,14 @@ export default {
             subtotal: format.money(
               meal_package_item.price * meal_package_item.quantity,
               subscription.currency
-            )
+            ),
+            meal_package: true
           });
         } else {
           data.push({
+            delivery_date: moment(meal_package_item.delivery_date).format(
+              "dddd, MMM Do"
+            ),
             size: meal_package_item.customSize
               ? meal_package_item.customSize
               : meal_package_item.meal_package_size.title,
@@ -744,7 +777,8 @@ export default {
             subtotal: format.money(
               meal_package_item.price * meal_package_item.quantity,
               subscription.currency
-            )
+            ),
+            meal_package: true
           });
         }
 
@@ -767,6 +801,9 @@ export default {
             );
 
             data.push({
+              delivery_date: item.delivery_date
+                ? moment(item.delivery_date.date).format("dddd, MMM Do")
+                : null,
               size: size ? size.title : meal.default_size_title,
               //meal: meal.title,
               meal: title,
@@ -801,6 +838,9 @@ export default {
               );
 
           data.push({
+            delivery_date: item.delivery_date
+              ? moment(item.delivery_date.date).format("dddd, MMM Do")
+              : null,
             size: size ? size.title : meal.default_size_title,
             //meal: meal.title,
             meal: title,

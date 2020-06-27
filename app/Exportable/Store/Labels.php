@@ -13,6 +13,7 @@ use mikehaertl\wkhtmlto\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
+use App\MealOrder;
 
 class Labels
 {
@@ -62,31 +63,77 @@ class Labels
             $orders = $orders->where('voided', 0);
         }
 
-        $total = $orders->count();
-        $orders = $orders
-            ->slice(($this->page - 1) * $this->perPage)
-            ->take($this->perPage);
-        $numDone = $this->page * $this->perPage;
+        if (!$this->store->modules->multipleDeliveryDays) {
+            $total = $orders->count();
+            $orders = $orders
+                ->slice(($this->page - 1) * $this->perPage)
+                ->take($this->perPage);
+            $numDone = $this->page * $this->perPage;
 
-        if ($numDone < $total) {
-            $this->page++;
-        } else {
-            $this->page = null;
-        }
-
-        $orders->map(function ($order) use (&$allDates, &$production, $dates) {
-            $date = "";
-            if ($order->delivery_date) {
-                $date = $order->delivery_date->toDateString();
+            if ($numDone < $total) {
+                $this->page++;
+            } else {
+                $this->page = null;
             }
 
-            $mealOrders = $order
-                ->meal_orders()
-                ->with('meal', 'meal.ingredients');
-            $lineItemsOrders = $order->lineItemsOrders()->with('lineItem');
+            $orders->map(function ($order) use (
+                &$allDates,
+                &$production,
+                $dates
+            ) {
+                $date = "";
+                if ($order->delivery_date) {
+                    $date = $order->delivery_date->toDateString();
+                }
 
-            $mealOrders = $mealOrders->get();
-            $lineItemsOrders = $lineItemsOrders->get();
+                $mealOrders = $order
+                    ->meal_orders()
+                    ->with('meal', 'meal.ingredients');
+                $lineItemsOrders = $order->lineItemsOrders()->with('lineItem');
+
+                $mealOrders = $mealOrders->get();
+                $lineItemsOrders = $lineItemsOrders->get();
+
+                foreach ($mealOrders as $mealOrder) {
+                    for ($i = 1; $i <= $mealOrder->quantity; $i++) {
+                        $production->push($mealOrder);
+                    }
+                }
+
+                foreach ($lineItemsOrders as $lineItemOrder) {
+                    for ($i = 1; $i <= $lineItemOrder->quantity; $i++) {
+                        $production->push($lineItemOrder);
+                    }
+                }
+            });
+
+            $output = $production->map(function ($item) {
+                $meal = $item->meal;
+                $item->json = json_encode(
+                    array_merge($meal->attributesToArray(), [
+                        'ingredients' => $meal->ingredients->map(function (
+                            $ingredient
+                        ) {
+                            return $ingredient->attributesToArray();
+                        })
+                    ])
+                );
+                return $item;
+            });
+
+            return $output;
+        } else {
+            $mealOrders = MealOrder::where(
+                'delivery_date',
+                '>=',
+                $dates['from']
+            )
+                ->where('delivery_date', '<=', $dates['to'])
+                ->whereHas('order', function ($order) {
+                    $order->where('paid', 1)->where('voided', 0);
+                })
+                ->with('meal', 'meal.ingredients')
+                ->get();
 
             foreach ($mealOrders as $mealOrder) {
                 for ($i = 1; $i <= $mealOrder->quantity; $i++) {
@@ -94,28 +141,22 @@ class Labels
                 }
             }
 
-            foreach ($lineItemsOrders as $lineItemOrder) {
-                for ($i = 1; $i <= $lineItemOrder->quantity; $i++) {
-                    $production->push($lineItemOrder);
-                }
-            }
-        });
+            $output = $production->map(function ($item) {
+                $meal = $item->meal;
+                $item->json = json_encode(
+                    array_merge($meal->attributesToArray(), [
+                        'ingredients' => $meal->ingredients->map(function (
+                            $ingredient
+                        ) {
+                            return $ingredient->attributesToArray();
+                        })
+                    ])
+                );
+                return $item;
+            });
 
-        $output = $production->map(function ($item) {
-            $meal = $item->meal;
-            $item->json = json_encode(
-                array_merge($meal->attributesToArray(), [
-                    'ingredients' => $meal->ingredients->map(function (
-                        $ingredient
-                    ) {
-                        return $ingredient->attributesToArray();
-                    })
-                ])
-            );
-            return $item;
-        });
-
-        return $output;
+            return $output;
+        }
     }
 
     public function export($type)

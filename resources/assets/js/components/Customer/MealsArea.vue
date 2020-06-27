@@ -1086,6 +1086,7 @@ export default {
           this.packageTitle = mealPackage.title;
         }
       }
+
       if (size) {
         mealPackage.selectedSizeId = size.id;
       } else {
@@ -1094,10 +1095,12 @@ export default {
       /* Refresh Meal Package */
       // if (!this.store.refreshed_package_ids.includes(mealPackage.id)) {
       this.$parent.forceShow = true;
+
       mealPackage = await store.dispatch(
         "refreshStoreMealPackage",
         mealPackage
       );
+
       this.$parent.forceShow = false;
       // } else {
       //   mealPackage = this.getMealPackage(mealPackage.id);
@@ -1137,6 +1140,13 @@ export default {
         return false;
       }
       /* Show Detail Page or not end */
+
+      if (this.store.modules.multipleDeliveryDays) {
+        mealPackage.customTitle =
+          mealPackage.title + " - " + this.$parent.selectedDeliveryDay.day_long;
+        mealPackage.title =
+          mealPackage.title + " - " + this.$parent.selectedDeliveryDay.day_long;
+      }
 
       this.addOne(mealPackage, true, size);
 

@@ -534,6 +534,7 @@ const mutations = {
     if (!meal.delivery_day && state.viewed_store.delivery_day) {
       meal.delivery_day = state.viewed_store.delivery_day;
     }
+
     const delivery_day = meal.delivery_day ? meal.delivery_day : null;
 
     let guid = CryptoJS.MD5(
@@ -576,6 +577,11 @@ const mutations = {
 
     /* Adjustments */
     let price = item.size ? item.size.price : item.meal.price;
+
+    if (item.meal.ignoreBasePrice && !item.meal.adjustOrder) {
+      price = 0;
+    }
+
     if (item.components) {
       _.forEach(item.components, (choices, componentId) => {
         let component = _.find(item.meal.components, {
@@ -593,7 +599,7 @@ const mutations = {
           });
         } else {
           if (component.price) {
-            price += component.price;
+            price += parseInt(component.price);
           }
           _.forEach(choices, (choices, optionId) => {
             let option = _.find(component.options, {
@@ -645,7 +651,7 @@ const mutations = {
       item.guid = guid;
     }
     /* Adjustments End */
-
+    item.customTitle = meal.customTitle;
     Vue.set(state.bag.items, guid, item);
   },
   removeFromBagFromAdjust(state, order_bag) {

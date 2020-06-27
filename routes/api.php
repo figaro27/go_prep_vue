@@ -261,6 +261,17 @@ foreach (
                                 'getOrdersWithDatesWithoutItems',
                                 'OrderController@getOrdersWithDatesWithoutItems'
                             );
+
+                            Route::post(
+                                'getMealOrdersWithDates',
+                                'OrderController@getMealOrdersWithDates'
+                            );
+
+                            Route::post(
+                                'getMealOrdersWithDatesMD',
+                                'OrderController@getMealOrdersWithDatesMD'
+                            );
+
                             Route::get(
                                 'ordersUpdateViewed',
                                 'OrderController@updateViewed'
