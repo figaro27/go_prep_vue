@@ -1057,6 +1057,9 @@ export default {
       addons,
       special_instructions
     ) {
+      if (this.$parent.selectedDeliveryDay) {
+        meal.delivery_day = this.$parent.selectedDeliveryDay;
+      }
       if (meal.meal_package) {
         this.minusOne(meal, true);
       } else {
@@ -1185,6 +1188,9 @@ export default {
       return hasVar;
     },
     async addMeal(meal, mealPackage, size) {
+      if (this.$parent.selectedDeliveryDay) {
+        meal.delivery_day = this.$parent.selectedDeliveryDay;
+      }
       if (meal.gift_card) {
         this.addOne(meal);
         this.$parent.showBagClass = "shopping-cart show-right bag-area";

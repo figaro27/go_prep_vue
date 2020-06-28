@@ -73,7 +73,7 @@
               <div class="delivery_day_wrap mt-3">
                 <div
                   @click="changeDeliveryDay(day)"
-                  v-for="day in store.delivery_days"
+                  v-for="day in sortedDeliveryDays"
                   v-bind:class="
                     selectedDeliveryDay &&
                     selectedDeliveryDay.day_friendly == day.day_friendly
@@ -618,6 +618,9 @@ export default {
       bagDeliveryDate: "bagDeliveryDate",
       bagPickup: "bagPickup"
     }),
+    sortedDeliveryDays() {
+      return _.orderBy(this.store.delivery_days, "day_friendly");
+    },
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
     },

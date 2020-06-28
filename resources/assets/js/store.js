@@ -531,9 +531,9 @@ const mutations = {
       //mealId += JSON.stringify(components);
     }
 
-    if (!meal.delivery_day && state.viewed_store.delivery_day) {
-      meal.delivery_day = state.viewed_store.delivery_day;
-    }
+    // if (!meal.delivery_day && state.viewed_store.delivery_day) {
+    //   meal.delivery_day = state.viewed_store.delivery_day;
+    // }
 
     const delivery_day = meal.delivery_day ? meal.delivery_day : null;
 
@@ -706,6 +706,10 @@ const mutations = {
     if (size) {
       //mealId = "size-" + mealId + "-" + size.id;
     }
+
+    // if (!meal.delivery_day && state.viewed_store.delivery_day) {
+    //   meal.delivery_day = state.viewed_store.delivery_day;
+    // }
 
     const delivery_day = meal.delivery_day ? meal.delivery_day : null;
 

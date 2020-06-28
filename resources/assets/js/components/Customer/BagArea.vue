@@ -46,6 +46,20 @@
           </button>
         </div>
       </b-alert> -->
+
+      <button
+        v-if="
+          isMultipleDelivery &&
+            $route.name != 'store-bag' &&
+            $route.name != 'customer-bag'
+        "
+        style="background-color:#28A745"
+        type="button"
+        class="mb-3 btn btn-md white-text w-100"
+        @click="addDeliveryDay()"
+      >
+        Add Day
+      </button>
       <b-alert
         v-if="bag.length == 0 && !isMultipleDelivery"
         variant="secondary"
@@ -66,7 +80,7 @@
             v-if="isMultipleDelivery && groupItem.delivery_day"
             :style="activeDD(groupItem.delivery_day)"
           >
-            <h5>
+            <h5 @click="loadDeliveryDayMenu(groupItem.delivery_day)">
               {{
                 moment(groupItem.delivery_day.day_friendly).format(
                   "ddd, MMM Do YYYY"

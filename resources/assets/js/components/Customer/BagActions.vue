@@ -10,21 +10,6 @@
           >
             {{ addMore }}
           </p>
-          <center>
-            <button
-              v-if="
-                isMultipleDelivery &&
-                  $route.name != 'store-bag' &&
-                  $route.name != 'customer-bag'
-              "
-              :style="brandColor"
-              type="button"
-              class="mt-4  mb-2 ml-2 btn btn-md white-text"
-              @click="addDeliveryDay()"
-            >
-              Add Day
-            </button>
-          </center>
         </div>
         <div class="col-md-5">
           <p class="small pl-2 pt-2">Subtotal</p>
