@@ -477,6 +477,7 @@
               :options="gratuityOptions"
               v-model="gratuityType"
               class="ml-2 w-100px"
+              @input="changeGratuity"
             ></b-form-select>
           </div>
           <div class="col-6 col-md-3 offset-md-5 d-flex">
@@ -1297,10 +1298,6 @@ export default {
     // });
     if (this.bagPickupSet) {
       this.pickup = this.bagPickup;
-    }
-
-    if (this.gratuityType !== "custom") {
-      this.gratuity = this.afterDiscount * (this.gratuityType / 100);
     }
   },
   props: {
@@ -3167,6 +3164,11 @@ use next_delivery_dates
         this.customerOptions = [];
         loading(true);
         this.search(loading, search, this);
+      }
+    },
+    changeGratuity() {
+      if (this.gratuityType !== "custom") {
+        this.gratuity = this.afterDiscount * (this.gratuityType / 100);
       }
     },
     search: _.debounce((loading, search, vm) => {
