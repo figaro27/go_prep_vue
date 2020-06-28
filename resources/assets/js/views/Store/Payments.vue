@@ -360,7 +360,7 @@ export default {
         },
         couponCode: null,
         dailySummary: 0,
-        byOrderDate: 0,
+        byOrderDate: 1,
         removeManualOrders: 0,
         removeCashOrders: 0
       },
