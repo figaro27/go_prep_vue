@@ -256,7 +256,7 @@ f<template>
             </p>
             <p v-if="order.gratuity > 0">
               Gratuity:
-              {{ format.money(order.gratuity, order.currency) }}
+              {{ format.money(subscription.gratuity, order.currency) }}
             </p>
             <p class="strong">
               Total:
