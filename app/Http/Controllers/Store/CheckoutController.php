@@ -545,6 +545,8 @@ class CheckoutController extends StoreController
                                         $item['meal_package_id'],
                                     'meal_package_size_id' =>
                                         $item['meal_package_size_id'],
+                                    'order_id' => $order->id,
+                                    'customTitle' => $item['customTitle'],
                                     'order_id' => $order->id
                                 ]
                             )
