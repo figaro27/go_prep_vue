@@ -87,6 +87,7 @@
             :pickup="pickup"
             :orderLineItems="orderLineItems"
             :checkoutData="checkoutData"
+            :staffMember="staffMember"
             @updateData="updateData"
             :gateway="storeSettings.payment_gateway"
             :order="order"
@@ -164,7 +165,6 @@ export default {
       publicOrderNotes: null,
       showAuthModal: false,
       //couponFreeDelivery: 0,
-      transferTime: "",
       cashOrder: null,
       noBalance: null,
       hot: null,
@@ -179,7 +179,6 @@ export default {
           : null,
       selectedPickupLocation: null,
       pickup: 0,
-      transferTime: null,
       deliveryDay:
         this.checkoutDataProp && this.checkoutDataProp.deliveryDay
           ? this.checkoutDataProp.deliveryDay
@@ -254,8 +253,20 @@ export default {
       user: "user",
       bagDeliverySettings: "bagDeliverySettings",
       subscriptions: "subscriptions",
-      bagPickup: "bagPickup"
+      bagPickup: "bagPickup",
+      bagTransferTime: "bagTransferTime",
+      bagStaffMember: "bagStaffMember"
     }),
+    transferTime() {
+      return this.$route.params.adjustOrder
+        ? this.$route.params.transferTime
+        : this.bagTransferTime;
+    },
+    staffMember() {
+      return this.$route.params.adjustOrder
+        ? this.$route.params.staffMember
+        : this.bagStaffMember;
+    },
     fullHeight() {
       if (!this.mobile && !this.storeOwner) return "min-height:100%";
     },
@@ -542,7 +553,6 @@ export default {
 
     if (this.$route.params.adjustOrder) {
       this.deliveryDay = this.$route.params.deliveryDay;
-      this.transferTime = this.$route.params.transferTime;
     }
 
     if (this.$route.params.pickup != undefined) {
@@ -612,10 +622,6 @@ export default {
 
         if (newData.hasOwnProperty("pickup")) {
           this.pickup = newData.pickup;
-        }
-
-        if (newData.hasOwnProperty("transferTime")) {
-          this.transferTime = newData.transferTime;
         }
 
         if (newData.hasOwnProperty("deliveryDay")) {
