@@ -27,6 +27,7 @@
           params: {
             subscriptionId: subscriptionId,
             transferTime: transferTime,
+            staffMember: staffMember,
             pickup: pickup,
             inSub: inSub,
             weeklySubscriptionValue: weeklySubscriptionValue,
@@ -58,13 +59,15 @@
             preview: preview,
             deliveryDay: deliveryDay,
             transferTime: transferTime,
+            staffMember: staffMember,
             pickup: pickup,
             checkoutData: checkoutData,
             forceValue: forceValue,
             inSub: inSub,
             weeklySubscriptionValue: weeklySubscriptionValue,
             lineItemOrders: lineItemOrders,
-            subscription: subscription
+            subscription: subscription,
+            staffMember: staffMember
           }
         }"
         class="menu-bag-btn bottom-margin"
@@ -119,6 +122,7 @@ export default {
     order: null,
     deliveryDay: null,
     transferTime: null,
+    staffMember: null,
     pickup: null,
     checkoutData: null,
     forceValue: false,

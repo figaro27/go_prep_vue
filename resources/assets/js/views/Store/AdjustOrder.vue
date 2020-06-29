@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import format from "../../lib/format.js";
 import Spinner from "../../components/Spinner";
 import MenuBag from "../../mixins/menuBag";
@@ -76,6 +76,7 @@ export default {
     ...mapActions({
       refreshUpcomingOrders: "refreshUpcomingOrders"
     }),
+    ...mapMutations(["setBagStaffMember"]),
     async initBag() {
       // await this.refreshUpcomingOrders();
       // const order = _.find(this.upcomingOrders, {
@@ -85,7 +86,7 @@ export default {
       // if (!order) {
       //   return;
       // }
-
+      this.setBagStaffMember(this.order.staff_id);
       this.clearAll();
 
       // axios.get("/api/me/order_bag/" + this.order.id).then(resp => {

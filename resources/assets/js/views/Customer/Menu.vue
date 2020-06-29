@@ -373,6 +373,7 @@
               :orderId="orderId"
               :deliveryDay="deliveryDay"
               :transferTime="transferTime"
+              :staffMember="staffMember"
               :pickup="pickup"
               :order="order"
               :inSub="inSub"
@@ -534,6 +535,7 @@ export default {
     order: null,
     deliveryDay: null,
     transferTime: null,
+    staffMember: null,
     pickup: null,
     inSub: null,
     weeklySubscriptionValue: null,

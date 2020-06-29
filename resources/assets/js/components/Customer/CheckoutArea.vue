@@ -855,6 +855,7 @@
           :filterable="false"
           :reduce="staff => staff.id"
           class="mb-2"
+          @input="changeStaff"
         >
         </v-select>
       </div>
@@ -885,9 +886,10 @@
               label="text"
               :options="customerOptions"
               @search="onSearchCustomer"
-              v-model="customerModel"
+              @input="val => changeCustomer(val)"
               placeholder="Type name, email, phone, or address."
               :filterable="false"
+              v-model="customerModel"
             >
             </v-select>
           </b-form-group>
@@ -1251,7 +1253,6 @@ export default {
     return {
       gratuity: null,
       gratuityType: 0,
-      staffMember: null,
       customerOptions: [],
       coupons: [],
       purchasedGiftCards: [],
@@ -1281,7 +1282,6 @@ export default {
       discountCode: "",
       addCustomerModal: false,
       weeklySubscriptionValue: null,
-      customerModel: null,
       existingCustomerAdded: false,
       emailCustomer: true,
       selectedPickupLocation:
@@ -1367,7 +1367,6 @@ export default {
 
     if (this.$route.params.storeView || this.storeOwner) {
       if (this.$route.params.adjustOrder) {
-        this.staffMember = this.order.staff_id;
         this.gratuity = this.order.gratuity;
       } else {
         // Apparently more of a nuisance than convenience to auto select the last staff member
@@ -1434,7 +1433,9 @@ export default {
       deliveryFeeZipCodes: "viewedStoreDeliveryFeeZipCodes",
       bagPickup: "bagPickup",
       bagPickupSet: "bagPickupSet",
-      staff: "storeStaff"
+      staff: "storeStaff",
+      staffMember: "bagStaffMember",
+      customerModel: "bagCustomerModel"
     }),
     gratuityOptions() {
       return [
@@ -2461,8 +2462,14 @@ use next_delivery_dates
       "setBagPurchasedGiftCard",
       "setBagReferral",
       "setBagDeliveryDate",
+      "setBagStaffMember",
       "clearBagDeliveryDate",
-      "setBagPickup"
+      "clearBagTransferTime",
+      "clearBagStaffMember",
+      "clearBagCustomerModel",
+      "setBagPickup",
+      "setBagTransferTime",
+      "setBagCustomerModel"
     ]),
     preventNegative() {
       if (this.total < 0) {
@@ -2645,10 +2652,20 @@ use next_delivery_dates
       this.updateParentData();
     },
     changeDeliveryTime(val) {
+      this.setBagTransferTime(val);
       this.updateParentData();
     },
     changePickup(val) {
       this.setBagPickup(val);
+      this.updateParentData();
+    },
+    changeStaff(val) {
+      this.setBagStaffMember(val);
+      this.updateParentData();
+    },
+    changeCustomer(val) {
+      console.log("??");
+      this.setBagCustomerModel(val);
       this.updateParentData();
     },
     setWeeklySubscriptionValue(v) {
@@ -2776,6 +2793,9 @@ use next_delivery_dates
           this.refreshUpcomingOrders();
           this.refreshUpcomingOrdersWithoutItems();
           this.clearBagDeliveryDate();
+          this.clearBagTransferTime();
+          this.clearBagStaffMember();
+          this.clearBagCustomerModel();
           this.refreshStorePurchasedGiftCards();
         })
         .catch(async response => {
@@ -2973,6 +2993,9 @@ use next_delivery_dates
           this.setBagPurchasedGiftCard(null);
           this.setBagReferral(null);
           this.clearBagDeliveryDate();
+          this.clearBagTransferTime();
+          this.clearBagStaffMember();
+          this.clearBagCustomerModel();
           this.refreshCards();
 
           if (this.isManualOrder) {

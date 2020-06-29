@@ -66,7 +66,10 @@ const state = {
     referral: null,
     meal_plan: false,
     pickup: null,
-    pickupSet: false
+    pickupSet: false,
+    transferTime: null,
+    staffMember: null,
+    customerModel: null
   },
   delivery_date: null,
 
@@ -790,9 +793,28 @@ const mutations = {
   clearBagDeliveryDate(state, date) {
     this.state.delivery_date = null;
   },
+  clearBagTransferTime(state, date) {
+    this.state.bag.transferTime = null;
+  },
+  clearBagStaffMember(state, date) {
+    this.state.bag.staffMember = null;
+  },
+  clearBagCustomerModel(state, date) {
+    this.state.bag.customerModel = null;
+  },
   setBagPickup({ state, dispatch }, pickup) {
     this.state.bag.pickup = pickup;
     this.state.bag.pickupSet = true;
+  },
+  setBagTransferTime({ state, dispatch }, transferTime) {
+    this.state.bag.transferTime = transferTime;
+    this.state.bag.transferTimeSet = true;
+  },
+  setBagStaffMember({ state, dispatch }, staffMember) {
+    this.state.bag.staffMember = staffMember;
+  },
+  setBagCustomerModel({ state, dispatch }, customerModel) {
+    this.state.bag.customerModel = customerModel;
   },
   updateBagItem(state, item) {
     if (item.guid) {
@@ -3352,6 +3374,15 @@ const getters = {
   },
   bagDeliveryDate(state) {
     return state.delivery_date;
+  },
+  bagTransferTime(state) {
+    return state.bag.transferTime;
+  },
+  bagStaffMember(state) {
+    return state.bag.staffMember;
+  },
+  bagCustomerModel(state) {
+    return state.bag.customerModel;
   },
   bagDeliverySettings(state, getters) {
     const { bagCustomDeliveryDay } = getters;
