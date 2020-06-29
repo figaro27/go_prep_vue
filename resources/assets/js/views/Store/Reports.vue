@@ -359,7 +359,7 @@
         <p>
           #1
           <a
-            href="https://github.com/qzind/tray/releases/download/v2.1.1/qz-tray-2.1.1.exe"
+            href="https://github.com/qzind/tray/releases/download/v2.1.1/qz-tray-2.1.1%2B1.exe"
             target="_blank"
             class="strong"
             >Download QZ tray</a
