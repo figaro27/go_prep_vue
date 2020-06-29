@@ -23,7 +23,9 @@
       <table border="1" width="100" class="orders-report">
         <thead>
           <tr>
+            @if ($params['show_daily_order_numbers'])
             <th style="width:75px">Daily Order #</th>
+            @endif
             <th>Order ID</th>
             <th>First Name</th>
             <th>Last Name</th>
@@ -36,6 +38,7 @@
             <th>Balance</th>
             <th style="width:100px">Order Placed</th>
             <th style="width:100px">Delivery Date</th>
+            @if ($params['show_times'])
             <th>Time</th>
             @endif
           </tr>

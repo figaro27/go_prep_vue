@@ -132,7 +132,15 @@ class MealPackageController extends StoreController
             if ($key === 'components') {
                 return collect($val)->map(function ($component) {
                     return collect($component)
-                        ->only(['id', 'title', 'minimum', 'maximum', 'options'])
+                        ->only([
+                            'id',
+                            'title',
+                            'minimum',
+                            'maximum',
+                            'options',
+                            'price',
+                            'delivery_day_id'
+                        ])
                         ->map(function ($val, $key) {
                             if ($key === 'options') {
                                 return collect($val)->map(function ($option) {
@@ -175,7 +183,8 @@ class MealPackageController extends StoreController
                             'meals',
                             'meal_package_size_id',
                             'selectable',
-                            'price'
+                            'price',
+                            'delivery_day_id'
                         ])
                         ->map(function ($val, $key) {
                             if ($key === 'meals') {

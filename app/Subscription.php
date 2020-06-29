@@ -294,6 +294,7 @@ class Subscription extends Model
             ->map(function ($mealSub) {
                 return (object) [
                     'meal_id' => $mealSub->meal_id,
+                    'delivery_date' => $mealSub->delivery_date,
                     'meal_size_id' => $mealSub->meal_size_id,
                     'meal_title' => $mealSub->title,
                     'full_title' => $mealSub->full_title,
@@ -487,6 +488,7 @@ class Subscription extends Model
             $this->interval === 'week'
                 ? $latestOrder->delivery_date->addWeeks(1)
                 : $latestOrder->delivery_date->addDays(30);
+        $newOrder->isMultipleDelivery = $this->isMultipleDelivery;
         $newOrder->save();
 
         // Assign meal package orders from meal package subscriptions
@@ -538,10 +540,12 @@ class Subscription extends Model
             }
 
             if ($isMultipleDelivery == 1 && $mealSub->delivery_date) {
-                $mealOrder->delivery_date =
+                $mealSub->delivery_date =
                     $this->interval === 'week'
                         ? $mealSub->delivery_date->addWeeks(1)
                         : $mealSub->delivery_date->addDays(30);
+                $mealSub->save();
+                $mealOrder->delivery_date = $mealSub->delivery_date;
             }
 
             $mealOrder->save();

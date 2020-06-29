@@ -37,7 +37,8 @@ class Store extends Model
         'next_cutoff_date',
         'url',
         'hasPromoCodes',
-        'bulkCustomers'
+        'bulkCustomers',
+        'hasDeliveryDayMeals'
     ];
 
     public static function boot()
@@ -68,6 +69,11 @@ class Store extends Model
     public function orders()
     {
         return $this->hasMany('App\Order')->orderBy('created_at', 'desc');
+    }
+
+    public function mealOrders()
+    {
+        return $this->hasMany('App\MealOrder');
     }
 
     public function subscriptions()
@@ -191,6 +197,11 @@ class Store extends Model
     public function deliveryDays()
     {
         return $this->hasMany('App\DeliveryDay');
+    }
+
+    public function deliveryDayMeals()
+    {
+        return $this->hasMany('App\DeliveryDayMeal');
     }
 
     public function referrals()
@@ -468,13 +479,13 @@ class Store extends Model
                                 Carbon::parse(
                                     $mealOrder->delivery_date
                                 )->format('Y-m-d');
-                            $ingredient->food_name =
-                                '(' .
-                                Carbon::parse(
-                                    $mealOrder->delivery_date
-                                )->format('D, m/d/y') .
-                                ') ' .
-                                $ingredient->food_name;
+                            // $ingredient->food_name =
+                            //     '(' .
+                            //     Carbon::parse(
+                            //         $mealOrder->delivery_date
+                            //     )->format('D, m/d/y') .
+                            //     ') ' .
+                            //     $ingredient->food_name;
                         }
 
                         if (!isset($ingredients[$key])) {
@@ -832,6 +843,12 @@ class Store extends Model
             }
             if ($couponCode != '') {
                 $orders = $orders->where('couponCode', $couponCode);
+            }
+            if ($removeManualOrders) {
+                $orders = $orders->where('manual', 0);
+            }
+            if ($removeCashOrders) {
+                $orders = $orders->where('cashOrder', 0);
             }
         }
 
@@ -1271,5 +1288,13 @@ class Store extends Model
         } else {
             return false;
         }
+    }
+
+    public function getHasDeliveryDayMealsAttribute()
+    {
+        if (count($this->deliveryDayMeals) > 0) {
+            return true;
+        }
+        return false;
     }
 }

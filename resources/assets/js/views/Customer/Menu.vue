@@ -55,32 +55,47 @@
       <b-modal
         size="md"
         cancel-disabled
-        @hide="okDeliveryDayModal"
-        @ok="okDeliveryDayModal"
         v-model="showDeliveryDayModal"
+        hide-footer
         hide-header
         no-fade
       >
         <div class="row mt-3">
           <div class="col-md-12">
             <div style="position: relative">
-              <h4 class="center-text">Select Delivery Day:</h4>
+              <h4 class="center-text">Select Delivery Day</h4>
 
               <Spinner
                 v-if="isLoadingDeliveryDays"
                 position="relative"
                 style="left: 0;"
               />
-
               <div class="delivery_day_wrap mt-3">
                 <div
-                  @click="selectedDeliveryDay = delivery_day"
+                  @click="changeDeliveryDay(day)"
+                  v-for="day in sortedDeliveryDays"
+                  v-bind:class="
+                    selectedDeliveryDay &&
+                    selectedDeliveryDay.day_friendly == day.day_friendly
+                      ? 'delivery_day_item active'
+                      : 'delivery_day_item'
+                  "
+                  :style="getBrandColor(day)"
+                >
+                  {{ moment(day.day_friendly).format("dddd, MMM Do YYYY") }}
+                </div>
+              </div>
+
+              <!-- <div class="delivery_day_wrap mt-3">
+                <div
+                  @click="changeDeliveryDay(delivery_day)"
                   v-bind:class="
                     selectedDeliveryDay &&
                     selectedDeliveryDay.id == delivery_day.id
                       ? 'delivery_day_item active'
                       : 'delivery_day_item'
                   "
+                  :style="getBrandColor(delivery_day)"
                   v-for="(delivery_day, index) in store.delivery_days"
                   v-bind:key="index"
                 >
@@ -90,7 +105,7 @@
                     )
                   }}
                 </div>
-              </div>
+              </div> -->
             </div>
             <!-- Relative End !-->
           </div>
@@ -341,6 +356,8 @@
             :subscriptionId="subscriptionId"
             :orderId="orderId"
             :storeView="storeView"
+            :selectedDeliveryDay="selectedDeliveryDay"
+            @changeDeliveryDay="changeDeliveryDay($event)"
           >
           </bag-area>
           <div class="bag-bottom-area">
@@ -601,6 +618,9 @@ export default {
       bagDeliveryDate: "bagDeliveryDate",
       bagPickup: "bagPickup"
     }),
+    sortedDeliveryDays() {
+      return _.orderBy(this.store.delivery_days, "day_friendly");
+    },
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
     },
@@ -945,6 +965,8 @@ export default {
     });
   },
   mounted() {
+    this.autoPickUpcomingMultDD();
+
     if (this.$route.query.sub || this.$route.query.subscriptionId) {
       this.bagPageURL =
         "/customer/bag?sub=true&subscriptionId=" + this.$route.params.id;
@@ -952,11 +974,6 @@ export default {
 
     if (this.$route.query.filter) {
       this.search = this.$route.query.filter;
-    }
-    if (this.isMultipleDelivery) {
-      store.dispatch("refreshDeliveryDay");
-      this.showDeliveryDateModal();
-    } else {
     }
 
     // if (this.bag.length > 0 || this.subscriptionId !== undefined) {
@@ -1032,17 +1049,17 @@ export default {
         this.menuPs = null;
       }
     },
-    okDeliveryDayModal(e) {
-      if (this.selectedDeliveryDay) {
-        this.finalDeliveryDay = this.selectedDeliveryDay;
-        this.showDeliveryDayModal = false;
-
-        store.dispatch("refreshLazyDD", {
-          delivery_day: this.finalDeliveryDay
-        });
-      } else {
-        e.preventDefault();
+    changeDeliveryDay(e) {
+      this.selectedDeliveryDay = e;
+      this.finalDeliveryDay = e;
+      this.showDeliveryDayModal = false;
+      if (this.store.hasDeliveryDayMeals) {
+        e.has_items = true;
       }
+
+      store.dispatch("refreshLazyDD", {
+        delivery_day: this.finalDeliveryDay
+      });
     },
     showAdjustModal(
       meal,
@@ -1388,6 +1405,35 @@ export default {
       this.meal = data.meal;
       this.sizeId = data.sizeId;
       this.showVariationsModal = true;
+    },
+    autoPickUpcomingMultDD() {
+      if (this.isMultipleDelivery) {
+        let week_index = this.storeSettings.next_orderable_delivery_dates[0]
+          .week_index;
+        let nextDeliveryDay = this.store.delivery_days.find(day => {
+          return day.day == week_index;
+        });
+
+        this.selectedDeliveryDay = nextDeliveryDay;
+        this.finalDeliveryDay = nextDeliveryDay;
+
+        store.dispatch("refreshLazyDD", {
+          delivery_day: this.finalDeliveryDay
+        });
+      }
+    },
+    getBrandColor(delivery_day) {
+      if (this.selectedDeliveryDay) {
+        if (
+          this.selectedDeliveryDay.day_friendly == delivery_day.day_friendly
+        ) {
+          if (this.store.settings) {
+            let style = "background-color:";
+            style += this.store.settings.color;
+            return style;
+          }
+        }
+      }
     }
   }
 };

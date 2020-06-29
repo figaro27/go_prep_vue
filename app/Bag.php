@@ -62,7 +62,8 @@ class Bag
         return md5(
             json_encode([
                 'meal_package_id' => $meal_package_id, // contained in package
-                'meal_package_size_id' => $meal_package_size_id
+                'meal_package_size_id' => $meal_package_size_id,
+                'meal_package_title' => $item['meal']['title']
             ])
         );
     }
@@ -377,7 +378,6 @@ class Bag
                                 $customSize = isset($item['customSize'])
                                     ? $item['customSize']
                                     : null;
-
                                 $mealItem = [
                                     'meal' => $meal['meal'],
                                     'meal_package' => true,

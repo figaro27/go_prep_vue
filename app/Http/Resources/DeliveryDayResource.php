@@ -24,6 +24,8 @@ class DeliveryDayResource extends JsonResource
             'cutoff_hours' => $this->cutoff_hours,
             'cutoff_type' => $this->cutoff_type,
             'day_friendly' => $this->day_friendly,
+            'day_long' => $this->day_long,
+            'day_short' => $this->day_short,
             'day' => $this->day,
             'fee' => $this->fee,
             'feeType' => $this->feeType,

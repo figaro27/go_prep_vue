@@ -229,6 +229,8 @@ export default {
       productionGroupIds: [],
       new_group: null,
       ordersByDate: [],
+      mealOrdersByDate: [],
+      mealOrdersByDateMD: [],
       filters: {
         delivery_dates: {
           start: null,
@@ -296,146 +298,11 @@ export default {
         return order.voided === 0;
       });
 
-      let mealCounts = {};
-      let mealIds = {};
-      let mealSizes = {};
-      let mealTitles = {};
-
-      // orders.forEach(order => {
-      //   _.forEach(order.newItems, item => {
-      //     let meal = this.getMeal(item.meal_id);
-      //     if (meal) {
-      //       if (this.productionGroupIds != null) {
-      //         if (meal.production_group_id !== this.productionGroupIds)
-      //           return null;
-      //       }
-
-      //       let size = meal.getSize(item.meal_size_id);
-      //       let title = meal.getTitle(
-      //         true,
-      //         size,
-      //         item.components,
-      //         item.addons,
-      //         item.special_instructions
-      //       );
-      //       let base_title = item.base_title;
-      //       let base_size = item.base_size ? item.base_size : "";
-      //       let key = base_title + "<sep>" + base_size;
-
-      //       if (!mealCounts[key]) {
-      //         mealCounts[key] = 0;
-      //         mealIds[key] = item.meal_id;
-      //         mealSizes[key] = size;
-      //         mealTitles[key] = base_title;
-      //       }
-      //       mealCounts[key] += item.quantity;
-      //     }
-      //   });
-      // });
-
-      orders.forEach(order => {
-        _.forEach(order.items, item => {
-          let meal = this.getMeal(item.meal_id);
-          if (meal) {
-            if (
-              this.storeModules.productionGroups &&
-              this.productionGroupIds.length > 0
-            ) {
-              if (!this.productionGroupIds.includes(meal.production_group_id))
-                return null;
-
-              if (this.productionGroupId != null) {
-                if (meal.production_group_id !== this.productionGroupId)
-                  return null;
-              }
-            }
-
-            let size = meal.getSize(item.meal_size_id, item.customSize);
-
-            let title = meal.getTitle(
-              true,
-              size,
-              item.components,
-              item.addons,
-              item.special_instructions,
-              true,
-              item.customTitle,
-              item.customSize
-            );
-
-            let base_title = meal.getTitle(
-              true,
-              size,
-              item.components,
-              item.addons,
-              item.special_instructions,
-              false,
-              item.customTitle
-            );
-
-            if (!mealCounts[title]) {
-              mealCounts[title] = 0;
-              mealIds[title] = item.meal_id;
-              mealSizes[title] = size;
-              mealTitles[title] = base_title;
-            }
-            mealCounts[title] += item.quantity;
-          }
-        });
-      });
-
-      orders.forEach(order => {
-        _.forEach(order.line_items_order, lineItem => {
-          let item = lineItem;
-          if (item) {
-            if (
-              !this.productionGroupIds.includes(lineItem.production_group_id)
-            ) {
-              return null;
-            }
-            let size = lineItem.size;
-            let title = lineItem.title;
-            let base_title = lineItem.title;
-
-            if (!mealCounts[title]) {
-              mealCounts[title] = 0;
-              mealIds[title] = lineItem.id;
-              mealSizes[title] = size;
-              mealTitles[title] = base_title;
-            }
-            mealCounts[title] += lineItem.quantity;
-          }
-        });
-      });
-
-      return _.map(mealCounts, (quantity, title) => {
-        let meal = this.getMeal(mealIds[title]);
-
-        //let base_title = meal.title + "";
-        let base_title = mealTitles[title];
-
-        let size = mealSizes[title];
-        let base_size = "";
-
-        if (size) {
-          base_size = size.title ? size.title : size;
-        } else if (meal && meal.default_size_title) {
-          base_size = meal.default_size_title;
-        }
-
-        let price = meal ? meal.price : null;
-
-        return {
-          ...meal,
-          title,
-          base_title,
-          base_size,
-          price,
-          size,
-          quantity: quantity,
-          total: quantity * price
-        };
-      });
+      if (!this.storeModules.multipleDeliveryDays) {
+        return this.mealOrdersByDate;
+      } else {
+        return this.mealOrdersByDateMD;
+      }
     },
     productionGroupOptions() {
       let prodGroups = this.storeProductionGroups;
@@ -546,14 +413,25 @@ export default {
         });
     },
     onChangeDateFilter() {
-      axios
-        .post("/api/me/getOrdersWithDates", {
-          start: this.filters.delivery_dates.start,
-          end: this.filters.delivery_dates.end
-        })
-        .then(response => {
-          this.ordersByDate = response.data;
-        });
+      if (!this.storeModules.multipleDeliveryDays) {
+        axios
+          .post("/api/me/getMealOrdersWithDates", {
+            start: this.filters.delivery_dates.start,
+            end: this.filters.delivery_dates.end
+          })
+          .then(response => {
+            this.mealOrdersByDate = response.data;
+          });
+      } else {
+        axios
+          .post("/api/me/getMealOrdersWithDatesMD", {
+            start: this.filters.delivery_dates.start,
+            end: this.filters.delivery_dates.end
+          })
+          .then(response => {
+            this.mealOrdersByDateMD = response.data;
+          });
+      }
     },
     clearDeliveryDates() {
       this.filters.delivery_dates.start = null;

@@ -409,7 +409,10 @@ class SubscriptionController extends UserController
                     MealPackageSubscription::where([
                         'meal_package_id' => $item['meal_package_id'],
                         'meal_package_size_id' => $item['meal_package_size_id'],
-                        'subscription_id' => $sub->id
+                        'subscription_id' => $sub->id,
+                        'customTitle' => isset($item['customTitle'])
+                            ? $item['customTitle']
+                            : null
                     ])
                         ->get()
                         ->count() === 0
@@ -424,6 +427,10 @@ class SubscriptionController extends UserController
                     $mealPackageSubscription->quantity =
                         $item['package_quantity'];
                     $mealPackageSubscription->price = $item['package_price'];
+                    if (isset($item['delivery_day']) && $item['delivery_day']) {
+                        $mealPackageSubscription->delivery_date =
+                            $item['delivery_day']['day_friendly'];
+                    }
                     $mealPackageSubscription->customTitle = isset(
                         $item['customTitle']
                     )
@@ -450,6 +457,9 @@ class SubscriptionController extends UserController
                         ->pluck('id')
                         ->first();
                 }
+            }
+            if (isset($item['delivery_day']) && $item['delivery_day']) {
+                $mealSub->delivery_date = $item['delivery_day']['day_friendly'];
             }
             $mealSub->save();
 
@@ -573,10 +583,8 @@ class SubscriptionController extends UserController
                 $mealOrder->quantity = $item['quantity'];
                 $mealOrder->price = $item['price'] * $item['quantity'];
                 if (isset($item['delivery_day']) && $item['delivery_day']) {
-                    $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                        $item['delivery_day']['day'],
-                        $isMultipleDelivery
-                    );
+                    $mealOrder->delivery_date =
+                        $item['delivery_day']['day_friendly'];
                 }
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
@@ -676,10 +684,8 @@ class SubscriptionController extends UserController
                             isset($item['delivery_day']) &&
                             $item['delivery_day']
                         ) {
-                            $mealPackageOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                                $item['delivery_day']['day'],
-                                $isMultipleDelivery
-                            );
+                            $mealPackageOrder->delivery_date =
+                                $item['delivery_day']['day_friendly'];
                         }
                         $mealPackageOrder->save();
                     }

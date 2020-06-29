@@ -14,6 +14,7 @@ use App\DeliveryDay;
 use App\DeliveryDayMeal;
 use App\DeliveryDayMealPackage;
 use App\GiftCard;
+use App\StoreSetting;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
@@ -281,7 +282,8 @@ class SpaController extends Controller
                     'moduleSettings',
                     'reportSettings',
                     'smsSettings',
-                    'deliveryFeeZipCodes'
+                    'deliveryFeeZipCodes',
+                    'deliveryDays'
                 ])
                 ->first();
 
@@ -484,10 +486,37 @@ class SpaController extends Controller
         $data = $request->all();
         extract($data);
 
+        if ($user && $user->hasRole('store') && $user->has('store')) {
+            $store_id = $user->store->id;
+        } else {
+            if (defined('STORE_ID')) {
+                $store_id = (int) STORE_ID;
+            } else {
+                if ($user && isset($user->last_viewed_store)) {
+                    $store_id = (int) $user->last_viewed_store->id;
+                }
+            }
+        }
+
+        $storeSetting = StoreSetting::where('store_id', $store_id)->first();
+
+        $nextDeliveryDayWeekIndex = null;
+        if (count($storeSetting->store->deliveryDayMeals) > 0) {
+            $nextDeliveryDayWeekIndex =
+                $storeSetting->next_orderable_delivery_dates[0]['week_index'];
+        }
+
         $offset_meal = (int) $offset_meal;
         $offset_package = (int) $offset_package;
         $category_id = (int) $category_id;
-        $delivery_day_id = (int) $delivery_day_id;
+        $delivery_day_id = $request->get('delivery_day_id')
+            ? $request->get('delivery_day_id')
+            : DeliveryDay::where([
+                'store_id' => $store_id,
+                'day' => $nextDeliveryDayWeekIndex
+            ])
+                ->pluck('id')
+                ->first();
         $category_ids =
             trim($category_ids_str) == ""
                 ? []
@@ -501,24 +530,11 @@ class SpaController extends Controller
             }
         }
 
-        if ($user && $user->hasRole('store') && $user->has('store')) {
-            $store_id = $user->store->id;
-        } else {
-            if (defined('STORE_ID')) {
-                $store_id = (int) STORE_ID;
-            } else {
-                if ($user && isset($user->last_viewed_store)) {
-                    $store_id = (int) $user->last_viewed_store->id;
-                }
-            }
-        }
-
         $items = $meals = $packages = $giftCards = []; // Both of meals and packages
         $end = 0;
 
         if ($store_id != 0) {
             $isValidDD = false;
-
             if ($delivery_day_id != 0) {
                 /*$delivery_day_meals = DeliveryDayMeal::has('meal.categories')->where(
                 'delivery_day_id',
@@ -569,14 +585,16 @@ class SpaController extends Controller
                         ]);
 
                         if ($delivery_day_id != 0 && $isValidDD) {
-                            $temp_meal = $temp_meal->whereHas('days', function (
-                                $query
-                            ) use ($delivery_day_id) {
-                                $query->where(
-                                    'delivery_day_meals.delivery_day_id',
-                                    $delivery_day_id
-                                );
-                            });
+                            $temp_meal = $temp_meal
+                                ? $temp_meal->whereHas('days', function (
+                                    $query
+                                ) use ($delivery_day_id) {
+                                    $query->where(
+                                        'delivery_day_meals.delivery_day_id',
+                                        $delivery_day_id
+                                    );
+                                })
+                                : null;
                         }
 
                         $temp_meal = $temp_meal->first();
@@ -604,15 +622,16 @@ class SpaController extends Controller
                         ]);
 
                         if ($delivery_day_id != 0 && $isValidDD) {
-                            $temp_package = $temp_package->whereHas(
-                                'days',
-                                function ($query) use ($delivery_day_id) {
+                            $temp_package = $temp_package
+                                ? $temp_package->whereHas('days', function (
+                                    $query
+                                ) use ($delivery_day_id) {
                                     $query->where(
                                         'delivery_day_meal_packages.delivery_day_id',
                                         $delivery_day_id
                                     );
-                                }
-                            );
+                                })
+                                : null;
                         }
 
                         $temp_giftCard = $temp_giftCard->first();

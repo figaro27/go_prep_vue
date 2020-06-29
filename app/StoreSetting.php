@@ -211,9 +211,9 @@ class StoreSetting extends Model
                     $this->cutoff_days * (60 * 60 * 24) +
                     $this->cutoff_hours * (60 * 60);
 
-                $customDeliveryDays = $this->store->isModuleEnabled(
-                    'customDeliveryDays'
-                );
+                $customDeliveryDays =
+                    $this->store->isModuleEnabled('customDeliveryDays') ||
+                    $this->store->isModuleEnabled('multipleDeliveryDays');
                 $ddays = $customDeliveryDays
                     ? $this->store->deliveryDays->filter(function (
                         DeliveryDay $dday
@@ -319,7 +319,8 @@ class StoreSetting extends Model
                 'date_passed' => $date->isPast(),
                 'cutoff' => $cutoff->toDateTimeString(),
                 'cutoff_passed' => $cutoff->isPast(),
-                'week_index' => (int) $date->format('w')
+                'week_index' => (int) $date->format('w'),
+                'day_friendly' => $date->format('Y-m-d')
             ];
         });
     }

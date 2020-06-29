@@ -30,6 +30,7 @@ use App\Billing\Constants;
 use App\Billing\Charge;
 use App\Billing\Authorize;
 use App\Billing\Billing;
+use App\MealSize;
 
 class OrderController extends StoreController
 {
@@ -66,6 +67,29 @@ class OrderController extends StoreController
 
         if ($end) {
             $query = $query->whereDate('delivery_date', '<=', $end);
+        }
+
+        // If multiple delivery days, get orders by looking at meal order dates
+        if ($this->store->modules->multipleDeliveryDays) {
+            $mealOrders = $this->store->mealOrders();
+            if ($start) {
+                $mealOrders = $mealOrders->where('delivery_date', '>=', $start);
+            }
+
+            if ($end) {
+                $mealOrders = $mealOrders->where('delivery_date', '<=', $end);
+            }
+
+            $orderIds = $mealOrders->get()->map(function ($mealOrder) {
+                return $mealOrder->order->id;
+            });
+
+            $query = $this->store
+                ->orders()
+                ->with(['user', 'pickup_location', 'purchased_gift_cards'])
+                ->whereIn('id', $orderIds)
+                ->where(['paid' => 1])
+                ->without($hide);
         }
 
         if ($search) {
@@ -378,81 +402,18 @@ class OrderController extends StoreController
                     $startDate,
                     $endDate
                 ) {
-                    $query
-                        ->where(function ($query1) use ($startDate, $endDate) {
-                            $query1
-                                ->where('isMultipleDelivery', 0)
-                                ->where('paid', 1);
-                            $query1->where('delivery_date', '>=', $startDate);
-                            $query1->where('delivery_date', '<=', $endDate);
-                        })
-                        ->orWhere(function ($query2) use (
-                            $startDate,
-                            $endDate
-                        ) {
-                            $query2
-                                ->where('isMultipleDelivery', 1)
-                                ->where('paid', 1)
-                                ->whereHas('meal_orders', function (
-                                    $subquery1
-                                ) use ($startDate, $endDate) {
-                                    $subquery1->whereNotNull(
-                                        'meal_orders.delivery_date'
-                                    );
-                                    $subquery1->where(
-                                        'meal_orders.delivery_date',
-                                        '>=',
-                                        $startDate
-                                    );
-                                    $subquery1->where(
-                                        'meal_orders.delivery_date',
-                                        '<=',
-                                        $endDate
-                                    );
-                                });
-                        });
+                    $query->where(function ($query) use ($startDate, $endDate) {
+                        $query
+                            ->where('isMultipleDelivery', 0)
+                            ->where('paid', 1);
+                        $query->where('delivery_date', '>=', $startDate);
+                        $query->where('delivery_date', '<=', $endDate);
+                    });
                 });
 
                 $data = $orders->get();
             }
         }
-
-        // Newly Added for Table Data
-        // if ($data) {
-        //     foreach ($data as &$order) {
-        //         $newItems = [];
-        //         $mealOrders = $order
-        //             ->meal_orders()
-        //             ->with('meal')
-        //             ->get();
-
-        //         if ($order->isMultipleDelivery) {
-        //             if ($mealOrders) {
-        //                 foreach ($mealOrders as $mealOrder) {
-        //                     if (!$mealOrder->delivery_date) {
-        //                         continue;
-        //                     }
-
-        //                     $mealOrder_date = Carbon::parse(
-        //                         $mealOrder->delivery_date
-        //                     )->format('Y-m-d');
-        //                     if ($mealOrder_date < $startDate) {
-        //                         continue;
-        //                     }
-        //                     if ($mealOrder_date > $endDate) {
-        //                         continue;
-        //                     }
-
-        //                     $newItems[] = $mealOrder;
-        //                 }
-        //             }
-        //         } else {
-        //             $newItems = $mealOrders;
-        //         }
-
-        //         $order->newItems = $newItems;
-        //     }
-        // }
 
         return $data;
     }
@@ -465,10 +426,18 @@ class OrderController extends StoreController
         $removeManualOrders = $request->get('removeManualOrders');
         $removeCashOrders = $request->get('removeCashOrders');
 
+        $startDate = $request->get('start')
+            ? $request->get('start')
+            : date('Y-m-d');
+
         if ($request->get('end') != null) {
-            $endDate = $request->get('end');
+            $endDate = $request->get('end')
+                ? $request->get('end')
+                : date('Y-m-d', strtotime($startDate . ' + 7 days'));
         } else {
-            $endDate = $request->get('start');
+            $endDate = $request->get('start')
+                ? $request->get('start')
+                : date('Y-m-d', strtotime($startDate . ' + 7 days'));
         }
 
         $date = '';
@@ -483,7 +452,7 @@ class OrderController extends StoreController
                 ->orders()
                 ->with(['user', 'pickup_location'])
                 ->where(['paid' => 1])
-                ->where($date, '>=', $request->get('start'))
+                ->where($date, '>=', $startDate)
                 ->where($date, '<=', $endDate)
             : [];
 
@@ -505,6 +474,149 @@ class OrderController extends StoreController
         ]);
 
         return $orders;
+    }
+
+    public function getMealOrdersWithDates(Request $request)
+    {
+        if ($request->get('end') != null) {
+            $endDate = $request->get('end');
+        } else {
+            $endDate = $request->get('start');
+        }
+
+        $startDate = Carbon::parse($request->get('start'))->format('Y-m-d');
+        $endDate = Carbon::parse($endDate)->format('Y-m-d');
+
+        $orders = $this->store->has('orders')
+            ? $this->store
+                ->orders()
+                ->where(['paid' => 1, 'voided' => 0, 'isMultipleDelivery' => 0])
+                ->where('delivery_date', '>=', $startDate)
+                ->where('delivery_date', '<=', $endDate)
+                ->get()
+                ->map(function ($order) {
+                    return $order->id;
+                })
+            : [];
+
+        // Meal Orders
+
+        $mealOrders = MealOrder::whereIn('order_id', $orders)->get();
+
+        $mealQuantities = [];
+
+        foreach ($mealOrders as $i => $mealOrder) {
+            $title = $mealOrder->base_title_without_date;
+            $size = $mealOrder->base_size;
+            $title = $title . '<sep>' . $size;
+
+            if (!isset($mealQuantities[$title])) {
+                $mealQuantities[$title] = 0;
+            }
+
+            $mealQuantities[$title] += $mealOrder->quantity;
+        }
+
+        $production = [];
+
+        foreach ($mealQuantities as $title => $quantity) {
+            $temp = explode('<sep>', $title);
+            $size = $temp && isset($temp[1]) ? $temp[1] : "";
+            $title = $temp[0];
+            $row = [];
+            $row['base_title'] = $title;
+            $row['base_size'] = $size;
+            $row['quantity'] = $quantity;
+            array_push($production, $row);
+        }
+
+        // Line Items
+
+        $lineItemOrders = LineItemOrder::whereIn('order_id', $orders)->get();
+
+        $lineItemQuantities = [];
+
+        foreach ($lineItemOrders as $i => $lineItemOrder) {
+            $title = $lineItemOrder->title;
+            $size = $lineItemOrder->size;
+            $title = $title . '<sep>' . $size;
+
+            if (!isset($lineItemQuantities[$title])) {
+                $lineItemQuantities[$title] = 0;
+            }
+
+            $lineItemQuantities[$title] += $lineItemOrder->quantity;
+        }
+
+        foreach ($lineItemQuantities as $title => $quantity) {
+            $temp = explode('<sep>', $title);
+            $size = $temp && isset($temp[1]) ? $temp[1] : "";
+            $title = $temp[0];
+            $row = [];
+            $row['base_title'] = $title;
+            $row['base_size'] = $size;
+            $row['quantity'] = $quantity;
+            array_push($production, $row);
+        }
+
+        usort($production, function ($a, $b) {
+            return strcmp($b['base_title'], $a['base_title']);
+        });
+
+        return $production;
+    }
+
+    // For multiple delivery
+    public function getMealOrdersWithDatesMD(Request $request)
+    {
+        if ($request->get('end') != null) {
+            $endDate = $request->get('end');
+        } else {
+            $endDate = $request->get('start');
+        }
+
+        $startDate = Carbon::parse($request->get('start'))->format('Y-m-d');
+        $endDate = Carbon::parse($endDate)->format('Y-m-d');
+
+        $mealOrders = MealOrder::where('delivery_date', '>=', $startDate)
+            ->where('delivery_date', '<=', $endDate)
+            ->whereHas('order', function ($order) {
+                $order->where('paid', 1)->where('voided', 0);
+            })
+            ->get();
+
+        $mealQuantities = [];
+
+        foreach ($mealOrders as $i => $mealOrder) {
+            $title = $mealOrder->base_title_without_date;
+            $size = $mealOrder->base_size;
+            $title = $title . '<sep>' . $size;
+
+            if (!isset($mealQuantities[$title])) {
+                $mealQuantities[$title] = 0;
+            }
+
+            $mealQuantities[$title] += $mealOrder->quantity;
+        }
+
+        $production = [];
+
+        foreach ($mealQuantities as $title => $quantity) {
+            $temp = explode('<sep>', $title);
+            $size = $temp && isset($temp[1]) ? $temp[1] : "";
+            $title = $temp[0];
+            $row = [];
+            $row['base_title'] = $title;
+            $row['base_size'] = $size;
+            $row['quantity'] = $quantity;
+            array_push($production, $row);
+        }
+
+        usort($production, function ($a, $b) {
+            return strcmp($b['base_title'], $a['base_title']);
+        });
+
+        return $production;
     }
 
     public function getLatestOrder()
@@ -561,15 +673,13 @@ class OrderController extends StoreController
             'paid',
             'paid_at',
             'pickup_location',
-            'purchased_gift_card_code',
-            'purchased_gift_card_id',
             'stripe_id',
             'user_id',
             'visible_items'
         ]);
 
         if (!$this->store->modules->multipleDeliveryDays) {
-            $order->makeHIdden(['delivery_dates_array', 'isMultipleDelivery']);
+            $order->makeHidden(['delivery_dates_array', 'isMultipleDelivery']);
         }
 
         return $order;
@@ -740,10 +850,8 @@ class OrderController extends StoreController
                     : null;
             }
             if (isset($item['delivery_day']) && $item['delivery_day']) {
-                $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                    $item['delivery_day']['day'],
-                    $isMultipleDelivery
-                );
+                $mealOrder->delivery_date =
+                    $item['delivery_day']['day_friendly'];
             }
             if (isset($item['size']) && $item['size']) {
                 $mealOrder->meal_size_id = $item['size']['id'];
@@ -773,7 +881,10 @@ class OrderController extends StoreController
                     MealPackageOrder::where([
                         'meal_package_id' => $item['meal_package_id'],
                         'meal_package_size_id' => $item['meal_package_size_id'],
-                        'order_id' => $order->id
+                        'order_id' => $order->id,
+                        'delivery_date' =>
+                            $item['delivery_day']['day_friendly'],
+                        'customTitle' => $item['customTitle']
                     ])
                         ->get()
                         ->count() === 0
@@ -788,10 +899,8 @@ class OrderController extends StoreController
                     $mealPackageOrder->quantity = $item['package_quantity'];
                     $mealPackageOrder->price = $item['package_price'];
                     if (isset($item['delivery_day']) && $item['delivery_day']) {
-                        $mealPackageOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                            $item['delivery_day']['day'],
-                            $isMultipleDelivery
-                        );
+                        $mealPackageOrder->delivery_date =
+                            $item['delivery_day']['day_friendly'];
                     }
                     $mealPackageOrder->customTitle = isset($item['customTitle'])
                         ? $item['customTitle']
@@ -808,7 +917,10 @@ class OrderController extends StoreController
                             'meal_package_id' => $item['meal_package_id'],
                             'meal_package_size_id' =>
                                 $item['meal_package_size_id'],
-                            'order_id' => $order->id
+                            'order_id' => $order->id,
+                            'delivery_date' =>
+                                $item['delivery_day']['day_friendly'],
+                            'customTitle' => $item['customTitle']
                         ]
                     )
                         ->pluck('id')
@@ -870,10 +982,8 @@ class OrderController extends StoreController
                     $mealOrder->free = 1;
                     $mealOrder->hidden = $attachment->hidden;
                     if (isset($item['delivery_day']) && $item['delivery_day']) {
-                        $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                            $item['delivery_day']['day'],
-                            $isMultipleDelivery
-                        );
+                        $mealOrder->delivery_date =
+                            $item['delivery_day']['day_friendly'];
                     }
                     $mealOrder->save();
                 }

@@ -24,14 +24,51 @@
       ></i>
     </div>
     <div :class="shoppingCartClass" style="overflow-y: auto">
+      <!-- <b-alert
+        v-if="isMultipleDelivery"
+        variant="secondary"
+        show
+      >
+        <h6>Ordering for {{selectedDeliveryDay ? moment(selectedDeliveryDay.day_friendly).format("ddd, MMM Do YYYY") : null}}</h6>
+        <div style="text-align:center">
+        <button
+            v-if="
+              isMultipleDelivery &&
+                $route.name != 'store-bag' &&
+                $route.name != 'customer-bag'
+            "
+            :style="brandColor"
+            type="button"
+            class="mt-1 btn btn-md white-text"
+            @click="addDeliveryDay()"
+          >
+            Add/Change Day
+          </button>
+        </div>
+      </b-alert> -->
+
+      <button
+        v-if="
+          isMultipleDelivery &&
+            $route.name != 'store-bag' &&
+            $route.name != 'customer-bag'
+        "
+        style="background-color:#28A745"
+        type="button"
+        class="mb-3 btn btn-md white-text w-100"
+        @click="addDeliveryDay()"
+      >
+        Add Day
+      </button>
       <b-alert
-        v-if="bag.length == 0"
+        v-if="bag.length == 0 && !isMultipleDelivery"
         variant="secondary"
         show
         class="d-flex d-center"
       >
         <span class="small strong">Please add items to your bag.</span>
       </b-alert>
+
       <ul class="list-group">
         <li
           v-for="(groupItem, indexGroup) in groupBag"
@@ -39,26 +76,52 @@
           class="bag-item"
         >
           <div
-            style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;"
+            style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;padding-top:5px;border-radius:10px"
             v-if="isMultipleDelivery && groupItem.delivery_day"
+            :style="activeDD(groupItem.delivery_day)"
           >
-            <h5>
+            <h5 @click="loadDeliveryDayMenu(groupItem.delivery_day)">
               {{
                 moment(groupItem.delivery_day.day_friendly).format(
                   "ddd, MMM Do YYYY"
                 )
               }}
             </h5>
+            <i
+              class="fas fa-arrow-circle-left ml-1 mb-2"
+              :style="checkMarkStyle"
+              v-if="
+                isMultipleDelivery &&
+                  $route.name != 'store-bag' &&
+                  $route.name != 'customer-bag' &&
+                  selectedDeliveryDay &&
+                  groupItem.delivery_day.id !== selectedDeliveryDay.id
+              "
+              @click="loadDeliveryDayMenu(groupItem.delivery_day)"
+            >
+            </i>
+            <i
+              v-if="activeDD(groupItem.delivery_day)"
+              style="font-size:16px"
+              class="fas fa-times-circle white-text d-inline float-right pb-2 pl-2"
+              @click="removeDeliveryDayItems(groupItem.delivery_day)"
+            ></i>
+            <i
+              v-if="!activeDD(groupItem.delivery_day)"
+              style="font-size:16px"
+              class="fas fa-times-circle dark-gray d-inline float-right pb-2 pl-1"
+              @click="removeDeliveryDayItems(groupItem.delivery_day)"
+            ></i>
 
-            <button
-              v-if="$route.name != 'store-bag' && $route.name != 'customer-bag'"
+            <!-- <button
+              v-if="$route.name != 'store-bag' && $route.name != 'customer-bag' && selectedDeliveryDay && groupItem.delivery_day.id !== selectedDeliveryDay.id"
               type="button"
               class="btn btn-sm white-text"
               :style="brandColor"
               @click="loadDeliveryDayMenu(groupItem.delivery_day)"
             >
-              Pick Meals
-            </button>
+            Select Day
+            </button> -->
           </div>
 
           <div
@@ -209,6 +272,7 @@
                   class="fas fa-check-circle text-primary pt-1 font-15"
                   @click="endEdit(item)"
                 ></i>
+
                 <i
                   class="fas fa-times-circle clear-meal dark-gray font-15"
                   @click="clearFromBag(item)"
@@ -252,9 +316,28 @@
           </div>
         </li>
       </ul>
+      <!-- <center>
+      <button
+        v-if="
+          isMultipleDelivery &&
+            $route.name != 'store-bag' &&
+            $route.name != 'customer-bag'
+        "
+        :style="brandColor"
+        type="button"
+        class="mt-3 btn btn-md white-text"
+        @click="addDeliveryDay()"
+      >
+        Add/Change Day
+      </button>
+    </center> -->
     </div>
     <div
-      v-if="($route.params.storeView || storeView) && storeModules.lineItems"
+      v-if="
+        ($route.params.storeView || storeView) &&
+          storeModules.lineItems &&
+          !storeModules.multipleDeliveryDays
+      "
     >
       <b-button
         size="lg"
@@ -488,7 +571,8 @@ export default {
     adjustMealPlan: false,
     subscriptionId: null,
     pickup: 0,
-    storeView: false
+    storeView: false,
+    selectedDeliveryDay: null
   },
   mixins: [MenuBag],
   computed: {
@@ -525,6 +609,11 @@ export default {
       style += this.store.settings.color;
       return style;
     },
+    checkMarkStyle() {
+      let style = "font-size:16px;color:";
+      style += this.store.settings.color;
+      return style;
+    },
     groupBag() {
       let grouped = [];
       let groupedDD = [];
@@ -551,18 +640,35 @@ export default {
             }
           }
 
-          grouped.sort((a, b) => {
-            const ddA = a.delivery_day.day;
-            const ddB = b.delivery_day.day;
+          // grouped.sort((a, b) => {
+          //   const ddA = a.delivery_day.day;
+          //   const ddB = b.delivery_day.day;
 
-            return moment(ddA).unix() - moment(ddB).unix();
-          });
+          //   return moment(ddA).unix() - moment(ddB).unix();
+          // });
+
+          // Add all delivery days
+          if (this.selectedDeliveryDay) {
+            let included = false;
+            grouped.forEach(group => {
+              if (group.delivery_day.id === this.selectedDeliveryDay.id) {
+                included = true;
+              }
+            });
+            if (!included) {
+              grouped.push({
+                items: [],
+                delivery_day: this.selectedDeliveryDay
+              });
+            }
+          }
         } else {
           grouped.push({
             items: this.bag
           });
         }
       }
+
       return grouped;
     },
     productionGroupOptions() {
@@ -638,10 +744,8 @@ export default {
     this.$emit("updateLineItems", this.orderLineItems);
   },
   methods: {
-    loadDeliveryDayMenu(delivery_day) {
-      store.dispatch("refreshLazyDD", {
-        delivery_day
-      });
+    loadDeliveryDayMenu(deliveryDay) {
+      this.$emit("changeDeliveryDay", deliveryDay);
     },
     addToBag(item) {
       if (this.isAdjustOrder() || this.isManualOrder()) {
@@ -982,6 +1086,39 @@ export default {
         ? this.$parent.order.line_items_order
         : extras;
       this.$emit("updateLineItems", this.orderLineItems);
+    },
+    addDeliveryDay() {
+      store.dispatch("refreshDeliveryDay");
+      this.$parent.showDeliveryDayModal = true;
+    },
+    activeDD(deliveryDay) {
+      if (
+        this.selectedDeliveryDay &&
+        deliveryDay.id == this.selectedDeliveryDay.id
+      ) {
+        if (this.store.settings) {
+          let style = "color:#ffffff;background-color:";
+          style += this.store.settings.color;
+          return style;
+        }
+      }
+    },
+    removeDeliveryDayItems(deliveryDay) {
+      this.bag.forEach(item => {
+        if (item.delivery_day.id == deliveryDay.id) {
+          this.clearMealFullQuantity(
+            item.meal,
+            item.meal_package,
+            item.size,
+            item.components,
+            item.addons,
+            item.special_instructions
+          );
+        }
+      });
+
+      // Switch to the first delivery day in the bag if exists
+      this.loadDeliveryDayMenu(this.bag[0].delivery_day);
     }
   }
 };

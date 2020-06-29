@@ -33,7 +33,7 @@ export default {
   computed: {
     ...mapGetters({
       subscriptions: "storeSubscriptions",
-      store: "store",
+      store: "viewedStore",
       bag: "bag",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
@@ -158,6 +158,16 @@ export default {
               }
             }
           });
+
+          if (this.store.modules.multipleDeliveryDays) {
+            let delivery_day = this.store.delivery_days.find(day => {
+              return day.day == moment(pkgItem.delivery_date).day();
+            });
+            meal_package.delivery_day = delivery_day;
+          }
+
+          meal_package.customTitle = pkgItem.customTitle;
+
           for (let i = 0; i < pkgItem.quantity; i++) {
             this.addOne(
               meal_package,
@@ -192,6 +202,16 @@ export default {
           let special_instructions = item.special_instructions;
 
           let free = item.free;
+
+          meal.price = item.price / item.quantity;
+
+          if (this.store.modules.multipleDeliveryDays) {
+            let delivery_day = this.store.delivery_days.find(day => {
+              return day.day == moment(item.delivery_date.date).day();
+            });
+
+            meal.delivery_day = delivery_day;
+          }
 
           for (let i = 0; i < item.quantity; i++) {
             this.addOne(

@@ -477,6 +477,7 @@
               :options="gratuityOptions"
               v-model="gratuityType"
               class="ml-2 w-100px"
+              @input="changeGratuity"
             ></b-form-select>
           </div>
           <div class="col-6 col-md-3 offset-md-5 d-flex">
@@ -1298,10 +1299,6 @@ export default {
     if (this.bagPickupSet) {
       this.pickup = this.bagPickup;
     }
-
-    if (this.gratuityType !== "custom") {
-      this.gratuity = this.afterDiscount * (this.gratuityType / 100);
-    }
   },
   props: {
     order: null,
@@ -1381,6 +1378,20 @@ export default {
     }
     if (this.$route.params.adjustMealPlan || this.$route.params.subscription) {
       this.gratuity = this.$parent.$route.params.subscription.gratuity;
+    }
+
+    if (
+      this.$route.params.adjustOrder &&
+      this.order.purchasedGiftCardReduction > 0
+    ) {
+      axios
+        .post("/api/me/findPurchasedGiftCard", {
+          store_id: this.store.id,
+          purchasedGiftCardCode: this.order.purchased_gift_card_code
+        })
+        .then(resp => {
+          this.setBagPurchasedGiftCard(resp.data);
+        });
     }
   },
   mixins: [MenuBag],
@@ -2089,6 +2100,12 @@ use next_delivery_dates
       return this.afterFees + this.tax;
     },
     purchasedGiftCardReduction() {
+      if (
+        this.$route.params.adjustOrder &&
+        this.order.purchasedGiftCardReduction > 0
+      ) {
+        return this.order.purchasedGiftCardReduction;
+      }
       if (!this.purchasedGiftCardApplied) {
         return 0;
       }
@@ -3147,6 +3164,11 @@ use next_delivery_dates
         this.customerOptions = [];
         loading(true);
         this.search(loading, search, this);
+      }
+    },
+    changeGratuity() {
+      if (this.gratuityType !== "custom") {
+        this.gratuity = this.afterDiscount * (this.gratuityType / 100);
       }
     },
     search: _.debounce((loading, search, vm) => {

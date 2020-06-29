@@ -38,7 +38,7 @@ export default {
   computed: {
     ...mapGetters({
       upcomingOrders: "storeUpcomingOrders",
-      store: "store",
+      store: "viewedStore",
       bag: "bag",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage"
@@ -53,7 +53,9 @@ export default {
       return this.order.subscription_id ? 1 : 0;
     },
     deliveryDay() {
-      return moment(this.order.delivery_date).format("YYYY-MM-DD 00:00:00");
+      return this.order
+        ? moment(this.order.delivery_date).format("YYYY-MM-DD 00:00:00")
+        : null;
     },
     transferTime() {
       return this.order.transferTime;
@@ -134,7 +136,7 @@ export default {
             if (item.meal_package_order_id === pkgItem.id && !item.hidden) {
               const meal = this.getMeal(item.meal_id);
               meal.meal_size_id = item.meal_size_id;
-              meal.quantity = item.quantity;
+              meal.quantity = item.quantity / pkgItem.quantity;
               meal.special_instructions = item.special_instructions;
 
               if (pkgItem.meal_package_size && index !== null) {
@@ -158,6 +160,16 @@ export default {
             size.title = pkgItem.customSize;
           }
 
+          if (this.store.modules.multipleDeliveryDays) {
+            let delivery_day = this.store.delivery_days.find(day => {
+              return day.day == moment(pkgItem.delivery_date).day();
+            });
+            meal_package.delivery_day = delivery_day;
+          }
+
+          meal_package.adjustOrder = true;
+          meal_package.customTitle = pkgItem.customTitle;
+
           for (let i = 0; i < pkgItem.quantity; i++) {
             this.addOne(
               meal_package,
@@ -179,6 +191,7 @@ export default {
           if (!meal) {
             return;
           }
+
           let components = _.mapValues(
             _.groupBy(item.components, "meal_component_id"),
             choices => {
@@ -193,6 +206,13 @@ export default {
           let free = item.free;
 
           meal.price = item.price / item.quantity;
+          if (this.store.modules.multipleDeliveryDays) {
+            let delivery_day = this.store.delivery_days.find(day => {
+              return day.day == moment(item.delivery_date.date).day();
+            });
+
+            meal.delivery_day = delivery_day;
+          }
 
           for (let i = 0; i < item.quantity; i++) {
             this.addOne(

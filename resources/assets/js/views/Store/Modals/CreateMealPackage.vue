@@ -52,7 +52,7 @@
                 required
               ></b-form-checkbox-group>
 
-              <p class="mt-4">
+              <!-- <p class="mt-4">
                 <span class="mr-1">Display Included Items in Packages</span>
                 <hint title="Display Included Items in Packages">
                   Creates a slider in the meal package popup which allows users
@@ -66,7 +66,7 @@
                   size="lg"
                   v-model="mealPackage.meal_carousel"
                 />
-              </b-form-group>
+              </b-form-group> -->
             </b-tab>
             <b-tab title="Meals">
               <h4>Items</h4>

@@ -9,7 +9,7 @@
         <b-col>
           <b-tabs>
             <b-tab title="Orders" active>
-              <b-form-group label="Logo" :state="true" class="pb-5">
+              <b-form-group label="Logo" :state="true" class="pb-3">
                 <picture-input
                   :ref="`storeImageInput`"
                   :prefill="logoPrefill"
@@ -25,6 +25,7 @@
               </b-form-group>
               <b-form @submit.prevent="updateStoreSettings">
                 <b-form-group
+                  v-if="!customDeliveryDays"
                   label="Delivery / Pickup Day(s)"
                   label-for="delivery-days"
                   :state="true"
@@ -252,6 +253,7 @@
                 </b-form-group>
 
                 <b-form-group
+                  v-if="!customDeliveryDays"
                   label="Cut Off Period Type"
                   label-for="cut-off-period-type"
                   :state="true"
@@ -276,6 +278,7 @@
                 </b-form-group>
 
                 <b-form-group
+                  v-if="!customDeliveryDays"
                   :label="
                     storeSettings.cutoff_type === 'timed'
                       ? 'Cut Off Period'
@@ -526,7 +529,7 @@
                   ></b-form-input>
                 </div>
 
-                <b-form-group label="I Will Be:">
+                <b-form-group label="I Will Be:" v-if="!customDeliveryDays">
                   <b-form-checkbox-group
                     v-model="transferSelected"
                     :options="transferOptions"
@@ -757,7 +760,7 @@
               <b-form-radio-group
                 buttons
                 v-model="storeSettings.menuStyle"
-                class="storeFilters"
+                class="storeFilters mb-2"
                 @input="updateStoreSettings"
                 :options="[
                   { value: 'image', text: 'Image Based' },
@@ -1279,6 +1282,16 @@ export default {
     }),
     storeDetails() {
       return this.storeDetail;
+    },
+    customDeliveryDays() {
+      if (
+        this.storeModules.customDeliveryDays ||
+        this.storeModules.multipleDeliveryDays
+      ) {
+        return true;
+      } else {
+        return false;
+      }
     },
     // storeDetail(){
     //     return this.store.store_detail;

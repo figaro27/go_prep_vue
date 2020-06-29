@@ -10,19 +10,6 @@
           >
             {{ addMore }}
           </p>
-          <button
-            v-if="
-              isMultipleDelivery &&
-                $route.name != 'store-bag' &&
-                $route.name != 'customer-bag'
-            "
-            :style="brandColor"
-            type="button"
-            class="mb-3 mt-2 ml-2 btn btn-md white-text"
-            @click="addDeliveryDay()"
-          >
-            Add Delivery Day
-          </button>
         </div>
         <div class="col-md-5">
           <p class="small pl-2 pt-2">Subtotal</p>
@@ -142,7 +129,6 @@ export default {
   mixins: [MenuBag],
   methods: {
     addDeliveryDay() {
-      store.dispatch("refreshDeliveryDay");
       this.$parent.showDeliveryDayModal = true;
     }
   },

@@ -142,7 +142,10 @@ class Hourly extends Command
         $count = 0;
         foreach ($orders as $order) {
             try {
-                if (!$order->store->modules->hideTransferOptions) {
+                if (
+                    !$order->store->modules->hideTransferOptions &&
+                    !$order->store->modules->multipleDeliveryDays
+                ) {
                     /* Timezone */
                     $settings = $order->store->settings;
                     if ($settings && $settings->timezone) {
@@ -152,6 +155,7 @@ class Hourly extends Command
                     /* Timezone Set */
 
                     $currentHour = date('H');
+
                     if ($currentHour === "08") {
                         $order->user->sendNotification('delivery_today', [
                             'user' => $order->user,
@@ -165,7 +169,49 @@ class Hourly extends Command
             } catch (\Exception $e) {
             }
         }
+
         $this->info($count . ' `Delivery Today` emails sent');
+
+        // Multiple delivery day Delivery Today emails
+
+        $orders = Order::where([
+            'paid' => 1,
+            'voided' => 0
+        ])
+            ->whereHas('meal_orders', function ($mealOrder) {
+                $mealOrder->where('delivery_date', date('Y-m-d'));
+            })
+            ->get();
+
+        $count = 0;
+        foreach ($orders as $order) {
+            try {
+                if ($order->store->modules->multipleDeliveryDays) {
+                    /* Timezone */
+                    $settings = $order->store->settings;
+                    if ($settings && $settings->timezone) {
+                        $timezone = $settings->timezone;
+                        date_default_timezone_set($timezone);
+                    }
+                    /* Timezone Set */
+
+                    $currentHour = date('H');
+
+                    if ($currentHour === "08") {
+                        $order->user->sendNotification('delivery_today', [
+                            'user' => $order->user,
+                            'customer' => $order->customer,
+                            'order' => $order,
+                            'settings' => $order->store->settings
+                        ]);
+                        $count++;
+                    }
+                }
+            } catch (\Exception $e) {
+            }
+        }
+
+        $this->info($count . ' Multiple delivery `Delivery Today` emails sent');
 
         // Send Delivery Today SMS if enabled
         $count = 0;

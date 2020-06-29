@@ -65,6 +65,14 @@
               ></b-select>
             </b-form-group>
           </b-col>
+          <b-col v-if="store.modules.multipleDeliveryDays">
+            <b-form-group label="Delivery Day" class="font-weight-bold">
+              <b-form-select
+                v-model="addon.delivery_day_id"
+                :options="deliveryDayOptions"
+              ></b-form-select>
+            </b-form-group>
+          </b-col>
           <b-col>
             <b-btn
               variant="primary"
@@ -139,8 +147,16 @@ export default {
   },
   computed: {
     ...mapGetters({
-      storeCurrencySymbol: "storeCurrencySymbol"
+      storeCurrencySymbol: "storeCurrencySymbol",
+      store: "viewedStore"
     }),
+    deliveryDayOptions() {
+      let options = [];
+      this.store.delivery_days.forEach(day => {
+        options.push({ value: day.id, text: day.day_long });
+      });
+      return options;
+    },
     sizeOptions() {
       return _.concat(
         {

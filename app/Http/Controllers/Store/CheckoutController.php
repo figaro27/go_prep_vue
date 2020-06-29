@@ -447,10 +447,8 @@ class CheckoutController extends StoreController
                     }
 
                     if (isset($item['delivery_day']) && $item['delivery_day']) {
-                        $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                            $item['delivery_day']['day'],
-                            $isMultipleDelivery
-                        );
+                        $mealOrder->delivery_date =
+                            $item['delivery_day']['day_friendly'];
                     }
                     if (isset($item['size']) && $item['size']) {
                         $mealOrder->meal_size_id = $item['size']['id'];
@@ -482,6 +480,7 @@ class CheckoutController extends StoreController
                                 'meal_package_id' => $item['meal_package_id'],
                                 'meal_package_size_id' =>
                                     $item['meal_package_size_id'],
+                                'customTitle' => $item['customTitle'],
                                 'order_id' => $order->id
                             ])
                                 ->get()
@@ -494,8 +493,14 @@ class CheckoutController extends StoreController
                                 $item['meal_package_id'];
                             $mealPackageOrder->meal_package_size_id =
                                 $item['meal_package_size_id'];
-                            $mealPackageOrder->quantity =
-                                $item['package_quantity'];
+                            $mealPackageOrder->quantity = $item['customTitle']
+                                ? $item['quantity']
+                                : $item['package_quantity'];
+                            $mealPackageOrder->customTitle = isset(
+                                $item['customTitle']
+                            )
+                                ? $item['customTitle']
+                                : null;
                             // $mealPackageOrder->price =
                             //     $item['meal_package_size_id'] !== null
                             //         ? MealPackageSize::where(
@@ -515,10 +520,8 @@ class CheckoutController extends StoreController
                                 isset($item['delivery_day']) &&
                                 $item['delivery_day']
                             ) {
-                                $mealPackageOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                                    $item['delivery_day']['day'],
-                                    $isMultipleDelivery
-                                );
+                                $mealPackageOrder->delivery_date =
+                                    $item['delivery_day']['day_friendly'];
                             }
 
                             $mealPackageOrder->customTitle = isset(
@@ -615,10 +618,8 @@ class CheckoutController extends StoreController
                                 isset($item['delivery_day']) &&
                                 $item['delivery_day']
                             ) {
-                                $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                                    $item['delivery_day']['day'],
-                                    $isMultipleDelivery
-                                );
+                                $mealOrder->delivery_date =
+                                    $item['delivery_day']['day_friendly'];
                             }
                             $mealOrder->save();
                         }
@@ -925,10 +926,8 @@ class CheckoutController extends StoreController
                         : null;
                 }
                 if (isset($item['delivery_day']) && $item['delivery_day']) {
-                    $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                        $item['delivery_day']['day'],
-                        $isMultipleDelivery
-                    );
+                    $mealOrder->delivery_date =
+                        $item['delivery_day']['day_friendly'];
                 }
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];
@@ -986,10 +985,8 @@ class CheckoutController extends StoreController
                             isset($item['delivery_day']) &&
                             $item['delivery_day']
                         ) {
-                            $mealPackageOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                                $item['delivery_day']['day'],
-                                $isMultipleDelivery
-                            );
+                            $mealPackageOrder->delivery_date =
+                                $item['delivery_day']['day_friendly'];
                         }
 
                         $mealPackageOrder->customTitle = isset(
@@ -1074,10 +1071,8 @@ class CheckoutController extends StoreController
                             isset($item['delivery_day']) &&
                             $item['delivery_day']
                         ) {
-                            $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                                $item['delivery_day']['day'],
-                                $isMultipleDelivery
-                            );
+                            $mealOrder->delivery_date =
+                                $item['delivery_day']['day_friendly'];
                         }
                         $mealOrder->save();
                     }
@@ -1095,10 +1090,8 @@ class CheckoutController extends StoreController
                     $mealSub->free = $item['free'];
                 }
                 if (isset($item['delivery_day']) && $item['delivery_day']) {
-                    $mealSub->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                        $item['delivery_day']['day'],
-                        $isMultipleDelivery
-                    );
+                    $mealSub->delivery_date =
+                        $item['delivery_day']['day_friendly'];
                 }
                 if (isset($item['size']) && $item['size']) {
                     $mealSub->meal_size_id = $item['size']['id'];
@@ -1127,7 +1120,10 @@ class CheckoutController extends StoreController
                             'meal_package_id' => $item['meal_package_id'],
                             'meal_package_size_id' =>
                                 $item['meal_package_size_id'],
-                            'subscription_id' => $userSubscription->id
+                            'subscription_id' => $userSubscription->id,
+                            'customTitle' => isset($item['customTitle'])
+                                ? $item['customTitle']
+                                : null
                         ])
                             ->get()
                             ->count() === 0
@@ -1154,6 +1150,13 @@ class CheckoutController extends StoreController
                         )
                             ? $item['customSize']
                             : null;
+                        if (
+                            isset($item['delivery_day']) &&
+                            $item['delivery_day']
+                        ) {
+                            $mealPackageSubscription->delivery_date =
+                                $item['delivery_day']['day_friendly'];
+                        }
                         $mealPackageSubscription->save();
 
                         $mealSub->meal_package_subscription_id =
@@ -1226,10 +1229,8 @@ class CheckoutController extends StoreController
                             isset($item['delivery_day']) &&
                             $item['delivery_day']
                         ) {
-                            $mealSub->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                                $item['delivery_day']['day'],
-                                $isMultipleDelivery
-                            );
+                            $mealSub->delivery_date =
+                                $item['delivery_day']['day_friendly'];
                         }
                         $mealSub->save();
                     }
