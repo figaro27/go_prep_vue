@@ -311,7 +311,11 @@ export default {
   mounted() {
     let host = this.store.details.host ? this.store.details.host : "goprep";
     this.message.content =
-      "Order now at https://" + this.store.details.domain + "." + host + ".com";
+      "Order now at https://" +
+      this.store.details.domain +
+      "." +
+      host +
+      ".com. To opt out, reply STOP or UNSUBSCRIBE.";
   },
   computed: {
     ...mapGetters({
