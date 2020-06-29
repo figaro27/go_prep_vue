@@ -2664,7 +2664,6 @@ use next_delivery_dates
       this.updateParentData();
     },
     changeCustomer(val) {
-      console.log("??");
       this.setBagCustomerModel(val);
       this.updateParentData();
     },
