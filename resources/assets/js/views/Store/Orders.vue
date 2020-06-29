@@ -994,6 +994,8 @@ export default {
     if (!isOpen && $(".navbar-toggler").length > 0) {
       $(".navbar-toggler").click();
     }
+
+    this.clearBag();
     /* Sidebar Check End */
 
     // if (this.storeModules.manualOrders || this.storeModules.cashOrders) {
@@ -1091,6 +1093,12 @@ export default {
       removeJob: "removeJob"
     }),
     ...mapActions("resources", ["refreshResource"], "printer/connect"),
+    ...mapMutations([
+      "clearBagDeliveryDate",
+      "clearBagTransferTime",
+      "clearBagStaffMember",
+      "clearBagCustomerModel"
+    ]),
     refreshTable() {
       this.refreshResource("orders");
     },
@@ -1625,6 +1633,12 @@ export default {
       this.user_detail.phone = new AsYouType(this.store.details.country).input(
         this.user_detail.phone
       );
+    },
+    clearBag() {
+      this.clearBagDeliveryDate();
+      this.clearBagTransferTime();
+      this.clearBagStaffMember();
+      this.clearBagCustomerModel();
     }
   }
 };
