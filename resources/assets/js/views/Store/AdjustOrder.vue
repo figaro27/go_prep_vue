@@ -237,6 +237,7 @@ export default {
 
         this.addOne(item, null);
       });
+      console.log(1);
     }
   }
 };
