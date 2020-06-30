@@ -8,6 +8,7 @@ use App\Customer;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Stripe;
+use App\UserDetail;
 
 class RegisterController extends StoreController
 {
@@ -102,9 +103,22 @@ class RegisterController extends StoreController
             $store->settings->payment_gateway
         );
 
-        return Customer::where('user_id', $user->id)
+        $id = Customer::where('user_id', $user->id)
             ->pluck('id')
             ->first();
+
+        $firstname = UserDetail::where('user_id', $user->id)
+            ->pluck('firstname')
+            ->first();
+
+        $lastname = UserDetail::where('user_id', $user->id)
+            ->pluck('lastname')
+            ->first();
+
+        return [
+            'text' => $firstname . ' ' . $lastname,
+            'value' => $id
+        ];
 
         /*
 
