@@ -369,17 +369,23 @@
               </b-btn>
             </td>
           </tr>
-          <tr>
+          <tr class="nutrientsTable">
             <td>Calories</td>
             <td>Protein</td>
             <td>Carbs</td>
             <td>Fat</td>
+            <td>Sugars</td>
+            <td>Sodium</td>
+            <td>Cholesterol</td>
           </tr>
-          <tr>
+          <tr class="nutrientsTable">
             <td>{{ processSingleIngredient(ingredient, "calories") }}</td>
             <td>{{ processSingleIngredient(ingredient, "proteins") }}</td>
             <td>{{ processSingleIngredient(ingredient, "totalcarb") }}</td>
             <td>{{ processSingleIngredient(ingredient, "totalfat") }}</td>
+            <td>{{ processSingleIngredient(ingredient, "sugars") }}</td>
+            <td>{{ processSingleIngredient(ingredient, "sodium") }}</td>
+            <td>{{ processSingleIngredient(ingredient, "cholesterol") }}</td>
           </tr>
         </table>
 
@@ -607,19 +613,28 @@ export default {
     },
     searchInstant: function() {},
     processSingleIngredient(ingredient, macro) {
-      let macroNutrient = null;
+      let nutrient = null;
       switch (macro) {
         case "calories":
-          macroNutrient = ingredient.calories;
+          nutrient = ingredient.calories;
           break;
         case "proteins":
-          macroNutrient = ingredient.proteins;
+          nutrient = ingredient.proteins;
           break;
         case "totalcarb":
-          macroNutrient = ingredient.totalcarb;
+          nutrient = ingredient.totalcarb;
           break;
         case "totalfat":
-          macroNutrient = ingredient.totalfat;
+          nutrient = ingredient.totalfat;
+          break;
+        case "sugars":
+          nutrient = ingredient.sugars;
+          break;
+        case "sodium":
+          nutrient = ingredient.sodium;
+          break;
+        case "cholesterol":
+          nutrient = ingredient.cholesterol;
           break;
       }
       let baseUnit = "ml";
@@ -633,7 +648,7 @@ export default {
         baseUnit = "g";
       }
       let mac = (
-        units.convert(macroNutrient, ingredient.quantity_unit, baseUnit, true) *
+        units.convert(nutrient, ingredient.quantity_unit, baseUnit, true) *
         ingredient.quantity
       ).toFixed(1);
 
@@ -863,3 +878,9 @@ export default {
   }
 };
 </script>
+<style>
+.nutrientsTable td {
+  width: 100px !important;
+  text-align: center !important;
+}
+</style>
