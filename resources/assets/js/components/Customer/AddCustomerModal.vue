@@ -148,7 +148,7 @@
 
 <script>
 import states from "../../data/states.js";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import { AsYouType } from "libphonenumber-js";
 
 export default {
@@ -186,6 +186,7 @@ export default {
   },
   methods: {
     ...mapActions(["refreshStoreCustomersNoOrders", "refreshStoreCustomers"]),
+    ...mapMutations(["setBagCustomerModel"]),
     addCustomer() {
       this.asYouType();
 
@@ -203,6 +204,7 @@ export default {
       }
 
       axios.post("/api/me/register", form).then(async response => {
+        this.setBagCustomerModel(response.data);
         this.$parent.addCustomerModal = false;
         this.form = {};
 
