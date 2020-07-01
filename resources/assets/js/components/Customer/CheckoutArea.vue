@@ -1827,28 +1827,10 @@ export default {
       //   }
       // }
       if (
-        this.bagDeliveryDate === "2020-04-12 00:00:00" &&
+        this.bagDeliveryDate === "2020-07-04 00:00:00" &&
         (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
       ) {
         for (let i = 0; i <= 5; i++) newHourOptions.pop();
-      }
-
-      // Last pickup time on Saturdays is 1 PM for Livoti's
-      if (
-        this.bagDeliveryDate &&
-        (this.storeId === 108 ||
-          this.storeId === 109 ||
-          this.storeId === 110 ||
-          this.storeId == 3)
-      ) {
-        let date = moment(this.bagDeliveryDate);
-        if (date.day() == 6) {
-          let i = 0;
-          while (i <= 5) {
-            newHourOptions.pop();
-            i++;
-          }
-        }
       }
 
       return newHourOptions;
