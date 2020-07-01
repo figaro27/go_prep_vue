@@ -53,7 +53,7 @@
                     required
                   ></b-form-input>
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-2">
                   <b-form-checkbox
                     v-model="coupon.freeDelivery"
                     value="1"
