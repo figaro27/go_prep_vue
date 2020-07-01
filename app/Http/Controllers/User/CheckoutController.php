@@ -45,6 +45,7 @@ use DB;
 use Exception;
 use App\Traits\DeliveryDates;
 use App\SmsSetting;
+use App\Billing\Exceptions\BillingException;
 
 class CheckoutController extends UserController
 {
@@ -341,7 +342,16 @@ class CheckoutController extends UserController
                 $charge->customer = $customer;
                 $charge->card = $card;
 
-                $transactionId = $billing->charge($charge);
+                try {
+                    $transactionId = $billing->charge($charge);
+                } catch (BillingException $e) {
+                    return response()->json(
+                        [
+                            'error' => $e->getMessage()
+                        ],
+                        500
+                    );
+                }
                 $charge->id = $transactionId;
             }
 
