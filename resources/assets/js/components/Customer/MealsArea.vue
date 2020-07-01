@@ -1165,9 +1165,23 @@ export default {
     },
     hasVariations(meal, size) {
       let hasVar = false;
-      if (size == null) {
-        if (meal.components.length > 0 || meal.addons.length > 0) {
-          hasVar = true;
+      if (size == null || size == undefined) {
+        if (meal.components.length > 0) {
+          meal.components.forEach(component => {
+            component.options.forEach(option => {
+              if (option.meal_size_id == null) {
+                hasVar = true;
+              }
+            });
+          });
+        }
+
+        if (meal.addons.length > 0) {
+          meal.addons.forEach(addon => {
+            if (addon.meal_size_id == null) {
+              hasVar = true;
+            }
+          });
         }
       } else {
         meal.addons.forEach(addon => {
