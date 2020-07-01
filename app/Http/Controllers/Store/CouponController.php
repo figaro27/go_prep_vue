@@ -56,7 +56,8 @@ class CouponController extends StoreController
             'type',
             'amount',
             'freeDelivery',
-            'oneTime'
+            'oneTime',
+            'minimum'
         ]);
         $amount = 0;
         if ($props->get('amount') != null) {
@@ -69,6 +70,7 @@ class CouponController extends StoreController
         $coupon->type = $props->get('type');
         $coupon->freeDelivery = $props->get('freeDelivery');
         $coupon->oneTime = $props->get('oneTime');
+        $coupon->minimum = $props->has('minimum') ? $props->get('minimum') : 0;
         $coupon->amount = $amount;
         $coupon->save();
     }

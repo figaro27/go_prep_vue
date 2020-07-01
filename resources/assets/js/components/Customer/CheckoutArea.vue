@@ -1299,6 +1299,12 @@ export default {
     if (this.bagPickupSet) {
       this.pickup = this.bagPickup;
     }
+
+    if (this.coupon.minimum > 0) {
+      if (this.coupon.minimum > this.totalBagPricePreFees) {
+        this.removeCoupon();
+      }
+    }
   },
   props: {
     order: null,
@@ -2497,13 +2503,13 @@ use next_delivery_dates
         if (coupon.oneTime) {
           let oneTimePass = this.oneTimeCouponCheck(coupon.id);
           if (oneTimePass === "login") {
-            this.$toastr.e(
+            this.$toastr.w(
               "This is a one-time coupon. Please log in or create an account to check if it has already been used."
             );
             return;
           }
           if (!oneTimePass) {
-            this.$toastr.e(
+            this.$toastr.w(
               "This was a one-time coupon that has already been used.",
               'Coupon Code: "' + this.couponCode + '"'
             );
@@ -2528,6 +2534,15 @@ use next_delivery_dates
         coupon &&
         this.discountCode.toUpperCase() === coupon.code.toUpperCase()
       ) {
+        if (coupon.minimum > 0 && coupon.minimum >= this.totalBagPricePreFees) {
+          this.$toastr.w(
+            "This coupon requires a minimum amount of " +
+              this.store.settings.currency_symbol +
+              coupon.minimum +
+              " to be used."
+          );
+          return;
+        }
         if (coupon.oneTime) {
           let oneTimePass = this.oneTimeCouponCheck(coupon.id);
           if (oneTimePass === "login") {

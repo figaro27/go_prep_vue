@@ -21,7 +21,7 @@
           <b-form @submit.prevent="saveCoupon">
             <b-form-group id="coupon">
               <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-1">
                   <b-form-input
                     id="coupon-code"
                     v-model="coupon.code"
@@ -45,7 +45,7 @@
                     </div>
                   </b-form-radio-group>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                   <b-form-input
                     id="coupon-code"
                     v-model="coupon.amount"
@@ -53,7 +53,7 @@
                     required
                   ></b-form-input>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                   <b-form-checkbox
                     v-model="coupon.freeDelivery"
                     value="1"
@@ -63,7 +63,7 @@
                     Free Delivery
                   </b-form-checkbox>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                   <b-form-checkbox
                     v-model="coupon.oneTime"
                     value="1"
@@ -72,6 +72,14 @@
                   >
                     One Time
                   </b-form-checkbox>
+                </div>
+                <div class="col-md-2">
+                  <b-form-input
+                    v-model="coupon.minimum"
+                    class="pt-2"
+                    placeholder="Minimum Amount (optional)"
+                  >
+                  </b-form-input>
                 </div>
                 <div class="col-md-1">
                   <b-button type="submit" variant="success">Add</b-button>
@@ -121,7 +129,15 @@ export default {
   data() {
     return {
       coupon: { type: "flat", freeDelivery: 0, oneTime: 0 },
-      columns: ["code", "type", "amount", "freeDelivery", "oneTime", "actions"]
+      columns: [
+        "code",
+        "type",
+        "amount",
+        "freeDelivery",
+        "oneTime",
+        "minimum",
+        "actions"
+      ]
     };
   },
   created() {},
