@@ -285,7 +285,14 @@ class RegisterController extends Controller
             ]);
 
             $storeReportSettings = $store->reportSettings()->create();
-            $storeSMSSettings = $store->smsSettings()->create();
+            $storeSMSSettings = $store->smsSettings()->create([
+                'autoSendOrderReminderTemplate' =>
+                    'Last chance to order for {next delivery}. Our cutoff time is {cutoff}. Please order at {URL}.',
+                'autoSendDeliveryTemplate' =>
+                    'Your order from {store name} {pickup/delivery} today.',
+                'autoSendOrderConfirmationTemplate' =>
+                    'Thank you for your order. Your order {pickup/delivery} on {delivery date}.'
+            ]);
 
             $storeSMSMasterList = $store->smsSettings->createMasterList();
 
