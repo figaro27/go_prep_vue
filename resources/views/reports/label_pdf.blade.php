@@ -39,7 +39,7 @@ font-size:10px !important;
       @endphp
 
 
-      @if ($reportSettings->lab_nutrition)
+      @if ($mealOrder->meal && $reportSettings->lab_nutrition)
 <div style="width:50%;float:left;margin-left:10px">
         @endif
   <center>
@@ -49,17 +49,17 @@ font-size:10px !important;
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="/ style="width:25vh;height:15vh;margin-top:8px;margin-bottom:4px">
       @endif
 
-      <p class="text-11" style="font-weight:bold"> {!! $mealOrder->html_title !!}
-      </p> @if ($reportSettings->lab_description)
+      <p class="text-11" style="font-weight:bold"> {!! $mealOrder->meal ? $mealOrder->html_title : $mealOrder->title !!}
+      </p> @if ($mealOrder->meal && $reportSettings->lab_description)
       <p> {!!
       $mealOrder->meal->description !!} </p> @endif
 
-        @if ($reportSettings->lab_instructions)
+        @if ($mealOrder->meal && $reportSettings->lab_instructions)
         <p class="text-10">
-        {!! $mealOrder->meal ? $mealOrder->meal->instructions : null !!}
+        {!! $mealOrder->meal->instructions !!}
         </p>
         @endif
-        @if ($reportSettings->lab_expiration)
+        @if ($mealOrder->meal && $reportSettings->lab_expiration)
         <p class="text-10">
         Consume Before: {!! $mealOrder->expirationDate !!}
         </p>
@@ -70,10 +70,10 @@ font-size:10px !important;
         <p class="text-13" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
 
         @endif
-@if ($reportSettings->lab_ingredients && strlen($mealOrder['ingredientList']) > 0)
+@if ($mealOrder->meal && $reportSettings->lab_ingredients && strlen($mealOrder['ingredientList']) > 0)
 <p class="text-9"><b>Ingredients:</b> {{ $mealOrder['ingredientList'] }}</p>
 @endif
-@if ($reportSettings->lab_allergies && strlen($mealOrder['allergyList']) > 0)
+@if ($mealOrder->meal && $reportSettings->lab_allergies && strlen($mealOrder['allergyList']) > 0)
 <p class="text-9"><b>Allergens:</b> {{ $mealOrder['allergyList'] }}</p>
 @endif
 @if ($reportSettings->lab_website)
@@ -88,21 +88,21 @@ font-size:10px !important;
         @endif
   </center>
         </div>
-        @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
+        @if ($mealOrder->meal && ($reportSettings->lab_nutrition || $reportSettings->lab_macros))
         <div style="width:45%;float:left">
 
           @endif
-        @if ($reportSettings->lab_macros and $mealOrder->meal->macros)
+        @if ($mealOrder->meal && $reportSettings->lab_macros && $mealOrder->meal->macros)
           Calories: {!! $mealOrder->meal->macros->calories !!}
           Proten: {!! $mealOrder->meal->macros->protein !!}
           Fat: {!! $mealOrder->meal->macros->fat !!}
           Carbs: {!! $mealOrder->meal->macros->carbs !!}
         @endif
 
-        @if ($reportSettings->lab_nutrition)
+        @if ($mealOrder->meal && $reportSettings->lab_nutrition)
 
           <div class="nutritionFacts sm" data-meal="{{ $mealOrder->json }}" style="position:relative;left:20px;top:10px"></div>
-      @if ($reportSettings->lab_nutrition || $reportSettings->lab_macros)
+      @if ($mealOrder->meal && ($reportSettings->lab_nutrition || $reportSettings->lab_macros))
 
       </div>
       @endif
