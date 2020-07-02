@@ -1300,7 +1300,7 @@ export default {
       this.pickup = this.bagPickup;
     }
 
-    if (this.coupon.minimum > 0) {
+    if (this.coupon && this.coupon.minimum > 0) {
       if (this.coupon.minimum > this.totalBagPricePreFees) {
         this.removeCoupon();
       }
