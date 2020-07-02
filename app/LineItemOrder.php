@@ -26,6 +26,11 @@ class LineItemOrder extends Pivot
         return $this->belongsTo('App\LineItem');
     }
 
+    public function store()
+    {
+        return $this->belongsTo('App\Store');
+    }
+
     public function order()
     {
         return $this->belongsTo('App\Order');

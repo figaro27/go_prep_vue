@@ -109,15 +109,17 @@ class Labels
 
             $output = $production->map(function ($item) {
                 $meal = $item->meal;
-                $item->json = json_encode(
-                    array_merge($meal->attributesToArray(), [
-                        'ingredients' => $meal->ingredients->map(function (
-                            $ingredient
-                        ) {
-                            return $ingredient->attributesToArray();
-                        })
-                    ])
-                );
+                $item->json = $meal
+                    ? json_encode(
+                        array_merge($meal->attributesToArray(), [
+                            'ingredients' => $meal->ingredients->map(function (
+                                $ingredient
+                            ) {
+                                return $ingredient->attributesToArray();
+                            })
+                        ])
+                    )
+                    : null;
                 return $item;
             });
 

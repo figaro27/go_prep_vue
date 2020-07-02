@@ -56,7 +56,7 @@ font-size:10px !important;
 
         @if ($reportSettings->lab_instructions)
         <p class="text-10">
-        {!! $mealOrder->meal->instructions !!}
+        {!! $mealOrder->meal ? $mealOrder->meal->instructions : null !!}
         </p>
         @endif
         @if ($reportSettings->lab_expiration)
