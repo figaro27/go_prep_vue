@@ -2187,7 +2187,11 @@ use next_delivery_dates
     },
     tip() {
       let gratuity = 0;
-      if (this.gratuity !== "" && this.gratuity !== null) {
+      if (
+        this.gratuity !== "" &&
+        this.gratuity !== null &&
+        this.gratuity !== undefined
+      ) {
         gratuity = parseFloat(this.gratuity);
       }
       return gratuity;
