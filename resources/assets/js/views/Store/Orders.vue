@@ -1,17 +1,15 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show>
+      <b-alert style="background-color:#EBFAFF" show>
         <h5>
-          New Feature - Gratuity
+          Update
         </h5>
         <p>
-          Allow your customers to optionally leave a tip on the checkout page
-          before they place an order. You can enable this in the Advanced tab on
-          the
-          <router-link to="/store/account/settings">Settings</router-link> page.
+          You and your customers can now pause & resume subscriptions.
+          <!-- <router-link to="/store/account/settings">Settings</router-link> page. -->
         </p>
-      </b-alert> -->
+      </b-alert>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
