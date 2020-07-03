@@ -31,7 +31,7 @@ class SubscriptionController extends UserController
     {
         $subscriptions = $this->user
             ->subscriptions()
-            ->where('status', 'active')
+            ->where('status', '!=', 'cancelled')
             ->with(['orders', 'pickup_location'])
             ->get();
 

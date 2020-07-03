@@ -92,20 +92,18 @@ f<template>
             >
               Cancel
             </button>
-            <!--Removing pause functionality for the time being -->
-
-            <!-- <b-btn
-                v-if="props.row.status === 'active'"
-                class="btn btn-warning btn-sm"
-                @click.stop="() => pauseSubscription(props.row.id)"
-                >Pause</b-btn
-              >
-              <b-btn
-                v-if="props.row.status === 'paused'"
-                class="btn btn-warning btn-sm"
-                @click.stop="() => resumeSubscription(props.row.id)"
-                >Resume</b-btn
-              > -->
+            <b-btn
+              v-if="props.row.status === 'active'"
+              class="btn btn-warning btn-sm"
+              @click.stop="() => pauseSubscription(props.row.id)"
+              >Pause</b-btn
+            >
+            <b-btn
+              v-if="props.row.status === 'paused'"
+              class="btn btn-warning btn-sm"
+              @click.stop="() => resumeSubscription(props.row.id)"
+              >Resume</b-btn
+            >
           </div>
 
           <div slot="amount" slot-scope="props">
@@ -663,7 +661,7 @@ export default {
     async pauseSubscription(subscription) {
       try {
         const resp = await axios.post(
-          `/api/me/subscriptions/${subscription.id}/pause`
+          `/api/me/subscriptions/${subscription}/pause`
         );
         this.$toastr.s("Subscription paused.");
       } catch (e) {
@@ -678,7 +676,7 @@ export default {
     async resumeSubscription(subscription) {
       try {
         const resp = await axios.post(
-          `/api/me/subscriptions/${subscription.id}/resume`
+          `/api/me/subscriptions/${subscription}/resume`
         );
         this.$toastr.s("Subscription resumed.");
       } catch (e) {

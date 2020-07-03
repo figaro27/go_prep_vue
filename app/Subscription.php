@@ -1189,31 +1189,45 @@ class Subscription extends Model
     public function pause($withStripe = true)
     {
         if ($withStripe) {
-            try {
-                $coupon = \Stripe\Coupon::retrieve('subscription-paused', [
-                    'stripe_account' => $this->store->settings->stripe_id
-                ]);
-            } catch (\Exception $e) {
-                $coupon = \Stripe\Coupon::create(
-                    [
-                        'duration' => 'forever',
-                        'id' => 'subscription-paused',
-                        'percent_off' => 100
-                    ],
-                    [
-                        'stripe_account' => $this->store->settings->stripe_id
-                    ]
-                );
-            }
-
-            $subscription = \Stripe\Subscription::retrieve(
+            $subscription = \Stripe\Subscription::update(
                 'sub_' . $this->stripe_id,
+                [
+                    'pause_collection' => [
+                        'behavior' => 'void'
+                    ]
+                ],
                 [
                     'stripe_account' => $this->store->settings->stripe_id
                 ]
             );
-            $subscription->coupon = 'subscription-paused';
-            $subscription->save();
+
+            // Old method of pausing before Stripe released the pause feature
+
+            // try {
+            //     $coupon = \Stripe\Coupon::retrieve('subscription-paused', [
+            //         'stripe_account' => $this->store->settings->stripe_id
+            //     ]);
+            // } catch (\Exception $e) {
+            //     $coupon = \Stripe\Coupon::create(
+            //         [
+            //             'duration' => 'forever',
+            //             'id' => 'subscription-paused',
+            //             'percent_off' => 100
+            //         ],
+            //         [
+            //             'stripe_account' => $this->store->settings->stripe_id
+            //         ]
+            //     );
+            // }
+
+            // $subscription = \Stripe\Subscription::retrieve(
+            //     'sub_' . $this->stripe_id,
+            //     [
+            //         'stripe_account' => $this->store->settings->stripe_id
+            //     ]
+            // );
+            // $subscription->coupon = 'subscription-paused';
+            // $subscription->save();
         }
 
         $this->update([
@@ -1223,9 +1237,9 @@ class Subscription extends Model
 
         $this->store->clearCaches();
 
-        if ($this->store->notificationEnabled('paused_subscription')) {
-            $this->store->sendNotification('paused_subscription', $this);
-        }
+        // if ($this->store->notificationEnabled('paused_subscription')) {
+        //     $this->store->sendNotification('paused_subscription', $this);
+        // }
     }
 
     /**
@@ -1236,14 +1250,26 @@ class Subscription extends Model
     public function resume($withStripe = true)
     {
         if ($withStripe) {
-            $subscription = \Stripe\Subscription::retrieve(
+            $subscription = \Stripe\Subscription::update(
                 'sub_' . $this->stripe_id,
+                [
+                    'pause_collection' => ''
+                ],
                 [
                     'stripe_account' => $this->store->settings->stripe_id
                 ]
             );
-            $subscription->coupon = null;
-            $subscription->save();
+
+            // Old method of resuming before Stripe released the pause feature
+
+            // $subscription = \Stripe\Subscription::retrieve(
+            //     'sub_' . $this->stripe_id,
+            //     [
+            //         'stripe_account' => $this->store->settings->stripe_id
+            //     ]
+            // );
+            // $subscription->coupon = null;
+            // $subscription->save();
         }
 
         $this->update([
@@ -1253,9 +1279,9 @@ class Subscription extends Model
 
         $this->store->clearCaches();
 
-        if ($this->store->notificationEnabled('resumed_subscription')) {
-            $this->store->sendNotification('resumed_subscription', $this);
-        }
+        // if ($this->store->notificationEnabled('resumed_subscription')) {
+        //     $this->store->sendNotification('resumed_subscription', $this);
+        // }
     }
 
     public function apply100offCoupon()

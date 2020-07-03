@@ -32,7 +32,7 @@ class SubscriptionController extends StoreController
     {
         $subscriptions = $this->store
             ->subscriptions()
-            ->where('status', 'active')
+            ->where('status', '!=', 'cancelled')
             ->with(['user:id', 'pickup_location'])
             ->orderBy('created_at')
             ->get();
