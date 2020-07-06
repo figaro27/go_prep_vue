@@ -50,12 +50,15 @@
               class="categorySection"
               :target="'categorySection_' + component.id"
             >
-              <h3 class="center-text mb-3">
-                {{ getComponentLabel(component) }}
-                <span v-if="component.minimum > 0"
-                  >- Remaining: {{ getRemainingMeals(component.id) }}</span
-                >
-              </h3>
+              <h3 class="center-text">{{ getComponentLabel(component) }}</h3>
+              <h5
+                v-if="
+                  component.minimum > 0 && component.minimum == component.maxium
+                "
+                class="center-text mb-3"
+              >
+                Remaining: {{ getRemainingMeals(component.id) }}
+              </h5>
 
               <b-form-group :label="null">
                 <div v-for="option in getOptions(component)" :key="option.id">
@@ -1340,23 +1343,29 @@ export default {
         qty = `Choose ${component.minimum}`;
       } else {
         qty = `Choose up to ${component.maximum}`;
+        if (component.minimum > 0) {
+          qty = qty.concat(" (Minimum " + component.minimum + ")");
+        }
       }
 
-      return `${component.title}`;
+      return `${component.title}` + " - " + qty;
     },
     getRemainingMeals(componentId) {
       const component = this.getComponent(componentId);
       const min = component.minimum;
-      const choices = this.getComponentChoices(componentId);
-      let remainingMeals = _.reduce(
-        choices,
-        (remaining, meals) => {
-          return remaining - meals.length;
-        },
-        min
-      );
-      this.$parent.remainingMeals = remainingMeals;
-      return remainingMeals;
+      const max = component.maximum;
+      if (min == max) {
+        const choices = this.getComponentChoices(componentId);
+        let remainingMeals = _.reduce(
+          choices,
+          (remaining, meals) => {
+            return remaining - meals.length;
+          },
+          min
+        );
+        this.$parent.remainingMeals = remainingMeals;
+        return remainingMeals;
+      }
     },
     getTotalRemainingMeals() {
       let totalRemainingMeals = 0;
