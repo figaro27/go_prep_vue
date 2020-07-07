@@ -146,9 +146,9 @@ u + .body .full { width:100% !important; width:100vw !important;}
 
                   <p>For any questions, you can call us at (866) 5GO-PREP or email us at <a href="mailto:help@goprep.com">help@goprep.com</a></p>
 
-                  <p>View Documentation<a style="color:#0645AD" href="https://www.goprep.com/documentation">https://www.goprep.com/documentation</a></p>
-                  <p>Watch Overview Video <a href="https://www.goprep.com/demo-video/"> https://www.goprep.com/demo-video/</a></p>
-                  <p>Book a Demo <a href="https://calendly.com/goprep/support">https://calendly.com/goprep/support</a></p>
+                  <p>View Documentation: <a style="color:#0645AD" href="https://www.goprep.com/documentation">https://www.goprep.com/documentation</a></p>
+                  <p>Watch Overview Video: <a style="color:#0645AD" href="https://www.goprep.com/demo-video/"> https://www.goprep.com/demo-video/</a></p>
+                  <p>Book a Demo: <a style="color:#0645AD" href="https://calendly.com/goprep/support">https://calendly.com/goprep/support</a></p>
 
                   <p>Thanks again and we hope you enjoy your experience with GoPrep!</p>
                 </td>
