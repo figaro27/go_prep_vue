@@ -134,21 +134,21 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">
                   <p>Hey {{ $user->userDetail->firstname }}!</p>
-                  <p>Welcome to GoPrep. We’re excited to have you as part of the team. Now that you are registered, there are just a few small steps remaining to get your store up and running. Our goal is to help you save time, money, and grow your meal prep operation.</p>
+                  <p>Welcome to GoPrep. We’re excited to have you as part of the team. Now that you are registered, there are just a few small steps remaining to get your store up and running. Our goal is to help you save time, money, and grow your operation.</p>
 
-                  <p>To open your store, all you need to complete is the following: </p>
+                  <p>To open your menu for orders, all you need to complete is the following: </p>
                   <ul>
                   <li>Pick Your Delivery / Pickup Day(s)</li>
-                  <li>Set Your Cutoff Period</li>
-                  <li>Connect Your Bank Account to Stripe</li>
                   <li>Add At Least One Meal On Your Menu Page</li>
+                  <li>Toggle on 'Open' at the bottom of the Settings page</li>
                   </ul>
 
-                  <p>Everything else is optional.</p>
-                  <p>We will happily do the entire setup for you for free. Just reply to this email or call us at (866) 5GO-PREP. The only things we’d need are the answers to a few quick questions, and a list of your menu items with prices.</p>
 
-                  <p>You can also view our extensive onboarding guide here:
-                  <a href="https://www.goprep.com/documentation">https://www.goprep.com/documentation</a></p>
+                  <p>For any questions, you can call us at (866) 5GO-PREP or email us at <a href="mailto:help@goprep.com">help@goprep.com</a></p>
+
+                  <p>View Documentation<a style="color:#0645AD" href="https://www.goprep.com/documentation">https://www.goprep.com/documentation</a></p>
+                  <p>Watch Overview Video <a href="https://www.goprep.com/demo-video/"> https://www.goprep.com/demo-video/</a></p>
+                  <p>Book a Demo <a href="https://calendly.com/goprep/support">https://calendly.com/goprep/support</a></p>
 
                   <p>Thanks again and we hope you enjoy your experience with GoPrep!</p>
                 </td>
