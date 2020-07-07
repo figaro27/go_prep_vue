@@ -51,14 +51,18 @@
 
             <div slot="actions" slot-scope="props">
               <b-select
-                v-if="props.row.unit_type !== 'unit'"
+                v-if="
+                  props.row.unit_type !== 'unit' &&
+                    displayUnits[props.row.id] !== 'fl-oz'
+                "
                 :value="displayUnits[props.row.id]"
                 :options="unitOptions(props.row.unit_type)"
                 @change="val => saveUnit(props.row.id, val)"
               >
                 <option slot="top" disabled>-- Select unit --</option>
               </b-select>
-              <span v-else>Units</span>
+              <span v-if="displayUnits[props.row.id] == 'fl-oz'">fl. oz.</span>
+              <span v-if="props.row.unit_type == 'unit'">Units</span>
             </div>
 
             <div slot="adjuster" slot-scope="props">
@@ -173,11 +177,13 @@ export default {
 
           // Convert weight to selected unit
           if (baseUnit !== "unit") {
-            ingredient.quantity = units.convert(
-              orderIngredient.quantity,
-              baseUnit,
-              this.displayUnits[id] || baseUnit
-            );
+            if (this.displayUnits[id] !== "fl-oz") {
+              ingredient.quantity = units.convert(
+                orderIngredient.quantity,
+                baseUnit,
+                this.displayUnits[id] || baseUnit
+              );
+            }
           } else {
             ingredient.quantity = orderIngredient.quantity;
           }
