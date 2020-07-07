@@ -874,10 +874,8 @@ class Subscription extends Model
             }
         }
 
-        $salesTax = $afterDiscountBeforeFees * $salesTaxRate;
+        $salesTax = ceil($afterDiscountBeforeFees * $salesTaxRate * 100) / 100;
         $total += $salesTax;
-
-        $total = floor($total * 100) / 100;
 
         // Update subscription pricing
         $this->preFeePreDiscount = $preFeePreDiscount;
