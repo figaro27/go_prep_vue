@@ -51,9 +51,9 @@ class IngredientQuantities
                         $orderIngredient['quantity'],
                         $baseUnit
                     );
-                    if ($unit == 'fl-oz') {
-                        $unit = 'fl oz';
-                    }
+                    // if ($unit == 'fl-oz') {
+                    //     $unit = 'fl oz';
+                    // }
                     $quantity = $volume->toUnit($unit);
                     break;
 
