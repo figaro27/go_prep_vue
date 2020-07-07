@@ -94,13 +94,17 @@ class Labels
                 $mealOrders = $mealOrders->get();
                 $lineItemsOrders = $lineItemsOrders->get();
 
-                foreach ($mealOrders as $mealOrder) {
+                foreach ($mealOrders as $i => $mealOrder) {
+                    $mealOrder->index = $i + 1;
+                    $mealOrder->totalCount = count($mealOrders);
                     for ($i = 1; $i <= $mealOrder->quantity; $i++) {
                         $production->push($mealOrder);
                     }
                 }
 
-                foreach ($lineItemsOrders as $lineItemOrder) {
+                foreach ($lineItemsOrders as $i => $lineItemOrder) {
+                    $lineItemOrder->index = $i + 1;
+                    $lineItemOrder->totalCount = count($lineItemsOrders);
                     for ($i = 1; $i <= $lineItemOrder->quantity; $i++) {
                         $production->push($lineItemOrder);
                     }
@@ -122,7 +126,6 @@ class Labels
                     : null;
                 return $item;
             });
-
             return $output;
         } else {
             $mealOrders = MealOrder::where(
@@ -137,7 +140,9 @@ class Labels
                 ->with('meal', 'meal.ingredients')
                 ->get();
 
-            foreach ($mealOrders as $mealOrder) {
+            foreach ($mealOrders as $i => $mealOrder) {
+                $mealOrder->index = $i + 1;
+                $mealOrder->totalCount = count($mealOrders);
                 for ($i = 1; $i <= $mealOrder->quantity; $i++) {
                     $production->push($mealOrder);
                 }
