@@ -95,16 +95,16 @@ class Labels
                 $lineItemsOrders = $lineItemsOrders->get();
 
                 foreach ($mealOrders as $i => $mealOrder) {
-                    $mealOrder->index = $i + 1;
-                    $mealOrder->totalCount = count($mealOrders);
+                    // $mealOrder->index = $i + 1;
+                    // $mealOrder->totalCount = count($mealOrders);
                     for ($i = 1; $i <= $mealOrder->quantity; $i++) {
                         $production->push($mealOrder);
                     }
                 }
 
                 foreach ($lineItemsOrders as $i => $lineItemOrder) {
-                    $lineItemOrder->index = $i + 1;
-                    $lineItemOrder->totalCount = count($lineItemsOrders);
+                    // $lineItemOrder->index = $i + 1;
+                    // $lineItemOrder->totalCount = count($lineItemsOrders);
                     for ($i = 1; $i <= $lineItemOrder->quantity; $i++) {
                         $production->push($lineItemOrder);
                     }
@@ -141,8 +141,8 @@ class Labels
                 ->get();
 
             foreach ($mealOrders as $i => $mealOrder) {
-                $mealOrder->index = $i + 1;
-                $mealOrder->totalCount = count($mealOrders);
+                // $mealOrder->index = $i + 1;
+                // $mealOrder->totalCount = count($mealOrders);
                 for ($i = 1; $i <= $mealOrder->quantity; $i++) {
                     $production->push($mealOrder);
                 }
