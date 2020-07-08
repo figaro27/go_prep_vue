@@ -21,7 +21,8 @@ class SmsSetting extends Model
         'autoAddCustomers' => 'boolean',
         'autoSendDelivery' => 'boolean',
         'autoSendOrderReminder' => 'boolean',
-        'autoSendOrderConfirmation' => 'boolean'
+        'autoSendOrderConfirmation' => 'boolean',
+        'autoSendSubscriptionRenewal' => 'boolean'
     ];
 
     public $appends = [
@@ -31,6 +32,7 @@ class SmsSetting extends Model
         'orderReminderTemplatePreview',
         'orderConfirmationTemplatePreview',
         'deliveryTemplatePreview',
+        'subscriptionTemplatePreview',
         'aboveFiftyContacts'
     ];
 
@@ -43,6 +45,7 @@ class SmsSetting extends Model
         'orderReminderTemplatePreview',
         'orderConfirmationTemplatePreview',
         'deliveryTemplatePreview',
+        'subscriptionTemplatePreview',
         'aboveFiftyContacts'
     ];
 
@@ -115,7 +118,8 @@ class SmsSetting extends Model
                     'headers' => $this->headers,
                     'form_params' => [
                         'lists' => $list,
-                        'text' => $message
+                        'text' => $message,
+                        'from' => $this->phone
                     ]
                 ]
             );
@@ -168,7 +172,8 @@ class SmsSetting extends Model
                     'headers' => $this->headers,
                     'form_params' => [
                         'phones' => $phone,
-                        'text' => $message
+                        'text' => $message,
+                        'from' => $this->phone
                     ]
                 ]
             );
@@ -208,7 +213,50 @@ class SmsSetting extends Model
                     'headers' => $this->headers,
                     'form_params' => [
                         'phones' => $phone,
-                        'text' => $message
+                        'text' => $message,
+                        'from' => $this->phone
+                    ]
+                ]
+            );
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
+
+            $store = $this->store;
+            $this->balance += 0.06;
+            $this->total_spent += 0.06;
+            $this->update();
+            $this->chargeBalance($store);
+
+            return $body;
+        } catch (\Exception $e) {
+        }
+    }
+
+    public function sendSubscriptionRenewalSMS($subscription)
+    {
+        $customer = $subscription->customer;
+
+        $message = $this->processTags(
+            $this->autoSendSubscriptionRenewalTemplate,
+            false
+        );
+
+        $phone = (int) preg_replace('/[^0-9]/', '', $customer['phone']);
+        if (strlen((string) $phone) === 10) {
+            $phone = 1 . $phone;
+        }
+
+        try {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'POST',
+                'https://rest.textmagic.com/api/v2/messages',
+                [
+                    'headers' => $this->headers,
+                    'form_params' => [
+                        'phones' => $phone,
+                        'text' => $message,
+                        'from' => $this->phone
                     ]
                 ]
             );
@@ -292,6 +340,11 @@ class SmsSetting extends Model
     public function getDeliveryTemplatePreviewAttribute()
     {
         return $this->processTags($this->autoSendDeliveryTemplate);
+    }
+
+    public function getSubscriptionTemplatePreviewAttribute()
+    {
+        return $this->processTags($this->autoSendSubscriptionRenewalTemplate);
     }
 
     public function getAboveFiftyContactsAttribute()

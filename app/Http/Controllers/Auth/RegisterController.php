@@ -291,7 +291,9 @@ class RegisterController extends Controller
                 'autoSendDeliveryTemplate' =>
                     'Your order from {store name} {pickup/delivery} today.',
                 'autoSendOrderConfirmationTemplate' =>
-                    'Thank you for your order. Your order {pickup/delivery} on {delivery date}.'
+                    'Thank you for your order. Your order {pickup/delivery} on {delivery date}.',
+                'autoSendSubscriptionRenewalTemplate' =>
+                    'Your subscription from {store name} will renew in 24 hours. If you\'d like to make any changes, please visit {URL}.'
             ]);
 
             $storeSMSMasterList = $store->smsSettings->createMasterList();
