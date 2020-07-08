@@ -378,6 +378,11 @@ export default {
         return;
       }
 
+      if (this.mealPackage.meals.length == 0) {
+        this.$toastr.w("Please add at least one meal to the meal package");
+        return;
+      }
+
       try {
         const { data } = await axios.post("/api/me/packages", this.mealPackage);
       } catch (response) {

@@ -418,6 +418,11 @@ export default {
         validate_all: true
       };
 
+      if (this.mealPackage.meals.length == 0) {
+        this.$toastr.w("Please add at least one meal to the meal package");
+        return;
+      }
+
       try {
         const { data } = await axios.patch(
           `/api/me/packages/${this.mealPackage.id}`,
