@@ -44,30 +44,30 @@ font-size:10px !important;
         @endif
   <center>
           @if ($reportSettings->lab_logo)
-      <img src="{{$logo}}"/ style="width:32vh;height:32vh;margin-top:8px;margin-bottom:4px">
+      <img src="{{$logo}}"/ style="width:28vh;height:28vh;margin-top:8px;margin-bottom:4px">
       @else
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="/ style="width:25vh;height:15vh;margin-top:8px;margin-bottom:4px">
       @endif
       <!-- <p class="text-9">{{ $mealOrder->index }} of {{ $mealOrder->totalCount }}</p> -->
       <p class="text-11" style="font-weight:bold"> {!! $mealOrder->meal ? $mealOrder->html_title : $mealOrder->title !!}
       </p> @if ($mealOrder->meal && $reportSettings->lab_description)
-      <p> {!!
+      <p class="text-9"> {!!
       $mealOrder->meal->description !!} </p> @endif
 
         @if ($mealOrder->meal && $reportSettings->lab_instructions)
-        <p class="text-10">
+        <p class="text-9">
         {!! $mealOrder->meal->instructions !!}
         </p>
         @endif
         @if ($mealOrder->meal && $reportSettings->lab_expiration)
-        <p class="text-10">
+        <p class="text-9">
         Consume Before: {!! $mealOrder->expirationDate !!}
         </p>
         @endif
   
  @if ($reportSettings->lab_customer)
 
-        <p class="text-13" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
+        <p class="text-11" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
 
         @endif
 @if ($mealOrder->meal && $reportSettings->lab_ingredients && strlen($mealOrder['ingredientList']) > 0)
