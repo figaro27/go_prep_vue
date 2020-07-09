@@ -125,6 +125,9 @@ class Hourly extends Command
             $count++;
             // $sub->updated = 0;
             $sub->save();
+
+            // Send SMS Subscription Renewal texts
+            $sub->store->smsSettings->sendSubscriptionRenewalSMS($sub);
         }
         $this->info($count . ' `Subscription Renewing` notifications sent');
         $count = 0;

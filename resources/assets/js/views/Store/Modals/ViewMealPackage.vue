@@ -418,6 +418,11 @@ export default {
         validate_all: true
       };
 
+      if (!this.hasMeals(this.mealPackage)) {
+        this.$toastr.w("Please add at least one meal to the meal package");
+        return;
+      }
+
       try {
         const { data } = await axios.patch(
           `/api/me/packages/${this.mealPackage.id}`,
@@ -442,6 +447,30 @@ export default {
     },
     toggleModal() {
       this.$parent.viewPackageModal = false;
+    },
+    hasMeals(mealPackage) {
+      let hasMeals = false;
+      if (this.mealPackage.meals.length > 0) {
+        hasMeals = true;
+      }
+      this.mealPackage.sizes.forEach(size => {
+        if (size.meals.length > 0) {
+          hasMeals = true;
+        }
+      });
+      this.mealPackage.components.forEach(component => {
+        component.options.forEach(option => {
+          if (option.meals.length > 0) {
+            hasMeals = true;
+          }
+        });
+      });
+      this.mealPackage.addons.forEach(addon => {
+        if (addon.meals.length > 0) {
+          hasMeals = true;
+        }
+      });
+      return hasMeals;
     }
   }
 };

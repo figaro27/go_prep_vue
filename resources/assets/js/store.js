@@ -579,7 +579,11 @@ const mutations = {
     }
 
     /* Adjustments */
-    let price = item.size ? item.size.price : item.meal.price;
+    let price = item.size
+      ? item.size.price
+      : item.meal_package
+      ? item.meal.price
+      : item.meal.item_price;
 
     if (item.meal.ignoreBasePrice && !item.meal.adjustOrder) {
       price = 0;

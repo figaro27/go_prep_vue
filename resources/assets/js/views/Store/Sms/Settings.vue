@@ -55,6 +55,20 @@
         ></delivery-template>
       </b-modal>
 
+      <b-modal
+        size="lg"
+        title="Subscription Renewal"
+        v-model="subscriptionTemplateModal"
+        v-if="subscriptionTemplateModal"
+        no-fade
+        hide-footer
+      >
+        <subscription-template
+          @closeModal="subscriptionTemplateModal = false"
+          @update="updateSettings(true)"
+        ></subscription-template>
+      </b-modal>
+
       <div class="mb-4">
         <p v-if="smsSettings.phone" class="strong">
           Your Number - {{ smsSettings.phone }}
@@ -99,7 +113,7 @@
           @change.native="updateSettings"
         />
       </div>
-      <!-- <div class="mb-4">
+      <div class="mb-4">
         <p class="strong">
           <span class="mr-1">Auto Send Order Reminder Texts</span>
           <img
@@ -163,7 +177,7 @@
             >Edit Template</b-btn
           >
         </div>
-      </div> -->
+      </div>
       <div class="mb-4">
         <p class="strong">
           <span class="mr-1">Auto Send Order Confirmation Text</span>
@@ -234,6 +248,38 @@
           >
         </div>
       </div>
+      <div class="mb-4">
+        <p class="strong">
+          <span class="mr-1">Auto Send Subscription Renewal Text</span>
+          <img
+            v-b-popover.hover="
+              '24 hours before the customer\'s subscription renews, send them a reminder text telling them they have 24 hours left to update their meals if they wish. The customer also automatically receives a reminder email 24 hours before.'
+            "
+            title="Auto Send Subscription Renewal"
+            src="/images/store/popover.png"
+            class="popover-size"
+          />
+        </p>
+        <div class="d-flex">
+          <c-switch
+            color="success"
+            variant="pill"
+            size="lg"
+            v-model="smsSettings.autoSendSubscriptionRenewal"
+            class="d-inline mr-2 pt-1"
+            @change.native="updateSettings"
+          />
+        </div>
+        <div>
+          <b-btn
+            v-if="smsSettings.autoSendSubscriptionRenewal"
+            @click="subscriptionTemplateModal = true"
+            class="mt-3"
+            variant="warning"
+            >Edit Template</b-btn
+          >
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -250,6 +296,7 @@ import Activate from "./Modals/Activate.vue";
 import ReminderTemplate from "./Modals/ReminderTemplate.vue";
 import OrderConfirmationTemplate from "./Modals/OrderConfirmationTemplate.vue";
 import DeliveryTemplate from "./Modals/DeliveryTemplate.vue";
+import SubscriptionTemplate from "./Modals/SubscriptionTemplate.vue";
 
 export default {
   components: {
@@ -258,7 +305,8 @@ export default {
     Activate,
     ReminderTemplate,
     OrderConfirmationTemplate,
-    DeliveryTemplate
+    DeliveryTemplate,
+    SubscriptionTemplate
   },
   mixins: [checkDateRange],
   data() {
@@ -266,7 +314,8 @@ export default {
       showActivateModal: false,
       reminderTemplateModal: false,
       orderConfirmationTemplateModal: false,
-      deliveryTemplateModal: false
+      deliveryTemplateModal: false,
+      subscriptionTemplateModal: false
     };
   },
   created() {},
