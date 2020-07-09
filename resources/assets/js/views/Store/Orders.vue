@@ -1,15 +1,22 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show>
+      <b-alert style="background-color:#EBFAFF" show>
         <h5>
-          Update
+          SMS Updates.
         </h5>
-        <p>
-          You and your customers can now pause & resume subscriptions.
-         
-        </p>
-      </b-alert> -->
+        <strong
+          >3 New Settings.
+          <router-link to="/store/SMS">View Here.</router-link></strong
+        ><br />
+        1) Automatically send you a text alert when a customer responds to one
+        of your messages. This is turned on by default.<br />
+        2) Automatically send a reminder to all of your customers to order at a
+        certain time each week before your cutoff.<br />
+        3) Automatically send a text to your customer 24 hours before their
+        subscription renews reminding them they have 24 hours left to change
+        their subscription. They also receive an email.<br />
+      </b-alert>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
