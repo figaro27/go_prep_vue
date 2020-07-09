@@ -22,7 +22,8 @@ class SmsSetting extends Model
         'autoSendDelivery' => 'boolean',
         'autoSendOrderReminder' => 'boolean',
         'autoSendOrderConfirmation' => 'boolean',
-        'autoSendSubscriptionRenewal' => 'boolean'
+        'autoSendSubscriptionRenewal' => 'boolean',
+        'notifyChats' => 'boolean'
     ];
 
     public $appends = [
