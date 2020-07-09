@@ -288,33 +288,5 @@ class SmsChatController extends StoreController
             } catch (\Exception $e) {
             }
         }
-
-        $this->notifyStoreOwner($storeId);
-    }
-
-    public function notifyStoreOwner($storeId)
-    {
-        $storeDetail = StoreDetail::where('store_id', $storeId)->first();
-        $phone = (int) preg_replace('/[^0-9]/', '', $storeDetail->phone);
-        if (strlen((string) $phone) === 10) {
-            $phone = 1 . $phone;
-        }
-
-        try {
-            $client = new \GuzzleHttp\Client();
-            $res = $client->request(
-                'POST',
-                'https://rest.textmagic.com/api/v2/messages',
-                [
-                    'headers' => $this->headers,
-                    'form_params' => [
-                        'phones' => $phone,
-                        'from' => 16468805656,
-                        'text' => 'You have a new SMS reply on GoPrep.'
-                    ]
-                ]
-            );
-        } catch (\Exception $e) {
-        }
     }
 }
