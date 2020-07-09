@@ -288,10 +288,8 @@ class SmsChatController extends StoreController
             } catch (\Exception $e) {
             }
         }
-
         $this->notifyStoreOwner($storeId);
     }
-
     public function notifyStoreOwner($storeId)
     {
         $storeDetail = StoreDetail::where('store_id', $storeId)->first();
@@ -299,7 +297,6 @@ class SmsChatController extends StoreController
         if (strlen((string) $phone) === 10) {
             $phone = 1 . $phone;
         }
-
         try {
             $client = new \GuzzleHttp\Client();
             $res = $client->request(
