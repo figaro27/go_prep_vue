@@ -14,12 +14,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
 use App\MealOrder;
-use App\MealAddon;
-use App\MealComponentOption;
-use App\Utils\Data\Format;
-use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
-use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
-use App\Ingredient;
 
 class Labels
 {
@@ -135,8 +129,18 @@ class Labels
             });
 
             $output = $production->map(function ($item) {
-                $json = $this->getAllIngredients($item);
-                $item->json = $json;
+                $meal = $item->meal;
+                $item->json = $meal
+                    ? json_encode(
+                        array_merge($meal->attributesToArray(), [
+                            'ingredients' => $meal->ingredients->map(function (
+                                $ingredient
+                            ) {
+                                return $ingredient->attributesToArray();
+                            })
+                        ])
+                    )
+                    : null;
                 return $item;
             });
 
@@ -171,8 +175,16 @@ class Labels
             }
 
             $output = $production->map(function ($item) {
-                $json = $this->getAllIngredients($item);
-                $item->json = $json;
+                $meal = $item->meal;
+                $item->json = json_encode(
+                    array_merge($meal->attributesToArray(), [
+                        'ingredients' => $meal->ingredients->map(function (
+                            $ingredient
+                        ) {
+                            return $ingredient->attributesToArray();
+                        })
+                    ])
+                );
                 return $item;
             });
 
@@ -242,54 +254,6 @@ class Labels
         } elseif ($type === 'b64') {
             return base64_encode($output);
         }
-    }
-
-    public function getAllIngredients($item)
-    {
-        $meal = $item->meal;
-
-        if ($item->meal_size_id) {
-            $meal = MealSize::where('id', $item->meal_size_id)->first();
-        }
-
-        $relations = $item->relationsToArray();
-
-        foreach ($relations['components'] as $component) {
-            $ingredients = MealComponentOption::where(
-                'id',
-                $component['meal_component_option_id']
-            )
-                ->with('ingredients')
-                ->first()->ingredients;
-            foreach ($ingredients as $ingredient) {
-                if (!$ingredient->attributes['hidden']) {
-                    $meal->ingredients->push($ingredient);
-                }
-            }
-        }
-
-        foreach ($relations['addons'] as $addon) {
-            $ingredients = MealAddon::where('id', $addon['meal_addon_id'])
-                ->with('ingredients')
-                ->first()->ingredients;
-            foreach ($ingredients as $ingredient) {
-                if (!$ingredient->attributes['hidden']) {
-                    $meal->ingredients->push($ingredient);
-                }
-            }
-        }
-
-        $allIngredients = json_encode(
-            array_merge($meal->attributesToArray(), [
-                'ingredients' => $meal->ingredients->map(function (
-                    $ingredient
-                ) {
-                    return $ingredient;
-                })
-            ])
-        );
-
-        return $allIngredients;
     }
 
     public function exportPdfView()
