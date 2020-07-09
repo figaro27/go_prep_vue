@@ -233,11 +233,14 @@ class PackingSlips
 
         Log::info('Logo URL: ' . $logo);
 
-        $logoSize = getImageSize($logo);
         $squareLogo = true;
 
-        if ($logoSize[0] !== $logoSize[1]) {
-            $squareLogo = false;
+        if ($logo) {
+            $logoSize = getImageSize($logo);
+
+            if ($logoSize[0] !== $logoSize[1]) {
+                $squareLogo = false;
+            }
         }
 
         $vars = [
