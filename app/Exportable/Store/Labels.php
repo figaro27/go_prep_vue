@@ -94,21 +94,38 @@ class Labels
                 $mealOrders = $mealOrders->get();
                 $lineItemsOrders = $lineItemsOrders->get();
 
-                foreach ($mealOrders as $i => $mealOrder) {
-                    // $mealOrder->index = $i + 1;
-                    // $mealOrder->totalCount = count($mealOrders);
-                    for ($i = 1; $i <= $mealOrder->quantity; $i++) {
-                        $production->push($mealOrder);
-                    }
+                $totalCount = 0;
+                foreach ($mealOrders as $mealOrder) {
+                    $totalCount += $mealOrder->quantity;
                 }
 
-                foreach ($lineItemsOrders as $i => $lineItemOrder) {
-                    // $lineItemOrder->index = $i + 1;
-                    // $lineItemOrder->totalCount = count($lineItemsOrders);
-                    for ($i = 1; $i <= $lineItemOrder->quantity; $i++) {
-                        $production->push($lineItemOrder);
+                $number = 0;
+                foreach ($mealOrders as $mealOrder) {
+                    for ($i = 1; $i <= $mealOrder->quantity; $i++) {
+                        $mealOrderCopy = $mealOrder->replicate();
+                        $mealOrderCopy->index = $number + $i;
+                        $mealOrderCopy->totalCount = $totalCount;
+                        $production->push($mealOrderCopy);
                     }
+                    $number += $mealOrder->quantity;
                 }
+
+                // Not sure if it makes sense to generate labels for line items especially for service based items
+
+                // $totalCount = 0;
+                // foreach ($lineItemsOrders as $lineItemOrder){
+                //     $totalCount += $lineItemOrder->quantity;
+                // }
+
+                // $number = 0;
+                // foreach ($lineItemsOrders as $i => $lineItemOrder) {
+                //     $lineItemOrderCopy = $lineItemOrder->replicate();
+                //     $lineItemOrderCopy->index = $number + $i;
+                //     $lineItemOrderCopy->totalCount = $totalCount;
+                //     for ($i = 1; $i <= $lineItemOrder->quantity; $i++) {
+                //         $production->push($lineItemOrderCopy);
+                //     }
+                // }
             });
 
             $output = $production->map(function ($item) {
@@ -126,6 +143,7 @@ class Labels
                     : null;
                 return $item;
             });
+
             return $output;
         } else {
             $mealOrders = MealOrder::where(
@@ -140,11 +158,19 @@ class Labels
                 ->with('meal', 'meal.ingredients')
                 ->get();
 
-            foreach ($mealOrders as $i => $mealOrder) {
-                // $mealOrder->index = $i + 1;
-                // $mealOrder->totalCount = count($mealOrders);
+            $totalCount = 0;
+            foreach ($mealOrders as $mealOrder) {
+                $totalCount += $mealOrder->quantity;
+            }
+
+            $number = 0;
+
+            foreach ($mealOrders as $mealOrder) {
                 for ($i = 1; $i <= $mealOrder->quantity; $i++) {
-                    $production->push($mealOrder);
+                    $mealOrderCopy = $mealOrder->replicate();
+                    $mealOrderCopy->index = $number + $i;
+                    $mealOrderCopy->totalCount = $totalCount;
+                    $production->push($mealOrderCopy);
                 }
             }
 
