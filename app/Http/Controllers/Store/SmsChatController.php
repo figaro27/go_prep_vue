@@ -8,6 +8,7 @@ use stdClass;
 use App\SmsSetting;
 use Carbon\Carbon;
 use App\SmsContact;
+use App\StoreDetail;
 
 class SmsChatController extends StoreController
 {
@@ -253,6 +254,22 @@ class SmsChatController extends StoreController
 
         $chat = SmsChat::where('chat_id', $chatId)->first();
 
+        // Get store ID from looking up the contact by their phone number
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'GET',
+            'https://rest.textmagic.com/api/v2/contacts/phone/' . $phone,
+            [
+                'headers' => $this->headers
+            ]
+        );
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+        $contactId = json_decode($body)->id;
+        $storeId = SmsContact::where('contact_id', $contactId)
+            ->pluck('store_id')
+            ->first();
+
         if ($chat) {
             // Update existing chat
             $chat->unread = 1;
@@ -260,23 +277,6 @@ class SmsChatController extends StoreController
             $chat->update();
         } else {
             try {
-                // Get store ID from looking up the contact by their phone number
-                $client = new \GuzzleHttp\Client();
-                $res = $client->request(
-                    'GET',
-                    'https://rest.textmagic.com/api/v2/contacts/phone/' .
-                        $phone,
-                    [
-                        'headers' => $this->headers
-                    ]
-                );
-                $status = $res->getStatusCode();
-                $body = $res->getBody();
-                $contactId = json_decode($body)->id;
-                $storeId = SmsContact::where('contact_id', $contactId)
-                    ->pluck('store_id')
-                    ->first();
-
                 // Add new chat
                 $chat = new SmsChat();
                 $chat->store_id = $storeId;
@@ -284,6 +284,42 @@ class SmsChatController extends StoreController
                 $chat->unread = 1;
                 $chat->updatedAt = $request->get('messageTime');
                 $chat->save();
+            } catch (\Exception $e) {
+            }
+        }
+
+        $this->notifyStoreOwner($storeId, $contactId);
+    }
+
+    public function notifyStoreOwner($storeId, $contactId)
+    {
+        $smsSettings = SmsSetting::where('store_id', $storeId)->first();
+        if ($smsSettings->notifyChats) {
+            $storeDetail = StoreDetail::where('store_id', $storeId)->first();
+            $phone = (int) preg_replace('/[^0-9]/', '', $storeDetail->phone);
+            if (strlen((string) $phone) === 10) {
+                $phone = 1 . $phone;
+            }
+            try {
+                $client = new \GuzzleHttp\Client();
+                $res = $client->request(
+                    'POST',
+                    'https://rest.textmagic.com/api/v2/messages',
+                    [
+                        'headers' => $this->headers,
+                        'form_params' => [
+                            'phones' => $phone,
+                            'from' => 16468805656,
+                            'text' =>
+                                'You have an unread SMS chat from one of your customers on GoPrep.'
+                        ]
+                    ]
+                );
+
+                $smsSettings->balance += 0.06;
+                $smsSettings->total_spent += 0.06;
+                $smsSettings->update();
+                $smsSettings->chargeBalance($this->store);
             } catch (\Exception $e) {
             }
         }

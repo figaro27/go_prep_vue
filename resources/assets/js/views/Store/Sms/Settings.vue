@@ -95,6 +95,26 @@
       </div>
       <div class="mb-4">
         <p class="strong">
+          <span class="mr-1">Notify Me on Responses</span>
+          <img
+            v-b-popover.hover="
+              'If a customer replies to one of your messages, we can text a notification to your phone (charges apply).'
+            "
+            title="Notify Me on Responses"
+            src="/images/store/popover.png"
+            class="popover-size"
+          />
+        </p>
+        <c-switch
+          color="success"
+          variant="pill"
+          size="lg"
+          v-model="smsSettings.notifyChats"
+          @change.native="updateSettings"
+        />
+      </div>
+      <div class="mb-4">
+        <p class="strong">
           <span class="mr-1">Auto Add New Customers to Contacts</span>
           <img
             v-b-popover.hover="
