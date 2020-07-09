@@ -24,6 +24,11 @@ class Authorize implements IBilling
     const TEST_CARD_EXPIRATION = '2032-10';
     const TEST_CARD_SECURITY = '123';
 
+    const TRANSACTION_RESPONSE_CODE_APPROVED = '1';
+    const TRANSACTION_RESPONSE_CODE_DECLINED = '2';
+    const TRANSACTION_RESPONSE_CODE_ERROR = '3';
+    const TRANSACTION_RESPONSE_CODE_HELD = '4';
+
     /**
      * @var AnetAPI\MerchantAuthenticationType
      */
@@ -245,7 +250,36 @@ class Authorize implements IBilling
 
         $this->validateResponse($response);
 
-        return $response->getTransactionResponse()->getTransId();
+        /** @var AnetAPI\TransactionResponseType */
+        $transactionResponse = $response->getTransactionResponse();
+        $this->validateTransactionResponse($transactionResponse);
+
+        return $transactionResponse->getTransId();
+    }
+
+    /**
+     * @param AnetAPI\TransactionResponseType $response
+     */
+    protected function validateTransactionResponse($response)
+    {
+        if (!$response || !$response->getMessages()) {
+            throw new BillingException('Invalid transaction response');
+        }
+
+        $responseCode = $response->getResponseCode();
+
+        switch ($responseCode) {
+            case self::TRANSACTION_RESPONSE_CODE_APPROVED:
+                return true;
+            case self::TRANSACTION_RESPONSE_CODE_DECLINED:
+                throw new BillingException('Transaction declined');
+            case self::TRANSACTION_RESPONSE_CODE_ERROR:
+                throw new BillingException('Transaction error');
+            case self::TRANSACTION_RESPONSE_CODE_HELD:
+                throw new BillingException('Transaction held for review');
+        }
+
+        return true;
     }
 
     public function refund(Refund $refund)
