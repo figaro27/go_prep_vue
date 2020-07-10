@@ -621,7 +621,14 @@ export default {
       bagPickup: "bagPickup"
     }),
     sortedDeliveryDays() {
-      return _.orderBy(this.store.delivery_days, "day_friendly");
+      // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
+      let sortedDays = _.uniqBy(this.store.delivery_days, "day_friendly");
+      return sortedDays;
+
+      // this.store.delivery_days.forEach(day => {
+      //   if (!sortedDays.includes(day.day_friendly))
+      // })
+      // return _.orderBy(this.store.delivery_days, "day_friendly");
     },
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
