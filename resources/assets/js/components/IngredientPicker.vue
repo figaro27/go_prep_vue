@@ -663,6 +663,9 @@ export default {
     processFoods(foods) {
       return _.map(foods, ingredient => {
         // Get properly named unit
+        if (ingredient.serving_unit === "lbs") ingredient.serving_unit = "lb";
+        if (ingredient.serving_unit === "kgs") ingredient.serving_unit = "kg";
+
         let unit = units.normalize(ingredient.serving_unit);
         ingredient.unit_type = units.type(unit);
         ingredient.quantity_unit_display = unit;
