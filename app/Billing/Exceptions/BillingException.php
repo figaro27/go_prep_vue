@@ -14,7 +14,7 @@ class BillingException extends \Exception
      */
     public $code;
 
-    public function __construct($message, $code)
+    public function __construct($message, $code = null)
     {
         $this->message = $message;
         $this->code = $code;
