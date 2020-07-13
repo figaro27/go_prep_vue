@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <b-alert style="background-color:#EBFAFF" show>
+      <!-- <b-alert style="background-color:#EBFAFF" show>
         <h5>
           SMS Updates.
         </h5>
@@ -16,7 +16,7 @@
         3) Automatically send a text to your customer 24 hours before their
         subscription renews reminding them they have 24 hours left to change
         their subscription. They also receive an email.<br />
-      </b-alert>
+      </b-alert> -->
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
