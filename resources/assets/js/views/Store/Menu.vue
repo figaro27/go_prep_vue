@@ -236,7 +236,6 @@
                     v-model="meal.title"
                     placeholder="Item Name"
                     required
-                    @change="val => updateMeal(meal.id, { title: val }, true)"
                   ></b-form-textarea>
                 </b-form-group>
                 <h4>Meal Description</h4>
@@ -246,9 +245,6 @@
                     id="meal-description"
                     class="form-control"
                     :rows="4"
-                    @change="
-                      e => updateMealDescription(meal.id, e.target.value)
-                    "
                   ></textarea>
                   <br />
                   <h4>Price</h4>
@@ -259,9 +255,6 @@
                     :max="999.99"
                     class="form-control"
                     v-bind="{ prefix: storeCurrencySymbol }"
-                    @blur.native="
-                      e => updateMeal(meal.id, { price: meal.price })
-                    "
                   ></money>
                   <br />
                   <h4 v-if="store.modules.stockManagement">Stock</h4>
@@ -274,7 +267,6 @@
                     <b-form-input
                       v-model="meal.stock"
                       placeholder="Leave blank for no stock management."
-                      @change="val => updateMeal(meal.id, { stock: val }, true)"
                     ></b-form-input>
                   </b-form-group>
                   <h4 v-if="storeSettings.showMacros">
