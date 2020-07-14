@@ -999,19 +999,15 @@ export default {
         : "left-right-box-shadow main-customer-container gray-background";
     },
     packageTitle() {
-      if (this.mealPackage) {
-        if (this.mealPackageSize) {
-          return this.mealPackage.title + " - " + this.mealPackageSize.title;
+      if (this.mealPackageSize) {
+        return this.mealPackage.title + " - " + this.mealPackageSize.title;
+      } else {
+        if (this.mealPackage.default_size_title) {
+          return (
+            this.mealPackage.title + " - " + this.mealPackage.default_size_title
+          );
         } else {
-          if (this.mealPackage.default_size_title) {
-            return (
-              this.mealPackage.title +
-              " - " +
-              this.mealPackage.default_size_title
-            );
-          } else {
-            return this.mealPackage.title;
-          }
+          return this.mealPackage.title;
         }
       }
     },
@@ -1022,16 +1018,12 @@ export default {
       return { meal_package_size_id: this.sizeId };
     },
     components() {
-      if (this.mealPackage) {
-        return _.filter(this.mealPackage.components, component => {
-          return _.find(component.options, this.sizeCriteria);
-        });
-      }
+      return _.filter(this.mealPackage.components, component => {
+        return _.find(component.options, this.sizeCriteria);
+      });
     },
     mealAddons() {
-      if (this.mealPackage) {
-        return _.filter(this.mealPackage.addons, this.sizeCriteria);
-      }
+      return _.filter(this.mealPackage.addons, this.sizeCriteria);
     }
   },
   validations() {
@@ -1074,8 +1066,6 @@ export default {
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPackagePageView = false;
       this.$parent.finalCategoriesSub = [];
-
-      this.$router.push("/customer/menu");
     },
     done() {
       this.$v.$touch();
@@ -1289,8 +1279,6 @@ export default {
         this.back();
         if (this.$parent.showBagClass.includes("hidden"))
           this.$parent.showBag();
-
-        this.$router.push("/customer/menu");
       }
     },
     optionMealSelected(componentId, optionId, mealId) {
