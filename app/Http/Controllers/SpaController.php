@@ -859,7 +859,9 @@ class SpaController extends Controller
                 'active_orders',
                 'active_orders_price',
                 'lifetime_orders',
-                'featured_image'
+                'featured_image',
+                'media',
+                'image'
             ]);
         });
 
@@ -881,7 +883,9 @@ class SpaController extends Controller
                 'allergy_titles',
                 'nutrition',
                 'substitute',
-                'gallery'
+                'gallery',
+                'media',
+                'image'
             ]);
         });
 
