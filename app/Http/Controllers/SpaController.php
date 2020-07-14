@@ -849,56 +849,39 @@ class SpaController extends Controller
         //sleep(5);
 
         $items = collect($items)->map(function ($item) {
-            return collect($item)->only([
-                'active',
-                'allergy_ids',
-                'allergy_titles',
-                'category_ids',
-                'default_size_title',
-                'description',
-                'full_title',
-                'hasVariations',
-                'hidden',
-                'hideFromMenu',
-                'id',
-                'image',
-                'item_price',
-                'item_title',
-                'macros',
-                'price',
-                'sizes',
-                'store_id',
-                'tag_ids',
-                'tag_titles',
-                'tags',
-                'title'
+            return collect($item)->except([
+                'order_ids',
+                'substitute_ids',
+                'production_group_id',
+                'updated_at',
+                'created_at',
+                'created_at_local',
+                'active_orders',
+                'active_orders_price',
+                'lifetime_orders',
+                'featured_image'
             ]);
         });
 
         $meals = collect($meals)->map(function ($meal) {
-            return collect($meal)->only([
-                'active',
-                'allergy_ids',
-                'allergy_titles',
-                'category_ids',
-                'default_size_title',
+            return collect($meal)->except([
+                'order_ids',
+                'substitute_ids',
+                'production_group_id',
+                'updated_at',
+                'created_at',
+                'created_at_local',
+                'active_orders',
+                'active_orders_price',
+                'lifetime_orders',
+                'ingredients',
+                'ingredient_ids',
+                'nutrition',
                 'description',
-                'full_title',
-                'hasVariations',
-                'hidden',
-                'hideFromMenu',
-                'id',
-                'image',
-                'item_price',
-                'item_title',
-                'macros',
-                'price',
-                'sizes',
-                'store_id',
-                'tag_ids',
-                'tag_titles',
-                'tags',
-                'title'
+                'allergy_titles',
+                'nutrition',
+                'substitute',
+                'gallery'
             ]);
         });
 
