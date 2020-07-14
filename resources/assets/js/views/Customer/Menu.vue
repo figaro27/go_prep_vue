@@ -974,23 +974,6 @@ export default {
     });
   },
   mounted() {
-    if (this.$route.query.item) {
-      axios.get(`/api/refresh/meal/${this.$route.query.item}`).then(resp => {
-        this.showMealPage(resp.data.meal);
-      });
-    }
-
-    if (this.$route.query.package) {
-      axios
-        .get(`/api/refresh/meal_package_with_size/${this.$route.query.package}`)
-        .then(resp => {
-          this.showMealPackagePage(
-            resp.data.package,
-            resp.data.package.sizes[0]
-          );
-        });
-    }
-
     this.autoPickUpcomingMultDD();
 
     if (this.$route.query.sub || this.$route.query.subscriptionId) {
@@ -1193,28 +1176,24 @@ export default {
       });
     },
     async showMealPackagePage(meal, size) {
-      this.$router.push(`/customer/menu?package=` + size.id);
+      this.mealPackagePageView = true;
       this.mealPackage = meal;
       this.mealPackageSize = size;
     },
-    async showMealPage(meal, size = null) {
-      axios.get(`/api/refresh/meal/${meal.id}`).then(resp => {
-        this.meal = resp.data.meal;
-        this.mealPageView = true;
-        this.showMealsArea = false;
-        this.$router.push(`/customer/menu?item=` + meal.id);
-        this.$refs.mealPage.setSizeFromMealsArea(size);
-        this.mealDescription = meal.description
-          ? meal.description.replace(/\n/g, "<br>")
-          : "";
+    async showMealPage(meal, size) {
+      this.mealPageView = true;
+      this.meal = meal;
+      this.$refs.mealPage.setSizeFromMealsArea(size);
+      this.mealDescription = meal.description
+        ? meal.description.replace(/\n/g, "<br>")
+        : "";
 
-        let sortedIngredients = this.meal.ingredients.sort((a, b) => {
-          return b.pivot.quantity_base - a.pivot.quantity_base;
-        });
-
-        this.getNutritionFacts(sortedIngredients, this.meal);
-        // this.$refs.mealGallery.reSlick();
+      let sortedIngredients = this.meal.ingredients.sort((a, b) => {
+        return b.pivot.quantity_base - a.pivot.quantity_base;
       });
+
+      this.getNutritionFacts(sortedIngredients, this.meal);
+      // this.$refs.mealGallery.reSlick();
     },
     filterByTag(tag) {
       Vue.set(this.active, tag, !this.active[tag]);
