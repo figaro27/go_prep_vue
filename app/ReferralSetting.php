@@ -27,7 +27,7 @@ class ReferralSetting extends Model
     public function getAmountFormatAttribute()
     {
         if ($this->type === 'percent') {
-            return trim($this->amount, ".00") . '%';
+            return (int) ltrim($this->amount, ".") . '%';
         } else {
             return '$' . $this->amount;
         }
