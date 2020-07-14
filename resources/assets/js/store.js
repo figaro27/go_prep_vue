@@ -585,6 +585,10 @@ const mutations = {
       ? item.meal.price
       : item.meal.item_price;
 
+    if (item.meal.gift_card) {
+      price = item.meal.price;
+    }
+
     if (item.meal.ignoreBasePrice && !item.meal.adjustOrder) {
       price = 0;
     }
