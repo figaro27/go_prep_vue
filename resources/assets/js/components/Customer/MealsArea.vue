@@ -1197,81 +1197,83 @@ export default {
           });
         });
       }
-
       return hasVar;
     },
     async addMeal(meal, mealPackage, size) {
-      if (this.$parent.selectedDeliveryDay) {
-        meal.delivery_day = this.$parent.selectedDeliveryDay;
-      }
-      if (meal.gift_card) {
-        this.addOne(meal);
-        this.$parent.showBagClass = "shopping-cart show-right bag-area";
-        return;
-      }
-      if (meal.meal_package) {
-        this.addMealPackage(meal, true);
-      } else {
-        if (
-          meal.sizes & (meal.sizes.length > 0) &&
-          meal.components &&
-          meal.components.length === 0 &&
-          meal.addons &&
-          meal.addons.length === 0
-        ) {
-          if (this.isAdjustOrder() || this.isManualOrder()) {
-            //const items = this.getRelatedBagItems(meal, null);
-            const items = this.getPackageBagItems();
+      axios.get(`/api/refresh/meal/${meal.id}`).then(resp => {
+        meal = resp.data.meal;
+        if (this.$parent.selectedDeliveryDay) {
+          meal.delivery_day = this.$parent.selectedDeliveryDay;
+        }
+        if (meal.gift_card) {
+          this.addOne(meal);
+          this.$parent.showBagClass = "shopping-cart show-right bag-area";
+          return;
+        }
+        if (meal.meal_package) {
+          this.addMealPackage(meal, true);
+        } else {
+          if (
+            meal.sizes & (meal.sizes.length > 0) &&
+            meal.components &&
+            meal.components.length === 0 &&
+            meal.addons &&
+            meal.addons.length === 0
+          ) {
+            if (this.isAdjustOrder() || this.isManualOrder()) {
+              //const items = this.getRelatedBagItems(meal, null);
+              const items = this.getPackageBagItems();
 
-            if (items && items.length > 0) {
-              this.$parent.showAdjustModal(meal, null, null, [], null, items);
-              return;
+              if (items && items.length > 0) {
+                this.$parent.showAdjustModal(meal, null, null, [], null, items);
+                return;
+              } else {
+                this.addOne(meal, false, null, null, [], null);
+              }
             } else {
               this.addOne(meal, false, null, null, [], null);
             }
+          }
+
+          if (this.hasVariations(meal, size)) {
+            let data = {};
+            data.meal = meal;
+            data.sizeId = size ? size.id : null;
+            this.$emit("showVariations", data);
+            // this.showVariationsModal = true;
+            // this.showMeal(meal, null, size);
+            return;
           } else {
-            this.addOne(meal, false, null, null, [], null);
-          }
-        }
+            if (size === undefined) {
+              size = null;
+            }
 
-        if (this.hasVariations(meal, size)) {
-          let data = {};
-          data.meal = meal;
-          data.sizeId = size ? size.id : null;
-          this.$emit("showVariations", data);
-          // this.showVariationsModal = true;
-          // this.showMeal(meal, null, size);
-          return;
-        } else {
-          if (size === undefined) {
-            size = null;
-          }
+            if (this.isAdjustOrder() || this.isManualOrder()) {
+              //const items = this.getRelatedBagItems(meal, size);
+              const items = this.getPackageBagItems();
 
-          if (this.isAdjustOrder() || this.isManualOrder()) {
-            //const items = this.getRelatedBagItems(meal, size);
-            const items = this.getPackageBagItems();
-
-            if (items && items.length > 0) {
-              this.$parent.showAdjustModal(meal, size, null, [], null, items);
-              return;
+              if (items && items.length > 0) {
+                this.$parent.showAdjustModal(meal, size, null, [], null, items);
+                return;
+              } else {
+                this.addOne(meal, false, size, null, [], null);
+              }
             } else {
               this.addOne(meal, false, size, null, [], null);
             }
-          } else {
-            this.addOne(meal, false, size, null, [], null);
+          }
+
+          if (this.$parent.showBagClass.includes("hidden-right")) {
+            this.$parent.showBagClass = "shopping-cart show-right bag-area";
+          }
+          if (this.$parent.showBagScrollbar) {
+            this.$parent.showBagClass += " area-scroll";
+          } else if (this.$parent.showBagScrollbar) {
+            this.$parent.showBagClass -= " area-scroll";
           }
         }
-
-        if (this.$parent.showBagClass.includes("hidden-right")) {
-          this.$parent.showBagClass = "shopping-cart show-right bag-area";
-        }
-        if (this.$parent.showBagScrollbar) {
-          this.$parent.showBagClass += " area-scroll";
-        } else if (this.$parent.showBagScrollbar) {
-          this.$parent.showBagClass -= " area-scroll";
-        }
-      }
-      this.$parent.search = "";
+        this.$parent.search = "";
+      });
     },
     showMealPackage(mealPackage, size) {
       $([document.documentElement, document.body]).scrollTop(0);
