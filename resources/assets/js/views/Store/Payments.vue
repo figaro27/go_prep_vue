@@ -555,8 +555,8 @@ export default {
           promotionReduction: 0,
           pointsReduction: 0,
           amount: 0,
-          refundedAmount: 0
-          balance: 0,
+          refundedAmount: 0,
+          balance: 0
         };
 
         orders.forEach(order => {
