@@ -412,7 +412,7 @@ class Subscription extends Model
             ['stripe_account' => $this->store->settings->stripe_id]
         );
 
-        $latestOrder->paid = 1;
+        $latestOrder->paid = $this->status != 'paused' ? 1 : 0;
         $latestOrder->paid_at = new Carbon();
         $latestOrder->stripe_id = $stripeInvoice->get('charge', null);
         // $latestOrder->stripe_id = $stripeInvoice->get('id', null);

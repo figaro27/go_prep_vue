@@ -555,8 +555,8 @@ export default {
           promotionReduction: 0,
           pointsReduction: 0,
           amount: 0,
-          balance: 0,
-          refundedAmount: 0
+          refundedAmount: 0,
+          balance: 0
         };
 
         orders.forEach(order => {
@@ -572,8 +572,8 @@ export default {
           sums.promotionReduction += order.promotionReduction;
           sums.pointsReduction += order.pointsReduction;
           sums.amount += order.amount;
-          sums.balance += order.balance;
           sums.refundedAmount += order.refundedAmount;
+          sums.balance += order.balance;
         });
 
         orders.unshift({
@@ -591,8 +591,8 @@ export default {
           promotionReduction: sums.promotionReduction,
           pointsReduction: sums.pointsReduction,
           amount: sums.amount,
-          balance: sums.balance,
           refundedAmount: sums.refundedAmount,
+          balance: sums.balance,
           sumRow: 1
         });
       }
@@ -616,6 +616,7 @@ export default {
         if (order.promotionReduction > 0)
           addedColumns.promotionReduction = true;
         if (order.pointsReduction > 0) addedColumns.pointsReduction = true;
+        if (order.refundedAmount > 0) addedColumns.refundedAmount = true;
         if (order.balance > 0) addedColumns.balance = true;
       });
 
@@ -638,6 +639,9 @@ export default {
         columns.splice(columns.length, 0, "pointsReduction");
 
       columns.splice(columns.length, 0, "amount");
+
+      if (addedColumns.refundedAmount)
+        columns.splice(columns.length, 0, "refundedAmount");
 
       if (addedColumns.balance) columns.splice(columns.length, 0, "balance");
 

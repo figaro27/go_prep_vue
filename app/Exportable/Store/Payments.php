@@ -30,8 +30,8 @@ class Payments
 
         $params->date_format = $this->store->settings->date_format;
 
-        $sums = ['TOTALS', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $sums = ['TOTALS', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         if ($dailySummary != 1) {
             $payments = $this->store
@@ -59,7 +59,8 @@ class Payments
                     $sums[10] += $payment->promotionReduction;
                     $sums[11] += $payment->pointsReduction;
                     $sums[12] += $payment->amount;
-                    $sums[13] += $payment->balance;
+                    $sums[13] += $payment->refundedAmount;
+                    $sums[14] += $payment->balance;
 
                     $paymentsRows = [
                         $payment->created_at->format('D, m/d/Y'),
@@ -81,6 +82,7 @@ class Payments
                         '$' . number_format($payment->promotionReduction, 2),
                         '$' . number_format($payment->pointsReduction, 2),
                         '$' . number_format($payment->amount, 2),
+                        '$' . number_format($payment->refundedAmount, 2),
                         '$' . number_format($payment->balance, 2)
                     ];
                     return $paymentsRows;
@@ -117,6 +119,7 @@ class Payments
                 $promotionReduction = 0;
                 $pointsReduction = 0;
                 $amount = 0;
+                $refundedAmount = 0;
                 $balance = 0;
 
                 foreach ($orderByDay as $order) {
@@ -137,6 +140,7 @@ class Payments
                     $promotionReduction += $order->promotionReduction;
                     $pointsReduction += $order->pointsReduction;
                     $amount += $order->amount;
+                    $refundedAmount += $order->refundedAmount;
                     $balance += $order->balance;
                     // $refundedAmount += $order->refundedAmount;
                 }
@@ -164,6 +168,7 @@ class Payments
                     '$' . number_format($promotionReduction, 2),
                     '$' . number_format($pointsReduction, 2),
                     '$' . number_format($amount, 2),
+                    '$' . number_format($refundedAmount, 2),
                     '$' . number_format($balance, 2)
                 ]);
 
@@ -179,7 +184,8 @@ class Payments
                 $sumsByDaily[10] += $promotionReduction;
                 $sumsByDaily[11] += $pointsReduction;
                 $sumsByDaily[12] += $amount;
-                $sumsByDaily[13] += $balance;
+                $sumsByDaily[13] += $refundedAmount;
+                $sumsByDaily[14] += $balance;
             }
 
             foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as $i) {
@@ -234,7 +240,8 @@ class Payments
             ? true
             : false;
         $params['removePoints'] = in_array(11, $removedIndexes) ? true : false;
-        $params['removeBalance'] = in_array(13, $removedIndexes) ? true : false;
+        $params['removeRefund'] = in_array(13, $removedIndexes) ? true : false;
+        $params['removeBalance'] = in_array(14, $removedIndexes) ? true : false;
 
         $filteredHeaders[0] = ['Order Date', 'Delivery Date', 'Subtotal'];
 
@@ -269,6 +276,9 @@ class Payments
         }
         array_push($filteredHeaders[0], 'Total');
         if (!in_array(13, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Refund');
+        }
+        if (!in_array(14, $removedIndexes)) {
             array_push($filteredHeaders[0], 'Balance');
         }
 
