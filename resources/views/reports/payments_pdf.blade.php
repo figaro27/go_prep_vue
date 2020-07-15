@@ -81,10 +81,10 @@
             @if (!$params['removePoints'])
             <th class="text-green">(Points)</th> 
             @endif
+            <th>Total</th>  
             @if (!$params['removeRefund'])
             <th class="text-green">(Refunded)</th> 
             @endif
-            <th>Total</th>  
             @if (!$params['removeBalance']) 
             <th>Balance</th>
             @endif
