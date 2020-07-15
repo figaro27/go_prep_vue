@@ -309,7 +309,14 @@ class StoreSetting extends Model
     }
     public function getNextOrderableDeliveryDatesAttribute()
     {
-        return $this->getNextDeliveryDates(true)->map(function (Carbon $date) {
+        // Hard coding for Beyond Vegan. Will modulize in future if requested. Ignores cutoff on same day before 3 PM PST.
+        $ignoreCutoff = true;
+        if ($this->store_id === 118 && (int) date('H') < 22) {
+            $ignoreCutoff = false;
+        }
+        return $this->getNextDeliveryDates($ignoreCutoff)->map(function (
+            Carbon $date
+        ) {
             $deliveryDay = null; //$this->store->getDeliveryDayByWeekIndex($date->format('w'));
             $cutoff = $this->getCutoffDate($date, $deliveryDay);
 
@@ -326,20 +333,26 @@ class StoreSetting extends Model
     }
     public function getNextOrderablePickupDatesAttribute()
     {
-        return $this->getNextDeliveryDates(true, 'pickup')->map(function (
-            Carbon $date
-        ) {
-            $deliveryDay = null; //$this->store->getDeliveryDayByWeekIndex($date->format('w'));
-            $cutoff = $this->getCutoffDate($date, $deliveryDay);
+        // Hard coding for Beyond Vegan. Will modulize in future if requested. Ignores cutoff on same day before 3 PM PST.
+        $ignoreCutoff = true;
+        if ($this->store_id === 118 && (int) date('H') < 22) {
+            $ignoreCutoff = false;
+        }
 
-            return [
-                'date' => $date->toDateTimeString(),
-                'date_passed' => $date->isPast(),
-                'cutoff' => $cutoff->toDateTimeString(),
-                'cutoff_passed' => $cutoff->isPast(),
-                'week_index' => (int) $date->format('w')
-            ];
-        });
+        return $this->getNextDeliveryDates($ignoreCutoff, 'pickup')->map(
+            function (Carbon $date) {
+                $deliveryDay = null; //$this->store->getDeliveryDayByWeekIndex($date->format('w'));
+                $cutoff = $this->getCutoffDate($date, $deliveryDay);
+
+                return [
+                    'date' => $date->toDateTimeString(),
+                    'date_passed' => $date->isPast(),
+                    'cutoff' => $cutoff->toDateTimeString(),
+                    'cutoff_passed' => $cutoff->isPast(),
+                    'week_index' => (int) $date->format('w')
+                ];
+            }
+        );
     }
 
     public function getDeliveryDay(Carbon $date)
