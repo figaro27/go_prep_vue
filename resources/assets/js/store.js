@@ -578,6 +578,8 @@ const mutations = {
       item.added = moment().unix();
     }
 
+    console.log(item);
+
     /* Adjustments */
     let price = item.size
       ? item.size.price
