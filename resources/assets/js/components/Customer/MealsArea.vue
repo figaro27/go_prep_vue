@@ -773,17 +773,20 @@ export default {
       if (this.context !== "store") {
         axios.post("/api/addViewToMeal", {
           store_id: this.store.id,
-          meal_title: this.$route.query.item
+          meal_id: this.$route.query.item
         });
       }
-      axios
-        .post("/api/refreshByTitle", {
-          store_id: this.store.id,
-          meal_title: this.$route.query.item
-        })
-        .then(resp => {
-          this.$parent.showMealPage(resp.data.meal);
-        });
+      // axios
+      //   .post("/api/refreshByTitle", {
+      //     store_id: this.store.id,
+      //     meal_title: this.$route.query.item
+      //   })
+      //   .then(resp => {
+      //     this.$parent.showMealPage(resp.data.meal);
+      //   });
+      axios.get("/api/refresh/meal/" + this.$route.query.item).then(resp => {
+        this.$parent.showMealPage(resp.data.meal);
+      });
     }
 
     // Fix packages first
