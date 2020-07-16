@@ -361,14 +361,14 @@ $hot = $order->hot;
               <td style="border:none"><b>Gratuity</b></td>
               <td style="border:none;text-align:right;position:relative;right:8px">{{ $gratuity }}</td>
             </tr>@endif
-            @if ($order->balance > 0)<tr>
+            <tr>
             <td style="border:none"><b>Total</b></td>
               <td style="border:none;text-align:right;position:relative;right:8px">{{ $amount }}</td>
             </tr><tr>
             <td style="border:none"><b>Paid</b></td>
               <td style="border:none;text-align:right;position:relative;right:8px">{{$currency}}{{number_format($order->amount - $order->balance, 2)}}</td>
             </tr>
-            @endif
+            
             @if ($order->subscription && $order->subscription->monthlyPrepay && ($order->subscription->weekCount !== 1 || $order->subscription->weekCount % 4 !== 1))
               <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">Prepaid</span>
             @endif
