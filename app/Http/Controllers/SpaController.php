@@ -1074,6 +1074,42 @@ class SpaController extends Controller
         ];
     }
 
+    public function refreshMealByTitle(Request $request)
+    {
+        $title = str_replace('-', ' ', $request->get('meal_title'));
+        // Full Refresh
+        $meal = Meal::with([
+            'categories',
+            'allergies',
+            'sizes',
+            'components',
+            'addons',
+            'macros'
+        ])
+            ->where([
+                'title' => $title,
+                'store_id' => $request->get('store_id')
+            ])
+            ->first();
+
+        return [
+            'meal' => $meal
+        ];
+    }
+
+    public function addViewToMeal(Request $request)
+    {
+        $title = str_replace('-', ' ', $request->get('meal_title'));
+
+        $meal = Meal::where([
+            'title' => $title,
+            'store_id' => $request->get('store_id')
+        ])->first();
+        $meal->views += 1;
+        $meal->update();
+        return $meal;
+    }
+
     public function refreshMealPackageBag($meal_package_id)
     {
         // Refresh for Bag
@@ -1118,6 +1154,45 @@ class SpaController extends Controller
 
         return [
             'package' => $package
+        ];
+    }
+
+    public function refreshPackageByTitle(Request $request)
+    {
+        $title = str_replace('-', ' ', $request->get('package_title'));
+
+        // Full Refresh
+        $package = MealPackage::where([
+            'title' => $title,
+            'store_id' => $request->get('store_id')
+        ])
+            ->with([
+                'meals',
+                'sizes' => function ($query) {
+                    $query->where('id', null);
+                },
+                'sizes.meals',
+                'components' => function ($query) {
+                    $query->whereHas('options', function ($q) {
+                        $q->where('meal_package_size_id', null);
+                    });
+                },
+                'addons' => function ($query) {
+                    $query->where('meal_package_size_id', null);
+                }
+            ])
+            ->first();
+
+        $title = str_replace('-', ' ', $request->get('package_size_title'));
+
+        $packageSize = MealPackageSize::where([
+            'title' => $title,
+            'store_id' => $request->get('store_id')
+        ])->first();
+
+        return [
+            'package' => $package,
+            'packageSize' => $packageSize
         ];
     }
 

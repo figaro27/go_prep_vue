@@ -131,6 +131,16 @@ foreach (
                 'uses' => 'SpaController@refreshMeal'
             ]);
 
+            Route::post('/refreshByTitle', [
+                'middleware' => ['view.api'],
+                'uses' => 'SpaController@refreshMealByTitle'
+            ]);
+
+            Route::post('/addViewToMeal', [
+                'middleware' => ['view.api'],
+                'uses' => 'SpaController@addViewToMeal'
+            ]);
+
             Route::get('/refresh_bag/meal/{meal_id}', [
                 'middleware' => ['view.api'],
                 'uses' => 'SpaController@refreshMealBag'
@@ -139,6 +149,11 @@ foreach (
             Route::get('/refresh/meal_package/{meal_package_id}', [
                 'middleware' => ['view.api'],
                 'uses' => 'SpaController@refreshMealPackage'
+            ]);
+
+            Route::post('/refreshPackageByTitle', [
+                'middleware' => ['view.api'],
+                'uses' => 'SpaController@refreshPackageByTitle'
             ]);
 
             Route::get(
