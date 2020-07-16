@@ -1105,9 +1105,10 @@ class SpaController extends Controller
             'title' => $title,
             'store_id' => $request->get('store_id')
         ])->first();
-        $meal->views += 1;
-        $meal->update();
-        return $meal;
+        if ($meal) {
+            $meal->views += 1;
+            $meal->update();
+        }
     }
 
     public function refreshMealPackageBag($meal_package_id)
