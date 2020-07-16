@@ -38,6 +38,15 @@
             document.getElementsByTagName("head")[0].appendChild(mf);
         })();
     </script>
+    <script type="text/javascript" language="Javascript">
+        window._mfq = window._mfq || [];
+        (function() {
+            var mf = document.createElement("script");
+            mf.type = "text/javascript"; mf.async = true;
+            mf.src = "//cdn.mouseflow.com/projects/@php echo env('MOUSEFLOW_GOEATFRESH') @endphp";
+            document.getElementsByTagName("head")[0].appendChild(mf);
+        })();
+    </script>
     <div id="xs"></div>
     <div id="sm"></div>
     <div id="md"></div>
