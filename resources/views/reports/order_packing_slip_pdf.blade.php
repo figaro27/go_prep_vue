@@ -376,19 +376,29 @@ $hot = $order->hot;
         </td>
       </tr>
       <tfoot>
-        @if ($order->balance > 0)
+        
         <tr>
-          <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">
-          Amount Due</th>
-          <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{$currency}}{{number_format($order->balance, 2)}}</th>
-        </tr>
-        @endif
-        @if ($order->balance <= 0)
-        <tr>
-          <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Total Paid</th>
-          <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{ $amount }}</th>
-        </tr>
-        @endif
+          <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Total Paid
+            @if ($order->balance > 0)
+            <br>
+            Amount Due
+            @endif
+            @if ($order->balance < 0)
+            <br>
+            Amount Owed To Customer
+            @endif
+          </th>
+          <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{ $amount }}
+            @if ($order->balance > 0)
+            <br>
+            {{$currency}}{{number_format($order->balance, 2)}}
+            @endif
+            @if ($order->balance < 0)
+            <br>
+            {{$currency}}{{number_format($order->balance * -1, 2)}}
+            @endif
+          </th>
+        </tr> 
       </tfoot>
     </table>
 
