@@ -1026,12 +1026,7 @@ export default {
     this.showActiveFilters();
   },
   updated() {
-    if (this.$route.params.checkoutData) {
-      this.pickup = this.$route.params.checkoutData.pickup;
-    }
-    if (this.$parent.pickup !== null) {
-      this.pickup = this.$parent.pickup;
-    }
+    this.pickup = this.bagPickup;
   },
   methods: {
     showGallery(images, index) {
