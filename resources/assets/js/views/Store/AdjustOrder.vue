@@ -215,6 +215,9 @@ export default {
             meal.delivery_day = delivery_day;
           }
 
+          console.log(item);
+          console.log(meal);
+
           for (let i = 0; i < item.quantity; i++) {
             this.addOne(
               meal,
