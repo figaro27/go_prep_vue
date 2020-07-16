@@ -1155,6 +1155,7 @@ export default {
         "contains",
         "price",
         "subscription_count",
+        "views",
         "lifetime_orders",
         "created_at",
         "actions"

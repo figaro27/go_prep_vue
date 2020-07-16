@@ -769,6 +769,31 @@ export default {
     adjustOrder: false
   },
   mounted() {
+    if ("item" in this.$route.query) {
+      if (this.context !== "store") {
+        axios.post("/api/addViewToMeal", {
+          store_id: this.store.id,
+          meal_title: this.$route.query.item
+        });
+      }
+      axios
+        .post("/api/refreshByTitle", {
+          store_id: this.store.id,
+          meal_title: this.$route.query.item
+        })
+        .then(resp => {
+          this.$parent.showMealPage(resp.data.meal);
+        });
+    }
+
+    // Fix packages first
+    // if (this.$route.query.package){
+    //   axios.post('/api/refreshPackageByTitle', {store_id: this.store.id, package_title: this.$route.query.package, package_size_title: this.$route.query.package_size})
+    //   .then(resp => {
+    //     this.showMealPackage(resp.data.package, resp.data.packageSize)
+    //   })
+    // }
+
     window.scrollTo(0, 0);
 
     // Remove first category if it has no items.
@@ -1073,6 +1098,43 @@ export default {
         }
       }
     },
+    hasVariations(meal, size) {
+      let hasVar = false;
+      if (size == null || size == undefined) {
+        if (meal.components.length > 0) {
+          meal.components.forEach(component => {
+            component.options.forEach(option => {
+              if (option.meal_size_id == null) {
+                hasVar = true;
+              }
+            });
+          });
+        }
+
+        if (meal.addons.length > 0) {
+          meal.addons.forEach(addon => {
+            if (addon.meal_size_id == null) {
+              hasVar = true;
+            }
+          });
+        }
+      } else {
+        meal.addons.forEach(addon => {
+          if (addon.meal_size_id == size.id) {
+            hasVar = true;
+          }
+        });
+        meal.components.forEach(component => {
+          component.options.forEach(option => {
+            if (option.meal_size_id == size.id) {
+              hasVar = true;
+            }
+          });
+        });
+      }
+
+      return hasVar;
+    },
     async addMealPackage(mealPackage, condition = false, size) {
       if (size === undefined) {
         size = null;
@@ -1098,10 +1160,12 @@ export default {
       // if (!this.store.refreshed_package_ids.includes(mealPackage.id)) {
       this.$parent.forceShow = true;
 
-      mealPackage = await store.dispatch(
-        "refreshStoreMealPackage",
-        mealPackage
-      );
+      if (!("package" in this.$route.query)) {
+        mealPackage = await store.dispatch(
+          "refreshStoreMealPackage",
+          mealPackage
+        );
+      }
 
       this.$parent.forceShow = false;
       // } else {
@@ -1162,43 +1226,6 @@ export default {
         this.$parent.showBagClass -= " area-scroll";
       }
       this.$parent.search = "";
-    },
-    hasVariations(meal, size) {
-      let hasVar = false;
-      if (size == null || size == undefined) {
-        if (meal.components.length > 0) {
-          meal.components.forEach(component => {
-            component.options.forEach(option => {
-              if (option.meal_size_id == null) {
-                hasVar = true;
-              }
-            });
-          });
-        }
-
-        if (meal.addons.length > 0) {
-          meal.addons.forEach(addon => {
-            if (addon.meal_size_id == null) {
-              hasVar = true;
-            }
-          });
-        }
-      } else {
-        meal.addons.forEach(addon => {
-          if (addon.meal_size_id == size.id) {
-            hasVar = true;
-          }
-        });
-        meal.components.forEach(component => {
-          component.options.forEach(option => {
-            if (option.meal_size_id == size.id) {
-              hasVar = true;
-            }
-          });
-        });
-      }
-
-      return hasVar;
     },
     async addMeal(meal, mealPackage, size) {
       if (this.$parent.selectedDeliveryDay) {
@@ -1281,8 +1308,12 @@ export default {
       this.$parent.search = "";
     },
     showMeal(meal, group, size) {
-      if (meal.meal_package || meal.gift_card) {
+      if (meal.gift_card || meal.meal_package) {
         return;
+      }
+
+      if (meal.meal_package) {
+        this.showMealPackage(meal, true);
       } else {
         $([document.documentElement, document.body]).scrollTop(0);
         this.$parent.showMealPage(meal, size ? size.id : null);
