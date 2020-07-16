@@ -957,6 +957,9 @@ export default {
     },
     brandFontColor() {
       return this.store.settings.color;
+    },
+    query() {
+      return this.$route.query;
     }
   },
   created() {
@@ -1024,6 +1027,19 @@ export default {
   },
   beforeDestroy() {
     this.showActiveFilters();
+  },
+  watch: {
+    query: function() {
+      if (
+        !("item" in this.query) &&
+        !("package" in this.query) &&
+        !("package_size" in this.query)
+      ) {
+        this.showMealsArea = true;
+        this.mealPageView = false;
+        this.mealPackagePageView = false;
+      }
+    }
   },
   updated() {
     if (this.$route.params.checkoutData) {
@@ -1176,13 +1192,35 @@ export default {
       });
     },
     async showMealPackagePage(meal, size) {
-      this.mealPackagePageView = true;
       this.mealPackage = meal;
       this.mealPackageSize = size;
+      this.showMealsArea = false;
+      this.mealPackagePageView = true;
+
+      // Need to fix pushing packages to individual URLs first
+      // if (!('package' in this.query)){
+      //   if (!size){
+      //     this.$router.push(`/customer/menu?package=` + this.slugifyItem(meal));
+      //   }
+      //   else {
+      //     this.$router.push(`/customer/menu?package=` + this.slugifyItem(meal) + `&package_size=` + this.slugifyItem(size));
+      //   }
+      // }
     },
-    async showMealPage(meal, size) {
-      this.mealPageView = true;
+    async showMealPage(meal, size = null) {
       this.meal = meal;
+      this.mealPageView = true;
+      this.showMealsArea = false;
+      let title = this.slugifyItem(meal);
+      if (!("item" in this.query)) {
+        this.$router.push(`/customer/menu?item=` + title);
+        if (this.context !== "store") {
+          axios.post("/api/addViewToMeal", {
+            store_id: this.store.id,
+            meal_title: title
+          });
+        }
+      }
       this.$refs.mealPage.setSizeFromMealsArea(size);
       this.mealDescription = meal.description
         ? meal.description.replace(/\n/g, "<br>")
@@ -1443,6 +1481,11 @@ export default {
           }
         }
       }
+    },
+    slugifyItem(item) {
+      let title = item.title;
+      title = title.replace(/\s+/g, "-").toLowerCase();
+      return title;
     }
   }
 };
