@@ -378,26 +378,19 @@ $hot = $order->hot;
       <tfoot>
         
         <tr>
-          <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Total Paid
-            @if ($order->balance > 0)
-            <br>
-            Amount Due
-            @endif
-            @if ($order->balance < 0)
-            <br>
-            Amount Owed To Customer
-            @endif
-          </th>
-          <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{ $amount }}
-            @if ($order->balance > 0)
-            <br>
-            {{$currency}}{{number_format($order->balance, 2)}}
-            @endif
-            @if ($order->balance < 0)
-            <br>
-            {{$currency}}{{number_format($order->balance * -1, 2)}}
-            @endif
-          </th>
+          @if ($order->balance === 0.00 || $order->balance === 0 || $order->balance === null)
+            <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Total Paid</th>
+            <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{ $amount }}</th>
+          @endif
+          @if ($order->balance > 0)
+            <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Amount Due</th>
+            <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{$currency}}{{number_format($order->balance, 2)}}</th>
+          @endif
+          @if ($order->balance < 0)
+            <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Amount Owed To Customer</th>
+            <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{$currency}}{{number_format($order->balance * -1, 2)}}</th>
+          @endif
+
         </tr> 
       </tfoot>
     </table>
