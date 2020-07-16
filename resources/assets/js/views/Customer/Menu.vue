@@ -1206,13 +1206,14 @@ export default {
       this.meal = meal;
       this.mealPageView = true;
       this.showMealsArea = false;
-      let title = this.slugifyItem(meal);
+      // let title = this.slugifyItem(meal);
+      let id = meal.id;
       if (!("item" in this.query)) {
-        this.$router.push(`/customer/menu?item=` + title);
+        this.$router.push(`/customer/menu?item=` + id);
         if (this.context !== "store") {
           axios.post("/api/addViewToMeal", {
             store_id: this.store.id,
-            meal_title: title
+            meal_id: id
           });
         }
       }

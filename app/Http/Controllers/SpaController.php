@@ -1099,16 +1099,13 @@ class SpaController extends Controller
 
     public function addViewToMeal(Request $request)
     {
-        $title = str_replace('-', ' ', $request->get('meal_title'));
-
         $meal = Meal::where([
-            'title' => $title,
+            'id' => $request->get('meal_id'),
             'store_id' => $request->get('store_id')
         ])->first();
-        if ($meal) {
-            $meal->views += 1;
-            $meal->update();
-        }
+
+        $meal->views += 1;
+        $meal->update();
     }
 
     public function refreshMealPackageBag($meal_package_id)
