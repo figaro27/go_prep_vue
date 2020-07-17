@@ -657,6 +657,8 @@ const mutations = {
     item.price = item.original_price + 0;
     item.delivery_day = delivery_day;
 
+    console.log(item.price);
+
     if (isNew) {
       // item.free = false;
       item.guid = guid;
