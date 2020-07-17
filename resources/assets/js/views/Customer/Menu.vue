@@ -1210,7 +1210,7 @@ export default {
       // let title = this.slugifyItem(meal);
       let id = meal.id;
       if (!("item" in this.query)) {
-        this.$router.push(`/customer/menu?item=` + id);
+        this.$router.push(this.$route.path + `?item=` + id);
         if (this.context !== "store") {
           axios.post("/api/addViewToMeal", {
             store_id: this.store.id,
