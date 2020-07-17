@@ -658,7 +658,7 @@ export default {
       this.invalidCheck = false;
       this.showcaseNutrition = false;
 
-      this.$router.push("/customer/menu");
+      this.$router.push(this.$route.path);
     },
     getMealVariationPrice() {
       let selectedMealSize = null;
