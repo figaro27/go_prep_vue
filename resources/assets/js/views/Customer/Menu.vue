@@ -21,7 +21,8 @@
           !bagDeliveryDate &&
             store.modules.category_restrictions &&
             !$route.params.storeView &&
-            !storeView
+            !storeView &&
+            context !== 'store'
         "
       ></delivery-date-modal>
 

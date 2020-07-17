@@ -2815,6 +2815,14 @@ use next_delivery_dates
           this.clearBagStaffMember();
           this.clearBagCustomerModel();
           this.refreshStorePurchasedGiftCards();
+          // Always select pickup for Livotis
+          if (
+            this.store.id === 108 ||
+            this.store.id === 109 ||
+            this.store.id === 110
+          ) {
+            this.setBagPickup(1);
+          }
         })
         .catch(async response => {
           this.checkingOut = false;
@@ -3015,6 +3023,15 @@ use next_delivery_dates
           this.clearBagStaffMember();
           this.clearBagCustomerModel();
           this.refreshCards();
+
+          // Always select pickup for Livotis
+          if (
+            this.store.id === 108 ||
+            this.store.id === 109 ||
+            this.store.id === 110
+          ) {
+            this.setBagPickup(1);
+          }
 
           if (this.isManualOrder) {
             this.refreshResource("orders");
