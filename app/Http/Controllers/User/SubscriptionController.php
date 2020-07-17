@@ -378,7 +378,7 @@ class SubscriptionController extends UserController
         $sub->stripe_plan = $plan->id;
 
         // If the current subscription is in draft state (within 1 hour before renewal, add line item to current invoice)
-        if ($subscription->store->id === 13) {
+        if ($sub->store->id === 13) {
             // Testing on MQS store first
             $invoice = \Stripe\Invoice::retrieve(
                 $subscription->latest_invoice,
