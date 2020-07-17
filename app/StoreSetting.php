@@ -310,11 +310,11 @@ class StoreSetting extends Model
     public function getNextOrderableDeliveryDatesAttribute()
     {
         // Hard coding for Beyond Vegan. Will modulize in future if requested. Ignores cutoff on same day before 3 PM PST.
-        $ignoreCutoff = true;
+        $factorCutoff = true;
         if ($this->store_id === 118 && (int) date('H') < 22) {
-            $ignoreCutoff = false;
+            $factorCutoff = false;
         }
-        return $this->getNextDeliveryDates($ignoreCutoff)->map(function (
+        return $this->getNextDeliveryDates($factorCutoff)->map(function (
             Carbon $date
         ) {
             $deliveryDay = null; //$this->store->getDeliveryDayByWeekIndex($date->format('w'));
@@ -334,12 +334,12 @@ class StoreSetting extends Model
     public function getNextOrderablePickupDatesAttribute()
     {
         // Hard coding for Beyond Vegan. Will modulize in future if requested. Ignores cutoff on same day before 3 PM PST.
-        $ignoreCutoff = true;
+        $factorCutoff = true;
         if ($this->store_id === 118 && (int) date('H') < 22) {
-            $ignoreCutoff = false;
+            $factorCutoff = false;
         }
 
-        return $this->getNextDeliveryDates($ignoreCutoff, 'pickup')->map(
+        return $this->getNextDeliveryDates($factorCutoff, 'pickup')->map(
             function (Carbon $date) {
                 $deliveryDay = null; //$this->store->getDeliveryDayByWeekIndex($date->format('w'));
                 $cutoff = $this->getCutoffDate($date, $deliveryDay);
