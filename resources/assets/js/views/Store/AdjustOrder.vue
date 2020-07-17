@@ -215,6 +215,9 @@ export default {
             meal.delivery_day = delivery_day;
           }
 
+          meal.customTitle = item.customTitle;
+          meal.customSize = item.customSize;
+
           for (let i = 0; i < item.quantity; i++) {
             this.addOne(
               meal,
