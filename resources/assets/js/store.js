@@ -657,14 +657,19 @@ const mutations = {
     item.price = item.original_price + 0;
     item.delivery_day = delivery_day;
 
-    console.log(item.price);
-
     if (isNew) {
       // item.free = false;
       item.guid = guid;
     }
     /* Adjustments End */
     item.customTitle = meal.customTitle;
+    item.customSize = meal.customSize;
+
+    // If the price was customized (which also saves customTitle & customSize)
+    if (item.customTitle && item.customSize) {
+      item.price = meal.price;
+    }
+
     Vue.set(state.bag.items, guid, item);
   },
   removeFromBagFromAdjust(state, order_bag) {
