@@ -1415,7 +1415,8 @@ export default {
         addons: this.meal.addons,
         macros: this.meal.macros,
         salesTax: this.meal.salesTax,
-        expirationDays: this.meal.expirationDays
+        expirationDays: this.meal.expirationDays,
+        stock: this.meal.stock
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 
