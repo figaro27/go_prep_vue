@@ -226,7 +226,9 @@
               (storeModules.specialInstructions &&
                 !storeModuleSettings.specialInstructionsStoreOnly) ||
                 (storeModuleSettings.specialInstructionsStoreOnly &&
-                  ($route.params.storeView || $route.params.orderId))
+                  ($route.params.storeView ||
+                    $route.params.orderId ||
+                    context === 'store'))
             "
             class="mt-4 mb-2"
             v-model="special_instructions"
@@ -367,7 +369,8 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       storeModules: "viewedStoreModules",
-      storeModuleSettings: "viewedStoreModuleSettings"
+      storeModuleSettings: "viewedStoreModuleSettings",
+      context: "context"
     }),
     galleryStyle() {
       if (this.showNutritionFacts) {
