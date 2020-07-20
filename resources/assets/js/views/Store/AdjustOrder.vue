@@ -136,7 +136,6 @@ export default {
 
           _.forEach(this.order.items, item => {
             if (item.meal_package_order_id === pkgItem.id && !item.hidden) {
-              console.log(1);
               const meal = this.getMeal(item.meal_id);
               meal.meal_size_id = item.meal_size_id;
               meal.quantity = item.quantity / pkgItem.quantity;
@@ -148,7 +147,6 @@ export default {
               } else {
                 meal_package.meals.push(meal);
               }
-              console.log(meal_package.meals);
             }
           });
 
@@ -173,6 +171,8 @@ export default {
 
           meal_package.adjustOrder = true;
           meal_package.customTitle = pkgItem.customTitle;
+
+          console.log(meal_package);
 
           for (let i = 0; i < pkgItem.quantity; i++) {
             this.addOne(
