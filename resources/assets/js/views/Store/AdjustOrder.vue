@@ -135,6 +135,8 @@ export default {
           }
 
           _.forEach(this.order.items, item => {
+            console.log(item);
+            console.log(pkgItem);
             if (item.meal_package_order_id === pkgItem.id && !item.hidden) {
               const meal = this.getMeal(item.meal_id);
               meal.meal_size_id = item.meal_size_id;
