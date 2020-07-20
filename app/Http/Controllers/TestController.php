@@ -229,7 +229,7 @@ class TestController extends Controller
     {
         $charge = \Stripe\Charge::create([
             'amount' => round(29 * 100),
-            'currency' => $store->settings->currency,
+            'currency' => 'USD',
             'source' => 'acct_1Gq1RZCEihBkmCwH',
             'description' => 'Mouseflow fee for GoEatFresh'
         ]);
