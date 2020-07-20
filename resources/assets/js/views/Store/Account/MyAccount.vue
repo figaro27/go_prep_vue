@@ -133,9 +133,6 @@
             </b-form-group>
 
             <b-button type="submit" variant="primary">Save</b-button>
-            <b-btn v-if="store.id === 16" @click="testChargeDescriptor"
-              >TEST CHARGE DESCRIPTOR</b-btn
-            >
           </b-form>
 
           <!--
