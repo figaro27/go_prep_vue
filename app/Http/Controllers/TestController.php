@@ -227,17 +227,14 @@ class TestController extends Controller
 
     public function testChargeDescriptor()
     {
-        $charge = \Stripe\Charge::create([
-            'amount' => round(29 * 100),
-            'currency' => 'USD',
-            'source' => 'acct_1Gq1RZCEihBkmCwH',
-            'description' => 'Mouseflow fee for GoEatFresh'
-        ]);
-
-        return $charge;
-
+        // $charge = \Stripe\Charge::create([
+        //     'amount' => round(29 * 100),
+        //     'currency' => 'USD',
+        //     'source' => 'acct_1Gq1RZCEihBkmCwH',
+        //     'description' => 'Mouseflow fee for GoEatFresh'
+        // ]);
+        // return $charge;
         // \Stripe\Stripe::setApiKey('sk_live_w371HmpG4A0x4xG1E3FMYgdr00IjD6SplL');
-
         // $test = \Stripe\Account::update('acct_1GOv9dLVLsZe90Mo', [
         //     'settings' => [
         //         'payments' => [
@@ -245,7 +242,6 @@ class TestController extends Controller
         //         ]
         //     ]
         // ]);
-
         // return $test;
     }
 
