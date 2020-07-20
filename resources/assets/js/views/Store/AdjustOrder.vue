@@ -170,9 +170,7 @@ export default {
           }
 
           meal_package.adjustOrder = true;
-          meal_package.customTitle = pkgItem.customTitle;
-
-          console.log(meal_package);
+          // meal_package.customTitle = pkgItem.customTitle;
 
           for (let i = 0; i < pkgItem.quantity; i++) {
             this.addOne(
