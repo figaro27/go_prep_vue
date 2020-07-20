@@ -154,13 +154,13 @@ export default {
             ? pkgItem.customTitle
             : meal_package.title;
 
-          if (pkgItem.customSize) {
-            let sizeId = pkgItem.meal_package_size_id;
-            let size = meal_package.sizes.find(size => {
-              return (size.id = sizeId);
-            });
-            size.title = pkgItem.customSize;
-          }
+          // if (pkgItem.customSize) {
+          //   let sizeId = pkgItem.meal_package_size_id;
+          //   let size = meal_package.sizes.find(size => {
+          //     return (size.id = sizeId);
+          //   });
+          //   size.title = pkgItem.customSize;
+          // }
 
           if (this.store.modules.multipleDeliveryDays) {
             let delivery_day = this.store.delivery_days.find(day => {
@@ -170,7 +170,7 @@ export default {
           }
 
           meal_package.adjustOrder = true;
-          // meal_package.customTitle = pkgItem.customTitle;
+          meal_package.customTitle = pkgItem.customTitle;
 
           for (let i = 0; i < pkgItem.quantity; i++) {
             this.addOne(
