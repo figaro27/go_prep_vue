@@ -157,7 +157,7 @@ export default {
           if (pkgItem.customSize) {
             let sizeId = pkgItem.meal_package_size_id;
             let size = meal_package.sizes.find(size => {
-              return (size.id = sizeId);
+              return size.id === sizeId;
             });
             size.title = pkgItem.customSize;
           }
