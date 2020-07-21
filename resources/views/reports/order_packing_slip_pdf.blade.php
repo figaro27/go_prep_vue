@@ -21,6 +21,7 @@ $cashOrder = $order->cashOrder;
 $balance = $order->balance;
 $brandColor = $order->store->settings->color;
 $hot = $order->hot;
+$deliveryInstructions = $order->user->userDetail->delivery;
 @endphp
 
 <head>
@@ -159,6 +160,20 @@ $hot = $order->hot;
           @endif
 
           @if (!$order->store->modules->hideTransferOptions)
+          @if ($order->pickup_location_id)
+          <p>Pickup Location: {{ $order->pickup_location_name }}</p>
+          @endif
+          @if ($order->isMultipleDelivery === 0)
+          <p>Date: {{$order->delivery_date->format($order->store->settings->date_format)}}</p>
+          @endif
+          @if ($order->isMultipleDelivery === 1)
+          <p>Dates: {{ $order->multipleDates }}
+          @endif
+          </p>
+          @endif
+          @if ($order->staff_id)
+          <p>Order Taken By: {{ $order->staff_member }}</p>
+          @endif
           @if ($order->transferTime)
           @if ($order->pickup === 0)
           <p>Delivery Time: {{ $order->transferTime }}</p>
@@ -167,20 +182,7 @@ $hot = $order->hot;
           <p>Pickup Time: {{ $order->transferTime }}</p>
           @endif
           @endif
-          @if ($order->pickup_location_id)
-          <p>Pickup Location: {{ $order->pickup_location_name }}</p>
-          @endif
-          @if ($order->isMultipleDelivery === 0)
-          <p>Date: {{$order->delivery_date->format($order->store->settings->date_format)}}</p>
-            @endif
-          @if ($order->isMultipleDelivery === 1)
-          <p>Dates: {{ $order->multipleDates }}
-            @endif
-          </p>
-          @endif
-          @if ($order->staff_id)
-          <p>Order Taken By: {{ $order->staff_member }}</p>
-          @endif
+          <p>{{ $deliveryInstructions }}</p>
       </div>
     </center>
     </div>
