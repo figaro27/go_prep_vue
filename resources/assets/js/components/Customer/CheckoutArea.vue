@@ -668,6 +668,7 @@
         v-if="
           deliveryDateOptions.length > 1 &&
             $route.params.subscriptionId === undefined &&
+            context === 'store' &&
             !$route.params.storeView &&
             !storeOwner &&
             (!bagDeliveryDate || !store.modules.category_restrictions) &&
