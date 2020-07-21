@@ -21,6 +21,7 @@ $cashOrder = $order->cashOrder;
 $balance = $order->balance;
 $brandColor = $order->store->settings->color;
 $hot = $order->hot;
+$deliveryInstructions = $order->user->userDetail->delivery;
 @endphp
 
 <head>
@@ -158,15 +159,7 @@ $hot = $order->hot;
           <p>Order ID: {{$order->order_number}}</p>
           @endif
 
-          @if (!$order->store->modules->hideTransferOptions)
-          @if ($order->transferTime)
-          @if ($order->pickup === 0)
-          <p>Delivery Time: {{ $order->transferTime }}</p>
-          @endif
-          @if ($order->pickup === 1)
-          <p>Pickup Time: {{ $order->transferTime }}</p>
-          @endif
-          @endif
+          
           @if ($order->pickup_location_id)
           <p>Pickup Location: {{ $order->pickup_location_name }}</p>
           @endif
@@ -181,6 +174,16 @@ $hot = $order->hot;
           @if ($order->staff_id)
           <p>Order Taken By: {{ $order->staff_member }}</p>
           @endif
+          @if (!$order->store->modules->hideTransferOptions)
+          @if ($order->transferTime)
+          @if ($order->pickup === 0)
+          <p>Delivery Time: {{ $order->transferTime }}</p>
+          @endif
+          @if ($order->pickup === 1)
+          <p>Pickup Time: {{ $order->transferTime }}</p>
+          @endif
+          @endif
+          <p>{{ $deliveryInstructions }}</p>
       </div>
     </center>
     </div>
