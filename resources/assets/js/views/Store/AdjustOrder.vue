@@ -101,7 +101,6 @@ export default {
       //     }
       //   }
       // });
-
       axios.get("/api/me/getLineItemOrders/" + this.order.id).then(resp => {
         resp.data.forEach(lineItemOrder => {
           this.lineItemOrders.push(lineItemOrder);
@@ -136,7 +135,7 @@ export default {
 
           _.forEach(this.order.items, item => {
             if (item.meal_package_order_id === pkgItem.id && !item.hidden) {
-              const meal = this.getMeal(item.meal_id);
+              const meal = { ...this.getMeal(item.meal_id) };
               meal.meal_size_id = item.meal_size_id;
               meal.quantity = item.quantity / pkgItem.quantity;
               meal.special_instructions = item.special_instructions;
@@ -189,7 +188,7 @@ export default {
 
       _.forEach(this.order.items, item => {
         if (!item.meal_package_order_id && !item.hidden && !item.attached) {
-          const meal = this.getMeal(item.meal_id);
+          const meal = { ...this.getMeal(item.meal_id) };
           if (!meal) {
             return;
           }
