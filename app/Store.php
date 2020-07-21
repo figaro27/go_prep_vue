@@ -189,6 +189,11 @@ class Store extends Model
         return $this->hasMany('App\DeliveryFeeZipCode');
     }
 
+    public function deliveryDayZipCodes()
+    {
+        return $this->hasMany('App\DeliveryDayZipCode');
+    }
+
     public function plan()
     {
         return $this->hasOne('App\StorePlan');

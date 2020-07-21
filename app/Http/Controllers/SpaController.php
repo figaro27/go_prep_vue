@@ -283,6 +283,7 @@ class SpaController extends Controller
                     'reportSettings',
                     'smsSettings',
                     'deliveryFeeZipCodes',
+                    'deliveryDayZipCodes',
                     'deliveryDays'
                 ])
                 ->first();
@@ -313,7 +314,8 @@ class SpaController extends Controller
                     'pickupLocations',
                     'lineItems',
                     'deliveryDays',
-                    'deliveryFeeZipCodes'
+                    'deliveryFeeZipCodes',
+                    'deliveryDayZipCodes'
                 ])->find(STORE_ID)
                 : $last_viewed_store;
 

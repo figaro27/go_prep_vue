@@ -72,6 +72,7 @@ const state = {
     customerModel: null
   },
   delivery_date: null,
+  zip_code: null,
 
   allergies: {},
 
@@ -801,6 +802,9 @@ const mutations = {
     }
 
     Vue.delete(state.bag.items, guid);
+  },
+  setBagZipCode({ state, dispatch }, zipCode) {
+    this.state.zip_code = zipCode;
   },
   setBagDeliveryDate({ state, dispatch }, date) {
     this.state.delivery_date = date;
@@ -3389,6 +3393,9 @@ const getters = {
   },
   bagDeliveryDate(state) {
     return state.delivery_date;
+  },
+  bagZipCode(state) {
+    return state.zip_code;
   },
   bagTransferTime(state) {
     return state.bag.transferTime;
