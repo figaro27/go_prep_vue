@@ -362,7 +362,13 @@
             href="https://github.com/qzind/tray/releases/download/v2.1.1/qz-tray-2.1.1%2B1.exe"
             target="_blank"
             class="strong"
-            >Download QZ tray</a
+            >Download QZ tray (Windows)</a
+          >
+          <a
+            href="https://github.com/qzind/tray/releases/download/v2.1.1/qz-tray-2.1.1%2B1.pkg"
+            target="_blank"
+            class="strong"
+            >Download QZ tray (Mac)</a
           >
         </p>
         <p>
