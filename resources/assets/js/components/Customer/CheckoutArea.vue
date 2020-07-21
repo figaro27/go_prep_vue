@@ -1400,6 +1400,15 @@ export default {
     }
   },
   mixins: [MenuBag],
+  destroyed() {
+    if (
+      this.store.id === 108 ||
+      this.store.id === 109 ||
+      this.store.id === 110
+    ) {
+      this.setBagPickup(1);
+    }
+  },
   computed: {
     ...mapGetters({
       creditCards: "cards",
