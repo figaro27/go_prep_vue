@@ -158,7 +158,9 @@ $deliveryInstructions = $order->user->userDetail->delivery;
           @if ($order->dailyOrderNumber && $order->store->modules->dailyOrderNumbers)
           <p>Order ID: {{$order->order_number}}</p>
           @endif
-
+          @if ($order->staff_id)
+          <p>Order Taken By: {{ $order->staff_member }}</p>
+          @endif
           @if (!$order->store->modules->hideTransferOptions)
           @if ($order->pickup_location_id)
           <p>Pickup Location: {{ $order->pickup_location_name }}</p>
@@ -170,9 +172,6 @@ $deliveryInstructions = $order->user->userDetail->delivery;
           <p>Dates: {{ $order->multipleDates }}
           @endif
           </p>
-          @endif
-          @if ($order->staff_id)
-          <p>Order Taken By: {{ $order->staff_member }}</p>
           @endif
           @if ($order->transferTime)
           @if ($order->pickup === 0)
