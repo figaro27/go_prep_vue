@@ -1973,7 +1973,7 @@ use next_delivery_dates
       }
       if (coupon && coupon.type === "flat") {
         return coupon.amount < subtotal ? coupon.amount : subtotal;
-      } else if (coupon.type === "percent") {
+      } else if (coupon && coupon.type === "percent") {
         return (coupon.amount / 100) * subtotal;
       }
     },
