@@ -137,8 +137,10 @@ export default {
             if (item.meal_package_order_id === pkgItem.id && !item.hidden) {
               const meal = { ...this.getMeal(item.meal_id) };
               meal.meal_size_id = item.meal_size_id;
+              meal.price = item.price;
               meal.quantity = item.quantity / pkgItem.quantity;
               meal.special_instructions = item.special_instructions;
+              meal.meal_package_variation = item.meal_package_variation;
 
               if (pkgItem.meal_package_size && index !== null) {
                 meal_package.sizes[index].meals.push(meal);

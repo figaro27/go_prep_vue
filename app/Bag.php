@@ -467,7 +467,9 @@ class Bag
                                 'meal_package_variation' => false,
                                 'mappingId' => $mappingId,
                                 'customTitle' => $customTitle,
-                                'customSize' => $customSize
+                                'customSize' => $customSize,
+                                'meal_package_variation' =>
+                                    $meal['meal_package_variation']
                             ];
 
                             $mealItemId = $this->getItemId($mealItem);

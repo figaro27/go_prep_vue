@@ -26,6 +26,14 @@
         "
       ></delivery-date-modal>
 
+      <zip-code-modal
+        v-if="
+          !loggedIn &&
+            context !== 'store' &&
+            store.delivery_day_zip_codes.length > 0
+        "
+      ></zip-code-modal>
+
       <store-description-modal
         :showDescriptionModal="showDescriptionModal"
       ></store-description-modal>
@@ -400,6 +408,7 @@ import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 import MealComponentsModal from "../../components/Modals/MealComponentsModal";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 import DeliveryDateModal from "./Modals/DeliveryDateModal";
+import ZipCodeModal from "./Modals/ZipCodeModal";
 import MenuBag from "../../mixins/menuBag";
 import units from "../../data/units";
 import nutrition from "../../data/nutrition";
@@ -518,6 +527,7 @@ export default {
     MealPackagePage,
     MealComponentsModal,
     DeliveryDateModal,
+    ZipCodeModal,
     MealVariationsArea
   },
   mixins: [MenuBag],
@@ -619,17 +629,29 @@ export default {
       getMealPackage: "viewedStoreMealPackage",
       allTags: "tags",
       bagDeliveryDate: "bagDeliveryDate",
-      bagPickup: "bagPickup"
+      bagPickup: "bagPickup",
+      bagZipCode: "bagZipCode",
+      loggedIn: "loggedIn",
+      user: "user"
     }),
     sortedDeliveryDays() {
       // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
       let sortedDays = _.uniqBy(this.store.delivery_days, "day_friendly");
-      return sortedDays;
 
-      // this.store.delivery_days.forEach(day => {
-      //   if (!sortedDays.includes(day.day_friendly))
-      // })
-      // return _.orderBy(this.store.delivery_days, "day_friendly");
+      // If the store only serves certain zip codes on certain delivery days
+      if (this.store.delivery_day_zip_codes.length > 0) {
+        let deliveryDayIds = [];
+        this.store.delivery_day_zip_codes.forEach(ddZipCode => {
+          if (ddZipCode.zip_code === parseInt(this.bagZipCode)) {
+            deliveryDayIds.push(ddZipCode.delivery_day_id);
+          }
+        });
+        sortedDays = sortedDays.filter(day => {
+          return deliveryDayIds.includes(day.id);
+        });
+      }
+
+      return sortedDays;
     },
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
@@ -978,7 +1000,14 @@ export default {
     });
   },
   mounted() {
-    this.autoPickUpcomingMultDD();
+    if (this.store.delivery_day_zip_codes.length === 0) {
+      this.autoPickUpcomingMultDD();
+    } else {
+      if (this.loggedIn) {
+        this.setBagZipCode(parseInt(this.user.user_detail.zip));
+        this.autoPickUpcomingMultDD(this.sortedDeliveryDays);
+      }
+    }
 
     if (this.$route.query.sub || this.$route.query.subscriptionId) {
       this.bagPageURL =
@@ -1055,7 +1084,12 @@ export default {
       "emptyBag",
       "refreshUpcomingOrders"
     ]),
-    ...mapMutations(["emptyBag", "setBagMealPlan", "setBagCoupon"]),
+    ...mapMutations([
+      "emptyBag",
+      "setBagMealPlan",
+      "setBagCoupon",
+      "setBagZipCode"
+    ]),
     updateScrollbar() {
       return; // disabling for now
 
@@ -1450,19 +1484,28 @@ export default {
       this.sizeId = data.sizeId;
       this.showVariationsModal = true;
     },
-    autoPickUpcomingMultDD() {
-      if (this.isMultipleDelivery) {
-        let week_index = this.storeSettings.next_orderable_delivery_dates[0]
-          .week_index;
-        let nextDeliveryDay = this.store.delivery_days.find(day => {
-          return day.day == week_index;
-        });
+    autoPickUpcomingMultDD(availableDates) {
+      if (!availableDates) {
+        if (this.isMultipleDelivery) {
+          let week_index = this.storeSettings.next_orderable_delivery_dates[0]
+            .week_index;
+          let nextDeliveryDay = this.store.delivery_days.find(day => {
+            return day.day == week_index;
+          });
 
-        this.selectedDeliveryDay = nextDeliveryDay;
-        this.finalDeliveryDay = nextDeliveryDay;
+          this.selectedDeliveryDay = nextDeliveryDay;
+          this.finalDeliveryDay = nextDeliveryDay;
+
+          store.dispatch("refreshLazyDD", {
+            delivery_day: this.finalDeliveryDay
+          });
+        }
+      } else {
+        this.selectedDeliveryDay = availableDates[0];
+        this.finalDeliveryDay = availableDates[0];
 
         store.dispatch("refreshLazyDD", {
-          delivery_day: this.finalDeliveryDay
+          delivery_day: this.availableDates[0]
         });
       }
     },

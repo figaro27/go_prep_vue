@@ -645,7 +645,8 @@
           ($route.params.storeView || storeOwner) &&
             !isMultipleDelivery &&
             !$route.params.adjustMealPlan &&
-            !subscriptionId
+            !subscriptionId &&
+            context === 'store'
         "
       >
         <div>
@@ -668,7 +669,6 @@
         v-if="
           deliveryDateOptions.length > 1 &&
             $route.params.subscriptionId === undefined &&
-            context === 'store' &&
             !$route.params.storeView &&
             !storeOwner &&
             (!bagDeliveryDate || !store.modules.category_restrictions) &&
@@ -2340,6 +2340,19 @@ use next_delivery_dates
               customSalesTaxAmount += item.quantity * item.size.salesTax;
             }
           } else {
+            if (this.$route.params.adjustOrder) {
+              if (item.meal.sizes.length > 0) {
+                item.meal.sizes.forEach(size => {
+                  if (size.meals) {
+                    size.meals.forEach(meal => {
+                      removableItemAmount += meal.price * meal.quantity;
+                      customSalesTaxAmount +=
+                        meal.price * meal.quantity * meal.salesTax;
+                    });
+                  }
+                });
+              }
+            }
             // Meal packages size (top level) meals don't affect the package price, so not included below.
             if (item.addons !== null) {
               if (item.addons && item.addons.length > 0) {
