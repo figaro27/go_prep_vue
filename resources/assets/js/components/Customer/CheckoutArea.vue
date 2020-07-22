@@ -2770,6 +2770,15 @@ use next_delivery_dates
           return;
         }
       }
+      if (
+        this.pickup === 1 &&
+        this.store.modules.pickupLocations &&
+        this.pickupLocationOptions.length > 0 &&
+        !this.selectedPickupLocation
+      ) {
+        this.$toastr.w("Please select a pickup location from the dropdown.");
+        return;
+      }
       let deposit = this.deposit;
       if (deposit !== null && deposit.toString().includes("%")) {
         deposit.replace("%", "");
