@@ -666,8 +666,8 @@ const mutations = {
     item.customTitle = meal.customTitle;
     item.customSize = meal.customSize;
 
-    // If the price was customized (which also saves customTitle & customSize)
-    if (item.customTitle && item.customSize) {
+    // If the price was customized (which also saves customTitle or customSize)
+    if (item.customTitle || item.customSize) {
       item.price = meal.price;
     }
 

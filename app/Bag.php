@@ -468,8 +468,11 @@ class Bag
                                 'mappingId' => $mappingId,
                                 'customTitle' => $customTitle,
                                 'customSize' => $customSize,
-                                'meal_package_variation' =>
+                                'meal_package_variation' => isset(
                                     $meal['meal_package_variation']
+                                )
+                                    ? $meal['meal_package_variation']
+                                    : 0
                             ];
 
                             $mealItemId = $this->getItemId($mealItem);
@@ -507,7 +510,9 @@ class Bag
                                     'package_price' => $item['price'],
                                     'package_quantity' => $item['quantity'],
                                     'quantity' => $meal['quantity'],
-                                    'price' => 0,
+                                    'price' => isset($meal['price'])
+                                        ? $meal['price']
+                                        : 0,
                                     'size' => [
                                         'id' => $meal['meal_size_id']
                                             ? $meal['meal_size_id']
@@ -529,7 +534,11 @@ class Bag
                                     )
                                         ? $item['emailRecipient']
                                         : null,
-                                    'meal_package_variation' => false,
+                                    'meal_package_variation' => isset(
+                                        $meal['meal_package_variation']
+                                    )
+                                        ? $meal['meal_package_variation']
+                                        : 0,
                                     'mappingId' => $mappingId,
                                     'customTitle' => $customTitle,
                                     'customSize' => $customSize

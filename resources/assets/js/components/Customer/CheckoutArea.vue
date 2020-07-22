@@ -2341,13 +2341,23 @@ use next_delivery_dates
             }
           } else {
             if (this.$route.params.adjustOrder) {
+              item.meal.meals.forEach(meal => {
+                if (meal.salesTax !== null) {
+                  removableItemAmount += meal.price * meal.quantity;
+                  customSalesTaxAmount +=
+                    meal.price * meal.quantity * meal.salesTax;
+                }
+              });
+
               if (item.meal.sizes.length > 0) {
                 item.meal.sizes.forEach(size => {
                   if (size.meals) {
                     size.meals.forEach(meal => {
-                      removableItemAmount += meal.price * meal.quantity;
-                      customSalesTaxAmount +=
-                        meal.price * meal.quantity * meal.salesTax;
+                      if (meal.salesTax !== null) {
+                        removableItemAmount += meal.price * meal.quantity;
+                        customSalesTaxAmount +=
+                          meal.price * meal.quantity * meal.salesTax;
+                      }
                     });
                   }
                 });
