@@ -1472,6 +1472,7 @@ export default {
           scrollToCategory(categoryTarget);
         });
       }
+      this.$router.push(this.$route.path);
     },
     backFromPackagePage() {
       this.$refs.mealPackagePage.back();
