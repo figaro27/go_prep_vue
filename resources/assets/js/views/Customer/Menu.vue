@@ -30,7 +30,8 @@
         v-if="
           !loggedIn &&
             context !== 'store' &&
-            store.delivery_day_zip_codes.length > 0
+            store.delivery_day_zip_codes.length > 0 &&
+            store.modules.multipleDeliveryDays
         "
       ></zip-code-modal>
 
