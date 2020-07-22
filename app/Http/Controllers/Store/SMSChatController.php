@@ -239,56 +239,59 @@ class SmsChatController extends StoreController
 
     public function incomingSMS(Request $request)
     {
-        $phone = $request->get('sender');
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request(
-            'GET',
-            $this->baseURL . '/' . $phone . '/by/phone',
-            [
-                'headers' => $this->headers
-            ]
-        );
-        $status = $res->getStatusCode();
-        $body = $res->getBody();
-        $chatId = json_decode($body)->id;
+        try {
+            $phone = $request->get('sender');
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'GET',
+                $this->baseURL . '/' . $phone . '/by/phone',
+                [
+                    'headers' => $this->headers
+                ]
+            );
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
+            $chatId = json_decode($body)->id;
 
-        $chat = SmsChat::where('chat_id', $chatId)->first();
+            $chat = SmsChat::where('chat_id', $chatId)->first();
 
-        // Get store ID from looking up the contact by their phone number
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request(
-            'GET',
-            'https://rest.textmagic.com/api/v2/contacts/phone/' . $phone,
-            [
-                'headers' => $this->headers
-            ]
-        );
-        $status = $res->getStatusCode();
-        $body = $res->getBody();
-        $contactId = json_decode($body)->id;
-        $storeId = SmsContact::where('contact_id', $contactId)
-            ->pluck('store_id')
-            ->first();
+            // Get store ID from looking up the contact by their phone number
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'GET',
+                'https://rest.textmagic.com/api/v2/contacts/phone/' . $phone,
+                [
+                    'headers' => $this->headers
+                ]
+            );
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
+            $contactId = json_decode($body)->id;
+            $storeId = SmsContact::where('contact_id', $contactId)
+                ->pluck('store_id')
+                ->first();
 
-        if ($chat) {
-            // Update existing chat
-            $chat->unread = 1;
-            $chat->updatedAt = $request->get('messageTime');
-            $chat->update();
-        } else {
-            try {
-                // Add new chat
-                $chat = new SmsChat();
-                $chat->store_id = $storeId;
-                $chat->chat_id = $chatId;
+            if ($chat) {
+                // Update existing chat
                 $chat->unread = 1;
                 $chat->updatedAt = $request->get('messageTime');
-                $chat->save();
-            } catch (\Exception $e) {
+                $chat->update();
+            } else {
+                try {
+                    // Add new chat
+                    $chat = new SmsChat();
+                    $chat->store_id = $storeId;
+                    $chat->chat_id = $chatId;
+                    $chat->unread = 1;
+                    $chat->updatedAt = $request->get('messageTime');
+                    $chat->save();
+                } catch (\Exception $e) {
+                }
             }
-        }
 
-        $this->notifyStoreOwner($storeId, $contactId);
+            $this->notifyStoreOwner($storeId, $contactId);
+        } catch (\Exception $e) {
+        }
     }
 
     public function notifyStoreOwner($storeId, $contactId)
