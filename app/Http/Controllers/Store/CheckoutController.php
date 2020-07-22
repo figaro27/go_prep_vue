@@ -493,9 +493,8 @@ class CheckoutController extends StoreController
                                 $item['meal_package_id'];
                             $mealPackageOrder->meal_package_size_id =
                                 $item['meal_package_size_id'];
-                            $mealPackageOrder->quantity = $item['customTitle']
-                                ? $item['quantity']
-                                : $item['package_quantity'];
+                            $mealPackageOrder->quantity =
+                                $item['package_quantity'];
                             $mealPackageOrder->customTitle = isset(
                                 $item['customTitle']
                             )
