@@ -35,7 +35,7 @@ class Referrals
                     $this->store->details->domain .
                     '.' .
                     $host .
-                    '.com/?r=' .
+                    '.com/customer/menu?r=' .
                     $referralUrlCode;
                 return [
                     $referral['user']['name'],
