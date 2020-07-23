@@ -74,7 +74,8 @@ class Bag
             json_encode([
                 'meal' => $item['meal']['id'],
                 'meal_package' => $item['meal_package'] ?? false,
-                'meal_package_id' => $item['meal_package_id'] ?? null, // contained in package
+                'meal_package_id' => $item['meal_package_id'] ?? null, // contained in package,
+                'meal_package_title' => $item['meal_package_title'] ?? null,
                 'meal_package_size_id' => $item['meal_package_size_id'] ?? null,
                 'price' => $item['price'],
                 'size' => $item['size'] ?? null,
@@ -421,6 +422,7 @@ class Bag
                             }
                         }
                     }
+                    // Top level package meals not in a package size
                     if (
                         $item['size'] === null &&
                         (is_array($item['meal']['meals']) ||
@@ -484,6 +486,7 @@ class Bag
                                     $mealItem['quantity'];
                             }
                         }
+                        // Top level package meals in a package size
                     } else {
                         if (
                             isset($item) &&
