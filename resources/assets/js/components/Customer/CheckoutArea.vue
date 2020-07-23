@@ -2340,30 +2340,27 @@ use next_delivery_dates
               customSalesTaxAmount += item.quantity * item.size.salesTax;
             }
           } else {
-            if (this.$route.params.adjustOrder) {
-              item.meal.meals.forEach(meal => {
-                if (meal.salesTax !== null) {
-                  removableItemAmount += meal.price * meal.quantity;
-                  customSalesTaxAmount +=
-                    meal.price * meal.quantity * meal.salesTax;
+            item.meal.meals.forEach(meal => {
+              if (meal.salesTax !== null) {
+                removableItemAmount += meal.price * meal.quantity;
+                customSalesTaxAmount +=
+                  meal.price * meal.quantity * meal.salesTax;
+              }
+            });
+
+            if (item.meal.sizes.length > 0) {
+              item.meal.sizes.forEach(size => {
+                if (size.meals) {
+                  size.meals.forEach(meal => {
+                    if (meal.salesTax !== null) {
+                      removableItemAmount += meal.price * meal.quantity;
+                      customSalesTaxAmount +=
+                        meal.price * meal.quantity * meal.salesTax;
+                    }
+                  });
                 }
               });
-
-              if (item.meal.sizes.length > 0) {
-                item.meal.sizes.forEach(size => {
-                  if (size.meals) {
-                    size.meals.forEach(meal => {
-                      if (meal.salesTax !== null) {
-                        removableItemAmount += meal.price * meal.quantity;
-                        customSalesTaxAmount +=
-                          meal.price * meal.quantity * meal.salesTax;
-                      }
-                    });
-                  }
-                });
-              }
             }
-            // Meal packages size (top level) meals don't affect the package price, so not included below.
             if (item.addons !== null) {
               if (item.addons && item.addons.length > 0) {
                 item.addons.forEach(addonItem => {
