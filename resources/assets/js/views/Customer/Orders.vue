@@ -126,7 +126,7 @@
           </div>
           <div class="col-md-3 pt-1">
             <h4>Placed On</h4>
-            <p>{{ moment(order.paid_at).format("dddd, MMM Do") }}</p>
+            <p>{{ moment(order.paid_at).format("LLLL") }}</p>
             <span v-if="!storeModules.hideTransferOptions" class="mt-2">
               <h4 v-if="!order.pickup">Delivery Day</h4>
               <h4 v-if="order.pickup">Pickup Day</h4>

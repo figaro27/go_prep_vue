@@ -671,7 +671,6 @@ class OrderController extends StoreController
             'meal_ids',
             'payment_gateway',
             'paid',
-            'paid_at',
             'pickup_location',
             'stripe_id',
             'user_id',
