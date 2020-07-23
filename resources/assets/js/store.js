@@ -549,7 +549,9 @@ const mutations = {
         components,
         addons,
         special_instructions,
-        delivery_day
+        delivery_day,
+        title: meal.customTitle ? meal.customTitle : meal.title,
+        mappingId: meal.mappingId ? meal.mappingId : null
       })
     ).toString();
 

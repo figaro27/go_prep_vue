@@ -481,7 +481,10 @@ class CheckoutController extends StoreController
                                 'meal_package_size_id' =>
                                     $item['meal_package_size_id'],
                                 'customTitle' => $item['customTitle'],
-                                'order_id' => $order->id
+                                'order_id' => $order->id,
+                                'mappingId' => isset($item['mappingId'])
+                                    ? $item['mappingId']
+                                    : null
                             ])
                                 ->get()
                                 ->count() === 0
@@ -533,6 +536,11 @@ class CheckoutController extends StoreController
                             )
                                 ? $item['customSize']
                                 : null;
+                            $mealPackageOrder->mappingId = isset(
+                                $item['mappingId']
+                            )
+                                ? $item['mappingId']
+                                : null;
                             $mealPackageOrder->save();
 
                             $mealOrder->meal_package_order_id =
@@ -546,7 +554,10 @@ class CheckoutController extends StoreController
                                         $item['meal_package_size_id'],
                                     'order_id' => $order->id,
                                     'customTitle' => $item['customTitle'],
-                                    'order_id' => $order->id
+                                    'order_id' => $order->id,
+                                    'mappingId' => isset($item['mappingId'])
+                                        ? $item['mappingId']
+                                        : null
                                 ]
                             )
                                 ->pluck('id')
@@ -954,7 +965,10 @@ class CheckoutController extends StoreController
                             'meal_package_id' => $item['meal_package_id'],
                             'meal_package_size_id' =>
                                 $item['meal_package_size_id'],
-                            'order_id' => $order->id
+                            'order_id' => $order->id,
+                            'mappingId' => isset($item['mappingId'])
+                                ? $item['mappingId']
+                                : null
                         ])
                             ->get()
                             ->count() === 0
@@ -1000,6 +1014,9 @@ class CheckoutController extends StoreController
                         )
                             ? $item['customSize']
                             : null;
+                        $mealPackageOrder->mappingId = isset($item['mappingId'])
+                            ? $item['mappingId']
+                            : null;
                         $mealPackageOrder->save();
 
                         $mealOrder->meal_package_order_id =
@@ -1010,7 +1027,10 @@ class CheckoutController extends StoreController
                                 'meal_package_id' => $item['meal_package_id'],
                                 'meal_package_size_id' =>
                                     $item['meal_package_size_id'],
-                                'order_id' => $order->id
+                                'order_id' => $order->id,
+                                'mappingId' => isset($item['mappingId'])
+                                    ? $item['mappingId']
+                                    : null
                             ]
                         )
                             ->pluck('id')

@@ -112,6 +112,7 @@ export default {
           let meal_package_id = pkgItem.meal_package_id;
           let meal_package = this.getMealPackage(meal_package_id);
           meal_package.price = pkgItem.price;
+          meal_package.mappingId = pkgItem.mappingId;
 
           // Adding meals to meal package
           meal_package.meals = [];

@@ -63,7 +63,8 @@ class Bag
             json_encode([
                 'meal_package_id' => $meal_package_id, // contained in package
                 'meal_package_size_id' => $meal_package_size_id,
-                'meal_package_title' => $item['meal']['title']
+                'meal_package_title' => $item['meal']['title'],
+                'guid' => $item['guid']
             ])
         );
     }
@@ -85,7 +86,8 @@ class Bag
                 'delivery_day' =>
                     isset($item['delivery_day']) && $item['delivery_day']
                         ? $item['delivery_day']
-                        : null
+                        : null,
+                'guid' => isset($item['guid']) ? $item['guid'] : null
             ])
         );
     }
@@ -474,7 +476,10 @@ class Bag
                                     $meal['meal_package_variation']
                                 )
                                     ? $meal['meal_package_variation']
-                                    : 0
+                                    : 0,
+                                'guid' => isset($item['guid'])
+                                    ? $item['guid']
+                                    : null
                             ];
 
                             $mealItemId = $this->getItemId($mealItem);
