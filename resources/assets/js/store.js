@@ -2305,50 +2305,45 @@ const actions = {
       parseInt(oldMealPackage.id)
     ]);
 
-    if (isNaN(index) || index < 0) {
-      return null;
-    } else {
-      /*if (oldMealPackage.refreshed) {
+    /*if (oldMealPackage.refreshed) {
         return oldMealPackage;
       }*/
 
-      // if (
-      //   state.viewed_store.refreshed_package_ids.includes(oldMealPackage.id)
-      // ) {
-      //   return oldMealPackage;
-      // }
+    // if (
+    //   state.viewed_store.refreshed_package_ids.includes(oldMealPackage.id)
+    // ) {
+    //   return oldMealPackage;
+    // }
 
-      let url = "";
-      if (oldMealPackage.selectedSizeId !== undefined) {
-        url =
-          "/api/refresh/meal_package_with_size/" +
-          oldMealPackage.selectedSizeId;
-      } else {
-        url = "/api/refresh/meal_package/" + oldMealPackage.id;
+    let url = "";
+    if (oldMealPackage.selectedSizeId !== undefined) {
+      url =
+        "/api/refresh/meal_package_with_size/" + oldMealPackage.selectedSizeId;
+    } else {
+      url = "/api/refresh/meal_package/" + oldMealPackage.id;
+    }
+
+    const res = await axios.get(url);
+    const { data } = await res;
+
+    if (data.package) {
+      let meal_package = data.package;
+      if (oldMealPackage.delivery_day) {
+        meal_package = {
+          ...meal_package,
+          delivery_day: oldMealPackage.delivery_day
+        };
       }
 
-      const res = await axios.get(url);
-      const { data } = await res;
+      //meal_package.refreshed = true;
+      //meal_package.refreshed_bag = true;
 
-      if (data.package) {
-        let meal_package = data.package;
-        if (oldMealPackage.delivery_day) {
-          meal_package = {
-            ...meal_package,
-            delivery_day: oldMealPackage.delivery_day
-          };
-        }
+      state.viewed_store.packages.splice(index, 1, meal_package);
+      state.viewed_store.refreshed_package_ids.push(meal_package.id);
 
-        //meal_package.refreshed = true;
-        //meal_package.refreshed_bag = true;
-
-        state.viewed_store.packages.splice(index, 1, meal_package);
-        state.viewed_store.refreshed_package_ids.push(meal_package.id);
-
-        return meal_package;
-      } else {
-        return null;
-      }
+      return meal_package;
+    } else {
+      return null;
     }
   },
 
