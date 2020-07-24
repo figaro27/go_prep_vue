@@ -287,7 +287,7 @@ export default {
         this.store.details.domain +
         "." +
         host +
-        ".com/?r=" +
+        ".com/customer/menu?r=" +
         this.user.referralUrlCode
       );
     },

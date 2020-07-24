@@ -705,7 +705,7 @@ Gratuity<br>
 @php
 $referralSettings = $order->store->referralSettings;
 $host = $order->store->details->host ? $order->store->details->host : '.goprep.';
-$referralURL = 'https://' . $order->store->details->domain . $host . 'com?r=' . $order->user->referralUrlCode;
+$referralURL = 'https://' . $order->store->details->domain . $host . 'com/customer/menu?r=' . $order->user->referralUrlCode;
 $percentAmount = trim($referralSettings->amount, ".00");
 @endphp
 @if ($referralSettings->enabled && $referralSettings->showInNotifications)

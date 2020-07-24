@@ -671,7 +671,6 @@ class OrderController extends StoreController
             'meal_ids',
             'payment_gateway',
             'paid',
-            'paid_at',
             'pickup_location',
             'stripe_id',
             'user_id',
@@ -884,7 +883,10 @@ class OrderController extends StoreController
                         'order_id' => $order->id,
                         'delivery_date' =>
                             $item['delivery_day']['day_friendly'],
-                        'customTitle' => $item['customTitle']
+                        'customTitle' => $item['customTitle'],
+                        'mappingId' => isset($item['mappingId'])
+                            ? $item['mappingId']
+                            : null
                     ])
                         ->get()
                         ->count() === 0
@@ -908,6 +910,9 @@ class OrderController extends StoreController
                     $mealPackageOrder->customSize = isset($item['customSize'])
                         ? $item['customSize']
                         : null;
+                    $mealPackageOrder->mappingId = isset($item['mappingId'])
+                        ? $item['mappingId']
+                        : null;
                     $mealPackageOrder->save();
 
                     $mealOrder->meal_package_order_id = $mealPackageOrder->id;
@@ -920,7 +925,10 @@ class OrderController extends StoreController
                             'order_id' => $order->id,
                             'delivery_date' =>
                                 $item['delivery_day']['day_friendly'],
-                            'customTitle' => $item['customTitle']
+                            'customTitle' => $item['customTitle'],
+                            'mappingId' => isset($item['mappingId'])
+                                ? $item['mappingId']
+                                : null
                         ]
                     )
                         ->pluck('id')

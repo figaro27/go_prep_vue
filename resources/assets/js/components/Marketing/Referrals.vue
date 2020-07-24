@@ -314,7 +314,7 @@ export default {
         this.store.details.domain +
         "." +
         host +
-        ".com/customer/Menu?r="
+        ".com/customer/menu?r="
       );
     }
   },

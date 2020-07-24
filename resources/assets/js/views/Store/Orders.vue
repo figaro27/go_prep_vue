@@ -483,7 +483,7 @@
           </div>
           <div class="col-md-3 pt-1">
             <h4>Placed On</h4>
-            <p>{{ moment(order.paid_at).format("dddd, MMM Do") }}</p>
+            <p>{{ moment(order.paid_at).format("LLLL") }}</p>
             <div class="mt-3" v-if="order.staff_id">
               <h4>Order Taken By</h4>
               <p>{{ order.staff_member }}</p>
@@ -976,6 +976,13 @@ export default {
   },
   created() {},
   mounted() {
+    if (
+      this.store.id === 108 ||
+      this.store.id === 109 ||
+      this.store.id === 110
+    ) {
+      this.setBagPickup(1);
+    }
     if (this.storeModules.dailyOrderNumbers) {
       this.columns.splice(1, 0, "dailyOrderNumber");
     }
@@ -1102,7 +1109,8 @@ export default {
       "clearBagDeliveryDate",
       "clearBagTransferTime",
       "clearBagStaffMember",
-      "clearBagCustomerModel"
+      "clearBagCustomerModel",
+      "setBagPickup"
     ]),
     refreshTable() {
       this.refreshResource("orders");
