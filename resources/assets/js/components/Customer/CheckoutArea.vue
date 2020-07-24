@@ -2331,7 +2331,7 @@ use next_delivery_dates
               customSalesTaxAmount += item.quantity * item.size.salesTax;
             }
           } else {
-            if (item.meal) {
+            if (item.meal && item.meal.meals) {
               item.meal.meals.forEach(meal => {
                 if (meal.salesTax !== null) {
                   removableItemAmount += meal.price * meal.quantity;
@@ -2339,7 +2339,8 @@ use next_delivery_dates
                     meal.price * meal.quantity * meal.salesTax;
                 }
               });
-
+            }
+            if (item.meal && item.meal.sizes) {
               if (item.meal.sizes.length > 0) {
                 item.meal.sizes.forEach(size => {
                   if (size.meals) {
@@ -2354,6 +2355,7 @@ use next_delivery_dates
                 });
               }
             }
+
             if (item.addons !== null) {
               if (item.addons && item.addons.length > 0) {
                 item.addons.forEach(addonItem => {
