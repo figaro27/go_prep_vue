@@ -742,7 +742,9 @@ const mutations = {
         components,
         addons,
         special_instructions,
-        delivery_day
+        delivery_day,
+        title: meal.customTitle ? meal.customTitle : meal.title,
+        mappingId: meal.mappingId ? meal.mappingId : null
       })
     ).toString();
 
@@ -795,7 +797,9 @@ const mutations = {
         components,
         addons,
         special_instructions,
-        delivery_day
+        delivery_day,
+        title: meal.customTitle ? meal.customTitle : meal.title,
+        mappingId: meal.mappingId ? meal.mappingId : null
       })
     ).toString();
 
@@ -3347,6 +3351,7 @@ const getters = {
         if (object.added < menu_update_time) {
           Vue.delete(state.bag.items, key);
           delete state.bag.items[key];
+          ``;
         }
       }
     }
@@ -3484,6 +3489,8 @@ const getters = {
     if (_.isObject(size)) {
     }
 
+    const delivery_day = meal.delivery_day ? meal.delivery_day : null;
+
     let guid = CryptoJS.MD5(
       JSON.stringify({
         meal: mealId,
@@ -3491,7 +3498,10 @@ const getters = {
         size,
         components,
         addons,
-        special_instructions
+        special_instructions,
+        delivery_day,
+        title: meal.customTitle ? meal.customTitle : meal.title,
+        mappingId: meal.mappingId ? meal.mappingId : null
       })
     ).toString();
 
