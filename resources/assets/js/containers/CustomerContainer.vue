@@ -14,7 +14,7 @@
 
       <i
         class="fas fa-filter customer-nav-icon"
-        style="margin-right:60px"
+        style="margin-right:65px"
         @click.prevent="showFilterArea()"
         v-if="showBagAndFilters && mobile"
       ></i>
