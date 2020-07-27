@@ -615,6 +615,11 @@ foreach (
                                 'submitMultiAuthPassword',
                                 'StoreModuleSettingController@submitMultiAuthPassword'
                             );
+
+                            Route::post(
+                                'getRoutes',
+                                'DeliveryRouteController@getRoutes'
+                            );
                         }
                     );
                 } elseif ($user && $user->user_role_id === 1) {
