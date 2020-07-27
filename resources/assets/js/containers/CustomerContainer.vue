@@ -11,6 +11,13 @@
       </b-navbar-brand>
 
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+
+      <i
+        class="fas fa-filter customer-nav-icon"
+        style="margin-right:85px"
+        @click.prevent="showFilterArea()"
+        v-if="showBagAndFilters && mobile"
+      ></i>
       <!-- <div class="navbar-brand"></div> -->
       <b-collapse
         is-nav
