@@ -6,12 +6,19 @@ use App\Exportable\Exportable;
 use GuzzleHttp\Client;
 use App\Store;
 use App\Order;
+use App\UserDetail;
 
 class DeliveryRoutes
 {
     use Exportable;
 
     protected $store;
+
+    protected $headers = [
+        'Content-Type' => 'application/json',
+        'Authorization' =>
+            'Bearer SjA0RntZK8VPMARUgFnE7hX6iZrBO9340Mh35aY7yxWVDUFaVUwP0QOIPLoq'
+    ];
 
     public function __construct(Store $store, $params = [])
     {
@@ -26,8 +33,6 @@ class DeliveryRoutes
         $orders = $this->store->getOrders(null, $dates, true, true, true);
         $orders = $orders->where('voided', 0);
 
-        // Get all customer addresses from orders
-
         $id = auth('api')->user()->id;
         $store = Store::where('user_id', $id)->first();
         $storeDetails = $store->details;
@@ -40,32 +45,91 @@ class DeliveryRoutes
             ' ' .
             $storeDetails->zip;
 
-        $customerAddresses = [];
-        // $customers = [];
+        $url = "https://app.elasticroute.com/api/v1/plan/asdf?c=sync&w=false";
+        $names = [];
 
         foreach ($orders as $order) {
             $customerDetails = $order->user->details;
-            $customerAddresses[] = implode(', ', [
-                $customerDetails->address,
-                $customerDetails->city,
-                $customerDetails->state,
-                $customerDetails->zip
-            ]);
-            // $customers[] = [
-            //     'order' => $order,
-            //     'name' => $customerDetails->full_name,
-            //     'address' => implode(', ', [
-            //         $customerDetails->address,
-            //         $customerDetails->city,
-            //         $customerDetails->state,
-            //         $customerDetails->zip
-            //     ]),
-            //     'phone' => $customerDetails->phone,
-            //     'instructions' => $customerDetails->delivery
-            // ];
+            $name =
+                $customerDetails->firstname . ' ' . $customerDetails->lastname;
+
+            if (!in_array($name, $names)) {
+                $address = implode(', ', [
+                    $customerDetails->address,
+                    $customerDetails->city,
+                    $customerDetails->state,
+                    $customerDetails->zip
+                ]);
+
+                $stops[] = [
+                    "name" => $name,
+                    "address" => $address
+                ];
+
+                $names[] = $name;
+            }
         }
 
-        // return $deliveryAddresses;
+        $depots = [
+            [
+                "name" => $storeDetails->name,
+                "address" => $storeAddress
+            ]
+        ];
+
+        $vehicles = [
+            [
+                "name" => "Vehicle 1"
+            ]
+        ];
+
+        $generalSettings = [
+            "country" => $storeDetails->country,
+            "timezone" => $store->settings->timezone
+        ];
+
+        $client = new \GuzzleHttp\Client();
+
+        $res = $client->request('POST', $url, [
+            'headers' => $this->headers,
+            'json' => [
+                'stops' => $stops,
+                'depots' => $depots,
+                'vehicles' => $vehicles,
+                'generalSettings' => $generalSettings
+            ]
+        ]);
+
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        $data = json_decode($body->getContents());
+
+        $routes[] = [
+            "startingAddress" => $data->data->details->depots[0]->address,
+            "stops" => $data->data->stats->total_plan_stops,
+            "miles" => $data->data->stats->total_plan_distance
+        ];
+
+        foreach ($data->data->details->stops as $stop) {
+            // Get the delivery instructions
+            $address = explode(',', $stop->address);
+
+            $userDetail = UserDetail::where([
+                'address' => $address[0],
+                'city' => ltrim($address[1]),
+                'state' => ltrim($address[2]),
+                'zip' => ltrim($address[3])
+            ])->first();
+
+            $routes[] = [
+                "name" => $stop->name,
+                "address" => $stop->address,
+                "delivery" => $userDetail->delivery
+            ];
+        }
+
+        return $routes;
     }
 
     public function exportPdfView()
