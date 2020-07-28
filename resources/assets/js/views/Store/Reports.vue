@@ -209,7 +209,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-6" v-if="store.id === 40">
+      <div class="col-md-6" v-if="store.id === 112">
         <div class="card">
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Delivery Routes</h4>
