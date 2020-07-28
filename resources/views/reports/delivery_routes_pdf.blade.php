@@ -27,15 +27,15 @@
     </div>
 
     <div>
-    <h6><strong>Starting Point:</strong> {{ $data[0]['startingAddress']}}</h6>
-    <h6><strong>Total Stops:</strong> {{ $data[0]['stops']}}</h6>
-    <h6><strong>Total Distance:</strong> {{ $data[0]['miles']}} Miles</h6>
-    <br>
+    <p class="text-18"><strong>Starting Point:</strong> {{ $data[0]['startingAddress']}}</p>
+    <p class="text-18"><strong>Total Stops:</strong> {{ $data[0]['stops']}}</p>
+    <p class="text-18"><strong>Total Distance:</strong> {{ $data[0]['miles']}} Miles</p>
+    <br><br>
     @foreach($data as $i => $row)
     @if ($i > 0)
-    <p class="text-13">#{{$i}} {{ $row['name']}} - {{ $row['address']}}</p>
-    <p class="text-13">{{ $row['delivery'] }}</p>
-    <br>
+    <p class="text-16">#{{$i}} {{ $row['name']}} - {{ $row['address']}}</p>
+    <p class="text-16">{{ $row['delivery'] }}</p>
+    <br><br>
     @endif
     @endforeach
     </div>
