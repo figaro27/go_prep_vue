@@ -14,6 +14,7 @@
     "barryvdh/laravel-cors": "^0.11.2",
     "braintree/braintree_php": "^3.37",
     "cloudflare/sdk": "^1.1",
+    "detrack/elasticroute": "^1.0@RC",
     "doctrine/dbal": "^2.8",
     "elic-dev/laravel-site-protection": "^1.0",
     "fideloper/proxy": "^4.0",

@@ -6,12 +6,19 @@ use App\Exportable\Exportable;
 use GuzzleHttp\Client;
 use App\Store;
 use App\Order;
+use App\UserDetail;
 
 class DeliveryRoutes
 {
     use Exportable;
 
     protected $store;
+
+    protected $headers = [
+        'Content-Type' => 'application/json',
+        'Authorization' =>
+            'Bearer SjA0RntZK8VPMARUgFnE7hX6iZrBO9340Mh35aY7yxWVDUFaVUwP0QOIPLoq'
+    ];
 
     public function __construct(Store $store, $params = [])
     {
@@ -26,142 +33,103 @@ class DeliveryRoutes
         $orders = $this->store->getOrders(null, $dates, true, true, true);
         $orders = $orders->where('voided', 0);
 
-        $googleApiKey = 'AIzaSyArp-lohyOEQXF6a69wyFXruthJd9jNY4U';
-        // $hereApp_id = "V2tJJFOIa2LjoSw4xNuX";
-        // $hereApp_code = "JRGmnV2itkv7cCLRWc55CA";
-        $hereApp_id = "D2vwjQLe6hZEsNkdzPf0";
-        $hereApp_code = "_0IsSILsI4W-7piSDVl81A";
-
-        // Get all customer addresses from orders
-
         $id = auth('api')->user()->id;
         $store = Store::where('user_id', $id)->first();
         $storeDetails = $store->details;
-        $address =
+        $storeAddress =
             $storeDetails->address .
-            ' ' .
+            ', ' .
             $storeDetails->city .
-            ' ' .
+            ', ' .
             $storeDetails->state .
             ' ' .
             $storeDetails->zip;
-        $storeAddress = urlencode($address);
 
-        $customerAddresses = [];
-        $customers = [];
+        $url = "https://app.elasticroute.com/api/v1/plan/asdf?c=sync&w=false";
+        $names = [];
 
         foreach ($orders as $order) {
             $customerDetails = $order->user->details;
-            $customerAddresses[] = urlencode(
-                implode(', ', [
-                    $customerDetails->address,
-                    $customerDetails->city,
-                    $customerDetails->state,
-                    $customerDetails->zip
-                ])
-            );
+            $name =
+                $customerDetails->firstname . ' ' . $customerDetails->lastname;
 
-            $customers[] = [
-                'order' => $order,
-                'name' => $customerDetails->full_name,
-                'address' => implode(', ', [
+            if (!in_array($name, $names)) {
+                $address = implode(', ', [
                     $customerDetails->address,
                     $customerDetails->city,
                     $customerDetails->state,
                     $customerDetails->zip
-                ]),
-                'phone' => $customerDetails->phone,
-                'instructions' => $customerDetails->delivery
+                ]);
+
+                $stops[] = [
+                    "name" => $name,
+                    "address" => $address
+                ];
+
+                $names[] = $name;
+            }
+        }
+
+        $depots = [
+            [
+                "name" => $storeDetails->name,
+                "address" => $storeAddress
+            ]
+        ];
+
+        $vehicles = [
+            [
+                "name" => "Vehicle 1"
+            ]
+        ];
+
+        $generalSettings = [
+            "country" => $storeDetails->country,
+            "timezone" => $store->settings->timezone
+        ];
+
+        $client = new \GuzzleHttp\Client();
+
+        $res = $client->request('POST', $url, [
+            'headers' => $this->headers,
+            'json' => [
+                'stops' => $stops,
+                'depots' => $depots,
+                'vehicles' => $vehicles,
+                'generalSettings' => $generalSettings
+            ]
+        ]);
+
+        $status = $res->getStatusCode();
+        $body = $res->getBody();
+
+        $data = json_decode($body->getContents());
+
+        $routes[] = [
+            "startingAddress" => $data->data->details->depots[0]->address,
+            "stops" => $data->data->stats->total_plan_stops,
+            "miles" => $data->data->stats->total_plan_distance
+        ];
+
+        foreach ($data->data->details->stops as $stop) {
+            // Get the delivery instructions
+            $address = explode(',', $stop->address);
+
+            $userDetail = UserDetail::where([
+                'address' => $address[0],
+                'city' => ltrim($address[1]),
+                'state' => ltrim($address[2]),
+                'zip' => ltrim($address[3])
+            ])->first();
+
+            $routes[] = [
+                "name" => $stop->name,
+                "address" => $stop->address,
+                "delivery" => $userDetail->delivery
             ];
         }
 
-        // Convert store address to geocode
-
-        $googleClient = new Client();
-
-        $storeCoordinates = '';
-        $res = $googleClient->get(
-            'https://maps.googleapis.com/maps/api/geocode/json?address=' .
-                $storeAddress .
-                '&key=' .
-                $googleApiKey
-        );
-        $response = $res->getBody();
-        $body = json_decode($response);
-        $latitude = $body->results[0]->geometry->location->lat;
-        $longitude = $body->results[0]->geometry->location->lng;
-        $storeCoordinates .= $latitude . ',' . $longitude;
-
-        // Convert customer addresses to geocodes
-
-        $coordinates = [];
-
-        foreach ($customerAddresses as $customerAddress) {
-            $res = $googleClient->get(
-                'https://maps.googleapis.com/maps/api/geocode/json?address=' .
-                    $customerAddress .
-                    '&key=' .
-                    $googleApiKey
-            );
-            $response = $res->getBody();
-            $body = json_decode($response);
-            $latitude = $body->results[0]->geometry->location->lat;
-            $longitude = $body->results[0]->geometry->location->lng;
-            array_push($coordinates, $latitude . ',' . $longitude);
-            sleep(0.25);
-        }
-
-        // Append all geocoded addresses together
-
-        $hereClient = new Client();
-
-        $i = 1;
-        $coordinatesString = '&destination' . $i . '=';
-        $len = count($coordinates);
-
-        foreach ($coordinates as $coordinate) {
-            $i++;
-            $coordinatesString .= $coordinate;
-            if ($i != $len + 1) {
-                $coordinatesString .= '&destination' . $i . '=';
-            }
-        }
-
-        // Get the optimal delivery route order
-
-        $res = $hereClient->get(
-            'https://wse.api.here.com/2/findsequence.json?start=Start;' .
-                $storeCoordinates .
-                $coordinatesString .
-                '&mode=fastest;car&app_id=' .
-                $hereApp_id .
-                '&app_code=' .
-                $hereApp_code
-        );
-
-        $response = $res->getBody();
-
-        $body = json_decode($response);
-
-        $waypoints = $body->results[0]->waypoints;
-
-        $order = [];
-
-        foreach ($waypoints as $waypoint) {
-            if ($waypoint->id != "Start") {
-                array_push($order, (int) substr($waypoint->id, -1));
-            }
-        }
-
-        $deliveryAddresses = collect($order)
-            ->filter()
-            ->map(function ($item) use ($customers) {
-                if ($item != 0) {
-                    return $customers[$item - 1];
-                }
-            });
-
-        return $deliveryAddresses;
+        return $routes;
     }
 
     public function exportPdfView()

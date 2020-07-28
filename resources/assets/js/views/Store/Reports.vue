@@ -207,12 +207,9 @@
         </div>
       </div>
     </div>
-    <!-- Showing report only for Livoti's who doesn't use the report for routes. Will add back when routes are fixed-->
+
     <div class="row">
-      <div
-        class="col-md-6"
-        v-if="store.id === 108 || store.id === 109 || store.id === 110"
-      >
+      <div class="col-md-6" v-if="store.id === 40">
         <div class="card">
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Delivery Routes</h4>

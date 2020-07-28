@@ -22,25 +22,18 @@
       </h2>
 
 
-      <!-- <h2>{{ date('m/d/Y h:i:a')}}</h2> -->
+      <h2>{{ date('m/d/Y h:i:a')}}</h2>
       <div style="clear:both"></div>
     </div>
 
     <div>
+    <p>Starting Point: {{ $data[0]['startingAddress']}}</p>
+    <p>Total Stops: {{ $data[0]['stops']}}</p>
+    <p>Total Distance: {{ $data[0]['miles']}} Miles</p>
     @foreach($data as $i => $row)
-      <h5>{{$i + 1}}.</h5>
-      @if ($row['order']->dailyOrderNumber)
-      <h5>Daily Order #{{$row['order']->dailyOrderNumber}}</h5>
-      @endif
-      @if ($row['order']->transferTime)
-      <h5>Delivery Time: {{$row['order']->transferTime}}</h5>
-      @endif
-      <h5>Order ID: {{$row['order']->order_number}}</h5>
-      <h5>{{$row['name']}}</h5>
-      <h5>{{$row['address']}}</h5>
-      <h5>{{$row['phone']}}</h5>
-      <h5>Instructions: {{$row['instructions']}}</h5>
-      <hr align="left" width="50%">
+    @if ($i > 0)
+    <p>#{{$i}} {{ $row['name']}} | {{ $row['address']}} | {{ $row['delivery'] }}</p>
+    @endif
     @endforeach
     </div>
   </div>
