@@ -33,9 +33,9 @@
     <br><br>
     @foreach($data as $i => $row)
     @if ($i > 0)
-    <p class="text-16">#{{$i}} {{ $row['name']}} - {{ $row['address']}}</p>
+    <p class="text-16 strong">#{{$i}}) {{ $row['name']}} - {{ $row['address']}}</p>
     <p class="text-16">{{ $row['delivery'] }}</p>
-    <br><br>
+    <br>
     @endif
     @endforeach
     </div>
