@@ -221,7 +221,8 @@
               <b-btn @click="clearDeliveryRoutes()" class="ml-1">Clear</b-btn>
             </div>
             <p class="mt-4 center-text">
-              Shows you the quickest route to make your deliveries.
+              Shows you the quickest route to make your deliveries. This report
+              can take up to a minute or longer to generate.
             </p>
             <div class="row">
               <div class="col-md-12">
