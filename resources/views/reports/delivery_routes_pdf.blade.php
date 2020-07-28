@@ -35,6 +35,7 @@
     @if ($i > 0)
     <p class="text-16"><strong>#{{$i}} {{ $row['name']}} - {{ $row['address']}}</strong></p>
     <p class="text-16">{{ $row['delivery'] }}</p>
+    <p class="text-16">{{ $row['phone'] }}</p>
     <br>
     @endif
     @endforeach

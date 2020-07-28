@@ -125,6 +125,7 @@ class DeliveryRoutes
             $routes[] = [
                 "name" => $stop->name,
                 "address" => $stop->address,
+                "phone" => $userDetail ? $userDetail->phone : null,
                 "delivery" => $userDetail ? $userDetail->delivery : null
             ];
         }
