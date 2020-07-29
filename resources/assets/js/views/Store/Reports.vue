@@ -209,7 +209,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-6" v-if="store.id === 40">
+      <div class="col-md-6">
         <div class="card">
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">Delivery Routes</h4>
@@ -240,7 +240,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body m-sm-4">
-            <h4 class="center-text mb-2">
+            <h4 class="center-text mb-4">
               Labels <span class="text-danger">(Beta)</span>
             </h4>
             <div class="report-date-picker">
