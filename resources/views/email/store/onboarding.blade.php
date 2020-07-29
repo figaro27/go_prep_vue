@@ -158,7 +158,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
           </tr>
           <!-- end header -->
           <tr>
-            <td height="10" style="border-bottom:3px solid #bcbcbc;"></td>
+            
           </tr>
         </table>
       </td>

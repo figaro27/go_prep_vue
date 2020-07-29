@@ -2030,6 +2030,9 @@ use next_delivery_dates
         if (this.$route.params.adjustOrder) {
           return this.order.deliveryFee;
         }
+        if (this.adjustMealPlan) {
+          return this.$route.params.subscription.deliveryFee;
+        }
         if (this.removeDeliveryFee) {
           return 0;
         }
