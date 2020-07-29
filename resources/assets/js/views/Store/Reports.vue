@@ -240,8 +240,9 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body m-sm-4">
-            <h4 class="center-text mb-2">Labels</h4>
-            <h6 class="center-text text-danger mb-4">(Beta)</h6>
+            <h4 class="center-text mb-2">
+              Labels <span class="text-danger">(Beta)</span>
+            </h4>
             <div class="report-date-picker">
               <delivery-date-picker
                 v-model="delivery_dates.labels"
