@@ -108,7 +108,7 @@ class DeliveryRoutes
         $routes[] = [
             "startingAddress" => $data->data->details->depots[0]->address,
             "stops" => $data->data->stats->total_plan_stops,
-            "miles" => $data->data->stats->total_plan_distance
+            "miles" => $data->data->stats->total_plan_distance * 0.621371
         ];
 
         foreach ($data->data->details->stops as $stop) {
