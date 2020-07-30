@@ -74,6 +74,7 @@
               :state="state(0, 'email')"
               autocomplete="new-password"
             ></b-input>
+            <p class="red font-11">{{ emailValidator }}</p>
           </b-form-group>
 
           <b-form-group
@@ -91,6 +92,7 @@
               :state="state(0, 'password')"
               autocomplete="new-password"
             ></b-input>
+            <p class="red font-11">{{ passwordValidator }}</p>
           </b-form-group>
 
           <b-form-group
@@ -110,6 +112,7 @@
               :state="state(0, 'password') && state(0, 'password_confirmation')"
               autocomplete="new-password"
             ></b-input>
+            <p class="red font-11">{{ passwordConfirmationValidator }}</p>
           </b-form-group>
 
           <b-form-group
@@ -534,6 +537,33 @@ export default {
     },
     currencyOptions() {
       return currencies.selectOptions();
+    },
+    passwordValidator() {
+      let password = this.form[0].password;
+      if (password && password.length > 0 && password.length < 6) {
+        return (
+          "Please add at least " + (6 - password.length) + " more characters."
+        );
+      } else return "";
+    },
+    passwordConfirmationValidator() {
+      let password = this.form[0].password_confirmation;
+      if (password && password.length > 0 && password.length < 6) {
+        return (
+          "Please add at least " + (6 - password.length) + " more characters."
+        );
+      } else return "";
+    },
+    emailValidator() {
+      let email = this.form[0].email;
+      if (email && email.length > 0) {
+        if (!email.includes("@")) {
+          return "Please include the @ symbol.";
+        }
+        if (!email.includes(".")) {
+          return "Please include the ending of the email such as .com.";
+        }
+      }
     }
   },
   validations: {
