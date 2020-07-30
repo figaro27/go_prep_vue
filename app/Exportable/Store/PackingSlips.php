@@ -236,6 +236,10 @@ class PackingSlips
         $squareLogo = true;
 
         if ($logo) {
+            if ($this->store->details->host) {
+                $logo = 'https://goprep.com' . $logo;
+            }
+
             $logoSize = getImageSize($logo);
 
             if ($logoSize[0] !== $logoSize[1]) {
