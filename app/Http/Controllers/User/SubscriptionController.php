@@ -389,7 +389,7 @@ class SubscriptionController extends UserController
                     [
                         'invoice' => $invoice->id,
                         'customer' => $subscription->customer,
-                        'amount' => $total * 100 - $sub->amount,
+                        'amount' => ($total - $sub->amount) * 100,
                         'currency' => $this->store->settings->currency,
                         'description' => 'Subscription updated in draft state.'
                     ],
