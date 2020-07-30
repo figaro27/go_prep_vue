@@ -378,24 +378,20 @@ class SubscriptionController extends UserController
         $sub->stripe_plan = $plan->id;
 
         // If the current subscription is in draft state (within 1 hour before renewal, add line item to current invoice)
-        if ($sub->store->id === 13) {
-            // Testing on MQS store first
-            $invoice = \Stripe\Invoice::retrieve(
-                $subscription->latest_invoice,
+        $invoice = \Stripe\Invoice::retrieve($subscription->latest_invoice, [
+            'stripe_account' => $store->settings->stripe_id
+        ]);
+        if ($invoice->status === 'draft') {
+            $invoiceItem = \Stripe\InvoiceItem::create(
+                [
+                    'invoice' => $invoice->id,
+                    'customer' => $subscription->customer,
+                    'amount' => ($total - $sub->amount) * 100,
+                    'currency' => $this->store->settings->currency,
+                    'description' => 'Subscription updated in draft state.'
+                ],
                 ['stripe_account' => $store->settings->stripe_id]
             );
-            if ($invoice->status === 'draft') {
-                $invoiceItem = \Stripe\InvoiceItem::create(
-                    [
-                        'invoice' => $invoice->id,
-                        'customer' => $subscription->customer,
-                        'amount' => ($total - $sub->amount) * 100,
-                        'currency' => $this->store->settings->currency,
-                        'description' => 'Subscription updated in draft state.'
-                    ],
-                    ['stripe_account' => $store->settings->stripe_id]
-                );
-            }
         }
 
         // Update meals in subscription
