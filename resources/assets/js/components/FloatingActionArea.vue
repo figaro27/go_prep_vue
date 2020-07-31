@@ -33,7 +33,7 @@ export default {
   width: 56px;
   padding: 0;
   margin: 0;
-  right: 110px;
+  right: 120px;
   bottom: 10px;
 
   align-items: center;
