@@ -261,11 +261,11 @@
                           "
                         >
                           <span v-if="!showFullDescription[meal.id]">
-                            {{ truncate(meal.description, 150, "...") }} Read
+                            {{ truncate(meal.description, 150, "...") }} Show
                             more</span
                           >
                           <span v-if="showFullDescription[meal.id]">
-                            {{ meal.description }}</span
+                            {{ meal.description }} Show less</span
                           >
                         </span>
                         <span v-else>
@@ -1382,7 +1382,8 @@ export default {
       console.log(meal.image.url_thumb);
     },
     readMore(meal) {
-      this.$set(this.showFullDescription, meal.id, true);
+      let status = this.showFullDescription[meal.id];
+      this.$set(this.showFullDescription, meal.id, !status);
     }
   }
 };
