@@ -256,7 +256,11 @@
           <floating-action-area
             class="d-md-none"
             :to="bagPageURL"
-            v-if="(!subscriptionId || !adjustOrder) && !mealPackagePageView"
+            v-if="
+              (!subscriptionId || !adjustOrder) &&
+                !mealPackagePageView &&
+                !mealPageView
+            "
           >
             <div
               class="d-flex flex-column pl-1 pr-1"
