@@ -253,6 +253,33 @@
             </div>
           </floating-action-button>
 
+          <floating-action-area
+            class="d-md-none"
+            :to="bagPageURL"
+            v-if="(!subscriptionId || !adjustOrder) && !mealPackagePageView"
+          >
+            <div
+              class="d-flex flex-column pl-1 pr-1"
+              style="border-radius:10px"
+            >
+              <p
+                class="pt-2"
+                v-if="minOption === 'price' && minPrice > totalBagPricePreFees"
+              >
+                {{
+                  format.money(
+                    minPrice - totalBagPricePreFees,
+                    storeSettings.currency
+                  )
+                }}
+                Remaining
+              </p>
+              <p class="pt-2" v-if="minOption === 'meals' && minMeals > total">
+                {{ minMeals - total }} {{ items }} Remaining
+              </p>
+            </div>
+          </floating-action-area>
+
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
@@ -633,8 +660,18 @@ export default {
       bagPickup: "bagPickup",
       bagZipCode: "bagZipCode",
       loggedIn: "loggedIn",
-      user: "user"
+      user: "user",
+      minMeals: "minimumMeals",
+      minPrice: "minimumPrice",
+      minOption: "minimumOption",
+      totalBagPricePreFees: "totalBagPricePreFees"
     }),
+    items() {
+      if (this.minMeals - this.total > 1) {
+        return "items";
+      }
+      return "item";
+    },
     sortedDeliveryDays() {
       // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
       let sortedDays = _.uniqBy(this.store.delivery_days, "day_friendly");

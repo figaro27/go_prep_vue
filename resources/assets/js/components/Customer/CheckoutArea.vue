@@ -2272,15 +2272,15 @@ use next_delivery_dates
     },
     singOrPlural() {
       if (this.remainingMeals > 1) {
-        return "meals";
+        return "items";
       }
-      return "meal";
+      return "item";
     },
     singOrPluralTotal() {
       if (this.total > 1) {
-        return "Meals";
+        return "Items";
       }
-      return "Meal";
+      return "item";
     },
     weeklySubscription() {
       if (this.hasSubscriptionOnlyItems) {

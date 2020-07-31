@@ -117,6 +117,9 @@ Vue.component("page-spinner", PageSpinner);
 import FloatingActionButton from "./components/FloatingActionButton";
 Vue.component("floating-action-button", FloatingActionButton);
 
+import FloatingActionArea from "./components/FloatingActionArea";
+Vue.component("floating-action-area", FloatingActionArea);
+
 import MealPicker from "./components/Menu/MealPicker";
 Vue.component("meal-picker", MealPicker);
 

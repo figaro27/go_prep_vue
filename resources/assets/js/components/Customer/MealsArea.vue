@@ -838,7 +838,9 @@ export default {
       subscriptions: "subscriptions",
       promotions: "viewedStorePromotions",
       loggedIn: "loggedIn",
-      totalBagPricePreFees: "totalBagPricePreFees"
+      totalBagPricePreFees: "totalBagPricePreFees",
+      minMeals: "minimumMeals",
+      minPrice: "minimumPrice"
     }),
     smallScreen() {
       const width =
