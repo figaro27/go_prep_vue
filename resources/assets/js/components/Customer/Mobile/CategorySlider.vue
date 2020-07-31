@@ -148,7 +148,7 @@ export default {
     goToCategory(category) {
       if ($("#xs").is(":visible") || $("#sm").is(":visible")) {
         const top = $(`#${category}`).offset().top;
-        $(document).scrollTop(top - 120);
+        $(document).scrollTop(top - 125);
       } else {
         $(".main-menu-area").scrollTop(0);
         const top = $(`#${category}`).position().top;
