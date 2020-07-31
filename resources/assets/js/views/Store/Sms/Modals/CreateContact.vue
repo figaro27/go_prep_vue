@@ -2,24 +2,27 @@
   <div class="row mt-3">
     <div class="col-md-12 d-flex pb-3">
       <Spinner v-if="isLoading" />
-      <b-form-input
-        v-model="contact.firstName"
-        placeholder="First Name"
-        class="d-inline mr-1"
-      ></b-form-input>
-      <b-form-input
-        v-model="contact.lastName"
-        placeholder="Last Name"
-        class="d-inline mr-1"
-      ></b-form-input>
-      <b-form-input
-        v-model="contact.phone"
-        placeholder="Phone"
-        class="d-inline mr-1"
-      ></b-form-input>
-      <b-btn variant="primary" @click="$emit('addContact', contact)"
-        >Save</b-btn
-      >
+      <b-form @submit.prevent="$emit('addContact', contact)" class="d-flex">
+        <b-form-input
+          v-model="contact.firstName"
+          placeholder="First Name"
+          class="d-inline mr-1"
+          required
+        ></b-form-input>
+        <b-form-input
+          v-model="contact.lastName"
+          placeholder="Last Name"
+          class="d-inline mr-1"
+          required
+        ></b-form-input>
+        <b-form-input
+          v-model="contact.phone"
+          placeholder="Phone"
+          class="d-inline mr-1"
+          required
+        ></b-form-input>
+        <b-btn variant="primary" type="submit">Save</b-btn>
+      </b-form>
     </div>
   </div>
 </template>
