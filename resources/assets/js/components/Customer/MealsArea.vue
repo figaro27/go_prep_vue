@@ -251,8 +251,26 @@
                         >
                       </div>
 
-                      <div class="description d-md-none">
-                        {{ truncate(meal.description, 150, "...") }}
+                      <div
+                        class="description d-md-none"
+                        @click="readMore(meal)"
+                      >
+                        <span
+                          v-if="
+                            meal.description && meal.description.length > 150
+                          "
+                        >
+                          <span v-if="!showFullDescription[meal.id]">
+                            {{ truncate(meal.description, 150, "...") }} Read
+                            more</span
+                          >
+                          <span v-if="showFullDescription[meal.id]">
+                            {{ meal.description }}</span
+                          >
+                        </span>
+                        <span v-else>
+                          {{ meal.description }}
+                        </span>
                       </div>
 
                       <div
@@ -753,7 +771,8 @@ import store from "../../store";
 export default {
   data() {
     return {
-      packageTitle: null
+      packageTitle: null,
+      showFullDescription: {}
     };
   },
   components: {
@@ -1361,6 +1380,9 @@ export default {
     },
     logImg(meal) {
       console.log(meal.image.url_thumb);
+    },
+    readMore(meal) {
+      this.$set(this.showFullDescription, meal.id, true);
     }
   }
 };
