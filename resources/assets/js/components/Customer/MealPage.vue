@@ -81,9 +81,6 @@
           </div>
         </slick>
       </div>
-      <div v-if="smallScreen && showNutritionFacts">
-        <div id="nutritionFacts" ref="nutritionFacts" class="pt-2"></div>
-      </div>
 
       <div class="col-md-6">
         <h2 class="dark-gray">{{ meal.title }}</h2>
@@ -236,6 +233,10 @@
             rows="3"
             max-rows="6"
           ></b-form-textarea>
+        </div>
+
+        <div v-if="smallScreen && showNutritionFacts">
+          <div id="nutritionFacts" ref="nutritionFacts" class="pt-2 pb-4"></div>
         </div>
 
         <div class="row">

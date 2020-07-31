@@ -251,8 +251,26 @@
                         >
                       </div>
 
-                      <div class="description d-md-none">
-                        {{ truncate(meal.description, 150, "...") }}
+                      <div
+                        class="description d-md-none"
+                        @click="readMore(meal)"
+                      >
+                        <span
+                          v-if="
+                            meal.description && meal.description.length > 150
+                          "
+                        >
+                          <span v-if="!showFullDescription[meal.id]">
+                            {{ truncate(meal.description, 150, "...") }} Show
+                            more</span
+                          >
+                          <span v-if="showFullDescription[meal.id]">
+                            {{ meal.description }} Show less</span
+                          >
+                        </span>
+                        <span v-else>
+                          {{ meal.description }}
+                        </span>
                       </div>
 
                       <div
@@ -752,7 +770,8 @@ import store from "../../store";
 export default {
   data() {
     return {
-      packageTitle: null
+      packageTitle: null,
+      showFullDescription: {}
     };
   },
   components: {
@@ -837,7 +856,9 @@ export default {
       subscriptions: "subscriptions",
       promotions: "viewedStorePromotions",
       loggedIn: "loggedIn",
-      totalBagPricePreFees: "totalBagPricePreFees"
+      totalBagPricePreFees: "totalBagPricePreFees",
+      minMeals: "minimumMeals",
+      minPrice: "minimumPrice"
     }),
     smallScreen() {
       const width =
@@ -1355,6 +1376,13 @@ export default {
       }
 
       return macros;
+    },
+    logImg(meal) {
+      console.log(meal.image.url_thumb);
+    },
+    readMore(meal) {
+      let status = this.showFullDescription[meal.id];
+      this.$set(this.showFullDescription, meal.id, !status);
     }
   }
 };
