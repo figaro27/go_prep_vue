@@ -838,6 +838,10 @@ export default {
     },
     updateReportSettings() {
       let settings = { ...this.reportSettings };
+      if (settings.lab_margin_top == "") settings.lab_margin_top = 0;
+      if (settings.lab_margin_bottom == "") settings.lab_margin_bottom = 0;
+      if (settings.lab_margin_right == "") settings.lab_margin_right = 0;
+      if (settings.lab_margin_left == "") settings.lab_margin_left = 0;
       axios
         .post("/api/me/updateReportSettings", settings)
         .then(response => {
