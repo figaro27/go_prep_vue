@@ -251,7 +251,9 @@
                         >
                       </div>
 
-                      <div
+                      <!-- Show more & show less buttons instead of linking to meal page on mobile -->
+
+                      <!-- <div
                         class="description d-md-none"
                         @click="readMore(meal)"
                       >
@@ -271,6 +273,16 @@
                         <span v-else>
                           {{ meal.description }}
                         </span>
+                      </div> -->
+
+                      <div
+                        class="description d-md-none"
+                        @click="showMeal(meal)"
+                      >
+                        <span>
+                          {{ truncate(meal.description, 150, "...") }} Show
+                          more</span
+                        >
                       </div>
 
                       <div
