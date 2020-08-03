@@ -119,6 +119,9 @@ export default {
             auth.setToken(jwt);
 
             this.$nextTick(async () => {
+              if (this.$route.path === "/customer/bag") {
+                this.redirect = "/customer/bag";
+              }
               if (!_.isEmpty(this.redirect)) {
                 this.init();
                 this.$router.replace(this.redirect);
@@ -128,7 +131,7 @@ export default {
                 await this.init();
                 switch (jwt.user.user_role_id) {
                   case 1:
-                    this.$router.replace("/customer/home");
+                    this.$router.replace(this.$route.path);
                     break;
 
                   case 2:

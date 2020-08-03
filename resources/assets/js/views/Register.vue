@@ -990,7 +990,9 @@ export default {
 
           if (jwt.access_token) {
             auth.setToken(jwt);
-
+            if (this.$route.path === "/customer/bag") {
+              this.redirect = "/customer/bag";
+            }
             if (this.redirect) {
               await this.init();
               this.$router.replace(this.redirect);
