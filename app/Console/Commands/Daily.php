@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Facades\StorePlanService;
 use Carbon\Carbon;
 use App\SmsSetting;
+use Illuminate\Support\Facades\Storage;
 
 class Daily extends Command
 {
@@ -48,6 +49,8 @@ class Daily extends Command
         $this->storePlanRenewals();
 
         $this->SMSPhoneRenewals();
+
+        $this->deleteWeekOldStorage();
 
         // Moved to Hourly cron job so it can be sent at a certain time in the morning instead of midnight.
 
@@ -110,6 +113,20 @@ class Daily extends Command
                             $store->storeDetail->name
                     ]);
                 }
+            }
+        }
+    }
+
+    protected function deleteWeekOldStorage()
+    {
+        $files = Storage::files('/public');
+        $lastWeek = Carbon::now()->subWeek();
+
+        foreach ($files as $file) {
+            $time = Storage::lastModified($file);
+            $time = Carbon::createFromTimestamp($time);
+            if ($time < $lastWeek) {
+                // Storage::delete($file);
             }
         }
     }
