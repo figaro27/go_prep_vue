@@ -580,6 +580,7 @@ class OrderController extends StoreController
 
         $mealOrders = MealOrder::where('delivery_date', '>=', $startDate)
             ->where('delivery_date', '<=', $endDate)
+            ->where('store_id', $this->store->id)
             ->whereHas('order', function ($order) {
                 $order->where('paid', 1)->where('voided', 0);
             })
