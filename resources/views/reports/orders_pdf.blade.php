@@ -33,7 +33,6 @@
             <th>Zip</th>
             <th>Phone</th>
             <th style="width:100px">Email</th>
-            @if (!isset($params['livotis']))
             <th>Total</th>
             <th>Balance</th>
             <th style="width:100px">Order Placed</th>
