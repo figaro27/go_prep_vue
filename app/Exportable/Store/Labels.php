@@ -148,6 +148,7 @@ class Labels
                 $dates['from']
             )
                 ->where('delivery_date', '<=', $dates['to'])
+                ->where('store_id', $this->store->id)
                 ->whereHas('order', function ($order) {
                     $order->where('paid', 1)->where('voided', 0);
                 })
