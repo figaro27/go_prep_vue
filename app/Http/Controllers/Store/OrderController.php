@@ -579,6 +579,7 @@ class OrderController extends StoreController
         $endDate = Carbon::parse($endDate)->format('Y-m-d');
 
         $mealOrders = MealOrder::where('delivery_date', '>=', $startDate)
+            ->where('store_id', $this->store->id)
             ->where('delivery_date', '<=', $endDate)
             ->whereHas('order', function ($order) {
                 $order->where('paid', 1)->where('voided', 0);
