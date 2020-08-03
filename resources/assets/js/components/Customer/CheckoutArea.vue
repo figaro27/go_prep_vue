@@ -515,6 +515,7 @@
             !subscriptionId
         "
       >
+        <h5 v-if="!loggedIn">Promo codes entered during checkout.</h5>
         <div class="row">
           <div class="col-xs-6 pl-3">
             <b-form-group id="coupon">
@@ -523,11 +524,17 @@
                 v-model="discountCode"
                 required
                 placeholder="Enter Promotional Code"
+                :disabled="!loggedIn"
               ></b-form-input>
             </b-form-group>
           </div>
           <div class="col-xs-6 pl-2">
-            <b-btn variant="primary" @click="applyDiscountCode">Apply</b-btn>
+            <b-btn
+              variant="primary"
+              @click="applyDiscountCode"
+              :disabled="!loggedIn"
+              >Apply</b-btn
+            >
           </div>
         </div>
       </li>
@@ -1131,7 +1138,7 @@
 
     <li v-else>
       <div class="row">
-        <div class="col-md-6">
+        <!-- <div class="col-md-6">
           <router-link
             :to="{
               path: '/login',
@@ -1151,7 +1158,10 @@
           >
             <b-btn class="menu-bag-btn">REGISTER</b-btn>
           </router-link>
-        </div>
+        </div> -->
+        <b-btn @click="showAuthModal()" class="menu-bag-btn mb-4"
+          >CONTINUE CHECKOUT</b-btn
+        >
       </div>
     </li>
 
@@ -3265,6 +3275,9 @@ use next_delivery_dates
       if (this.gratuityType !== "custom") {
         this.gratuity = this.afterDiscount * (this.gratuityType / 100);
       }
+    },
+    showAuthModal() {
+      this.$eventBus.$emit("showAuthModal");
     },
     search: _.debounce((loading, search, vm) => {
       axios
