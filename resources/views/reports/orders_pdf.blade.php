@@ -33,9 +33,10 @@
             <th>Zip</th>
             <th>Phone</th>
             <th style="width:100px">Email</th>
-            @if (!isset($params['livotis']))
+            <!-- @if (!isset($params['livotis'])) -->
             <th>Total</th>
             <th>Balance</th>
+            <!-- @endif -->
             <th style="width:100px">Order Placed</th>
             <th style="width:100px">Delivery Date</th>
             @if ($params['show_times'])
