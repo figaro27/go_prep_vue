@@ -247,12 +247,65 @@
               <span v-else>Paid in Full</span>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
+              <!-- Keeping but hiding for purposes of double clicking the row to open the modal -->
               <button
+                v-show="false"
                 class="btn view btn-primary btn-sm"
                 @click="viewOrder(props.row.id)"
               >
                 View Order
               </button>
+              <button
+                type="button"
+                class="btn btn-primary dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                @click="(order = props.row), (orderId = props.row.id)"
+              >
+                Actions
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" @click="viewOrder(props.row.id)"
+                  >View</a
+                >
+                <a class="dropdown-item" @click="adjustOrder(props.row.id)"
+                  >Adjust</a
+                >
+                <a
+                  class="dropdown-item"
+                  @click="voidOrder"
+                  v-if="!props.row.voided"
+                  >Void</a
+                >
+                <a
+                  class="dropdown-item"
+                  @click="voidOrder"
+                  v-if="props.row.voided"
+                  >Unvoid</a
+                >
+                <a class="dropdown-item" @click="printPackingSlip(props.row.id)"
+                  >Print Packing Slip</a
+                >
+                <a
+                  class="dropdown-item"
+                  @click="printLabel(props.row.id, 'labels', 'b64')"
+                  >Print Label</a
+                >
+                <a
+                  class="dropdown-item"
+                  @click="emailCustomerReceipt(props.row.id)"
+                  >Email Customer Receipt</a
+                >
+                <a
+                  class="dropdown-item"
+                  v-if="
+                    props.row.coolerDeposit > 0 && !props.row.coolerReturned
+                  "
+                  @click="refund(true)"
+                  >Refund Cooler Deposit</a
+                >
+              </div>
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -1448,15 +1501,17 @@ export default {
     },
     refund(cooler = false) {
       if (cooler == true) {
-        this.refundAmount = this.order.coolerDeposit;
+        this.refundAmount = this.order
+          ? this.order.coolerDeposit
+          : coolerDepositAmount;
       }
       axios
         .post("/api/me/refundOrder", {
-          orderId: this.orderId,
+          orderId: this.order.id,
           refundAmount:
             this.refundAmount == null ? this.order.amount : this.refundAmount,
           applyToBalance: this.applyToBalanceRefund,
-          cooler: true
+          cooler: cooler
         })
         .then(response => {
           if (response.data === 1) {
@@ -1711,6 +1766,12 @@ export default {
       this.clearBagTransferTime();
       this.clearBagStaffMember();
       this.clearBagCustomerModel();
+    },
+    adjustOrder() {
+      this.$router.push({
+        name: "store-adjust-order",
+        params: { order: this.order, orderId: this.orderId }
+      });
     }
   }
 };
