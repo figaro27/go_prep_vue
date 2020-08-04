@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 use App\Store;
 use App\Order;
 
-class DeliveryRoutes
+class DeliveryRoutesLivotis
 {
     use Exportable;
 
