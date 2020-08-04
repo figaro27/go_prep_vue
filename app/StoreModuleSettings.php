@@ -12,7 +12,8 @@ class StoreModuleSettings extends Model
     protected $casts = [
         'transferTimeRange' => 'boolean',
         'cashAllowedForCustomer' => 'boolean',
-        'specialInstructionsStoreOnly' => 'boolean'
+        'specialInstructionsStoreOnly' => 'boolean',
+        'coolerOptional' => 'boolean'
     ];
 
     protected $guarded = [];

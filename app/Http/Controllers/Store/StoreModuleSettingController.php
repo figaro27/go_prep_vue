@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Store;
 use App\StoreModuleSettings;
 use Illuminate\Support\Facades\Hash;
-
 use Illuminate\Http\Request;
 
 class StoreModuleSettingController extends StoreController
@@ -15,7 +14,10 @@ class StoreModuleSettingController extends StoreController
      */
     public function index()
     {
-        //
+        return StoreModuleSettings::where(
+            'store_id',
+            $this->store->id
+        )->first();
     }
 
     /**
