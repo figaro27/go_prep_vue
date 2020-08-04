@@ -236,7 +236,7 @@
                   Print
                 </button>
                 <button
-                  v-if="store.id == 108 && store.id == 109 && store.id == 110"
+                  v-if="store.id == 108 || store.id == 109 || store.id == 110"
                   @click="print('delivery_routes_livotis', 'pdf')"
                   class="btn btn-primary btn-md center mt-2 center"
                 >
