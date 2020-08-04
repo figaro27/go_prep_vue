@@ -353,6 +353,14 @@
                   "
                 >
                 </i>
+                <i
+                  v-if="order.coolerDeposit > 0 && order.coolerReturned"
+                  class="fas fa-briefcase text-success"
+                  v-b-popover.hover.top="
+                    'A deposit for a cooler bag was paid, the bag was returned, and the customer was refunded.'
+                  "
+                >
+                </i>
               </p>
             </div>
           </div>
@@ -1439,7 +1447,7 @@ export default {
         });
     },
     refund(cooler = false) {
-      if (cooler) {
+      if (cooler == true) {
         this.refundAmount = this.order.coolerDeposit;
       }
       axios
