@@ -126,7 +126,7 @@ class Daily extends Command
             $time = Storage::lastModified($file);
             $time = Carbon::createFromTimestamp($time);
             if ($time < $lastWeek) {
-                // Storage::delete($file);
+                Storage::delete($file);
             }
         }
     }
