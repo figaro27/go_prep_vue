@@ -17,6 +17,7 @@ use App\Exportable\Store\PastOrders;
 use App\Exportable\Store\Subscriptions;
 use App\Exportable\Store\MealsIngredients;
 use App\Exportable\Store\DeliveryRoutes;
+use App\Exportable\Store\DeliveryRoutesLivotis;
 use App\Exportable\Store\Payments;
 use App\Exportable\Store\Labels;
 use App\Exportable\Store\Leads;
