@@ -516,12 +516,7 @@
           </div>
           <div class="col-6 col-md-3 offset-md-5 d-flex">
             <span v-if="includeCooler">
-              {{
-                format.money(
-                  storeModuleSettings.coolerDeposit,
-                  storeSettings.currency
-                )
-              }}
+              {{ format.money(coolerDeposit, storeSettings.currency) }}
             </span>
             <span v-else>
               {{ format.money(0, storeSettings.currency) }}
@@ -2248,6 +2243,9 @@ use next_delivery_dates
       return gratuity;
     },
     coolerDeposit() {
+      if (this.$route.params.adjustOrder) {
+        return parseFloat(this.order.coolerDeposit);
+      }
       if (this.storeModules.cooler) {
         if (this.includeCooler) {
           return this.storeModuleSettings.coolerDeposit;
