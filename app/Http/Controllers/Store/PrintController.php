@@ -91,6 +91,10 @@ class PrintController extends StoreController
                 $exportable = new DeliveryRoutes($this->store, $params);
                 break;
 
+            case 'delivery_routes_livotis':
+                $exportable = new DeliveryRoutesLivotis($this->store, $params);
+                break;
+
             case 'payments':
                 $exportable = new Payments($this->store, $params);
                 break;
