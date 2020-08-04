@@ -227,7 +227,17 @@
             <div class="row">
               <div class="col-md-12">
                 <button
+                  v-if="
+                    store.id !== 108 && store.id !== 109 && store.id !== 110
+                  "
                   @click="print('delivery_routes', 'pdf')"
+                  class="btn btn-primary btn-md center mt-2 center"
+                >
+                  Print
+                </button>
+                <button
+                  v-if="store.id == 108 && store.id == 109 && store.id == 110"
+                  @click="print('delivery_routes_livotis', 'pdf')"
                   class="btn btn-primary btn-md center mt-2 center"
                 >
                   Print
