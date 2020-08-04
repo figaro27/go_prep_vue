@@ -524,15 +524,12 @@
                 v-model="discountCode"
                 required
                 placeholder="Enter Promotional Code"
-                :disabled="!loggedIn"
+                v-if="loggedIn"
               ></b-form-input>
             </b-form-group>
           </div>
           <div class="col-xs-6 pl-2">
-            <b-btn
-              variant="primary"
-              @click="applyDiscountCode"
-              :disabled="!loggedIn"
+            <b-btn variant="primary" @click="applyDiscountCode" v-if="loggedIn"
               >Apply</b-btn
             >
           </div>
