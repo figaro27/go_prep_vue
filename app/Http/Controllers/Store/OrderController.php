@@ -1172,6 +1172,7 @@ class OrderController extends StoreController
         $user = User::where('id', $order->user_id)->first();
         $customer = Customer::where('id', $order->customer_id)->first();
         $applyToBalance = $request->get('applyToBalance');
+        $cooler = $request->get('cooler');
 
         $originalAmount = $order->originalAmount;
         $chargedAmount = $order->chargedAmount;
@@ -1249,6 +1250,7 @@ class OrderController extends StoreController
             $order->balance += $request->get('refundAmount');
         }
         $order->refundedAmount += $request->get('refundAmount');
+        $order->coolerReturned = $cooler;
         $order->save();
 
         return 'Refunded $' . $request->get('refundAmount');

@@ -193,6 +193,23 @@
                   v-b-popover.hover.top="
                     'This order needs to be hot upon delivery/pickup.'
                   "
+                ></i>
+                <i
+                  v-if="
+                    props.row.coolerDeposit > 0 && !props.row.coolerReturned
+                  "
+                  class="fas fa-briefcase text-warning"
+                  v-b-popover.hover.top="
+                    'A deposit for a cooler bag was paid and needs to be refunded upon return.'
+                  "
+                >
+                </i>
+                <i
+                  v-if="props.row.coolerDeposit > 0 && props.row.coolerReturned"
+                  class="fas fa-briefcase text-success"
+                  v-b-popover.hover.top="
+                    'A deposit for a cooler bag was paid, the bag was returned, and the customer was refunded.'
+                  "
                 >
                 </i>
               </p>
@@ -328,6 +345,14 @@
                   "
                 >
                 </i>
+                <i
+                  v-if="order.coolerDeposit > 0 && !order.coolerReturned"
+                  class="fas fa-briefcase text-primary"
+                  v-b-popover.hover.top="
+                    'A deposit for a cooler bag was paid and needs to be refunded upon return.'
+                  "
+                >
+                </i>
               </p>
             </div>
           </div>
@@ -392,6 +417,32 @@
               <img
                 v-b-popover.hover="
                   'Refund your customer partially or fully. Refunds take 5-10 days to show on your customer\'s statements. Leave the field blank for a full refund. Refunding does not remove the order from all of your reports. Please void the order for that.'
+                "
+                title="Refunds"
+                src="/images/store/popover.png"
+                class="popover-size d-inline"
+              />
+            </div>
+            <div
+              class="d-inline"
+              v-if="
+                !order.cashOrder &&
+                  store.settings.payment_gateway !== 'authorize' &&
+                  order.coolerDeposit > 0 &&
+                  !order.coolerReturned
+              "
+            >
+              <br />
+              <b-btn
+                variant="primary"
+                class="btn mb-2 d-inline mr-1"
+                @click="refund(true)"
+                >Refund Cooler Deposit
+                {{ format.money(order.coolerDeposit, storeSettings.currency) }}
+              </b-btn>
+              <img
+                v-b-popover.hover="
+                  'Refund your customer for their cooler deposit upon return of the bag.'
                 "
                 title="Refunds"
                 src="/images/store/popover.png"
@@ -1387,13 +1438,17 @@ export default {
           this.applyToBalanceRefund = false;
         });
     },
-    refund() {
+    refund(cooler = false) {
+      if (cooler) {
+        this.refundAmount = this.order.coolerDeposit;
+      }
       axios
         .post("/api/me/refundOrder", {
           orderId: this.orderId,
           refundAmount:
             this.refundAmount == null ? this.order.amount : this.refundAmount,
-          applyToBalance: this.applyToBalanceRefund
+          applyToBalance: this.applyToBalanceRefund,
+          cooler: true
         })
         .then(response => {
           if (response.data === 1) {
