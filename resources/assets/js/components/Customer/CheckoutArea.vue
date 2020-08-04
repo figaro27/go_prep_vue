@@ -494,6 +494,42 @@
         </div>
       </li>
 
+      <li class="checkout-item" v-if="storeModules.cooler">
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <span>
+              <strong>Cooler Deposit</strong>
+              <img
+                v-b-popover.hover="
+                  'This deposit will be refunded to you upon return of the cooler.'
+                "
+                title="Cooler Deposit"
+                src="/images/store/popover.png"
+                class="popover-size"
+              />
+              <b-form-checkbox
+                v-model="includeCooler"
+                v-if="storeModuleSettings.coolerOptional"
+                >Include</b-form-checkbox
+              >
+            </span>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5 d-flex">
+            <span v-if="includeCooler">
+              {{
+                format.money(
+                  storeModuleSettings.coolerDeposit,
+                  storeSettings.currency
+                )
+              }}
+            </span>
+            <span v-else>
+              {{ format.money(0, storeSettings.currency) }}
+            </span>
+          </div>
+        </div>
+      </li>
+
       <li class="checkout-item">
         <div class="row">
           <div class="col-6 col-md-4">
@@ -1262,6 +1298,7 @@ export default {
   },
   data() {
     return {
+      includeCooler: true,
       gratuity: null,
       gratuityType: 0,
       customerOptions: [],
@@ -2210,8 +2247,24 @@ use next_delivery_dates
       }
       return gratuity;
     },
+    coolerDeposit() {
+      if (this.storeModules.cooler) {
+        if (this.includeCooler) {
+          return this.storeModuleSettings.coolerDeposit;
+        } else {
+          return 0;
+        }
+      } else {
+        return 0;
+      }
+    },
     grandTotal() {
-      return this.afterFeesAndTax - this.totalDiscountReduction + this.tip;
+      return (
+        this.afterFeesAndTax -
+        this.totalDiscountReduction +
+        this.coolerDeposit +
+        this.tip
+      );
     },
     totalDiscountReduction() {
       return (
@@ -2835,7 +2888,8 @@ use next_delivery_dates
           customSalesTax: this.customSalesTax !== null ? 1 : 0,
           dontAffectBalance: this.dontAffectBalance,
           hot: this.hot ? this.hot : 0,
-          pointsReduction: this.promotionPointsReduction
+          pointsReduction: this.promotionPointsReduction,
+          coolerDeposit: this.coolerDeposit
         })
         .then(resp => {
           if (this.purchasedGiftCard !== null) {
@@ -3052,7 +3106,8 @@ use next_delivery_dates
           referralUrl: this.$route.query.r,
           promotionPointsAmount: this.promotionPointsAmount,
           pointsReduction: this.promotionPointsReduction,
-          staff: this.staffMember
+          staff: this.staffMember,
+          coolerDeposit: this.coolerDeposit
         })
         .then(async resp => {
           //this.checkingOut = false;

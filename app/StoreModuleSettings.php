@@ -13,7 +13,8 @@ class StoreModuleSettings extends Model
         'transferTimeRange' => 'boolean',
         'cashAllowedForCustomer' => 'boolean',
         'specialInstructionsStoreOnly' => 'boolean',
-        'coolerOptional' => 'boolean'
+        'coolerOptional' => 'boolean',
+        'coolerDeposit' => 'float'
     ];
 
     protected $guarded = [];

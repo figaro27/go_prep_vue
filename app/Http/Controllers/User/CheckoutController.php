@@ -152,6 +152,7 @@ class CheckoutController extends UserController
         $referralReduction = $request->get('referralReduction');
         $deliveryFee = $request->get('deliveryFee');
         $gratuity = $request->get('gratuity');
+        $coolerDeposit = $request->get('coolerDeposit');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
         $monthlyPrepay = $request->get('monthlyPrepay');
@@ -377,6 +378,7 @@ class CheckoutController extends UserController
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
             $order->deliveryFee = $deliveryFee;
             $order->gratuity = $gratuity;
+            $order->coolerDeposit = $coolerDeposit;
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->customSalesTax = $customSalesTax;
@@ -906,6 +908,7 @@ class CheckoutController extends UserController
                 $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
                 $order->deliveryFee = $deliveryFee;
                 $order->gratuity = $gratuity;
+                $order->coolerDeposit = $coolerDeposit;
                 $order->processingFee = $processingFee;
                 $order->salesTax = $salesTax;
                 $order->customSalesTax = $customSalesTax;

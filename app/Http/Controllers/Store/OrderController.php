@@ -786,6 +786,7 @@ class OrderController extends StoreController
         // $deposit =
         //     (($order->deposit * $order->amount) / 100 / $grandTotal) * 100;
         $originalDeliveryDate = $order->delivery_date;
+        $coolerDeposit = $request->get('coolerDeposit');
 
         $order->delivery_date = $deliveryDate;
         $order->transferTime = $request->get('transferTime');
@@ -816,6 +817,7 @@ class OrderController extends StoreController
         $order->pickup_location_id = $pickupLocation;
         $order->transferTime = $transferTime;
         $order->hot = $hot;
+        $order->coolerDeposit = $coolerDeposit;
 
         $dailyOrderNumber = 0;
         if (!$isMultipleDelivery) {
