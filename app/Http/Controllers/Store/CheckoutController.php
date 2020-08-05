@@ -843,6 +843,7 @@ class CheckoutController extends StoreController
             $userSubscription->processingFee = $processingFee;
             $userSubscription->deliveryFee = $deliveryFee;
             $userSubscription->gratuity = $gratuity;
+            $userSubscription->coolerDeposit = $coolerDeposit;
             $userSubscription->salesTax = $salesTax;
             $userSubscription->amount = $total;
             $userSubscription->pickup = $request->get('pickup', 0);

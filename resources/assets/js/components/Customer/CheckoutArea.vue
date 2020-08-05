@@ -2246,6 +2246,9 @@ use next_delivery_dates
       if (this.$route.params.adjustOrder) {
         return parseFloat(this.order.coolerDeposit);
       }
+      if (this.$route.params.adjustMealPlan) {
+        return parseFloat(this.$route.params.subscription.coolerDeposit);
+      }
       if (this.storeModules.cooler) {
         if (this.includeCooler) {
           return this.storeModuleSettings.coolerDeposit;

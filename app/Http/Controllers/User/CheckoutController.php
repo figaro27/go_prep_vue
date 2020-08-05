@@ -867,6 +867,7 @@ class CheckoutController extends UserController
                 $userSubscription->processingFee = $processingFee;
                 $userSubscription->deliveryFee = $deliveryFee;
                 $userSubscription->gratuity = $gratuity;
+                $userSubscription->coolerDeposit = $coolerDeposit;
                 $userSubscription->salesTax = $salesTax;
                 $userSubscription->amount = $total;
                 $userSubscription->currency = $storeSettings->currency;
