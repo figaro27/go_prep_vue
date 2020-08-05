@@ -198,7 +198,7 @@
                   v-if="
                     props.row.coolerDeposit > 0 && !props.row.coolerReturned
                   "
-                  class="fas fa-briefcase text-warning"
+                  class="fas fa-icicles text-primary"
                   v-b-popover.hover.top="
                     'A deposit for a cooler bag was paid and needs to be refunded upon return.'
                   "
@@ -206,7 +206,7 @@
                 </i>
                 <i
                   v-if="props.row.coolerDeposit > 0 && props.row.coolerReturned"
-                  class="fas fa-briefcase text-success"
+                  class="fas fa-icicles text-secondary"
                   v-b-popover.hover.top="
                     'A deposit for a cooler bag was paid, the bag was returned, and the customer was refunded.'
                   "
@@ -399,7 +399,7 @@
                 </i>
                 <i
                   v-if="order.coolerDeposit > 0 && !order.coolerReturned"
-                  class="fas fa-briefcase text-primary"
+                  class="fas fa-icicles text-primary"
                   v-b-popover.hover.top="
                     'A deposit for a cooler bag was paid and needs to be refunded upon return.'
                   "
@@ -407,7 +407,7 @@
                 </i>
                 <i
                   v-if="order.coolerDeposit > 0 && order.coolerReturned"
-                  class="fas fa-briefcase text-success"
+                  class="fas fa-icicles text-secondary"
                   v-b-popover.hover.top="
                     'A deposit for a cooler bag was paid, the bag was returned, and the customer was refunded.'
                   "

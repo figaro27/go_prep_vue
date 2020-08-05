@@ -509,6 +509,7 @@
               />
               <b-form-checkbox
                 v-model="includeCooler"
+                @input="coolerDepositChanged = true"
                 v-if="storeModuleSettings.coolerOptional"
                 >Include</b-form-checkbox
               >
@@ -1293,6 +1294,7 @@ export default {
   },
   data() {
     return {
+      coolerDepositChanged: false,
       includeCooler: true,
       gratuity: null,
       gratuityType: 0,
@@ -1440,6 +1442,17 @@ export default {
         .then(resp => {
           this.setBagPurchasedGiftCard(resp.data);
         });
+    }
+
+    if (this.$route.params.adjustOrder) {
+      if (this.order.coolerDeposit === "0.00") {
+        this.includeCooler = false;
+      }
+    }
+    if (this.$route.params.adjustMealPlan) {
+      if (this.$route.params.subscription.coolerDeposit === "0.00") {
+        this.includeCooler = false;
+      }
     }
   },
   mixins: [MenuBag],
@@ -2243,10 +2256,10 @@ use next_delivery_dates
       return gratuity;
     },
     coolerDeposit() {
-      if (this.$route.params.adjustOrder) {
+      if (this.$route.params.adjustOrder && !this.coolerDepositChanged) {
         return parseFloat(this.order.coolerDeposit);
       }
-      if (this.$route.params.adjustMealPlan) {
+      if (this.$route.params.adjustMealPlan && !this.coolerDepositChanged) {
         return parseFloat(this.$route.params.subscription.coolerDeposit);
       }
       if (this.storeModules.cooler) {
