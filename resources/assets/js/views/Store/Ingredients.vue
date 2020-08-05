@@ -161,7 +161,8 @@ export default {
       orderIngredientsSpecial: "orderIngredientsSpecial",
       ingredient: "ingredient",
       defaultWeightUnit: "defaultWeightUnit",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      storeModules: "storeModules"
     }),
     tableData() {
       return (
@@ -314,6 +315,13 @@ export default {
         });
     },
     async print(format = "pdf") {
+      if (
+        this.filters.delivery_dates.start === null &&
+        this.storeModules.multipleDeliveryDays
+      ) {
+        this.$toastr.w("Please select a delivery date.");
+        return;
+      }
       const warning = this.checkDateRange({ ...this.filters.delivery_dates });
       if (warning) {
         try {
