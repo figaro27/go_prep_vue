@@ -300,6 +300,7 @@ $currency = $subscription->store->settings->currency_symbol
                         $mealPlanDiscount = $subscription->mealPlanDiscount;
                         $deliveryFee = $subscription->deliveryFee;
                         $gratuity = $subscription->gratuity;
+                        $coolerDeposit = $subscription->coolerDeposit;
                         $processingFee = $subscription->processingFee;
                         $salesTax = $subscription->salesTax;
                         $coupon = $subscription->couponReduction;
@@ -337,6 +338,9 @@ $currency = $subscription->store->settings->currency_symbol
                         @if ($gratuity > 0)
 Gratuity<br>
 @endif
+@if ($coolerDeposit > 0)
+Cooler Deposit<br>
+@endif
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span>
                       </td>
@@ -371,6 +375,9 @@ Gratuity<br>
                           @endif
                           @if ($gratuity > 0)
 {{$currency}}{{ number_format($gratuity, 2) }}<br>
+@endif
+@if ($coolerDeposit > 0)
+{{$currency}}{{ number_format($coolerDeposit, 2) }}<br>
 @endif
                           <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">{{$currency}}{{ number_format($subscription->amount, 2) }}</span>

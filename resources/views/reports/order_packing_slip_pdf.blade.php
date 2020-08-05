@@ -6,6 +6,7 @@ $subtotal = $currency . number_format($order->preFeePreDiscount, 2);
 $mealPlanDiscount = $currency . number_format($order->mealPlanDiscount, 2);
 $deliveryFee = $currency . number_format($order->deliveryFee, 2);
 $gratuity = $currency . number_format($order->gratuity, 2);
+$coolerDeposit = $currency . number_format($order->coolerDeposit, 2);
 $processingFee = $currency . number_format($order->processingFee, 2);
 $salesTax = $currency . number_format($order->salesTax, 2);
 $coupon = $currency . number_format($order->couponReduction, 2);
@@ -361,6 +362,10 @@ $deliveryInstructions = $order->user->userDetail->delivery;
             @if ($order->gratuity > 0)<tr>
               <td style="border:none"><b>Gratuity</b></td>
               <td style="border:none;text-align:right;position:relative;right:8px">{{ $gratuity }}</td>
+            </tr>@endif
+            @if ($order->coolerDeposit > 0)<tr>
+              <td style="border:none"><b>Cooler Deposit</b></td>
+              <td style="border:none;text-align:right;position:relative;right:8px">{{ $coolerDeposit }}</td>
             </tr>@endif
             <tr>
             <td style="border:none"><b>Total</b></td>
