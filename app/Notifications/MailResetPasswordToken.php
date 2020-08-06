@@ -43,16 +43,16 @@ class MailResetPasswordToken extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage())
-            ->subject("Reset your password")
+            ->subject("Reset Password Notification")
             ->line(
                 'You are receiving this email because we received a password reset request for your account.'
             )
             ->action(
                 'Reset Password',
-                url('https://goprep.com/forgot/reset/', $this->token)
+                url('https://goprep.com/forgot/reset/' . $this->token)
             )
             ->line(
-                'This password reset link will expire in 60 minutes. If you did not request a password reset, no further action is required. Regards, GoPrep'
+                'This password reset link will expire in 60 minutes. If you did not request a password reset, no further action is required.'
             );
     }
 
