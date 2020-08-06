@@ -1425,7 +1425,7 @@ export default {
         showPolyFat: false,
         showMonoFat: false,
         showTransFat: false,
-        showFibers: false,
+        showFibers: true,
         showVitaminD: false,
         showPotassium_2018: false,
         showCalcium: false,
