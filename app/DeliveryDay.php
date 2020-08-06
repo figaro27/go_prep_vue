@@ -22,7 +22,8 @@ class DeliveryDay extends Model
         'applyFee' => 'boolean',
         'cutoff_days' => 'number',
         'cutoff_hours' => 'number',
-        'fee' => 'float'
+        'fee' => 'float',
+        'active' => 'boolean'
     ];
 
     public function store()

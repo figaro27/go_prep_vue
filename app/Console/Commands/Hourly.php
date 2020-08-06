@@ -9,6 +9,7 @@ use App\StoreSetting;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use App\SmsSetting;
+use App\DeliveryDay;
 
 class Hourly extends Command
 {
@@ -44,13 +45,32 @@ class Hourly extends Command
     public function handle()
     {
         // Store reports
+        $currentDay = date('D');
+        $currentHour = date('H');
 
         $stores = Store::with(['settings', 'details'])->get();
+        $deliveryDays = DeliveryDay::all();
+
+        foreach ($deliveryDays as $deliveryDay) {
+            if (
+                $deliveryDay->disableDay == $currentDay &&
+                $deliveryDay->disableHour == $currentHour
+            ) {
+                $deliveryDay->active = 0;
+                $deliveryDay->update();
+            }
+            if (
+                $deliveryDay->enableDay == $currentDay &&
+                $deliveryDay->enableHour == $currentHour
+            ) {
+                $deliveryDay->active = 1;
+                $deliveryDay->update();
+            }
+        }
+
         $count = 0;
 
         foreach ($stores as $store) {
-            $currentDay = date('D');
-            $currentHour = date('H');
             $settings = StoreSetting::where('store_id', $store->id)->first();
 
             if (

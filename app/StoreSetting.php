@@ -218,7 +218,9 @@ class StoreSetting extends Model
                     ? $this->store->deliveryDays->filter(function (
                         DeliveryDay $dday
                     ) use ($type) {
-                        return $dday->type === $type;
+                        if ($dday->active) {
+                            return $dday->type === $type;
+                        }
                     })
                     : $this->delivery_days;
 
