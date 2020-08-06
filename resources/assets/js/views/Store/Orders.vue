@@ -1225,7 +1225,8 @@ export default {
       "clearBagTransferTime",
       "clearBagStaffMember",
       "clearBagCustomerModel",
-      "setBagPickup"
+      "setBagPickup",
+      "setBagCoupon"
     ]),
     refreshTable() {
       this.refreshResource("orders");
@@ -1773,6 +1774,7 @@ export default {
       this.clearBagTransferTime();
       this.clearBagStaffMember();
       this.clearBagCustomerModel();
+      this.setBagCoupon(null);
     },
     adjustOrder() {
       this.$router.push({
