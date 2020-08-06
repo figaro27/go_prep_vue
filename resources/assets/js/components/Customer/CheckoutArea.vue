@@ -1906,9 +1906,14 @@ use next_delivery_dates
             return false;
           }
 
-          return deliveryDay.pickup_location_ids.includes(
-            this.selectedPickupLocation
-          );
+          // Change to check if store has delivery_day_pickup_locations instead of just checking for pickup locations
+          if (this.pickupLocations.length > 0) {
+            return deliveryDay.pickup_location_ids.includes(
+              this.selectedPickupLocation
+            );
+          } else {
+            return deliveryDay;
+          }
         });
       }
 
