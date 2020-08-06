@@ -704,14 +704,14 @@ class CheckoutController extends UserController
                 $purchasedGiftCard->update();
             }
 
-            if ($bagItems && count($bagItems) > 0) {
-                foreach ($bagItems as $bagItem) {
-                    $orderBag = new OrderBag();
-                    $orderBag->order_id = (int) $order->id;
-                    $orderBag->bag = json_encode($bagItem);
-                    $orderBag->save();
-                }
-            }
+            // if ($bagItems && count($bagItems) > 0) {
+            //     foreach ($bagItems as $bagItem) {
+            //         $orderBag = new OrderBag();
+            //         $orderBag->order_id = (int) $order->id;
+            //         $orderBag->bag = json_encode($bagItem);
+            //         $orderBag->save();
+            //     }
+            // }
 
             // Delete the credit card if the user unchecked save for future use
             if ($card && !$card->saveCard) {
@@ -1277,24 +1277,24 @@ class CheckoutController extends UserController
                     ]);
                 }
 
-                if ($bagItems && count($bagItems) > 0) {
-                    foreach ($bagItems as $bagItem) {
-                        $orderBag = new OrderBag();
-                        $orderBag->order_id = (int) $order->id;
-                        $orderBag->bag = json_encode($bagItem);
-                        $orderBag->save();
-                    }
-                }
+                // if ($bagItems && count($bagItems) > 0) {
+                //     foreach ($bagItems as $bagItem) {
+                //         $orderBag = new OrderBag();
+                //         $orderBag->order_id = (int) $order->id;
+                //         $orderBag->bag = json_encode($bagItem);
+                //         $orderBag->save();
+                //     }
+                // }
 
-                if ($bagItems && count($bagItems) > 0) {
-                    foreach ($bagItems as $bagItem) {
-                        $subscriptionBag = new SubscriptionBag();
-                        $subscriptionBag->subscription_id =
-                            (int) $userSubscription->id;
-                        $subscriptionBag->bag = json_encode($bagItem);
-                        $subscriptionBag->save();
-                    }
-                }
+                // if ($bagItems && count($bagItems) > 0) {
+                //     foreach ($bagItems as $bagItem) {
+                //         $subscriptionBag = new SubscriptionBag();
+                //         $subscriptionBag->subscription_id =
+                //             (int) $userSubscription->id;
+                //         $subscriptionBag->bag = json_encode($bagItem);
+                //         $subscriptionBag->save();
+                //     }
+                // }
 
                 try {
                     $user->sendNotification('meal_plan', [
