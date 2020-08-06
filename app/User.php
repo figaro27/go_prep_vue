@@ -25,6 +25,7 @@ use App\Media\Utils as MediaUtils;
 use App\Subscription;
 use App\Referral;
 use App\Order;
+use App\Notifications\MailResetPasswordToken;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -564,5 +565,10 @@ class User extends Authenticatable implements JWTSubject
             'store_id' => $this->last_viewed_store_id,
             'paid' => 1
         ])->count();
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new MailResetPasswordToken($token));
     }
 }
