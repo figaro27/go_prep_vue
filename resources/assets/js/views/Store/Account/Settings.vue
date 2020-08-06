@@ -1159,6 +1159,63 @@
                   v-model="storeModules.gratuity"
                   @change.native="updateStoreModules"
                 />
+
+                <p class="mt-2">
+                  <span class="mr-1 mt-2">Cooler Bag Deposit</span>
+                  <img
+                    v-b-popover.hover="
+                      'Apply a deposit on your customer\'s orders for a cooler bag which can then be refunded upon return of the bag..'
+                    "
+                    title="Cooler Bag Deposit"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeModules.cooler"
+                  @change.native="updateStoreModules"
+                />
+                <p class="mt-2 ml-5" v-if="storeModules.cooler">
+                  <span class="mr-1 mt-2">Optional</span>
+                  <img
+                    v-b-popover.hover="
+                      'Make the cooler bag deposit optional for the customer. They will see a checkbox instead of it being required.'
+                    "
+                    title="Optional"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  v-if="storeModules.cooler"
+                  class="ml-5"
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeModuleSettings.coolerOptional"
+                  @change.native="updateStoreModules"
+                />
+                <p class="mt-2 ml-5" v-if="storeModules.cooler">
+                  <span class="mr-1 mt-2">Cooler Bag Deposit Amount</span>
+                  <img
+                    v-b-popover.hover="
+                      'Enter the amount of the cooler bag deposit the customer has to pay.'
+                    "
+                    title="Cooler Bag Deposit"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <b-form-input
+                  v-if="storeModules.cooler"
+                  class="w-80px ml-5"
+                  v-model="storeModuleSettings.coolerDeposit"
+                  type="number"
+                  @change.native="updateStoreModules"
+                ></b-form-input>
               </b-form>
             </b-tab>
           </b-tabs>

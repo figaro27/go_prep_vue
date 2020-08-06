@@ -406,6 +406,11 @@ foreach (
                             Route::resource('modules', 'StoreModuleController');
 
                             Route::resource(
+                                'moduleSettings',
+                                'StoreModuleSettingController'
+                            );
+
+                            Route::resource(
                                 'reportSettings',
                                 'ReportSettingController'
                             );

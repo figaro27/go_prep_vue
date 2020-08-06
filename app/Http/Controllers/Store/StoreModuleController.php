@@ -14,7 +14,7 @@ class StoreModuleController extends StoreController
      */
     public function index()
     {
-        //
+        return StoreModule::where('store_id', $this->store->id)->first();
     }
 
     /**

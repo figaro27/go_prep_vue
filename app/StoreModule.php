@@ -24,7 +24,8 @@ class StoreModule extends Model
         'showHotCheckbox' => 'boolean',
         'mealExpiration' => 'boolean',
         'pickupOnly' => 'boolean',
-        'gratuity' => 'boolean'
+        'gratuity' => 'boolean',
+        'cooler' => 'boolean'
     ];
 
     protected $guarded = [];

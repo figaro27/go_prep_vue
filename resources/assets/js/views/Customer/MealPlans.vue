@@ -168,6 +168,15 @@
                           )
                         }}
                       </p>
+                      <p v-if="subscription.coolerDeposit > 0">
+                        Cooler Deposit::
+                        {{
+                          format.money(
+                            subscription.coolerDeposit,
+                            subscription.currency
+                          )
+                        }}
+                      </p>
                       <p class="strong">
                         Total:
                         {{
@@ -354,6 +363,15 @@
                           {{
                             format.money(
                               subscription.gratuity,
+                              subscription.currency
+                            )
+                          }}
+                        </p>
+                        <p v-if="subscription.coolerDeposit > 0">
+                          Cooler Deposit:
+                          {{
+                            format.money(
+                              subscription.coolerDeposit,
                               subscription.currency
                             )
                           }}

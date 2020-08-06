@@ -269,6 +269,7 @@ class SubscriptionController extends UserController
         $couponCode = $request->get('couponCode');
         $deliveryFee = $request->get('deliveryFee');
         $gratuity = $request->get('gratuity');
+        $coolerDeposit = $request->get('coolerDeposit');
         $pickupLocation = $request->get('pickupLocation');
         //$stripeToken = $request->get('token');
 
@@ -542,6 +543,7 @@ class SubscriptionController extends UserController
         $sub->processingFee = $processingFee;
         $sub->salesTax = $salesTax;
         $sub->gratuity = $gratuity;
+        $sub->coolerDeposit = $coolerDeposit;
         $sub->amount = $total;
         $sub->pickup = $request->get('pickup', 0);
         $sub->delivery_day = $deliveryDay;
@@ -577,6 +579,7 @@ class SubscriptionController extends UserController
             $order->processingFee = $processingFee;
             $order->deliveryFee = $deliveryFee;
             $order->gratuity = $gratuity;
+            $order->coolerDeposit = $coolerDeposit;
             $order->couponReduction = $couponReduction;
             $order->couponCode = $couponCode;
             $order->salesTax = $salesTax;
