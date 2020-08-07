@@ -26,7 +26,7 @@
             @if ($params['show_daily_order_numbers'])
             <th style="width:75px">Daily Order #</th>
             @endif
-            @if ($params['livotis'])
+            @if (isset($params['livotis']) && $params['livotis']) 
             <th>Last Name</th>
             <th>First Name</th>
             <th>Phone</th>
