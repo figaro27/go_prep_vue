@@ -22,7 +22,8 @@ class ReportSetting extends Model
         'lab_instructions' => 'boolean',
         'lab_expiration' => 'boolean',
         'lab_ingredients' => 'boolean',
-        'lab_allergies' => 'boolean'
+        'lab_allergies' => 'boolean',
+        'lab_packaged_by' => 'boolean'
     ];
 
     public function store()
