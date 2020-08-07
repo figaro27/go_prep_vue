@@ -1044,11 +1044,15 @@ class Subscription extends Model
 
                 if (isset($item['components']) && $item['components']) {
                     foreach ($item['components'] as $component) {
-                        MealOrderComponent::create([
-                            'meal_order_id' => $mealOrder->id,
-                            'meal_component_id' => $component->id,
-                            'meal_component_option_id' => $component->option->id
-                        ]);
+                        try {
+                            MealOrderComponent::create([
+                                'meal_order_id' => $mealOrder->id,
+                                'meal_component_id' => $component->id,
+                                'meal_component_option_id' =>
+                                    $component->option->id
+                            ]);
+                        } catch (\Exception $e) {
+                        }
                     }
                 }
 
