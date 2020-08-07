@@ -67,7 +67,7 @@ font-size:10px !important;
         @if ($reportSettings->lab_packaged_by)
         <p class="text-9">
         Packaged By: 
-          { $mealOrder->store->details->name }, { $mealOrder->store->details->address }, { $mealOrder->store->details->city }, { $mealOrder->store->details->state } { $mealOrder->store->details->zip }
+          {{ $mealOrder->store->details->name }}, {{ $mealOrder->store->details->address }}, {{ $mealOrder->store->details->city }}, {{ $mealOrder->store->details->state }} {{ $mealOrder->store->details->zip }}
         </p>
         @endif
   
