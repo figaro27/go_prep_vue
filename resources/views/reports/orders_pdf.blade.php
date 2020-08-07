@@ -27,7 +27,6 @@
             <th style="width:75px">Daily Order #</th>
             @endif
             @if ($params['livotis'])
-            <th>Order ID</th>
             <th>Last Name</th>
             <th>First Name</th>
             <th>Phone</th>
