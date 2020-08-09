@@ -1,18 +1,23 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show>
+      <b-alert style="background-color:#EBFAFF" show dismissible>
         <h5>
-          New Feature - Delivery Route Report
+          New Feature - Cooler Bag Deposit
         </h5>
         <p>
-          This report gives you the quickest and most optimal route to make your
-          deliveries to your customers.<br />
-          <router-link to="/store/reports"
-            >View on the Reports page here.</router-link
+          Have your customer optionally pay a deposit on a cooler bag which
+          their food will be delivered in.<br />You will then see an indication
+          on each new order that a cooler bag deposit was paid, and you'll have
+          the option to refund the customer the deposit once the bag is returned
+          to you.<br />
+          <router-link to="/store/account/settings"
+            ><strong
+              >Enable in the Advanced tab of the Settings page here.</strong
+            ></router-link
           >
         </p>
-      </b-alert> -->
+      </b-alert>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />

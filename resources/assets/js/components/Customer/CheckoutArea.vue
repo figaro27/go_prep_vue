@@ -498,12 +498,12 @@
         <div class="row">
           <div class="col-6 col-md-4">
             <span>
-              <strong>Cooler Deposit</strong>
+              <strong>Cooler Bag Deposit</strong>
               <img
                 v-b-popover.hover="
                   'This deposit will be refunded to you upon return of the cooler.'
                 "
-                title="Cooler Deposit"
+                title="Cooler Bag Deposit"
                 src="/images/store/popover.png"
                 class="popover-size"
               />

@@ -1182,7 +1182,7 @@
                   <span class="mr-1 mt-2">Optional</span>
                   <img
                     v-b-popover.hover="
-                      'Make the cooler bag deposit optional for the customer. They will see a checkbox instead of it being required.'
+                      'Make the cooler bag deposit optional for the customer. They will see a checkbox instead of it being forced.'
                     "
                     title="Optional"
                     src="/images/store/popover.png"
