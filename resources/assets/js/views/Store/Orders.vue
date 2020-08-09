@@ -1524,7 +1524,7 @@ export default {
           refundAmount:
             this.refundAmount == null ? this.order.amount : this.refundAmount,
           applyToBalance: this.applyToBalanceRefund,
-          cooler: cooler
+          cooler: this.cooler
         })
         .then(response => {
           if (response.data === 1) {
