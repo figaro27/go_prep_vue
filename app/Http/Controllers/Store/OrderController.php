@@ -1250,7 +1250,7 @@ class OrderController extends StoreController
             $order->balance += $request->get('refundAmount');
         }
         $order->refundedAmount += $request->get('refundAmount');
-        $order->coolerReturned = $cooler;
+        $order->coolerReturned = isset($cooler) ? $cooler : 0;
         $order->save();
 
         return 'Refunded $' . $request->get('refundAmount');
