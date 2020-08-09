@@ -410,7 +410,8 @@ export default {
             referralReduction: this.referralReduction,
             promotionReduction: this.promotionReduction,
             pointsReduction: this.promotionPointsReduction,
-            gratuity: this.gratuity
+            gratuity: this.gratuity,
+            coolerDeposit: this.coolerDeposit
           }
         );
         await this.refreshSubscriptions();

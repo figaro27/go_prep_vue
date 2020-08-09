@@ -2131,9 +2131,8 @@ const actions = {
   async refreshStoreModuleSettings({ commit, state }, args = {}) {
     const res = await axios.get("/api/me/moduleSettings");
     const { data } = await res;
-
     if (_.isObject(data)) {
-      commit("storeModuleSettings", { module_settings: data });
+      commit("storeModuleSettings", { moduleSettings: data });
     } else {
       throw new Error("Failed to retrieve modules");
     }

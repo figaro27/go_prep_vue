@@ -152,6 +152,7 @@ class CheckoutController extends UserController
         $referralReduction = $request->get('referralReduction');
         $deliveryFee = $request->get('deliveryFee');
         $gratuity = $request->get('gratuity');
+        $coolerDeposit = $request->get('coolerDeposit');
         $pickupLocation = $request->get('pickupLocation');
         $transferTime = $request->get('transferTime');
         $monthlyPrepay = $request->get('monthlyPrepay');
@@ -371,12 +372,13 @@ class CheckoutController extends UserController
             $order->order_number =
                 strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                 chr(rand(65, 90)) .
-                rand(0, 9);
+                rand(10, 99);
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
             $order->deliveryFee = $deliveryFee;
             $order->gratuity = $gratuity;
+            $order->coolerDeposit = $coolerDeposit;
             $order->processingFee = $processingFee;
             $order->salesTax = $salesTax;
             $order->customSalesTax = $customSalesTax;
@@ -702,14 +704,14 @@ class CheckoutController extends UserController
                 $purchasedGiftCard->update();
             }
 
-            if ($bagItems && count($bagItems) > 0) {
-                foreach ($bagItems as $bagItem) {
-                    $orderBag = new OrderBag();
-                    $orderBag->order_id = (int) $order->id;
-                    $orderBag->bag = json_encode($bagItem);
-                    $orderBag->save();
-                }
-            }
+            // if ($bagItems && count($bagItems) > 0) {
+            //     foreach ($bagItems as $bagItem) {
+            //         $orderBag = new OrderBag();
+            //         $orderBag->order_id = (int) $order->id;
+            //         $orderBag->bag = json_encode($bagItem);
+            //         $orderBag->save();
+            //     }
+            // }
 
             // Delete the credit card if the user unchecked save for future use
             if ($card && !$card->saveCard) {
@@ -865,6 +867,7 @@ class CheckoutController extends UserController
                 $userSubscription->processingFee = $processingFee;
                 $userSubscription->deliveryFee = $deliveryFee;
                 $userSubscription->gratuity = $gratuity;
+                $userSubscription->coolerDeposit = $coolerDeposit;
                 $userSubscription->salesTax = $salesTax;
                 $userSubscription->amount = $total;
                 $userSubscription->currency = $storeSettings->currency;
@@ -900,12 +903,13 @@ class CheckoutController extends UserController
                 $order->order_number =
                     strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                     chr(rand(65, 90)) .
-                    rand(0, 9);
+                    rand(10, 99);
                 $order->preFeePreDiscount = $preFeePreDiscount;
                 $order->mealPlanDiscount = $mealPlanDiscount;
                 $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
                 $order->deliveryFee = $deliveryFee;
                 $order->gratuity = $gratuity;
+                $order->coolerDeposit = $coolerDeposit;
                 $order->processingFee = $processingFee;
                 $order->salesTax = $salesTax;
                 $order->customSalesTax = $customSalesTax;
@@ -1273,24 +1277,24 @@ class CheckoutController extends UserController
                     ]);
                 }
 
-                if ($bagItems && count($bagItems) > 0) {
-                    foreach ($bagItems as $bagItem) {
-                        $orderBag = new OrderBag();
-                        $orderBag->order_id = (int) $order->id;
-                        $orderBag->bag = json_encode($bagItem);
-                        $orderBag->save();
-                    }
-                }
+                // if ($bagItems && count($bagItems) > 0) {
+                //     foreach ($bagItems as $bagItem) {
+                //         $orderBag = new OrderBag();
+                //         $orderBag->order_id = (int) $order->id;
+                //         $orderBag->bag = json_encode($bagItem);
+                //         $orderBag->save();
+                //     }
+                // }
 
-                if ($bagItems && count($bagItems) > 0) {
-                    foreach ($bagItems as $bagItem) {
-                        $subscriptionBag = new SubscriptionBag();
-                        $subscriptionBag->subscription_id =
-                            (int) $userSubscription->id;
-                        $subscriptionBag->bag = json_encode($bagItem);
-                        $subscriptionBag->save();
-                    }
-                }
+                // if ($bagItems && count($bagItems) > 0) {
+                //     foreach ($bagItems as $bagItem) {
+                //         $subscriptionBag = new SubscriptionBag();
+                //         $subscriptionBag->subscription_id =
+                //             (int) $userSubscription->id;
+                //         $subscriptionBag->bag = json_encode($bagItem);
+                //         $subscriptionBag->save();
+                //     }
+                // }
 
                 try {
                     $user->sendNotification('meal_plan', [

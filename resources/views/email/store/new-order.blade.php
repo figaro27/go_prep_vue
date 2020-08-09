@@ -393,6 +393,7 @@ $currency = $order->store->settings->currency_symbol
                         $mealPlanDiscount = $order->mealPlanDiscount;
                         $deliveryFee = $order->deliveryFee;
                         $gratuity = $order->gratuity;
+                        $coolerDeposit = $order->coolerDeposit;
                         $processingFee = $order->processingFee;
                         $salesTax = $order->salesTax;
                         $coupon = $order->couponReduction;
@@ -436,6 +437,10 @@ $currency = $order->store->settings->currency_symbol
                         @if ($gratuity > 0)
 Gratuity<br>
 @endif
+@if ($coolerDeposit > 0)
+Cooler Deposit<br>
+@endif
+
 <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">Total</span><br>
                         @if ($balance > 0)
@@ -478,6 +483,9 @@ Gratuity<br>
                           
                           @if ($gratuity > 0)
 {{$currency}}{{ number_format($gratuity, 2) }}<br>
+@endif
+@if ($coolerDeposit > 0)
+{{$currency}}{{ number_format($coolerDeposit, 2) }}<br>
 @endif
 <br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold; ">{{$currency}}{{ number_format($order->amount, 2) }}

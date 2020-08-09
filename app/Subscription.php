@@ -460,12 +460,13 @@ class Subscription extends Model
         $newOrder->order_number =
             strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
             chr(rand(65, 90)) .
-            rand(0, 9);
+            rand(10, 99);
         $newOrder->preFeePreDiscount = $this->preFeePreDiscount;
         $newOrder->mealPlanDiscount = $this->mealPlanDiscount;
         $newOrder->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
         $newOrder->deliveryFee = $this->deliveryFee;
         $newOrder->gratuity = $this->gratuity;
+        $newOrder->coolerDeposit = $this->coolerDeposit;
         $newOrder->processingFee = $this->processingFee;
         $newOrder->salesTax = $this->salesTax;
         $newOrder->coupon_id = $this->coupon_id;
@@ -860,6 +861,10 @@ class Subscription extends Model
         // }
         $gratuity = $this->gratuity;
         $total += $gratuity;
+
+        $coolerDeposit = $this->coolerDeposit;
+        $total += $coolerDeposit;
+
         $total += $deliveryFee;
 
         if ($this->store->settings->applyProcessingFee) {
@@ -892,6 +897,7 @@ class Subscription extends Model
         $total -= $this->promotionReduction;
         $total -= $this->pointsReduction;
         $this->gratuity = $gratuity;
+        $this->coolerDeposit = $coolerDeposit;
         $this->amount = $total;
         $this->save();
 
@@ -976,6 +982,7 @@ class Subscription extends Model
             $order->promotionReduction = $this->promotionReduction;
             $order->pointsReduction = $this->pointsReduction;
             $order->gratuity = $this->gratuity;
+            $order->coolerDeposit = $this->coolerDeposit;
             $order->amount = $this->amount;
             $order->save();
 

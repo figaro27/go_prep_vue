@@ -199,6 +199,10 @@
               Gratuity:
               {{ format.money(order.gratuity, order.currency) }}
             </p>
+            <p v-if="order.coolerDeposit > 0">
+              Cooler Deposit:
+              {{ format.money(order.coolerDeposit, order.currency) }}
+            </p>
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
             </p>
@@ -280,6 +284,10 @@
                 <p v-if="order.gratuity > 0">
                   Gratuity:
                   {{ format.money(order.gratuity, order.currency) }}
+                </p>
+                <p v-if="order.coolerDeposit > 0">
+                  Cooler Deposit:
+                  {{ format.money(order.coolerDeposit, order.currency) }}
                 </p>
                 <p class="strong">
                   Total:

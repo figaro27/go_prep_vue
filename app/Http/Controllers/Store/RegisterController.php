@@ -94,6 +94,17 @@ class RegisterController extends StoreController
                     'subscription_renewing' => true
                 )
             ]);
+        } else {
+            // Update user detail with newly entered data
+            $userDetail = UserDetail::where('user_id', $user->id)->first();
+            $userDetail->firstname = $request->get('first_name');
+            $userDetail->lastname = $request->get('last_name');
+            $userDetail->address = $request->get('address');
+            $userDetail->city = $request->get('city');
+            $userDetail->zip = $request->get('zip');
+            $userDetail->state = $request->get('state')['value'];
+            $userDetail->phone = $request->get('phone');
+            $userDetail->update();
         }
 
         $user = User::findOrFail($user->id);

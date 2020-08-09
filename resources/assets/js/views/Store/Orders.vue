@@ -1,18 +1,23 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show>
+      <b-alert style="background-color:#EBFAFF" show dismissible>
         <h5>
-          New Feature - Delivery Route Report
+          New Feature - Cooler Bag Deposit
         </h5>
         <p>
-          This report gives you the quickest and most optimal route to make your
-          deliveries to your customers.<br />
-          <router-link to="/store/reports"
-            >View on the Reports page here.</router-link
+          Have your customer optionally pay a deposit on a cooler bag which
+          their food will be delivered in.<br />You will then see an indication
+          on each new order that a cooler bag deposit was paid, and you'll have
+          the option to refund the customer the deposit once the bag is returned
+          to you.<br />
+          <router-link to="/store/account/settings"
+            ><strong
+              >Enable in the Advanced tab of the Settings page here.</strong
+            ></router-link
           >
         </p>
-      </b-alert> -->
+      </b-alert>
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
@@ -193,6 +198,23 @@
                   v-b-popover.hover.top="
                     'This order needs to be hot upon delivery/pickup.'
                   "
+                ></i>
+                <i
+                  v-if="
+                    props.row.coolerDeposit > 0 && !props.row.coolerReturned
+                  "
+                  class="fas fa-icicles text-primary"
+                  v-b-popover.hover.top="
+                    'A deposit for a cooler bag was paid and needs to be refunded upon return.'
+                  "
+                >
+                </i>
+                <i
+                  v-if="props.row.coolerDeposit > 0 && props.row.coolerReturned"
+                  class="fas fa-icicles text-secondary"
+                  v-b-popover.hover.top="
+                    'A deposit for a cooler bag was paid, the bag was returned, and the customer was refunded.'
+                  "
                 >
                 </i>
               </p>
@@ -230,12 +252,65 @@
               <span v-else>Paid in Full</span>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
+              <!-- Keeping but hiding for purposes of double clicking the row to open the modal -->
               <button
+                v-show="false"
                 class="btn view btn-primary btn-sm"
                 @click="viewOrder(props.row.id)"
               >
                 View Order
               </button>
+              <button
+                type="button"
+                class="btn btn-primary dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                @click="(order = props.row), (orderId = props.row.id)"
+              >
+                Actions
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" @click="viewOrder(props.row.id)"
+                  >View</a
+                >
+                <a class="dropdown-item" @click="adjustOrder(props.row.id)"
+                  >Adjust</a
+                >
+                <a
+                  class="dropdown-item"
+                  @click="voidOrder"
+                  v-if="!props.row.voided"
+                  >Void</a
+                >
+                <a
+                  class="dropdown-item"
+                  @click="voidOrder"
+                  v-if="props.row.voided"
+                  >Unvoid</a
+                >
+                <a class="dropdown-item" @click="printPackingSlip(props.row.id)"
+                  >Print Packing Slip</a
+                >
+                <a
+                  class="dropdown-item"
+                  @click="printLabel(props.row.id, 'labels', 'b64')"
+                  >Print Label</a
+                >
+                <a
+                  class="dropdown-item"
+                  @click="emailCustomerReceipt(props.row.id)"
+                  >Email Customer Receipt</a
+                >
+                <a
+                  class="dropdown-item"
+                  v-if="
+                    props.row.coolerDeposit > 0 && !props.row.coolerReturned
+                  "
+                  @click="refund(true)"
+                  >Refund Cooler Deposit</a
+                >
+              </div>
             </div>
 
             <div slot="amount" slot-scope="props">
@@ -263,7 +338,6 @@
         size="xl"
         title="Order Information"
         no-fade
-        no-close-on-backdrop
       >
         <div class="row">
           <div class="col-md-12 light-background">
@@ -325,6 +399,22 @@
                   class="fas fa-fire red"
                   v-b-popover.hover.top="
                     'This order needs to be hot upon delivery/pickup.'
+                  "
+                >
+                </i>
+                <i
+                  v-if="order.coolerDeposit > 0 && !order.coolerReturned"
+                  class="fas fa-icicles text-primary"
+                  v-b-popover.hover.top="
+                    'A deposit for a cooler bag was paid and needs to be refunded upon return.'
+                  "
+                >
+                </i>
+                <i
+                  v-if="order.coolerDeposit > 0 && order.coolerReturned"
+                  class="fas fa-icicles text-secondary"
+                  v-b-popover.hover.top="
+                    'A deposit for a cooler bag was paid, the bag was returned, and the customer was refunded.'
                   "
                 >
                 </i>
@@ -392,6 +482,32 @@
               <img
                 v-b-popover.hover="
                   'Refund your customer partially or fully. Refunds take 5-10 days to show on your customer\'s statements. Leave the field blank for a full refund. Refunding does not remove the order from all of your reports. Please void the order for that.'
+                "
+                title="Refunds"
+                src="/images/store/popover.png"
+                class="popover-size d-inline"
+              />
+            </div>
+            <div
+              class="d-inline"
+              v-if="
+                !order.cashOrder &&
+                  store.settings.payment_gateway !== 'authorize' &&
+                  order.coolerDeposit > 0 &&
+                  !order.coolerReturned
+              "
+            >
+              <br />
+              <b-btn
+                variant="primary"
+                class="btn mb-2 d-inline mr-1"
+                @click="refund(true)"
+                >Refund Cooler Deposit
+                {{ format.money(order.coolerDeposit, storeSettings.currency) }}
+              </b-btn>
+              <img
+                v-b-popover.hover="
+                  'Refund your customer for their cooler deposit upon return of the bag.'
                 "
                 title="Refunds"
                 src="/images/store/popover.png"
@@ -538,6 +654,10 @@
             <p v-if="order.gratuity > 0">
               Gratuity:
               {{ format.money(order.gratuity, order.currency) }}
+            </p>
+            <p v-if="order.coolerDeposit > 0">
+              Cooler Deposit:
+              {{ format.money(order.coolerDeposit, order.currency) }}
             </p>
             <p class="strong">
               Total: {{ format.money(order.amount, order.currency) }}
@@ -824,6 +944,10 @@
                   Gratuity:
                   {{ format.money(order.gratuity, order.currency) }}
                 </p>
+                <p v-if="order.coolerDeposit > 0">
+                  Cooler Deposit:
+                  {{ format.money(order.coolerDeposit, order.currency) }}
+                </p>
                 <p class="strong">
                   Total:
                   {{ format.money(order.amount, order.currency) }}
@@ -1106,7 +1230,8 @@ export default {
       "clearBagTransferTime",
       "clearBagStaffMember",
       "clearBagCustomerModel",
-      "setBagPickup"
+      "setBagPickup",
+      "setBagCoupon"
     ]),
     refreshTable() {
       this.refreshResource("orders");
@@ -1387,13 +1512,19 @@ export default {
           this.applyToBalanceRefund = false;
         });
     },
-    refund() {
+    refund(cooler = false) {
+      if (cooler == true) {
+        this.refundAmount = this.order
+          ? this.order.coolerDeposit
+          : coolerDepositAmount;
+      }
       axios
         .post("/api/me/refundOrder", {
-          orderId: this.orderId,
+          orderId: this.order.id,
           refundAmount:
             this.refundAmount == null ? this.order.amount : this.refundAmount,
-          applyToBalance: this.applyToBalanceRefund
+          applyToBalance: this.applyToBalanceRefund,
+          cooler: cooler
         })
         .then(response => {
           if (response.data === 1) {
@@ -1648,6 +1779,13 @@ export default {
       this.clearBagTransferTime();
       this.clearBagStaffMember();
       this.clearBagCustomerModel();
+      this.setBagCoupon(null);
+    },
+    adjustOrder() {
+      this.$router.push({
+        name: "store-adjust-order",
+        params: { order: this.order, orderId: this.orderId }
+      });
     }
   }
 };

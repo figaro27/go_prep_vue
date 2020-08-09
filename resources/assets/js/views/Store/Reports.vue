@@ -447,6 +447,11 @@
               >Allergens</b-form-checkbox
             >
           </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.lab_packaged_by"
+              >Packaged By (Your address)</b-form-checkbox
+            >
+          </p>
         </div>
         <div class="col-md-4">
           <p class="strong">Label Dimensions</p>
