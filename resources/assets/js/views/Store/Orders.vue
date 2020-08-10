@@ -277,7 +277,7 @@
                 <a
                   class="dropdown-item"
                   @click="adjustOrder(props.row.id)"
-                  :disabled="mealMixItems.isRunningLazy"
+                  v-if="!mealMixItems.isRunningLazy"
                   >Adjust</a
                 >
                 <a
