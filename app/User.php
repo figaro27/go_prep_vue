@@ -26,6 +26,8 @@ use App\Subscription;
 use App\Referral;
 use App\Order;
 use App\Notifications\MailResetPasswordToken;
+use App\StoreDetail;
+use App\Store;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -72,7 +74,8 @@ class User extends Authenticatable implements JWTSubject
         'last_viewed_store',
         'has_active_subscription',
         'referrals',
-        'orderCount'
+        'orderCount',
+        'last_viewed_store_url'
     ];
 
     /**
@@ -570,5 +573,27 @@ class User extends Authenticatable implements JWTSubject
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new MailResetPasswordToken($token));
+    }
+
+    public function getLastViewedStoreUrlAttribute()
+    {
+        if ($this->user_role_id === 1 && $this->last_viewed_store_id) {
+            $storeDetail = StoreDetail::where(
+                'id',
+                $this->last_viewed_store_id
+            )->first();
+            if ($storeDetail->host) {
+                $host = $storeDetail->host ? $storeDetail->host : 'goprep';
+                $start =
+                    env('APP_ENV') == 'production' ? 'https://' : 'http://';
+                $end =
+                    env('APP_ENV') == 'production' ? '.com' : '.localhost:8000';
+                return $start . $storeDetail->domain . '.' . $host . $end;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 }
