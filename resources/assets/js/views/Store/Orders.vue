@@ -274,7 +274,10 @@
                 <a class="dropdown-item" @click="viewOrder(props.row.id)"
                   >View</a
                 >
-                <a class="dropdown-item" @click="adjustOrder(props.row.id)"
+                <a
+                  class="dropdown-item"
+                  @click="adjustOrder(props.row.id)"
+                  :disabled="mealMixItems.isRunningLazy"
                   >Adjust</a
                 >
                 <a
