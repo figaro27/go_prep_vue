@@ -114,7 +114,6 @@ export default {
         .post("/api/auth/login", data)
         .then(async response => {
           let jwt = response.data;
-          let lastViewedStoreUrl = response.data.user.last_viewed_store_url;
 
           if (jwt.access_token) {
             auth.setToken(jwt);
@@ -127,7 +126,7 @@ export default {
                 this.init();
                 this.$router.replace(this.redirect);
               } else if (jwt.redirect) {
-                window.location = lastViewedStoreUrl + jwt.redirect;
+                window.location = jwt.redirect;
               } else {
                 await this.init();
                 switch (jwt.user.user_role_id) {
