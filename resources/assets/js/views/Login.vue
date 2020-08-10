@@ -87,14 +87,13 @@ export default {
 
           if (jwt.access_token) {
             auth.setToken(jwt);
-
             this.$nextTick(async () => {
               if (!_.isEmpty(this.redirect)) {
                 this.init();
                 this.$router.replace(this.redirect);
               } else if (jwt.redirect) {
                 if (lastViewedStoreUrl) {
-                  window.location = lastViewedStoreUrl + jwt.redirect;
+                  window.location = lastViewedStoreUrl + ".com/customer/menu";
                 } else {
                   window.location = jwt.redirect;
                 }
