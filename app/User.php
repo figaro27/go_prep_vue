@@ -588,7 +588,7 @@ class User extends Authenticatable implements JWTSubject
                     env('APP_ENV') == 'production' ? 'https://' : 'http://';
                 $end =
                     env('APP_ENV') == 'production' ? '.com' : '.localhost:8000';
-                return $start . $storeDetail->domain . '.' . $host . $end;
+                return $start . $storeDetail->domain . '.' . $host;
             } else {
                 return null;
             }
