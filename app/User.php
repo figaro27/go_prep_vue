@@ -582,12 +582,18 @@ class User extends Authenticatable implements JWTSubject
                 'id',
                 $this->last_viewed_store_id
             )->first();
-            $host = $storeDetail->host ? $storeDetail->host : 'goprep';
-            $start = env('APP_ENV') == 'production' ? 'https://' : 'http://';
-            $end = env('APP_ENV') == 'production' ? '.com' : '.localhost:8000';
-            return $start . $storeDetail->domain . '.' . $host . $end;
+            if ($storeDetail->host) {
+                $host = $storeDetail->host ? $storeDetail->host : 'goprep';
+                $start =
+                    env('APP_ENV') == 'production' ? 'https://' : 'http://';
+                $end =
+                    env('APP_ENV') == 'production' ? '.com' : '.localhost:8000';
+                return $start . $storeDetail->domain . '.' . $host . $end;
+            } else {
+                return null;
+            }
         } else {
-            return '';
+            return null;
         }
     }
 }

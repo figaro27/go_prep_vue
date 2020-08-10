@@ -127,7 +127,11 @@ export default {
                 this.init();
                 this.$router.replace(this.redirect);
               } else if (jwt.redirect) {
-                window.location = lastViewedStoreUrl + jwt.redirect;
+                if (lastViewedStoreUrl) {
+                  window.location = lastViewedStoreUrl + jwt.redirect;
+                } else {
+                  window.location = jwt.redirect;
+                }
               } else {
                 await this.init();
                 switch (jwt.user.user_role_id) {
