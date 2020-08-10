@@ -27,6 +27,7 @@ use App\Referral;
 use App\Order;
 use App\Notifications\MailResetPasswordToken;
 use App\StoreDetail;
+use App\Store;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -576,13 +577,17 @@ class User extends Authenticatable implements JWTSubject
 
     public function getLastViewedStoreUrlAttribute()
     {
-        $storeDetail = StoreDetail::where(
-            'id',
-            $this->last_viewed_store_id
-        )->first();
-        $host = $storeDetail->host ? $storeDetail->host : 'goprep';
-        $start = env('APP_ENV') == 'production' ? 'https://' : 'http://';
-        $end = env('APP_ENV') == 'production' ? '.com' : '.localhost:8000';
-        return $start . $storeDetail->domain . '.' . $host;
+        if ($this->user_role_id === 1 && $this->last_viewed_store_id) {
+            $storeDetail = StoreDetail::where(
+                'id',
+                $this->last_viewed_store_id
+            )->first();
+            $host = $storeDetail->host ? $storeDetail->host : 'goprep';
+            $start = env('APP_ENV') == 'production' ? 'https://' : 'http://';
+            $end = env('APP_ENV') == 'production' ? '.com' : '.localhost:8000';
+            return $start . $storeDetail->domain . '.' . $host . $end;
+        } else {
+            return '';
+        }
     }
 }
