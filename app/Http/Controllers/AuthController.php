@@ -85,8 +85,15 @@ class AuthController extends Controller
             ->pluck('domain')
             ->first();
 
-        $preg =
-            '/https?:\/\/(?:www\.)?' . preg_quote(config('app.domain')) . '/i';
+        $storeHost = StoreDetail::where('store_id', $user->last_viewed_store_id)
+            ->pluck('host')
+            ->first();
+
+        if ($storeHost == null) {
+            $storeHost = preg_quote(config('app.domain'));
+        }
+
+        $preg = '/https?:\/\/(?:www\.)?' . $storeHost . '/i';
         $url = Request::url();
 
         // If not accessing store subdomain
@@ -98,7 +105,7 @@ class AuthController extends Controller
                     : 'http://' .
                         $storeDomain .
                         '.' .
-                        config('app.domain') .
+                        $storeHost .
                         '/customer/menu';
             } else {
                 $redirect = $user->hasRole('store')
