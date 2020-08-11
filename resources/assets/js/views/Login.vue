@@ -93,6 +93,7 @@ export default {
                 this.$router.replace(this.redirect);
               } else if (jwt.redirect) {
                 if (lastViewedStoreUrl) {
+                  console.log(jwt.redirect);
                   window.location = lastViewedStoreUrl + "/customer/menu";
                 } else {
                   window.location = jwt.redirect;
