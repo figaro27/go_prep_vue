@@ -26,7 +26,17 @@ class MealMealPackageSize extends Pivot
         return $this->belongsTo('App\MealPackage', 'meal_package_id');
     }
 
+    public function meal_package()
+    {
+        return $this->belongsTo('App\MealPackage');
+    }
+
     public function mealPackageSize()
+    {
+        return $this->belongsTo('App\MealPackageSize', 'meal_package_size_id');
+    }
+
+    public function meal_package_size()
     {
         return $this->belongsTo('App\MealPackageSize', 'meal_package_size_id');
     }
