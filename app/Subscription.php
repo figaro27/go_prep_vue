@@ -1041,6 +1041,8 @@ class Subscription extends Model
                     )
                         ? $item['meal_package_variation']
                         : 0;
+                    $mealOrder->meal_package_order_id =
+                        $item['meal_package_subscription_id'];
                 }
 
                 if (isset($item['meal_package_title'])) {
@@ -1086,24 +1088,80 @@ class Subscription extends Model
                     $mealOrder->meal_package = 1;
 
                     if ($item->meal_package_subscription_id !== null) {
-                        $mealPackageSub = MeaLPackageSubscription::where(
+                        $mealPackageSub = MealPackageSubscription::where(
                             'id',
                             $item->meal_package_subscription_id
                         )->first();
-                        $mealOrder->meal_package_order_id = MealPackageOrder::where(
-                            [
+
+                        if (
+                            MealPackageOrder::where([
                                 'meal_package_id' =>
                                     $mealPackageSub->meal_package_id,
                                 'meal_package_size_id' =>
                                     $mealPackageSub->meal_package_size_id,
-                                'order_id' => $order->id
-                            ]
-                        )
-                            ->pluck('id')
-                            ->first();
-                    }
+                                'customTitle' => $mealPackageSub->customTitle,
+                                'order_id' => $order->id,
+                                'mappingId' => isset($mealPackageSub->mappingId)
+                                    ? $mealPackageSub->mappingId
+                                    : null
+                            ])
+                                ->get()
+                                ->count() === 0
+                        ) {
+                            $mealPackageOrder = new MealPackageOrder();
+                            $mealPackageOrder->store_id = $this->store->id;
+                            $mealPackageOrder->order_id = $order->id;
+                            $mealPackageOrder->meal_package_id =
+                                $mealPackageSub->meal_package_id;
+                            $mealPackageOrder->meal_package_size_id =
+                                $mealPackageSub->meal_package_size_id;
+                            $mealPackageOrder->quantity =
+                                $mealPackageSub->quantity;
+                            $mealPackageOrder->customTitle = isset(
+                                $mealPackageSub->customTitle
+                            )
+                                ? $mealPackageSub->customTitle
+                                : null;
+                            $mealPackageOrder->price = $mealPackageSub->price;
 
-                    $mealOrder->save();
+                            if (
+                                isset($mealPackageSub->delivery_date) &&
+                                $mealPackageSub->delivery_date
+                            ) {
+                                $mealPackageOrder->delivery_date =
+                                    $mealPackageSub->delivery_date;
+                            }
+                            $mealPackageOrder->mappingId = isset(
+                                $mealPackageSub->mappingId
+                            )
+                                ? $mealPackageSub->mappingId
+                                : null;
+                            $mealPackageOrder->save();
+
+                            $mealOrder->meal_package_order_id =
+                                $mealPackageOrder->id;
+                        } else {
+                            $mealOrder->meal_package_order_id = MealPackageOrder::where(
+                                [
+                                    'meal_package_id' =>
+                                        $mealPackageSub->meal_package_id,
+                                    'meal_package_size_id' =>
+                                        $mealPackageSub->meal_package_size_id,
+                                    'customTitle' =>
+                                        $mealPackageSub->customTitle,
+                                    'order_id' => $order->id,
+                                    'mappingId' => isset(
+                                        $mealPackageSub->mappingId
+                                    )
+                                        ? $mealPackageSub->mappingId
+                                        : null
+                                ]
+                            )
+                                ->pluck('id')
+                                ->first();
+                        }
+                        $mealOrder->save();
+                    }
                 }
             }
         }
