@@ -195,23 +195,77 @@ class MealController extends StoreController
         )->get();
 
         foreach ($mealMealPackages as $mealMealPackage) {
-            $mealMealPackage->update(['meal_id' => $subId]);
+            $existing = MealMealPackage::where([
+                'meal_id' => $subId,
+                'meal_package_id' => $mealMealPackage->meal_package_id
+            ])->first();
+
+            if (!$existing) {
+                $mealMealPackage->update(['meal_id' => $subId]);
+            } else {
+                $existingQuantity = $existing->quantity;
+                $quantity = $mealMealPackage->quantity;
+                $existing->update([
+                    'quantity' => $existingQuantity + $quantity
+                ]);
+                $mealMealPackage->delete();
+            }
         }
 
         foreach ($mealMealPackageSizes as $mealMealPackageSize) {
-            $mealMealPackageSize->update(['meal_id' => $subId]);
+            $existing = MealMealPackageSize::where([
+                'meal_id' => $subId,
+                'meal_package_size_id' =>
+                    $mealMealPackageSize->meal_package_size_id
+            ])->first();
+
+            if (!$existing) {
+                $mealMealPackageSize->update(['meal_id' => $subId]);
+            } else {
+                $existingQuantity = $existing->quantity;
+                $quantity = $mealMealPackageSize->quantity;
+                $existing->update([
+                    'quantity' => $existingQuantity + $quantity
+                ]);
+                $mealMealPackageSize->delete();
+            }
         }
 
-        foreach (
-            $mealMealPackageComponentOptions
-            as $mealMealPackageComponentOption
-        ) {
-            $mealMealPackageComponentOption->update(['meal_id' => $subId]);
-        }
+        // This just adds on to the quantity if they happen to select or add on that meal which is not right. This code should only be applied to "top level" included meals above that aren't effected by user choice. Leaving it in here just in case.
 
-        foreach ($mealMealPackageAddons as $mealMealPackageAddon) {
-            $mealMealPackageAddon->update(['meal_id' => $subId]);
-        }
+        // foreach ($mealMealPackageComponentOptions as $mealMealPackageComponentOption) {
+        //     $existing = MealMealPackageComponentOption::where([
+        //         'meal_id' => $subId,
+        //         'meal_package_component_option_id' => $mealMealPackageComponentOption->meal_package_component_option_id
+        //     ])->first();
+
+        //     if (!$existing){
+        //         $mealMealPackageComponentOption->update(['meal_id' => $subId]);
+        //     }
+        //     else{
+        //         $existingQuantity = $existing->quantity;
+        //         $quantity = $mealMealPackageComponentOption->quantity;
+        //         $existing->update(['quantity' => $existingQuantity + $quantity]);
+        //         $mealMealPackageComponentOption->delete();
+        //     }
+        // }
+
+        // foreach ($mealMealPackageAddons as $mealMealPackageAddon) {
+        //     $existing = MealMealPackageAddon::where([
+        //         'meal_id' => $subId,
+        //         'meal_package_addon_id' => $mealMealPackageAddon->meal_package_addon_id
+        //     ])->first();
+
+        //     if (!$existing){
+        //         $mealMealPackageAddon->update(['meal_id' => $subId]);
+        //     }
+        //     else{
+        //         $existingQuantity = $existing->quantity;
+        //         $quantity = $mealMealPackageAddon->quantity;
+        //         $existing->update(['quantity' => $existingQuantity + $quantity]);
+        //         $mealMealPackageAddon->delete();
+        //     }
+        // }
 
         if ($this->store) {
             $this->store->setTimezone();

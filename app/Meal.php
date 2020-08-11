@@ -24,6 +24,9 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use App\Media\Utils as MediaUtils;
 use App\MealMealPackage;
+use App\MealMealPackageSize;
+use App\MealMealPackageComponentOption;
+use App\MealMealPackageAddon;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -204,7 +207,16 @@ class Meal extends Model implements HasMedia
             ->where('meal_id', $this->id)
             ->count();
 
-        if ($mealMealPackages > 0) {
+        $mealMealPackageSizes = MealMealPackageSize::whereHas(
+            'meal_package_size',
+            function ($mealPkg) {
+                $mealPkg->where('deleted_at', '=', null);
+            }
+        )
+            ->where('meal_id', $this->id)
+            ->count();
+
+        if ($mealMealPackages > 0 || $mealMealPackageSizes > 0) {
             return true;
         } else {
             return false;
