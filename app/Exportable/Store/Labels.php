@@ -307,10 +307,7 @@ class Labels
                 ->with('ingredients')
                 ->first()->ingredients;
             foreach ($ingredients as $ingredient) {
-                if (
-                    !$ingredient->attributes['hidden'] &&
-                    $meal->ingredients->contains($ingredient)
-                ) {
+                if (!$ingredient->attributes['hidden']) {
                     $meal->ingredients->pop($ingredient);
                 }
             }
@@ -321,10 +318,7 @@ class Labels
                 ->with('ingredients')
                 ->first()->ingredients;
             foreach ($ingredients as $ingredient) {
-                if (
-                    !$ingredient->attributes['hidden'] &&
-                    $meal->ingredients->contains($ingredient)
-                ) {
+                if (!$ingredient->attributes['hidden']) {
                     $meal->ingredients->pop($ingredient);
                 }
             }
