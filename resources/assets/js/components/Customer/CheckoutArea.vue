@@ -1451,6 +1451,7 @@ export default {
         this.includeCooler = false;
       }
     }
+    this.setSubscription();
   },
   mixins: [MenuBag],
   computed: {
@@ -2044,7 +2045,13 @@ use next_delivery_dates
       return subtotal;
     },
     mealPlanDiscount() {
-      if (this.weeklySubscription || this.inSub || this.adjustMealPlan)
+      if (
+        this.weeklySubscription ||
+        this.inSub ||
+        this.adjustMealPlan ||
+        this.$route.query.sub === "true" ||
+        this.mealPlan
+      )
         return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
     },
     subscribeAndSaveAmount() {
@@ -3352,6 +3359,16 @@ use next_delivery_dates
     },
     showAuthModal() {
       this.$eventBus.$emit("showAuthModal");
+    },
+    setSubscription() {
+      if (
+        this.weeklySubscription ||
+        this.inSub ||
+        this.adjustMealPlan ||
+        this.$route.query.sub === "true"
+      ) {
+        this.setBagMealPlan(true);
+      }
     },
     search: _.debounce((loading, search, vm) => {
       axios
