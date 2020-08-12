@@ -99,13 +99,10 @@ class AuthController extends Controller
             if ($storeDomain) {
                 $end =
                     env('APP_ENV') == 'production' ? '.com' : '.localhost:8000';
-                $host = $storeHost ? $storeHost . $end : config('app.domain');
+                $host = $storeHost ? $storeHost : config('app.domain');
                 $redirect = $user->hasRole('store')
                     ? $user->store->getUrl('/store/orders', $secure)
                     : 'http://' . $storeDomain . '.' . $host . '/customer/menu';
-                if (strpos($redirect, '.com.com') !== false) {
-                    str_replace('.com.com', '.com', $redirect);
-                }
             } else {
                 $redirect = $user->hasRole('store')
                     ? $user->store->getUrl('/store/orders', $secure)
