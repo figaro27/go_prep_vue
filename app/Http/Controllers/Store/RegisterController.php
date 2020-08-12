@@ -99,11 +99,23 @@ class RegisterController extends StoreController
             $userDetail = UserDetail::where('user_id', $user->id)->first();
             $userDetail->firstname = $request->get('first_name');
             $userDetail->lastname = $request->get('last_name');
-            $userDetail->address = $request->get('address');
-            $userDetail->city = $request->get('city');
-            $userDetail->zip = $request->get('zip');
-            $userDetail->state = $request->get('state')['value'];
+            $userDetail->address = $request->get('address')
+                ? $request->get('address')
+                : 'N/A';
+            $userDetail->city = $request->get('city')
+                ? $request->get('city')
+                : 'N/A';
+            $userDetail->zip = $request->get('zip')
+                ? $request->get('zip')
+                : 'N/A';
+            $userDetail->state = $request->get('state')
+                ? $request->get('state')['value']
+                : 'N/A';
             $userDetail->phone = $request->get('phone');
+            $userDetail->country = 'USA';
+            $userDetail->delivery = $request->get('delivery')
+                ? $request->get('delivery')
+                : 'N/A';
             $userDetail->update();
         }
 
