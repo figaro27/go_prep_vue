@@ -848,7 +848,7 @@ class Subscription extends Model
                 $this->couponCode = null;
                 $this->update();
             } else {
-                if ($preFeePreDiscount > $coupon->minimum) {
+                if ($preFeePreDiscount >= $coupon->minimum) {
                     if ($coupon->type == 'percent') {
                         $couponReduction =
                             $preFeePreDiscount * ($coupon->amount / 100);
