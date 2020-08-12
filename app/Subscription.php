@@ -32,8 +32,8 @@ class Subscription extends Model
         // 'pre_coupon',
         'items',
         'meal_package_items',
-        'interval_title'
-        // 'paid_order_count',
+        'interval_title',
+        'paid_order_count'
         // 'total_item_quantity'
     ];
 
