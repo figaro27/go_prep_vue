@@ -93,7 +93,11 @@ export default {
                 this.$router.replace(this.redirect);
               } else if (jwt.redirect) {
                 if (lastViewedStoreUrl) {
-                  window.location = lastViewedStoreUrl + jwt.redirect;
+                  if (window.location.origin.includes("goprep")) {
+                    window.location = jwt.redirect;
+                  } else {
+                    window.location = lastViewedStoreUrl + jwt.redirect;
+                  }
                 } else {
                   window.location = jwt.redirect;
                 }
