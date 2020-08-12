@@ -493,12 +493,52 @@ class MealOrder extends Pivot
 
     public function getIngredientListAttribute()
     {
-        $ingredients = $this->meal->ingredients;
+        $meal = $this->meal;
+
+        if ($this->meal_size_id) {
+            $meal = MealSize::where('id', $this->meal_size_id)->first();
+        }
+
+        $mainIngredients = $meal->ingredients;
         $ingredientList = '';
-        foreach ($ingredients as $ingredient) {
+
+        foreach ($mainIngredients as $ingredient) {
             $ingredientList .= $ingredient['food_name'] . ', ';
         }
+
+        foreach ($this->components as $component) {
+            $ingredients = MealComponentOption::where(
+                'id',
+                $component['meal_component_option_id']
+            )
+                ->with('ingredients')
+                ->first()->ingredients;
+            foreach ($ingredients as $ingredient) {
+                if (!$ingredient->attributes['hidden']) {
+                    $ingredientList .= $ingredient['food_name'] . ', ';
+                }
+            }
+        }
+
+        foreach ($this->addons as $addon) {
+            $ingredients = MealAddon::where('id', $addon['meal_addon_id'])
+                ->with('ingredients')
+                ->first()->ingredients;
+            foreach ($ingredients as $ingredient) {
+                if (!$ingredient->attributes['hidden']) {
+                    $ingredientList .= $ingredient['food_name'] . ', ';
+                }
+            }
+        }
+
         return $ingredientList;
+
+        // $ingredients = $this->meal->ingredients;
+        // $ingredientList = '';
+        // foreach ($ingredients as $ingredient) {
+        //     $ingredientList .= $ingredient['food_name'] . ', ';
+        // }
+        // return $ingredientList;
     }
 
     public function getAllergyListAttribute()

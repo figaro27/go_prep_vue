@@ -253,6 +253,8 @@ class Labels
             $meal = MealSize::where('id', $item->meal_size_id)->first();
         }
 
+        $mainIngredients = $meal->ingredients->toArray();
+
         $relations = $item->relationsToArray();
 
         foreach ($relations['components'] as $component) {
@@ -263,11 +265,8 @@ class Labels
                 ->with('ingredients')
                 ->first()->ingredients;
             foreach ($ingredients as $ingredient) {
-                if (
-                    !$ingredient->attributes['hidden'] &&
-                    !$meal->ingredients->contains($ingredient)
-                ) {
-                    $meal->ingredients->push($ingredient);
+                if (!$ingredient->attributes['hidden']) {
+                    array_push($mainIngredients, $ingredient);
                 }
             }
         }
@@ -277,52 +276,43 @@ class Labels
                 ->with('ingredients')
                 ->first()->ingredients;
             foreach ($ingredients as $ingredient) {
-                if (
-                    !$ingredient->attributes['hidden'] &&
-                    !$meal->ingredients->contains($ingredient)
-                ) {
-                    $meal->ingredients->push($ingredient);
+                if (!$ingredient->attributes['hidden']) {
+                    array_push($mainIngredients, $ingredient);
                 }
             }
         }
 
-        $mealCopy = $meal->replicate();
-
         $allIngredients = json_encode(
             array_merge($meal->attributesToArray(), [
-                'ingredients' => $mealCopy->ingredients->map(function (
-                    $ingredient
-                ) {
-                    return $ingredient;
-                })
+                'ingredients' => $mainIngredients
             ])
         );
 
         // Remove ingredients added on or duplication occurs
-        foreach ($relations['components'] as $component) {
-            $ingredients = MealComponentOption::where(
-                'id',
-                $component['meal_component_option_id']
-            )
-                ->with('ingredients')
-                ->first()->ingredients;
-            foreach ($ingredients as $ingredient) {
-                if (!$ingredient->attributes['hidden']) {
-                    $meal->ingredients->pop($ingredient);
-                }
-            }
-        }
+        // foreach ($relations['components'] as $component) {
+        //     $ingredients = MealComponentOption::where(
+        //         'id',
+        //         $component['meal_component_option_id']
+        //     )
+        //         ->with('ingredients')
+        //         ->first()->ingredients;
+        //     foreach ($ingredients as $ingredient) {
+        //         if (!$ingredient->attributes['hidden']) {
+        //             $meal->ingredients->pop($ingredient);
+        //         }
+        //     }
+        // }
 
-        foreach ($relations['addons'] as $addon) {
-            $ingredients = MealAddon::where('id', $addon['meal_addon_id'])
-                ->with('ingredients')
-                ->first()->ingredients;
-            foreach ($ingredients as $ingredient) {
-                if (!$ingredient->attributes['hidden']) {
-                    $meal->ingredients->pop($ingredient);
-                }
-            }
-        }
+        // foreach ($relations['addons'] as $addon) {
+        //     $ingredients = MealAddon::where('id', $addon['meal_addon_id'])
+        //         ->with('ingredients')
+        //         ->first()->ingredients;
+        //     foreach ($ingredients as $ingredient) {
+        //         if (!$ingredient->attributes['hidden']) {
+        //             $meal->ingredients->pop($ingredient);
+        //         }
+        //     }
+        // }
 
         return $allIngredients;
     }
