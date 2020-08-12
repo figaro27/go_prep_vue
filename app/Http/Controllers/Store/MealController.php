@@ -12,6 +12,8 @@ use App\MealMealPackageSize;
 use App\MealMealPackageComponentOption;
 use App\MealMealPackageAddon;
 use App\MealSize;
+use App\MealPackageComponentOption;
+use App\MealPackageAddon;
 use Illuminate\Http\Request;
 
 class MealController extends StoreController
@@ -231,41 +233,62 @@ class MealController extends StoreController
             }
         }
 
-        // This just adds on to the quantity if they happen to select or add on that meal which is not right. This code should only be applied to "top level" included meals above that aren't effected by user choice. Leaving it in here just in case.
+        foreach (
+            $mealMealPackageComponentOptions
+            as $mealMealPackageComponentOption
+        ) {
+            $existing = MealMealPackageComponentOption::where([
+                'meal_id' => $subId,
+                'meal_package_component_option_id' =>
+                    $mealMealPackageComponentOption->meal_package_component_option_id
+            ])->first();
 
-        // foreach ($mealMealPackageComponentOptions as $mealMealPackageComponentOption) {
-        //     $existing = MealMealPackageComponentOption::where([
-        //         'meal_id' => $subId,
-        //         'meal_package_component_option_id' => $mealMealPackageComponentOption->meal_package_component_option_id
-        //     ])->first();
+            if (!$existing) {
+                $mealMealPackageComponentOption->update(['meal_id' => $subId]);
+            } else {
+                $mealPackageComponentOption = MealPackageComponentOption::where(
+                    'id',
+                    $existing->meal_package_component_option_id
+                )->first();
+                if (!$mealPackageComponentOption->selectable) {
+                    $existingQuantity = $existing->quantity;
+                    $quantity = $mealMealPackageComponentOption->quantity;
+                    $existing->update([
+                        'quantity' => $existingQuantity + $quantity
+                    ]);
+                    $mealMealPackageComponentOption->delete();
+                } else {
+                    $mealMealPackageComponentOption->delete();
+                }
+            }
+        }
 
-        //     if (!$existing){
-        //         $mealMealPackageComponentOption->update(['meal_id' => $subId]);
-        //     }
-        //     else{
-        //         $existingQuantity = $existing->quantity;
-        //         $quantity = $mealMealPackageComponentOption->quantity;
-        //         $existing->update(['quantity' => $existingQuantity + $quantity]);
-        //         $mealMealPackageComponentOption->delete();
-        //     }
-        // }
+        foreach ($mealMealPackageAddons as $mealMealPackageAddon) {
+            $existing = MealMealPackageAddon::where([
+                'meal_id' => $subId,
+                'meal_package_addon_id' =>
+                    $mealMealPackageAddon->meal_package_addon_id
+            ])->first();
 
-        // foreach ($mealMealPackageAddons as $mealMealPackageAddon) {
-        //     $existing = MealMealPackageAddon::where([
-        //         'meal_id' => $subId,
-        //         'meal_package_addon_id' => $mealMealPackageAddon->meal_package_addon_id
-        //     ])->first();
-
-        //     if (!$existing){
-        //         $mealMealPackageAddon->update(['meal_id' => $subId]);
-        //     }
-        //     else{
-        //         $existingQuantity = $existing->quantity;
-        //         $quantity = $mealMealPackageAddon->quantity;
-        //         $existing->update(['quantity' => $existingQuantity + $quantity]);
-        //         $mealMealPackageAddon->delete();
-        //     }
-        // }
+            if (!$existing) {
+                $mealMealPackageAddon->update(['meal_id' => $subId]);
+            } else {
+                $mealPackageAddon = MealPackageAddon::where(
+                    'id',
+                    $existing->meal_package_addon_id
+                )->first();
+                if (!$mealPackageAddon->selectable) {
+                    $existingQuantity = $existing->quantity;
+                    $quantity = $mealMealPackageAddon->quantity;
+                    $existing->update([
+                        'quantity' => $existingQuantity + $quantity
+                    ]);
+                    $mealMealPackageAddon->delete();
+                } else {
+                    $mealMealPackageAddon->delete();
+                }
+            }
+        }
 
         if ($this->store) {
             $this->store->setTimezone();
