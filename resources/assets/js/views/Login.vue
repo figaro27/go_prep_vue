@@ -94,7 +94,7 @@ export default {
               } else if (jwt.redirect) {
                 if (lastViewedStoreUrl) {
                   if (window.location.origin.includes("goprep")) {
-                    window.location = jwt.redirect;
+                    window.location = lastViewedStoreUrl;
                   } else {
                     window.location = lastViewedStoreUrl + jwt.redirect;
                   }
