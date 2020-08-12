@@ -85,6 +85,10 @@ class AuthController extends Controller
             ->pluck('domain')
             ->first();
 
+        $storeHost = StoreDetail::where('store_id', $user->last_viewed_store_id)
+            ->pluck('host')
+            ->first();
+
         $preg =
             '/https?:\/\/(?:www\.)?' . preg_quote(config('app.domain')) . '/i';
         $url = Request::url();
@@ -93,13 +97,12 @@ class AuthController extends Controller
 
         if (preg_match($preg, $url)) {
             if ($storeDomain) {
+                $end =
+                    env('APP_ENV') == 'production' ? '.com' : '.localhost:8000';
+                $host = $storeHost ? $storeHost : config('app.domain');
                 $redirect = $user->hasRole('store')
                     ? $user->store->getUrl('/store/orders', $secure)
-                    : 'http://' .
-                        $storeDomain .
-                        '.' .
-                        config('app.domain') .
-                        '/customer/menu';
+                    : 'http://' . $storeDomain . '.' . $host . '/customer/menu';
             } else {
                 $redirect = $user->hasRole('store')
                     ? $user->store->getUrl('/store/orders', $secure)
