@@ -216,7 +216,22 @@ class Meal extends Model implements HasMedia
             ->where('meal_id', $this->id)
             ->count();
 
-        if ($mealMealPackages > 0 || $mealMealPackageSizes > 0) {
+        // Add soft deletes and a check if the component option or addon was deleted
+        $mealMealPackageComponentOptions = MealMealPackageComponentOption::where(
+            'meal_id',
+            $this->id
+        )->count();
+        $mealMealPackageAddons = MealMealPackageAddon::where(
+            'meal_id',
+            $this->id
+        )->count();
+
+        if (
+            $mealMealPackages > 0 ||
+            $mealMealPackageSizes > 0 ||
+            $mealMealPackageComponentOptions > 0 ||
+            $mealMealPackageAddons > 0
+        ) {
             return true;
         } else {
             return false;
