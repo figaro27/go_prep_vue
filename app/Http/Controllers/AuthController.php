@@ -103,6 +103,9 @@ class AuthController extends Controller
                 $redirect = $user->hasRole('store')
                     ? $user->store->getUrl('/store/orders', $secure)
                     : 'http://' . $storeDomain . '.' . $host . '/customer/menu';
+                if (strpos($redirect, '.com.com') !== false) {
+                    str_replace('.com.com', '.com', $redirect);
+                }
             } else {
                 $redirect = $user->hasRole('store')
                     ? $user->store->getUrl('/store/orders', $secure)
