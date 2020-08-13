@@ -854,6 +854,7 @@ class Subscription extends Model
                             $preFeePreDiscount * ($coupon->amount / 100);
                         $this->couponReduction = $couponReduction;
                         $this->update();
+                        $afterDiscountBeforeFees -= $couponReduction;
                         $total -= $couponReduction;
                     } else {
                         $afterDiscountBeforeFees -= $this->couponReduction;
@@ -871,23 +872,21 @@ class Subscription extends Model
         $deliveryFee = $this->deliveryFee;
         $processingFee = 0;
         $mealPlanDiscount = 0;
-        if ($this->afterDiscountBeforeFees > 0) {
-            $salesTaxRate =
-                round(
-                    100 * ($this->salesTax / $this->afterDiscountBeforeFees),
-                    2
-                ) /
-                    100 ??
-                0;
-        } else {
-            $salesTaxRate = 0;
-        }
 
         if ($this->store->settings->applyMealPlanDiscount) {
             $discount = $this->store->settings->mealPlanDiscount / 100;
             $mealPlanDiscount = $preFeePreDiscount * $discount;
             $total -= $mealPlanDiscount;
             $afterDiscountBeforeFees -= $mealPlanDiscount;
+        }
+
+        if ($this->afterDiscountBeforeFees > 0) {
+            $salesTaxRate = round(
+                $this->salesTax / $this->afterDiscountBeforeFees,
+                2
+            );
+        } else {
+            $salesTaxRate = 0;
         }
 
         // if ($this->store->settings->applyDeliveryFee && !$this->pickup) {
@@ -914,7 +913,7 @@ class Subscription extends Model
             }
         }
 
-        $salesTax = ceil($afterDiscountBeforeFees * $salesTaxRate * 100) / 100;
+        $salesTax = round($afterDiscountBeforeFees * $salesTaxRate, 2);
         $total += $salesTax;
 
         // Update subscription pricing
@@ -936,7 +935,7 @@ class Subscription extends Model
         if ($total < 0) {
             $total = 0;
         }
-        $this->amount = $total;
+        $this->amount = round($total, 2);
         $this->save();
 
         // Delete existing stripe plan
