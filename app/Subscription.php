@@ -373,10 +373,10 @@ class Subscription extends Model
         // Ensure we haven't already processed this payment
         if (
             $this->orders()
-                // ->where('stripe_id', $stripeInvoice->get('id'))
                 ->where('stripe_id', $stripeInvoice->get('charge'))
                 ->count() &&
-            !$this->monthlyPrepay
+            !$this->monthlyPrepay &&
+            $this->amount > 0
         ) {
             return;
         }
