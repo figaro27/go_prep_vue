@@ -54,10 +54,12 @@ font-size:10px !important;
       <p class="text-9"> {!!
       $mealOrder->meal->description !!} </p> @endif
       @if ($mealOrder->meal && $reportSettings->lab_macros && $mealOrder->meal->macros)
-          Calories: {!! $mealOrder->meal->macros->calories !!}
-          Proten: {!! $mealOrder->meal->macros->protein !!}
-          Fat: {!! $mealOrder->meal->macros->fat !!}
-          Carbs: {!! $mealOrder->meal->macros->carbs !!}
+      <p class="text-9">
+          <b>Calories:</b> {!! $mealOrder->meal->macros->calories !!}
+          <b>Protein:</b> {!! $mealOrder->meal->macros->protein !!}
+          <b>Fat:</b> {!! $mealOrder->meal->macros->fat !!}
+          <b>Carbs:</b> {!! $mealOrder->meal->macros->carbs !!}
+        </p>
         @endif
 
         @if ($mealOrder->meal && $reportSettings->lab_instructions)
