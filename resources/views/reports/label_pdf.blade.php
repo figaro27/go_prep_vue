@@ -32,8 +32,8 @@ font-size:10px !important;
 </head>
 
 
-<div style="height:100vh">
     @foreach($mealOrders as $i => $mealOrder)
+    <div style="height:100vh">
       @php
       $reportSettings = $mealOrder->store->reportSettings;
       @endphp
@@ -53,6 +53,12 @@ font-size:10px !important;
       </p> @if ($mealOrder->meal && $reportSettings->lab_description)
       <p class="text-9"> {!!
       $mealOrder->meal->description !!} </p> @endif
+      @if ($mealOrder->meal && $reportSettings->lab_macros && $mealOrder->meal->macros)
+          Calories: {!! $mealOrder->meal->macros->calories !!}
+          Proten: {!! $mealOrder->meal->macros->protein !!}
+          Fat: {!! $mealOrder->meal->macros->fat !!}
+          Carbs: {!! $mealOrder->meal->macros->carbs !!}
+        @endif
 
         @if ($mealOrder->meal && $reportSettings->lab_instructions)
         <p class="text-9">
@@ -76,6 +82,7 @@ font-size:10px !important;
         <p class="text-11" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
 
         @endif
+
 @if ($mealOrder->meal && $reportSettings->lab_ingredients && strlen($mealOrder['ingredientList']) > 0)
 <p class="text-9"><b>Ingredients:</b> {{ $mealOrder['ingredientList'] }}</p>
 @endif
@@ -94,16 +101,10 @@ font-size:10px !important;
         @endif
   </center>
         </div>
-        @if ($mealOrder->meal && ($reportSettings->lab_nutrition || $reportSettings->lab_macros))
+        @if ($mealOrder->meal && $reportSettings->lab_nutrition)
         <div style="width:45%;float:left">
 
           @endif
-        @if ($mealOrder->meal && $reportSettings->lab_macros && $mealOrder->meal->macros)
-          Calories: {!! $mealOrder->meal->macros->calories !!}
-          Proten: {!! $mealOrder->meal->macros->protein !!}
-          Fat: {!! $mealOrder->meal->macros->fat !!}
-          Carbs: {!! $mealOrder->meal->macros->carbs !!}
-        @endif
 
         @if ($mealOrder->meal && $reportSettings->lab_nutrition)
 
@@ -113,9 +114,9 @@ font-size:10px !important;
       </div>
       @endif
       @endif
-
+      </div>
     @endforeach
-</div>
+
 
 
 </html>
