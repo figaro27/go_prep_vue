@@ -2036,20 +2036,22 @@ export default {
       this.replaceVariations = true;
     },
     inActiveSubscriptionsOrPackages(variations) {
+      let status = false;
       variations.forEach(variation => {
         if (variation.activeSubscriptionsOrPackages) {
-          return true;
+          status = true;
         }
       });
-      return false;
+      return status;
     },
     inActiveSubscriptions(variations) {
+      let status = false;
       variations.forEach(variation => {
         if (variation.activeSubscriptions) {
-          return true;
+          status = true;
         }
       });
-      return false;
+      return status;
     }
   }
 };
