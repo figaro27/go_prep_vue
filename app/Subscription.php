@@ -505,6 +505,15 @@ class Subscription extends Model
             $mealPackageOrder->price = $mealPackageSub->price;
             $mealPackageOrder->customTitle = $mealPackageSub->customTitle;
             $mealPackageOrder->customSize = $mealPackageSub->customSize;
+            if ($isMultipleDelivery == 1 && $mealPackageSub->delivery_date) {
+                $mealPackageSub->delivery_date =
+                    $this->interval === 'week'
+                        ? $mealPackageSub->delivery_date->addWeeks(1)
+                        : $mealPackageSub->delivery_date->addDays(30);
+                $mealPackageSub->save();
+                $mealPackageOrder->delivery_date =
+                    $mealPackageSub->delivery_date;
+            }
             $mealPackageOrder->save();
         }
 
