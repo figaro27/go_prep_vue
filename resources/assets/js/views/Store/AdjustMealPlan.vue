@@ -164,6 +164,7 @@ export default {
               return day.day == moment(pkgItem.delivery_date).day();
             });
             meal_package.delivery_day = delivery_day;
+            meal_package.delivery_day.day_friendly = pkgItem.delivery_date;
           }
 
           meal_package.customTitle = pkgItem.customTitle;
@@ -211,6 +212,7 @@ export default {
             });
 
             meal.delivery_day = delivery_day;
+            meal.delivery_day.day_friendly = item.delivery_date.date;
           }
 
           for (let i = 0; i < item.quantity; i++) {

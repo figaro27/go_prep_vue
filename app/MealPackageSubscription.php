@@ -8,6 +8,10 @@ class MealPackageSubscription extends Pivot
 {
     protected $table = 'meal_package_subscriptions';
 
+    protected $casts = [
+        'delivery_date' => 'datetime:Y-m-d'
+    ];
+
     protected $appends = ['hasCustomName', 'full_title'];
 
     public function store()
