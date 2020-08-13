@@ -55,9 +55,9 @@ font-size:10px !important;
       $mealOrder->meal->description !!} </p> @endif
       @if ($mealOrder->meal && $reportSettings->lab_macros && $mealOrder->meal->macros)
       <p class="text-9">
-          <b>Calories:</b> {!! $mealOrder->meal->macros->calories !!}
-          <b>Protein:</b> {!! $mealOrder->meal->macros->protein !!}
-          <b>Fat:</b> {!! $mealOrder->meal->macros->fat !!}
+          <b>Calories:</b> {!! $mealOrder->meal->macros->calories !!}&nbsp&nbsp
+          <b>Protein:</b> {!! $mealOrder->meal->macros->protein !!}&nbsp&nbsp
+          <b>Fat:</b> {!! $mealOrder->meal->macros->fat !!}&nbsp&nbsp
           <b>Carbs:</b> {!! $mealOrder->meal->macros->carbs !!}
         </p>
         @endif
