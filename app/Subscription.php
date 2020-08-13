@@ -1105,10 +1105,13 @@ class Subscription extends Model
 
                 if (isset($item['addons']) && $item['addons']) {
                     foreach ($item['addons'] as $addon) {
-                        MealOrderAddon::create([
-                            'meal_order_id' => $mealOrder->id,
-                            'meal_addon_id' => $addon->addon->id
-                        ]);
+                        try {
+                            MealOrderAddon::create([
+                                'meal_order_id' => $mealOrder->id,
+                                'meal_addon_id' => $addon->addon->id
+                            ]);
+                        } catch (\Exception $e) {
+                        }
                     }
                 }
             }
