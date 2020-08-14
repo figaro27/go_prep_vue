@@ -308,7 +308,9 @@
                 <a
                   class="dropdown-item"
                   v-if="
-                    props.row.coolerDeposit > 0 && !props.row.coolerReturned
+                    props.row.coolerDeposit > 0 &&
+                      !props.row.coolerReturned &&
+                      !props.row.cashOrder
                   "
                   @click="refund(true)"
                   >Refund Cooler Deposit</a
