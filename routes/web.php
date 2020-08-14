@@ -16,7 +16,7 @@
 
 Route::get('testDeleteMealOrders', 'TestController@testDeleteMealOrders');
 
-Route::get('testRenewSubscription', 'TestController@testRenewSubscription');
+Route::post('testRenewSubscription', 'TestController@testRenewSubscription');
 
 Route::get('testChargeDescriptor', 'TestController@testChargeDescriptor');
 

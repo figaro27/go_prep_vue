@@ -133,6 +133,17 @@
             </b-form-group>
 
             <b-button type="submit" variant="primary">Save</b-button>
+
+            <b-form-input
+              type="text"
+              v-model="stripeId"
+              placeholder="Stripe ID"
+            ></b-form-input>
+            <p>
+              <b-btn @click="testRenewSubscription" v-if="store.id === 3"
+                >TEST RENEW SUBSCRIPTION</b-btn
+              >
+            </p>
           </b-form>
 
           <!--
@@ -205,7 +216,9 @@ export default {
     cSwitch
   },
   data() {
-    return {};
+    return {
+      stripeId: null
+    };
   },
   computed: {
     ...mapGetters({
@@ -341,16 +354,13 @@ export default {
       axios.get("/testDeleteMealOrders");
     },
     testRenewSubscription() {
-      axios.get("/testRenewSubscription");
+      axios.post("/testRenewSubscription", { stripe_id: this.stripeId });
     },
     asYouType() {
       this.storeDetail.phone = this.storeDetail.phone.replace(/[^\d.-]/g, "");
       this.storeDetail.phone = new AsYouType(this.storeDetail.country).input(
         this.storeDetail.phone
       );
-    },
-    testRenewSubscription() {
-      axios.get("/testRenewSubscription");
     },
     testChargeDescriptor() {
       axios.get("/testChargeDescriptor");
