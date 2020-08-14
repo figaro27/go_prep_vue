@@ -852,10 +852,17 @@ class Subscription extends Model
         $deliveryFee = $this->deliveryFee;
         $processingFee = 0;
         $mealPlanDiscount = 0;
-        $salesTaxRate =
-            round(100 * ($this->salesTax / $this->afterDiscountBeforeFees), 2) /
-                100 ??
-            0;
+        if ($this->afterDiscountBeforeFees > 0) {
+            $salesTaxRate =
+                round(
+                    100 * ($this->salesTax / $this->afterDiscountBeforeFees),
+                    2
+                ) /
+                    100 ??
+                0;
+        } else {
+            $salesTaxRate = 0;
+        }
 
         if ($this->store->settings->applyMealPlanDiscount) {
             $discount = $this->store->settings->mealPlanDiscount / 100;
