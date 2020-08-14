@@ -219,10 +219,13 @@ class TestController extends Controller
         }
     }
 
-    public function testRenewSubscription()
+    public function testRenewSubscription(Request $request)
     {
-        $sub = Subscription::where('id', 304)->first();
-        $sub->renew();
+        $sub = Subscription::where(
+            'stripe_id',
+            $request->get('stripe_id')
+        )->first();
+        $sub->renewTest();
     }
 
     public function testChargeDescriptor()
