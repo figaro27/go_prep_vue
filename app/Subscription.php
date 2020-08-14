@@ -845,8 +845,23 @@ class Subscription extends Model
             $this->couponCode = null;
             $this->update();
         } else {
-            $afterDiscountBeforeFees -= $this->couponReduction;
-            $total -= $this->couponReduction;
+            if ($preFeePreDiscount > $coupon->minimum) {
+                if ($coupon->type == 'percent') {
+                    $couponReduction =
+                        $preFeePreDiscount * ($coupon->amount / 100);
+                    $this->couponReduction = $couponReduction;
+                    $this->update();
+                    $total -= $couponReduction;
+                } else {
+                    $afterDiscountBeforeFees -= $this->couponReduction;
+                    $total -= $this->couponReduction;
+                }
+            } else {
+                $this->coupon_id = null;
+                $this->couponReduction = null;
+                $this->couponCode = null;
+                $this->update();
+            }
         }
 
         $deliveryFee = $this->deliveryFee;
@@ -914,6 +929,9 @@ class Subscription extends Model
         $total -= $this->pointsReduction;
         $this->gratuity = $gratuity;
         $this->coolerDeposit = $coolerDeposit;
+        if ($total < 0) {
+            $total = 0;
+        }
         $this->amount = $total;
         $this->save();
 
