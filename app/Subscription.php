@@ -371,15 +371,17 @@ class Subscription extends Model
         }
 
         // Ensure we haven't already processed this payment
-        if (
-            $this->orders()
-                ->where('stripe_id', $stripeInvoice->get('charge'))
-                ->count() &&
-            !$this->monthlyPrepay &&
-            $this->amount > 0
-        ) {
-            return;
-        }
+
+        // This check messes up the flow when subscriptions are paused since I believe $stripeInvoice passes a null charge and it's finding that null paused order so it returns. Removing for now. Will recheck.
+        // if (
+        //     $this->orders()
+        //         ->where('stripe_id', $stripeInvoice->get('charge'))
+        //         ->count() &&
+        //     !$this->monthlyPrepay &&
+        //     $this->amount > 0
+        // ) {
+        //     return;
+        // }
 
         // Updating item stock
         if ($this->store->modules->stockManagement) {
@@ -839,14 +841,31 @@ class Subscription extends Model
 
         // Adjust the price of the subscription on renewal if a one time coupon code was used. (Remove coupon from subscription).
         $coupon = Coupon::where('id', $this->coupon_id)->first();
-        if (isset($coupon) && $coupon->oneTime) {
-            $this->coupon_id = null;
-            $this->couponReduction = null;
-            $this->couponCode = null;
-            $this->update();
-        } else {
-            $afterDiscountBeforeFees -= $this->couponReduction;
-            $total -= $this->couponReduction;
+        if (isset($coupon)) {
+            if ($coupon->oneTime) {
+                $this->coupon_id = null;
+                $this->couponReduction = null;
+                $this->couponCode = null;
+                $this->update();
+            } else {
+                if ($preFeePreDiscount > $coupon->minimum) {
+                    if ($coupon->type == 'percent') {
+                        $couponReduction =
+                            $preFeePreDiscount * ($coupon->amount / 100);
+                        $this->couponReduction = $couponReduction;
+                        $this->update();
+                        $total -= $couponReduction;
+                    } else {
+                        $afterDiscountBeforeFees -= $this->couponReduction;
+                        $total -= $this->couponReduction;
+                    }
+                } else {
+                    $this->coupon_id = null;
+                    $this->couponReduction = null;
+                    $this->couponCode = null;
+                    $this->update();
+                }
+            }
         }
 
         $deliveryFee = $this->deliveryFee;
@@ -914,6 +933,9 @@ class Subscription extends Model
         $total -= $this->pointsReduction;
         $this->gratuity = $gratuity;
         $this->coolerDeposit = $coolerDeposit;
+        if ($total < 0) {
+            $total = 0;
+        }
         $this->amount = $total;
         $this->save();
 

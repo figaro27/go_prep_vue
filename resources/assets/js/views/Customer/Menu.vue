@@ -678,8 +678,23 @@ export default {
     },
     sortedDeliveryDays() {
       // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
-      let sortedDays = _.uniqBy(this.store.delivery_days, "day_friendly");
+      let baseDeliveryDays = this.store.delivery_days;
+      let deliveryWeeks = this.store.settings.deliveryWeeks;
+      let storeDeliveryDays = [];
 
+      for (let i = 0; i <= deliveryWeeks; i++) {
+        baseDeliveryDays.forEach(day => {
+          let m = moment(day.day_friendly);
+          let newDate = moment(m).subtract(i, "week");
+          let newDay = { ...day };
+          newDay.day_friendly = newDate.format("YYYY-MM-DD");
+          storeDeliveryDays.push(newDay);
+        });
+      }
+
+      storeDeliveryDays = storeDeliveryDays.reverse();
+
+      let sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
       // If the store only serves certain zip codes on certain delivery days
       if (this.store.delivery_day_zip_codes.length > 0) {
         let deliveryDayIds = [];
@@ -692,6 +707,10 @@ export default {
           return deliveryDayIds.includes(day.id);
         });
       }
+
+      sortedDays.sort(function(a, b) {
+        return new Date(a.day_friendly) - new Date(b.day_friendly);
+      });
 
       return sortedDays;
     },
@@ -1532,11 +1551,13 @@ export default {
     autoPickUpcomingMultDD(availableDates) {
       if (!availableDates) {
         if (this.isMultipleDelivery) {
-          let week_index = this.storeSettings.next_orderable_delivery_dates[0]
-            .week_index;
-          let nextDeliveryDay = this.store.delivery_days.find(day => {
-            return day.day == week_index;
-          });
+          // let week_index = this.storeSettings.next_orderable_delivery_dates[0]
+          //   .week_index;
+          // let nextDeliveryDay = this.store.delivery_days.find(day => {
+          //   return day.day == week_index;
+          // });
+
+          let nextDeliveryDay = this.sortedDeliveryDays[0];
 
           this.selectedDeliveryDay = nextDeliveryDay;
           this.finalDeliveryDay = nextDeliveryDay;
