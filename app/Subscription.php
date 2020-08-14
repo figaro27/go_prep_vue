@@ -839,7 +839,7 @@ class Subscription extends Model
 
         // Adjust the price of the subscription on renewal if a one time coupon code was used. (Remove coupon from subscription).
         $coupon = Coupon::where('id', $this->coupon_id)->first();
-        if ($isset($coupon)) {
+        if (isset($coupon)) {
             if ($coupon->oneTime) {
                 $this->coupon_id = null;
                 $this->couponReduction = null;
