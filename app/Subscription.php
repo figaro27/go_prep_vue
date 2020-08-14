@@ -839,28 +839,30 @@ class Subscription extends Model
 
         // Adjust the price of the subscription on renewal if a one time coupon code was used. (Remove coupon from subscription).
         $coupon = Coupon::where('id', $this->coupon_id)->first();
-        if (isset($coupon) && $coupon->oneTime) {
-            $this->coupon_id = null;
-            $this->couponReduction = null;
-            $this->couponCode = null;
-            $this->update();
-        } else {
-            if ($preFeePreDiscount > $coupon->minimum) {
-                if ($coupon->type == 'percent') {
-                    $couponReduction =
-                        $preFeePreDiscount * ($coupon->amount / 100);
-                    $this->couponReduction = $couponReduction;
-                    $this->update();
-                    $total -= $couponReduction;
-                } else {
-                    $afterDiscountBeforeFees -= $this->couponReduction;
-                    $total -= $this->couponReduction;
-                }
-            } else {
+        if ($isset($coupon)) {
+            if ($coupon->oneTime) {
                 $this->coupon_id = null;
                 $this->couponReduction = null;
                 $this->couponCode = null;
                 $this->update();
+            } else {
+                if ($preFeePreDiscount > $coupon->minimum) {
+                    if ($coupon->type == 'percent') {
+                        $couponReduction =
+                            $preFeePreDiscount * ($coupon->amount / 100);
+                        $this->couponReduction = $couponReduction;
+                        $this->update();
+                        $total -= $couponReduction;
+                    } else {
+                        $afterDiscountBeforeFees -= $this->couponReduction;
+                        $total -= $this->couponReduction;
+                    }
+                } else {
+                    $this->coupon_id = null;
+                    $this->couponReduction = null;
+                    $this->couponCode = null;
+                    $this->update();
+                }
             }
         }
 
