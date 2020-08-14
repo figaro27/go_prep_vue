@@ -315,6 +315,10 @@ foreach (
                                 'emailCustomerReceipt',
                                 'OrderController@emailCustomerReceipt'
                             );
+                            Route::post(
+                                'coolerReturned',
+                                'OrderController@coolerReturned'
+                            );
                             Route::resource(
                                 'subscriptions',
                                 'SubscriptionController'
