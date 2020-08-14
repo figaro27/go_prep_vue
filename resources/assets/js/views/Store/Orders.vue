@@ -316,6 +316,16 @@
                   @click="refund(true)"
                   >Refund Cooler Deposit</a
                 >
+                <a
+                  class="dropdown-item"
+                  v-if="
+                    props.row.coolerDeposit > 0 &&
+                      !props.row.coolerReturned &&
+                      props.row.cashOrder
+                  "
+                  @click="coolerReturned()"
+                  >Mark Cooler as Returned</a
+                >
               </div>
             </div>
 
@@ -1518,8 +1528,9 @@ export default {
           this.applyToBalanceRefund = false;
         });
     },
-    refund(cooler = false) {
-      if (cooler == true) {
+    refund(cooler = 0) {
+      let isCoolerRefund = cooler;
+      if (cooler == 1) {
         this.refundAmount = this.order
           ? this.order.coolerDeposit
           : coolerDepositAmount;
@@ -1530,7 +1541,7 @@ export default {
           refundAmount:
             this.refundAmount == null ? this.order.amount : this.refundAmount,
           applyToBalance: this.applyToBalanceRefund,
-          cooler: this.cooler
+          cooler: isCoolerRefund
         })
         .then(response => {
           if (response.data === 1) {
@@ -1791,6 +1802,12 @@ export default {
       this.$router.push({
         name: "store-adjust-order",
         params: { order: this.order, orderId: this.orderId }
+      });
+    },
+    coolerReturned() {
+      axios.post("/api/me/coolerReturned", { id: this.orderId }).then(resp => {
+        this.refreshTable();
+        this.$toastr.s("Cooler marked as returned.");
       });
     }
   }

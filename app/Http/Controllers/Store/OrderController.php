@@ -1250,7 +1250,7 @@ class OrderController extends StoreController
             $order->balance += $request->get('refundAmount');
         }
         $order->refundedAmount += $request->get('refundAmount');
-        $order->coolerReturned = isset($cooler) ? $cooler : 0;
+        $order->coolerReturned = isset($cooler) && $cooler == 1 ? 1 : 0;
         $order->save();
 
         return 'Refunded $' . $request->get('refundAmount');
@@ -1312,5 +1312,12 @@ class OrderController extends StoreController
                     'production_group_id' => $lineItemOrder->production_group_id
                 ];
             });
+    }
+
+    public function coolerReturned(Request $request)
+    {
+        $order = Order::where('id', $request->get('id'))->first();
+        $order->coolerReturned = 1;
+        $order->update();
     }
 }
