@@ -525,7 +525,31 @@
                 v-b-popover.hover="
                   'Refund your customer for their cooler deposit upon return of the bag.'
                 "
-                title="Refunds"
+                title="Refund Cooler Deposit"
+                src="/images/store/popover.png"
+                class="popover-size d-inline"
+              />
+            </div>
+            <div
+              class="d-inline"
+              v-if="
+                order.cashOrder &&
+                  order.coolerDeposit > 0 &&
+                  !order.coolerReturned
+              "
+            >
+              <br />
+              <b-btn
+                variant="primary"
+                class="btn mb-2 d-inline mr-1"
+                @click="coolerReturned()"
+                >Mark Cooler as Returned
+              </b-btn>
+              <img
+                v-b-popover.hover="
+                  'Indicate that the cooler has been returned for your records.'
+                "
+                title="Mark Cooler as Returned"
                 src="/images/store/popover.png"
                 class="popover-size d-inline"
               />
