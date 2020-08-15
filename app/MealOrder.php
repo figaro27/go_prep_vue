@@ -136,7 +136,7 @@ class MealOrder extends Pivot
         ) {
             $deliveryDate = new Carbon($this->delivery_date);
             if ($this->store->settings->deliveryWeeks > 0) {
-                $title = '(' . $deliveryDate->format('l, m/d') . ') ' . $title;
+                $title = '(' . $deliveryDate->format('l, M d') . ') ' . $title;
             } else {
                 $title = '(' . $deliveryDate->format('l') . ') ' . $title;
             }
