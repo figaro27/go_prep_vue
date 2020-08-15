@@ -622,7 +622,7 @@ export default {
         if (this.isMultipleDelivery) {
           this.bag.forEach((bagItem, index) => {
             if (bagItem.delivery_day) {
-              const key = "dd_" + bagItem.delivery_day.id;
+              const key = "dd_" + bagItem.delivery_day.day_friendly;
               if (!groupedDD[key]) {
                 groupedDD[key] = {
                   items: [],
@@ -1094,7 +1094,7 @@ export default {
     activeDD(deliveryDay) {
       if (
         this.selectedDeliveryDay &&
-        deliveryDay.id == this.selectedDeliveryDay.id
+        deliveryDay.day_friendly == this.selectedDeliveryDay.day_friendly
       ) {
         if (this.store.settings) {
           let style = "color:#ffffff;background-color:";
