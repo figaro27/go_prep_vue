@@ -676,7 +676,7 @@ class Subscription extends Model
                 }
                 if ($promotion->conditionType === 'subtotal') {
                     if (
-                        $this->preFeePreDiscount > $promotion->conditionAmount
+                        $this->preFeePreDiscount >= $promotion->conditionAmount
                     ) {
                         if ($promotion->promotionType === 'flat') {
                             $this->promotionReduction +=
@@ -693,7 +693,7 @@ class Subscription extends Model
                 }
                 if ($promotion->conditionType === 'meals') {
                     if (
-                        $this->total_item_quantity > $promotion->condtionAmount
+                        $this->total_item_quantity >= $promotion->condtionAmount
                     ) {
                         if ($promotion->promotionType === 'flat') {
                             $this->promotionReduction +=
