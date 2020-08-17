@@ -2282,12 +2282,15 @@ use next_delivery_dates
       }
     },
     grandTotal() {
-      return (
+      let total =
         this.afterFeesAndTax -
         this.totalDiscountReduction +
         this.coolerDeposit +
-        this.tip
-      );
+        this.tip;
+      if (total < 0) {
+        total = 0;
+      }
+      return total;
     },
     totalDiscountReduction() {
       return (
