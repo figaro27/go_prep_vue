@@ -1055,11 +1055,8 @@ class Subscription extends Model
                 $mealOrder->meal_size_id = $item['meal_size']['id'];
                 $mealOrder->price = $item['price'];
                 $mealOrder->quantity = $item['quantity'];
-                if (isset($item['delivery_day']) && $item['delivery_day']) {
-                    $mealOrder->delivery_date = $this->getDeliveryDateMultipleDelivery(
-                        $item['delivery_day']['day'],
-                        $isMultipleDelivery
-                    );
+                if (isset($item['delivery_date']) && $item['delivery_date']) {
+                    $mealOrder->delivery_date = $item['delivery_date'];
                 }
                 if (isset($item['size']) && $item['size']) {
                     $mealOrder->meal_size_id = $item['size']['id'];

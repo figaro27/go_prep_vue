@@ -138,6 +138,7 @@
               type="text"
               v-model="stripeId"
               placeholder="Stripe ID"
+              v-if="store.id === 3"
             ></b-form-input>
             <p>
               <b-btn @click="testRenewSubscription" v-if="store.id === 3"
