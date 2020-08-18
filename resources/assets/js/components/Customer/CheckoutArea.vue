@@ -2124,19 +2124,20 @@ use next_delivery_dates
                 parseFloat(mileageBase) + parseFloat(mileagePerMile) * distance;
             }
 
-            if (this.groupBag) {
+            if (this.storeModules.multipleDeliveryDays) {
+              let mddFee = 0;
               this.groupBag.forEach(item => {
                 if (
                   item.delivery_day &&
-                  parseInt(item.delivery_day.applyFee) == 1 &&
+                  item.delivery_day.applyFee &&
                   item.items &&
                   item.items.length > 0
                 ) {
-                  fee += parseFloat(item.delivery_day.fee);
+                  mddFee += parseFloat(item.delivery_day.fee);
                 }
               });
+              return mddFee;
             }
-            // Multiple delivery days
             fee = fee * this.groupBag.length;
             return fee;
           } else return 0;
