@@ -1354,17 +1354,21 @@ export default {
       const component = this.getComponent(componentId);
       const min = component.minimum;
       const max = component.maximum;
+      let diff = max - min;
+      const choices = this.getComponentChoices(componentId);
+      let remainingMeals = _.reduce(
+        choices,
+        (remaining, meals) => {
+          return remaining - meals.length;
+        },
+        min
+      );
+      this.$parent.remainingMeals = remainingMeals;
+
       if (min == max) {
-        const choices = this.getComponentChoices(componentId);
-        let remainingMeals = _.reduce(
-          choices,
-          (remaining, meals) => {
-            return remaining - meals.length;
-          },
-          min
-        );
-        this.$parent.remainingMeals = remainingMeals;
         return remainingMeals;
+      } else {
+        return remainingMeals + diff;
       }
     },
     getTotalRemainingMeals() {

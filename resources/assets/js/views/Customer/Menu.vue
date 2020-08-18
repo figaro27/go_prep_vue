@@ -380,7 +380,10 @@
               <div
                 v-if="mealPackagePageView && mealPackagePageComponents === 1"
               >
-                <h4 class="center-text mt-2" v-if="remainingMeals">
+                <h4
+                  class="center-text mt-2"
+                  v-if="remainingMeals && remainingMeals > 0"
+                >
                   Remaining: {{ remainingMeals }}
                 </h4>
               </div>
