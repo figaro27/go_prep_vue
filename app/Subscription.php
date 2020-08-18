@@ -392,7 +392,9 @@ class Subscription extends Model
                         $mealSub->delete();
                         $this->syncPrices();
                     } elseif ($meal->stock < $mealSub->quantity) {
+                        $unitPrice = $mealSub->price / $mealSub->quantity;
                         $mealSub->quantity = $meal->stock;
+                        $mealSub->price = $unitPrice * $mealSub->quantity;
                         $mealSub->update();
                         $meal->stock = 0;
                         $meal->active = 0;
@@ -1491,7 +1493,9 @@ class Subscription extends Model
                         $mealSub->delete();
                         $this->syncPrices();
                     } elseif ($meal->stock < $mealSub->quantity) {
+                        $unitPrice = $mealSub->price / $mealSub->quantity;
                         $mealSub->quantity = $meal->stock;
+                        $mealSub->price = $unitPrice * $mealSub->quantity;
                         $mealSub->update();
                         $meal->stock = 0;
                         $meal->active = 0;
