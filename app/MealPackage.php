@@ -8,6 +8,7 @@ use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\DeliveryDayMealPackage;
 
 class MealPackage extends Model implements HasMedia
 {
@@ -23,7 +24,7 @@ class MealPackage extends Model implements HasMedia
         'default_size_title',
         'meal_carousel'
     ];
-    public $appends = ['image', 'category_ids'];
+    public $appends = ['image', 'category_ids', 'delivery_day_ids'];
     public $hidden = ['store', 'categories'];
 
     protected $casts = [
@@ -144,6 +145,12 @@ class MealPackage extends Model implements HasMedia
             ->performOnCollections('featured_image');
     }
 
+    public function getDeliveryDayIdsAttribute()
+    {
+        $ddays = $this->days->pluck('delivery_day_id');
+        return $ddays;
+    }
+
     public static function _store($props)
     {
         $props = collect($props)->only([
@@ -159,11 +166,14 @@ class MealPackage extends Model implements HasMedia
             'components',
             'addons',
             'meal_carousel',
-            'category_ids'
+            'category_ids',
+            'delivery_day_ids'
         ]);
 
         $package = MealPackage::create(
-            $props->except(['featured_image', 'category_ids'])->toArray()
+            $props
+                ->except(['featured_image', 'category_ids', 'delivery_day_ids'])
+                ->toArray()
         );
 
         if ($props->has('featured_image')) {
@@ -182,6 +192,23 @@ class MealPackage extends Model implements HasMedia
         $categories = $props->get('category_ids');
         if (is_array($categories)) {
             $package->categories()->sync($categories);
+        }
+
+        $days = $props->get('delivery_day_ids');
+        if (is_array($days)) {
+            $ddays = DeliveryDayMealPackage::where(
+                'meal_package_id',
+                $package->id
+            )->get();
+            foreach ($ddays as $dday) {
+                $dday->delete();
+            }
+            foreach ($days as $day) {
+                $dday = new DeliveryDayMealPackage();
+                $dday->delivery_day_id = $day;
+                $dday->meal_package_id = $package->id;
+                $dday->save();
+            }
         }
 
         // Associate meals
@@ -388,7 +415,8 @@ class MealPackage extends Model implements HasMedia
             'components',
             'addons',
             'meal_carousel',
-            'category_ids'
+            'category_ids',
+            'delivery_day_ids'
         ]);
 
         if ($props->has('featured_image')) {
@@ -407,6 +435,23 @@ class MealPackage extends Model implements HasMedia
         $categories = $props->get('category_ids');
         if (is_array($categories)) {
             $this->categories()->sync($categories);
+        }
+
+        $days = $props->get('delivery_day_ids');
+        if (is_array($days)) {
+            $ddays = DeliveryDayMealPackage::where(
+                'meal_package_id',
+                $this->id
+            )->get();
+            foreach ($ddays as $dday) {
+                $dday->delete();
+            }
+            foreach ($days as $day) {
+                $dday = new DeliveryDayMealPackage();
+                $dday->delivery_day_id = $day;
+                $dday->meal_package_id = $this->id;
+                $dday->save();
+            }
         }
 
         // Associate meals

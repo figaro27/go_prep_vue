@@ -118,6 +118,7 @@ class MealController extends StoreController
                 'category_ids',
                 'tag_ids',
                 'allergy_ids',
+                'delivery_day_ids',
                 'featured_image',
                 'gallery',
                 'ingredients',

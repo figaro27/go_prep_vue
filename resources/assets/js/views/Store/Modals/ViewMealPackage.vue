@@ -4,7 +4,7 @@
       size="xl"
       title="Edit Package"
       ref="modal"
-      @ok.prevent="e => updateMealPackage(e)"
+      @ok.prevent="e => updateMealPackage(e, true)"
       @cancel.prevent="toggleModal()"
       @hidden="toggleModal"
       no-fade
@@ -63,6 +63,28 @@
                   val =>
                     updateMealPackage(mealPackage.id, { category_ids: val })
                 "
+              ></b-form-checkbox-group>
+              <h4 class="mt-4" v-if="store.modules.multipleDeliveryDays">
+                Delivery Days
+                <img
+                  v-b-popover.hover="
+                    'Here you can restrict this meal packages to be only available on the highlighted delivery days. Leave blank for the package to be available on ALL days.'
+                  "
+                  title="Delivery Days"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </h4>
+              <b-form-checkbox-group
+                v-if="store.modules.multipleDeliveryDays"
+                buttons
+                v-model="mealPackage.delivery_day_ids"
+                :options="deliveryDayOptions"
+                @input="
+                  val =>
+                    updateMealPackage(mealPackage.id, { delivery_day_ids: val })
+                "
+                class="storeFilters"
               ></b-form-checkbox-group>
 
               <!-- <p class="mt-4">
@@ -293,6 +315,14 @@ export default {
         };
       });
     },
+    deliveryDayOptions() {
+      return Object.values(this.store.delivery_days).map(day => {
+        return {
+          text: day.day_long,
+          value: day.id
+        };
+      });
+    },
     tableData() {
       return this.meals.map(meal => {
         meal.included = this.hasMeal(meal.id);
@@ -412,7 +442,7 @@ export default {
         return this.mealPackage.meals[index].meal_size_id;
       }
     },
-    async updateMealPackage(e) {
+    async updateMealPackage(e, close = false) {
       const req = {
         ...this.mealPackage,
         validate_all: true
@@ -438,8 +468,11 @@ export default {
 
       this.$toastr.s("Package updated.");
       this.$emit("updated");
-      this.$refs.modal.hide();
-      this.$parent.modal = false;
+
+      if (close == true) {
+        this.$refs.modal.hide();
+        this.$parent.modal = false;
+      }
     },
     async changeImage(val) {
       let b64 = await fs.getBase64(this.$refs.featuredImageInput.file);

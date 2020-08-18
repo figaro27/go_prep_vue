@@ -58,7 +58,8 @@ class MealPackageController extends StoreController
                 'components',
                 'addons',
                 'meal_carousel',
-                'category_ids'
+                'category_ids',
+                'delivery_day_ids'
             ])
         );
         $props->put('store_id', $this->store->id);
@@ -89,7 +90,8 @@ class MealPackageController extends StoreController
                     'components',
                     'addons',
                     'addons.meals',
-                    'categories'
+                    'categories',
+                    'days'
                 ])
                 ->find($id)
         );
@@ -241,7 +243,8 @@ class MealPackageController extends StoreController
                 'components',
                 'addons',
                 'meal_carousel',
-                'category_ids'
+                'category_ids',
+                'delivery_day_ids'
             ])
         );
 

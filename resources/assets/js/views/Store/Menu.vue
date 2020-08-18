@@ -409,6 +409,28 @@
                     class="storeFilters"
                   ></b-form-checkbox-group>
 
+                  <h4 class="mt-4" v-if="store.modules.multipleDeliveryDays">
+                    Delivery Days
+                    <img
+                      v-b-popover.hover="
+                        'Here you can restrict this meal to be only available on the highlighted delivery days. Leave blank for the meal to be available on ALL days.'
+                      "
+                      title="Delivery Days"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </h4>
+                  <b-form-checkbox-group
+                    v-if="store.modules.multipleDeliveryDays"
+                    buttons
+                    v-model="meal.delivery_day_ids"
+                    :options="deliveryDayOptions"
+                    @change="
+                      val => updateMeal(meal.id, { delivery_day_ids: val })
+                    "
+                    class="storeFilters"
+                  ></b-form-checkbox-group>
+
                   <div v-if="store.modules.customSalesTax">
                     <h4 class="mt-4">
                       Custom Sales Tax
@@ -1280,6 +1302,14 @@ export default {
         };
       });
     },
+    deliveryDayOptions() {
+      return Object.values(this.store.delivery_days).map(day => {
+        return {
+          text: day.day_long,
+          value: day.id
+        };
+      });
+    },
     weightUnitOptions() {
       return units.mass.selectOptions();
     },
@@ -1434,7 +1464,6 @@ export default {
       if (_.isEmpty(changes)) {
         changes = this.editing[id];
       }
-
       try {
         const meal = await this._updateMeal({ id, data: changes, updateLocal });
 

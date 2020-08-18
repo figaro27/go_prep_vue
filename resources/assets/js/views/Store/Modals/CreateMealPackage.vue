@@ -51,6 +51,24 @@
                 class="storeFilters"
                 required
               ></b-form-checkbox-group>
+              <h4 class="mt-4" v-if="store.modules.multipleDeliveryDays">
+                Delivery Days
+                <img
+                  v-b-popover.hover="
+                    'Here you can restrict this meal package to be only available on the highlighted delivery days. Leave blank for the package to be available on ALL days.'
+                  "
+                  title="Delivery Days"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </h4>
+              <b-form-checkbox-group
+                v-if="store.modules.multipleDeliveryDays"
+                buttons
+                v-model="mealPackage.delivery_day_ids"
+                :options="deliveryDayOptions"
+                class="storeFilters"
+              ></b-form-checkbox-group>
 
               <!-- <p class="mt-4">
                 <span class="mr-1">Display Included Items in Packages</span>
@@ -250,6 +268,14 @@ export default {
         return {
           text: cat.category,
           value: cat.id
+        };
+      });
+    },
+    deliveryDayOptions() {
+      return Object.values(this.store.delivery_days).map(day => {
+        return {
+          text: day.day_long,
+          value: day.id
         };
       });
     },

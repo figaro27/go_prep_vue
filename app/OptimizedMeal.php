@@ -57,6 +57,7 @@ class OptimizedMeal extends Model implements HasMedia
         'category_ids',
         'tag_titles',
         'allergy_ids',
+        'delivery_day_ids',
         'full_title',
         'item_title'
     ];

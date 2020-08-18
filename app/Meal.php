@@ -29,6 +29,7 @@ use App\MealMealPackageComponentOption;
 use App\MealMealPackageAddon;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use App\DeliveryDayMeal;
 
 class Meal extends Model implements HasMedia
 {
@@ -71,6 +72,7 @@ class Meal extends Model implements HasMedia
         'allergy_ids',
         'category_ids',
         'tag_ids',
+        'delivery_day_ids',
         'substitute',
         'substitute_ids',
         'ingredient_ids',
@@ -398,6 +400,12 @@ class Meal extends Model implements HasMedia
         return $this->tags->pluck('id');
     }
 
+    public function getDeliveryDayIdsAttribute()
+    {
+        $ddays = $this->days->pluck('delivery_day_id');
+        return $ddays;
+    }
+
     public function getSubscriptionCountAttribute()
     {
         return $this->subscriptions->where('status', 'active')->count();
@@ -682,6 +690,7 @@ class Meal extends Model implements HasMedia
             'tag_ids',
             'category_ids',
             'allergy_ids',
+            'delivery_day_ids',
             'ingredients',
             'sizes',
             'default_size_title',
@@ -852,6 +861,21 @@ class Meal extends Model implements HasMedia
             $tags = $props->get('tag_ids');
             if (is_array($tags)) {
                 $meal->tags()->sync($tags);
+            }
+
+            $days = $props->get('delivery_day_ids');
+            if (is_array($days)) {
+                $ddays = DeliveryDayMeal::where('meal_id', $meal->id)->get();
+                foreach ($ddays as $dday) {
+                    $dday->delete();
+                }
+                foreach ($days as $day) {
+                    $dday = new DeliveryDayMeal();
+                    $dday->store_id = $meal->store_id;
+                    $dday->delivery_day_id = $day;
+                    $dday->meal_id = $meal->id;
+                    $dday->save();
+                }
             }
 
             // Meal sizes
@@ -1058,6 +1082,7 @@ class Meal extends Model implements HasMedia
             'category_ids',
             'ingredients',
             'allergy_ids',
+            'delivery_day_ids',
             'sizes',
             'default_size_title',
             'components',
@@ -1201,6 +1226,21 @@ class Meal extends Model implements HasMedia
         $tags = $props->get('tag_ids');
         if (is_array($tags)) {
             $meal->tags()->sync($tags);
+        }
+
+        $days = $props->get('delivery_day_ids');
+        if (is_array($days)) {
+            $ddays = DeliveryDayMeal::where('meal_id', $meal->id)->get();
+            foreach ($ddays as $dday) {
+                $dday->delete();
+            }
+            foreach ($days as $day) {
+                $dday = new DeliveryDayMeal();
+                $dday->store_id = $meal->store_id;
+                $dday->delivery_day_id = $day;
+                $dday->meal_id = $meal->id;
+                $dday->save();
+            }
         }
 
         // Meal sizes
