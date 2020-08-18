@@ -919,6 +919,9 @@ class Subscription extends Model
         // Update subscription pricing
         $this->preFeePreDiscount = $preFeePreDiscount;
         $this->mealPlanDiscount = $mealPlanDiscount;
+        if ($afterDiscountBeforeFees < 0) {
+            $afterDiscountBeforeFees = 0;
+        }
         $this->afterDiscountBeforeFees = $afterDiscountBeforeFees;
         $this->processingFee = $processingFee;
         $this->deliveryFee = $deliveryFee;
