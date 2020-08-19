@@ -371,17 +371,15 @@ class Subscription extends Model
         }
 
         // Ensure we haven't already processed this payment
-
-        // This check messes up the flow when subscriptions are paused since I believe $stripeInvoice passes a null charge and it's finding that null paused order so it returns. Removing for now. Will recheck.
-        // if (
-        //     $this->orders()
-        //         ->where('stripe_id', $stripeInvoice->get('charge'))
-        //         ->count() &&
-        //     !$this->monthlyPrepay &&
-        //     $this->amount > 0
-        // ) {
-        //     return;
-        // }
+        if (
+            $this->orders()
+                ->where('stripe_id', $stripeInvoice->get('charge'))
+                ->count() &&
+            !$this->monthlyPrepay &&
+            $this->amount > 0
+        ) {
+            return;
+        }
 
         // Updating item stock
         if ($this->store->modules->stockManagement) {
