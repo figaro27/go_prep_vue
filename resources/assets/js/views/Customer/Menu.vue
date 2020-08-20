@@ -18,8 +18,7 @@
       <!-- Temp fix to make the modal show -->
       <delivery-date-modal
         v-if="
-          !bagDeliveryDate &&
-            store.modules.category_restrictions &&
+          store.modules.category_restrictions &&
             !$route.params.storeView &&
             !storeView &&
             context !== 'store'
