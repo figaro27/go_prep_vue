@@ -96,7 +96,8 @@ class StoreSetting extends Model
         'application_fee' => 'float',
         'mealPlanDiscount' => 'float',
         'mealInstructions' => 'boolean',
-        'enableSalesTax' => 'boolean'
+        'enableSalesTax' => 'boolean',
+        'minimumDeliveryOnly' => 'boolean'
     ];
 
     public function setAttributeVisibility()

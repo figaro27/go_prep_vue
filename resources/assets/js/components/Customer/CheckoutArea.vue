@@ -1194,27 +1194,13 @@
       </div>
     </li>
 
-    <li
-      v-if="
-        minOption === 'meals' &&
-          total < minimumMeals &&
-          !$route.params.storeView &&
-          !storeOwner
-      "
-    >
+    <li v-if="minOption === 'meals' && !minimumMet">
       <p class="strong">
         Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
       </p>
     </li>
 
-    <li
-      v-if="
-        minOption === 'price' &&
-          totalBagPricePreFees < minPrice &&
-          !$route.params.storeView &&
-          !storeOwner
-      "
-    >
+    <li v-if="minOption === 'price' && !minimumMet">
       <p class="strong">
         Please add
         {{ format.money(remainingPrice, storeSettings.currency) }}
@@ -2512,7 +2498,10 @@ use next_delivery_dates
       if (
         (this.minOption === "meals" && this.total >= this.minimumMeals) ||
         (this.minOption === "price" &&
-          this.totalBagPricePreFees >= this.minPrice)
+          this.totalBagPricePreFees >= this.minPrice) ||
+        this.$route.params.storeView ||
+        this.storeOwner ||
+        (this.storeSettings.minimumDeliveryOnly && this.pickup)
       )
         return true;
       else return false;
