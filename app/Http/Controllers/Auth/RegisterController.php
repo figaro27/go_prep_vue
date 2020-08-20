@@ -167,7 +167,9 @@ class RegisterController extends Controller
                 'R' .
                 strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                 chr(rand(65, 90)) .
-                rand(0, 9)
+                rand(0, 9) .
+                rand(0, 9) .
+                chr(rand(65, 90))
         ]);
 
         $userDetails = $user->details()->create([
