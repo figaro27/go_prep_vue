@@ -1017,16 +1017,16 @@ class OrderController extends StoreController
             }
         }
 
-        if ($bagItems && count($bagItems) > 0) {
-            OrderBag::where('order_id', (int) $order->id)->delete();
+        // if ($bagItems && count($bagItems) > 0) {
+        //     OrderBag::where('order_id', (int) $order->id)->delete();
 
-            foreach ($bagItems as $bagItem) {
-                $orderBag = new OrderBag();
-                $orderBag->order_id = (int) $order->id;
-                $orderBag->bag = json_encode($bagItem);
-                $orderBag->save();
-            }
-        }
+        //     foreach ($bagItems as $bagItem) {
+        //         $orderBag = new OrderBag();
+        //         $orderBag->order_id = (int) $order->id;
+        //         $orderBag->bag = json_encode($bagItem);
+        //         $orderBag->save();
+        //     }
+        // }
 
         // Send email to store only if it's not a manual order. Subject to change in future.
         if ($order->manual === 0) {
