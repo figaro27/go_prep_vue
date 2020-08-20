@@ -101,8 +101,8 @@ class UserController extends StoreController
 
     public function getLeads()
     {
-        return User::doesntHave('orders')
-            ->where('last_viewed_store_id', $this->store->id)
+        return User::where('last_viewed_store_id', $this->store->id)
+            ->whereDoesntHave('orders')
             ->get();
     }
 }
