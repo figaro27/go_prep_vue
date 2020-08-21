@@ -538,7 +538,7 @@ class Subscription extends Model
             $mealOrder->customSize = $mealSub->customSize;
 
             if ($mealSub->meal_package_subscription_id !== null) {
-                $mealPackageSub = MeaLPackageSubscription::where(
+                $mealPackageSub = MealPackageSubscription::where(
                     'id',
                     $mealSub->meal_package_subscription_id
                 )->first();
