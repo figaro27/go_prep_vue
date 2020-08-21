@@ -1486,7 +1486,8 @@ export default {
       bagPickupSet: "bagPickupSet",
       staff: "storeStaff",
       staffMember: "bagStaffMember",
-      customerModel: "bagCustomerModel"
+      customerModel: "bagCustomerModel",
+      context: "context"
     }),
     gratuityOptions() {
       return [
