@@ -382,33 +382,6 @@ class Subscription extends Model
             return;
         }
 
-        // Updating item stock
-        if ($this->store->modules->stockManagement) {
-            foreach ($this->meal_subscriptions as $mealSub) {
-                $meal = Meal::where('id', $mealSub->meal_id)->first();
-                if ($meal && $meal->stock !== null) {
-                    if ($meal->stock === 0) {
-                        $mealSub->delete();
-                        $this->syncPrices();
-                    } elseif ($meal->stock < $mealSub->quantity) {
-                        $unitPrice = $mealSub->price / $mealSub->quantity;
-                        $mealSub->quantity = $meal->stock;
-                        $mealSub->price = $unitPrice * $mealSub->quantity;
-                        $mealSub->update();
-                        $meal->stock = 0;
-                        $meal->active = 0;
-                        $this->syncPrices();
-                    } else {
-                        $meal->stock -= $mealSub->quantity;
-                        if ($meal->stock === 0) {
-                            $meal->active = 0;
-                        }
-                    }
-                    $meal->update();
-                }
-            }
-        }
-
         // Retrieve the subscription from Stripe
         $subscription = \Stripe\Subscription::retrieve(
             'sub_' . $this->stripe_id,
@@ -662,6 +635,33 @@ class Subscription extends Model
                 'customer' => $latestOrder->customer ?? null,
                 'subscription' => $this ?? null
             ]);
+        }
+
+        // Updating item stock
+        if ($this->store->modules->stockManagement) {
+            foreach ($this->meal_subscriptions as $mealSub) {
+                $meal = Meal::where('id', $mealSub->meal_id)->first();
+                if ($meal && $meal->stock !== null) {
+                    if ($meal->stock === 0) {
+                        $mealSub->delete();
+                        $this->syncPrices();
+                    } elseif ($meal->stock < $mealSub->quantity) {
+                        $unitPrice = $mealSub->price / $mealSub->quantity;
+                        $mealSub->quantity = $meal->stock;
+                        $mealSub->price = $unitPrice * $mealSub->quantity;
+                        $mealSub->update();
+                        $meal->stock = 0;
+                        $meal->active = 0;
+                        $this->syncPrices();
+                    } else {
+                        $meal->stock -= $mealSub->quantity;
+                        if ($meal->stock === 0) {
+                            $meal->active = 0;
+                        }
+                    }
+                    $meal->update();
+                }
+            }
         }
     }
 
@@ -1492,33 +1492,6 @@ class Subscription extends Model
         //     return;
         // }
 
-        // Updating item stock
-        if ($this->store->modules->stockManagement) {
-            foreach ($this->meal_subscriptions as $mealSub) {
-                $meal = Meal::where('id', $mealSub->meal_id)->first();
-                if ($meal && $meal->stock !== null) {
-                    if ($meal->stock === 0) {
-                        $mealSub->delete();
-                        $this->syncPrices();
-                    } elseif ($meal->stock < $mealSub->quantity) {
-                        $unitPrice = $mealSub->price / $mealSub->quantity;
-                        $mealSub->quantity = $meal->stock;
-                        $mealSub->price = $unitPrice * $mealSub->quantity;
-                        $mealSub->update();
-                        $meal->stock = 0;
-                        $meal->active = 0;
-                        $this->syncPrices();
-                    } else {
-                        $meal->stock -= $mealSub->quantity;
-                        if ($meal->stock === 0) {
-                            $meal->active = 0;
-                        }
-                    }
-                    $meal->update();
-                }
-            }
-        }
-
         // Retrieve the subscription from Stripe
         $subscription = \Stripe\Subscription::retrieve(
             'sub_' . $this->stripe_id,
@@ -1772,6 +1745,33 @@ class Subscription extends Model
                 'customer' => $latestOrder->customer ?? null,
                 'subscription' => $this ?? null
             ]);
+        }
+
+        // Updating item stock
+        if ($this->store->modules->stockManagement) {
+            foreach ($this->meal_subscriptions as $mealSub) {
+                $meal = Meal::where('id', $mealSub->meal_id)->first();
+                if ($meal && $meal->stock !== null) {
+                    if ($meal->stock === 0) {
+                        $mealSub->delete();
+                        $this->syncPrices();
+                    } elseif ($meal->stock < $mealSub->quantity) {
+                        $unitPrice = $mealSub->price / $mealSub->quantity;
+                        $mealSub->quantity = $meal->stock;
+                        $mealSub->price = $unitPrice * $mealSub->quantity;
+                        $mealSub->update();
+                        $meal->stock = 0;
+                        $meal->active = 0;
+                        $this->syncPrices();
+                    } else {
+                        $meal->stock -= $mealSub->quantity;
+                        if ($meal->stock === 0) {
+                            $meal->active = 0;
+                        }
+                    }
+                    $meal->update();
+                }
+            }
         }
     }
 }
