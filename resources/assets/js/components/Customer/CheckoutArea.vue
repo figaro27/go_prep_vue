@@ -1377,6 +1377,9 @@ export default {
     customerModel: function(val) {
       this.getCards();
       this.updateParentData();
+    },
+    customDeliveryFee: function(val) {
+      this.setBagDeliveryFee(val);
     }
   },
   mounted: function() {
@@ -1487,7 +1490,8 @@ export default {
       staff: "storeStaff",
       staffMember: "bagStaffMember",
       customerModel: "bagCustomerModel",
-      context: "context"
+      context: "context",
+      deliveryFee: "bagDeliveryFee"
     }),
     gratuityOptions() {
       return [
@@ -2071,6 +2075,9 @@ use next_delivery_dates
       } else return this.afterCoupon;
     },
     deliveryFeeAmount() {
+      if (this.deliveryFee) {
+        return parseFloat(this.deliveryFee);
+      }
       if (this.pickup === 0) {
         let {
           applyDeliveryFee,
@@ -2593,9 +2600,11 @@ use next_delivery_dates
       "clearBagTransferTime",
       "clearBagStaffMember",
       "clearBagCustomerModel",
+      "clearBagDeliveryFee",
       "setBagPickup",
       "setBagTransferTime",
-      "setBagCustomerModel"
+      "setBagCustomerModel",
+      "setBagDeliveryFee"
     ]),
     preventNegative() {
       if (this.total < 0) {
@@ -2941,6 +2950,7 @@ use next_delivery_dates
           this.clearBagStaffMember();
           this.clearBagCustomerModel();
           this.refreshStorePurchasedGiftCards();
+          this.clearBagDeliveryFee();
           // Always select pickup for Livotis
           if (
             this.store.id === 108 ||
@@ -3149,6 +3159,7 @@ use next_delivery_dates
           this.clearBagTransferTime();
           this.clearBagStaffMember();
           this.clearBagCustomerModel();
+          this.clearBagDeliveryFee();
           this.refreshCards();
 
           // Always select pickup for Livotis

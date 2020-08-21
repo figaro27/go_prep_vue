@@ -1270,6 +1270,7 @@ export default {
       "clearBagTransferTime",
       "clearBagStaffMember",
       "clearBagCustomerModel",
+      "clearBagDeliveryFee",
       "setBagPickup",
       "setBagCoupon"
     ]),
@@ -1820,6 +1821,7 @@ export default {
       this.clearBagTransferTime();
       this.clearBagStaffMember();
       this.clearBagCustomerModel();
+      this.clearBagDeliveryFee();
       this.setBagCoupon(null);
     },
     adjustOrder() {

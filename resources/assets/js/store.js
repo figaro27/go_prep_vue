@@ -69,7 +69,8 @@ const state = {
     pickupSet: false,
     transferTime: null,
     staffMember: null,
-    customerModel: null
+    customerModel: null,
+    deliveryFee: null
   },
   delivery_date: null,
   zip_code: null,
@@ -827,6 +828,9 @@ const mutations = {
   clearBagCustomerModel(state, date) {
     this.state.bag.customerModel = null;
   },
+  clearBagDeliveryFee(state, deliveryFee) {
+    this.state.bag.deliveryFee = null;
+  },
   setBagPickup({ state, dispatch }, pickup) {
     this.state.bag.pickup = pickup;
     this.state.bag.pickupSet = true;
@@ -840,6 +844,9 @@ const mutations = {
   },
   setBagCustomerModel({ state, dispatch }, customerModel) {
     this.state.bag.customerModel = customerModel;
+  },
+  setBagDeliveryFee({ state, dispatch }, deliveryFee) {
+    this.state.bag.deliveryFee = deliveryFee;
   },
   updateBagItem(state, item) {
     if (item.guid) {
@@ -3406,6 +3413,9 @@ const getters = {
   },
   bagCustomerModel(state) {
     return state.bag.customerModel;
+  },
+  bagDeliveryFee(state) {
+    return state.bag.deliveryFee;
   },
   bagDeliverySettings(state, getters) {
     const { bagCustomDeliveryDay } = getters;
