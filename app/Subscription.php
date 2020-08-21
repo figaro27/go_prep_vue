@@ -887,10 +887,7 @@ class Subscription extends Model
         }
 
         if ($this->afterDiscountBeforeFees > 0) {
-            $salesTaxRate = round(
-                $this->salesTax / $this->afterDiscountBeforeFees,
-                2
-            );
+            $salesTaxRate = $this->salesTax / $this->afterDiscountBeforeFees;
         } else {
             $salesTaxRate = 0;
         }
