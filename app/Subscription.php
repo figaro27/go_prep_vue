@@ -868,6 +868,11 @@ class Subscription extends Model
                     $this->update();
                 }
             }
+        } else {
+            $this->coupon_id = null;
+            $this->couponReduction = null;
+            $this->couponCode = null;
+            $this->update();
         }
 
         $deliveryFee = $this->deliveryFee;
@@ -1024,6 +1029,9 @@ class Subscription extends Model
             $order->pointsReduction = $this->pointsReduction;
             $order->gratuity = $this->gratuity;
             $order->coolerDeposit = $this->coolerDeposit;
+            $order->coupon_id = $this->coupon_id;
+            $order->couponReduction = $this->couponReduction;
+            $order->couponCode = $this->couponCode;
             $order->amount = $this->amount;
             $order->save();
 
