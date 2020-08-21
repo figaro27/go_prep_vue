@@ -30,6 +30,19 @@ class CouponController extends Controller
         }
     }
 
+    public function findCouponById(Request $request)
+    {
+        $storeId = $request->get('store_id');
+        $couponId = $request->get('couponId');
+        $coupon = Coupon::where([
+            'store_id' => $storeId,
+            'id' => $couponId
+        ])->first();
+        if (isset($coupon)) {
+            return $coupon;
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *

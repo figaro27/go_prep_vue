@@ -28,6 +28,7 @@ foreach (
         ],
         function ($router) {
             Route::post('findCoupon', 'CouponController@findCoupon');
+            Route::post('findCouponById', 'CouponController@findCouponById');
             Route::post(
                 'findPurchasedGiftCard',
                 'PurchasedGiftCardController@findPurchasedGiftCard'
@@ -364,6 +365,11 @@ foreach (
                                 'CouponController@findCoupon'
                             );
 
+                            Route::post(
+                                'findCouponById',
+                                'CouponController@findCouponById'
+                            );
+
                             Route::patch('coupons', 'CouponController@update');
 
                             Route::resource('giftCards', 'GiftCardController');
@@ -644,6 +650,11 @@ foreach (
                             Route::post(
                                 '/me/findCoupon',
                                 'CouponController@findCoupon'
+                            );
+
+                            Route::post(
+                                '/me/findCouponById',
+                                'CouponController@findCouponById'
                             );
                             Route::resource(
                                 '/me/purchasedGiftCards',

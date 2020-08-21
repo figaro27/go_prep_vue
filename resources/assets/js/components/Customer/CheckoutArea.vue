@@ -1409,8 +1409,13 @@ export default {
         // });
       }
     }
-    if (this.$route.params.adjustMealPlan || this.$route.params.subscription) {
+    if (
+      this.$route.params.adjustMealPlan ||
+      this.$route.params.subscription ||
+      this.$route.query.sub
+    ) {
       this.gratuity = this.$parent.$route.params.subscription.gratuity;
+      this.setSubscriptionCoupon();
     }
 
     if (
@@ -2013,9 +2018,9 @@ use next_delivery_dates
       }
       let coupon = this.coupon;
       let subtotal = this.subtotal;
-      if (coupon && coupon.fromSub) {
-        return coupon.amount;
-      }
+      // if (coupon && coupon.fromSub) {
+      //   return coupon.amount;
+      // }
       if (coupon && coupon.type === "flat") {
         return coupon.amount < subtotal ? coupon.amount : subtotal;
       } else if (coupon && coupon.type === "percent") {
@@ -3362,6 +3367,19 @@ use next_delivery_dates
       ) {
         this.setBagMealPlan(true);
       }
+    },
+    setSubscriptionCoupon() {
+      axios
+        .post(this.prefix + "findCouponById", {
+          store_id: this.store.id,
+          couponId:
+            this.coupon && this.coupon.id
+              ? this.coupon.id
+              : this.$route.params.subscription.coupon_id
+        })
+        .then(resp => {
+          this.setBagCoupon(resp.data);
+        });
     },
     search: _.debounce((loading, search, vm) => {
       axios
