@@ -3123,7 +3123,7 @@ use next_delivery_dates
           applied_referral_id: this.referral ? this.referral.id : null,
           referralReduction: this.referralReduction,
           promotionReduction: this.promotionReduction,
-          deliveryFee: this.deliveryFee,
+          deliveryFee: this.deliveryFeeAmount,
           processingFee: this.processingFeeAmount,
           pickupLocation: this.selectedPickupLocation,
           customer: this.customerModel
