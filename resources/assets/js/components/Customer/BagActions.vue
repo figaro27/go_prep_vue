@@ -200,7 +200,8 @@ export default {
       if (
         (this.minOption === "meals" && this.total >= this.minMeals) ||
         (this.minOption === "price" &&
-          this.totalBagPricePreFees >= this.minPrice)
+          this.totalBagPricePreFees >= this.minPrice) ||
+        this.store.settings.minimumDeliveryOnly
       )
         return true;
       else return false;
