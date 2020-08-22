@@ -385,11 +385,11 @@ export default {
           purchasedGiftCardReduction: "Gift Card",
           promotionReduction: "Promotion",
           pointsReduction: "Points",
+          gratuity: "Gratuity",
+          coolerDeposit: "Cooler Deposit",
           amount: "Total",
           balance: "Balance",
-          refundedAmount: "Refunded",
-          gratuity: "Gratuity",
-          coolerDeposit: "Cooler Deposit"
+          refundedAmount: "Refunded"
         },
         customSorting: {
           created_at: function(ascending) {
@@ -529,10 +529,10 @@ export default {
             purchasedGiftCardReduction: sums.purchasedGiftCardReduction,
             promotionReduction: sums.promotionReduction,
             pointsReduction: sums.pointsReduction,
-            amount: sums.amount,
-            balance: sums.balance,
             gratuity: sums.gratuity,
-            coolerDeposit: sums.coolerDeposit
+            coolerDeposit: sums.coolerDeposit,
+            amount: sums.amount,
+            balance: sums.balance
           });
         });
 
@@ -602,11 +602,11 @@ export default {
           purchasedGiftCardReduction: sums.purchasedGiftCardReduction,
           promotionReduction: sums.promotionReduction,
           pointsReduction: sums.pointsReduction,
+          gratuity: sums.gratuity,
+          coolerDeposit: sums.coolerDeposit,
           amount: sums.amount,
           refundedAmount: sums.refundedAmount,
           balance: sums.balance,
-          gratuity: sums.gratuity,
-          coolerDeposit: sums.coolerDeposit,
           sumRow: 1
         });
       }
