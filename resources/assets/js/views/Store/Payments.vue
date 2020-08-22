@@ -491,7 +491,9 @@ export default {
             // goprep_fee: 0,
             // stripe_fee: 0,
             amount: 0,
-            balance: 0
+            balance: 0,
+            gratuity: 0,
+            coolerDeposit: 0
           };
 
           orderByDay.forEach(order => {
@@ -510,6 +512,8 @@ export default {
             sums.pointsReduction += order.pointsReduction;
             sums.amount += order.amount;
             sums.balance += order.balance;
+            sums.gratuity += order.gratuity;
+            sums.coolerDeposit += order.coolerDeposit;
           });
           orders.push({
             created_at: created_at,
@@ -526,7 +530,9 @@ export default {
             promotionReduction: sums.promotionReduction,
             pointsReduction: sums.pointsReduction,
             amount: sums.amount,
-            balance: sums.balance
+            balance: sums.balance,
+            gratuity: sums.gratuity,
+            coolerDeposit: sums.coolerDeposit
           });
         });
 
@@ -558,7 +564,9 @@ export default {
           pointsReduction: 0,
           amount: 0,
           refundedAmount: 0,
-          balance: 0
+          balance: 0,
+          gratuity: 0,
+          coolerDeposit: 0
         };
 
         orders.forEach(order => {
@@ -576,6 +584,8 @@ export default {
           sums.amount += order.amount;
           sums.refundedAmount += order.refundedAmount;
           sums.balance += order.balance;
+          sums.gratuity += order.gratuity;
+          sums.coolerDeposit += order.coolerDeposit;
         });
 
         orders.unshift({
@@ -595,6 +605,8 @@ export default {
           amount: sums.amount,
           refundedAmount: sums.refundedAmount,
           balance: sums.balance,
+          gratuity: sums.gratuity,
+          coolerDeposit: sums.coolerDeposit,
           sumRow: 1
         });
       }
@@ -602,13 +614,7 @@ export default {
       return orders;
     },
     columns() {
-      let columns = [
-        "created_at",
-        "delivery_date",
-        "gratuity",
-        "coolerDeposit",
-        "subtotal"
-      ];
+      let columns = ["created_at", "delivery_date", "subtotal"];
 
       let addedColumns = {};
 
@@ -626,6 +632,8 @@ export default {
         if (order.pointsReduction > 0) addedColumns.pointsReduction = true;
         if (order.refundedAmount > 0) addedColumns.refundedAmount = true;
         if (order.balance > 0) addedColumns.balance = true;
+        if (order.gratuity > 0) addedColumns.gratuity = true;
+        if (order.coolerDeposit > 0) addedColumns.coolerDeposit = true;
       });
 
       if (addedColumns.couponReduction)
@@ -652,6 +660,11 @@ export default {
         columns.splice(columns.length, 0, "refundedAmount");
 
       if (addedColumns.balance) columns.splice(columns.length, 0, "balance");
+
+      if (addedColumns.gratuity) columns.splice(columns.length, 0, "gratuity");
+
+      if (addedColumns.coolerDeposit)
+        columns.splice(columns.length, 0, "coolerDeposit");
 
       // if (this.filters.dailySummary) {
       //   columns.splice(1, 0, "totalOrders");
