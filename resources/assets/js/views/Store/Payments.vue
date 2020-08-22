@@ -387,7 +387,9 @@ export default {
           pointsReduction: "Points",
           amount: "Total",
           balance: "Balance",
-          refundedAmount: "Refunded"
+          refundedAmount: "Refunded",
+          gratuity: "Gratuity",
+          coolerDeposit: "Cooler Deposit"
         },
         customSorting: {
           created_at: function(ascending) {
@@ -600,7 +602,13 @@ export default {
       return orders;
     },
     columns() {
-      let columns = ["created_at", "delivery_date", "subtotal"];
+      let columns = [
+        "created_at",
+        "delivery_date",
+        "gratuity",
+        "coolerDeposit",
+        "subtotal"
+      ];
 
       let addedColumns = {};
 
