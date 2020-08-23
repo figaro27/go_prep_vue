@@ -251,7 +251,10 @@ class MealController extends StoreController
                     'id',
                     $existing->meal_package_component_option_id
                 )->first();
-                if (!$mealPackageComponentOption->selectable) {
+                if (
+                    $mealPackageComponentOption &&
+                    !$mealPackageComponentOption->selectable
+                ) {
                     $existingQuantity = $existing->quantity;
                     $quantity = $mealMealPackageComponentOption->quantity;
                     $existing->update([
@@ -278,7 +281,7 @@ class MealController extends StoreController
                     'id',
                     $existing->meal_package_addon_id
                 )->first();
-                if (!$mealPackageAddon->selectable) {
+                if ($mealPackageAddon && !$mealPackageAddon->selectable) {
                     $existingQuantity = $existing->quantity;
                     $quantity = $mealMealPackageAddon->quantity;
                     $existing->update([
