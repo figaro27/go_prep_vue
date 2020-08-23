@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Coupon;
+use App\Subscription;
 
 class CouponController extends Controller
 {
@@ -33,7 +34,11 @@ class CouponController extends Controller
     public function findCouponById(Request $request)
     {
         $storeId = $request->get('store_id');
-        $couponId = $request->get('couponId');
+        $subId = $request->get('subId');
+        $couponId = Subscription::where('id', $subId)
+            ->pluck('coupon_id')
+            ->first();
+
         $coupon = Coupon::where([
             'store_id' => $storeId,
             'id' => $couponId

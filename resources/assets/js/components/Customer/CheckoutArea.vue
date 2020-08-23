@@ -1412,14 +1412,11 @@ export default {
         // });
       }
     }
-    if (
-      this.$route.params.adjustMealPlan ||
-      this.$route.params.subscription ||
-      this.$route.query.sub
-    ) {
-      this.gratuity = this.$parent.$route.params.subscription.gratuity;
-      this.setSubscriptionCoupon();
-    }
+
+    this.gratuity = this.$parent.$route.params.subscription
+      ? this.$parent.$route.params.subscription.gratuity
+      : null;
+    this.setSubscriptionCoupon();
 
     if (
       this.$route.params.adjustOrder &&
@@ -3384,13 +3381,14 @@ use next_delivery_dates
       axios
         .post(this.prefix + "findCouponById", {
           store_id: this.store.id,
-          couponId:
-            this.coupon && this.coupon.id
-              ? this.coupon.id
-              : this.$route.params.subscription.coupon_id
+          subId: this.subscriptionId
+            ? this.subscriptionId
+            : this.user.active_subscription_id
         })
         .then(resp => {
-          this.setBagCoupon(resp.data);
+          if (resp.data) {
+            this.setBagCoupon(resp.data);
+          }
         });
     },
     search: _.debounce((loading, search, vm) => {

@@ -73,6 +73,7 @@ class User extends Authenticatable implements JWTSubject
         'cards',
         'last_viewed_store',
         'has_active_subscription',
+        'active_subscription_id',
         'referrals',
         'orderCount',
         'last_viewed_store_url'
@@ -554,6 +555,15 @@ class User extends Authenticatable implements JWTSubject
         } else {
             return false;
         }
+    }
+
+    public function getActiveSubscriptionIdAttribute()
+    {
+        $subId = Subscription::where('user_id', $this->id)
+            ->where('status', '!=', 'cancelled')
+            ->pluck('id')
+            ->first();
+        return $subId;
     }
 
     public function getReferralsAttribute()
