@@ -198,8 +198,9 @@
           <p>
             A subscription is a weekly recurring order. Your card will be
             automatically charged every week. You can change the items in your
-            subscription and you can cancel the subscription after the 2nd
-            order.
+            subscription and you can cancel the subscription after
+            {{ store.settings.minimumSubWeeks }}
+            orders.
           </p>
         </div>
       </li>

@@ -34,7 +34,8 @@ class StoreSetting extends Model
         'currency',
         'showMacros',
         'preventNextWeekOrders',
-        'timezone'
+        'timezone',
+        'minimumSubWeeks'
     ];
 
     /**

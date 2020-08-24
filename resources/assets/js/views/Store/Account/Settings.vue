@@ -363,7 +363,7 @@
                 </b-form-group>
                 <b-form-group :state="true">
                   <p>
-                    <span class="mr-1">Weekly Subscription Discount</span>
+                    <span class="mr-1">Subscription Discount</span>
                     <img
                       v-b-popover.hover="
                         'Give your customers an incentive to create a weekly subscription with you by offering a discount percentage. The customer is locked into at least 2 orders before they can cancel their subscription through our system in order to prevent users from abusing the discount. They would have to contact you if they want to cancel the subscription before at least 2 orders in which you can cancel it for them if you agree.'
@@ -387,6 +387,25 @@
                     required
                   ></b-form-input>
                 </b-form-group>
+
+                <b-form-group :state="true">
+                  <p>
+                    <span class="mr-1">Minimum Subscription Weeks</span>
+                    <img
+                      v-b-popover.hover="
+                        'Type in the number of weeks of orders your customer will be locked into when creating a subscription. The Cancel button will only show for them after they meet this minimum requirement. They would have to contact you directly if they want to cancel. This is a way to prevent abuse of the subscription discount if you have one.'
+                      "
+                      title="Minimum Subscription Weeks"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <b-form-input
+                    v-model="storeSettings.minimumSubWeeks"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+
                 <b-form-group :state="true">
                   <p>
                     <span class="mr-1">Delivery Fee</span>

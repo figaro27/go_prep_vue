@@ -82,7 +82,7 @@ f<template>
               <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
             </router-link>
             <button
-              v-if="props.row.paid_order_count >= 2"
+              v-if="props.row.paid_order_count >= storeSettings.minimumSubWeeks"
               class="btn btn-danger btn-sm"
               @click="
                 {
