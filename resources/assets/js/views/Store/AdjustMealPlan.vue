@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import format from "../../lib/format.js";
 import Spinner from "../../components/Spinner";
 import MenuBag from "../../mixins/menuBag";
@@ -49,6 +49,7 @@ export default {
   },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
+    ...mapMutations(["setBagPickup"]),
     getSub() {
       axios.get("/api/me/subscriptions/" + this.subscriptionId).then(resp => {
         this.subscription = resp.data;
@@ -68,6 +69,7 @@ export default {
 
       // Setting pickup here
       this.pickup = subscription.pickup;
+      this.setBagPickup(subscription.pickup);
 
       this.clearAll();
       let stop = false;
