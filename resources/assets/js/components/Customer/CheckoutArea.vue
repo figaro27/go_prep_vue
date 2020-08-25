@@ -679,11 +679,10 @@
       <li
         class="checkout-item"
         v-if="
-          (($route.params.storeView || storeOwner) &&
+          ($route.params.storeView || storeOwner) &&
             !isMultipleDelivery &&
             !$route.params.adjustMealPlan &&
-            !subscriptionId) ||
-            context === 'store'
+            !subscriptionId
         "
       >
         <div>
