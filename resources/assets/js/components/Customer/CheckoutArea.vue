@@ -313,7 +313,7 @@
 
       <li
         class="checkout-item"
-        v-if="bagDeliverySettings.applyDeliveryFee && pickup === 0"
+        v-if="bagDeliverySettings.applyDeliveryFee === true && pickup === 0"
       >
         <div class="row">
           <div class="col-6 col-md-4">
@@ -1383,10 +1383,6 @@ export default {
     }
   },
   mounted: function() {
-    console.log("a");
-    console.log(this.bagDeliverySettings.applyDeliveryFee);
-    console.log("b");
-    console.log(this.pickup);
     if (this.customer) {
       this.customerModel = this.getCustomerObject(this.customer);
     } else {
