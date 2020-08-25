@@ -2072,9 +2072,6 @@ use next_delivery_dates
       } else return this.afterCoupon;
     },
     deliveryFeeAmount() {
-      if (this.deliveryFee) {
-        return parseFloat(this.deliveryFee);
-      }
       if (this.pickup === 0) {
         let {
           applyDeliveryFee,
@@ -2083,6 +2080,10 @@ use next_delivery_dates
           mileageBase,
           mileagePerMile
         } = this.bagDeliverySettings;
+
+        if (this.deliveryFee) {
+          return parseFloat(this.deliveryFee);
+        }
 
         if (this.customDeliveryFee !== null) {
           return parseFloat(this.customDeliveryFee);
