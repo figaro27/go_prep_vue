@@ -35,6 +35,7 @@ class Store extends Model
         'cutoff_passed',
         'next_delivery_date',
         'next_cutoff_date',
+        'next_locked_in_date',
         'url',
         'hasPromoCodes',
         'bulkCustomers',
@@ -1236,6 +1237,65 @@ class Store extends Model
         } else {
             return false;
         }
+    }
+
+    public function getNextLockedInDate($period = 'hour')
+    {
+        if (!$this->settings || !is_array($this->settings->delivery_days)) {
+            return false;
+        }
+
+        $now = Carbon::now('utc');
+
+        $cutoff =
+            $this->settings->cutoff_days * (60 * 60 * 24) +
+            $this->settings->cutoff_hours * (60 * 60);
+
+        if ($this->settings->cutoff_type === 'timed') {
+            foreach ($this->settings->delivery_days as $day) {
+                $date = Carbon::createFromFormat(
+                    'D',
+                    $day,
+                    $this->settings->timezone
+                )->setTime(0, 0, 0);
+                $diff = $date->getTimestamp() - $now->getTimestamp() - $cutoff;
+                //echo $diff."\r\n";
+
+                // Cutoff passed less than an hour ago
+                if ($period === 'hour' && $diff >= -60 * 60 && $diff < 0) {
+                    return $day;
+                }
+            }
+        } elseif ($this->settings->cutoff_type === 'single_day') {
+            /*$date = $this->getNextDeliveryDate();
+            if (!$date) {
+                return false;
+            }
+            $cutoff = $this->getCutoffDate($date);*/
+
+            $dayName = date(
+                'l',
+                strtotime("Sunday +{$this->settings->cutoff_days} days")
+            );
+
+            $cutoff = Carbon::parse(
+                "this $dayName",
+                $this->settings->timezone
+            )->setTime($this->settings->cutoff_hours, 0, 0);
+
+            $diff = $cutoff->getTimestamp() - $now->getTimestamp();
+
+            // Cutoff passed less than an hour ago
+            if ($period === 'hour' && $diff >= -60 * 60 && $diff < 0) {
+                return $day;
+            }
+        }
+    }
+
+    public function getNextLockedInDateAttribute()
+    {
+        $date = $this->getNextLockedInDate();
+        return $date;
     }
 
     public function getNextCutoffDateAttribute()
