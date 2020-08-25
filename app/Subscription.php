@@ -970,20 +970,42 @@ class Subscription extends Model
         );
 
         // Assign plan to stripe subscription
-        \Stripe\Subscription::update(
-            $subscription->id,
-            [
-                'cancel_at_period_end' => false,
-                'items' => [
-                    [
-                        'id' => $subscription->items->data[0]->id,
-                        'plan' => $plan->id
+        if ($subscription->status === \Stripe\Subscription::STATUS_CANCELED) {
+            \Stripe\Subscription::update(
+                $subscription->id,
+                [
+                    'cancel_at_period_end' => false,
+                    'items' => [
+                        [
+                            'id' => $subscription->items->data[0]->id,
+                            'plan' => $plan->id
+                        ]
+                    ],
+                    'prorate' => false,
+                    'pause_collection' => [
+                        'behavior' => 'void'
                     ]
                 ],
-                'prorate' => false
-            ],
-            ['stripe_account' => $this->store->settings->stripe_id]
-        );
+                [
+                    'stripe_account' => $this->store->settings->stripe_id
+                ]
+            );
+        } else {
+            \Stripe\Subscription::update(
+                $subscription->id,
+                [
+                    'cancel_at_period_end' => false,
+                    'items' => [
+                        [
+                            'id' => $subscription->items->data[0]->id,
+                            'plan' => $plan->id
+                        ]
+                    ],
+                    'prorate' => false
+                ],
+                ['stripe_account' => $this->store->settings->stripe_id]
+            );
+        }
 
         // Assign new plan ID to subscription
         $this->stripe_plan = $plan->id;
