@@ -398,7 +398,7 @@ export default {
             coupon_id: this.couponApplied ? this.coupon.id : null,
             couponReduction: this.couponReduction,
             couponCode: this.couponApplied ? this.coupon.code : null,
-            deliveryFee: this.deliveryFee,
+            deliveryFee: this.deliveryFeeAmount,
             pickupLocation: this.selectedPickupLocation,
             customer: this.customer,
             // deposit: deposit,
