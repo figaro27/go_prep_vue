@@ -30,8 +30,26 @@ class Payments
 
         $params->date_format = $this->store->settings->date_format;
 
-        $sums = ['TOTALS', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        $sumsByDaily = ['TOTALS', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $sums = ['TOTALS', '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        $sumsByDaily = [
+            'TOTALS',
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ];
 
         if ($dailySummary != 1) {
             $payments = $this->store
@@ -54,13 +72,15 @@ class Payments
                     $sums[5] += $payment->salesTax;
                     $sums[6] += $payment->processingFee;
                     $sums[7] += $payment->deliveryFee;
-                    $sums[8] += $payment->purchasedGiftCardReduction;
-                    $sums[9] += $payment->referralReduction;
-                    $sums[10] += $payment->promotionReduction;
-                    $sums[11] += $payment->pointsReduction;
-                    $sums[12] += $payment->amount;
-                    $sums[13] += $payment->refundedAmount;
-                    $sums[14] += $payment->balance;
+                    $sums[8] += $payment->gratuity;
+                    $sums[9] += $payment->coolerDeposit;
+                    $sums[10] += $payment->purchasedGiftCardReduction;
+                    $sums[11] += $payment->referralReduction;
+                    $sums[12] += $payment->promotionReduction;
+                    $sums[13] += $payment->pointsReduction;
+                    $sums[14] += $payment->amount;
+                    $sums[15] += $payment->refundedAmount;
+                    $sums[16] += $payment->balance;
 
                     $paymentsRows = [
                         $payment->created_at->format('D, m/d/Y'),
@@ -73,6 +93,8 @@ class Payments
                         '$' . number_format($payment->salesTax, 2),
                         '$' . number_format($payment->processingFee, 2),
                         '$' . number_format($payment->deliveryFee, 2),
+                        '$' . number_format($payment->gratuity, 2),
+                        '$' . number_format($payment->coolerDeposit, 2),
                         '$' .
                             number_format(
                                 $payment->purchasedGiftCardReduction,
@@ -114,6 +136,8 @@ class Payments
                 $salesTax = 0;
                 $processingFee = 0;
                 $deliveryFee = 0;
+                $gratuity = 0;
+                $coolerDeposit = 0;
                 $purchasedGiftCardReduction = 0;
                 $referralReduction = 0;
                 $promotionReduction = 0;
@@ -132,6 +156,8 @@ class Payments
                     $salesTax += $order->salesTax;
                     $processingFee += $order->processingFee;
                     $deliveryFee += $order->deliveryFee;
+                    $gratuity += $order->gratuity;
+                    $coolerDeposit += $order->coolerDeposit;
                     // $goPrepFeeAmount += $order->goprep_fee;
                     // $stripeFeeAmount += $order->stripe_fee;
                     $purchasedGiftCardReduction +=
@@ -163,6 +189,8 @@ class Payments
                     '$' . number_format($salesTax, 2),
                     '$' . number_format($processingFee, 2),
                     '$' . number_format($deliveryFee, 2),
+                    '$' . number_format($gratuity, 2),
+                    '$' . number_format($coolerDeposit, 2),
                     '$' . number_format($purchasedGiftCardReduction, 2),
                     '$' . number_format($referralReduction, 2),
                     '$' . number_format($promotionReduction, 2),
@@ -179,16 +207,18 @@ class Payments
                 $sumsByDaily[5] += $salesTax;
                 $sumsByDaily[6] += $processingFee;
                 $sumsByDaily[7] += $deliveryFee;
-                $sumsByDaily[8] += $purchasedGiftCardReduction;
-                $sumsByDaily[9] += $referralReduction;
-                $sumsByDaily[10] += $promotionReduction;
-                $sumsByDaily[11] += $pointsReduction;
-                $sumsByDaily[12] += $amount;
-                $sumsByDaily[13] += $refundedAmount;
-                $sumsByDaily[14] += $balance;
+                $sumsByDaily[8] += $gratuity;
+                $sumsByDaily[9] += $coolerDeposit;
+                $sumsByDaily[10] += $purchasedGiftCardReduction;
+                $sumsByDaily[11] += $referralReduction;
+                $sumsByDaily[12] += $promotionReduction;
+                $sumsByDaily[13] += $pointsReduction;
+                $sumsByDaily[14] += $amount;
+                $sumsByDaily[15] += $refundedAmount;
+                $sumsByDaily[16] += $balance;
             }
 
-            foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as $i) {
+            foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] as $i) {
                 $sumsByDaily[$i] = '$' . number_format($sumsByDaily[$i], 2);
             }
 
@@ -197,7 +227,7 @@ class Payments
         }
 
         // Format the sum row
-        foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as $i) {
+        foreach ([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] as $i) {
             $sums[$i] = '$' . number_format($sums[$i], 2);
         }
 
@@ -234,14 +264,22 @@ class Payments
         $params['removeDeliveryFee'] = in_array(7, $removedIndexes)
             ? true
             : false;
-        $params['removeGiftCard'] = in_array(8, $removedIndexes) ? true : false;
-        $params['removeReferral'] = in_array(9, $removedIndexes) ? true : false;
-        $params['removePromotion'] = in_array(10, $removedIndexes)
+        $params['removeGratuity'] = in_array(8, $removedIndexes) ? true : false;
+        $params['removeCoolerDeposit'] = in_array(9, $removedIndexes)
             ? true
             : false;
-        $params['removePoints'] = in_array(11, $removedIndexes) ? true : false;
-        $params['removeRefund'] = in_array(13, $removedIndexes) ? true : false;
-        $params['removeBalance'] = in_array(14, $removedIndexes) ? true : false;
+        $params['removeGiftCard'] = in_array(10, $removedIndexes)
+            ? true
+            : false;
+        $params['removeReferral'] = in_array(11, $removedIndexes)
+            ? true
+            : false;
+        $params['removePromotion'] = in_array(12, $removedIndexes)
+            ? true
+            : false;
+        $params['removePoints'] = in_array(13, $removedIndexes) ? true : false;
+        $params['removeRefund'] = in_array(15, $removedIndexes) ? true : false;
+        $params['removeBalance'] = in_array(16, $removedIndexes) ? true : false;
 
         $filteredHeaders[0] = ['Order Date', 'Delivery Date', 'Subtotal'];
 
@@ -263,22 +301,28 @@ class Payments
             array_push($filteredHeaders[0], 'Delivery Fee');
         }
         if (!in_array(8, $removedIndexes)) {
-            array_push($filteredHeaders[0], 'Gift Card');
+            array_push($filteredHeaders[0], 'Gratuity');
         }
         if (!in_array(9, $removedIndexes)) {
-            array_push($filteredHeaders[0], 'Referral');
+            array_push($filteredHeaders[0], 'Cooler Deposit');
         }
         if (!in_array(10, $removedIndexes)) {
-            array_push($filteredHeaders[0], 'Promotion');
+            array_push($filteredHeaders[0], 'Gift Card');
         }
         if (!in_array(11, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Referral');
+        }
+        if (!in_array(12, $removedIndexes)) {
+            array_push($filteredHeaders[0], 'Promotion');
+        }
+        if (!in_array(13, $removedIndexes)) {
             array_push($filteredHeaders[0], 'Points');
         }
         array_push($filteredHeaders[0], 'Total');
-        if (!in_array(13, $removedIndexes)) {
+        if (!in_array(15, $removedIndexes)) {
             array_push($filteredHeaders[0], 'Refund');
         }
-        if (!in_array(14, $removedIndexes)) {
+        if (!in_array(16, $removedIndexes)) {
             array_push($filteredHeaders[0], 'Balance');
         }
 
