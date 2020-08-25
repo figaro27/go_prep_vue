@@ -1383,6 +1383,10 @@ export default {
     }
   },
   mounted: function() {
+    console.log("a");
+    console.log(this.bagDeliverySettings.applyDeliveryFee);
+    console.log("b");
+    console.log(this.pickup);
     if (this.customer) {
       this.customerModel = this.getCustomerObject(this.customer);
     } else {
