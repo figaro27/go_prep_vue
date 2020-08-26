@@ -111,7 +111,7 @@ export default {
           }
         },
         orderBy: {
-          column: "name",
+          column: "created_at",
           ascending: true
         }
       }
