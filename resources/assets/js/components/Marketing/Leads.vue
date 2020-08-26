@@ -112,7 +112,7 @@ export default {
         },
         orderBy: {
           column: "created_at",
-          ascending: true
+          ascending: false
         }
       }
     };
