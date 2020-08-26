@@ -28,7 +28,7 @@
         </span>
         <div slot="created_at" slot-scope="props">
           <div>
-            {{ moment(props.row.created_at).format("dddd, MMM Do YYYY") }}
+            {{ moment(props.row.created_at).format("dddd, MMM Do, YYYY") }}
           </div>
         </div>
 
