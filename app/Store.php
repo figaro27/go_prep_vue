@@ -422,6 +422,8 @@ class Store extends Model
 
         $orders = $orders->get();
 
+        $ingredientsByMeal = [];
+
         foreach ($orders as $order) {
             $mealOrders = $order->meal_orders()->get();
             foreach ($mealOrders as $mealOrder) {
@@ -608,6 +610,221 @@ class Store extends Model
         }
 
         return $ingredients;
+    }
+
+    public function getIngredientsByMeal($dateRange = [])
+    {
+        $ingredients = [];
+
+        $orders = $this->orders()
+            ->with(['meals', 'meals.ingredients', 'meal_orders'])
+            ->where(['paid' => 1, 'voided' => 0]);
+
+        if ($dateRange === []) {
+            //$orders = $orders->where('delivery_date', $this->getNextDeliveryDate());
+        }
+
+        $orders = $orders->where(function ($query) use ($dateRange) {
+            $query
+                ->where(function ($query1) use ($dateRange) {
+                    $query1->where('isMultipleDelivery', 0);
+                    if (isset($dateRange['from'])) {
+                        $from = Carbon::parse($dateRange['from']);
+                        $query1->where(
+                            'delivery_date',
+                            '>=',
+                            $from->format('Y-m-d')
+                        );
+                    } else {
+                        $query1->where(
+                            'delivery_date',
+                            '>=',
+                            Carbon::now()->format('Y-m-d')
+                        );
+                    }
+                    if (isset($dateRange['to'])) {
+                        $to = Carbon::parse($dateRange['to']);
+                        $query1->where(
+                            'delivery_date',
+                            '<=',
+                            $to->format('Y-m-d')
+                        );
+                    }
+                })
+                ->orWhere(function ($query2) use ($dateRange) {
+                    $query2
+                        ->where('isMultipleDelivery', 1)
+                        ->whereHas('meal_orders', function ($subquery) use (
+                            $dateRange
+                        ) {
+                            $subquery->whereNotNull(
+                                'meal_orders.delivery_date'
+                            );
+                            if (isset($dateRange['from'])) {
+                                $from = Carbon::parse($dateRange['from']);
+                                $subquery->where(
+                                    'meal_orders.delivery_date',
+                                    '>=',
+                                    $from->format('Y-m-d')
+                                );
+                            } else {
+                                $subquery->where(
+                                    'meal_orders.delivery_date',
+                                    '>=',
+                                    Carbon::now()->format('Y-m-d')
+                                );
+                            }
+                            if (isset($dateRange['to'])) {
+                                $to = Carbon::parse($dateRange['to']);
+                                $subquery->where(
+                                    'meal_orders.delivery_date',
+                                    '<=',
+                                    $to->format('Y-m-d')
+                                );
+                            }
+                        });
+                });
+        });
+
+        $orders = $orders->get();
+
+        $ingredientsByMeal = [];
+
+        foreach ($orders as $order) {
+            $mealOrders = $order->meal_orders()->get();
+            foreach ($mealOrders as $mealOrder) {
+                $isMultipleDelivery =
+                    (int) $mealOrder->order->isMultipleDelivery;
+
+                if ($isMultipleDelivery) {
+                    if (!$mealOrder->delivery_date) {
+                        continue;
+                    }
+
+                    $mealOrder_date = Carbon::parse(
+                        $mealOrder->delivery_date
+                    )->format('Y-m-d');
+
+                    if (isset($dateRange['from'])) {
+                        $from = Carbon::parse($dateRange['from'])->format(
+                            'Y-m-d'
+                        );
+                        if ($mealOrder_date < $from) {
+                            continue;
+                        }
+                    }
+
+                    if (isset($dateRange['to'])) {
+                        $to = Carbon::parse($dateRange['to'])->format('Y-m-d');
+                        if ($mealOrder_date > $to) {
+                            continue;
+                        }
+                    }
+                }
+
+                $quantity = $mealOrder->quantity;
+                $meal = $mealOrder->meal;
+                $multiplier = 1;
+                $mealIngredients = $meal->ingredients;
+
+                // A size was chosen. Use the multiplier
+                // 2019-07-24 DB - multipliers no longer used for meal sizes
+                //                 store now manually assigns ingredients
+                if ($mealOrder->meal_size_id && $mealOrder->meal_size) {
+                    $multiplier = 1; //$mealOrder->meal_size->multiplier;
+                    $mealIngredients = $mealOrder->meal_size->ingredients;
+                }
+
+                foreach ($mealIngredients as $ingredient) {
+                    if (!$ingredient->attributes['hidden']) {
+                        if (
+                            !isset(
+                                $ingredientsByMeal[$mealOrder->short_title][
+                                    $ingredient->food_name
+                                ]
+                            )
+                        ) {
+                            $ingredientsByMeal[$mealOrder->short_title][
+                                $ingredient->food_name
+                            ] = [
+                                $ingredient->pivot->quantity_unit =>
+                                    $ingredient->pivot->quantity
+                            ];
+                        } else {
+                            $ingredientsByMeal[$mealOrder->short_title][
+                                $ingredient->food_name
+                            ][$ingredient->pivot->quantity_unit] +=
+                                $ingredient->pivot->quantity;
+                        }
+                    }
+                }
+
+                $components = collect($mealOrder->components);
+
+                foreach ($components as $component) {
+                    if ($component->option) {
+                        foreach (
+                            $component->option->ingredients
+                            as $ingredient
+                        ) {
+                            if (!$ingredient->attributes['hidden']) {
+                                if (
+                                    !isset(
+                                        $ingredientsByMeal[
+                                            $mealOrder->short_title
+                                        ][$ingredient->food_name]
+                                    )
+                                ) {
+                                    $ingredientsByMeal[$mealOrder->short_title][
+                                        $ingredient->food_name
+                                    ] = [
+                                        $ingredient->pivot->quantity_unit =>
+                                            $ingredient->pivot->quantity
+                                    ];
+                                } else {
+                                    $ingredientsByMeal[$mealOrder->short_title][
+                                        $ingredient->food_name
+                                    ][$ingredient->pivot->quantity_unit] +=
+                                        $ingredient->pivot->quantity;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $addons = collect($mealOrder->addons);
+
+                foreach ($addons as $addon) {
+                    if ($addon->addon) {
+                        foreach ($addon->addon->ingredients as $ingredient) {
+                            if (!$ingredient->attributes['hidden']) {
+                                if (
+                                    !isset(
+                                        $ingredientsByMeal[
+                                            $mealOrder->short_title
+                                        ][$ingredient->food_name]
+                                    )
+                                ) {
+                                    $ingredientsByMeal[$mealOrder->short_title][
+                                        $ingredient->food_name
+                                    ] = [
+                                        $ingredient->pivot->quantity_unit =>
+                                            $ingredient->pivot->quantity
+                                    ];
+                                } else {
+                                    $ingredientsByMeal[$mealOrder->short_title][
+                                        $ingredient->food_name
+                                    ][$ingredient->pivot->quantity_unit] +=
+                                        $ingredient->pivot->quantity;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $ingredientsByMeal;
     }
 
     public function getOrderMeals($dateRange = [])
