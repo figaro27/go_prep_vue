@@ -51,6 +51,6 @@ class IngredientsByMeal
 
     public function exportPdfView()
     {
-        return 'reports.order_ingredients_pdf';
+        return 'reports.ingredients_by_meal_pdf';
     }
 }
