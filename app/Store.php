@@ -1263,7 +1263,9 @@ class Store extends Model
 
                 // Cutoff passed less than an hour ago
                 if ($period === 'hour' && $diff >= -60 * 60 && $diff < 0) {
-                    return $day;
+                    if ($day) {
+                        return $day;
+                    }
                 }
             }
         } elseif ($this->settings->cutoff_type === 'single_day') {
@@ -1287,7 +1289,9 @@ class Store extends Model
 
             // Cutoff passed less than an hour ago
             if ($period === 'hour' && $diff >= -60 * 60 && $diff < 0) {
-                return $day;
+                if ($day) {
+                    return $day;
+                }
             }
         }
     }
