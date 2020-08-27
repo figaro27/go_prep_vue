@@ -1289,8 +1289,8 @@ class Store extends Model
 
             // Cutoff passed less than an hour ago
             if ($period === 'hour' && $diff >= -60 * 60 && $diff < 0) {
-                if (isset($day)) {
-                    return $day;
+                if (isset($dayName)) {
+                    return $dayName;
                 }
             }
         }
