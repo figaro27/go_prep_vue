@@ -937,6 +937,7 @@ class OrderController extends StoreController
                         ->pluck('id')
                         ->first();
                 }
+                $mealOrder->price = $item['price'];
             }
 
             $mealOrder->save();
