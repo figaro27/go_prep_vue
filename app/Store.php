@@ -735,87 +735,94 @@ class Store extends Model
                     $mealIngredients = $mealOrder->meal_size->ingredients;
                 }
 
-                foreach ($mealIngredients as $ingredient) {
-                    if (!$ingredient->attributes['hidden']) {
-                        if (
-                            !isset(
+                for ($i = 0; $i < $quantity; $i++) {
+                    foreach ($mealIngredients as $ingredient) {
+                        if (!$ingredient->attributes['hidden']) {
+                            if (
+                                !isset(
+                                    $ingredientsByMeal[$mealOrder->short_title][
+                                        $ingredient->food_name
+                                    ]
+                                )
+                            ) {
                                 $ingredientsByMeal[$mealOrder->short_title][
                                     $ingredient->food_name
-                                ]
-                            )
-                        ) {
-                            $ingredientsByMeal[$mealOrder->short_title][
-                                $ingredient->food_name
-                            ] = [
-                                $ingredient->pivot->quantity_unit =>
-                                    $ingredient->pivot->quantity
-                            ];
-                        } else {
-                            $ingredientsByMeal[$mealOrder->short_title][
-                                $ingredient->food_name
-                            ][$ingredient->pivot->quantity_unit] +=
-                                $ingredient->pivot->quantity;
+                                ] = [
+                                    $ingredient->pivot->quantity_unit =>
+                                        $ingredient->pivot->quantity
+                                ];
+                            } else {
+                                $ingredientsByMeal[$mealOrder->short_title][
+                                    $ingredient->food_name
+                                ][$ingredient->pivot->quantity_unit] +=
+                                    $ingredient->pivot->quantity;
+                            }
                         }
                     }
-                }
 
-                $components = collect($mealOrder->components);
+                    $components = collect($mealOrder->components);
 
-                foreach ($components as $component) {
-                    if ($component->option) {
-                        foreach (
-                            $component->option->ingredients
-                            as $ingredient
-                        ) {
-                            if (!$ingredient->attributes['hidden']) {
-                                if (
-                                    !isset(
+                    foreach ($components as $component) {
+                        if ($component->option) {
+                            foreach (
+                                $component->option->ingredients
+                                as $ingredient
+                            ) {
+                                if (!$ingredient->attributes['hidden']) {
+                                    if (
+                                        !isset(
+                                            $ingredientsByMeal[
+                                                $mealOrder->short_title
+                                            ][$ingredient->food_name]
+                                        )
+                                    ) {
                                         $ingredientsByMeal[
                                             $mealOrder->short_title
-                                        ][$ingredient->food_name]
-                                    )
-                                ) {
-                                    $ingredientsByMeal[$mealOrder->short_title][
-                                        $ingredient->food_name
-                                    ] = [
-                                        $ingredient->pivot->quantity_unit =>
-                                            $ingredient->pivot->quantity
-                                    ];
-                                } else {
-                                    $ingredientsByMeal[$mealOrder->short_title][
-                                        $ingredient->food_name
-                                    ][$ingredient->pivot->quantity_unit] +=
-                                        $ingredient->pivot->quantity;
+                                        ][$ingredient->food_name] = [
+                                            $ingredient->pivot->quantity_unit =>
+                                                $ingredient->pivot->quantity
+                                        ];
+                                    } else {
+                                        $ingredientsByMeal[
+                                            $mealOrder->short_title
+                                        ][$ingredient->food_name][
+                                            $ingredient->pivot->quantity_unit
+                                        ] += $ingredient->pivot->quantity;
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                $addons = collect($mealOrder->addons);
+                    $addons = collect($mealOrder->addons);
 
-                foreach ($addons as $addon) {
-                    if ($addon->addon) {
-                        foreach ($addon->addon->ingredients as $ingredient) {
-                            if (!$ingredient->attributes['hidden']) {
-                                if (
-                                    !isset(
+                    foreach ($addons as $addon) {
+                        if ($addon->addon) {
+                            foreach (
+                                $addon->addon->ingredients
+                                as $ingredient
+                            ) {
+                                if (!$ingredient->attributes['hidden']) {
+                                    if (
+                                        !isset(
+                                            $ingredientsByMeal[
+                                                $mealOrder->short_title
+                                            ][$ingredient->food_name]
+                                        )
+                                    ) {
                                         $ingredientsByMeal[
                                             $mealOrder->short_title
-                                        ][$ingredient->food_name]
-                                    )
-                                ) {
-                                    $ingredientsByMeal[$mealOrder->short_title][
-                                        $ingredient->food_name
-                                    ] = [
-                                        $ingredient->pivot->quantity_unit =>
-                                            $ingredient->pivot->quantity
-                                    ];
-                                } else {
-                                    $ingredientsByMeal[$mealOrder->short_title][
-                                        $ingredient->food_name
-                                    ][$ingredient->pivot->quantity_unit] +=
-                                        $ingredient->pivot->quantity;
+                                        ][$ingredient->food_name] = [
+                                            $ingredient->pivot->quantity_unit =>
+                                                $ingredient->pivot->quantity
+                                        ];
+                                    } else {
+                                        $ingredientsByMeal[
+                                            $mealOrder->short_title
+                                        ][$ingredient->food_name][
+                                            $ingredient->pivot->quantity_unit
+                                        ] += $ingredient->pivot->quantity;
+                                    }
                                 }
                             }
                         }

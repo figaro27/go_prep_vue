@@ -60,8 +60,6 @@ class IngredientsByMeal
             array_push($rows, ...$subArray);
         }
 
-        dd($rows);
-
         return $rows;
     }
 
