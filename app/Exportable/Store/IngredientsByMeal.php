@@ -28,20 +28,36 @@ class IngredientsByMeal
         $params = $this->params;
         $params->date_format = $this->store->settings->date_format;
         $ingredients = $this->store->getIngredientsByMeal($dates);
+
         $rows = [];
+
         foreach ($ingredients as $meal => $ingredient) {
-            $i = count($rows);
-            $array[$i] = [$meal, key($ingredient)];
+            $subArray = [];
 
-            foreach ($ingredient as $food) {
-                $key = key($food);
-                $array[$i] += [$food[$key], $key];
+            $i = 0;
 
-                // $array[$i] += $meal;
-                // $array[] = key($ingredient);
+            foreach ($ingredient as $ingredientName => $food) {
+                $array = [];
+
+                if ($i == 0) {
+                    array_push($array, $meal);
+                } else {
+                    array_push($array, "");
+                }
+
+                array_push(
+                    $array,
+                    $ingredientName,
+                    $food[key($food)],
+                    key($food)
+                );
+
+                $subArray[$i] = $array;
+
+                $i++;
             }
 
-            $rows = $array;
+            array_push($rows, ...$subArray);
         }
 
         dd($rows);
