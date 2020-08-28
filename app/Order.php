@@ -361,6 +361,7 @@ class Order extends Model
             ->map(function ($mealOrder) {
                 return (object) [
                     'meal_id' => $mealOrder->meal_id,
+                    'item_id' => $mealOrder->id,
                     'delivery_date' => $mealOrder->delivery_date,
                     'short_title' => $mealOrder->short_title,
                     'full_title' => $mealOrder->full_title,

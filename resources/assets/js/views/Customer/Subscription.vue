@@ -159,6 +159,7 @@ export default {
               meal.meal_size_id = item.meal_size_id;
               meal.quantity = item.quantity;
               meal.special_instructions = item.special_instructions;
+              meal.item_id = item.item_id;
 
               if (pkgItem.meal_package_size && index !== null) {
                 meal_package.sizes[index].meals.push(meal);

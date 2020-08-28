@@ -294,6 +294,7 @@ class Subscription extends Model
             ->map(function ($mealSub) {
                 return (object) [
                     'meal_id' => $mealSub->meal_id,
+                    'item_id' => $mealSub->id,
                     'delivery_date' => $mealSub->delivery_date,
                     'meal_size_id' => $mealSub->meal_size_id,
                     'meal_title' => $mealSub->title,

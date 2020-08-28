@@ -838,7 +838,8 @@ export default {
         _.keyBy(packageMeals, pkgMeal => {
           return JSON.stringify({
             mealId: pkgMeal.id,
-            sizeId: pkgMeal.meal_size_id
+            sizeId: pkgMeal.meal_size_id,
+            itemId: pkgMeal.item_id
           });
         }),
         mealItem => {
