@@ -20,6 +20,12 @@
             </div>
 
             <span slot="beforeLimit">
+              <b-btn
+                variant="success"
+                @click="print('pdf', 'ingredients_by_meal')"
+              >
+                <i class="fa fa-print"></i>&nbsp; Print Ingredients By Meal
+              </b-btn>
               <b-btn variant="primary" @click="print('pdf')">
                 <i class="fa fa-print"></i>&nbsp; Print
               </b-btn>
@@ -314,7 +320,7 @@ export default {
           this.loading = false;
         });
     },
-    async print(format = "pdf") {
+    async print(format = "pdf", report = "ingredient_quantities") {
       if (
         this.filters.delivery_dates.start === null &&
         this.storeModules.multipleDeliveryDays
@@ -356,7 +362,7 @@ export default {
       }
 
       axios
-        .get(`/api/me/print/ingredient_quantities/${format}`, {
+        .get(`/api/me/print/${report}/${format}`, {
           params
         })
         .then(response => {

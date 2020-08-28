@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Store\StoreController;
 use App\Exportable\Store\MealQuantities;
 use App\Exportable\Store\IngredientQuantities;
+use App\Exportable\Store\IngredientsByMeal;
 use App\Exportable\Store\Orders;
 use App\Exportable\Store\PackingSlips;
 use App\Exportable\Store\Customers;
@@ -33,6 +34,10 @@ class PrintController extends StoreController
         switch ($report) {
             case 'ingredient_quantities':
                 $exportable = new IngredientQuantities($this->store, $params);
+                break;
+
+            case 'ingredients_by_meal':
+                $exportable = new IngredientsByMeal($this->store, $params);
                 break;
 
             case 'orders':
