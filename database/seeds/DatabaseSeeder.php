@@ -38,6 +38,6 @@ class DatabaseSeeder extends Seeder
         $this->call(GiftCardsSeeder::class);
         $this->call(ReferralsSeeder::class);
 
-        Artisan::call('migrate:images');
+        // Artisan::call('migrate:images');
     }
 }
