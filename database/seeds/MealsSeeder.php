@@ -216,7 +216,7 @@ class MealsSeeder extends Seeder
                 }
 
                 $meal = Meal::find($id);
-                $fullImagePath = resource_path('assets' . '');
+                $fullImagePath = resource_path('assets' . $mealImages[$i]);
                 try {
                     $meal->clearMediaCollection('featured_image');
                     $meal
