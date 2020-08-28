@@ -228,6 +228,18 @@
               </div>
             </div>
 
+            <div slot="gratuity" slot-scope="props">
+              <div>
+                {{ formatMoney(props.row.gratuity, props.row.currency) }}
+              </div>
+            </div>
+
+            <div slot="coolerDeposit" slot-scope="props">
+              <div>
+                {{ formatMoney(props.row.coolerDeposit, props.row.currency) }}
+              </div>
+            </div>
+
             <!-- <div slot="total" slot-scope="props">
               <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
             </div> -->
@@ -385,6 +397,8 @@ export default {
           purchasedGiftCardReduction: "Gift Card",
           promotionReduction: "Promotion",
           pointsReduction: "Points",
+          gratuity: "Gratuity",
+          coolerDeposit: "Cooler Deposit",
           amount: "Total",
           balance: "Balance",
           refundedAmount: "Refunded"
@@ -489,7 +503,9 @@ export default {
             // goprep_fee: 0,
             // stripe_fee: 0,
             amount: 0,
-            balance: 0
+            balance: 0,
+            gratuity: 0,
+            coolerDeposit: 0
           };
 
           orderByDay.forEach(order => {
@@ -508,6 +524,8 @@ export default {
             sums.pointsReduction += order.pointsReduction;
             sums.amount += order.amount;
             sums.balance += order.balance;
+            sums.gratuity += order.gratuity;
+            sums.coolerDeposit += order.coolerDeposit;
           });
           orders.push({
             created_at: created_at,
@@ -524,6 +542,8 @@ export default {
             promotionReduction: sums.promotionReduction,
             pointsReduction: sums.pointsReduction,
             amount: sums.amount,
+            gratuity: sums.gratuity,
+            coolerDeposit: sums.coolerDeposit,
             balance: sums.balance
           });
         });
@@ -556,7 +576,9 @@ export default {
           pointsReduction: 0,
           amount: 0,
           refundedAmount: 0,
-          balance: 0
+          balance: 0,
+          gratuity: 0,
+          coolerDeposit: 0
         };
 
         orders.forEach(order => {
@@ -574,6 +596,8 @@ export default {
           sums.amount += order.amount;
           sums.refundedAmount += order.refundedAmount;
           sums.balance += order.balance;
+          sums.gratuity += order.gratuity;
+          sums.coolerDeposit += order.coolerDeposit;
         });
 
         orders.unshift({
@@ -593,6 +617,8 @@ export default {
           amount: sums.amount,
           refundedAmount: sums.refundedAmount,
           balance: sums.balance,
+          gratuity: sums.gratuity,
+          coolerDeposit: sums.coolerDeposit,
           sumRow: 1
         });
       }
@@ -610,6 +636,8 @@ export default {
         if (order.salesTax > 0) addedColumns.salesTax = true;
         if (order.processingFee > 0) addedColumns.processingFee = true;
         if (order.deliveryFee > 0) addedColumns.deliveryFee = true;
+        if (order.gratuity > 0) addedColumns.gratuity = true;
+        if (order.coolerDeposit > 0) addedColumns.coolerDeposit = true;
         if (order.purchasedGiftCardReduction > 0)
           addedColumns.purchasedGiftCardReduction = true;
         if (order.referralReduction > 0) addedColumns.referralReduction = true;
@@ -631,6 +659,9 @@ export default {
         columns.splice(columns.length, 0, "deliveryFee");
       if (addedColumns.purchasedGiftCardReduction)
         columns.splice(columns.length, 0, "purchasedGiftCardReduction");
+      if (addedColumns.gratuity) columns.splice(columns.length, 0, "gratuity");
+      if (addedColumns.coolerDeposit)
+        columns.splice(columns.length, 0, "coolerDeposit");
       if (addedColumns.referralReduction)
         columns.splice(columns.length, 0, "referralReduction");
       if (addedColumns.promotionReduction)

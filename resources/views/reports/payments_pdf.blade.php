@@ -69,6 +69,12 @@
             @if (!$params['removeDeliveryFee'])
             <th>Delivery Fee</th>
             @endif
+            @if (!$params['removeGratuity'])
+            <th>Gratuity</th>
+            @endif
+            @if (!$params['removeCoolerDeposit'])
+            <th>Cooler Deposit</th>
+            @endif
             @if (!$params['removeGiftCard'])
             <th class="text-green">(Gift Card)</th>
             @endif
