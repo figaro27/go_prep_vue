@@ -2163,9 +2163,12 @@ use next_delivery_dates
       let processingFee = this.processingFeeAmount;
       let subtotal = this.afterDiscount;
 
-      if (applyDeliveryFee & (this.pickup === 0))
+      if (applyDeliveryFee && this.pickup === 0 && this.deliveryFeeAmount) {
         subtotal += this.deliveryFeeAmount;
-      if (applyProcessingFee) subtotal += processingFee;
+      }
+      if (applyProcessingFee) {
+        subtotal += processingFee;
+      }
 
       return subtotal;
     },
@@ -2263,10 +2266,18 @@ use next_delivery_dates
       return gratuity;
     },
     coolerDeposit() {
-      if (this.$route.params.adjustOrder && !this.coolerDepositChanged) {
+      if (
+        this.$route.params.adjustOrder &&
+        !this.coolerDepositChanged &&
+        this.order.coolerDeposit
+      ) {
         return parseFloat(this.order.coolerDeposit);
       }
-      if (this.$route.params.adjustMealPlan && !this.coolerDepositChanged) {
+      if (
+        this.$route.params.adjustMealPlan &&
+        !this.coolerDepositChanged &&
+        this.$route.params.subscription.coolerDeposit
+      ) {
         return parseFloat(this.$route.params.subscription.coolerDeposit);
       }
       if (this.storeModules.cooler) {
@@ -2278,6 +2289,7 @@ use next_delivery_dates
       } else {
         return 0;
       }
+      return 0;
     },
     grandTotal() {
       let total =

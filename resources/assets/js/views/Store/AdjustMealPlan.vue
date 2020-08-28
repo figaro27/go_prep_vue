@@ -53,6 +53,7 @@ export default {
     getSub() {
       axios.get("/api/me/subscriptions/" + this.subscriptionId).then(resp => {
         this.subscription = resp.data;
+        this.$route.params.subscription = this.subscription;
         this.initBag();
       });
     },
