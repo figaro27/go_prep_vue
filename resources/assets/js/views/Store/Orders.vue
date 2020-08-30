@@ -1,24 +1,22 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
+      <b-alert style="background-color:#EBFAFF" show dismissible>
         <h5>
-          New Feature - Cooler Bag Deposit
+          New Report - Ingredient By Meal Report
         </h5>
         <p>
-          Have your customer optionally pay a deposit on a cooler bag which
-          their food will be delivered in.<br />You will then see an indication
-          on each new order that a cooler bag deposit was paid, and you'll have
-          the option to refund the customer the deposit once the bag is returned
-          to you.<br />
-          <router-link to="/store/account/settings"
+          The new Ingredient By Meal Report shows you the total amount of each
+          ingredient required to fulfill orders broken down by meal.<br />
+          <router-link to="/store/ingredients"
             ><strong
-              >Enable in the Advanced tab of the Settings page here.</strong
+              >You can find the new green Print Ingredients By Meal button on
+              the Ingredients page.</strong
             ></router-link
           >
         </p>
       </b-alert>
-     -->
+
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
