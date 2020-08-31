@@ -9,6 +9,7 @@
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <h1>Total Ingredients By Meal</h1>
+    <h2 style="font-size:22px">
     @if ($delivery_dates)
           @if ($delivery_dates['from']->format($params->date_format) === $delivery_dates['to']->format($params->date_format))
             {{ $delivery_dates['from']->format($params->date_format) }}
@@ -18,6 +19,7 @@
         @else
           All Delivery Dates
         @endif
+      </h2>
     <div class="unbreakable">
       <table border="1" width="100">
         <thead>
