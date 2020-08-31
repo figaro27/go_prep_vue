@@ -752,10 +752,25 @@ class Store extends Model
                                         $ingredient->pivot->quantity
                                 ];
                             } else {
-                                $ingredientsByMeal[$mealOrder->short_title][
-                                    $ingredient->food_name
-                                ][$ingredient->pivot->quantity_unit] +=
-                                    $ingredient->pivot->quantity;
+                                if (
+                                    !isset(
+                                        $ingredientsByMeal[
+                                            $mealOrder->short_title
+                                        ][$ingredient->food_name][
+                                            $ingredient->pivot->quantity_unit
+                                        ]
+                                    )
+                                ) {
+                                    $ingredientsByMeal[$mealOrder->short_title][
+                                        $ingredient->food_name
+                                    ][$ingredient->pivot->quantity_unit] =
+                                        $ingredient->pivot->quantity;
+                                } else {
+                                    $ingredientsByMeal[$mealOrder->short_title][
+                                        $ingredient->food_name
+                                    ][$ingredient->pivot->quantity_unit] +=
+                                        $ingredient->pivot->quantity;
+                                }
                             }
                         }
                     }
@@ -783,11 +798,28 @@ class Store extends Model
                                                 $ingredient->pivot->quantity
                                         ];
                                     } else {
-                                        $ingredientsByMeal[
-                                            $mealOrder->short_title
-                                        ][$ingredient->food_name][
-                                            $ingredient->pivot->quantity_unit
-                                        ] += $ingredient->pivot->quantity;
+                                        if (
+                                            !isset(
+                                                $ingredientsByMeal[
+                                                    $mealOrder->short_title
+                                                ][$ingredient->food_name][
+                                                    $ingredient->pivot
+                                                        ->quantity_unit
+                                                ]
+                                            )
+                                        ) {
+                                            $ingredientsByMeal[
+                                                $mealOrder->short_title
+                                            ][$ingredient->food_name][
+                                                $ingredient->pivot->quantity_unit
+                                            ] = $ingredient->pivot->quantity;
+                                        } else {
+                                            $ingredientsByMeal[
+                                                $mealOrder->short_title
+                                            ][$ingredient->food_name][
+                                                $ingredient->pivot->quantity_unit
+                                            ] += $ingredient->pivot->quantity;
+                                        }
                                     }
                                 }
                             }
@@ -817,11 +849,28 @@ class Store extends Model
                                                 $ingredient->pivot->quantity
                                         ];
                                     } else {
-                                        $ingredientsByMeal[
-                                            $mealOrder->short_title
-                                        ][$ingredient->food_name][
-                                            $ingredient->pivot->quantity_unit
-                                        ] += $ingredient->pivot->quantity;
+                                        if (
+                                            !isset(
+                                                $ingredientsByMeal[
+                                                    $mealOrder->short_title
+                                                ][$ingredient->food_name][
+                                                    $ingredient->pivot
+                                                        ->quantity_unit
+                                                ]
+                                            )
+                                        ) {
+                                            $ingredientsByMeal[
+                                                $mealOrder->short_title
+                                            ][$ingredient->food_name][
+                                                $ingredient->pivot->quantity_unit
+                                            ] = $ingredient->pivot->quantity;
+                                        } else {
+                                            $ingredientsByMeal[
+                                                $mealOrder->short_title
+                                            ][$ingredient->food_name][
+                                                $ingredient->pivot->quantity_unit
+                                            ] += $ingredient->pivot->quantity;
+                                        }
                                     }
                                 }
                             }
