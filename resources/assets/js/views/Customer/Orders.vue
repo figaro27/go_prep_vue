@@ -332,7 +332,6 @@ export default {
         "store_name",
         // "user.user_detail.phone",
         "paid_at",
-        "delivery_date",
         "pickup",
         "amount",
         "actions"
@@ -423,6 +422,10 @@ export default {
     }
   },
   async mounted() {
+    if (!this.store.modules.hideTransferOptions) {
+      this.columns.splice(3, 0, "delivery_date");
+    }
+
     this.loading = true;
     await this.refreshCustomerOrders();
     this.loading = false;
