@@ -971,7 +971,7 @@ class Subscription extends Model
         );
 
         // Assign plan to stripe subscription
-        if ($subscription->status === \Stripe\Subscription::STATUS_CANCELED) {
+        if ($subscription->status === \Stripe\Subscription::STATUS_PAUSED) {
             \Stripe\Subscription::update(
                 $subscription->id,
                 [
