@@ -3010,12 +3010,12 @@ use next_delivery_dates
         this.$toastr.w("Please select a pickup location from the dropdown.");
         return;
       }
-      if (!this.isMultipleDelivery) {
+      if (!this.isMultipleDelivery && !this.store.modules.hideTransferOptions) {
         if (!this.bagDeliveryDate) {
           if (this.pickup === 1) {
             this.$toastr.w("Please select a pickup date from the dropdown.");
           }
-          if (this.pickup === 0 && !this.store.modules.hideTransferOptions) {
+          if (this.pickup === 0) {
             this.$toastr.w("Please select a delivery date from the dropdown.");
           }
           return;
