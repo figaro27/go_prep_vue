@@ -2072,6 +2072,10 @@ use next_delivery_dates
       } else return this.afterCoupon;
     },
     deliveryFeeAmount() {
+      // Hard coding temporary solution for The Produce Box
+      if (this.store.id === 172) {
+        return this.storeSettings.deliveryFee * this.bag.length;
+      }
       if (this.pickup === 0) {
         let {
           applyDeliveryFee,
