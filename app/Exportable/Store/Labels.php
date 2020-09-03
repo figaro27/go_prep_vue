@@ -151,9 +151,13 @@ class Labels
                 ->where('store_id', $this->store->id)
                 ->whereHas('order', function ($order) {
                     $order->where('paid', 1)->where('voided', 0);
-                })
-                ->with('meal', 'meal.ingredients')
-                ->get();
+                });
+
+            if ($this->orderId) {
+                $mealOrders = $mealOrders->where('order_id', $this->orderId);
+            }
+
+            $mealOrders = $mealOrders->with('meal', 'meal.ingredients')->get();
 
             $totalCount = 0;
             foreach ($mealOrders as $mealOrder) {
