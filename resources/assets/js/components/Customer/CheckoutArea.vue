@@ -605,9 +605,7 @@
           transferTypeCheckPickup &&
           (!storeModules.hideDeliveryOption ||
             $route.params.storeView === true ||
-            storeOwner) &&
-          !$route.params.adjustMealPlan &&
-          !subscriptionId
+            storeOwner)
       "
     >
       <b-alert
