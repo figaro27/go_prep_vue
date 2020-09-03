@@ -392,6 +392,11 @@
       <div class="row">
         <div class="col-md-4">
           <p class="strong">Show the Following on the Label</p>
+          <p v-if="store.modules.dailyOrderNumbers">
+            <b-form-checkbox v-model="reportSettings.lab_dailyOrderNumbers"
+              >Daily Order Numbers</b-form-checkbox
+            >
+          </p>
           <p>
             <b-form-checkbox v-model="reportSettings.lab_nutrition"
               >Nutrition</b-form-checkbox
