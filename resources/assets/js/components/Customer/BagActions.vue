@@ -197,11 +197,19 @@ export default {
       return "item";
     },
     minimumMet() {
+      let giftCardOnly = true;
+      this.bag.forEach(item => {
+        if (!item.meal.gift_card) {
+          giftCardOnly = false;
+        }
+      });
+
       if (
         (this.minOption === "meals" && this.total >= this.minMeals) ||
         (this.minOption === "price" &&
           this.totalBagPricePreFees >= this.minPrice) ||
-        this.store.settings.minimumDeliveryOnly
+        this.store.settings.minimumDeliveryOnly ||
+        giftCardOnly
       )
         return true;
       else return false;

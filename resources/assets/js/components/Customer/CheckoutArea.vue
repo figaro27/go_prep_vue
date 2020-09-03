@@ -2522,13 +2522,21 @@ use next_delivery_dates
       return this.$route.params.subscriptionId;
     },
     minimumMet() {
+      let giftCardOnly = true;
+      this.bag.forEach(item => {
+        if (!item.meal.gift_card) {
+          giftCardOnly = false;
+        }
+      });
+
       if (
         (this.minOption === "meals" && this.total >= this.minimumMeals) ||
         (this.minOption === "price" &&
           this.totalBagPricePreFees >= this.minPrice) ||
         this.$route.params.storeView ||
         this.storeOwner ||
-        (this.storeSettings.minimumDeliveryOnly && this.pickup)
+        (this.storeSettings.minimumDeliveryOnly && this.pickup) ||
+        giftCardOnly
       )
         return true;
       else return false;
