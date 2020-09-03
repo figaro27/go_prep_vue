@@ -1089,6 +1089,16 @@ class OrderController extends StoreController
             $card = Card::where('id', $cardId)->first();
         }
 
+        if (!$card) {
+            return response()->json(
+                [
+                    'message' =>
+                        'The customer has deleted the card associated with this order from the system and the card can no longer be charged.'
+                ],
+                400
+            );
+        }
+
         $gateway = $card->payment_gateway;
         $storeSettings = $this->store->settings;
         $customer = $user->getStoreCustomer(

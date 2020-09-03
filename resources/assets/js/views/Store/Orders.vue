@@ -1549,6 +1549,10 @@ export default {
           tthis.refreshResource("orders");
           this.applyToBalanceCharge = false;
           this.applyToBalanceRefund = false;
+        })
+        .catch(async response => {
+          let error = response.response.data.message;
+          this.$toastr.w(error);
         });
     },
     refund(cooler = 0) {
