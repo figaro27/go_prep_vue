@@ -250,7 +250,14 @@
 
       <li
         class="checkout-item"
-        v-if="(weeklySubscription && applyMealPlanDiscount) || inSub"
+        v-if="
+          applyMealPlanDiscount &&
+            (weeklySubscription ||
+              inSub ||
+              this.adjustMealPlan ||
+              this.$route.query.sub === 'true' ||
+              this.mealPlan)
+        "
       >
         <div class="row">
           <div class="col-6 col-md-4">
@@ -2064,7 +2071,10 @@ use next_delivery_dates
     afterDiscount() {
       if (
         (this.applyMealPlanDiscount && this.weeklySubscription) ||
-        this.inSub
+        this.inSub ||
+        this.adjustMealPlan ||
+        this.$route.query.sub === "true" ||
+        this.mealPlan
       ) {
         return this.afterCoupon - this.mealPlanDiscount;
       } else return this.afterCoupon;
