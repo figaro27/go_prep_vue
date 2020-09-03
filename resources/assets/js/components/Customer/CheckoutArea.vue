@@ -2991,8 +2991,9 @@ use next_delivery_dates
           }
         })
         .catch(async response => {
+          let error = response.response.data.message;
           this.checkingOut = false;
-          this.$toastr.e(response.data.message, "Error");
+          this.$toastr.w(error);
         });
     },
     mounted() {

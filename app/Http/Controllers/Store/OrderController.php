@@ -710,218 +710,179 @@ class OrderController extends StoreController
 
     public function adjustOrder(Request $request)
     {
-        $order = Order::where('id', $request->get('orderId'))->first();
-        $store = $order->store;
-        $bagItems = $request->get('bag');
-        $bag = new Bag($bagItems, $store);
-        // Checking all meals are in stock before proceeding
-        if ($this->store->modules->stockManagement) {
-            foreach ($bag->getItems() as $item) {
-                $meal = Meal::where('id', $item['meal']['id'])->first();
-                if ($meal && $meal->stock !== null) {
-                    $existingMealOrder = $order
-                        ->meal_orders()
-                        ->where('meal_id', $item['meal']['id'])
-                        ->first();
-                    $quantity = $existingMealOrder
-                        ? $existingMealOrder->quantity
-                        : 0;
-                    if ($meal->stock + $quantity < $item['quantity']) {
-                        return response()->json(
-                            [
-                                'message' =>
-                                    $meal->title .
-                                    ' currently has ' .
-                                    $meal->stock .
-                                    ' left in stock. Please adjust your order and try again.'
-                            ],
-                            400
-                        );
+        try {
+            $order = Order::where('id', $request->get('orderId'))->first();
+            $store = $order->store;
+            $bagItems = $request->get('bag');
+            $bag = new Bag($bagItems, $store);
+            // Checking all meals are in stock before proceeding
+            if ($this->store->modules->stockManagement) {
+                foreach ($bag->getItems() as $item) {
+                    $meal = Meal::where('id', $item['meal']['id'])->first();
+                    if ($meal && $meal->stock !== null) {
+                        $existingMealOrder = $order
+                            ->meal_orders()
+                            ->where('meal_id', $item['meal']['id'])
+                            ->first();
+                        $quantity = $existingMealOrder
+                            ? $existingMealOrder->quantity
+                            : 0;
+                        if ($meal->stock + $quantity < $item['quantity']) {
+                            return response()->json(
+                                [
+                                    'message' =>
+                                        $meal->title .
+                                        ' currently has ' .
+                                        $meal->stock .
+                                        ' left in stock. Please adjust your order and try again.'
+                                ],
+                                400
+                            );
+                        }
+                        $meal->stock -= $item['quantity'] - $quantity;
+                        if ($meal->stock === 0) {
+                            $meal->active = 0;
+                        }
+                        $meal->update();
                     }
-                    $meal->stock -= $item['quantity'] - $quantity;
-                    if ($meal->stock === 0) {
-                        $meal->active = 0;
-                    }
-                    $meal->update();
                 }
             }
-        }
 
-        $couponId = $request->get('coupon_id');
-        $couponReduction = $request->get('couponReduction');
-        $couponCode = $request->get('couponCode');
-        $purchasedGiftCardId = $request->get('purchased_gift_card_id');
-        $purchasedGiftCardReduction = $request->get(
-            'purchasedGiftCardReduction'
-        );
-        $promotionReduction = $request->get('promotionReduction');
-        $pointsReduction = $request->get('pointsReduction');
-        $deliveryFee = $request->get('deliveryFee');
-        $deliveryDate = $request->get('deliveryDate');
-        $isMultipleDelivery = (int) $request->get('isMultipleDelivery');
-        $pickupLocation = $request->get('pickupLocation');
-        $transferTime = $request->get('transferTime');
-        $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
-        $subtotal = $request->get('subtotal');
-        $preFeePreDiscount = $request->get('subtotal');
-        $afterDiscountBeforeFees = $request->get('afterDiscount');
-        $processingFee = $request->get('processingFee');
-        $mealPlanDiscount = $request->get('mealPlanDiscount');
-        $salesTax = $request->get('salesTax');
-        $deliveryFee = $request->get('deliveryFee');
-        $processingFee = $request->get('processingFee');
-        $cashOrder = $request->get('cashOrder');
-        $gratuity = $request->get('gratuity');
-        $grandTotal = $request->get('grandTotal');
-        $adjustedDifference = $request->get('grandTotal') - $order->amount;
-        $balance = $request->get('dontAffectBalance')
-            ? 0
-            : $request->get('grandTotal') - $order->amount;
-        $customSalesTax =
-            $request->get('customSalesTax') !== null
-                ? $request->get('customSalesTax')
-                : 0;
-
-        $hot = $request->get('hot');
-        // $deposit =
-        //     (($order->deposit * $order->amount) / 100 / $grandTotal) * 100;
-        $originalDeliveryDate = $order->delivery_date;
-        $coolerDeposit = $request->get('coolerDeposit');
-
-        $order->delivery_date = $deliveryDate;
-        $order->transferTime = $request->get('transferTime');
-        $order->adjusted = 1;
-        $order->pickup = $request->get('pickup');
-        $order->preFeePreDiscount = $preFeePreDiscount;
-        $order->mealPlanDiscount = $mealPlanDiscount;
-        $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
-        $order->deliveryFee = $deliveryFee;
-        $order->processingFee = $processingFee;
-        $order->isMultipleDelivery = $isMultipleDelivery;
-        $order->salesTax = $salesTax;
-        $order->customSalesTax = $customSalesTax;
-        $order->gratuity = $gratuity;
-        $order->amount = $grandTotal;
-        // $order->deposit = $deposit;
-        $order->adjustedDifference += $adjustedDifference;
-        $order->balance += $balance;
-        $order->coupon_id = $couponId;
-        $order->couponReduction = $couponReduction;
-        $order->couponCode = $couponCode;
-        $order->coupon_id = $couponId;
-        $order->promotionReduction = $promotionReduction;
-        $order->pointsReduction = $pointsReduction;
-        $order->couponCode = $couponCode;
-        $order->purchased_gift_card_id = $purchasedGiftCardId;
-        $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
-        $order->pickup_location_id = $pickupLocation;
-        $order->transferTime = $transferTime;
-        $order->hot = $hot;
-        $order->coolerDeposit = $coolerDeposit;
-
-        $dailyOrderNumber = 0;
-        if (!$isMultipleDelivery) {
-            $max = Order::where('store_id', $store->id)
-                ->whereDate('delivery_date', $deliveryDate)
-                ->max('dailyOrderNumber');
-            $dailyOrderNumber = $max + 1;
-
-            if ($originalDeliveryDate != $deliveryDate) {
-                $order->dailyOrderNumber = $dailyOrderNumber;
-            }
-        }
-
-        $order->save();
-
-        $order->meal_orders()->delete();
-        $order->meal_package_orders()->delete();
-        $order->lineItemsOrder()->delete();
-        foreach ($bag->getItems() as $item) {
-            $mealOrder = new MealOrder();
-            $mealOrder->order_id = $order->id;
-            $mealOrder->store_id = $store->id;
-            $mealOrder->meal_id = $item['meal']['id'];
-            $mealOrder->quantity = $item['quantity'];
-            $mealOrder->price = $item['price'] * $item['quantity'];
-            if (!$item['meal_package']) {
-                $mealOrder->customTitle = isset($item['customTitle'])
-                    ? $item['customTitle']
-                    : null;
-                $mealOrder->customSize = isset($item['customSize'])
-                    ? $item['customSize']
-                    : null;
-            }
-            if (isset($item['delivery_day']) && $item['delivery_day']) {
-                $mealOrder->delivery_date =
-                    $item['delivery_day']['day_friendly'];
-            }
-            if (isset($item['size']) && $item['size']) {
-                $mealOrder->meal_size_id = $item['size']['id'];
-            }
-            if (isset($item['special_instructions'])) {
-                $mealOrder->special_instructions =
-                    $item['special_instructions'];
-            }
-            if (isset($item['free'])) {
-                $mealOrder->free = $item['free'];
-            }
-            if ($item['meal_package']) {
-                $mealOrder->meal_package = $item['meal_package'];
-                $mealOrder->meal_package_variation = isset(
-                    $item['meal_package_variation']
-                )
-                    ? $item['meal_package_variation']
+            $couponId = $request->get('coupon_id');
+            $couponReduction = $request->get('couponReduction');
+            $couponCode = $request->get('couponCode');
+            $purchasedGiftCardId = $request->get('purchased_gift_card_id');
+            $purchasedGiftCardReduction = $request->get(
+                'purchasedGiftCardReduction'
+            );
+            $promotionReduction = $request->get('promotionReduction');
+            $pointsReduction = $request->get('pointsReduction');
+            $deliveryFee = $request->get('deliveryFee');
+            $deliveryDate = $request->get('deliveryDate');
+            $isMultipleDelivery = (int) $request->get('isMultipleDelivery');
+            $pickupLocation = $request->get('pickupLocation');
+            $transferTime = $request->get('transferTime');
+            $bagTotal = $bag->getTotal() + $request->get('lineItemTotal');
+            $subtotal = $request->get('subtotal');
+            $preFeePreDiscount = $request->get('subtotal');
+            $afterDiscountBeforeFees = $request->get('afterDiscount');
+            $processingFee = $request->get('processingFee');
+            $mealPlanDiscount = $request->get('mealPlanDiscount');
+            $salesTax = $request->get('salesTax');
+            $deliveryFee = $request->get('deliveryFee');
+            $processingFee = $request->get('processingFee');
+            $cashOrder = $request->get('cashOrder');
+            $gratuity = $request->get('gratuity');
+            $grandTotal = $request->get('grandTotal');
+            $adjustedDifference = $request->get('grandTotal') - $order->amount;
+            $balance = $request->get('dontAffectBalance')
+                ? 0
+                : $request->get('grandTotal') - $order->amount;
+            $customSalesTax =
+                $request->get('customSalesTax') !== null
+                    ? $request->get('customSalesTax')
                     : 0;
+
+            $hot = $request->get('hot');
+            // $deposit =
+            //     (($order->deposit * $order->amount) / 100 / $grandTotal) * 100;
+            $originalDeliveryDate = $order->delivery_date;
+            $coolerDeposit = $request->get('coolerDeposit');
+
+            $order->delivery_date = $deliveryDate;
+            $order->transferTime = $request->get('transferTime');
+            $order->adjusted = 1;
+            $order->pickup = $request->get('pickup');
+            $order->preFeePreDiscount = $preFeePreDiscount;
+            $order->mealPlanDiscount = $mealPlanDiscount;
+            $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+            $order->deliveryFee = $deliveryFee;
+            $order->processingFee = $processingFee;
+            $order->isMultipleDelivery = $isMultipleDelivery;
+            $order->salesTax = $salesTax;
+            $order->customSalesTax = $customSalesTax;
+            $order->gratuity = $gratuity;
+            $order->amount = $grandTotal;
+            // $order->deposit = $deposit;
+            $order->adjustedDifference += $adjustedDifference;
+            $order->balance += $balance;
+            $order->coupon_id = $couponId;
+            $order->couponReduction = $couponReduction;
+            $order->couponCode = $couponCode;
+            $order->coupon_id = $couponId;
+            $order->promotionReduction = $promotionReduction;
+            $order->pointsReduction = $pointsReduction;
+            $order->couponCode = $couponCode;
+            $order->purchased_gift_card_id = $purchasedGiftCardId;
+            $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
+            $order->pickup_location_id = $pickupLocation;
+            $order->transferTime = $transferTime;
+            $order->hot = $hot;
+            $order->coolerDeposit = $coolerDeposit;
+
+            $dailyOrderNumber = 0;
+            if (!$isMultipleDelivery) {
+                $max = Order::where('store_id', $store->id)
+                    ->whereDate('delivery_date', $deliveryDate)
+                    ->max('dailyOrderNumber');
+                $dailyOrderNumber = $max + 1;
+
+                if ($originalDeliveryDate != $deliveryDate) {
+                    $order->dailyOrderNumber = $dailyOrderNumber;
+                }
             }
 
-            if (isset($item['meal_package_title'])) {
-                $mealOrder->meal_package_title = $item['meal_package_title'];
-            }
+            $order->save();
 
-            if ($item['meal_package'] === true) {
-                if (
-                    MealPackageOrder::where([
-                        'meal_package_id' => $item['meal_package_id'],
-                        'meal_package_size_id' => $item['meal_package_size_id'],
-                        'order_id' => $order->id,
-                        'delivery_date' =>
-                            $item['delivery_day']['day_friendly'],
-                        'customTitle' => $item['customTitle'],
-                        'mappingId' => isset($item['mappingId'])
-                            ? $item['mappingId']
-                            : null
-                    ])
-                        ->get()
-                        ->count() === 0
-                ) {
-                    $mealPackageOrder = new MealPackageOrder();
-                    $mealPackageOrder->store_id = $store->id;
-                    $mealPackageOrder->order_id = $order->id;
-                    $mealPackageOrder->meal_package_id =
-                        $item['meal_package_id'];
-                    $mealPackageOrder->meal_package_size_id =
-                        $item['meal_package_size_id'];
-                    $mealPackageOrder->quantity = $item['package_quantity'];
-                    $mealPackageOrder->price = $item['package_price'];
-                    if (isset($item['delivery_day']) && $item['delivery_day']) {
-                        $mealPackageOrder->delivery_date =
-                            $item['delivery_day']['day_friendly'];
-                    }
-                    $mealPackageOrder->customTitle = isset($item['customTitle'])
+            $order->meal_orders()->delete();
+            $order->meal_package_orders()->delete();
+            $order->lineItemsOrder()->delete();
+            foreach ($bag->getItems() as $item) {
+                $mealOrder = new MealOrder();
+                $mealOrder->order_id = $order->id;
+                $mealOrder->store_id = $store->id;
+                $mealOrder->meal_id = $item['meal']['id'];
+                $mealOrder->quantity = $item['quantity'];
+                $mealOrder->price = $item['price'] * $item['quantity'];
+                if (!$item['meal_package']) {
+                    $mealOrder->customTitle = isset($item['customTitle'])
                         ? $item['customTitle']
                         : null;
-                    $mealPackageOrder->customSize = isset($item['customSize'])
+                    $mealOrder->customSize = isset($item['customSize'])
                         ? $item['customSize']
                         : null;
-                    $mealPackageOrder->mappingId = isset($item['mappingId'])
-                        ? $item['mappingId']
-                        : null;
-                    $mealPackageOrder->save();
+                }
+                if (isset($item['delivery_day']) && $item['delivery_day']) {
+                    $mealOrder->delivery_date =
+                        $item['delivery_day']['day_friendly'];
+                }
+                if (isset($item['size']) && $item['size']) {
+                    $mealOrder->meal_size_id = $item['size']['id'];
+                }
+                if (isset($item['special_instructions'])) {
+                    $mealOrder->special_instructions =
+                        $item['special_instructions'];
+                }
+                if (isset($item['free'])) {
+                    $mealOrder->free = $item['free'];
+                }
+                if ($item['meal_package']) {
+                    $mealOrder->meal_package = $item['meal_package'];
+                    $mealOrder->meal_package_variation = isset(
+                        $item['meal_package_variation']
+                    )
+                        ? $item['meal_package_variation']
+                        : 0;
+                }
 
-                    $mealOrder->meal_package_order_id = $mealPackageOrder->id;
-                } else {
-                    $mealOrder->meal_package_order_id = MealPackageOrder::where(
-                        [
+                if (isset($item['meal_package_title'])) {
+                    $mealOrder->meal_package_title =
+                        $item['meal_package_title'];
+                }
+
+                if ($item['meal_package'] === true) {
+                    if (
+                        MealPackageOrder::where([
                             'meal_package_id' => $item['meal_package_id'],
                             'meal_package_size_id' =>
                                 $item['meal_package_size_id'],
@@ -932,127 +893,188 @@ class OrderController extends StoreController
                             'mappingId' => isset($item['mappingId'])
                                 ? $item['mappingId']
                                 : null
-                        ]
-                    )
-                        ->pluck('id')
-                        ->first();
+                        ])
+                            ->get()
+                            ->count() === 0
+                    ) {
+                        $mealPackageOrder = new MealPackageOrder();
+                        $mealPackageOrder->store_id = $store->id;
+                        $mealPackageOrder->order_id = $order->id;
+                        $mealPackageOrder->meal_package_id =
+                            $item['meal_package_id'];
+                        $mealPackageOrder->meal_package_size_id =
+                            $item['meal_package_size_id'];
+                        $mealPackageOrder->quantity = $item['package_quantity'];
+                        $mealPackageOrder->price = $item['package_price'];
+                        if (
+                            isset($item['delivery_day']) &&
+                            $item['delivery_day']
+                        ) {
+                            $mealPackageOrder->delivery_date =
+                                $item['delivery_day']['day_friendly'];
+                        }
+                        $mealPackageOrder->customTitle = isset(
+                            $item['customTitle']
+                        )
+                            ? $item['customTitle']
+                            : null;
+                        $mealPackageOrder->customSize = isset(
+                            $item['customSize']
+                        )
+                            ? $item['customSize']
+                            : null;
+                        $mealPackageOrder->mappingId = isset($item['mappingId'])
+                            ? $item['mappingId']
+                            : null;
+                        $mealPackageOrder->save();
+
+                        $mealOrder->meal_package_order_id =
+                            $mealPackageOrder->id;
+                    } else {
+                        $mealOrder->meal_package_order_id = MealPackageOrder::where(
+                            [
+                                'meal_package_id' => $item['meal_package_id'],
+                                'meal_package_size_id' =>
+                                    $item['meal_package_size_id'],
+                                'order_id' => $order->id,
+                                'delivery_date' =>
+                                    $item['delivery_day']['day_friendly'],
+                                'customTitle' => $item['customTitle'],
+                                'mappingId' => isset($item['mappingId'])
+                                    ? $item['mappingId']
+                                    : null
+                            ]
+                        )
+                            ->pluck('id')
+                            ->first();
+                    }
+                    $mealOrder->price = $item['price'];
                 }
-                $mealOrder->price = $item['price'];
-            }
 
-            $mealOrder->save();
+                $mealOrder->save();
 
-            if (isset($item['components']) && $item['components']) {
-                foreach ($item['components'] as $componentId => $choices) {
-                    foreach ($choices as $optionId) {
-                        MealOrderComponent::create([
+                if (isset($item['components']) && $item['components']) {
+                    foreach ($item['components'] as $componentId => $choices) {
+                        foreach ($choices as $optionId) {
+                            MealOrderComponent::create([
+                                'meal_order_id' => $mealOrder->id,
+                                'meal_component_id' => $componentId,
+                                'meal_component_option_id' => $optionId
+                            ]);
+                        }
+                    }
+                }
+
+                if (isset($item['addons']) && $item['addons']) {
+                    foreach ($item['addons'] as $addonId) {
+                        MealOrderAddon::create([
                             'meal_order_id' => $mealOrder->id,
-                            'meal_component_id' => $componentId,
-                            'meal_component_option_id' => $optionId
+                            'meal_addon_id' => $addonId
                         ]);
                     }
                 }
-            }
 
-            if (isset($item['addons']) && $item['addons']) {
-                foreach ($item['addons'] as $addonId) {
-                    MealOrderAddon::create([
-                        'meal_order_id' => $mealOrder->id,
-                        'meal_addon_id' => $addonId
-                    ]);
+                $attachments = MealAttachment::where([
+                    'meal_id' => $item['meal']['id'],
+                    'applyToAll' => 1
+                ])->get();
+
+                $explicitAttachments = MealAttachment::where([
+                    'applyToAll' => 0,
+                    'meal_id' => $item['meal']['id'],
+                    'meal_size_id' => isset($item['size']['id'])
+                        ? $item['size']['id']
+                        : null
+                ])->get();
+
+                foreach ($explicitAttachments as $explicitAttachment) {
+                    $attachments->push($explicitAttachment);
                 }
-            }
 
-            $attachments = MealAttachment::where([
-                'meal_id' => $item['meal']['id'],
-                'applyToAll' => 1
-            ])->get();
-
-            $explicitAttachments = MealAttachment::where([
-                'applyToAll' => 0,
-                'meal_id' => $item['meal']['id'],
-                'meal_size_id' => isset($item['size']['id'])
-                    ? $item['size']['id']
-                    : null
-            ])->get();
-
-            foreach ($explicitAttachments as $explicitAttachment) {
-                $attachments->push($explicitAttachment);
-            }
-
-            if ($attachments) {
-                foreach ($attachments as $attachment) {
-                    $mealOrder = new MealOrder();
-                    $mealOrder->order_id = $order->id;
-                    $mealOrder->store_id = $store->id;
-                    $mealOrder->meal_id = $attachment->attached_meal_id;
-                    $mealOrder->meal_size_id =
-                        $attachment->attached_meal_size_id;
-                    $mealOrder->quantity =
-                        $attachment->quantity * $item['quantity'];
-                    $mealOrder->attached = 1;
-                    $mealOrder->free = 1;
-                    $mealOrder->hidden = $attachment->hidden;
-                    if (isset($item['delivery_day']) && $item['delivery_day']) {
-                        $mealOrder->delivery_date =
-                            $item['delivery_day']['day_friendly'];
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $mealOrder = new MealOrder();
+                        $mealOrder->order_id = $order->id;
+                        $mealOrder->store_id = $store->id;
+                        $mealOrder->meal_id = $attachment->attached_meal_id;
+                        $mealOrder->meal_size_id =
+                            $attachment->attached_meal_size_id;
+                        $mealOrder->quantity =
+                            $attachment->quantity * $item['quantity'];
+                        $mealOrder->attached = 1;
+                        $mealOrder->free = 1;
+                        $mealOrder->hidden = $attachment->hidden;
+                        if (
+                            isset($item['delivery_day']) &&
+                            $item['delivery_day']
+                        ) {
+                            $mealOrder->delivery_date =
+                                $item['delivery_day']['day_friendly'];
+                        }
+                        $mealOrder->save();
                     }
-                    $mealOrder->save();
                 }
             }
-        }
 
-        $lineItemsOrder = $request->get('lineItemsOrder');
-        if ($lineItemsOrder != null) {
-            foreach ($lineItemsOrder as $lineItemOrder) {
-                $newLineItemOrder = new LineItemOrder();
-                $newLineItemOrder->store_id = $store->id;
-                $newLineItemOrder->line_item_id = isset(
-                    $lineItemOrder['line_item']
-                )
-                    ? $lineItemOrder['line_item']['id']
-                    : $lineItemOrder['id'];
-                $newLineItemOrder->order_id = $order->id;
-                $newLineItemOrder->quantity = $lineItemOrder['quantity'];
-                $newLineItemOrder->save();
+            $lineItemsOrder = $request->get('lineItemsOrder');
+            if ($lineItemsOrder != null) {
+                foreach ($lineItemsOrder as $lineItemOrder) {
+                    $newLineItemOrder = new LineItemOrder();
+                    $newLineItemOrder->store_id = $store->id;
+                    $newLineItemOrder->line_item_id = isset(
+                        $lineItemOrder['line_item']
+                    )
+                        ? $lineItemOrder['line_item']['id']
+                        : $lineItemOrder['id'];
+                    $newLineItemOrder->order_id = $order->id;
+                    $newLineItemOrder->quantity = $lineItemOrder['quantity'];
+                    $newLineItemOrder->save();
+                }
             }
-        }
 
-        // if ($bagItems && count($bagItems) > 0) {
-        //     OrderBag::where('order_id', (int) $order->id)->delete();
+            // if ($bagItems && count($bagItems) > 0) {
+            //     OrderBag::where('order_id', (int) $order->id)->delete();
 
-        //     foreach ($bagItems as $bagItem) {
-        //         $orderBag = new OrderBag();
-        //         $orderBag->order_id = (int) $order->id;
-        //         $orderBag->bag = json_encode($bagItem);
-        //         $orderBag->save();
-        //     }
-        // }
+            //     foreach ($bagItems as $bagItem) {
+            //         $orderBag = new OrderBag();
+            //         $orderBag->order_id = (int) $order->id;
+            //         $orderBag->bag = json_encode($bagItem);
+            //         $orderBag->save();
+            //     }
+            // }
 
-        // Send email to store only if it's not a manual order. Subject to change in future.
-        if ($order->manual === 0) {
-            try {
-                $store->sendNotification('adjusted_order', [
-                    'order' => $order ?? null,
-                    'pickup' => $order->pickup ?? null
-                ]);
-            } catch (\Exception $e) {
+            // Send email to store only if it's not a manual order. Subject to change in future.
+            if ($order->manual === 0) {
+                try {
+                    $store->sendNotification('adjusted_order', [
+                        'order' => $order ?? null,
+                        'pickup' => $order->pickup ?? null
+                    ]);
+                } catch (\Exception $e) {
+                }
             }
-        }
 
-        // Send email to customer
-        $customerUser = User::where('id', $order->user_id)->first();
-        if ($request->get('emailCustomer')) {
-            try {
-                $customerUser->sendNotification('adjusted_order', [
-                    'order' => $order ?? null,
-                    'pickup' => $pickup ?? null
-                ]);
-            } catch (\Exception $e) {
+            // Send email to customer
+            $customerUser = User::where('id', $order->user_id)->first();
+            if ($request->get('emailCustomer')) {
+                try {
+                    $customerUser->sendNotification('adjusted_order', [
+                        'order' => $order ?? null,
+                        'pickup' => $pickup ?? null
+                    ]);
+                } catch (\Exception $e) {
+                }
             }
-        }
 
-        return $order->id;
+            return $order->id;
+        } catch (\Exception $e) {
+            return response()->json(
+                [
+                    'message' => $e->getMessage()
+                ],
+                400
+            );
+        }
     }
 
     /**
