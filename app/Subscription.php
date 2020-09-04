@@ -888,7 +888,11 @@ class Subscription extends Model
         }
 
         if ($this->afterDiscountBeforeFees > 0) {
-            $salesTaxRate = $this->salesTax / $this->afterDiscountBeforeFees;
+            $salesTaxRate =
+                round(
+                    100 * ($this->salesTax / $this->afterDiscountBeforeFees),
+                    2
+                ) / 100;
         } else {
             $salesTaxRate = 0;
         }
@@ -942,7 +946,7 @@ class Subscription extends Model
         if ($total < 0) {
             $total = 0;
         }
-        $this->amount = round($total, 2);
+        $this->amount = floor($total * 100) / 100;
         $this->save();
 
         // Delete existing stripe plan
@@ -957,7 +961,7 @@ class Subscription extends Model
         // Create stripe plan with new pricing
         $plan = \Stripe\Plan::create(
             [
-                "amount" => round($total * 100),
+                "amount" => (floor($total * 100) / 100) * 100,
                 "interval" => "week",
                 "product" => [
                     "name" =>
