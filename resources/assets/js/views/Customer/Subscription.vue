@@ -132,6 +132,7 @@ export default {
           let meal_package_id = pkgItem.meal_package_id;
           let meal_package = this.getMealPackage(meal_package_id);
           meal_package.price = pkgItem.price;
+          meal_package.mappingId = pkgItem.mappingId;
 
           // Adding meals to meal package
           meal_package.meals = [];
@@ -160,6 +161,7 @@ export default {
               meal.quantity = item.quantity;
               meal.special_instructions = item.special_instructions;
               meal.item_id = item.item_id;
+              meal.price = item.price / item.quantity;
 
               if (pkgItem.meal_package_size && index !== null) {
                 meal_package.sizes[index].meals.push(meal);

@@ -272,10 +272,15 @@ class Bag
                                             $meal['meal_package_variation'],
                                         'mappingId' => $mappingId,
                                         'customTitle' => $customTitle,
-                                        'customSize' => $customSize
+                                        'customSize' => $customSize,
+                                        'guid' => isset($item['guid'])
+                                            ? $item['guid']
+                                            : null
                                     ];
 
-                                    $mealItemId = $this->getItemId($mealItem);
+                                    $mealItemId = isset($meal['item_id'])
+                                        ? $meal['item_id']
+                                        : $this->getItemId($mealItem);
 
                                     if (!isset($items[$mealItemId])) {
                                         $items[$mealItemId] = $mealItem;
@@ -410,10 +415,15 @@ class Bag
                                         $meal['meal_package_variation'],
                                     'mappingId' => $mappingId,
                                     'customTitle' => $customTitle,
-                                    'customSize' => $customSize
+                                    'customSize' => $customSize,
+                                    'guid' => isset($item['guid'])
+                                        ? $item['guid']
+                                        : null
                                 ];
 
-                                $mealItemId = $this->getItemId($mealItem);
+                                $mealItemId = isset($meal['item_id'])
+                                    ? $meal['item_id']
+                                    : $this->getItemId($mealItem);
 
                                 if (!isset($items[$mealItemId])) {
                                     $items[$mealItemId] = $mealItem;
@@ -479,10 +489,13 @@ class Bag
                                     : 0,
                                 'guid' => isset($item['guid'])
                                     ? $item['guid']
-                                    : null
+                                    : null,
+                                'top_level' => true
                             ];
 
-                            $mealItemId = $this->getItemId($mealItem);
+                            $mealItemId = isset($meal['item_id'])
+                                ? $meal['item_id']
+                                : $this->getItemId($mealItem);
 
                             if (!isset($items[$mealItemId])) {
                                 $items[$mealItemId] = $mealItem;
@@ -549,10 +562,16 @@ class Bag
                                         : 0,
                                     'mappingId' => $mappingId,
                                     'customTitle' => $customTitle,
-                                    'customSize' => $customSize
+                                    'customSize' => $customSize,
+                                    'guid' => isset($item['guid'])
+                                        ? $item['guid']
+                                        : null,
+                                    'top_level' => true
                                 ];
 
-                                $mealItemId = $this->getItemId($mealItem);
+                                $mealItemId = isset($meal['item_id'])
+                                    ? $meal['item_id']
+                                    : $this->getItemId($mealItem);
 
                                 if (!isset($items[$mealItemId])) {
                                     $items[$mealItemId] = $mealItem;

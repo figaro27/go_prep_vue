@@ -400,6 +400,9 @@ class SubscriptionController extends StoreController
                             'subscription_id' => $sub->id,
                             'customTitle' => isset($item['customTitle'])
                                 ? $item['customTitle']
+                                : null,
+                            'mappingId' => isset($item['mappingId'])
+                                ? $item['mappingId']
                                 : null
                         ])
                             ->get()
@@ -433,6 +436,11 @@ class SubscriptionController extends StoreController
                         )
                             ? $item['customSize']
                             : null;
+                        $mealPackageSubscription->mappingId = isset(
+                            $item['mappingId']
+                        )
+                            ? $item['mappingId']
+                            : null;
                         $mealPackageSubscription->save();
 
                         $mealSub->meal_package_subscription_id =
@@ -443,7 +451,10 @@ class SubscriptionController extends StoreController
                                 'meal_package_id' => $item['meal_package_id'],
                                 'meal_package_size_id' =>
                                     $item['meal_package_size_id'],
-                                'subscription_id' => $sub->id
+                                'subscription_id' => $sub->id,
+                                'mappingId' => isset($item['mappingId'])
+                                    ? $item['mappingId']
+                                    : null
                             ]
                         )
                             ->pluck('id')

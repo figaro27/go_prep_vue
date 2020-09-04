@@ -453,7 +453,11 @@ class CheckoutController extends StoreController
                         $mealOrder->store_id = $store->id;
                         $mealOrder->meal_id = $item['meal']['id'];
                         $mealOrder->quantity = $item['quantity'];
-                        $mealOrder->price = $item['price'] * $item['quantity'];
+                        $mealOrder->price =
+                            isset($item['top_level']) &&
+                            $item['top_level'] == true
+                                ? 0
+                                : $item['price'] * $item['quantity'];
 
                         if (!$item['meal_package']) {
                             $mealOrder->customTitle = isset(
@@ -963,7 +967,10 @@ class CheckoutController extends StoreController
                     $mealOrder->store_id = $store->id;
                     $mealOrder->meal_id = $item['meal']['id'];
                     $mealOrder->quantity = $item['quantity'];
-                    $mealOrder->price = $item['price'] * $item['quantity'];
+                    $mealOrder->price =
+                        isset($item['top_level']) && $item['top_level'] == true
+                            ? 0
+                            : $item['price'] * $item['quantity'];
                     if ($item['meal_package'] === false) {
                         $mealOrder->customTitle = isset($item['customTitle'])
                             ? $item['customTitle']
@@ -1148,7 +1155,10 @@ class CheckoutController extends StoreController
                     $mealSub->store_id = $store->id;
                     $mealSub->meal_id = $item['meal']['id'];
                     $mealSub->quantity = $item['quantity'];
-                    $mealSub->price = $item['price'] * $item['quantity'];
+                    $mealSub->price =
+                        isset($item['top_level']) && $item['top_level'] == true
+                            ? 0
+                            : $item['price'] * $item['quantity'];
                     if (isset($item['free'])) {
                         $mealSub->free = $item['free'];
                     }
@@ -1186,6 +1196,9 @@ class CheckoutController extends StoreController
                                 'subscription_id' => $userSubscription->id,
                                 'customTitle' => isset($item['customTitle'])
                                     ? $item['customTitle']
+                                    : null,
+                                'mappingId' => isset($item['mappingId'])
+                                    ? $item['mappingId']
                                     : null
                             ])
                                 ->get()
@@ -1213,6 +1226,11 @@ class CheckoutController extends StoreController
                             )
                                 ? $item['customSize']
                                 : null;
+                            $mealPackageSubscription->mappingId = isset(
+                                $item['mappingId']
+                            )
+                                ? $item['mappingId']
+                                : null;
                             if (
                                 isset($item['delivery_day']) &&
                                 $item['delivery_day']
@@ -1231,7 +1249,10 @@ class CheckoutController extends StoreController
                                         $item['meal_package_id'],
                                     'meal_package_size_id' =>
                                         $item['meal_package_size_id'],
-                                    'subscription_id' => $userSubscription->id
+                                    'subscription_id' => $userSubscription->id,
+                                    'mappingId' => isset($item['mappingId'])
+                                        ? $item['mappingId']
+                                        : null
                                 ]
                             )
                                 ->pluck('id')

@@ -250,18 +250,14 @@ $currency = $subscription->store->settings->currency_symbol
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
-                    @if ($item->meal_package_subscription_id === null)
-                    {{$currency}}{{ number_format($item->unit_price, 2) }}
-                    @else
                     In Package
-                    @endif
                     </td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;">
-                    @if ($item->meal_package_subscription_id=== null)
-                    {{$currency}}{{ number_format($item->price, 2) }}
+                    @if ($item->price > 0)
+                      In Package <span style="font-size:11px">({{$currency}}{{$item->price}})</span>
                     @else
-                    In Package
+                      In Package
                     @endif
                   </td>
                 </tr>
