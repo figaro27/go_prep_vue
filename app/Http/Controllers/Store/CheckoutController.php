@@ -796,9 +796,10 @@ class CheckoutController extends StoreController
 
                 // Is billing anchor past the cutoff?
                 // Set to the cutoff date
-                if ($billingAnchor->greaterThan($cutoff)) {
-                    $billingAnchor = $cutoff->copy();
-                }
+
+                // if ($billingAnchor->greaterThan($cutoff)) {
+                //     $billingAnchor = $cutoff->copy();
+                // }
 
                 if (!$cashOrder) {
                     $plan = \Stripe\Plan::create(
