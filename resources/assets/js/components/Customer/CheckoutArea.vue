@@ -610,6 +610,7 @@
       v-if="
         transferTypeCheckDelivery &&
           transferTypeCheckPickup &&
+          store.delivery_day_zip_codes.length == 0 &&
           (!storeModules.hideDeliveryOption ||
             $route.params.storeView === true ||
             storeOwner)

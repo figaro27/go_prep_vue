@@ -72,7 +72,7 @@
         <div class="row mt-3">
           <div class="col-md-12">
             <div style="position: relative">
-              <h4 class="center-text">Select Delivery Day</h4>
+              <h4 class="center-text">Select Day</h4>
 
               <Spinner
                 v-if="isLoadingDeliveryDays"
@@ -92,6 +92,21 @@
                   :style="getBrandColor(day)"
                 >
                   {{ moment(day.day_friendly).format("dddd, MMM Do YYYY") }}
+                </div>
+                <div
+                  v-if="
+                    sortedDeliveryDays.length === 0 &&
+                      store.delivery_day_zip_codes.length > 0
+                  "
+                >
+                  <center>
+                    <b-alert style="background-color:#EBFAFF" show>
+                      <p>
+                        Sorry, there are no delivery days available for your zip
+                        code.
+                      </p>
+                    </b-alert>
+                  </center>
                 </div>
               </div>
 
@@ -696,7 +711,14 @@ export default {
 
       storeDeliveryDays = storeDeliveryDays.reverse();
 
-      let sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
+      let sortedDays = [];
+
+      if (this.store.delivery_day_zip_codes.length === 0) {
+        sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
+      } else {
+        sortedDays = storeDeliveryDays;
+      }
+
       // If the store only serves certain zip codes on certain delivery days
       if (this.store.delivery_day_zip_codes.length > 0) {
         let deliveryDayIds = [];
@@ -706,7 +728,16 @@ export default {
           }
         });
         sortedDays = sortedDays.filter(day => {
-          return deliveryDayIds.includes(day.id);
+          if (deliveryDayIds.includes(day.id) || this.bagPickup) {
+            return true;
+          }
+          // return deliveryDayIds.includes(day.id);
+        });
+      }
+
+      if (this.bagPickup) {
+        sortedDays = sortedDays.filter(day => {
+          return day.type === "pickup";
         });
       }
 
@@ -1064,11 +1095,18 @@ export default {
   },
   mounted() {
     if (this.store.modules.multipleDeliveryDays) {
+      if (this.bagPickup === 1) {
+        this.autoPickUpcomingMultDD();
+      }
       if (this.store.delivery_day_zip_codes.length === 0) {
         this.autoPickUpcomingMultDD();
       } else {
         if (this.loggedIn) {
           this.setBagZipCode(parseInt(this.user.user_detail.zip));
+          this.autoPickUpcomingMultDD(this.sortedDeliveryDays);
+        }
+        if (this.bagZipCode) {
+          this.setBagZipCode(parseInt(this.bagZipCode));
           this.autoPickUpcomingMultDD(this.sortedDeliveryDays);
         }
       }

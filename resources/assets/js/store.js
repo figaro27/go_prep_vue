@@ -26,6 +26,7 @@ const state = {
   isLazyDDLoading: {},
   jobs: {},
   hideSpinner: false,
+  multDDZipCode: false,
   viewed_store: {
     delivery_days: [],
     delivery_day: null,
@@ -834,6 +835,9 @@ const mutations = {
   setBagPickup({ state, dispatch }, pickup) {
     this.state.bag.pickup = pickup;
     this.state.bag.pickupSet = true;
+  },
+  setMultDDZipCode({ state, dispatch }, multDDZipCode) {
+    this.state.multDDZipCode = multDDZipCode;
   },
   setBagTransferTime({ state, dispatch }, transferTime) {
     this.state.bag.transferTime = transferTime;
@@ -3395,6 +3399,9 @@ const getters = {
   },
   bagPickup(state) {
     return state.bag.pickup;
+  },
+  bagMultDDZipCode(state) {
+    return state.multDDZipCode;
   },
   bagPickupSet(state) {
     return state.bag.pickupSet;
