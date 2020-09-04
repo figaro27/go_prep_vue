@@ -936,6 +936,10 @@
             </v-select>
           </b-form-group>
 
+          <b-btn variant="primary" v-if="store.id === 3" @click="setSample"
+            >GO!</b-btn
+          >
+
           <b-btn
             variant="primary"
             v-if="storeModules.manualCustomers"
@@ -3410,6 +3414,11 @@ use next_delivery_dates
       ) {
         this.setBagMealPlan(true);
       }
+    },
+    setSample() {
+      this.setBagCustomerModel(this.customers[16]);
+      this.setBagDeliveryDate(this.deliveryDateOptionsStoreView[3]);
+      this.updateParentData();
     },
     setSubscriptionCoupon() {
       axios
