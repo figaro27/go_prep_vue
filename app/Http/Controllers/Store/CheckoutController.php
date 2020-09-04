@@ -801,6 +801,10 @@ class CheckoutController extends StoreController
                 //     $billingAnchor = $cutoff->copy();
                 // }
 
+                if ($store->settings->subscriptionRenewalType == 'cutoff') {
+                    $billingAnchor = $cutoff->copy();
+                }
+
                 if (!$cashOrder) {
                     $plan = \Stripe\Plan::create(
                         [

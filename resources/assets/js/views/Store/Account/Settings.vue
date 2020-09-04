@@ -310,7 +310,7 @@
                   />
                 </b-form-group>
 
-                <b-form-group>
+                <b-form-group class="mt-4 mb-4">
                   <b-form-radio-group
                     v-model="storeSettings.minimumOption"
                     :options="minimumOptions"
@@ -406,6 +406,23 @@
                   ></b-form-input>
                 </b-form-group>
 
+                <b-form-group :state="true" class="mt-4 mb-4">
+                  <p>
+                    <span class="mr-1">Subscription Renewal Timing</span>
+                    <img
+                      v-b-popover.hover="
+                        'Choose \'Renew Now\' for your customer\'s subscription renewal/lock in day to be the day they created the subscription. Choose \'Renew At Cutoff\' for the subscription renewal date to be moved to the cutoff day for the delivery day the customer chooses. The first option renews & creates the order immediately and on the same day each week the subscription was created, but there will be a gap between the renewal time and your cutoff time in which your customer is able to update their subscription. The second option gives your customer all the way until your cutoff to update their subscription, but their card is not charged and order is not created and shown until your cutoff.'
+                      "
+                      title="Subscription Renewal Timing"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <b-form-radio-group
+                    v-model="storeSettings.subscriptionRenewalType"
+                    :options="subscriptionRenewalTypeOptions"
+                  ></b-form-radio-group>
+                </b-form-group>
                 <b-form-group :state="true">
                   <p>
                     <span class="mr-1">Delivery Fee</span>
@@ -1326,6 +1343,10 @@ export default {
       transferOptions: [
         { text: "Delivering to Customers", value: "delivery" },
         { text: "Letting Customers Pickup", value: "pickup" }
+      ],
+      subscriptionRenewalTypeOptions: [
+        { text: "Renew Now", value: "now" },
+        { text: "Renew At Cutoff", value: "cutoff" }
       ],
       minimumSelected: "price",
       minimumOptions: [

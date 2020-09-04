@@ -35,7 +35,8 @@ class StoreSetting extends Model
         'showMacros',
         'preventNextWeekOrders',
         'timezone',
-        'minimumSubWeeks'
+        'minimumSubWeeks',
+        'subscriptionRenewalType'
     ];
 
     /**

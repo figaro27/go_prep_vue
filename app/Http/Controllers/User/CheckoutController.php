@@ -806,6 +806,10 @@ class CheckoutController extends UserController
                     $billingAnchor = $cutoff->copy();
                 }
 
+                if ($store->settings->subscriptionRenewalType == 'cutoff') {
+                    $billingAnchor = $cutoff->copy();
+                }
+
                 if (!$cashOrder) {
                     if ($gateway === Constants::GATEWAY_STRIPE) {
                         $plan = \Stripe\Plan::create(
