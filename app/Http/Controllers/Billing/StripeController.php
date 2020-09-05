@@ -19,9 +19,12 @@ class StripeController extends Controller
 
         //$subscriptions = Subscription::all();
 
-        if ($type === 'invoice.payment_succeeded') {
+        // Processing the renewal for voided invoices (from paused subscriptions). This will create a new order but keep it marked as unpaid in order to continue the weekly flow of new orders.
+        if (
+            $type === 'invoice.payment_succeeded' ||
+            $type === 'invoice.voided'
+        ) {
             $subId = $obj->get('subscription', null);
-            $amountPaid = $obj->get('amount_paid', null);
 
             $subscription = null;
             if ($subId) {
@@ -32,17 +35,7 @@ class StripeController extends Controller
                 )->first();
             }
 
-            // Subscription paused
-            // if (!$amountPaid && !$subscription->monthlyPrepay) {
-            //     return 'Amount paid = 0. Subscription paused. Skipping renewal';
-            // }
-
             if ($subscription) {
-                // Make sure status is set to 'active'
-                //if($subscription->isPaused()) {
-                //  $subscription->resume(false);
-                //}
-
                 // Process renewal
                 $subscription->renew($obj, $event);
                 return 'Subscription renewed';
