@@ -548,13 +548,7 @@
       </li>
 
       <!-- Coupon Area -->
-      <li
-        v-if="
-          store.hasPromoCodes &&
-            !$route.params.adjustMealPlan &&
-            !subscriptionId
-        "
-      >
+      <li v-if="store.hasPromoCodes">
         <h5 v-if="!loggedIn">Promo codes entered during checkout.</h5>
         <div class="row">
           <div class="col-xs-6 pl-3">
