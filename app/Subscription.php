@@ -512,6 +512,11 @@ class Subscription extends Model
             $mealOrder->customTitle = $mealSub->customTitle;
             $mealOrder->customSize = $mealSub->customSize;
 
+            // For purposes of showing added price on components & addons that cost extra. Eventually switch entirely to just having price and not be meal_package_variation
+            if ($mealSub->price > 0 && $mealSub->meal_package) {
+                $mealOrder->meal_package_variation = 1;
+            }
+
             if ($mealSub->meal_package_subscription_id !== null) {
                 $mealPackageSub = MealPackageSubscription::where(
                     'id',
@@ -1646,6 +1651,11 @@ class Subscription extends Model
             $mealOrder->free = $mealSub->free ? $mealSub->free : 0;
             $mealOrder->customTitle = $mealSub->customTitle;
             $mealOrder->customSize = $mealSub->customSize;
+
+            // For purposes of showing added price on components & addons that cost extra. Eventually switch entirely to just having price and not be meal_package_variation
+            if ($mealSub->price > 0 && $mealSub->meal_package) {
+                $mealOrder->meal_package_variation = 1;
+            }
 
             if ($mealSub->meal_package_subscription_id !== null) {
                 $mealPackageSub = MeaLPackageSubscription::where(

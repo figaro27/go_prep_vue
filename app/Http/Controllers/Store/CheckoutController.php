@@ -459,6 +459,13 @@ class CheckoutController extends StoreController
                                 ? 0
                                 : $item['price'] * $item['quantity'];
 
+                        if (
+                            isset($item['meal_package_variation']) &&
+                            $item['meal_package_variation']
+                        ) {
+                            $mealOrder->meal_package_variation = 1;
+                        }
+
                         if (!$item['meal_package']) {
                             $mealOrder->customTitle = isset(
                                 $item['customTitle']
@@ -979,6 +986,14 @@ class CheckoutController extends StoreController
                             ? $item['customSize']
                             : null;
                     }
+
+                    if (
+                        isset($item['meal_package_variation']) &&
+                        $item['meal_package_variation']
+                    ) {
+                        $mealOrder->meal_package_variation = 1;
+                    }
+
                     if (isset($item['delivery_day']) && $item['delivery_day']) {
                         $mealOrder->delivery_date =
                             $item['delivery_day']['day_friendly'];
