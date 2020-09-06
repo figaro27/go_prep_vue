@@ -602,12 +602,13 @@
     <li
       class="checkout-item"
       v-if="
-        transferTypeCheckDelivery &&
+        (transferTypeCheckDelivery &&
           transferTypeCheckPickup &&
-          store.delivery_day_zip_codes.length == 0 &&
           (!storeModules.hideDeliveryOption ||
             $route.params.storeView === true ||
-            storeOwner)
+            storeOwner)) ||
+          (store.delivery_day_zip_codes.length == 0 &&
+            store.modules.multipleDeliveryDays)
       "
     >
       <b-alert
