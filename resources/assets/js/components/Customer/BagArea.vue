@@ -1,5 +1,9 @@
 <template>
   <div>
+    <zip-code-modal
+      v-if="showZipCodeModal"
+      :deliverySelected="true"
+    ></zip-code-modal>
     <div
       class="bag-header center-text pt-3"
       v-if="
@@ -560,8 +564,12 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../mixins/menuBag";
 import store from "../../store";
+import ZipCodeModal from "../../views/Customer/Modals/ZipCodeModal";
 
 export default {
+  components: {
+    ZipCodeModal
+  },
   data() {
     return {
       enablingEdit: {},
@@ -579,7 +587,8 @@ export default {
         production_group_id: null
       },
       selectedLineItem: {},
-      orderLineItems: []
+      orderLineItems: [],
+      showZipCodeModal: false
     };
   },
   props: {
@@ -617,7 +626,8 @@ export default {
       getMealPackage: "viewedStoreMealPackage",
       lineItems: "viewedStoreLineItems",
       storeProductionGroups: "storeProductionGroups",
-      bagPickup: "bagPickup"
+      bagPickup: "bagPickup",
+      bagZipCode: "bagZipCode"
     }),
     hasBothTranserTypes() {
       let hasPickup = false;
@@ -1162,6 +1172,9 @@ export default {
     changeTransferType(val) {
       this.$store.commit("emptyBag");
       this.setBagPickup(val);
+      if (!this.bagZipCode) {
+        this.showZipCodeModal = true;
+      }
       this.$parent.autoPickUpcomingMultDD(this.$parent.sortedDeliveryDays);
     }
   }

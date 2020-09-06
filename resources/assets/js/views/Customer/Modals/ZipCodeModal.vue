@@ -58,6 +58,11 @@ import MenuBag from "../../../mixins/menuBag";
 
 export default {
   mixins: [MenuBag],
+  props: {
+    deliverySelected: {
+      default: false
+    }
+  },
   data() {
     return {
       visible: true,
@@ -70,7 +75,8 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       multDDZipCode: "bagMultDDZipCode",
-      bagZipCode: "bagZipCode"
+      bagZipCode: "bagZipCode",
+      context: "context"
     }),
     zipCodeSet() {
       if (this.zipCode && this.zipCode.length == 5) {
@@ -81,7 +87,11 @@ export default {
     }
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (this.deliverySelected) {
+      this.delivery = true;
+    }
+  },
   destroyed() {
     this.setMultDDZipCode(1);
   },
@@ -100,6 +110,9 @@ export default {
       this.$store.commit("emptyBag");
       this.setBagPickup(0);
       this.delivery = true;
+      if (this.context == "store") {
+        this.setBagZipCode(null);
+      }
       if (this.bagZipCode) {
         this.visible = false;
         this.$parent.autoPickUpcomingMultDD(this.$parent.sortedDeliveryDays);

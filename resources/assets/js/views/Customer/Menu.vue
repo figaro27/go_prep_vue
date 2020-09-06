@@ -27,10 +27,9 @@
 
       <zip-code-modal
         v-if="
-          !loggedIn &&
-            context !== 'store' &&
-            store.delivery_day_zip_codes.length > 0 &&
-            store.modules.multipleDeliveryDays
+          store.delivery_day_zip_codes.length > 0 &&
+            store.modules.multipleDeliveryDays &&
+            ((!loggedIn && context !== 'store') || context == 'store')
         "
       ></zip-code-modal>
 
@@ -1610,9 +1609,11 @@ export default {
         this.selectedDeliveryDay = availableDates[0];
         this.finalDeliveryDay = availableDates[0];
 
-        store.dispatch("refreshLazyDD", {
-          delivery_day: this.availableDates[0]
-        });
+        if (availableDates.length > 0) {
+          store.dispatch("refreshLazyDD", {
+            delivery_day: this.availableDates[0]
+          });
+        }
       }
     },
     getBrandColor(delivery_day) {
