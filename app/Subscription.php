@@ -491,6 +491,7 @@ class Subscription extends Model
                 $mealPackageOrder->delivery_date =
                     $mealPackageSub->delivery_date;
             }
+            $mealPackageOrder->mappingId = $mealPackageSub->mappingId;
             $mealPackageOrder->save();
         }
 
@@ -520,7 +521,8 @@ class Subscription extends Model
                     'meal_package_id' => $mealPackageSub->meal_package_id,
                     'meal_package_size_id' =>
                         $mealPackageSub->meal_package_size_id,
-                    'order_id' => $newOrder->id
+                    'order_id' => $newOrder->id,
+                    'mappingId' => $mealPackageSub->mappingId
                 ])
                     ->pluck('id')
                     ->first();
@@ -1624,6 +1626,7 @@ class Subscription extends Model
                 $mealPackageOrder->delivery_date =
                     $mealPackageSub->delivery_date;
             }
+            $mealPackageOrder->mappingId = $mealPackageSub->mappingId;
             $mealPackageOrder->save();
         }
 
@@ -1653,7 +1656,8 @@ class Subscription extends Model
                     'meal_package_id' => $mealPackageSub->meal_package_id,
                     'meal_package_size_id' =>
                         $mealPackageSub->meal_package_size_id,
-                    'order_id' => $newOrder->id
+                    'order_id' => $newOrder->id,
+                    'mappingId' => $mealPackageSub->mappingId
                 ])
                     ->pluck('id')
                     ->first();
