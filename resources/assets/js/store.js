@@ -4052,7 +4052,7 @@ const getters = {
 
 const plugins = [
   createPersistedState({
-    paths: ["bag", "cards", "printer.device", "delivery_date"]
+    paths: ["bag", "cards", "printer.device", "delivery_date", "zip_code"]
     // paths: ["cards"]
   })
 ];

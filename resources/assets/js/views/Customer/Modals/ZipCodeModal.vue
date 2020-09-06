@@ -9,7 +9,7 @@
     hide-footer
     hide-header
   >
-    <h5 class="mb-3 mt-3 center-text" v-if="delivery">
+    <h5 class="mb-3 mt-3 center-text" v-if="delivery && !bagZipCode">
       Please enter your delivery zip code.
     </h5>
     <h5 class="mb-3 mt-3 center-text" v-if="!delivery">
@@ -19,7 +19,7 @@
       <center>
         <b-form-group :state="true" class="d-flex">
           <b-form-input
-            v-if="delivery"
+            v-if="delivery && !bagZipCode"
             placeholder="Zip Code"
             v-model="zipCode"
             class="width-50"
@@ -69,7 +69,8 @@ export default {
   computed: {
     ...mapGetters({
       store: "viewedStore",
-      multDDZipCode: "bagMultDDZipCode"
+      multDDZipCode: "bagMultDDZipCode",
+      bagZipCode: "bagZipCode"
     }),
     zipCodeSet() {
       if (this.zipCode && this.zipCode.length == 5) {
@@ -99,6 +100,10 @@ export default {
       this.$store.commit("emptyBag");
       this.setBagPickup(0);
       this.delivery = true;
+      if (this.bagZipCode) {
+        this.visible = false;
+        this.$parent.autoPickUpcomingMultDD(this.$parent.sortedDeliveryDays);
+      }
     },
     setZipCode() {
       this.setBagZipCode(this.zipCode);
