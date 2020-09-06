@@ -31,6 +31,7 @@
             store.modules.multipleDeliveryDays &&
             ((!loggedIn && context !== 'store') || context == 'store')
         "
+        @setAutoPickUpcomingMultDD="autoPickUpcomingMultDD"
       ></zip-code-modal>
 
       <store-description-modal

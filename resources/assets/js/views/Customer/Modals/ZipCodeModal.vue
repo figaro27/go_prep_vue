@@ -115,13 +115,13 @@ export default {
       }
       if (this.bagZipCode) {
         this.visible = false;
-        this.$parent.autoPickUpcomingMultDD(this.$parent.sortedDeliveryDays);
+        this.$emit("setAutoPickUpcomingMultDD");
       }
     },
     setZipCode() {
       this.setBagZipCode(this.zipCode);
       this.visible = false;
-      this.$parent.autoPickUpcomingMultDD(this.$parent.sortedDeliveryDays);
+      this.$emit("setAutoPickUpcomingMultDD");
     }
   }
 };
