@@ -46,7 +46,24 @@
           </button>
         </div>
       </b-alert> -->
-
+      <center>
+        <b-form-radio-group
+          v-if="
+            isMultipleDelivery &&
+              $route.name != 'store-bag' &&
+              $route.name != 'customer-bag' &&
+              hasBothTranserTypes
+          "
+          buttons
+          v-model="bagPickup"
+          class="storeFilters mb-3"
+          :options="[
+            { value: 1, text: 'Pickup' },
+            { value: 0, text: 'Delivery' }
+          ]"
+          @input="val => changeTransferType(val)"
+        ></b-form-radio-group>
+      </center>
       <button
         v-if="
           isMultipleDelivery &&
@@ -599,8 +616,26 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       lineItems: "viewedStoreLineItems",
-      storeProductionGroups: "storeProductionGroups"
+      storeProductionGroups: "storeProductionGroups",
+      bagPickup: "bagPickup"
     }),
+    hasBothTranserTypes() {
+      let hasPickup = false;
+      let hasDelivery = false;
+      this.store.delivery_days.forEach(day => {
+        if (day.type === "delivery") {
+          hasDelivery = true;
+        }
+        if (day.type === "pickup") {
+          hasPickup = true;
+        }
+      });
+      if (hasPickup && hasDelivery) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     isMultipleDelivery() {
       return this.storeModules.multipleDeliveryDays == 1 ? true : false;
     },
@@ -747,6 +782,9 @@ export default {
     loadDeliveryDayMenu(deliveryDay) {
       this.$emit("changeDeliveryDay", deliveryDay);
     },
+    ...mapMutations({
+      setBagPickup: "setBagPickup"
+    }),
     addToBag(item) {
       if (this.isAdjustOrder() || this.isManualOrder()) {
         this.addOneFromAdjust({
@@ -1120,6 +1158,11 @@ export default {
 
       // Switch to the first delivery day in the bag if exists
       this.loadDeliveryDayMenu(this.bag[0].delivery_day);
+    },
+    changeTransferType(val) {
+      this.$store.commit("emptyBag");
+      this.setBagPickup(val);
+      this.$parent.autoPickUpcomingMultDD(this.$parent.sortedDeliveryDays);
     }
   }
 };
