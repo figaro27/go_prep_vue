@@ -594,80 +594,84 @@ class Subscription extends Model
             }
         }
 
-        // Increment the week count by 1
-        $this->update([
-            'weekCount' => $this->weekCount + 1
-        ]);
-
-        // Only charge once per month on monthly prepay subscriptions
-        if (
-            $this->monthlyPrepay &&
-            ($this->weekCount !== 0 || $this->weekCount % 4 !== 0)
-        ) {
-            $this->apply100offCoupon();
-        } else {
-            $this->remove100offCoupon();
-        }
-
-        // Cancelling the subscription for next month if cancelled_at is marked
-        if (
-            $this->monthlyPrepay &&
-            $this->cancelled_at !== null &&
-            $this->weekCount % 4 === 0
-        ) {
-            $this->cancel();
-            return;
-        }
-
-        // Store next charge time as reported by Stripe
-        $this->next_renewal_at = $subscription->current_period_end;
-        $this->save();
-
-        // Send new order notification to store at the cutoff once the order is paid
-        if ($this->store->settings->notificationEnabled('new_order')) {
-            $this->store->sendNotification('new_order', [
-                'order' => $latestOrder ?? null,
-                'pickup' => $latestOrder->pickup ?? null,
-                'card' => null,
-                'customer' => $latestOrder->customer ?? null,
-                'subscription' => $this ?? null
+        if ($this->status !== 'paused') {
+            // Increment the week count by 1
+            $this->update([
+                'weekCount' => $this->weekCount + 1
             ]);
-        }
 
-        // Send new order notification to customer at the cutoff once the order is paid
-        if ($this->user->details->notificationEnabled('new_order')) {
-            $this->user->sendNotification('new_order', [
-                'order' => $latestOrder ?? null,
-                'pickup' => $latestOrder->pickup ?? null,
-                'card' => null,
-                'customer' => $latestOrder->customer ?? null,
-                'subscription' => $this ?? null
-            ]);
-        }
+            // Only charge once per month on monthly prepay subscriptions
 
-        // Updating item stock
-        if ($this->store->modules->stockManagement) {
-            foreach ($this->meal_subscriptions as $mealSub) {
-                $meal = Meal::where('id', $mealSub->meal_id)->first();
-                if ($meal && $meal->stock !== null) {
-                    if ($meal->stock === 0) {
-                        $mealSub->delete();
-                        $this->syncPrices();
-                    } elseif ($meal->stock < $mealSub->quantity) {
-                        $unitPrice = $mealSub->price / $mealSub->quantity;
-                        $mealSub->quantity = $meal->stock;
-                        $mealSub->price = $unitPrice * $mealSub->quantity;
-                        $mealSub->update();
-                        $meal->stock = 0;
-                        $meal->active = 0;
-                        $this->syncPrices();
-                    } else {
-                        $meal->stock -= $mealSub->quantity;
+            // Update this for monthly prepay subscriptions
+            // if (
+            //     $this->monthlyPrepay &&
+            //     ($this->weekCount !== 0 || $this->weekCount % 4 !== 0)
+            // ) {
+            //     $this->apply100offCoupon();
+            // } else {
+            //     $this->remove100offCoupon();
+            // }
+
+            // // Cancelling the subscription for next month if cancelled_at is marked
+            // if (
+            //     $this->monthlyPrepay &&
+            //     $this->cancelled_at !== null &&
+            //     $this->weekCount % 4 === 0
+            // ) {
+            //     $this->cancel();
+            //     return;
+            // }
+
+            // Store next charge time as reported by Stripe
+            $this->next_renewal_at = $subscription->current_period_end;
+            $this->save();
+
+            // Send new order notification to store at the cutoff once the order is paid
+            if ($this->store->settings->notificationEnabled('new_order')) {
+                $this->store->sendNotification('new_order', [
+                    'order' => $latestOrder ?? null,
+                    'pickup' => $latestOrder->pickup ?? null,
+                    'card' => null,
+                    'customer' => $latestOrder->customer ?? null,
+                    'subscription' => $this ?? null
+                ]);
+            }
+
+            // Send new order notification to customer at the cutoff once the order is paid
+            if ($this->user->details->notificationEnabled('new_order')) {
+                $this->user->sendNotification('new_order', [
+                    'order' => $latestOrder ?? null,
+                    'pickup' => $latestOrder->pickup ?? null,
+                    'card' => null,
+                    'customer' => $latestOrder->customer ?? null,
+                    'subscription' => $this ?? null
+                ]);
+            }
+
+            // Updating item stock
+            if ($this->store->modules->stockManagement) {
+                foreach ($this->meal_subscriptions as $mealSub) {
+                    $meal = Meal::where('id', $mealSub->meal_id)->first();
+                    if ($meal && $meal->stock !== null) {
                         if ($meal->stock === 0) {
+                            $mealSub->delete();
+                            $this->syncPrices();
+                        } elseif ($meal->stock < $mealSub->quantity) {
+                            $unitPrice = $mealSub->price / $mealSub->quantity;
+                            $mealSub->quantity = $meal->stock;
+                            $mealSub->price = $unitPrice * $mealSub->quantity;
+                            $mealSub->update();
+                            $meal->stock = 0;
                             $meal->active = 0;
+                            $this->syncPrices();
+                        } else {
+                            $meal->stock -= $mealSub->quantity;
+                            if ($meal->stock === 0) {
+                                $meal->active = 0;
+                            }
                         }
+                        $meal->update();
                     }
-                    $meal->update();
                 }
             }
         }
