@@ -50,6 +50,9 @@
           </button>
         </div>
       </b-alert> -->
+
+      <!-- 
+      Fix this logic before uncommenting
       <center>
         <b-form-radio-group
           v-if="
@@ -59,7 +62,6 @@
               hasBothTranserTypes
           "
           buttons
-          v-model="bagPickup"
           class="storeFilters mb-3"
           :options="[
             { value: 1, text: 'Pickup' },
@@ -67,7 +69,7 @@
           ]"
           @input="val => changeTransferType(val)"
         ></b-form-radio-group>
-      </center>
+      </center> -->
       <button
         v-if="
           isMultipleDelivery &&
@@ -1172,10 +1174,10 @@ export default {
     changeTransferType(val) {
       this.$store.commit("emptyBag");
       this.setBagPickup(val);
-      if (!this.bagZipCode) {
+      if (!this.bagZipCode && val == 0) {
         this.showZipCodeModal = true;
       }
-      this.$parent.autoPickUpcomingMultDD(this.$parent.sortedDeliveryDays);
+      this.$parent.autoPickUpcomingMultDD(null);
     }
   }
 };

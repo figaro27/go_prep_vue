@@ -110,9 +110,8 @@ export default {
       this.$store.commit("emptyBag");
       this.setBagPickup(0);
       this.delivery = true;
-      if (this.context == "store") {
-        this.setBagZipCode(null);
-      }
+      this.setBagZipCode(null);
+
       if (this.bagZipCode) {
         this.visible = false;
         this.$emit("setAutoPickUpcomingMultDD");
@@ -120,8 +119,8 @@ export default {
     },
     setZipCode() {
       this.setBagZipCode(this.zipCode);
-      this.visible = false;
       this.$emit("setAutoPickUpcomingMultDD");
+      this.visible = false;
     }
   }
 };

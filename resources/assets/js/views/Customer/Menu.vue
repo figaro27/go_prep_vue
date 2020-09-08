@@ -31,7 +31,7 @@
             store.modules.multipleDeliveryDays &&
             ((!loggedIn && context !== 'store') || context == 'store')
         "
-        @setAutoPickUpcomingMultDD="autoPickUpcomingMultDD"
+        @setAutoPickUpcomingMultDD="autoPickUpcomingMultDD(null)"
       ></zip-code-modal>
 
       <store-description-modal
@@ -1612,7 +1612,7 @@ export default {
 
         if (availableDates.length > 0) {
           store.dispatch("refreshLazyDD", {
-            delivery_day: this.availableDates[0]
+            delivery_day: availableDates[0]
           });
         }
       }
