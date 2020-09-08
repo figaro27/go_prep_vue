@@ -9,6 +9,10 @@
     hide-footer
     hide-header
   >
+    <h5 class="mb-3 mt-3 center-text" v-if="noAvailableDays">
+      Unfortunately we do not deliver to your zip code.<br /><br />Please
+      refresh the page and choose Pickup or enter a different zip code.
+    </h5>
     <h5 class="mb-3 mt-3 center-text" v-if="delivery && !bagZipCode">
       Please enter your delivery zip code.
     </h5>
@@ -44,7 +48,7 @@
           type="submit"
           class="brand-color white-text d-inline"
           :disabled="!zipCodeSet"
-          v-if="delivery"
+          v-if="delivery && !noAvailableDays"
           >View Menu</b-btn
         >
       </center>
@@ -68,7 +72,8 @@ export default {
       visible: true,
       zipCode: null,
       delivery: false,
-      selected: false
+      selected: false,
+      noAvailableDays: false
     };
   },
   computed: {
@@ -76,7 +81,8 @@ export default {
       store: "viewedStore",
       multDDZipCode: "bagMultDDZipCode",
       bagZipCode: "bagZipCode",
-      context: "context"
+      context: "context",
+      bagPickup: "bagPickup"
     }),
     zipCodeSet() {
       if (this.zipCode && this.zipCode.length == 5) {
@@ -84,6 +90,60 @@ export default {
       } else {
         return false;
       }
+    },
+    sortedDeliveryDays() {
+      // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
+      let baseDeliveryDays = this.store.delivery_days;
+      let deliveryWeeks = this.store.settings.deliveryWeeks;
+      let storeDeliveryDays = [];
+
+      for (let i = 0; i <= deliveryWeeks; i++) {
+        baseDeliveryDays.forEach(day => {
+          let m = moment(day.day_friendly);
+          let newDate = moment(m).subtract(i, "week");
+          let newDay = { ...day };
+          newDay.day_friendly = newDate.format("YYYY-MM-DD");
+          storeDeliveryDays.push(newDay);
+        });
+      }
+
+      storeDeliveryDays = storeDeliveryDays.reverse();
+
+      let sortedDays = [];
+
+      if (this.store.delivery_day_zip_codes.length === 0) {
+        sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
+      } else {
+        sortedDays = storeDeliveryDays;
+      }
+
+      // If the store only serves certain zip codes on certain delivery days
+      if (this.store.delivery_day_zip_codes.length > 0) {
+        let deliveryDayIds = [];
+        this.store.delivery_day_zip_codes.forEach(ddZipCode => {
+          if (ddZipCode.zip_code === parseInt(this.bagZipCode)) {
+            deliveryDayIds.push(ddZipCode.delivery_day_id);
+          }
+        });
+        sortedDays = sortedDays.filter(day => {
+          if (deliveryDayIds.includes(day.id) || this.bagPickup) {
+            return true;
+          }
+          // return deliveryDayIds.includes(day.id);
+        });
+      }
+
+      if (this.bagPickup) {
+        sortedDays = sortedDays.filter(day => {
+          return day.type === "pickup";
+        });
+      }
+
+      sortedDays.sort(function(a, b) {
+        return new Date(a.day_friendly) - new Date(b.day_friendly);
+      });
+
+      return sortedDays;
     }
   },
   created() {},
@@ -120,6 +180,10 @@ export default {
     setZipCode() {
       this.setBagZipCode(this.zipCode);
       this.$emit("setAutoPickUpcomingMultDD");
+      if (this.sortedDeliveryDays.length === 0) {
+        this.noAvailableDays = true;
+        return;
+      }
       this.visible = false;
     }
   }
