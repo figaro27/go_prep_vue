@@ -986,42 +986,42 @@ class Subscription extends Model
         );
 
         // Assign plan to stripe subscription
-        if ($this->status === 'paused') {
-            \Stripe\Subscription::update(
-                $subscription->id,
-                [
-                    'cancel_at_period_end' => false,
-                    'items' => [
-                        [
-                            'id' => $subscription->items->data[0]->id,
-                            'plan' => $plan->id
-                        ]
-                    ],
-                    'prorate' => false,
-                    'pause_collection' => [
-                        'behavior' => 'void'
+        // if ($this->status === 'paused') {
+        //     \Stripe\Subscription::update(
+        //         $subscription->id,
+        //         [
+        //             'cancel_at_period_end' => false,
+        //             'items' => [
+        //                 [
+        //                     'id' => $subscription->items->data[0]->id,
+        //                     'plan' => $plan->id
+        //                 ]
+        //             ],
+        //             'prorate' => false,
+        //             'pause_collection' => [
+        //                 'behavior' => 'void'
+        //             ]
+        //         ],
+        //         [
+        //             'stripe_account' => $this->store->settings->stripe_id
+        //         ]
+        //     );
+        // } else {
+        \Stripe\Subscription::update(
+            $subscription->id,
+            [
+                'cancel_at_period_end' => false,
+                'items' => [
+                    [
+                        'id' => $subscription->items->data[0]->id,
+                        'plan' => $plan->id
                     ]
                 ],
-                [
-                    'stripe_account' => $this->store->settings->stripe_id
-                ]
-            );
-        } else {
-            \Stripe\Subscription::update(
-                $subscription->id,
-                [
-                    'cancel_at_period_end' => false,
-                    'items' => [
-                        [
-                            'id' => $subscription->items->data[0]->id,
-                            'plan' => $plan->id
-                        ]
-                    ],
-                    'prorate' => false
-                ],
-                ['stripe_account' => $this->store->settings->stripe_id]
-            );
-        }
+                'prorate' => false
+            ],
+            ['stripe_account' => $this->store->settings->stripe_id]
+        );
+        // }
 
         // Assign new plan ID to subscription
         $this->stripe_plan = $plan->id;
