@@ -2103,7 +2103,7 @@ use next_delivery_dates
           return this.order.deliveryFee;
         }
         if (this.adjustMealPlan) {
-          return this.$route.params.subscription.deliveryFee;
+          this.$parent.subscription.deliveryFee;
         }
         if (this.removeDeliveryFee) {
           return 0;
