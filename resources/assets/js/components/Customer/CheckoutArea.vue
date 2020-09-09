@@ -2535,6 +2535,9 @@ use next_delivery_dates
           giftCardOnly = false;
         }
       });
+      if (this.bag.length == 0) {
+        giftCardOnly = false;
+      }
 
       if (
         (this.minOption === "meals" && this.total >= this.minimumMeals) ||
