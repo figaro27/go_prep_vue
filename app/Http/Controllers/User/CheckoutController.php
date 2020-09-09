@@ -518,6 +518,7 @@ class CheckoutController extends UserController
                             if ($meal && $meal->stock !== null) {
                                 $meal->stock -= $item['quantity'];
                                 if ($meal->stock === 0) {
+                                    $meal->lastOutOfStock = date('Y-m-d H:i:s');
                                     $meal->active = 0;
                                     Subscription::syncStock($meal);
                                 }
@@ -988,6 +989,7 @@ class CheckoutController extends UserController
                             if ($meal && $meal->stock !== null) {
                                 $meal->stock -= $item['quantity'];
                                 if ($meal->stock === 0) {
+                                    $meal->lastOutOfStock = date('Y-m-d H:i:s');
                                     $meal->active = 0;
                                     Subscription::syncStock($meal);
                                 }

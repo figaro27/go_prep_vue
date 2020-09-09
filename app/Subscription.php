@@ -662,11 +662,13 @@ class Subscription extends Model
                             $mealSub->price = $unitPrice * $mealSub->quantity;
                             $mealSub->update();
                             $meal->stock = 0;
+                            $meal->lastOutOfStock = date('Y-m-d H:i:s');
                             $meal->active = 0;
                             $this->syncPrices();
                         } else {
                             $meal->stock -= $mealSub->quantity;
                             if ($meal->stock === 0) {
+                                $meal->lastOutOfStock = date('Y-m-d H:i:s');
                                 $meal->active = 0;
                             }
                         }
@@ -1803,11 +1805,13 @@ class Subscription extends Model
                         $mealSub->price = $unitPrice * $mealSub->quantity;
                         $mealSub->update();
                         $meal->stock = 0;
+                        $meal->lastOutOfStock = date('Y-m-d H:i:s');
                         $meal->active = 0;
                         $this->syncPrices();
                     } else {
                         $meal->stock -= $mealSub->quantity;
                         if ($meal->stock === 0) {
+                            $meal->lastOutOfStock = date('Y-m-d H:i:s');
                             $meal->active = 0;
                         }
                     }

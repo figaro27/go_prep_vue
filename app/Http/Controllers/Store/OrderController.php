@@ -31,6 +31,7 @@ use App\Billing\Charge;
 use App\Billing\Authorize;
 use App\Billing\Billing;
 use App\MealSize;
+use App\Subscription;
 
 class OrderController extends StoreController
 {
@@ -741,7 +742,9 @@ class OrderController extends StoreController
                         }
                         $meal->stock -= $item['quantity'] - $quantity;
                         if ($meal->stock === 0) {
+                            $meal->lastOutOfStock = date('Y-m-d H:i:s');
                             $meal->active = 0;
+                            Subscription::syncStock($meal);
                         }
                         $meal->update();
                     }
