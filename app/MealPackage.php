@@ -239,7 +239,14 @@ class MealPackage extends Model implements HasMedia
                 $mealPackageSize->title = $size['title'];
                 $mealPackageSize->price = $size['price'];
                 //$mealPackageSize->multiplier = $size['multiplier'];
-                $mealPackageSize->save();
+                $count = MealPackageSize::where([
+                    'store_id' => $props['store_id'],
+                    'title' => $size['title'],
+                    'price' => $size['price']
+                ])->count();
+                if ($count === 0) {
+                    $mealPackageSize->save();
+                }
 
                 $meals = [];
                 foreach ($size['meals'] as $meal) {
@@ -487,7 +494,15 @@ class MealPackage extends Model implements HasMedia
                 $mealPackageSize->title = $size['title'];
                 $mealPackageSize->price = $size['price'];
                 //$mealPackageSize->multiplier = $size['multiplier'];
-                $mealPackageSize->save();
+
+                $count = MealPackageSize::where([
+                    'store_id' => $this->store_id,
+                    'title' => $size['title'],
+                    'price' => $size['price']
+                ])->count();
+                if ($count === 0) {
+                    $mealPackageSize->save();
+                }
 
                 $meals = [];
                 foreach ($size['meals'] as $meal) {
