@@ -83,8 +83,7 @@ font-size:10px !important;
         @endif
         @if ($reportSettings->lab_packaged_on)
         <p class="text-7">
-        Packaged On: {{ date('Y-m-d') }} 
-          {{ $mealOrder->store->details->name }}, {{ $mealOrder->store->details->address }}, {{ $mealOrder->store->details->city }}, {{ $mealOrder->store->details->state }} {{ $mealOrder->store->details->zip }}
+        Packaged On: {{ date('d-m-Y') }} 
         </p>
         @endif
   
