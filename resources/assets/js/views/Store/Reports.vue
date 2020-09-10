@@ -459,7 +459,7 @@
           </p>
           <p>
             <b-form-checkbox v-model="reportSettings.lab_packaged_on"
-              >Packaged On (Today's Date)</b-form-checkbox
+              >Packaged On (Today's date)</b-form-checkbox
             >
           </p>
         </div>
