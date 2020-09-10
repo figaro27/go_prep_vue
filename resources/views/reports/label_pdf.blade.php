@@ -81,6 +81,12 @@ font-size:10px !important;
           {{ $mealOrder->store->details->name }}, {{ $mealOrder->store->details->address }}, {{ $mealOrder->store->details->city }}, {{ $mealOrder->store->details->state }} {{ $mealOrder->store->details->zip }}
         </p>
         @endif
+        @if ($reportSettings->lab_packaged_on)
+        <p class="text-7">
+        Packaged On: {{ date('Y-m-d') }} 
+          {{ $mealOrder->store->details->name }}, {{ $mealOrder->store->details->address }}, {{ $mealOrder->store->details->city }}, {{ $mealOrder->store->details->state }} {{ $mealOrder->store->details->zip }}
+        </p>
+        @endif
   
  @if ($reportSettings->lab_customer)
 

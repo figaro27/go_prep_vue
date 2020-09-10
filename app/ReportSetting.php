@@ -24,6 +24,7 @@ class ReportSetting extends Model
         'lab_ingredients' => 'boolean',
         'lab_allergies' => 'boolean',
         'lab_packaged_by' => 'boolean',
+        'lab_packaged_on' => 'boolean',
         'lab_dailyOrderNumbers' => 'boolean'
     ];
 
