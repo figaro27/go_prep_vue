@@ -83,7 +83,7 @@ font-size:10px !important;
         @endif
         @if ($reportSettings->lab_packaged_on)
         <p class="text-7">
-        Packaged On: {{ date('m-d-Y') }} 
+        Packaged On: {{ date('m/d/Y') }} 
         </p>
         @endif
   
