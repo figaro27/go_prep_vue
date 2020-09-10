@@ -238,6 +238,10 @@ foreach (
                                 'saveMealServings',
                                 'MealController@saveMealServings'
                             );
+                            Route::post(
+                                'getLatestMealSize',
+                                'MealController@getLatestMealSize'
+                            );
                             Route::resource(
                                 'ingredients',
                                 'IngredientController'

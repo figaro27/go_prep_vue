@@ -191,11 +191,14 @@ export default {
 
       this.$emit("change", this.meal.sizes);
     },
-    save() {
+    save(showToast = true) {
       this.$emit("save", this.meal.sizes);
-      this.$toastr.s("Meal variation saved.");
+      if (showToast) {
+        this.$toastr.s("Meal variation saved.");
+      }
     },
     editIngredients(sizeId) {
+      this.save(false);
       this.ingredient_picker_id = sizeId;
       this.ingredient_picker_size = _.find(this.meal.sizes, { id: sizeId });
 

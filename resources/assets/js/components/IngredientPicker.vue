@@ -866,16 +866,38 @@ export default {
       });
     },
     saveMealServings() {
+      if (this.mealSizeId >= 1000000) {
+        // If the meal size hasn't been saved yet, grab latest meal size ID.
+        this.saveMealServingsNewSize();
+      } else {
+        axios
+          .post("/api/me/saveMealServings", {
+            id: this.$parent.meal ? this.$parent.meal.id : this.meal.id,
+            meal_size_id: this.mealSizeId,
+            servingsPerMeal: this.meal.servingsPerMeal,
+            servingSizeUnit: this.meal.servingSizeUnit
+          })
+          .then(resp => {
+            this.$toastr.s("Meal serving info saved.");
+            this.getNutritionFacts(this.ingredients);
+          });
+      }
+    },
+    saveMealServingsNewSize() {
       axios
-        .post("/api/me/saveMealServings", {
-          id: this.meal.id,
-          meal_size_id: this.mealSizeId,
-          servingsPerMeal: this.meal.servingsPerMeal,
-          servingSizeUnit: this.meal.servingSizeUnit
-        })
+        .post("/api/me/getLatestMealSize", { id: this.$parent.meal.id })
         .then(resp => {
-          this.$toastr.s("Meal serving info saved.");
-          this.getNutritionFacts(this.ingredients);
+          axios
+            .post("/api/me/saveMealServings", {
+              id: this.$parent.meal ? this.$parent.meal.id : this.meal.id,
+              meal_size_id: resp.data,
+              servingsPerMeal: this.meal.servingsPerMeal,
+              servingSizeUnit: this.meal.servingSizeUnit
+            })
+            .then(resp => {
+              this.$toastr.s("Meal serving info saved.");
+              this.getNutritionFacts(this.ingredients);
+            });
         });
     }
   }

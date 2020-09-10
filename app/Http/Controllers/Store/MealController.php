@@ -377,10 +377,11 @@ class MealController extends StoreController
     {
         $mealSizeId = $request->get('meal_size_id');
         if ($mealSizeId) {
-            $meal = MealSize::where('id', $request->get('id'))->first();
+            $meal = MealSize::where('id', $mealSizeId)->first();
         } else {
             $meal = Meal::where('id', $request->get('id'))->first();
         }
+
         $meal->servingsPerMeal = $request->get('servingsPerMeal');
         if ($request->get('servingSizeUnit') === null) {
             $meal->servingSizeUnit = '';
@@ -388,5 +389,14 @@ class MealController extends StoreController
             $meal->servingSizeUnit = $request->get('servingSizeUnit');
         }
         $meal->save();
+    }
+
+    public function getLatestMealSize(Request $request)
+    {
+        $mealId = $request->get('id');
+
+        return MealSize::where('meal_id', $mealId)
+            ->pluck('id')
+            ->last();
     }
 }
