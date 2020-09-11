@@ -2,7 +2,11 @@
   <div>
     <div
       v-if="!willDeliver && loggedIn && !storeView"
-      class="main-customer-container customer-menu-container"
+      v-bind:class="
+        store.settings.menuStyle === 'image'
+          ? 'main-customer-container customer-menu-container'
+          : 'main-customer-container customer-menu-container gray-background'
+      "
     >
       <div class="row">
         <div class="col-sm-12">
@@ -23,6 +27,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      store: "viewedStore",
       willDeliver: "viewedStoreWillDeliver",
       loggedIn: "loggedIn"
     })
