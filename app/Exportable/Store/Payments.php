@@ -6,6 +6,7 @@ use App\Exportable\Exportable;
 use App\Store;
 use App\User;
 use Carbon\Carbon;
+use App\ReportRecord;
 
 class Payments
 {
@@ -332,6 +333,13 @@ class Payments
                 $filteredPayments
             );
         }
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->payments += 1;
+        $reportRecord->update();
 
         return $filteredPayments;
     }

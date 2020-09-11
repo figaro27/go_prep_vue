@@ -11,6 +11,7 @@ use App\Exportable\Exportable;
 use Illuminate\Support\Carbon;
 use mikehaertl\wkhtmlto\Pdf;
 use Illuminate\Support\Facades\Storage;
+use App\ReportRecord;
 
 class MealOrders
 {
@@ -483,6 +484,13 @@ class MealOrders
 
             return $formattedProduction;
         }
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->meal_production += 1;
+        $reportRecord->update();
 
         return $production->toArray();
     }

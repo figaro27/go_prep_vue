@@ -6,6 +6,7 @@ use App\Exportable\Exportable;
 use App\Store;
 use App\User;
 use App\Referral;
+use App\ReportRecord;
 
 class Referrals
 {
@@ -61,6 +62,14 @@ class Referrals
                 'Balance'
             ]);
         }
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->referrals += 1;
+        $reportRecord->update();
+
         return $referrals;
     }
 

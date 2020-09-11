@@ -5,6 +5,7 @@ namespace App\Exportable\Store;
 use App\Exportable\Exportable;
 use App\Store;
 use App\User;
+use App\ReportRecord;
 
 class Meals
 {
@@ -19,22 +20,37 @@ class Meals
 
     public function exportData($type = null)
     {
-        $menu = $this->store->meals->map(function($meal) {
-          return [
-            $meal->active ? 'Active' : 'Inactive',
-            $meal->title,
-            $meal->categories->implode('category', ', '),
-            $meal->tags->implode('tag', ', '),
-            $meal->allergies->implode('title', ', '),
-            $meal->lifetime_orders,
-            $meal->created_at->format('m/d/Y')
-          ];
+        $menu = $this->store->meals->map(function ($meal) {
+            return [
+                $meal->active ? 'Active' : 'Inactive',
+                $meal->title,
+                $meal->categories->implode('category', ', '),
+                $meal->tags->implode('tag', ', '),
+                $meal->allergies->implode('title', ', '),
+                $meal->lifetime_orders,
+                $meal->created_at->format('m/d/Y')
+            ];
         });
 
-        if($type !== 'pdf'){
-            $menu->prepend(['Status', 'Title', 'Categories', 'Tags', 'Contains', 'Lifetime Orders', 'Added' ]);
+        if ($type !== 'pdf') {
+            $menu->prepend([
+                'Status',
+                'Title',
+                'Categories',
+                'Tags',
+                'Contains',
+                'Lifetime Orders',
+                'Added'
+            ]);
         }
-        
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->meals += 1;
+        $reportRecord->update();
+
         return $menu->toArray();
     }
 

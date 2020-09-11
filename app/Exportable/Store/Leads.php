@@ -5,6 +5,7 @@ namespace App\Exportable\Store;
 use App\Exportable\Exportable;
 use App\Store;
 use App\User;
+use App\ReportRecord;
 
 class Leads
 {
@@ -45,6 +46,14 @@ class Leads
                 'Menu Viewed'
             ]);
         }
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->leads += 1;
+        $reportRecord->update();
+
         return $leads;
     }
 

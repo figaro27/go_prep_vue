@@ -7,6 +7,7 @@ use App\Store;
 use App\Utils\Data\Format;
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
+use App\ReportRecord;
 
 class IngredientsByMeal
 {
@@ -59,6 +60,13 @@ class IngredientsByMeal
 
             array_push($rows, ...$subArray);
         }
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->ingredients_by_meal += 1;
+        $reportRecord->update();
 
         return $rows;
     }

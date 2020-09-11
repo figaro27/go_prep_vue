@@ -6,6 +6,7 @@ use App\Exportable\Exportable;
 use App\Store;
 use App\User;
 use App\Meal;
+use App\ReportRecord;
 
 class MealsIngredients
 {
@@ -52,6 +53,13 @@ class MealsIngredients
                 }
             }
         }
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->meal_ingredients += 1;
+        $reportRecord->update();
 
         return $rows;
     }

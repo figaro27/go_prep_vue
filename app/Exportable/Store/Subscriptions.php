@@ -6,6 +6,7 @@ use App\Exportable\Exportable;
 use App\Store;
 use App\User;
 use Illuminate\Support\Carbon;
+use App\ReportRecord;
 
 class Subscriptions
 {
@@ -50,6 +51,14 @@ class Subscriptions
                 'Delivery Day'
             ]);
         }
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->subscriptions += 1;
+        $reportRecord->update();
+
         return $subscriptions->toArray();
     }
 

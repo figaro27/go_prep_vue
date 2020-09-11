@@ -5,6 +5,7 @@ namespace App\Exportable\Store;
 use App\Exportable\Exportable;
 use App\Store;
 use App\User;
+use App\ReportRecord;
 
 class Customers
 {
@@ -48,6 +49,13 @@ class Customers
                 'Last Order'
             ]);
         }
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->customers += 1;
+        $reportRecord->update();
 
         return $customers->toArray();
     }

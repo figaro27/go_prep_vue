@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use mikehaertl\wkhtmlto\Pdf;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\ReportRecord;
 
 class PackingSlips
 {
@@ -161,6 +162,13 @@ class PackingSlips
                 $this->page = null;
             }
         }
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->packing_slips += 1;
+        $reportRecord->update();
 
         return $orders;
     }

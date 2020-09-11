@@ -6,6 +6,7 @@ use App\Exportable\Exportable;
 use GuzzleHttp\Client;
 use App\Store;
 use App\Order;
+use App\ReportRecord;
 
 class DeliveryRoutes
 {
@@ -160,6 +161,13 @@ class DeliveryRoutes
                     return $customers[$item - 1];
                 }
             });
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->delivery_routes += 1;
+        $reportRecord->update();
 
         return $deliveryAddresses;
     }

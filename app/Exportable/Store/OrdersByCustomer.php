@@ -6,6 +6,8 @@ use App\StoreModule;
 use App\User;
 use App\MealOrder;
 use Illuminate\Support\Carbon;
+use App\ReportRecord;
+
 class OrdersByCustomer
 {
     use Exportable;
@@ -255,6 +257,13 @@ class OrdersByCustomer
                         })
                     ];
                 });
+
+            $reportRecord = ReportRecord::where(
+                'store_id',
+                $this->store->id
+            )->first();
+            $reportRecord->order_summaries += 1;
+            $reportRecord->update();
 
             return $customerOrders->values();
         }

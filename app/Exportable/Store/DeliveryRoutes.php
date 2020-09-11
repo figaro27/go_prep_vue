@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use App\Store;
 use App\Order;
 use App\UserDetail;
+use App\ReportRecord;
 
 class DeliveryRoutes
 {
@@ -132,6 +133,13 @@ class DeliveryRoutes
                     "delivery" => $userDetail ? $userDetail->delivery : null
                 ];
             }
+
+            $reportRecord = ReportRecord::where(
+                'store_id',
+                $this->store->id
+            )->first();
+            $reportRecord->delivery_routes += 1;
+            $reportRecord->update();
 
             return $routes;
         } catch (\Exception $e) {

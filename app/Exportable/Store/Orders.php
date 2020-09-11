@@ -5,6 +5,7 @@ namespace App\Exportable\Store;
 use App\Exportable\Exportable;
 use App\Store;
 use App\User;
+use App\ReportRecord;
 
 class Orders
 {
@@ -132,6 +133,13 @@ class Orders
                 array_pop($orders[$i]);
             }
         }
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->orders += 1;
+        $reportRecord->update();
 
         return $orders;
     }

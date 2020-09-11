@@ -145,6 +145,11 @@ class Store extends Model
         return $this->hasOne('App\SmsSetting');
     }
 
+    public function reportRecords()
+    {
+        return $this->hasOne('App\ReportRecord');
+    }
+
     public function categories()
     {
         return $this->hasMany('App\Category')->orderBy('order');

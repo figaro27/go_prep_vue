@@ -20,6 +20,7 @@ use App\Utils\Data\Format;
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
 use App\Ingredient;
+use App\ReportRecord;
 
 class Labels
 {
@@ -317,6 +318,13 @@ class Labels
         //         }
         //     }
         // }
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->labels += 1;
+        $reportRecord->update();
 
         return $allIngredients;
     }
