@@ -113,6 +113,18 @@ export default {
       this.$parent.createGiftCardModal = false;
     },
     addGiftCard() {
+      if (this.giftCard.title == null) {
+        this.$toastr.w("Please add a title.");
+        return;
+      }
+      if (this.giftCard.price == 0 || this.giftCard.price == null) {
+        this.$toastr.w("Please add a price.");
+        return;
+      }
+      if (this.giftCard.category_ids == null) {
+        this.$toastr.w("Please choose at least one category.");
+        return;
+      }
       axios.post("/api/me/giftCards", this.giftCard).then(resp => {
         this.$emit("created");
         this.$toastr.s("Gift card created.");
