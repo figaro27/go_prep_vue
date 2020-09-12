@@ -1386,10 +1386,10 @@ class Meal extends Model implements HasMedia
         $macros = $props->get('macros');
 
         if ($macros && $meal->store->settings->showMacros) {
-            $calories = $macros['calories'];
-            $carbs = $macros['carbs'];
-            $protein = $macros['protein'];
-            $fat = $macros['fat'];
+            $calories = isset($macros['calories']) ? $macros['calories'] : 0;
+            $carbs = isset($macros['carbs']) ? $macros['carbs'] : 0;
+            $protein = isset($macros['protein']) ? $macros['protein'] : 0;
+            $fat = isset($macros['fat']) ? $macros['fat'] : 0;
 
             $macro = MealMacro::where('meal_id', $meal->id)->first();
 
