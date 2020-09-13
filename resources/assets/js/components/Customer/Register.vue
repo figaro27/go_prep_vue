@@ -177,7 +177,11 @@
             ></b-input>
           </b-form-group>
 
-          <b-form-group horizontal label="State" :state="state(1, 'state')">
+          <b-form-group
+            horizontal
+            :label="stateWording"
+            :state="state(1, 'state')"
+          >
             <b-select
               label="name"
               :options="getStateNames(form[1].country)"
@@ -532,6 +536,15 @@ export default {
     ...mapGetters({
       store: "viewedStore"
     }),
+    stateWording() {
+      if (this.form[1].country == "GB") {
+        return "County";
+      } else if (this.form[1].country == "CA") {
+        return "Province";
+      } else {
+        return "State";
+      }
+    },
     countryNames() {
       return countries.selectOptions();
     },
@@ -605,7 +618,18 @@ export default {
       this.redirect = this.$route.query.redirect;
     }
   },
-  mounted() {},
+  mounted() {
+    if (this.store.details) {
+      this.form[1].state = this.store.details.state;
+      this.form[1].country = this.store.details.country;
+      let stateAbr = this.store.details.state;
+      let state = this.stateNames.filter(stateName => {
+        return stateName.value.toLowerCase() === stateAbr.toLowerCase();
+      });
+
+      this.form[1].state = state[0].value;
+    }
+  },
   methods: {
     ...mapActions(["init", "setToken"]),
     getStateNames(country = "US") {

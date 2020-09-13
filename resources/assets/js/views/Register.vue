@@ -684,10 +684,12 @@ export default {
       store: "viewedStore"
     }),
     stateWording() {
-      if (this.form[1].country === "US") {
-        return "State";
-      } else {
+      if (this.form[1].country == "GB") {
         return "County";
+      } else if (this.form[1].country == "CA") {
+        return "Province";
+      } else {
+        return "State";
       }
     },
     stateNames() {
