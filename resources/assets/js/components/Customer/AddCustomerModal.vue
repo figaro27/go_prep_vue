@@ -106,7 +106,7 @@
           <v-select
             v-model="form.state"
             label="name"
-            :options="stateNames"
+            :options="getStateNames(store.details.country)"
             @keypress.enter.native.prevent=""
           ></v-select>
         </b-form-group>
@@ -169,12 +169,16 @@ export default {
     };
   },
   mounted() {
-    let stateAbr = this.store.details.state;
-    let state = this.stateNames.filter(stateName => {
-      return stateName.value.toLowerCase() === stateAbr.toLowerCase();
-    });
+    if (this.store.details) {
+      this.form.state = this.store.details.state;
+      this.form.country = this.store.details.country;
+      let stateAbr = this.store.details.state;
+      let state = this.stateNames.filter(stateName => {
+        return stateName.value.toLowerCase() === stateAbr.toLowerCase();
+      });
 
-    this.form.state = state[0];
+      this.form.state = state[0].value;
+    }
   },
   computed: {
     ...mapGetters({
