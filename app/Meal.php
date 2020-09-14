@@ -1268,6 +1268,10 @@ class Meal extends Model implements HasMedia
                 $sizeIds->put($size['id'], $mealSize->id);
             }
 
+            // Remove the variation from all existing subscriptions before deleting
+            // $mealSizes = $meal->sizes()->whereNotIn('id', $sizeIds)->get();
+            // Subscription::removeVariations('sizes', $mealSizes);
+
             // Deleted sizes
             $meal
                 ->sizes()
@@ -1330,6 +1334,16 @@ class Meal extends Model implements HasMedia
 
                 $componentIds[] = $mealComponent->id;
 
+                // Remove the variation from all existing subscriptions before deleting
+                $mealComponentOptions = $mealComponent
+                    ->options()
+                    ->whereNotIn('id', $optionIds)
+                    ->get();
+                Subscription::removeVariations(
+                    'componentOptions',
+                    $mealComponentOptions
+                );
+
                 // Deleted component options
                 $mealComponent
                     ->options()
@@ -1338,6 +1352,7 @@ class Meal extends Model implements HasMedia
             }
 
             // Deleted components
+
             $meal
                 ->components()
                 ->whereNotIn('id', $componentIds)
@@ -1375,6 +1390,14 @@ class Meal extends Model implements HasMedia
             }
 
             // Deleted addons
+
+            // Remove the variation from all existing subscriptions before deleting
+            $mealAddons = $meal
+                ->addons()
+                ->whereNotIn('id', $addonIds)
+                ->get();
+            Subscription::removeVariations('addons', $mealAddons);
+
             $meal
                 ->addons()
                 ->whereNotIn('id', $addonIds)

@@ -14,6 +14,11 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use App\Coupon;
 use App\OrderTransaction;
+use App\MealAddon;
+use App\MealComponent;
+use App\MealComponentOption;
+use App\MealSubscriptionComponent;
+use App\MealSubscriptionAddon;
 
 class Subscription extends Model
 {
@@ -1494,6 +1499,119 @@ class Subscription extends Model
         }
 
         return $total;
+    }
+
+    // Removes deleted variations from existing subscriptions and updates the pricing
+    public static function removeVariations($type, $variations)
+    {
+        // if ($type == 'sizes'){
+        //     foreach ($variations as $size){
+        //         // Get the price of the regular meal (without the size)
+        //         $mealPrice = Meal::where('id', $size->meal_id)->pluck('price')->first();
+        //         $mealSizePrice = MealSize::where('id', $size->id)->pluck('price')->first();
+        //         $price = $mealSizePrice - $mealPrice;
+        //         // Adjust the pricing of all meal subscriptions
+        //         $mealSubscriptions = MealSubscription::where('meal_size_id', $size->id)->get();
+
+        //             foreach ($mealSubscriptions as $mealSubscription){
+        //                 $mealSubscription->price -= $price * $mealSubscription->quantity;
+        //                 $mealSubscription->meal_size_id = null;
+        //                 $mealSubscription->save();
+        //                 $subscriptions = Subscription::where('id', $mealSubscription->subscription_id)->where('status', '!=', 'cancelled')->get();
+        //                 foreach ($subscriptions as $subscription){
+        //                     $subscription->syncPrices();
+        //                 }
+        //         }
+        //     }
+        // }
+
+        if ($type == 'componentOptions') {
+            foreach ($variations as $componentOption) {
+                // Get the price of the component option
+                $price = MealComponentOption::where('id', $componentOption->id)
+                    ->pluck('price')
+                    ->first();
+                // Adjust the pricing of all meal subscriptions
+                $mealSubscriptionIds = MealSubscriptionComponent::where(
+                    'meal_component_option_id',
+                    $componentOption->id
+                )
+                    ->get()
+                    ->map(function ($componentOption) {
+                        return $componentOption->meal_subscription_id;
+                    });
+
+                foreach ($mealSubscriptionIds as $mealSubscriptionId) {
+                    $mealSubscriptions = MealSubscription::where(
+                        'id',
+                        $mealSubscriptionId
+                    )->get();
+                    foreach ($mealSubscriptions as $mealSubscription) {
+                        $mealSubscription->price -=
+                            $price * $mealSubscription->quantity;
+                        $mealSubscription->save();
+                        $subscriptions = Subscription::where(
+                            'id',
+                            $mealSubscription->subscription_id
+                        )
+                            ->where('status', '!=', 'cancelled')
+                            ->get();
+                        foreach ($subscriptions as $subscription) {
+                            $subscription->syncPrices();
+                        }
+                    }
+                }
+
+                MealSubscriptionComponent::where(
+                    'meal_component_option_id',
+                    $componentOption->id
+                )->delete();
+            }
+        }
+
+        if ($type == 'addons') {
+            foreach ($variations as $addon) {
+                // Get the price of the addon
+                $price = MealAddon::where('id', $addon->id)
+                    ->pluck('price')
+                    ->first();
+                // Adjust the pricing of all meal subscriptions
+                $mealSubscriptionIds = MealSubscriptionAddon::where(
+                    'meal_addon_id',
+                    $addon->id
+                )
+                    ->get()
+                    ->map(function ($addon) {
+                        return $addon->meal_subscription_id;
+                    });
+
+                foreach ($mealSubscriptionIds as $mealSubscriptionId) {
+                    $mealSubscriptions = MealSubscription::where(
+                        'id',
+                        $mealSubscriptionId
+                    )->get();
+                    foreach ($mealSubscriptions as $mealSubscription) {
+                        $mealSubscription->price -=
+                            $price * $mealSubscription->quantity;
+                        $mealSubscription->save();
+                        $subscriptions = Subscription::where(
+                            'id',
+                            $mealSubscription->subscription_id
+                        )
+                            ->where('status', '!=', 'cancelled')
+                            ->get();
+                        foreach ($subscriptions as $subscription) {
+                            $subscription->syncPrices();
+                        }
+                    }
+                }
+
+                MealSubscriptionAddon::where(
+                    'meal_addon_id',
+                    $addon->id
+                )->delete();
+            }
+        }
     }
 
     public function renewTest()
