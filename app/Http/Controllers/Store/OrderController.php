@@ -32,6 +32,7 @@ use App\Billing\Authorize;
 use App\Billing\Billing;
 use App\MealSize;
 use App\Subscription;
+use App\MealSubscription;
 
 class OrderController extends StoreController
 {
@@ -709,6 +710,23 @@ class OrderController extends StoreController
         return Order::updateOrder($id, $request->all());
     }
 
+    public function getReservedStock($meal)
+    {
+        // Accounts for meal stock in upcoming renewals of subscriptions
+        $mealSubs = MealSubscription::where('meal_id', $meal->id)->get();
+        $quantity = 0;
+        foreach ($mealSubs as $mealSub) {
+            $sub = Subscription::where(
+                'id',
+                $mealSub->subscription_id
+            )->first();
+            if ($sub->status == 'active') {
+                $quantity += $mealSub->quantity;
+            }
+        }
+        return $quantity;
+    }
+
     public function adjustOrder(Request $request)
     {
         try {
@@ -721,6 +739,7 @@ class OrderController extends StoreController
                 foreach ($bag->getItems() as $item) {
                     $meal = Meal::where('id', $item['meal']['id'])->first();
                     if ($meal && $meal->stock !== null) {
+                        $reservedStock = $this->getReservedStock($meal);
                         $existingMealOrder = $order
                             ->meal_orders()
                             ->where('meal_id', $item['meal']['id'])
@@ -728,13 +747,16 @@ class OrderController extends StoreController
                         $quantity = $existingMealOrder
                             ? $existingMealOrder->quantity
                             : 0;
-                        if ($meal->stock + $quantity < $item['quantity']) {
+                        if (
+                            $meal->stock + $quantity <
+                            $item['quantity'] + $reservedStock
+                        ) {
                             return response()->json(
                                 [
                                     'message' =>
                                         $meal->title .
                                         ' currently has ' .
-                                        $meal->stock .
+                                        ($meal->stock - $reservedStock) .
                                         ' left in stock. Please adjust your order and try again.'
                                 ],
                                 400
