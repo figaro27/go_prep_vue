@@ -1137,6 +1137,9 @@ export default {
 
             let newMealPackage = { ...this.mealPackage };
 
+            // Remove or add setting if the store wants to duplicate the price for each component option chosen
+            newMealPackage.price = newMealPackage.price / deliveryDays.length;
+
             newMealPackage.delivery_day = day;
 
             // Components
