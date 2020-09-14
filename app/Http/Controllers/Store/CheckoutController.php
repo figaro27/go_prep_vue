@@ -66,6 +66,23 @@ class CheckoutController extends StoreController
         // ];
     }
 
+    public function getReservedStock($meal)
+    {
+        // Accounts for meal stock in upcoming renewals of subscriptions
+        $mealSubs = MealSubscription::where('meal_id', $meal->id)->get();
+        $quantity = 0;
+        foreach ($mealSubs as $mealSub) {
+            $sub = Subscription::where(
+                'id',
+                $mealSub->subscription_id
+            )->first();
+            if ($sub->status == 'active') {
+                $quantity += $mealSub->quantity;
+            }
+        }
+        return $quantity;
+    }
+
     public function checkout(\App\Http\Requests\CheckoutRequest $request)
     {
         try {
@@ -87,13 +104,15 @@ class CheckoutController extends StoreController
                 foreach ($bag->getItems() as $item) {
                     $meal = Meal::where('id', $item['meal']['id'])->first();
                     if ($meal && $meal->stock !== null) {
-                        if ($meal->stock < $item['quantity']) {
+                        $reservedStock = $this->getReservedStock($meal);
+
+                        if ($meal->stock < $item['quantity'] + $reservedStock) {
                             return response()->json(
                                 [
                                     'message' =>
                                         $meal->title .
                                         ' currently has ' .
-                                        $meal->stock .
+                                        ($meal->stock - $reservedStock) .
                                         ' left in stock. Please adjust your order and checkout again.'
                                 ],
                                 400
