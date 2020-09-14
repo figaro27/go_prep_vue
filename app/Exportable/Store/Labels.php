@@ -182,6 +182,13 @@ class Labels
                 return $item;
             });
 
+            $reportRecord = ReportRecord::where(
+                'store_id',
+                $this->store->id
+            )->first();
+            $reportRecord->labels += 1;
+            $reportRecord->update();
+
             return $output;
         }
     }
@@ -241,6 +248,13 @@ class Labels
 
         $output = $page->pdf();
         Log::info('Saved to ' . $filename);
+
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        $reportRecord->labels += 1;
+        $reportRecord->update();
 
         if ($type === 'pdf') {
             Storage::disk('local')->put($filename, $output);
@@ -318,13 +332,6 @@ class Labels
         //         }
         //     }
         // }
-
-        $reportRecord = ReportRecord::where(
-            'store_id',
-            $this->store->id
-        )->first();
-        $reportRecord->labels += 1;
-        $reportRecord->update();
 
         return $allIngredients;
     }
