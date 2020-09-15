@@ -2135,13 +2135,16 @@ use next_delivery_dates
             if (this.storeModules.multipleDeliveryDays) {
               let mddFee = 0;
               this.groupBag.forEach(item => {
-                if (
-                  item.delivery_day &&
-                  item.delivery_day.applyFee &&
-                  item.items &&
-                  item.items.length > 0
-                ) {
-                  mddFee += parseFloat(item.delivery_day.fee);
+                if (item.delivery_day && item.items && item.items.length > 0) {
+                  if (item.delivery_day.feeType == "flat") {
+                    mddFee += parseFloat(item.delivery_day.fee);
+                  }
+                  if (item.delivery_day.feeType == "mileage") {
+                    let distance = parseFloat(this.store.distance);
+                    mddFee +=
+                      parseFloat(item.delivery_day.mileageBase) +
+                      parseFloat(item.delivery_day.mileagePerMile) * distance;
+                  }
                 }
               });
               return mddFee;
