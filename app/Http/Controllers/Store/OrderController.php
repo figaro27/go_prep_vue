@@ -751,12 +751,16 @@ class OrderController extends StoreController
                             $meal->stock + $quantity <
                             $item['quantity'] + $reservedStock
                         ) {
+                            $stockLeft = $meal->stock - $reservedStock;
+                            if ($stockLeft < 0) {
+                                $stockLeft = 0;
+                            }
                             return response()->json(
                                 [
                                     'message' =>
                                         $meal->title .
                                         ' currently has ' .
-                                        ($meal->stock - $reservedStock) .
+                                        $stockLeft .
                                         ' left in stock. Please adjust your order and try again.'
                                 ],
                                 400
