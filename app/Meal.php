@@ -1353,6 +1353,21 @@ class Meal extends Model implements HasMedia
 
             // Deleted components
 
+            $mealComponents = $meal
+                ->components()
+                ->whereNotIn('id', $componentIds)
+                ->get();
+
+            foreach ($mealComponents as $mealComponent) {
+                Subscription::removeVariations(
+                    'componentOptions',
+                    $mealComponent->options
+                );
+                foreach ($mealComponent->options as $option) {
+                    $option->delete();
+                }
+            }
+
             $meal
                 ->components()
                 ->whereNotIn('id', $componentIds)
