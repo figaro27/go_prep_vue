@@ -61,7 +61,7 @@ class CheckoutController extends UserController
                 'id',
                 $mealSub->subscription_id
             )->first();
-            if ($sub->status == 'active') {
+            if ($sub->status == 'active' && $sub->weekCount > 0) {
                 $quantity += $mealSub->quantity;
             }
         }
