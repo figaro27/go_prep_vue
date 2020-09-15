@@ -350,6 +350,10 @@ foreach (
                                 'searchCustomer',
                                 'CustomerController@searchCustomer'
                             );
+                            Route::post(
+                                'getDistanceFrom',
+                                'CustomerController@getDistanceFrom'
+                            );
 
                             Route::get('leads', 'UserController@getLeads');
                             Route::get(

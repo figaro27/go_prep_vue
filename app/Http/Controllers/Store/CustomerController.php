@@ -219,4 +219,14 @@ class CustomerController extends StoreController
 
         return [];
     }
+
+    public function getDistanceFrom(Request $request)
+    {
+        $customerId = $request->get('id');
+        $customer = Customer::where('id', $customerId)->first();
+        $user = User::where('id', $customer->user_id)->first();
+        $distance = $user->distanceFrom($this->store);
+        return 5;
+        return $distance;
+    }
 }

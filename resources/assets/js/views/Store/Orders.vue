@@ -1825,6 +1825,7 @@ export default {
       this.clearBagCustomerModel();
       this.clearBagDeliveryFee();
       this.setBagCoupon(null);
+      this.store.distance = 1;
     },
     adjustOrder() {
       this.$router.push({

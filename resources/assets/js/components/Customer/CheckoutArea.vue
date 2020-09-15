@@ -1370,6 +1370,13 @@ export default {
       if (!this.existingCustomerAdded) {
         if (val) {
           this.customerModel = this.getCustomerObject(val);
+          if (this.context == "store") {
+            axios
+              .post("/api/me/getDistanceFrom", { id: this.customerModel.value })
+              .then(resp => {
+                this.store.distance = resp.data;
+              });
+          }
         } else {
           this.customerModel = null;
         }

@@ -281,7 +281,7 @@ class User extends Authenticatable implements JWTSubject
 
         $origins = [];
         foreach ($stores as $store) {
-            $origin = $store->storeDetail;
+            $origin = $store->details;
             $origins[] = implode(',', [
                 $origin->address,
                 $origin->city,
