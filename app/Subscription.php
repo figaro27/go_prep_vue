@@ -1337,6 +1337,15 @@ class Subscription extends Model
             'store' => $this->store,
             'customer' => $this->customer
         ]);
+
+        // Adding stock back to the meal if the subscription is cancelled
+        if ($this->store->modules->stockManagement) {
+            foreach ($this->meal_subscriptions as $mealSub) {
+                $meal = Meal::where('id', $mealSub->meal_id)->first();
+                $meal->stock += $mealSub->quantity;
+                $meal->update();
+            }
+        }
     }
 
     /**
