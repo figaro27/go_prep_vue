@@ -69,8 +69,8 @@ class UpdateMealRequest extends FormRequest
                 'Please add a multiplier for the size variation.',
             'components.*.title.required' =>
                 'Please add a title for the component variation.',
-            'components.*.options.*.title.required' =>
-                'PLease add a title for the component option variation.',
+            // 'components.*.options.*.title.required' =>
+            //     'Please add a title for the component option variation.',
             'components.*.options.*.price.required' =>
                 'Please add a price for the component option variation.',
             'addons.*.title.required' =>

@@ -35,7 +35,7 @@ class UpdateMealPackageRequest extends FormRequest
                 'sizes.*.meals' => 'array',
                 'components.*.title' => 'required',
                 'components.*.options.*.title' =>
-                    'required_if:components.*.options.*.selectable,0',
+                    'required_if:components.*.options.*.preset,0',
                 'components.*.options.*.price' => 'required|gte:0|lte:6000',
                 'components.*.options.*.selectable' => 'filled',
                 'addons.*.price' => 'required|gte:0|lte:6000',
@@ -70,7 +70,7 @@ class UpdateMealPackageRequest extends FormRequest
             'components.*.title.required' =>
                 'Please add a title for the component variation.',
             'components.*.options.*.title.*' =>
-                'PLease add a title for the component option variation.',
+                'Please add a title for the component option variation.',
             'components.*.options.*.price.*' =>
                 'Please add a price for the component option variation.',
             'addons.*.title.required' =>
