@@ -172,6 +172,7 @@ export default {
       this.meal.addons = _.filter(this.meal.addons, addon => {
         return addon.id !== id;
       });
+      this.save();
       this.onChangeAddons();
     },
     onChangeAddons() {

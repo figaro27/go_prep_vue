@@ -175,6 +175,7 @@ export default {
       this.meal.sizes = _.filter(this.meal.sizes, size => {
         return size.id !== id;
       });
+      this.save();
       this.onChangeSizes();
     },
     onChangeSizes() {

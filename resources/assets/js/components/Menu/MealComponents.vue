@@ -251,6 +251,7 @@ export default {
       this.meal.components = _.filter(this.meal.components, component => {
         return component.id !== id;
       });
+      this.save();
       this.onChangeComponents();
     },
     deleteComponentOption(componentIndex, optionIndex) {
@@ -261,6 +262,7 @@ export default {
       });
 
       this.meal.components[componentIndex].options = options;
+      this.save();
       this.onChangeComponents();
     },
     onChangeComponents() {
