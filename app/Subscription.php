@@ -1541,6 +1541,11 @@ class Subscription extends Model
                         return $componentOption->meal_subscription_id;
                     });
 
+                MealSubscriptionComponent::where(
+                    'meal_component_option_id',
+                    $componentOption->id
+                )->delete();
+
                 foreach ($mealSubscriptionIds as $mealSubscriptionId) {
                     $mealSubscriptions = MealSubscription::where(
                         'id',
@@ -1561,11 +1566,6 @@ class Subscription extends Model
                         }
                     }
                 }
-
-                MealSubscriptionComponent::where(
-                    'meal_component_option_id',
-                    $componentOption->id
-                )->delete();
             }
         }
 
@@ -1585,6 +1585,11 @@ class Subscription extends Model
                         return $addon->meal_subscription_id;
                     });
 
+                MealSubscriptionAddon::where(
+                    'meal_addon_id',
+                    $addon->id
+                )->delete();
+
                 foreach ($mealSubscriptionIds as $mealSubscriptionId) {
                     $mealSubscriptions = MealSubscription::where(
                         'id',
@@ -1605,11 +1610,6 @@ class Subscription extends Model
                         }
                     }
                 }
-
-                MealSubscriptionAddon::where(
-                    'meal_addon_id',
-                    $addon->id
-                )->delete();
             }
         }
     }
