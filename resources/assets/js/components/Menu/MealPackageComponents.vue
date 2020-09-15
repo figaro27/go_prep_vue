@@ -295,6 +295,7 @@ export default {
           return component.id !== id;
         }
       );
+      this.save();
       this.onChangeComponents();
     },
     deleteComponentOption(componentIndex, optionIndex) {
@@ -305,6 +306,7 @@ export default {
       });
 
       this.meal_package.components[componentIndex].options = options;
+      this.save();
       this.onChangeComponents();
     },
     onChangeComponents() {

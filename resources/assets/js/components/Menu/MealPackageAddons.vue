@@ -195,6 +195,7 @@ export default {
       this.meal_package.addons = _.filter(this.meal_package.addons, addon => {
         return addon.id !== id;
       });
+      this.save();
       this.onChangeAddons();
     },
     onChangeAddons() {

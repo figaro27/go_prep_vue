@@ -54,7 +54,7 @@ class StoreMealRequest extends FormRequest
             'components.*.title.required' =>
                 'Please add a title for the component variation.',
             'components.*.options.*.title.required' =>
-                'PLease add a title for the component option variation.',
+                'Please add a title for the component option variation.',
             'components.*.options.*.price.required' =>
                 'Please add a price for the component option variation.',
             'addons.*.title.required' =>

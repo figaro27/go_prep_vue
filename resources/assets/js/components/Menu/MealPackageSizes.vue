@@ -171,6 +171,7 @@ export default {
       }
 
       this.$emit("change", this.sizes);
+      this.save();
     },
     changeSizeMeals(sizeId) {
       let size = _.find(this.sizes, { id: sizeId });
