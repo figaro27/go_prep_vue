@@ -10,9 +10,17 @@
     hide-header
   >
     <h5 class="mb-3 mt-3 center-text" v-if="noAvailableDays">
-      Unfortunately we do not deliver to your zip code.<br /><br />Please
-      refresh the page and choose Pickup or enter a different zip code.
+      Unfortunately we do not deliver to your zip code.
     </h5>
+    <center>
+      <b-btn
+        size="lg"
+        @click="reset"
+        class="brand-color white-text d-inline"
+        v-if="noAvailableDays"
+        >Enter Different Zip Code</b-btn
+      >
+    </center>
     <h5 class="mb-3 mt-3 center-text" v-if="delivery && !bagZipCode">
       Please enter your delivery zip code.
     </h5>
@@ -185,6 +193,12 @@ export default {
         return;
       }
       this.visible = false;
+    },
+    reset() {
+      this.noAvailableDays = false;
+      this.delivery = true;
+      this.zipCode = null;
+      this.setBagZipCode(null);
     }
   }
 };
