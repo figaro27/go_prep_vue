@@ -76,7 +76,7 @@ class RegisterController extends StoreController
                     : 'N/A',
                 'city' => $request->get('city') ? $request->get('city') : 'N/A',
                 'state' => $request->get('state')
-                    ? $request->get('state')['value']
+                    ? $request->get('state')
                     : 'N/A',
                 'zip' => $request->get('zip')
                     ? substr($request->get('zip'), 0, 5)

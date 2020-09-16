@@ -207,6 +207,10 @@ export default {
         return;
       }
 
+      if (this.form.state && this.form.state.value) {
+        this.form.state = this.form.state.value;
+      }
+
       axios.post("/api/me/register", form).then(async response => {
         this.setBagCustomerModel(response.data);
         this.$parent.addCustomerModal = false;
