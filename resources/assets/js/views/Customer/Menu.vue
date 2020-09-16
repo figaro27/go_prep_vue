@@ -484,6 +484,7 @@ import MealPage from "../../components/Customer/MealPage";
 import MealPackagePage from "../../components/Customer/MealPackagePage";
 import { sidebarCssClasses } from "../../shared/classes";
 import store from "../../store";
+import auth from "../../lib/auth";
 
 window.addEventListener("hashchange", function() {
   window.scrollTo(window.scrollX, window.scrollY - 500);
@@ -1085,6 +1086,16 @@ export default {
     }
   },
   created() {
+    // Check for auth token in URL
+    const { tkn } = this.$route.query;
+    if (tkn) {
+      auth.setToken(tkn);
+      // Remove token
+      this.$router.push(this.$route.path);
+      // Init state
+      this.initState();
+    }
+
     this.$eventBus.$on("showAuthModal", () => {
       this.showAuthModal = true;
     });
@@ -1188,6 +1199,7 @@ export default {
       this.$refs.lightbox.showImage(index);
     },
     ...mapActions([
+      "initState",
       "refreshSubscriptions",
       "emptyBag",
       "refreshUpcomingOrders"
