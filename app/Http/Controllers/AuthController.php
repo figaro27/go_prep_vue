@@ -93,6 +93,11 @@ class AuthController extends Controller
             '/https?:\/\/(?:www\.)?' . preg_quote(config('app.domain')) . '/i';
         $url = Request::url();
 
+        $expiresIn =
+            auth()
+                ->factory()
+                ->getTTL() * 60;
+
         // If not accessing store subdomain
 
         if (preg_match($preg, $url)) {
@@ -106,7 +111,7 @@ class AuthController extends Controller
 
                 // Custom domain. Add token to URL
                 if ($storeHost) {
-                    $redirect .= '?tkn=' . $token;
+                    $redirect .= '?tkn=' . $token . '&tknexp=' . $expiresIn;
                 }
             } else {
                 $redirect = $user->hasRole('store')
@@ -123,10 +128,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'user' => auth('api')->user(),
             'token_type' => 'bearer',
-            'expires_in' =>
-                auth()
-                    ->factory()
-                    ->getTTL() * 60,
+            'expires_in' => $expiresIn,
             'redirect' => $redirect,
             'store_domain' => $storeDomain
         ]);

@@ -1087,9 +1087,12 @@ export default {
   },
   created() {
     // Check for auth token in URL
-    const { tkn } = this.$route.query;
+    const { tkn, tknexp } = this.$route.query;
     if (tkn) {
-      auth.setToken(auth.decodeRawToken(tkn));
+      auth.setToken({
+        access_token: tkn,
+        expires_in: Number.parseInt(tknexp)
+      });
       // Remove token
       this.$router.push(this.$route.path);
       // Init state
