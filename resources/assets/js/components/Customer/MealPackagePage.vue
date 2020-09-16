@@ -927,8 +927,65 @@ export default {
       storeModuleSettings: "viewedStoreModuleSettings",
       deliveryDays: "viewedStoreDeliveryDays",
       deliveryDay: "viewedStoreDeliveryDay",
-      store: "viewedStore"
+      store: "viewedStore",
+      bagZipCode: "bagZipCode"
     }),
+    availableDeliveryDayIds() {
+      // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
+      let baseDeliveryDays = this.store.delivery_days;
+      let deliveryWeeks = this.store.settings.deliveryWeeks;
+      let storeDeliveryDays = [];
+
+      for (let i = 0; i <= deliveryWeeks; i++) {
+        baseDeliveryDays.forEach(day => {
+          let m = moment(day.day_friendly);
+          let newDate = moment(m).subtract(i, "week");
+          let newDay = { ...day };
+          newDay.day_friendly = newDate.format("YYYY-MM-DD");
+          storeDeliveryDays.push(newDay);
+        });
+      }
+
+      storeDeliveryDays = storeDeliveryDays.reverse();
+
+      let sortedDays = [];
+
+      if (this.store.delivery_day_zip_codes.length === 0) {
+        sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
+      } else {
+        sortedDays = storeDeliveryDays;
+      }
+
+      // If the store only serves certain zip codes on certain delivery days
+      if (this.store.delivery_day_zip_codes.length > 0) {
+        let deliveryDayIds = [];
+        this.store.delivery_day_zip_codes.forEach(ddZipCode => {
+          if (ddZipCode.zip_code === parseInt(this.bagZipCode)) {
+            deliveryDayIds.push(ddZipCode.delivery_day_id);
+          }
+        });
+        sortedDays = sortedDays.filter(day => {
+          if (deliveryDayIds.includes(day.id) || this.bagPickup) {
+            return true;
+          }
+          // return deliveryDayIds.includes(day.id);
+        });
+      }
+
+      if (this.bagPickup) {
+        sortedDays = sortedDays.filter(day => {
+          return day.type === "pickup";
+        });
+      }
+
+      sortedDays.sort(function(a, b) {
+        return new Date(a.day_friendly) - new Date(b.day_friendly);
+      });
+
+      return sortedDays.map(day => {
+        return day.id;
+      });
+    },
     addButtonText() {
       if (this.getTotalRemainingMeals() > 0) {
         return (
@@ -1019,7 +1076,9 @@ export default {
     },
     components() {
       return _.filter(this.mealPackage.components, component => {
-        return _.find(component.options, this.sizeCriteria);
+        if (this.availableDeliveryDayIds.includes(component.delivery_day_id)) {
+          return _.find(component.options, this.sizeCriteria);
+        }
       });
     },
     mealAddons() {
@@ -1137,9 +1196,6 @@ export default {
 
             let newMealPackage = { ...this.mealPackage };
 
-            // Remove or add setting if the store wants to duplicate the price for each component option chosen
-            newMealPackage.price = newMealPackage.price / deliveryDays.length;
-
             newMealPackage.delivery_day = day;
 
             // Components
@@ -1147,8 +1203,12 @@ export default {
             let newComponents = { ...components };
 
             newMealPackage.components.forEach(component => {
-              if (component.delivery_day_id == day.id) {
-                includedComponentIds.push(component.id);
+              if (
+                this.availableDeliveryDayIds.includes(component.delivery_day_id)
+              ) {
+                if (component.delivery_day_id == day.id) {
+                  includedComponentIds.push(component.id);
+                }
               }
             });
             if (includedComponentIds.length > 0) {
@@ -1159,6 +1219,11 @@ export default {
               });
             } else {
               newComponents = [];
+            }
+
+            if (newMealPackage.dividePriceByComponents) {
+              newMealPackage.price =
+                newMealPackage.price / this.components.length;
             }
 
             // Addons
@@ -1377,7 +1442,9 @@ export default {
     getTotalRemainingMeals() {
       let totalRemainingMeals = 0;
       this.mealPackage.components.forEach(component => {
-        totalRemainingMeals += this.getRemainingMeals(component.id);
+        if (this.availableDeliveryDayIds.includes(component.delivery_day_id)) {
+          totalRemainingMeals += this.getRemainingMeals(component.id);
+        }
       });
       return totalRemainingMeals;
     },

@@ -32,7 +32,8 @@ class MealPackage extends Model implements HasMedia
         'active_orders_price' => 'decimal:2',
         'created_at' => 'date:F d, Y',
         'created_at_local' => 'date:F d, Y',
-        'meal_carousel' => 'boolean'
+        'meal_carousel' => 'boolean',
+        'dividePriceByComponents' => 'boolean'
     ];
 
     public function days()
