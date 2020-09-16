@@ -425,6 +425,9 @@ class StoreSetting extends Model
             case "USD":
                 return '$';
                 break;
+            case "CAD":
+                return '$';
+                break;
             case "GBP":
                 return '£';
                 break;
@@ -433,7 +436,7 @@ class StoreSetting extends Model
 
     public function getDateFormatAttribute()
     {
-        if ($this->currency === 'USD') {
+        if ($this->currency === 'USD' || $this->currency === 'CAD') {
             return 'D, m/d/Y';
         } else {
             return 'D, d/m/Y';
