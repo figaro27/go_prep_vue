@@ -103,6 +103,11 @@ class AuthController extends Controller
                 $redirect = $user->hasRole('store')
                     ? $user->store->getUrl('/store/orders', $secure)
                     : 'http://' . $storeDomain . '.' . $host . '/customer/menu';
+
+                // Custom domain. Add token to URL
+                if ($storeHost) {
+                    $redirect .= '?tkn=' . $token;
+                }
             } else {
                 $redirect = $user->hasRole('store')
                     ? $user->store->getUrl('/store/orders', $secure)
@@ -122,7 +127,8 @@ class AuthController extends Controller
                 auth()
                     ->factory()
                     ->getTTL() * 60,
-            'redirect' => $redirect
+            'redirect' => $redirect,
+            'store_domain' => $storeDomain
         ]);
     }
 }
