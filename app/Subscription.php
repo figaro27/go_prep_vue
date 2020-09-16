@@ -987,7 +987,7 @@ class Subscription extends Model
                         $this->store->storeDetail->name .
                         ")"
                 ],
-                "currency" => "usd"
+                "currency" => $this->store->settings->currency
             ],
             ['stripe_account' => $this->store->settings->stripe_id]
         );
