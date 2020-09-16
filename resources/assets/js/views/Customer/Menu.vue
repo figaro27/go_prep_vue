@@ -1093,10 +1093,8 @@ export default {
         access_token: tkn,
         expires_in: Number.parseInt(tknexp)
       });
-      // Remove token
-      this.$router.push(this.$route.path);
-      // Init state
-      this.initState();
+      // Refresh
+      window.location.replace(window.location.href.split("?")[0]);
     }
 
     this.$eventBus.$on("showAuthModal", () => {
