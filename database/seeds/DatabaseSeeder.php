@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PickupLocationsSeeder::class);
         $this->call(GiftCardsSeeder::class);
         $this->call(ReferralsSeeder::class);
+        $this->call(ReportRecordsSeeder::class);
 
         Artisan::call('migrate:images');
     }

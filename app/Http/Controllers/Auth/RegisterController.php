@@ -300,6 +300,8 @@ class RegisterController extends Controller
 
             $storeSMSMasterList = $store->smsSettings->createMasterList();
 
+            $storeReportRecords = $store->reportRecords()->create();
+
             try {
                 $key = new \Cloudflare\API\Auth\APIKey(
                     config('services.cloudflare.user'),
