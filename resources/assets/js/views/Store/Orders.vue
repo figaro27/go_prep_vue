@@ -1270,7 +1270,8 @@ export default {
       "clearBagCustomerModel",
       "clearBagDeliveryFee",
       "setBagPickup",
-      "setBagCoupon"
+      "setBagCoupon",
+      "setBagZipCode"
     ]),
     refreshTable() {
       this.refreshResource("orders");
@@ -1825,6 +1826,7 @@ export default {
       this.clearBagCustomerModel();
       this.clearBagDeliveryFee();
       this.setBagCoupon(null);
+      this.setBagZipCode(null);
       this.store.distance = 1;
     },
     adjustOrder() {
