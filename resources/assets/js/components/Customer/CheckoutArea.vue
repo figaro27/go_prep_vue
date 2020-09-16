@@ -1370,7 +1370,10 @@ export default {
       if (!this.existingCustomerAdded) {
         if (val) {
           this.customerModel = this.getCustomerObject(val);
-          if (this.context == "store") {
+          if (
+            this.context == "store" &&
+            this.store.settings.deliveryFeeType == "mileage"
+          ) {
             axios
               .post("/api/me/getDistanceFrom", { id: this.customerModel.value })
               .then(resp => {
