@@ -5073,6 +5073,11 @@ jsvat@1.2.2:
   resolved "https://registry.yarnpkg.com/jsvat/-/jsvat-1.2.2.tgz#5aa3e23e66c12b4278d161c5592ab68f27e8ef9b"
   integrity sha512-rohMttxBJ078GtkQ603p3qBp1NQCVy5HPCjV5v5h9gP2fSnwu8yHlRi3T4JIImcJKbLxhNR6JU0wXTa+gItNDA==
 
+jwt-decode@^3.0.0-beta.2:
+  version "3.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-3.0.0-beta.2.tgz#5d928dd0d582caab47b252a5f12ad1721f2f6eef"
+  integrity sha512-AnENY5syz7PzgpTzos9sxkqKTmHU0JeJOXZFHUc41bDyybC2yzZ+1r43ZLhk7+JCwF0yjISPuVK9ZWfA1nCUPA==
+
 keyboardjs@^2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/keyboardjs/-/keyboardjs-2.5.1.tgz#2eb5d96bd1028e07136cd71919f607579edca716"
@@ -9434,6 +9439,11 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+vue-analytics-facebook-pixel@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/vue-analytics-facebook-pixel/-/vue-analytics-facebook-pixel-1.0.1.tgz#a49cf55108792eedd1072b1a6123af95baa2f58a"
+  integrity sha1-pJz1UQh5Lu3RBysaYSOvlbqi9Yo=
+
 vue-carousel@^0.18.0:
   version "0.18.0"
   resolved "https://registry.yarnpkg.com/vue-carousel/-/vue-carousel-0.18.0.tgz#478dfcad3abe2ee44c227020b6e60fb8484dc9f1"
@@ -9447,6 +9457,11 @@ vue-chartjs@^3.3.2:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/vue-chartjs/-/vue-chartjs-3.4.0.tgz#669e4453be0676605fc9290b3b581867ccd15c88"
   integrity sha512-uikAXl66g49rawH7Uto3gKh/7vxflcd5xyYbnQVGKSYEh9VI9JGMZ1KNPAEr+8ViRd2FX1hPDVevKBONK6v1fw==
+
+vue-click-outside@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/vue-click-outside/-/vue-click-outside-1.1.0.tgz#48b7680b518923e701643cccb3e165854aad99eb"
+  integrity sha512-pNyvAA9mRXJwPHlHJyjMb4IONSc7khS5lxGcMyE2EIKgNMAO279PWM9Hyq0d5J4FkiSRdmFLwnbjDd5UtPizHQ==
 
 vue-clickaway@^2.2.2:
   version "2.2.2"

@@ -1089,7 +1089,7 @@ export default {
     // Check for auth token in URL
     const { tkn } = this.$route.query;
     if (tkn) {
-      auth.setToken(tkn);
+      auth.setToken(auth.decodeRawToken(tkn));
       // Remove token
       this.$router.push(this.$route.path);
       // Init state
