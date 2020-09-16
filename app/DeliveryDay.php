@@ -59,13 +59,19 @@ class DeliveryDay extends Model
         );
     }
 
+    public function next_orderable_dates()
+    {
+        $dates = array_merge(
+            $this->store->settings->next_orderable_delivery_dates->toArray(),
+            $this->store->settings->next_orderable_pickup_dates->toArray()
+        );
+        return $dates;
+    }
+
     public function getDayFriendlyAttribute()
     {
         $nextDate = '';
-        foreach (
-            $this->store->settings->next_orderable_delivery_dates
-            as $date
-        ) {
+        foreach ($this->next_orderable_dates() as $date) {
             if ($date['week_index'] == $this->day) {
                 $nextDate = $date['day_friendly'];
             }

@@ -728,9 +728,14 @@ export default {
           }
         });
         sortedDays = sortedDays.filter(day => {
-          if (deliveryDayIds.includes(day.id) || this.bagPickup) {
+          if (this.bagPickup) {
             return true;
+          } else {
+            if (deliveryDayIds.includes(day.id) && day.type == "delivery") {
+              return true;
+            }
           }
+
           // return deliveryDayIds.includes(day.id);
         });
       }

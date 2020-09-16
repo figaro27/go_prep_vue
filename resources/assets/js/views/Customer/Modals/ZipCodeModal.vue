@@ -24,7 +24,7 @@
     <h5 class="mb-3 mt-3 center-text" v-if="delivery && !bagZipCode">
       Please enter your delivery zip code.
     </h5>
-    <h5 class="mb-3 mt-3 center-text" v-if="!delivery">
+    <h5 class="mb-3 mt-3 center-text" v-if="!delivery && transferTypes.both">
       Are you ordering for pickup or delivery?
     </h5>
     <b-form class="mt-2 text-center" @submit.prevent="setZipCode">
@@ -38,14 +38,14 @@
           ></b-form-input>
         </b-form-group>
         <b-btn
-          v-if="!delivery"
+          v-if="transferTypes.both && !delivery"
           size="lg"
           class="brand-color white-text d-inline"
           @click="setPickup()"
           >Pickup</b-btn
         >
         <b-btn
-          v-if="!delivery"
+          v-if="transferTypes.both && !delivery"
           size="lg"
           class="brand-color white-text d-inline"
           @click="setDelivery()"
@@ -81,7 +81,8 @@ export default {
       zipCode: null,
       delivery: false,
       selected: false,
-      noAvailableDays: false
+      noAvailableDays: false,
+      updated: false
     };
   },
   computed: {
@@ -92,6 +93,27 @@ export default {
       context: "context",
       bagPickup: "bagPickup"
     }),
+    transferTypes() {
+      let hasDelivery = false;
+      let hasPickup = false;
+
+      this.store.delivery_days.forEach(day => {
+        if (day.type == "delivery") {
+          hasDelivery = true;
+        }
+        if (day.type == "pickup") {
+          hasPickup = true;
+        }
+      });
+
+      let hasBoth = hasDelivery && hasPickup ? true : false;
+
+      return {
+        delivery: hasDelivery,
+        pickup: hasPickup,
+        both: hasBoth
+      };
+    },
     zipCodeSet() {
       if (this.zipCode && this.zipCode.length == 5) {
         return true;
@@ -156,8 +178,24 @@ export default {
   },
   created() {},
   mounted() {
+    if (this.transferTypes.both) {
+      this.hasBothTransferTypes = true;
+    } else if (!this.transferTypes.both && this.transferTypes.delivery) {
+      this.delivery = true;
+    }
+
     if (this.deliverySelected) {
       this.delivery = true;
+    }
+  },
+  updated() {
+    if (
+      !this.updated &&
+      !this.transferTypes.both &&
+      this.transferTypes.pickup
+    ) {
+      console.log(1);
+      this.visible = false;
     }
   },
   destroyed() {
@@ -188,7 +226,7 @@ export default {
     setZipCode() {
       this.setBagZipCode(this.zipCode);
       this.$emit("setAutoPickUpcomingMultDD");
-      if (this.sortedDeliveryDays.length === 0) {
+      if (this.sortedDeliveryDays.length === 0 && !this.bagPickup) {
         this.noAvailableDays = true;
         return;
       }
