@@ -1140,6 +1140,8 @@ export default {
       this.store.id === 110
     ) {
       this.setBagPickup(1);
+    } else {
+      this.setBagPickup(0);
     }
     if (this.storeModules.dailyOrderNumbers) {
       this.columns.splice(1, 0, "dailyOrderNumber");
