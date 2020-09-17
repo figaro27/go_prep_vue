@@ -700,8 +700,6 @@ export default {
       let deliveryWeeks = this.store.settings.deliveryWeeks;
       let storeDeliveryDays = [];
 
-      console.log("baseDeliveryDays: " + baseDeliveryDays);
-
       for (let i = 0; i <= deliveryWeeks; i++) {
         baseDeliveryDays.forEach(day => {
           let m = moment(day.day_friendly);
