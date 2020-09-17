@@ -1076,7 +1076,13 @@ export default {
     },
     components() {
       return _.filter(this.mealPackage.components, component => {
-        if (this.availableDeliveryDayIds.includes(component.delivery_day_id)) {
+        if (this.store.modules.multipleDeliveryDays) {
+          if (
+            this.availableDeliveryDayIds.includes(component.delivery_day_id)
+          ) {
+            return _.find(component.options, this.sizeCriteria);
+          }
+        } else {
           return _.find(component.options, this.sizeCriteria);
         }
       });
@@ -1203,12 +1209,18 @@ export default {
             let newComponents = { ...components };
 
             newMealPackage.components.forEach(component => {
-              if (
-                this.availableDeliveryDayIds.includes(component.delivery_day_id)
-              ) {
-                if (component.delivery_day_id == day.id) {
-                  includedComponentIds.push(component.id);
+              if (this.store.modules.multipleDeliveryDays) {
+                if (
+                  this.availableDeliveryDayIds.includes(
+                    component.delivery_day_id
+                  )
+                ) {
+                  if (component.delivery_day_id == day.id) {
+                    includedComponentIds.push(component.id);
+                  }
                 }
+              } else {
+                includedComponentIds.push(component.id);
               }
             });
             if (includedComponentIds.length > 0) {
@@ -1442,7 +1454,13 @@ export default {
     getTotalRemainingMeals() {
       let totalRemainingMeals = 0;
       this.mealPackage.components.forEach(component => {
-        if (this.availableDeliveryDayIds.includes(component.delivery_day_id)) {
+        if (this.store.modules.multipleDeliveryDays) {
+          if (
+            this.availableDeliveryDayIds.includes(component.delivery_day_id)
+          ) {
+            totalRemainingMeals += this.getRemainingMeals(component.id);
+          }
+        } else {
           totalRemainingMeals += this.getRemainingMeals(component.id);
         }
       });
