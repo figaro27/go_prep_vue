@@ -74,6 +74,8 @@
             <div style="position: relative">
               <h4 class="center-text">Select Day</h4>
 
+              Sorted Delivery Days: {{ sortedDeliveryDays }}
+
               <Spinner
                 v-if="isLoadingDeliveryDays"
                 position="relative"
