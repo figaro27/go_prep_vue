@@ -1178,7 +1178,6 @@ export default {
         "price",
         "subscription_count",
         "views",
-        "lifetime_orders",
         "created_at",
         "actions"
       ],
@@ -1192,7 +1191,6 @@ export default {
           contains: "Contains",
           price: "Price",
           subscription_count: "Subscriptions",
-          lifetime_orders: "Lifetime Orders",
           created_at: "Added",
           actions: "Actions"
         },

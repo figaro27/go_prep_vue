@@ -30,7 +30,7 @@ class OptimizedMealPackage extends Model implements HasMedia
 
     protected $casts = [
         'price' => 'double',
-        'active_orders_price' => 'decimal:2',
+        // 'active_orders_price' => 'decimal:2',
         'created_at' => 'date:F d, Y',
         'created_at_local' => 'date:F d, Y',
         'meal_carousel' => 'boolean'

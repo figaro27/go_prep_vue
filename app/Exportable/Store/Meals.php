@@ -27,7 +27,7 @@ class Meals
                 $meal->categories->implode('category', ', '),
                 $meal->tags->implode('tag', ', '),
                 $meal->allergies->implode('title', ', '),
-                $meal->lifetime_orders,
+                // $meal->lifetime_orders,
                 $meal->created_at->format('m/d/Y')
             ];
         });
@@ -39,7 +39,7 @@ class Meals
                 'Categories',
                 'Tags',
                 'Contains',
-                'Lifetime Orders',
+                // 'Lifetime Orders',
                 'Added'
             ]);
         }

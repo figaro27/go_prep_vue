@@ -18,7 +18,7 @@
             <th>Categories</th>
             <th>Tags</th>
             <th>Contains</th>
-            <th>Lifetime Orders</th>
+            <!-- <th>Lifetime Orders</th> -->
             <th>Added</th>
           </tr>
         </thead>

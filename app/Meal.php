@@ -54,7 +54,7 @@ class Meal extends Model implements HasMedia
 
     protected $casts = [
         'price' => 'double',
-        'active_orders_price' => 'decimal:2',
+        // 'active_orders_price' => 'decimal:2',
         'created_at' => 'date:F d, Y',
         'created_at_local' => 'date:F d, Y',
         'substitute' => 'boolean',
@@ -65,9 +65,9 @@ class Meal extends Model implements HasMedia
         'allergy_titles',
         'tag_titles',
         'nutrition',
-        'active_orders',
-        'active_orders_price',
-        'lifetime_orders',
+        // 'active_orders',
+        // 'active_orders_price',
+        // 'lifetime_orders',
         'subscription_count',
         'allergy_ids',
         'category_ids',
@@ -75,8 +75,8 @@ class Meal extends Model implements HasMedia
         'delivery_day_ids',
         'substitute',
         // 'substitute_ids',
-        'ingredient_ids',
-        'order_ids',
+        // 'ingredient_ids',
+        // 'order_ids',
         'created_at_local',
         'image',
         'gallery',
@@ -336,26 +336,26 @@ class Meal extends Model implements HasMedia
             ->performOnCollections('featured_image', 'gallery');
     }
 
-    public function getLifetimeOrdersAttribute()
-    {
-        $id = $this->id;
-        return MealOrder::where('meal_id', $id)
-            ->whereHas('order', function ($order) {
-                $order->where('paid', 1);
-            })
-            ->get()
-            ->sum('quantity');
-    }
+    // public function getLifetimeOrdersAttribute()
+    // {
+    //     $id = $this->id;
+    //     return MealOrder::where('meal_id', $id)
+    //         ->whereHas('order', function ($order) {
+    //             $order->where('paid', 1);
+    //         })
+    //         ->get()
+    //         ->sum('quantity');
+    // }
 
-    public function getActiveOrdersAttribute()
-    {
-        return $this->orders->where('fulfilled', 0)->count();
-    }
+    // public function getActiveOrdersAttribute()
+    // {
+    //     return $this->orders->where('fulfilled', 0)->count();
+    // }
 
-    public function getActiveOrdersPriceAttribute()
-    {
-        return $this->orders->where('fulfilled', 0)->count() * $this->price;
-    }
+    // public function getActiveOrdersPriceAttribute()
+    // {
+    //     return $this->orders->where('fulfilled', 0)->count() * $this->price;
+    // }
 
     public function getNutritionAttribute()
     {
@@ -375,15 +375,15 @@ class Meal extends Model implements HasMedia
         return $nutrition;
     }
 
-    public function getOrderIdsAttribute()
-    {
-        return $this->orders->pluck('id');
-    }
+    // public function getOrderIdsAttribute()
+    // {
+    //     return $this->orders->pluck('id');
+    // }
 
-    public function getIngredientIdsAttribute()
-    {
-        return $this->tags->pluck('id');
-    }
+    // public function getIngredientIdsAttribute()
+    // {
+    //     return $this->ingredients->pluck('id');
+    // }
 
     public function getAllergyIdsAttribute()
     {
