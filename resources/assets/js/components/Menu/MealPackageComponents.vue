@@ -221,7 +221,7 @@ export default {
       meal_picker_component_id: null,
       meal_picker_option_id: null,
       meal_picker_meals: [],
-      meal_picker_selectable: false,
+      meal_picker_selectable: true,
       duplicated: {}
     };
   },
@@ -334,7 +334,7 @@ export default {
       this.meal_picker_component_id = componentIndex;
       this.meal_picker_option_id = optionIndex;
 
-      this.meal_picker_selectable = !!option.selectable;
+      // this.meal_picker_selectable = !!option.selectable;
       this.meal_picker_meals = option
         ? _.map(option.meals, meal => {
             return {
@@ -363,7 +363,7 @@ export default {
     },
     hideMealPicker() {
       this.meal_picker_meals = [];
-      this.meal_picker_selectable = false;
+      this.meal_picker_selectable = true;
       this.meal_picker_component_id = null;
       this.meal_picker_option_id = null;
     },

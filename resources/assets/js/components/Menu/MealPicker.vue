@@ -18,7 +18,7 @@
       </div>
       <div slot="afterFilter" class="d-inline">
         <b-form-group class="ml-3">
-          <b-form-radio-group v-model="meals_selectable">
+          <!-- <b-form-radio-group v-model="meals_selectable">
             <b-form-radio
               :value="false"
               name="radio-options"
@@ -48,7 +48,7 @@
               class="width-130"
               @change="selectAll = false"
             ></b-form-select>
-          </b-form-radio-group>
+          </b-form-radio-group> -->
         </b-form-group>
       </div>
 
@@ -202,7 +202,7 @@ export default {
       //
       categoryFilter: -1,
       selected: [],
-      meals_selectable: false,
+      meals_selectable: true,
       filter_deselected: false,
       options: {
         perPage: 100,
