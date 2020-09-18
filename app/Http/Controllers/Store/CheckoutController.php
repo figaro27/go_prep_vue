@@ -838,6 +838,9 @@ class CheckoutController extends StoreController
 
                 if ($store->settings->subscriptionRenewalType == 'cutoff') {
                     $billingAnchor = $cutoff->copy();
+                    if ($billingAnchor->isPast()) {
+                        $billingAnchor->addWeeks(1);
+                    }
                 }
 
                 if (!$cashOrder) {
