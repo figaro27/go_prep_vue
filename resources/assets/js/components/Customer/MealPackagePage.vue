@@ -928,7 +928,8 @@ export default {
       deliveryDays: "viewedStoreDeliveryDays",
       deliveryDay: "viewedStoreDeliveryDay",
       store: "viewedStore",
-      bagZipCode: "bagZipCode"
+      bagZipCode: "bagZipCode",
+      bagPickup: "bagPickup"
     }),
     availableDeliveryDayIds() {
       // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
@@ -965,10 +966,15 @@ export default {
           }
         });
         sortedDays = sortedDays.filter(day => {
-          if (deliveryDayIds.includes(day.id) || this.bagPickup) {
-            return true;
+          if (day.type == "delivery") {
+            if (deliveryDayIds.includes(day.id)) {
+              return true;
+            }
+          } else {
+            if (this.bagPickup) {
+              return true;
+            }
           }
-          // return deliveryDayIds.includes(day.id);
         });
       }
 
