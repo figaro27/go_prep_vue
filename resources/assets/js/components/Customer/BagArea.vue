@@ -51,8 +51,6 @@
         </div>
       </b-alert> -->
 
-      <!-- 
-      Fix this logic before uncommenting
       <center>
         <b-form-radio-group
           v-if="
@@ -63,13 +61,14 @@
           "
           buttons
           class="storeFilters mb-3"
+          v-model="isPickup"
           :options="[
             { value: 1, text: 'Pickup' },
             { value: 0, text: 'Delivery' }
           ]"
-          @input="val => changeTransferType(val)"
+          @change="val => changeTransferType(val)"
         ></b-form-radio-group>
-      </center> -->
+      </center>
       <button
         v-if="
           isMultipleDelivery &&
@@ -590,7 +589,8 @@ export default {
       },
       selectedLineItem: {},
       orderLineItems: [],
-      showZipCodeModal: false
+      showZipCodeModal: false,
+      isPickup: 0
     };
   },
   props: {
@@ -601,6 +601,11 @@ export default {
     pickup: 0,
     storeView: false,
     selectedDeliveryDay: null
+  },
+  watch: {
+    bagPickup(val) {
+      this.changePickup(val);
+    }
   },
   mixins: [MenuBag],
   computed: {
@@ -773,6 +778,7 @@ export default {
     }
   },
   mounted() {
+    this.isPickup = this.bagPickup;
     if (this.bag) {
       this.bag.forEach(item => {
         this.$set(this.enablingEdit, item.guid, false);
@@ -1173,11 +1179,19 @@ export default {
     },
     changeTransferType(val) {
       this.$store.commit("emptyBag");
+      this.isPickup = val;
       this.setBagPickup(val);
-      if (!this.bagZipCode && val == 0) {
+      if (
+        !this.bagZipCode &&
+        val == 0 &&
+        this.store.delivery_day_zip_codes.length > 0
+      ) {
         this.showZipCodeModal = true;
       }
       this.$parent.autoPickUpcomingMultDD(null);
+    },
+    changePickup(val) {
+      this.isPickup = val;
     }
   }
 };
