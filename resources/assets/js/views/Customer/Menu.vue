@@ -28,6 +28,7 @@
       <zip-code-modal
         v-if="
           (store.delivery_day_zip_codes.length > 0 &&
+            transferTypes.delivery &&
             store.modules.multipleDeliveryDays &&
             ((!loggedIn && context !== 'store') || context == 'store')) ||
             (transferTypes.both &&
@@ -1140,6 +1141,9 @@ export default {
   },
   mounted() {
     if (this.store.modules.multipleDeliveryDays) {
+      if (!this.transferTypes.delivery && this.transferTypes.pickup) {
+        this.setBagPickup(1);
+      }
       if (this.bagPickup === 1) {
         this.autoPickUpcomingMultDD();
       }
@@ -1237,7 +1241,8 @@ export default {
       "emptyBag",
       "setBagMealPlan",
       "setBagCoupon",
-      "setBagZipCode"
+      "setBagZipCode",
+      "setBagPickup"
     ]),
     updateScrollbar() {
       return; // disabling for now

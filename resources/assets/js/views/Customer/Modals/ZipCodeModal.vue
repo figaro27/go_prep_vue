@@ -167,6 +167,10 @@ export default {
         sortedDays = sortedDays.filter(day => {
           return day.type === "pickup";
         });
+      } else {
+        sortedDays = sortedDays.filter(day => {
+          return day.type === "delivery";
+        });
       }
 
       sortedDays.sort(function(a, b) {
