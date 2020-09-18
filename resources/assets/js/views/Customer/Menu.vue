@@ -1146,7 +1146,7 @@ export default {
       if (this.store.delivery_day_zip_codes.length === 0) {
         this.autoPickUpcomingMultDD();
       } else {
-        if (this.loggedIn) {
+        if (this.loggedIn && this.context !== "store") {
           this.setBagZipCode(parseInt(this.user.user_detail.zip));
           this.autoPickUpcomingMultDD(this.sortedDeliveryDays);
         }
