@@ -30,7 +30,9 @@
           (store.delivery_day_zip_codes.length > 0 &&
             store.modules.multipleDeliveryDays &&
             ((!loggedIn && context !== 'store') || context == 'store')) ||
-            transferTypes.both
+            (transferTypes.both &&
+              !$route.params.adjustOrder &&
+              !adjustMealPlan)
         "
         @setAutoPickUpcomingMultDD="autoPickUpcomingMultDD(null)"
       ></zip-code-modal>
