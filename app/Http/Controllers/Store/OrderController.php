@@ -1172,7 +1172,7 @@ class OrderController extends StoreController
                 $charge = \Stripe\Charge::create(
                     [
                         "amount" => round(100 * $chargeAmount),
-                        "currency" => "usd",
+                        "currency" => $storeSettings->currency,
                         "source" => $storeSource,
                         // Change to "application_fee_amount" as per Stripe's updates
                         "application_fee" => round(
