@@ -79,8 +79,8 @@ class StoreDetailController extends StoreController
             'phone' => 'required|string',
             'address' => 'required|string',
             'city' => 'required|string',
-            'state' => 'required|string',
-            'zip' => 'required|numeric'
+            'state' => 'required|string'
+            // 'zip' => 'required|numeric'
             // 'description' => 'required|string|max:450',
         ];
 
