@@ -218,7 +218,7 @@ export default {
       this.delivery = true;
       this.setBagZipCode(null);
 
-      if (this.bagZipCode) {
+      if (this.bagZipCode || this.store.delivery_day_zip_codes.length == 0) {
         this.visible = false;
         this.$emit("setAutoPickUpcomingMultDD");
       }

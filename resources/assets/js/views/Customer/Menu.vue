@@ -27,9 +27,10 @@
 
       <zip-code-modal
         v-if="
-          store.delivery_day_zip_codes.length > 0 &&
+          (store.delivery_day_zip_codes.length > 0 &&
             store.modules.multipleDeliveryDays &&
-            ((!loggedIn && context !== 'store') || context == 'store')
+            ((!loggedIn && context !== 'store') || context == 'store')) ||
+            transferTypes.both
         "
         @setAutoPickUpcomingMultDD="autoPickUpcomingMultDD(null)"
       ></zip-code-modal>
@@ -688,6 +689,27 @@ export default {
       minOption: "minimumOption",
       totalBagPricePreFees: "totalBagPricePreFees"
     }),
+    transferTypes() {
+      let hasDelivery = false;
+      let hasPickup = false;
+
+      this.store.delivery_days.forEach(day => {
+        if (day.type == "delivery") {
+          hasDelivery = true;
+        }
+        if (day.type == "pickup") {
+          hasPickup = true;
+        }
+      });
+
+      let hasBoth = hasDelivery && hasPickup ? true : false;
+
+      return {
+        delivery: hasDelivery,
+        pickup: hasPickup,
+        both: hasBoth
+      };
+    },
     items() {
       if (this.minMeals - this.total > 1) {
         return "items";
@@ -744,6 +766,10 @@ export default {
       if (this.bagPickup) {
         sortedDays = sortedDays.filter(day => {
           return day.type === "pickup";
+        });
+      } else {
+        sortedDays = sortedDays.filter(day => {
+          return day.type === "delivery";
         });
       }
 

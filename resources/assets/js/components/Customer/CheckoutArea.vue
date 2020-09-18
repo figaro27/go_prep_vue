@@ -607,7 +607,8 @@
           (!storeModules.hideDeliveryOption ||
             $route.params.storeView === true ||
             storeOwner) &&
-          store.delivery_day_zip_codes.length == 0
+          store.delivery_day_zip_codes.length == 0 &&
+          !transferTypes.both
       "
     >
       <b-alert
@@ -1504,6 +1505,30 @@ export default {
       context: "context",
       deliveryFee: "bagDeliveryFee"
     }),
+    transferTypes() {
+      let hasDelivery = false;
+      let hasPickup = false;
+
+      this.store.delivery_days.forEach(day => {
+        if (day.type == "delivery") {
+          hasDelivery = true;
+        }
+        if (day.type == "pickup") {
+          hasPickup = true;
+        }
+      });
+
+      let hasBoth =
+        this.store.modules.multipleDeliveryDays && hasDelivery && hasPickup
+          ? true
+          : false;
+
+      return {
+        delivery: hasDelivery,
+        pickup: hasPickup,
+        both: hasBoth
+      };
+    },
     gratuityOptions() {
       return [
         { value: 0, text: "None" },
