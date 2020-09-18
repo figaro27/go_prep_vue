@@ -357,7 +357,7 @@ class SubscriptionController extends UserController
                             $store->storeDetail->name .
                             ")"
                     ],
-                    "currency" => "usd"
+                    "currency" => $store->settings->currency
                 ],
                 ['stripe_account' => $store->settings->stripe_id]
             );
