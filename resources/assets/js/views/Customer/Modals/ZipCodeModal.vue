@@ -14,6 +14,13 @@
     </h5>
     <center>
       <b-btn
+        v-if="noAvailableDays"
+        size="lg"
+        class="brand-color white-text d-inline"
+        @click="setPickup()"
+        >Pickup</b-btn
+      >
+      <b-btn
         size="lg"
         @click="reset"
         class="brand-color white-text d-inline"
