@@ -50,7 +50,7 @@ font-size:10px !important;
       @endif
       <p class="text-9">{{ $mealOrder->index }} of {{ $mealOrder->totalCount }}</p>
       @if ($reportSettings->lab_dailyOrderNumbers)
-      <p class="text-9">Daily Order Number #{{ $mealOrder->order->dailyOrderNumber }}</p>
+      <p class="text-11" style="font-weight:bold">Daily Order Number #{{ $mealOrder->order->dailyOrderNumber }}</p>
       @endif
       <p class="text-11" style="font-weight:bold"> {!! $mealOrder->meal ? $mealOrder->html_title : $mealOrder->title !!}
       </p> @if ($mealOrder->meal && $reportSettings->lab_description)
