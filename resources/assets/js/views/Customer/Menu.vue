@@ -753,13 +753,11 @@ export default {
             deliveryDayIds.push(ddZipCode.delivery_day_id);
           }
         });
-        console.log("deliveryDayIds: " + deliveryDayIds);
         sortedDays = sortedDays.filter(day => {
           if (this.bagPickup) {
             return true;
           } else {
             if (deliveryDayIds.includes(day.id) && day.type == "delivery") {
-              console.log("dayID: " + day.id);
               return true;
             }
           }
