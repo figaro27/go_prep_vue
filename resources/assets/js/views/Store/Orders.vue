@@ -1273,7 +1273,8 @@ export default {
       "clearBagDeliveryFee",
       "setBagPickup",
       "setBagCoupon",
-      "setBagZipCode"
+      "setBagZipCode",
+      "setMultDDZipCode"
     ]),
     refreshTable() {
       this.refreshResource("orders");
@@ -1829,6 +1830,7 @@ export default {
       this.clearBagDeliveryFee();
       this.setBagCoupon(null);
       this.setBagZipCode(null);
+      this.setMultDDZipCode(0);
       this.store.distance = 1;
     },
     adjustOrder() {
