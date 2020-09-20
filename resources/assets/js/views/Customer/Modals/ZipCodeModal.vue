@@ -205,7 +205,6 @@ export default {
       !this.transferTypes.both &&
       this.transferTypes.pickup
     ) {
-      console.log(1);
       this.visible = false;
     }
   },
