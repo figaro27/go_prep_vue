@@ -3,6 +3,7 @@
     <zip-code-modal
       v-if="showZipCodeModal"
       :deliverySelected="true"
+      @setAutoPickUpcomingMultDD="$parent.autoPickUpcomingMultDD(null)"
     ></zip-code-modal>
     <div
       class="bag-header center-text pt-3"
