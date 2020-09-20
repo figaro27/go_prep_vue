@@ -236,15 +236,18 @@ class StoreSetting extends Model
 
                     if ($customDeliveryDays) {
                         $customDeliveryDay = $day;
-                        $day = $customDeliveryDay->day_short;
+                        $dayShort = $customDeliveryDay->day_short;
                         $this->setDeliveryDayContext($customDeliveryDay);
                     }
-
-                    $date = Carbon::createFromFormat(
-                        'D',
-                        $day,
-                        $this->timezone
-                    )->setTime(0, 0, 0);
+                    if ($day->single_date) {
+                        $date = Carbon::parse($day->single_date);
+                    } else {
+                        $date = Carbon::createFromFormat(
+                            'D',
+                            $dayShort,
+                            $this->timezone
+                        )->setTime(0, 0, 0);
+                    }
 
                     $cutoff = $this->getCutoffDate($date);
 
