@@ -111,7 +111,7 @@ class RegisterController extends StoreController
                 ? $request->get('zip')
                 : 'N/A';
             $userDetail->state = $request->get('state')
-                ? $request->get('state')['value']
+                ? $request->get('state')
                 : 'N/A';
             $userDetail->phone = $request->get('phone');
             $userDetail->country = 'USA';
