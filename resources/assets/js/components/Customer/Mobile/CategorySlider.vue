@@ -16,7 +16,7 @@
         <div
           v-for="category in categories"
           :key="category.id"
-          @click.prevent="goToCategory(slugify(category.category))"
+          @click.prevent="goToCategory(category.id)"
           class="m-2"
         >
           {{ category.category }}
@@ -27,7 +27,7 @@
         <span
           v-for="category in categories"
           :key="category.category"
-          @click.prevent="goToCategory(slugify(category.category))"
+          @click.prevent="goToCategory(category.id)"
           class="d-inline-block m-2"
           >{{ category.category }}</span
         >

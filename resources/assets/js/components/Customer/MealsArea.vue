@@ -170,7 +170,7 @@
     <div
       v-for="(group, catIndex) in meals"
       :key="'category_' + group.category + '_' + catIndex"
-      :id="slugify(group.category)"
+      :id="group.category_id"
       :target="'categorySection_' + group.category_id"
       :class="container"
       style="margin-bottom: 20px;"
