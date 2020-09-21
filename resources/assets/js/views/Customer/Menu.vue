@@ -743,7 +743,7 @@ export default {
       } else {
         sortedDays = storeDeliveryDays;
       }
-      console.log("sortedDays 1: " + sortedDays);
+
       // If the store only serves certain zip codes on certain delivery days
       if (this.store.delivery_day_zip_codes.length > 0) {
         let deliveryDayIds = [];
@@ -764,21 +764,25 @@ export default {
           // return deliveryDayIds.includes(day.id);
         });
       }
-      console.log("sortedDays 2: " + sortedDays);
+
       if (this.bagPickup) {
+        console.log(1);
+        console.log("1 " + sortedDays);
         sortedDays = sortedDays.filter(day => {
           return day.type === "pickup";
         });
       } else {
+        console.log(2);
+        console.log("2 " + sortedDays);
         sortedDays = sortedDays.filter(day => {
           return day.type === "delivery";
         });
       }
-      console.log("sortedDays 3: " + sortedDays);
+
       sortedDays.sort(function(a, b) {
         return new Date(a.day_friendly) - new Date(b.day_friendly);
       });
-      console.log("sortedDays 4: " + sortedDays);
+
       return sortedDays;
     },
     isMultipleDelivery() {
