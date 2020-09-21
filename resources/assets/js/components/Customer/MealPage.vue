@@ -33,7 +33,7 @@
             <img
               :src="meal.image.url_thumb"
               style="width:60px;height:60px"
-              v-if="showNutritionFacts"
+              v-if="showNutritionFacts && meal.image"
               @mouseover="showcaseNutrition = false"
             />
             <img
