@@ -3,7 +3,9 @@
     <zip-code-modal
       v-if="showZipCodeModal"
       :deliverySelected="true"
-      @setAutoPickUpcomingMultDD="$parent.autoPickUpcomingMultDD(null)"
+      @setAutoPickUpcomingMultDD="
+        (showZipCodeModal = false), $parent.autoPickUpcomingMultDD(null)
+      "
     ></zip-code-modal>
     <div
       class="bag-header center-text pt-3"
@@ -635,7 +637,8 @@ export default {
       lineItems: "viewedStoreLineItems",
       storeProductionGroups: "storeProductionGroups",
       bagPickup: "bagPickup",
-      bagZipCode: "bagZipCode"
+      bagZipCode: "bagZipCode",
+      multDDZipCode: "bagMultDDZipCode"
     }),
     hasBothTranserTypes() {
       let hasPickup = false;
@@ -802,7 +805,9 @@ export default {
       this.$emit("changeDeliveryDay", deliveryDay);
     },
     ...mapMutations({
-      setBagPickup: "setBagPickup"
+      setBagPickup: "setBagPickup",
+      setMultDDZipCode: "setMultDDZipCode",
+      setBagZipCode: "setBagZipCode"
     }),
     addToBag(item) {
       if (this.isAdjustOrder() || this.isManualOrder()) {
@@ -1182,11 +1187,13 @@ export default {
       this.$store.commit("emptyBag");
       this.isPickup = val;
       this.setBagPickup(val);
+      this.setBagZipCode(null);
       if (
         !this.bagZipCode &&
         val == 0 &&
         this.store.delivery_day_zip_codes.length > 0
       ) {
+        this.setMultDDZipCode(0);
         this.showZipCodeModal = true;
       }
       this.$parent.autoPickUpcomingMultDD(null);

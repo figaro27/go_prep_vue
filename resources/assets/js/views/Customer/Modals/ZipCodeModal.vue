@@ -28,7 +28,10 @@
         >Enter Different Zip Code</b-btn
       >
     </center>
-    <h5 class="mb-3 mt-3 center-text" v-if="delivery && !bagZipCode">
+    <h5
+      class="mb-3 mt-3 center-text"
+      v-if="delivery && !bagZipCode && !noAvailableDays"
+    >
       Please enter your delivery zip code.
     </h5>
     <h5 class="mb-3 mt-3 center-text" v-if="!delivery && transferTypes.both">
@@ -38,7 +41,7 @@
       <center>
         <b-form-group :state="true" class="d-flex">
           <b-form-input
-            v-if="delivery && !bagZipCode"
+            v-if="delivery && !bagZipCode && !noAvailableDays"
             placeholder="Zip Code"
             v-model="zipCode"
             class="width-50"
@@ -235,10 +238,11 @@ export default {
     },
     setZipCode() {
       this.setBagZipCode(this.zipCode);
-      this.$emit("setAutoPickUpcomingMultDD");
       if (this.sortedDeliveryDays.length === 0 && !this.bagPickup) {
         this.noAvailableDays = true;
         return;
+      } else {
+        this.$emit("setAutoPickUpcomingMultDD");
       }
       this.visible = false;
     },
