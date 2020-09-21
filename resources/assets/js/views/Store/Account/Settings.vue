@@ -1197,6 +1197,25 @@
                 />
 
                 <p class="mt-2">
+                  <span class="mr-1 mt-2">Allow Multiple Subscriptions</span>
+                  <img
+                    v-b-popover.hover="
+                      'Allow each customer to have more than one subscription with you. As a caveat, this sometimes causes confusion among customers and they place multiple subscriptions unintentionally.'
+                    "
+                    title="Allow Multiple Subscriptions"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeModules.allowMultipleSubscriptions"
+                  @change.native="updateStoreModules"
+                />
+
+                <p class="mt-2">
                   <span class="mr-1 mt-2">Cooler Bag Deposit</span>
                   <img
                     v-b-popover.hover="

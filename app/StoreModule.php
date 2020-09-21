@@ -25,7 +25,8 @@ class StoreModule extends Model
         'mealExpiration' => 'boolean',
         'pickupOnly' => 'boolean',
         'gratuity' => 'boolean',
-        'cooler' => 'boolean'
+        'cooler' => 'boolean',
+        'allowMultipleSubscriptions' => 'boolean'
     ];
 
     protected $guarded = [];

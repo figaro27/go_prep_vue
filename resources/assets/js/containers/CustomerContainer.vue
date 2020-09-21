@@ -39,7 +39,8 @@
             v-if="
               'id' in viewedStore &&
                 name != 'customer-subscription-changes' &&
-                !userHasSubscriptions
+                (!userHasSubscriptions ||
+                  store.modules.allowMultipleSubscriptions)
             "
             :to="menuURL"
             @click.prevent="backToMenu()"
@@ -49,7 +50,8 @@
             v-if="
               'id' in viewedStore &&
                 name != 'customer-subscription-changes' &&
-                !userHasSubscriptions
+                (!userHasSubscriptions ||
+                  store.modules.allowMultipleSubscriptions)
             "
             :to="bagURL"
             >Checkout</b-nav-item
