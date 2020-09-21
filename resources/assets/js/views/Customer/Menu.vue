@@ -766,15 +766,12 @@ export default {
       }
 
       if (this.bagPickup) {
-        console.log(1);
-        console.log("1 " + sortedDays);
         sortedDays = sortedDays.filter(day => {
           return day.type === "pickup";
         });
       } else {
-        console.log(2);
-        console.log("2 " + sortedDays);
         sortedDays = sortedDays.filter(day => {
+          console.log(day);
           return day.type === "delivery";
         });
       }
