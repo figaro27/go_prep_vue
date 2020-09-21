@@ -739,8 +739,8 @@ export default {
       let sortedDays = [];
 
       if (this.store.delivery_day_zip_codes.length === 0) {
-        sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
-      } else {
+        //   sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
+        // } else {
         sortedDays = storeDeliveryDays;
       }
 
@@ -771,7 +771,6 @@ export default {
         });
       } else {
         sortedDays = sortedDays.filter(day => {
-          console.log(day);
           return day.type === "delivery";
         });
       }
