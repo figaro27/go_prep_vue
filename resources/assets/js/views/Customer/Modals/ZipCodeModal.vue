@@ -14,7 +14,7 @@
     </h5>
     <center>
       <b-btn
-        v-if="noAvailableDays"
+        v-if="noAvailableDays && transferTypes.pickup"
         size="lg"
         class="brand-color white-text d-inline"
         @click="setPickup()"

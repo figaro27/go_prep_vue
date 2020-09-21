@@ -27,13 +27,12 @@
 
       <zip-code-modal
         v-if="
-          (store.delivery_day_zip_codes.length > 0 &&
+          store.delivery_day_zip_codes.length > 0 &&
             transferTypes.delivery &&
             store.modules.multipleDeliveryDays &&
-            ((!loggedIn && context !== 'store') || context == 'store')) ||
-            (transferTypes.both &&
-              !$route.params.adjustOrder &&
-              !adjustMealPlan)
+            ((!loggedIn && context !== 'store') || context == 'store') &&
+            !$route.params.orderId &&
+            !adjustMealPlan
         "
         @setAutoPickUpcomingMultDD="autoPickUpcomingMultDD(null)"
       ></zip-code-modal>
