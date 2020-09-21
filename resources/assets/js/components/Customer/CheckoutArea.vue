@@ -3178,7 +3178,7 @@ use next_delivery_dates
           delivery_day: this.deliveryDay
             ? this.deliveryDay
             : this.bagDeliveryDate
-            ? this.bagDeliveryDate.value
+            ? this.bagDeliveryDate
             : this.deliveryDateOptions[0].value,
           card_id: cardId,
           store_id: this.store.id,
