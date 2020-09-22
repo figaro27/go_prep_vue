@@ -172,10 +172,11 @@ export default {
             }
           });
           if (this.store.modules.multipleDeliveryDays) {
-            let delivery_day = this.store.delivery_days.find(day => {
-              return day.day == moment(pkgItem.delivery_date).day();
-            });
-            meal_package.delivery_day = delivery_day;
+            // let delivery_day = this.store.delivery_days.find(day => {
+            //   return day.day == moment(pkgItem.delivery_date).day();
+            // });
+            // meal_package.delivery_day = delivery_day;
+            meal_package.delivery_day = this.store.delivery_days[0];
             meal_package.delivery_day.day_friendly = pkgItem.delivery_date;
           }
           meal_package.customTitle = pkgItem.customTitle;
@@ -218,12 +219,15 @@ export default {
           meal.price = item.price / item.quantity;
 
           if (this.store.modules.multipleDeliveryDays) {
-            let delivery_day = this.store.delivery_days.find(day => {
-              return day.day == moment(item.delivery_date.date).day();
-            });
+            // let delivery_day = this.store.delivery_days.find(day => {
+            //   return day.day == moment(item.delivery_date.date).day();
+            // });
 
-            meal.delivery_day = delivery_day;
-            meal.delivery_day.day_friendly = item.delivery_date.date;
+            // meal.delivery_day = delivery_day;
+            meal.delivery_day = this.store.delivery_days[0];
+            meal.delivery_day.day_friendly = moment(
+              item.delivery_date.date
+            ).format("YYYY-MM-DD");
           }
 
           for (let i = 0; i < item.quantity; i++) {
