@@ -774,6 +774,22 @@ export default {
 
       storeDeliveryDays = storeDeliveryDays.reverse();
 
+      // Add all future dates with no cutoff for manual orders
+      if (this.context == "store") {
+        storeDeliveryDays = [];
+        let today = new Date();
+        let year = today.getFullYear();
+        let month = today.getMonth();
+        let date = today.getDate();
+
+        for (let i = 0; i < 30; i++) {
+          let day = new Date(year, month, date + i);
+          let multDD = { ...this.store.delivery_days[0] };
+          multDD.day_friendly = moment(day).format("YYYY-MM-DD");
+          storeDeliveryDays.push(multDD);
+        }
+      }
+
       let sortedDays = [];
 
       if (this.store.delivery_day_zip_codes.length === 0) {
@@ -803,14 +819,16 @@ export default {
         });
       }
 
-      if (this.bagPickup) {
-        sortedDays = sortedDays.filter(day => {
-          return day.type === "pickup";
-        });
-      } else {
-        sortedDays = sortedDays.filter(day => {
-          return day.type === "delivery";
-        });
+      if (this.context !== "store") {
+        if (this.bagPickup) {
+          sortedDays = sortedDays.filter(day => {
+            return day.type === "pickup";
+          });
+        } else {
+          sortedDays = sortedDays.filter(day => {
+            return day.type === "delivery";
+          });
+        }
       }
 
       sortedDays.sort(function(a, b) {
@@ -1311,7 +1329,6 @@ export default {
       if (this.store.hasDeliveryDayMeals) {
         e.has_items = true;
       }
-
       store.dispatch("refreshLazyDD", {
         delivery_day: this.finalDeliveryDay
       });
