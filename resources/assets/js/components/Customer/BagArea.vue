@@ -696,13 +696,6 @@ export default {
             }
           }
 
-          // grouped.sort((a, b) => {
-          //   const ddA = a.delivery_day.day;
-          //   const ddB = b.delivery_day.day;
-
-          //   return moment(ddA).unix() - moment(ddB).unix();
-          // });
-
           // Add all delivery days
           if (this.selectedDeliveryDay) {
             let included = false;

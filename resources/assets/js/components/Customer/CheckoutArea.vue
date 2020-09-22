@@ -1199,17 +1199,9 @@
       </div>
     </li>
 
-    <li v-if="minOption === 'meals' && !minimumMet">
+    <li v-if="!minimumMet">
       <p class="strong">
-        Please add {{ remainingMeals }} {{ singOrPlural }} to continue.
-      </p>
-    </li>
-
-    <li v-if="minOption === 'price' && !minimumMet">
-      <p class="strong">
-        Please add
-        {{ format.money(remainingPrice, storeSettings.currency) }}
-        more to continue.
+        {{ addMore }}
       </p>
     </li>
 
@@ -1274,6 +1266,7 @@ import CardPicker from "../../components/Billing/CardPicker";
 import { createToken } from "vue-stripe-elements-plus";
 import AddCustomerModal from "../../components/Customer/AddCustomerModal";
 import states from "../../data/states.js";
+import format from "../../lib/format";
 
 export default {
   components: {
@@ -1320,7 +1313,8 @@ export default {
       selectedPickupLocation:
         this.order && this.order.pickup_location_id
           ? this.order.pickup_location_id
-          : null
+          : null,
+      minimumDeliveryDayAmount: 0
     };
   },
   updated() {
@@ -1458,6 +1452,10 @@ export default {
       }
     }
     this.setSubscription();
+
+    if (this.isMultipleDelivery) {
+      this.minimumDeliveryDayAmount = this.store.delivery_days[0].minimum;
+    }
   },
   mixins: [MenuBag],
   computed: {
@@ -1505,6 +1503,99 @@ export default {
       context: "context",
       deliveryFee: "bagDeliveryFee"
     }),
+    addMore() {
+      if (this.isMultipleDelivery) {
+        if (this.minimumDeliveryDayAmount > 0) {
+          let groupTotal = [];
+          this.groupBag.forEach((group, index) => {
+            groupTotal[index] = 0;
+            group.items.forEach(item => {
+              groupTotal[index] += item.price * item.quantity;
+            });
+          });
+
+          if (
+            !groupTotal.every(item => {
+              return item > this.minimumDeliveryDayAmount;
+            })
+          ) {
+            return (
+              "A minimum of " +
+              format.money(
+                this.minimumDeliveryDayAmount,
+                this.storeSettings.currency
+              ) +
+              " for each delivery day is required to place your order."
+            );
+          }
+        }
+      }
+
+      if (this.minOption === "meals")
+        return (
+          "Please add " +
+          this.remainingMeals +
+          " " +
+          this.singOrPlural +
+          " to continue."
+        );
+      else if (this.minOption === "price")
+        return (
+          "Please add " +
+          format.money(this.remainingPrice, this.storeSettings.currency) +
+          " more to continue."
+        );
+    },
+    groupBag() {
+      let grouped = [];
+      let groupedDD = [];
+
+      if (this.bag) {
+        if (this.isMultipleDelivery) {
+          this.bag.forEach((bagItem, index) => {
+            if (bagItem.delivery_day) {
+              const key = "dd_" + bagItem.delivery_day.day_friendly;
+              if (!groupedDD[key]) {
+                groupedDD[key] = {
+                  items: [],
+                  delivery_day: bagItem.delivery_day
+                };
+              }
+
+              groupedDD[key].items.push(bagItem);
+            }
+          });
+
+          if (JSON.stringify(groupedDD) != "{}") {
+            for (let i in groupedDD) {
+              grouped.push(groupedDD[i]);
+            }
+          }
+
+          // Add all delivery days
+          if (this.selectedDeliveryDay) {
+            let included = false;
+            grouped.forEach(group => {
+              if (group.delivery_day.id === this.selectedDeliveryDay.id) {
+                included = true;
+              }
+            });
+            if (!included) {
+              grouped.push({
+                items: [],
+                delivery_day: this.selectedDeliveryDay
+              });
+            }
+          }
+        } else {
+          grouped.push({
+            items: this.bag
+          });
+        }
+      }
+
+      return grouped;
+    },
     transferTypes() {
       let hasDelivery = false;
       let hasPickup = false;
@@ -2567,6 +2658,27 @@ use next_delivery_dates
       return this.$route.params.subscriptionId;
     },
     minimumMet() {
+      if (this.isMultipleDelivery) {
+        if (this.minimumDeliveryDayAmount > 0) {
+          let groupTotal = [];
+          this.groupBag.forEach((group, index) => {
+            groupTotal[index] = 0;
+            group.items.forEach(item => {
+              groupTotal[index] += item.price * item.quantity;
+            });
+          });
+
+          if (
+            groupTotal.every(item => {
+              return item > this.minimumDeliveryDayAmount;
+            })
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
       let giftCardOnly = true;
       this.bag.forEach(item => {
         if (!item.meal.gift_card) {
@@ -2588,21 +2700,6 @@ use next_delivery_dates
       )
         return true;
       else return false;
-    },
-    addMore() {
-      if (this.minOption === "meals")
-        return (
-          "Please add " +
-          this.remainingMeals +
-          this.singOrPlural +
-          " to continue."
-        );
-      else if (this.minOption === "price")
-        return (
-          "Please add " +
-          format.money(this.remainingPrice, this.storeSettings.currency) +
-          " more to continue."
-        );
     },
     hidePaymentArea() {
       let params = this.$route.params;

@@ -130,6 +130,11 @@ export default {
     weeklySubscriptionValue: null,
     lineItemOrders: null
   },
+  data() {
+    return {
+      minimumDeliveryDayAmount: 0
+    };
+  },
   mixins: [MenuBag],
   methods: {
     addDeliveryDay() {
@@ -197,6 +202,27 @@ export default {
       return "item";
     },
     minimumMet() {
+      if (this.isMultipleDelivery) {
+        if (this.minimumDeliveryDayAmount > 0) {
+          let groupTotal = [];
+          this.groupBag.forEach((group, index) => {
+            groupTotal[index] = 0;
+            group.items.forEach(item => {
+              groupTotal[index] += item.price * item.quantity;
+            });
+          });
+
+          if (
+            groupTotal.every(item => {
+              return item > this.minimumDeliveryDayAmount;
+            })
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
       let giftCardOnly = true;
       this.bag.forEach(item => {
         if (!item.meal.gift_card) {
@@ -218,6 +244,33 @@ export default {
       else return false;
     },
     addMore() {
+      if (this.isMultipleDelivery) {
+        if (this.minimumDeliveryDayAmount > 0) {
+          let groupTotal = [];
+          this.groupBag.forEach((group, index) => {
+            groupTotal[index] = 0;
+            group.items.forEach(item => {
+              groupTotal[index] += item.price * item.quantity;
+            });
+          });
+
+          if (
+            !groupTotal.every(item => {
+              return item > this.minimumDeliveryDayAmount;
+            })
+          ) {
+            return (
+              "Please add at least " +
+              format.money(
+                this.minimumDeliveryDayAmount,
+                this.storeSettings.currency
+              ) +
+              " for each day."
+            );
+          }
+        }
+      }
+
       if (this.minOption === "meals")
         return (
           "Please add " +
@@ -240,8 +293,62 @@ export default {
       )
         return true;
       else return false;
+    },
+    groupBag() {
+      let grouped = [];
+      let groupedDD = [];
+
+      if (this.bag) {
+        if (this.isMultipleDelivery) {
+          this.bag.forEach((bagItem, index) => {
+            if (bagItem.delivery_day) {
+              const key = "dd_" + bagItem.delivery_day.day_friendly;
+              if (!groupedDD[key]) {
+                groupedDD[key] = {
+                  items: [],
+                  delivery_day: bagItem.delivery_day
+                };
+              }
+
+              groupedDD[key].items.push(bagItem);
+            }
+          });
+
+          if (JSON.stringify(groupedDD) != "{}") {
+            for (let i in groupedDD) {
+              grouped.push(groupedDD[i]);
+            }
+          }
+
+          // Add all delivery days
+          if (this.selectedDeliveryDay) {
+            let included = false;
+            grouped.forEach(group => {
+              if (group.delivery_day.id === this.selectedDeliveryDay.id) {
+                included = true;
+              }
+            });
+            if (!included) {
+              grouped.push({
+                items: [],
+                delivery_day: this.selectedDeliveryDay
+              });
+            }
+          }
+        } else {
+          grouped.push({
+            items: this.bag
+          });
+        }
+      }
+
+      return grouped;
     }
   },
-  mounted() {}
+  mounted() {
+    if (this.isMultipleDelivery) {
+      this.minimumDeliveryDayAmount = this.store.delivery_days[0].minimum;
+    }
+  }
 };
 </script>
