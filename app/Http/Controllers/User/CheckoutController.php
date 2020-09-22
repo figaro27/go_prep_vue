@@ -94,7 +94,10 @@ class CheckoutController extends UserController
                 );
             }
 
-            if ($user->has_active_subscription) {
+            if (
+                $user->has_active_subscription &&
+                !$store->modules->allowMultipleSubscriptions
+            ) {
                 return response()->json(
                     [
                         'message' =>
