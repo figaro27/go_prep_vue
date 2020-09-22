@@ -3162,6 +3162,10 @@ use next_delivery_dates
 
       let weeklySubscriptionValue = this.weeklySubscriptionValue;
 
+      if (this.bagDeliveryDate) {
+        this.deliveryDay = this.bagDeliveryDate.value;
+      }
+
       axios
         .post(endPoint, {
           notes: this.orderNotes,
@@ -3177,9 +3181,9 @@ use next_delivery_dates
           isMultipleDelivery: this.isMultipleDelivery,
           delivery_day: this.deliveryDay
             ? this.deliveryDay
-            : this.bagDeliveryDate
-            ? this.bagDeliveryDate
-            : this.deliveryDateOptions[0].value,
+            : // : this.bagDeliveryDate
+              // ? this.bagDeliveryDate
+              this.deliveryDateOptions[0].value,
           card_id: cardId,
           store_id: this.store.id,
           salesTax: this.tax,

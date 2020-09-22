@@ -799,6 +799,11 @@ export default {
       this.orderLineItems.push(lineItemOrder);
     });
     this.$emit("updateLineItems", this.orderLineItems);
+
+    // If adjusting
+    if (this.$route.params.order || this.$parent.subscription) {
+      this.autoPickAdjustDD();
+    }
   },
   methods: {
     loadDeliveryDayMenu(deliveryDay) {
@@ -1200,6 +1205,24 @@ export default {
     },
     changePickup(val) {
       this.isPickup = val;
+    },
+    autoPickAdjustDD() {
+      let firstDate = "";
+      if (this.$route.params.order) {
+        firstDate = moment(
+          this.$route.params.order.items[0].delivery_date.date
+        ).format("YYYY-MM-DD");
+      } else {
+        // Subscription items / bag items don't load fast enough. Rework this. Selecting the first listed store delivery date for now.
+        // firstDate = moment(this.$route.params.subscription.items[0].delivery_date.date).format("YYYY-MM-DD");
+        firstDate = this.store.delivery_days[0].day_friendly;
+      }
+
+      let deliveryDay = this.store.delivery_days.find(day => {
+        return day.day_friendly == firstDate;
+      });
+
+      this.loadDeliveryDayMenu(deliveryDay);
     }
   }
 };
