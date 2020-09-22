@@ -783,6 +783,12 @@ export default {
   },
   mounted() {
     this.isPickup = this.bagPickup;
+    if (!this.transferTypes.delivery && this.transferTypes.pickup) {
+      this.setBagPickup(1);
+    }
+    if (this.transferTypes.delivery && !this.transferTypes.pickup) {
+      this.setBagPickup(0);
+    }
     if (this.bag) {
       this.bag.forEach(item => {
         this.$set(this.enablingEdit, item.guid, false);

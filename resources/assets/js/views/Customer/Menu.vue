@@ -75,6 +75,20 @@
         <div class="row mt-3">
           <div class="col-md-12">
             <div style="position: relative">
+              <center>
+                <b-form-radio-group
+                  v-if="isMultipleDelivery && hasBothTranserTypes"
+                  buttons
+                  class="storeFilters mb-3"
+                  v-model="isPickup"
+                  :options="[
+                    { value: 1, text: 'Pickup' },
+                    { value: 0, text: 'Delivery' }
+                  ]"
+                  @change="val => changeTransferType(val)"
+                ></b-form-radio-group>
+              </center>
+
               <h4 class="center-text">Select Day</h4>
 
               <Spinner
@@ -272,6 +286,7 @@
 
           <floating-action-area
             class="d-md-none"
+            :style="remainingTextStyle"
             :to="bagPageURL"
             v-if="
               (!subscriptionId || !adjustOrder) &&
@@ -607,6 +622,7 @@ export default {
   },
   data() {
     return {
+      isPickup: 0,
       showVariationsModal: false,
       bagPageURL: "/customer/bag",
       adjustMealModal: false,
@@ -691,6 +707,23 @@ export default {
       minOption: "minimumOption",
       totalBagPricePreFees: "totalBagPricePreFees"
     }),
+    hasBothTranserTypes() {
+      let hasPickup = false;
+      let hasDelivery = false;
+      this.store.delivery_days.forEach(day => {
+        if (day.type === "delivery") {
+          hasDelivery = true;
+        }
+        if (day.type === "pickup") {
+          hasPickup = true;
+        }
+      });
+      if (hasPickup && hasDelivery) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     transferTypes() {
       let hasDelivery = false;
       let hasPickup = false;
@@ -711,6 +744,11 @@ export default {
         pickup: hasPickup,
         both: hasBoth
       };
+    },
+    remainingTextStyle() {
+      if (this.isMultipleDelivery) {
+        return "margin-right:65px";
+      }
     },
     items() {
       if (this.minMeals - this.total > 1) {
@@ -1143,6 +1181,9 @@ export default {
       if (!this.transferTypes.delivery && this.transferTypes.pickup) {
         this.setBagPickup(1);
       }
+      if (this.transferTypes.delivery && !this.transferTypes.pickup) {
+        this.setBagPickup(0);
+      }
       if (this.bagPickup === 1) {
         this.autoPickUpcomingMultDD();
       }
@@ -1159,6 +1200,8 @@ export default {
         }
       }
     }
+
+    this.isPickup = this.bagPickup;
 
     if (this.$route.query.sub || this.$route.query.subscriptionId) {
       this.bagPageURL =
@@ -1220,6 +1263,9 @@ export default {
         this.mealPageView = false;
         this.mealPackagePageView = false;
       }
+    },
+    bagPickup(val) {
+      this.changePickup(val);
     }
   },
   updated() {
@@ -1241,7 +1287,8 @@ export default {
       "setBagMealPlan",
       "setBagCoupon",
       "setBagZipCode",
-      "setBagPickup"
+      "setBagPickup",
+      "setMultDDZipCode"
     ]),
     updateScrollbar() {
       return; // disabling for now
@@ -1684,6 +1731,23 @@ export default {
       let title = item.title;
       title = title.replace(/\s+/g, "-").toLowerCase();
       return title;
+    },
+    changeTransferType(val) {
+      this.$store.commit("emptyBag");
+      this.isPickup = val;
+      this.setBagPickup(val);
+      this.setBagZipCode(null);
+      if (
+        !this.bagZipCode &&
+        val == 0 &&
+        this.store.delivery_day_zip_codes.length > 0
+      ) {
+        this.setMultDDZipCode(0);
+      }
+      this.autoPickUpcomingMultDD(null);
+    },
+    changePickup(val) {
+      this.isPickup = val;
     }
   }
 };
