@@ -589,6 +589,10 @@ export default {
         return;
       }
 
+      if (this.$parent.selectedDeliveryDay) {
+        meal.delivery_day = this.$parent.selectedDeliveryDay;
+      }
+
       let size = this.mealSize;
 
       if (this.isAdjustOrder() || this.isManualOrder()) {
