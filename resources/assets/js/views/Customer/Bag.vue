@@ -499,6 +499,9 @@ export default {
     }
   },
   mounted() {
+    if (this.store.modules.pickupOnly) {
+      this.setBagPickup(1);
+    }
     if (this.subscriptionId) {
       let sub = _.find(this.subscriptions, subscription => {
         return subscription.id === parseInt(this.subscriptionId);
@@ -667,7 +670,8 @@ export default {
       "emptyBag",
       "setBagMealPlan",
       "setBagCoupon",
-      "setBagReferral"
+      "setBagReferral",
+      "setBagPickup"
     ]),
     preventNegative() {
       if (this.total < 0) {
