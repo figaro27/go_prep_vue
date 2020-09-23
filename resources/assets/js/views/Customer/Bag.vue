@@ -206,7 +206,8 @@ export default {
       if (
         this.user.id &&
         this.store.modules.subscriptionOnly &&
-        this.subscriptions.length > 0
+        this.subscriptions.length > 0 &&
+        !this.store.modules.allowMultipleSubscriptions
       ) {
         this.$router.push({
           path: "/customer/subscriptions/" + this.subscriptions[0].id
