@@ -1166,7 +1166,7 @@ export default {
     },
     removeDeliveryDayItems(deliveryDay) {
       this.bag.forEach(item => {
-        if (item.delivery_day.id == deliveryDay.id) {
+        if (item.delivery_day.day_friendly == deliveryDay.day_friendly) {
           this.clearMealFullQuantity(
             item.meal,
             item.meal_package,
