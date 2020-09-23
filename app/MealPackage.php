@@ -48,7 +48,7 @@ class MealPackage extends Model implements HasMedia
     public function meals()
     {
         return $this->belongsToMany('App\\Meal')
-            ->withPivot(['meal_size_id', 'quantity'])
+            ->withPivot(['meal_size_id', 'quantity', 'delivery_day_id'])
             ->using('App\\MealMealPackage');
     }
 
@@ -218,7 +218,8 @@ class MealPackage extends Model implements HasMedia
                 'meal_id' => $meal['id'],
                 'meal_size_id' => $meal['meal_size_id'] ?? null,
                 'meal_package_id' => $package->id,
-                'quantity' => $meal['quantity']
+                'quantity' => $meal['quantity'],
+                'delivery_day_id' => $meal['delivery_day_id'] ?? null
             ]);
         }
 
@@ -253,7 +254,8 @@ class MealPackage extends Model implements HasMedia
                 foreach ($size['meals'] as $meal) {
                     $meals[$meal['id']] = [
                         'quantity' => $meal['quantity'],
-                        'meal_size_id' => $meal['meal_size_id'] ?? null
+                        'meal_size_id' => $meal['meal_size_id'] ?? null,
+                        'delivery_day_id' => $meal['delivery_day_id'] ?? null
                     ];
                 }
                 $mealPackageSize->meals()->sync($meals);
@@ -333,7 +335,9 @@ class MealPackage extends Model implements HasMedia
                         $meals[$meal['id']] = [
                             'quantity' => $meal['quantity'],
                             'meal_size_id' => $meal['meal_size_id'] ?? null,
-                            'price' => $meal['price'] ?? 0
+                            'price' => $meal['price'] ?? 0,
+                            'delivery_day_id' =>
+                                $meal['delivery_day_id'] ?? null
                         ];
                     }
                     $option->meals()->sync($meals);
@@ -391,7 +395,8 @@ class MealPackage extends Model implements HasMedia
                     $meals[$meal['id']] = [
                         'quantity' => $meal['quantity'],
                         'meal_size_id' => $meal['meal_size_id'] ?? null,
-                        'price' => $meal['price'] ?? 0
+                        'price' => $meal['price'] ?? 0,
+                        'delivery_day_id' => $meal['delivery_day_id'] ?? null
                     ];
                 }
                 $mealPackageAddon->meals()->sync($meals);
@@ -470,7 +475,8 @@ class MealPackage extends Model implements HasMedia
             foreach ($rawMeals as $rawMeal) {
                 $meals[$rawMeal['id']] = [
                     'quantity' => $rawMeal['quantity'],
-                    'meal_size_id' => $rawMeal['meal_size_id'] ?? null
+                    'meal_size_id' => $rawMeal['meal_size_id'] ?? null,
+                    'delivery_day_id' => $rawMeal['delivery_day_id'] ?? null
                 ];
             }
 
@@ -509,7 +515,8 @@ class MealPackage extends Model implements HasMedia
                 foreach ($size['meals'] as $meal) {
                     $meals[$meal['id']] = [
                         'quantity' => $meal['quantity'],
-                        'meal_size_id' => $meal['meal_size_id'] ?? null
+                        'meal_size_id' => $meal['meal_size_id'] ?? null,
+                        'delivery_day_id' => $meal['delivery_day_id'] ?? null
                     ];
                 }
                 $mealPackageSize->meals()->sync($meals);
@@ -592,7 +599,9 @@ class MealPackage extends Model implements HasMedia
                         $meals[$meal['id']] = [
                             'quantity' => $meal['quantity'],
                             'meal_size_id' => $meal['meal_size_id'] ?? null,
-                            'price' => $meal['price'] ?? 0
+                            'price' => $meal['price'] ?? 0,
+                            'delivery_day_id' =>
+                                $meal['delivery_day_id'] ?? null
                         ];
                     }
                     $option->meals()->sync($meals);
@@ -679,7 +688,8 @@ class MealPackage extends Model implements HasMedia
                     $meals[$meal['id']] = [
                         'quantity' => $meal['quantity'],
                         'meal_size_id' => $meal['meal_size_id'] ?? null,
-                        'price' => $meal['price'] ?? 0
+                        'price' => $meal['price'] ?? 0,
+                        'delivery_day_id' => $meal['delivery_day_id'] ?? null
                     ];
                 }
                 $mealPackageAddon->meals()->sync($meals);

@@ -155,6 +155,14 @@
                     @change="val => setMealSizeId(props.row.id, val)"
                   ></b-select>
                 </div>
+
+                <div slot="delivery_day_id" slot-scope="props">
+                  <b-select
+                    v-model="props.row.delivery_day_id"
+                    :options="deliveryDayOptions"
+                    @change="val => setMealDeliveryDay(props.row.id, val)"
+                  ></b-select>
+                </div>
               </v-client-table>
             </b-tab>
             <b-tab title="Variations">
@@ -283,7 +291,8 @@ export default {
           featured_image: "Image",
           title: "Title",
           quantity: "Quantity",
-          meal_size_id: "Meal Size"
+          meal_size_id: "Meal Size",
+          delivery_day_id: "Delivery Day"
         },
         rowClassCallback: function(row) {
           let classes = `meal meal-${row.id}`;
@@ -328,6 +337,7 @@ export default {
         meal.included = this.hasMeal(meal.id);
         meal.quantity = this.getMealQuantity(meal.id);
         meal.meal_size_id = this.getMealSizeId(meal.id);
+        meal.delivery_day_id = this.getMealDeliveryDay(meal.id);
         return meal;
       });
     },
@@ -346,6 +356,9 @@ export default {
     this.mealPackage = { ...this.meal_package };
   },
   mounted() {
+    if (this.store.modules.multipleDeliveryDays) {
+      this.columns.push("delivery_day_id");
+    }
     this.$refs.modal.show();
     setTimeout(() => {
       this.$refs.featuredImageInput.onResize();
@@ -410,6 +423,22 @@ export default {
         return 0;
       } else {
         return this.mealPackage.meals[index].quantity;
+      }
+    },
+    getMealDeliveryDay(id) {
+      const index = this.findMealIndex(id);
+      if (index === -1) {
+        return 0;
+      } else {
+        return this.mealPackage.meals[index].delivery_day_id;
+      }
+    },
+    setMealDeliveryDay(id, deliveryDayId) {
+      const index = this.findMealIndex(id);
+      if (index !== -1) {
+        let meal = { ...this.mealPackage.meals[index] };
+        meal.delivery_day_id = deliveryDayId;
+        this.$set(this.mealPackage.meals, index, meal);
       }
     },
     sizeOptions(meal) {

@@ -2355,6 +2355,10 @@ const actions = {
       state.viewed_store.packages.splice(index, 1, meal_package);
       state.viewed_store.refreshed_package_ids.push(meal_package.id);
 
+      meal_package.meals.forEach(meal => {
+        meal.delivery_day_id = meal.pivot.delivery_day_id;
+      });
+
       return meal_package;
     } else {
       return null;

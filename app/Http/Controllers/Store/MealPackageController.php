@@ -105,7 +105,12 @@ class MealPackageController extends StoreController
                     return [
                         'id' => $meal->get('id'),
                         'quantity' => $meal->get('quantity'),
-                        'meal_size_id' => $size ? $size : null
+                        'meal_size_id' => $size ? $size : null,
+                        'delivery_day_id' => isset(
+                            $meal['pivot']['delivery_day_id']
+                        )
+                            ? $meal['pivot']['delivery_day_id']
+                            : null
                     ];
                 });
             }

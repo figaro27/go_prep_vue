@@ -1242,16 +1242,8 @@ export default {
         this.showMealPackage(mealPackage, size);
         return false;
       }
+
       /* Show Detail Page or not end */
-
-      if (this.store.modules.multipleDeliveryDays) {
-        mealPackage.customTitle =
-          mealPackage.title + " - " + this.$parent.selectedDeliveryDay.day_long;
-        mealPackage.title =
-          mealPackage.title + " - " + this.$parent.selectedDeliveryDay.day_long;
-      }
-
-      this.addOne(mealPackage, true, size);
 
       this.$parent.mealPackageModal = false;
       if (this.$parent.showBagClass.includes("hidden-right")) {
@@ -1263,6 +1255,50 @@ export default {
         this.$parent.showBagClass -= " area-scroll";
       }
       this.$parent.search = "";
+
+      if (this.store.modules.multipleDeliveryDays) {
+        if (
+          mealPackage.meals.some(meal => {
+            return meal.delivery_day_id;
+          })
+        ) {
+          // Splits the meals in the meal package into separate delivery days in the bag
+          let count = [
+            ...new Set(mealPackage.meals.map(meal => meal.delivery_day_id))
+          ].length;
+          let deliveryDayIds = this.store.delivery_days.map(day => {
+            return day.id;
+          });
+          deliveryDayIds.forEach(dayId => {
+            let deliveryDay = this.store.delivery_days.find(day => {
+              return day.id == dayId;
+            });
+            let newMealPackage = { ...mealPackage };
+            newMealPackage.meals = [];
+            mealPackage.meals.forEach(meal => {
+              if (meal.delivery_day_id == dayId) {
+                newMealPackage.meals.push(meal);
+              }
+            });
+            if (newMealPackage.meals.length > 0) {
+              newMealPackage.delivery_day = deliveryDay;
+              newMealPackage.customTitle =
+                newMealPackage.title + " - " + deliveryDay.day_long;
+              newMealPackage.title =
+                newMealPackage.title + " - " + deliveryDay.day_long;
+              newMealPackage.price = newMealPackage.price / count;
+              this.addOne(newMealPackage, true, size);
+            }
+          });
+          return;
+        }
+        mealPackage.customTitle =
+          mealPackage.title + " - " + this.$parent.selectedDeliveryDay.day_long;
+        mealPackage.title =
+          mealPackage.title + " - " + this.$parent.selectedDeliveryDay.day_long;
+      }
+
+      this.addOne(mealPackage, true, size);
     },
     async addMeal(meal, mealPackage, size) {
       if (this.$parent.selectedDeliveryDay) {
