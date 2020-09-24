@@ -542,7 +542,11 @@ class CheckoutController extends UserController
                             )->first();
                             if ($meal && $meal->stock !== null) {
                                 $meal->stock -= $item['quantity'];
-                                if ($meal->stock === 0) {
+                                if (
+                                    $meal->stock === 0 ||
+                                    $meal->stock <=
+                                        $this->getReservedStock($meal)
+                                ) {
                                     $meal->lastOutOfStock = date('Y-m-d H:i:s');
                                     $meal->active = 0;
                                     Subscription::syncStock($meal);
@@ -1013,7 +1017,11 @@ class CheckoutController extends UserController
                             )->first();
                             if ($meal && $meal->stock !== null) {
                                 $meal->stock -= $item['quantity'];
-                                if ($meal->stock === 0) {
+                                if (
+                                    $meal->stock === 0 ||
+                                    $meal->stock <=
+                                        $this->getReservedStock($meal)
+                                ) {
                                     $meal->lastOutOfStock = date('Y-m-d H:i:s');
                                     $meal->active = 0;
                                     Subscription::syncStock($meal);

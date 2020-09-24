@@ -767,7 +767,10 @@ class OrderController extends StoreController
                             );
                         }
                         $meal->stock -= $item['quantity'] - $quantity;
-                        if ($meal->stock === 0) {
+                        if (
+                            $meal->stock === 0 ||
+                            $meal->stock <= $this->getReservedStock($meal)
+                        ) {
                             $meal->lastOutOfStock = date('Y-m-d H:i:s');
                             $meal->active = 0;
                             Subscription::syncStock($meal);
