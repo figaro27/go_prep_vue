@@ -1060,14 +1060,18 @@
           </b-form-group>
         </div>
 
-        <!-- <div
-          v-if="hasActiveSubscription && !$route.params.subscriptionId"
+        <div
+          v-if="
+            hasActiveSubscription &&
+              store.modules.allowMultipleSubscriptions &&
+              weeklySubscription
+          "
           class="alert alert-warning"
           role="alert"
         >
-          You have an active weekly subscription with this company and may have
+          You already have an active weekly subscription with us and may have
           already been charged for an order this week.
-        </div> -->
+        </div>
         <b-alert
           show
           variant="warning"
