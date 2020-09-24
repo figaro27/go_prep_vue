@@ -169,6 +169,15 @@ export default {
         size.price = item.price;
       }
 
+      if (size && size.delivery_day) {
+        meal.delivery_day = size.delivery_day;
+      }
+
+      if (meal.dday) {
+        // Unable to directly set delivery_day on AdjustOrder
+        meal.delivery_day = meal.dday;
+      }
+
       this.$store.commit("addToBag", {
         meal,
         quantity: 1,

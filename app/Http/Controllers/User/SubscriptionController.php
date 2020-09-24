@@ -701,7 +701,13 @@ class SubscriptionController extends UserController
                                 'meal_package_id' => $item['meal_package_id'],
                                 'meal_package_size_id' =>
                                     $item['meal_package_size_id'],
-                                'order_id' => $order->id
+                                'order_id' => $order->id,
+                                'delivery_date' =>
+                                    $item['delivery_day']['day_friendly'],
+                                'customTitle' => $item['customTitle'],
+                                'mappingId' => isset($item['mappingId'])
+                                    ? $item['mappingId']
+                                    : null
                             ])
                                 ->get()
                                 ->count() === 0
@@ -737,6 +743,13 @@ class SubscriptionController extends UserController
                                 $mealPackageOrder->delivery_date =
                                     $item['delivery_day']['day_friendly'];
                             }
+                            $mealPackageOrder->customTitle =
+                                $item['customTitle'];
+                            $mealPackageOrder->mappingId = isset(
+                                $item['mappingId']
+                            )
+                                ? $item['mappingId']
+                                : null;
                             $mealPackageOrder->save();
                         }
                     }

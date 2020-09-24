@@ -181,7 +181,8 @@ export default {
             return {
               id: meal.id,
               meal_size_id: meal.meal_size_id,
-              quantity: meal.quantity
+              quantity: meal.quantity,
+              delivery_day_id: meal.delivery_day_id
             };
           })
         : [];

@@ -1197,6 +1197,10 @@ export default {
       // if (!this.store.refreshed_package_ids.includes(mealPackage.id)) {
       this.$parent.forceShow = true;
 
+      if (!mealPackage.delivery_day) {
+        mealPackage.delivery_day = this.$parent.finalDeliveryDay;
+      }
+
       if (!("package" in this.$route.query)) {
         mealPackage = await store.dispatch(
           "refreshStoreMealPackage",
@@ -1258,6 +1262,7 @@ export default {
 
       if (this.store.modules.multipleDeliveryDays) {
         if (
+          mealPackage.meals &&
           mealPackage.meals.some(meal => {
             return meal.delivery_day_id;
           })
@@ -1292,10 +1297,51 @@ export default {
           });
           return;
         }
+        if (size) {
+          if (
+            size.meals.some(meal => {
+              return meal.delivery_day_id;
+            })
+          ) {
+            // Splits the meals in the meal package into separate delivery days in the bag
+            let count = [
+              ...new Set(size.meals.map(meal => meal.delivery_day_id))
+            ].length;
+            let deliveryDayIds = this.store.delivery_days.map(day => {
+              return day.id;
+            });
+            deliveryDayIds.forEach(dayId => {
+              let deliveryDay = this.store.delivery_days.find(day => {
+                return day.id == dayId;
+              });
+              let newMealPackageSize = { ...size };
+              newMealPackageSize.meals = [];
+              size.meals.forEach(meal => {
+                if (meal.delivery_day_id == dayId) {
+                  newMealPackageSize.meals.push(meal);
+                }
+              });
+              if (newMealPackageSize.meals.length > 0) {
+                newMealPackageSize.delivery_day = deliveryDay;
+                newMealPackageSize.customTitle =
+                  newMealPackageSize.title + " - " + deliveryDay.day_long;
+                newMealPackageSize.title =
+                  newMealPackageSize.title + " - " + deliveryDay.day_long;
+                newMealPackageSize.price = newMealPackageSize.price / count;
+                this.addOne(mealPackage, true, newMealPackageSize);
+              }
+            });
+            return;
+          }
+        }
         mealPackage.customTitle =
-          mealPackage.title + " - " + this.$parent.selectedDeliveryDay.day_long;
+          mealPackage.title +
+          " - " +
+          moment(this.$parent.selectedDeliveryDay.day_friendly).format("dddd");
         mealPackage.title =
-          mealPackage.title + " - " + this.$parent.selectedDeliveryDay.day_long;
+          mealPackage.title +
+          " - " +
+          moment(this.$parent.selectedDeliveryDay.day_friendly).format("dddd");
       }
 
       this.addOne(mealPackage, true, size);

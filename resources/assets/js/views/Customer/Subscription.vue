@@ -35,7 +35,8 @@ export default {
       bag: "bag",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
-      mealMixItems: "mealMixItems"
+      mealMixItems: "mealMixItems",
+      context: "context"
     }),
     subscriptionId() {
       return this.$route.params.id;
@@ -127,6 +128,22 @@ export default {
       //   }
       // });
 
+      let delivery_days = [];
+
+      if (this.store.modules.multipleDeliveryDays && this.context == "store") {
+        let today = new Date();
+        let year = today.getFullYear();
+        let month = today.getMonth();
+        let date = today.getDate();
+
+        for (let i = 0; i < 30; i++) {
+          let day = new Date(year, month, date + i);
+          let multDD = { ...this.store.delivery_days[0] };
+          multDD.day_friendly = moment(day).format("YYYY-MM-DD");
+          delivery_days.push(multDD);
+        }
+      }
+
       if (subscription.meal_package_items) {
         _.forEach(subscription.meal_package_items, pkgItem => {
           let meal_package_id = pkgItem.meal_package_id;
@@ -172,12 +189,10 @@ export default {
             }
           });
           if (this.store.modules.multipleDeliveryDays) {
-            // let delivery_day = this.store.delivery_days.find(day => {
-            //   return day.day == moment(pkgItem.delivery_date).day();
-            // });
-            // meal_package.delivery_day = delivery_day;
-            meal_package.delivery_day = this.store.delivery_days[0];
-            meal_package.delivery_day.day_friendly = pkgItem.delivery_date;
+            let deliveryDay = delivery_days.find(day => {
+              return day.day_friendly == pkgItem.delivery_date;
+            });
+            meal_package.dday = deliveryDay;
           }
           meal_package.customTitle = pkgItem.customTitle;
 
@@ -219,15 +234,13 @@ export default {
           meal.price = item.price / item.quantity;
 
           if (this.store.modules.multipleDeliveryDays) {
-            // let delivery_day = this.store.delivery_days.find(day => {
-            //   return day.day == moment(item.delivery_date.date).day();
-            // });
-
-            // meal.delivery_day = delivery_day;
-            meal.delivery_day = this.store.delivery_days[0];
-            meal.delivery_day.day_friendly = moment(
-              item.delivery_date.date
-            ).format("YYYY-MM-DD");
+            let deliveryDay = delivery_days.find(day => {
+              return (
+                day.day_friendly ==
+                moment(item.delivery_date.date).format("YYYY-MM-DD")
+              );
+            });
+            meal.delivery_day = deliveryDay;
           }
 
           for (let i = 0; i < item.quantity; i++) {

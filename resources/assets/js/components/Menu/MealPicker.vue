@@ -153,6 +153,14 @@
         ></b-select>
       </div>
 
+      <div slot="delivery_day_id" slot-scope="props">
+        <b-select
+          v-model="props.row.delivery_day_id"
+          :options="deliveryDayOptions"
+          @change="val => setMealDeliveryDay(props.row.id, val)"
+        ></b-select>
+      </div>
+
       <div slot="afterTable">
         <b-button
           class="pull-right"
@@ -212,7 +220,8 @@ export default {
           title: "Title",
           meal_size_id: "Meal Size",
           quantity: "Quantity",
-          added_price: "Added Price"
+          added_price: "Added Price",
+          delivery_day_id: "Delivery Day"
         },
         rowClassCallback: function(row) {
           let classes = `meal meal-${row.id}`;
@@ -256,6 +265,7 @@ export default {
         meal.quantity = this.getMealQuantity(meal.id);
         meal.meal_size_id = this.getMealSizeId(meal.id);
         meal.price = this.getMealAddedPrice(meal.id);
+        meal.delivery_day_id = this.getMealDeliveryDay(meal.id);
         return meal;
       });
 
@@ -291,6 +301,14 @@ export default {
 
       return meals;
     },
+    deliveryDayOptions() {
+      return Object.values(this.store.delivery_days).map(day => {
+        return {
+          text: day.day_long,
+          value: day.id
+        };
+      });
+    },
     categories() {
       let categories = _.map(this.storeCategories, category => {
         return {
@@ -322,6 +340,11 @@ export default {
     this.selected = _.isArray(this.value) ? this.value : [];
     this.meals_selectable = this.selectable == true;
   },
+  mounted() {
+    if (this.store.modules.multipleDeliveryDays) {
+      this.columns.push("delivery_day_id");
+    }
+  },
   methods: {
     save() {
       this.$emit("save", {
@@ -329,6 +352,22 @@ export default {
         selectable: this.meals_selectable
       });
       this.$toastr.s("Meals saved.");
+    },
+    getMealDeliveryDay(id) {
+      const index = this.findMealIndex(id);
+      if (index === -1) {
+        return 0;
+      } else {
+        return this.selected[index].delivery_day_id;
+      }
+    },
+    setMealDeliveryDay(id, deliveryDayId) {
+      const index = this.findMealIndex(id);
+      if (index !== -1) {
+        let meal = { ...this.selected[index] };
+        meal.delivery_day_id = deliveryDayId;
+        this.$set(this.selected, index, meal);
+      }
     },
     findMealIndex(id) {
       return _.findIndex(this.selected, { id });

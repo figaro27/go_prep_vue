@@ -28,7 +28,7 @@ class MealPackageSize extends Model
     {
         return $this->belongsToMany('App\Meal', 'meal_meal_package_size')
             ->using('App\MealMealPackageSize')
-            ->withPivot(['quantity', 'meal_size_id']);
+            ->withPivot(['quantity', 'meal_size_id', 'delivery_day_id']);
     }
 
     public function getMealsAttribute()

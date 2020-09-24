@@ -126,7 +126,12 @@ class MealPackageController extends StoreController
                                         'id' => $meal['id'],
                                         'quantity' => $meal['quantity'],
                                         'meal_size_id' =>
-                                            $meal['pivot']['meal_size_id']
+                                            $meal['pivot']['meal_size_id'],
+                                        'delivery_day_id' => isset(
+                                            $meal['pivot']['delivery_day_id']
+                                        )
+                                            ? $meal['pivot']['delivery_day_id']
+                                            : null
                                     ];
                                 });
                             }
