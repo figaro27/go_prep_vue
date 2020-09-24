@@ -66,6 +66,11 @@ class RegisterController extends StoreController
                     chr(rand(65, 90))
             ]);
 
+            $zip = $request->get('zip') ? $request->get('zip') : 'N/A';
+            if ($store->details->country == 'US') {
+                $zip = substr($zip, 0, 5);
+            }
+
             $userDetails = $user->details()->create([
                 'companyname' => $request->get('company_name'),
                 'firstname' => $request->get('first_name'),
@@ -78,13 +83,11 @@ class RegisterController extends StoreController
                 'state' => $request->get('state')
                     ? $request->get('state')
                     : 'N/A',
-                'zip' => $request->get('zip')
-                    ? substr($request->get('zip'), 0, 5)
-                    : 'N/A',
+                'zip' => $zip,
                 'delivery' => $request->get('delivery')
                     ? $request->get('delivery')
                     : 'N/A',
-                'country' => 'USA',
+                'country' => $store->details->country,
                 'created_at' => now(),
                 'updated_at' => now(),
                 'notifications' => array(

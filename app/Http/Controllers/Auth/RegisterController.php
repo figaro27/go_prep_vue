@@ -172,6 +172,13 @@ class RegisterController extends Controller
                 chr(rand(65, 90))
         ]);
 
+        $zip = $data['user_details']['zip']
+            ? $data['user_details']['zip']
+            : 'N/A';
+        if ($data['user_details']['country'] == 'US') {
+            $zip = substr($zip, 0, 5);
+        }
+
         $userDetails = $user->details()->create([
             //'user_id' => $user->id,
             'companyname' => isset($data['user']['company_name'])
@@ -187,7 +194,7 @@ class RegisterController extends Controller
                 : $data['user_details']['address'],
             'city' => $data['user_details']['city'],
             'state' => $data['user_details']['state'],
-            'zip' => substr($data['user_details']['zip'], 0, 5),
+            'zip' => $zip,
             'country' => $data['user_details']['country'],
             'delivery' => isset($data['user_details']['delivery'])
                 ? $data['user_details']['delivery']
