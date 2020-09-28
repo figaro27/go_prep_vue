@@ -227,6 +227,7 @@ class OrdersByCustomer
                                     $order
                                         ->meal_orders()
                                         ->get()
+                                        ->sortBy('delivery_date')
                                         ->map(function ($mealOrder) {
                                             return [
                                                 'quantity' =>
