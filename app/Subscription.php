@@ -992,28 +992,14 @@ class Subscription extends Model
             ['stripe_account' => $this->store->settings->stripe_id]
         );
 
-        // Assign plan to stripe subscription
-        // if ($this->status === 'paused') {
-        //     \Stripe\Subscription::update(
-        //         $subscription->id,
-        //         [
-        //             'cancel_at_period_end' => false,
-        //             'items' => [
-        //                 [
-        //                     'id' => $subscription->items->data[0]->id,
-        //                     'plan' => $plan->id
-        //                 ]
-        //             ],
-        //             'prorate' => false,
-        //             'pause_collection' => [
-        //                 'behavior' => 'void'
-        //             ]
-        //         ],
-        //         [
-        //             'stripe_account' => $this->store->settings->stripe_id
-        //         ]
-        //     );
-        // } else {
+        // If the subscription is paused, resume then update then pause again. Stripe doesn't allow updating a paused subscription.
+        $paused = false;
+
+        if ($this->status === 'paused') {
+            $paused = true;
+            $this->resume();
+        }
+
         \Stripe\Subscription::update(
             $subscription->id,
             [
@@ -1028,7 +1014,10 @@ class Subscription extends Model
             ],
             ['stripe_account' => $this->store->settings->stripe_id]
         );
-        // }
+
+        if ($paused) {
+            $this->pause();
+        }
 
         // Assign new plan ID to subscription
         $this->stripe_plan = $plan->id;
