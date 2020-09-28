@@ -10,7 +10,7 @@ use Carbon\Carbon;
 use App\SmsContact;
 use App\StoreDetail;
 
-class SmsChatController extends StoreController
+class SMSChatController extends StoreController
 {
     protected $baseURL = 'https://rest.textmagic.com/api/v2/chats';
     protected $headers = [
