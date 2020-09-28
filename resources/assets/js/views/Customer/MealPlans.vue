@@ -477,7 +477,7 @@ export default {
           subtotal: format.money(item.price, subscription.currency)
         };
       });
-
+      data = _.orderBy(data, "delivery_date");
       return _.filter(data);
     },
     async pauseSubscription(subscription) {

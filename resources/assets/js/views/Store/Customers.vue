@@ -641,7 +641,7 @@ export default {
           subtotal: format.money(item.price, order.currency)
         };
       });
-
+      data = _.orderBy(data, "delivery_date");
       return _.filter(data);
     },
     getMealTableData(order) {
@@ -806,7 +806,7 @@ export default {
           }
         });
       }
-
+      data = _.orderBy(data, "delivery_date");
       return _.filter(data);
     },
     editCustomer() {
