@@ -237,6 +237,7 @@ class OrdersByCustomer
                                             ];
                                         })
                                         ->toArray()
+                                        ->sort('delivery_date')
                                 ),
                                 'lineItemsOrders' => array_merge(
                                     [['Extras', 'Quantity']], // Heading
