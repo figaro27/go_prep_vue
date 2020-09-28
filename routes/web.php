@@ -45,7 +45,7 @@ foreach ([config('app.domain')] as $domain) {
     Route::any('/stripe/event', 'Billing\\StripeController@event');
     Route::any(
         '/textmagic/incomingSMS',
-        'Store\\SmsChatController@incomingSMS'
+        'Store\\SMSChatController@incomingSMS'
     );
     //Auth::routes();
     Route::fallback('SpaController@index');

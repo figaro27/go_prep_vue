@@ -632,7 +632,7 @@ foreach (
                                 'smsAccountInfo',
                                 'SMSSettingController@smsAccountInfo'
                             );
-                            Route::resource('SMSChats', 'SmsChatController');
+                            Route::resource('SMSChats', 'SMSChatController');
 
                             Route::post(
                                 'submitMultiAuthPassword',
