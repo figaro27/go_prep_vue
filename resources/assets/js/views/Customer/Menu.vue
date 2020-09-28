@@ -117,12 +117,13 @@
                   "
                 >
                   <center>
-                    <b-alert style="background-color:#EBFAFF" show>
+                    <!-- <b-alert style="background-color:#EBFAFF" show>
                       <p>
                         Sorry, there are no delivery days available for your zip
                         code.
                       </p>
-                    </b-alert>
+                    </b-alert> -->
+                    <zip-code-modal :deliverySelected="true"></zip-code-modal>
                   </center>
                 </div>
               </div>
