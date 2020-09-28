@@ -8,7 +8,7 @@ use App\Store;
 use App\Order;
 use App\ReportRecord;
 
-class DeliveryRoutes
+class DeliveryRoutesOld
 {
     use Exportable;
 
