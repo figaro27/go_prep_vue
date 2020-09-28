@@ -503,10 +503,7 @@ class SpaController extends Controller
         $storeSetting = StoreSetting::where('store_id', $store_id)->first();
 
         $nextDeliveryDayWeekIndex = null;
-        if (
-            $storeSetting &&
-            count($storeSetting->store->deliveryDayMeals) > 0
-        ) {
+        if ($storeSetting->store->hasDeliveryDayItems) {
             $nextDeliveryDayWeekIndex =
                 $storeSetting->next_orderable_delivery_dates[0]['week_index'];
         }
@@ -515,7 +512,7 @@ class SpaController extends Controller
         $offset_package = (int) $offset_package;
         $category_id = (int) $category_id;
         $delivery_day_id = $request->get('delivery_day_id')
-            ? $request->get('delivery_day_id')
+            ? (int) $request->get('delivery_day_id')
             : DeliveryDay::where([
                 'store_id' => $store_id,
                 'day' => $nextDeliveryDayWeekIndex

@@ -1329,7 +1329,7 @@ export default {
       this.selectedDeliveryDay = e;
       this.finalDeliveryDay = e;
       this.showDeliveryDayModal = false;
-      if (this.store.hasDeliveryDayMeals) {
+      if (this.store.hasDeliveryDayItems) {
         e.has_items = true;
       }
       store.dispatch("refreshLazyDD", {

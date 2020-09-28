@@ -39,7 +39,7 @@ class Store extends Model
         'url',
         'hasPromoCodes',
         'bulkCustomers',
-        'hasDeliveryDayMeals'
+        'hasDeliveryDayItems'
     ];
 
     public static function boot()
@@ -213,6 +213,11 @@ class Store extends Model
     public function deliveryDayMeals()
     {
         return $this->hasMany('App\DeliveryDayMeal');
+    }
+
+    public function deliveryDayMealPackages()
+    {
+        return $this->hasMany('App\DeliveryDayMealPackage');
     }
 
     public function referrals()
@@ -1637,9 +1642,12 @@ class Store extends Model
         }
     }
 
-    public function getHasDeliveryDayMealsAttribute()
+    public function getHasDeliveryDayItemsAttribute()
     {
-        if (count($this->deliveryDayMeals) > 0) {
+        if (
+            count($this->deliveryDayMeals) > 0 ||
+            count($this->deliveryDayMealPackages) > 0
+        ) {
             return true;
         }
         return false;
