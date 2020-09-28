@@ -175,7 +175,8 @@ class Order extends Model
             ->filter(function ($item) {
                 return !$item->hidden;
             })
-            ->values();
+            ->values()
+            ->sortBy('delivery_date');
     }
 
     public function getCustomerNameAttribute()
