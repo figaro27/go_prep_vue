@@ -1782,7 +1782,7 @@ export default {
         }
       });
 
-      // data = _.orderBy(data, "delivery_date");
+      data = _.orderBy(data, "delivery_date");
       return _.filter(data);
     },
     updateBalance(id) {
