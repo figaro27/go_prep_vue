@@ -18,6 +18,10 @@ class DeliveryDayMealPackagesTable extends Migration
         ) {
             $table->increments('id');
             $table
+                ->integer('store_id')
+                ->references('id')
+                ->on('stores');
+            $table
                 ->integer('delivery_day_id')
                 ->references('id')
                 ->on('delivery_days');
