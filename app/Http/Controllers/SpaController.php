@@ -682,16 +682,14 @@ class SpaController extends Controller
                         ]);
 
                     if ($delivery_day_id != 0 && $isValidDD) {
-                        $meals = $meals
-                            ->doesntHave('days')
-                            ->orWhereHas('days', function ($query) use (
+                        $meals = $meals->whereHas('days', function (
+                            $query
+                        ) use ($delivery_day_id) {
+                            $query->where(
+                                'delivery_day_meals.delivery_day_id',
                                 $delivery_day_id
-                            ) {
-                                $query->where(
-                                    'delivery_day_meals.delivery_day_id',
-                                    $delivery_day_id
-                                );
-                            });
+                            );
+                        });
                     }
 
                     $meals = $meals
@@ -720,16 +718,14 @@ class SpaController extends Controller
                         ]);
 
                     if ($delivery_day_id != 0 && $isValidDD) {
-                        $packages = $packages
-                            ->doesntHave('days')
-                            ->orWhereHas('days', function ($query) use (
+                        $packages = $packages->whereHas('days', function (
+                            $query
+                        ) use ($delivery_day_id) {
+                            $query->where(
+                                'delivery_day_meal_packages.delivery_day_id',
                                 $delivery_day_id
-                            ) {
-                                $query->where(
-                                    'delivery_day_meal_packages.delivery_day_id',
-                                    $delivery_day_id
-                                );
-                            });
+                            );
+                        });
                     }
 
                     $packages = $packages
