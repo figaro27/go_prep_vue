@@ -588,14 +588,16 @@ class SpaController extends Controller
 
                         if ($delivery_day_id != 0 && $isValidDD) {
                             $temp_meal = $temp_meal
-                                ? $temp_meal->whereHas('days', function (
-                                    $query
-                                ) use ($delivery_day_id) {
-                                    $query->where(
-                                        'delivery_day_meals.delivery_day_id',
+                                ? $temp_meal
+                                    ->doesntHave('days')
+                                    ->orWhereHas('days', function ($query) use (
                                         $delivery_day_id
-                                    );
-                                })
+                                    ) {
+                                        $query->where(
+                                            'delivery_day_meals.delivery_day_id',
+                                            $delivery_day_id
+                                        );
+                                    })
                                 : null;
                         }
 
@@ -625,14 +627,16 @@ class SpaController extends Controller
 
                         if ($delivery_day_id != 0 && $isValidDD) {
                             $temp_package = $temp_package
-                                ? $temp_package->whereHas('days', function (
-                                    $query
-                                ) use ($delivery_day_id) {
-                                    $query->where(
-                                        'delivery_day_meal_packages.delivery_day_id',
+                                ? $temp_package
+                                    ->doesntHave('days')
+                                    ->orWhereHas('days', function ($query) use (
                                         $delivery_day_id
-                                    );
-                                })
+                                    ) {
+                                        $query->where(
+                                            'delivery_day_meal_packages.delivery_day_id',
+                                            $delivery_day_id
+                                        );
+                                    })
                                 : null;
                         }
 
@@ -682,14 +686,21 @@ class SpaController extends Controller
                         ]);
 
                     if ($delivery_day_id != 0 && $isValidDD) {
-                        $meals = $meals->whereHas('days', function (
-                            $query
-                        ) use ($delivery_day_id) {
-                            $query->where(
-                                'delivery_day_meals.delivery_day_id',
+                        $meals = $meals
+                            ->doesntHave('days')
+                            ->orWhereHas('days', function ($query) use (
                                 $delivery_day_id
-                            );
-                        });
+                            ) {
+                                $query->where(
+                                    'delivery_day_meals.delivery_day_id',
+                                    $delivery_day_id
+                                );
+                            })
+                            ->whereHas('categories', function ($query) use (
+                                $category_id
+                            ) {
+                                $query->where('categories.id', $category_id);
+                            });
                     }
 
                     $meals = $meals
@@ -718,14 +729,21 @@ class SpaController extends Controller
                         ]);
 
                     if ($delivery_day_id != 0 && $isValidDD) {
-                        $packages = $packages->whereHas('days', function (
-                            $query
-                        ) use ($delivery_day_id) {
-                            $query->where(
-                                'delivery_day_meal_packages.delivery_day_id',
+                        $packages = $packages
+                            ->doesntHave('days')
+                            ->orWhereHas('days', function ($query) use (
                                 $delivery_day_id
-                            );
-                        });
+                            ) {
+                                $query->where(
+                                    'delivery_day_meal_packages.delivery_day_id',
+                                    $delivery_day_id
+                                );
+                            })
+                            ->whereHas('categories', function ($query) use (
+                                $category_id
+                            ) {
+                                $query->where('categories.id', $category_id);
+                            });
                     }
 
                     $packages = $packages
