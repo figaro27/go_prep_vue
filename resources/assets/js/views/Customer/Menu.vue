@@ -1330,6 +1330,16 @@ export default {
       this.selectedDeliveryDay = e;
       this.finalDeliveryDay = e;
       this.showDeliveryDayModal = false;
+
+      let dayIndex = moment(this.finalDeliveryDay.day_friendly).day();
+      let type = this.finalDeliveryDay.type;
+
+      let deliveryDay = this.store.delivery_days.find(day => {
+        return day.day == dayIndex && day.type == type;
+      });
+
+      this.finalDeliveryDay.id = deliveryDay.id;
+
       if (this.store.hasDeliveryDayItems) {
         e.has_items = true;
       }
