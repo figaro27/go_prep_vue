@@ -148,12 +148,6 @@
             <p>
               <b-form-input
                 type="text"
-                v-model="storeId"
-                placeholder="Store ID"
-                v-if="store.id === 3 || store.id === 13 || store.id === 16"
-              ></b-form-input>
-              <b-form-input
-                type="text"
                 v-model="stripeId"
                 placeholder="Stripe ID"
                 v-if="store.id === 3 || store.id === 13 || store.id === 16"

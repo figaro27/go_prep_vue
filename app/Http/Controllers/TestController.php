@@ -309,7 +309,9 @@ class TestController extends Controller
     {
         $stripeId = $request->get('stripe_id');
         $timestamp = $request->get('unixTimestamp');
-        $storeId = $request->get('store_id');
+        $storeId = Subscription::where('stripe_id', $stripeId)
+            ->pluck('store_id')
+            ->first();
 
         $store = Store::where('id', $storeId)->first();
 
