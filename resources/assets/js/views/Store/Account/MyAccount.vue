@@ -156,7 +156,7 @@
                 type="text"
                 v-model="unixTimestamp"
                 placeholder="Unix Timestamp"
-                v-if="store.id === 3 || store.id === 13"
+                v-if="store.id === 3 || store.id === 13 || store.id === 16"
               ></b-form-input>
               <b-btn
                 @click="changeSubscriptionAnchor"
