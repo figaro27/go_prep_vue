@@ -3263,7 +3263,7 @@ use next_delivery_dates
 
       let weeklySubscriptionValue = this.weeklySubscriptionValue;
 
-      if (this.bagDeliveryDate) {
+      if (this.bagDeliveryDate && !this.deliveryDay) {
         this.deliveryDay = this.bagDeliveryDate.value;
       }
 
