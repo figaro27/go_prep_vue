@@ -18,6 +18,11 @@ Route::get('testDeleteMealOrders', 'TestController@testDeleteMealOrders');
 
 Route::post('testRenewSubscription', 'TestController@testRenewSubscription');
 
+Route::post(
+    'changeSubscriptionAnchor',
+    'TestController@changeSubscriptionAnchor'
+);
+
 Route::get('testChargeDescriptor', 'TestController@testChargeDescriptor');
 
 Route::get('testIncomingSMS', 'TestController@testIncomingSMS');

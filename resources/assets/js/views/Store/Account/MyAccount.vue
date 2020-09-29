@@ -145,6 +145,31 @@
                 >TEST RENEW SUBSCRIPTION</b-btn
               >
             </p>
+            <p>
+              <b-form-input
+                type="text"
+                v-model="storeId"
+                placeholder="Store ID"
+                v-if="store.id === 3 || store.id === 13 || store.id === 16"
+              ></b-form-input>
+              <b-form-input
+                type="text"
+                v-model="stripeId"
+                placeholder="Stripe ID"
+                v-if="store.id === 3 || store.id === 13 || store.id === 16"
+              ></b-form-input>
+              <b-form-input
+                type="text"
+                v-model="unixTimestamp"
+                placeholder="Unix Timestamp"
+                v-if="store.id === 3 || store.id === 13"
+              ></b-form-input>
+              <b-btn
+                @click="changeSubscriptionAnchor"
+                v-if="store.id === 3 || store.id === 13 || store.id === 16"
+                >Change Subscription Anchor</b-btn
+              >
+            </p>
           </b-form>
 
           <!--
@@ -218,7 +243,9 @@ export default {
   },
   data() {
     return {
-      stripeId: null
+      stripeId: null,
+      unixTimestamp: null,
+      storeId: null
     };
   },
   computed: {
@@ -368,6 +395,13 @@ export default {
     },
     testIncomingSMS() {
       axios.get("/testIncomingSMS");
+    },
+    changeSubscriptionAnchor() {
+      axios.post("/changeSubscriptionAnchor", {
+        stripe_id: this.stripeId,
+        unixTimestamp: this.unixTimestamp,
+        store_id: this.storeId
+      });
     }
   }
 };

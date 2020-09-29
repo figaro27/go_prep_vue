@@ -304,4 +304,24 @@ class TestController extends Controller
             $chat->save();
         }
     }
+
+    public function changeSubscriptionAnchor(Request $request)
+    {
+        $stripeId = $request->get('stripe_id');
+        $timestamp = $request->get('unixTimestamp');
+        $storeId = $request->get('store_id');
+
+        $store = Store::where('id', $storeId)->first();
+
+        \Stripe\Subscription::update(
+            'sub_' . $stripeId,
+            [
+                'trial_end' => $timestamp,
+                'proration_behavior' => 'none'
+            ],
+            [
+                'stripe_account' => $store->settings->stripe_id
+            ]
+        );
+    }
 }
