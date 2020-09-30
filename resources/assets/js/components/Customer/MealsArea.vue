@@ -1480,10 +1480,12 @@ export default {
       this.$set(this.showFullDescription, meal.id, !status);
     },
     assignedToDeliveryDay(meal) {
+      console.log(meal);
       if (
         !this.store.hasDeliveryDayItems ||
         !this.store.modules.multipleDeliveryDays
       ) {
+        console.log(1);
         return true;
       }
       if (meal.delivery_day_ids && this.$parent.finalDeliveryDay) {
@@ -1491,6 +1493,7 @@ export default {
           meal.delivery_day_ids.length === 0 ||
           meal.delivery_day_ids.includes(this.$parent.finalDeliveryDay.id)
         ) {
+          console.log(2);
           return true;
         }
       }
