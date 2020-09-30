@@ -1222,9 +1222,7 @@ export default {
         }
       }
 
-      if (this.context == "store") {
-        this.changeDeliveryDay(this.sortedDeliveryDays[0]);
-      }
+      this.changeDeliveryDay(this.sortedDeliveryDays[0]);
     }
 
     this.isPickup = this.bagPickup;
@@ -1346,7 +1344,7 @@ export default {
         this.finalDeliveryDay.id = deliveryDay.id;
       }
 
-      console.log("final delivery day " + this.finalDeliveryDay);
+      console.log("final delivery day " + this.finalDeliveryDay.id);
 
       if (this.store.hasDeliveryDayItems) {
         e.has_items = true;
