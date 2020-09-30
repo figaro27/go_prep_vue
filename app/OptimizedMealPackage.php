@@ -25,7 +25,7 @@ class OptimizedMealPackage extends Model implements HasMedia
         'meal_carousel'
     ];
 
-    public $appends = ['image', 'category_ids'];
+    public $appends = ['image', 'category_ids', 'delivery_day_ids'];
     public $hidden = ['store', 'categories'];
 
     protected $casts = [
@@ -137,5 +137,11 @@ class OptimizedMealPackage extends Model implements HasMedia
                 $mediaItems[0]->getUrl('medium')
             )
         ];
+    }
+
+    public function getDeliveryDayIdsAttribute()
+    {
+        $ddays = $this->days->pluck('delivery_day_id');
+        return $ddays;
     }
 }
