@@ -793,13 +793,11 @@ export default {
 
       let sortedDays = [];
 
-      if (this.store.delivery_day_zip_codes.length === 0) {
-        sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
-      } else {
-        sortedDays = storeDeliveryDays;
-      }
-
-      console.log(1 + sortedDays);
+      // if (this.store.delivery_day_zip_codes.length === 0) {
+      //   sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
+      // } else {
+      //   sortedDays = storeDeliveryDays;
+      // }
 
       // If the store only serves certain zip codes on certain delivery days
       if (this.store.delivery_day_zip_codes.length > 0) {
@@ -822,8 +820,6 @@ export default {
         });
       }
 
-      console.log(2 + sortedDays);
-
       if (this.context !== "store") {
         if (this.bagPickup) {
           sortedDays = sortedDays.filter(day => {
@@ -841,8 +837,6 @@ export default {
       sortedDays.sort(function(a, b) {
         return new Date(a.day_friendly) - new Date(b.day_friendly);
       });
-
-      console.log(4 + sortedDays);
 
       return sortedDays;
     },
