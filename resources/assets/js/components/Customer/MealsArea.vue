@@ -1480,10 +1480,6 @@ export default {
       this.$set(this.showFullDescription, meal.id, !status);
     },
     assignedToDeliveryDay(meal) {
-      if (this.store.id === 118) {
-        // Temp
-        return true;
-      }
       if (
         !this.store.hasDeliveryDayItems ||
         !this.store.modules.multipleDeliveryDays
