@@ -819,7 +819,6 @@ export default {
           // return deliveryDayIds.includes(day.id);
         });
       }
-      console.log(this.bagPickup);
       if (this.context !== "store") {
         if (this.bagPickup) {
           sortedDays = sortedDays.filter(day => {
@@ -1221,8 +1220,9 @@ export default {
           this.autoPickUpcomingMultDD(this.sortedDeliveryDays);
         }
       }
-
-      this.changeDeliveryDay(this.sortedDeliveryDays[0]);
+      if (this.sortedDeliveryDays.length > 0) {
+        this.changeDeliveryDay(this.sortedDeliveryDays[0]);
+      }
     }
 
     this.isPickup = this.bagPickup;
