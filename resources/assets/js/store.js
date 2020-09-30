@@ -2469,10 +2469,10 @@ const actions = {
     Vue.set(state.isLazyDD, key, true);
     Vue.set(state.isLazyDDLoading, key, true);
 
-    state.viewed_store = {
-      ...state.viewed_store,
-      delivery_day
-    };
+    // state.viewed_store = {
+    //   ...state.viewed_store,
+    //   delivery_day
+    // };
 
     triggerLazyDD(state, 0, 0, 0, "", 0, delivery_day);
   },
