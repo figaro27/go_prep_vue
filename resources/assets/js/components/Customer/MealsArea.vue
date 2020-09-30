@@ -192,7 +192,7 @@
             <div
               class="item col-sm-6 col-md-6 col-lg-6 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
               v-for="(meal, index) in group.meals"
-              v-if="!meal.hideFromMenu"
+              v-if="!meal.hideFromMenu && assignedToDeliveryDay(meal)"
               :key="
                 meal.meal_package
                   ? 'meal_package_' +
@@ -517,7 +517,7 @@
             <div
               class="item item-text col-sm-6 col-md-6 col-lg-12 col-xl-6"
               v-for="(meal, index) in group.meals"
-              v-if="!meal.hideFromMenu"
+              v-if="!meal.hideFromMenu && assignedToDeliveryDay(meal)"
               :key="'meal_' + meal.id + '_' + index"
               style="margin-bottom: 10px !important;"
             >
@@ -1478,6 +1478,22 @@ export default {
     readMore(meal) {
       let status = this.showFullDescription[meal.id];
       this.$set(this.showFullDescription, meal.id, !status);
+    },
+    assignedToDeliveryDay(meal) {
+      if (
+        !this.store.hasDeliveryDayItems ||
+        !this.store.modules.multipleDeliveryDays
+      ) {
+        return true;
+      }
+      if (meal.delivery_day_ids && this.$parent.finalDeliveryDay) {
+        if (
+          meal.delivery_day_ids.length === 0 ||
+          meal.delivery_day_ids.includes(this.$parent.finalDeliveryDay.id)
+        ) {
+          return true;
+        }
+      }
     }
   }
 };
