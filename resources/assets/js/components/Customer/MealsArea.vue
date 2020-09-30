@@ -1485,10 +1485,10 @@ export default {
         !this.store.hasDeliveryDayItems ||
         !this.store.modules.multipleDeliveryDays
       ) {
-        console.log(1);
         return true;
       }
       if (meal.delivery_day_ids && this.$parent.finalDeliveryDay) {
+        console.log(1);
         if (
           meal.delivery_day_ids.length === 0 ||
           meal.delivery_day_ids.includes(this.$parent.finalDeliveryDay.id)

@@ -1346,6 +1346,8 @@ export default {
         this.finalDeliveryDay.id = deliveryDay.id;
       }
 
+      console.log(this.finalDeliveryDay);
+
       if (this.store.hasDeliveryDayItems) {
         e.has_items = true;
       }
