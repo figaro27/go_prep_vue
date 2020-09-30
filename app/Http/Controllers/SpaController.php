@@ -511,16 +511,14 @@ class SpaController extends Controller
         $offset_meal = (int) $offset_meal;
         $offset_package = (int) $offset_package;
         $category_id = (int) $category_id;
-        // $delivery_day_id = $request->get('delivery_day_id')
-        //     ? (int) $request->get('delivery_day_id')
-        //     : DeliveryDay::where([
-        //         'store_id' => $store_id,
-        //         'day' => $nextDeliveryDayWeekIndex
-        //     ])
-        //         ->pluck('id')
-        //         ->first();
-        // Switching showing menu items by delivery day on front end.
-        $delivery_day_id = null;
+        $delivery_day_id = $request->get('delivery_day_id')
+            ? (int) $request->get('delivery_day_id')
+            : DeliveryDay::where([
+                'store_id' => $store_id,
+                'day' => $nextDeliveryDayWeekIndex
+            ])
+                ->pluck('id')
+                ->first();
         $category_ids =
             trim($category_ids_str) == ""
                 ? []
