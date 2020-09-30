@@ -1221,6 +1221,10 @@ export default {
           this.autoPickUpcomingMultDD(this.sortedDeliveryDays);
         }
       }
+
+      if (this.context == "store") {
+        this.changeDeliveryDay(this.sortedDeliveryDays[0]);
+      }
     }
 
     this.isPickup = this.bagPickup;
@@ -1338,7 +1342,9 @@ export default {
         return day.day == dayIndex && day.type == type;
       });
 
-      this.finalDeliveryDay.id = deliveryDay.id;
+      if (deliveryDay) {
+        this.finalDeliveryDay.id = deliveryDay.id;
+      }
 
       if (this.store.hasDeliveryDayItems) {
         e.has_items = true;
