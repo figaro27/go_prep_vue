@@ -794,7 +794,10 @@ export default {
     this.$emit("updateLineItems", this.orderLineItems);
 
     // If adjusting
-    if (this.$route.params.order || this.$parent.subscription) {
+    if (
+      this.store.modules.multipleDeliveryDays &&
+      (this.$route.params.order || this.$parent.subscription)
+    ) {
       this.autoPickAdjustDD();
     }
   },
