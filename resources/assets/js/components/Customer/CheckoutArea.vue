@@ -2251,8 +2251,10 @@ use next_delivery_dates
               if (!this.loggedIn) {
                 fee = deliveryFee;
               } else {
+                let userZip = this.user.user_detail.zip.replace(/\s/g, "");
                 let zip = this.deliveryFeeZipCodes.find(dfzc => {
-                  return dfzc.zip_code === this.user.user_detail.zip;
+                  dfzc.zip_code = dfzc.zip_code.replace(/\s/g, "");
+                  return dfzc.zip_code === userZip;
                 });
                 fee = zip ? zip.delivery_fee : deliveryFee;
               }

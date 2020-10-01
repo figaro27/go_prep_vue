@@ -90,6 +90,9 @@
                   @ok="updateDeliveryFeeZipCodes"
                   @cancel="deliveryFeeZipCodes = []"
                 >
+                  <center>
+                    <p class="strong">Add By City</p>
+                  </center>
                   <div
                     class="d-flex m-3"
                     style="justify-content:space-between;"
@@ -115,6 +118,29 @@
                       >Add</b-btn
                     >
                   </div>
+                  <center>
+                    <p class="strong">Add By Individual Postal Code</p>
+                  </center>
+                  <div
+                    class="d-flex m-3"
+                    style="justify-content:space-between;"
+                  >
+                    <b-form-input
+                      v-model="deliveryFeeZipCode.code"
+                      placeholder="Postal Codes"
+                      class="mr-1"
+                    ></b-form-input>
+                    <b-form-input
+                      v-model="deliveryFeeZipCode.rate"
+                      type="number"
+                      class="mr-1"
+                      placeholder="Rate"
+                    ></b-form-input>
+                    <b-btn variant="primary" @click="addDeliveryFeeZipCode"
+                      >Add</b-btn
+                    >
+                  </div>
+
                   <li
                     v-for="(dfzc, i) in deliveryFeeZipCodes"
                     class="mb-1 mt-2"
@@ -1350,6 +1376,7 @@ export default {
   data() {
     return {
       deliveryFeeCity: {},
+      deliveryFeeZipCode: {},
       deliveryFeeZipCodeModal: false,
       deliveryFeeZipCodes: [],
       logoUpdated: false,
@@ -1849,8 +1876,9 @@ export default {
           this.refreshStoreDeliveryFeeZipCodes();
         });
       this.updateStoreSettings();
-      this.deliveryFeeZipCodeModal = false;
-      this.deliveryFeeZipCodes = [];
+      // this.deliveryFeeZipCodeModal = false;
+      // this.deliveryFeeZipCodes = [];
+      this.deliveryFeeZipCode = {};
     },
     addDeliveryFeeCity() {
       if (this.deliveryFeeCity.rate == null) {
@@ -1865,9 +1893,26 @@ export default {
           this.refreshStoreDeliveryFeeZipCodes();
         });
       this.updateStoreSettings();
-      this.deliveryFeeZipCodeModal = false;
+      // this.deliveryFeeZipCodeModal = false;
       this.deliveryFeeCity = {};
-      this.deliveryFeeZipCodes = [];
+      // this.deliveryFeeZipCodes = [];
+    },
+    addDeliveryFeeZipCode() {
+      if (this.deliveryFeeZipCode.code == null) {
+        this.$toastr.w("Please add the postal code.");
+        return;
+      }
+      if (this.deliveryFeeZipCode.rate == null) {
+        this.$toastr.w(
+          "Please add the rate you want to charge for the postal code."
+        );
+        return;
+      }
+      this.deliveryFeeZipCodes.push({
+        delivery_fee: this.deliveryFeeZipCode.rate,
+        zip_code: this.deliveryFeeZipCode.code
+      });
+      this.updateDeliveryFeeZipCodes();
     },
     getStateNames(country = "US") {
       return states.selectOptions(country);

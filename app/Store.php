@@ -1319,9 +1319,21 @@ class Store extends Model
     {
         // return true;
         $zip = strtoupper(strval($zip));
+        $zip = preg_replace("/\s+/", "", $zip);
         list($zip) = explode(' ', $zip);
+
+        foreach ($this->deliveryFeeZipCodes as $zipcode) {
+            $zipcode = strtoupper(strval($zipcode->zip_code));
+            $zipcode = preg_replace("/\s+/", "", $zipcode);
+            list($zipcode) = explode(' ', $zipcode);
+            if ($zip === $zipcode) {
+                return true;
+            }
+        }
+
         foreach ($this->settings->delivery_distance_zipcodes as $zipcode) {
             $zipcode = strtoupper(strval($zipcode));
+            $zipcode = preg_replace("/\s+/", "", $zipcode);
             list($zipcode) = explode(' ', $zipcode);
             if ($zip === $zipcode) {
                 return true;
