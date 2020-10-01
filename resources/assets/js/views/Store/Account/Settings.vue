@@ -127,7 +127,7 @@
                   >
                     <b-form-input
                       v-model="deliveryFeeZipCode.code"
-                      placeholder="Postal Codes"
+                      placeholder="Postal Code"
                       class="mr-1"
                     ></b-form-input>
                     <b-form-input
