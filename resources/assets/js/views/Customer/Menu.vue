@@ -1197,7 +1197,7 @@ export default {
     });
   },
   mounted() {
-    if (this.store.modules.pickupOnly) {
+    if (this.store.modules.pickupOnly && this.context !== "store") {
       this.setBagPickup(1);
     }
     if (this.store.modules.multipleDeliveryDays) {
