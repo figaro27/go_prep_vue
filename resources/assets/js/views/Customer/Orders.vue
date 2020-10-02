@@ -504,7 +504,9 @@ export default {
               // delivery_date: item.delivery_date
               //   ? moment(item.delivery_date.date).format("dddd, MMM Do")
               //   : null,
-              delivery_date: null,
+              delivery_date: moment(item.delivery_date.date).format(
+                "dddd, MMM Do"
+              ),
               //meal: meal.title,
               size: size ? size.title : meal.default_size_title,
               meal: title,
@@ -546,9 +548,9 @@ export default {
               );
 
           data.push({
-            delivery_date: item.delivery_date
-              ? moment(item.delivery_date.date).format("dddd, MMM Do")
-              : null,
+            delivery_date: moment(item.delivery_date.date).format(
+              "dddd, MMM Do"
+            ),
             //meal: meal.title,
             size: size ? size.title : meal.default_size_title,
             meal: title,
@@ -591,7 +593,7 @@ export default {
           });
         }
       });
-      // data = _.orderBy(data, "delivery_date");
+      data = _.orderBy(data, "delivery_date");
       return _.filter(data);
     },
     async viewOrder(id) {
