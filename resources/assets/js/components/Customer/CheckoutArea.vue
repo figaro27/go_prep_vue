@@ -3267,7 +3267,9 @@ use next_delivery_dates
       let weeklySubscriptionValue = this.weeklySubscriptionValue;
 
       if (this.bagDeliveryDate && !this.deliveryDay) {
-        this.deliveryDay = this.bagDeliveryDate.value;
+        this.deliveryDay = this.bagDeliveryDate.value
+          ? this.bagDeliveryDate.value
+          : this.bagDeliveryDate;
       }
 
       axios
