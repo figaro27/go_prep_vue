@@ -751,9 +751,9 @@ export default {
       subscription.meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
           data.push({
-            delivery_date: moment(meal_package_item.delivery_date).format(
-              "dddd, MMM Do"
-            ),
+            delivery_date: meal_package_item.delivery_date
+              ? moment(meal_package_item.delivery_date).format("dddd, MMM Do")
+              : null,
             size: meal_package_item.customSize
               ? meal_package_item.customSize
               : meal_package_item.meal_package.default_size_title,
@@ -773,9 +773,9 @@ export default {
           });
         } else {
           data.push({
-            delivery_date: moment(meal_package_item.delivery_date).format(
-              "dddd, MMM Do"
-            ),
+            delivery_date: meal_package_item.delivery_date
+              ? moment(meal_package_item.delivery_date).format("dddd, MMM Do")
+              : null,
             size: meal_package_item.customSize
               ? meal_package_item.customSize
               : meal_package_item.meal_package_size.title,
