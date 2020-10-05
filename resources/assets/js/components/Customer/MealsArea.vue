@@ -1482,7 +1482,8 @@ export default {
     assignedToDeliveryDay(meal) {
       if (
         !this.store.hasDeliveryDayItems ||
-        !this.store.modules.multipleDeliveryDays
+        !this.store.modules.multipleDeliveryDays ||
+        meal.gift_card
       ) {
         return true;
       }
