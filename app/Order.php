@@ -171,7 +171,7 @@ class Order extends Model
 
     public function getVisibleItemsAttribute()
     {
-        if ($this->store->modules->multipleDeliveryDays) {
+        if ($this->isMultipleDelivery) {
             return $this->items
                 ->filter(function ($item) {
                     return !$item->hidden;
