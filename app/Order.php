@@ -171,12 +171,20 @@ class Order extends Model
 
     public function getVisibleItemsAttribute()
     {
-        return $this->items
-            ->filter(function ($item) {
-                return !$item->hidden;
-            })
-            ->values()
-            ->sortBy('delivery_date');
+        if ($this->store->modules->multipleDeliveryDays) {
+            return $this->items
+                ->filter(function ($item) {
+                    return !$item->hidden;
+                })
+                ->values()
+                ->sortBy('delivery_date');
+        } else {
+            return $this->items
+                ->filter(function ($item) {
+                    return !$item->hidden;
+                })
+                ->values();
+        }
     }
 
     public function getCustomerNameAttribute()
