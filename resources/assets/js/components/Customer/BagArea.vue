@@ -250,6 +250,14 @@
                       )
                     }}</span>
                   </div>
+                  <div v-else>
+                    <span>{{
+                      format.money(
+                        item.price * item.quantity,
+                        storeSettings.currency
+                      )
+                    }}</span>
+                  </div>
                 </span>
 
                 <p class="small">{{ item.special_instructions }}</p>
