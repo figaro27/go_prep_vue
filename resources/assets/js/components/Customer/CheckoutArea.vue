@@ -2007,8 +2007,17 @@ export default {
       //     newHourOptions.unshift("7 AM - 8 AM");
       //   }
       // }
+
+      // Livoti's Thanksgiving 2020
       if (
-        this.bagDeliveryDate === "2020-07-04 00:00:00" &&
+        this.bagDeliveryDate === "2020-11-25 00:00:00" &&
+        (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
+      ) {
+        newHourOptions.pop();
+      }
+
+      if (
+        this.bagDeliveryDate === "2020-11-26 00:00:00" &&
         (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
       ) {
         for (let i = 0; i <= 5; i++) newHourOptions.pop();
