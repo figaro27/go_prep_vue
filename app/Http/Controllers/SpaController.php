@@ -1151,6 +1151,18 @@ class SpaController extends Controller
 
     public function refreshMealPackage($meal_package_id)
     {
+        $sizesTitles = MealPackageSize::where(
+            'meal_package_id',
+            $meal_package_id
+        )
+            ->get()
+            ->map(function ($mealPackageSize) {
+                return [
+                    'id' => $mealPackageSize->id,
+                    'title' => $mealPackageSize->title
+                ];
+            });
+
         $package = MealPackage::where('id', $meal_package_id)
             ->with([
                 'meals',
@@ -1168,6 +1180,8 @@ class SpaController extends Controller
                 }
             ])
             ->first();
+
+        $package->sizesTitles = $sizesTitles;
 
         return [
             'package' => $package
@@ -1219,6 +1233,15 @@ class SpaController extends Controller
             ->pluck('meal_package_id')
             ->first();
 
+        $sizesTitles = MealPackageSize::where('meal_package_id', $packageId)
+            ->get()
+            ->map(function ($mealPackageSize) {
+                return [
+                    'id' => $mealPackageSize->id,
+                    'title' => $mealPackageSize->title
+                ];
+            });
+
         $package = MealPackage::where('id', $packageId)
             ->with([
                 'sizes' => function ($query) use ($meal_package_size_id) {
@@ -1244,8 +1267,15 @@ class SpaController extends Controller
             ])
             ->first();
 
+        $packageSize = MealPackageSize::where('id', $meal_package_size_id)
+            ->with(['meals'])
+            ->first();
+
+        $package->sizesTitles = $sizesTitles;
+
         return [
-            'package' => $package
+            'package' => $package,
+            'package_size' => $packageSize
         ];
     }
 

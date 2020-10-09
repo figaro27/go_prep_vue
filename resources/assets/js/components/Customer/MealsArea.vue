@@ -819,6 +819,26 @@ export default {
         this.$parent.showMealPage(resp.data.meal);
       });
     }
+    if ("package" in this.$route.query) {
+      axios
+        .get("/api/refresh/meal_package/" + this.$route.query.package)
+        .then(resp => {
+          this.$parent.showMealPackagePage(resp.data.package, null);
+        });
+    }
+    if ("package_size" in this.$route.query) {
+      axios
+        .get(
+          "/api/refresh/meal_package_with_size/" +
+            this.$route.query.package_size
+        )
+        .then(resp => {
+          this.$parent.showMealPackagePage(
+            resp.data.package,
+            resp.data.package_size
+          );
+        });
+    }
 
     // Fix packages first
     // if (this.$route.query.package){
@@ -1426,13 +1446,20 @@ export default {
       this.$parent.showMealPackagesArea = false;
       this.$parent.search = "";
     },
-    showMeal(meal, group, size) {
-      if (meal.gift_card || meal.meal_package) {
+    async showMeal(meal, group, size) {
+      if (meal.gift_card) {
         return;
       }
 
+      if (size) {
+        meal.selectedSizeId = size.id;
+      } else {
+        meal.selectedSizeId = undefined;
+      }
+
       if (meal.meal_package) {
-        this.showMealPackage(meal, true);
+        let mealPackage = await store.dispatch("refreshStoreMealPackage", meal);
+        this.showMealPackage(mealPackage, size);
       } else {
         $([document.documentElement, document.body]).scrollTop(0);
         this.$parent.showMealPage(meal, size ? size.id : null);

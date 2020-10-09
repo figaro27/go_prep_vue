@@ -39,6 +39,19 @@
         </b-col>
       </b-row>
 
+      <div v-if="mealPackageSizeOptions.length > 0">
+        <h3 class="center-text mb-3">
+          Sizes
+        </h3>
+        <b-form-radio-group
+          buttons
+          v-model="selectedSizeId"
+          class="storeFilters"
+          :options="mealPackageSizeOptions"
+          @change="val => changeSize(val)"
+        ></b-form-radio-group>
+      </div>
+
       <b-row v-if="components.length" class="my-3">
         <b-col>
           <div
@@ -547,11 +560,7 @@
       <b-row class="my-3">
         <b-col>
           <div>
-            <div
-              class="categorySection"
-              target="categorySection_top"
-              v-if="isStoreView"
-            >
+            <div class="categorySection" target="categorySection_top">
               <h3 class="center-text mb-3" v-if="getTopLevel().length > 0">
                 Included Items
               </h3>
@@ -895,10 +904,29 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../mixins/menuBag";
 import format from "../../lib/format";
 import { required, minLength } from "vuelidate/lib/validators";
+import store from "../../store";
 
 export default {
+  watch: {
+    mealPackage: function() {
+      if (this.mealPackageSize == undefined) {
+        this.selectedSizeId = this.mealPackage.id;
+      } else {
+        this.selectedSizeId = this.mealPackageSize.id;
+      }
+    },
+    selectedSizeId: function() {
+      if (!this.defaultSizeSelected) {
+        this.mealPackage.selectedSizeId = this.selectedSizeId;
+      } else {
+        this.mealPackage.selectedSizeId = null;
+      }
+    }
+  },
   data() {
     return {
+      defaultSizeSelected: false,
+      selectedSizeId: {},
       choices: {},
       addons: [],
       special_instructions: {},
@@ -908,8 +936,9 @@ export default {
     };
   },
   updated() {
-    if (this.components)
+    if (this.components) {
       this.$parent.mealPackagePageComponents = this.components.length;
+    }
   },
   components: {},
   props: {
@@ -931,6 +960,17 @@ export default {
       bagZipCode: "bagZipCode",
       bagPickup: "bagPickup"
     }),
+    mealPackageSizeOptions() {
+      let sizeTitles = this.mealPackage.sizesTitles.map(sizeTitle => {
+        return { value: sizeTitle.id, text: sizeTitle.title };
+      });
+      let mp = { ...this.mealPackage };
+      let defaultSizeTitle = mp.default_size_title
+        ? { value: mp.id, text: mp.default_size_title }
+        : { value: mp.id, text: "Regular" };
+      sizeTitles.unshift(defaultSizeTitle);
+      return sizeTitles;
+    },
     availableDeliveryDayIds() {
       // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
       let baseDeliveryDays = this.store.delivery_days;
@@ -1145,6 +1185,7 @@ export default {
         this.$forceUpdate();
         this.$toastr.w("Please select the minimum number of items required.");
       } else {
+        this.$router.push(this.$route.path);
         let components = {};
         let addons = {};
 
@@ -1817,6 +1858,48 @@ export default {
       }
 
       return macros;
+    },
+    async changeSize(sizeId = null) {
+      if (!this.mealPackageSizeOptions[0].id == sizeId) {
+        this.defaultSizeSelected = false;
+        this.mealPackage.selectedSizeId = sizeId;
+      } else {
+        this.defaultSizeSelected = true;
+      }
+
+      let mp = { ...this.mealPackage };
+
+      if (!sizeId || this.defaultSizeSelected) {
+        axios.get("/api/refresh/meal_package/" + mp.id).then(resp => {
+          this.$parent.mealPackage = resp.data.package;
+          this.$parent.mealPackageSize = undefined;
+        });
+        if (
+          !("package" in this.$route.query) ||
+          "package_size" in this.$route.query
+        ) {
+          this.$router.push(
+            this.$route.path + `?package=` + this.mealPackage.id
+          );
+        }
+      } else {
+        axios
+          .get("/api/refresh/meal_package_with_size/" + sizeId)
+          .then(resp => {
+            this.$parent.mealPackage = resp.data.package;
+            this.$parent.mealPackageSize = resp.data.package_size;
+          });
+
+        if (!("package_size" in this.$route.query)) {
+          this.$router.push(
+            this.$route.path +
+              `?package=` +
+              this.mealPackage.id +
+              `&package_size=` +
+              sizeId
+          );
+        }
+      }
     }
   }
 };

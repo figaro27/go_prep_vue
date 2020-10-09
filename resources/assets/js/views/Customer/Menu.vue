@@ -1464,6 +1464,22 @@ export default {
       this.showMealsArea = false;
       this.mealPackagePageView = true;
 
+      if (!size) {
+        if (!("package" in this.$route.query)) {
+          this.$router.push(this.$route.path + `?package=` + meal.id);
+        }
+      } else {
+        if (!("size" in this.$route.query)) {
+          this.$router.push(
+            this.$route.path +
+              `?package=` +
+              meal.id +
+              `&package_size=` +
+              size.id
+          );
+        }
+      }
+
       // Need to fix pushing packages to individual URLs first
       // if (!('package' in this.query)){
       //   if (!size){
@@ -1710,6 +1726,7 @@ export default {
     },
     backFromPackagePage() {
       this.$refs.mealPackagePage.back();
+      this.$router.push(this.$route.path);
     },
     addFromPackagePage() {
       this.$refs.mealPackagePage.done();
