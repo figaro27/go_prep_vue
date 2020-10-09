@@ -1525,7 +1525,7 @@ export default {
           dfzc.zip_code = dfzc.zip_code.replace(/\s/g, "");
           return dfzc.zip_code === userZip;
         });
-        if (zip.shipping) {
+        if (zip && zip.shipping) {
           return "Shipping";
         }
       }
@@ -1548,7 +1548,7 @@ export default {
             dfzc.zip_code = dfzc.zip_code.replace(/\s/g, "");
             return dfzc.zip_code === userZip;
           });
-          if (zip.shipping) {
+          if (zip && zip.shipping) {
             return "Shipping";
           }
         }
