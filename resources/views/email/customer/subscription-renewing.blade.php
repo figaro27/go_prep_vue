@@ -141,7 +141,7 @@ $currency = $subscription->store->settings->currency_symbol
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->transfer_type }} Date - {{ $subscription->next_delivery_date->format($subscription->store->settings->date_format) }}</td>
                       </tr>
-                      @if ($subscription->pickup_location_id != null)
+                      @if ($subscription->pickup_location_id !== null)
                       <tr>
                         <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#7f8c8d;"> <b>Pickup Location:</b>
                           {{ $subscription->pickup_location->name }}, 
@@ -151,9 +151,10 @@ $currency = $subscription->store->settings->currency_symbol
                           {{ $subscription->pickup_location->zip }}<br><br>
                           @if ($subscription->pickup_location->instructions)
                           <b>Instructions:</b> {{ $subscription->pickup_location->instructions }}
-                      @endif
+                          @endif
                           </td>
                       </tr>
+                      @endif
                       @endif
                       <!-- end address -->
                       <tr>
