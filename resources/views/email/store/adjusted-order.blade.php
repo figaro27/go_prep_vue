@@ -138,24 +138,14 @@ $currency = $order->store->settings->currency_symbol
                           {{ $order->user->details->phone }}
                         </td>
                       </tr>
-                      @if ($order->store->modules->hideTransferOptions === 0)
-                      @if ($pickup === 0)
+                      @if ($order->store->modules->hideTransferOptions === 0 && $order->isMultipleDelivery === 0)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format('D, m/d/Y') }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $order->transfer_type }} Date - {{ $order->delivery_date->format($order->store->settings->date_format) }}
                           @if ($order->transferTime)
                             - {{ $order->transferTime }}
                           @endif
                         </td>
                       </tr>
-                      @else ($pickup === 1)
-                      <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format('D, m/d/Y') }}
-                          @if ($order->transferTime)
-                            - {{ $order->transferTime }}
-                          @endif
-                        </td>
-                      </tr>
-                      @endif
                       @endif
                       <!-- end address -->
                       @if ($order->store->modules->dailyOrderNumbers)
@@ -374,7 +364,7 @@ $currency = $order->store->settings->currency_symbol
                         Sales Tax<br>
                         @endif
                         @if ($deliveryFee > 0)
-                        Delivery Fee<br>
+                        {{ $order->transfer_type }} Fee<br>
                         @endif
                         @if ($processingFee > 0)
                         Processing Fee<br>

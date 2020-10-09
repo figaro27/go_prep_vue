@@ -67,7 +67,7 @@
             </template>
           </div>
           <div slot="pickup" slot-scope="props">
-            {{ props.row.pickup ? "Pickup" : "Delivery" }}
+            {{ props.row.transfer_type }}
           </div>
           <div slot="dailyOrderNumber" slot-scope="props">
             {{ props.row.dailyOrderNumber }}
@@ -128,8 +128,7 @@
             <h4>Placed On</h4>
             <p>{{ moment(order.paid_at).format("LLLL") }}</p>
             <span v-if="!storeModules.hideTransferOptions" class="mt-2">
-              <h4 v-if="!order.pickup">Delivery Day</h4>
-              <h4 v-if="order.pickup">Pickup Day</h4>
+              <h4>{{ order.transfer_type }} Day</h4>
               <template v-if="!order.isMultipleDelivery">
                 {{ moment(order.delivery_date).format("dddd, MMM Do") }}
                 <span v-if="order.transferTime">{{ order.transferTime }}</span>
@@ -167,7 +166,7 @@
               Sales Tax: {{ format.money(order.salesTax, order.currency) }}
             </p>
             <p v-if="order.deliveryFee > 0">
-              Delivery Fee:
+              {{ order.transfer_type }} Fee:
               {{ format.money(order.deliveryFee, order.currency) }}
             </p>
             <p v-if="order.processingFee > 0">
@@ -270,7 +269,7 @@
                   }})
                 </p>
                 <p v-if="order.deliveryFee > 0">
-                  Delivery Fee:
+                  {{ order.transfer_type }} Fee:
                   {{ format.money(order.deliveryFee, order.currency) }}
                 </p>
                 <p v-if="order.processingFee > 0">

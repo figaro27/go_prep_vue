@@ -139,23 +139,13 @@ $currency = $order->store->settings->currency_symbol
                         </td>
                       </tr>
                       @if ($order->store->modules->hideTransferOptions === 0 && $order->isMultipleDelivery === 0)
-                      @if ($order->pickup === 0)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $order->delivery_date->format($order->store->settings->date_format) }}
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $order->transfer_type }} Date - {{ $order->delivery_date->format($order->store->settings->date_format) }}
                           @if ($order->transferTime)
                             - {{ $order->transferTime }}
                           @endif
                         </td>
                       </tr>
-                      @else ($order->pickup === 1)
-                      <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $order->delivery_date->format($order->store->settings->date_format) }}
-                          @if ($order->transferTime)
-                            - {{ $order->transferTime }}
-                          @endif
-                        </td>
-                      </tr>
-                      @endif
                       @endif
                       @if ($order->isMultipleDelivery === 1)
                       <tr>
@@ -418,7 +408,7 @@ $currency = $order->store->settings->currency_symbol
                         Sales Tax<br>
                         @endif
                         @if ($deliveryFee > 0)
-                        Delivery Fee<br>
+                        {{ $order->transfer_type }} Fee<br>
                         @endif
                         @if ($processingFee > 0)
                         Processing Fee<br>
@@ -553,41 +543,44 @@ Cooler Deposit<br>
 
 
 
-
+                @if ($order->transfer_type === 'Pickup' && $order->store->settings->pickupInstructions)
                 <tr>
-                  @if ($order->pickup === 0)
-                  @if ($order->store->settings->deliveryInstructions)
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
-                  @endif
-                  @else
-                  @if ($order->store->settings->pickupInstructions)
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Pickup Instructions</td>
-                  @endif
-                  @endif
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">
+                    Pickup Instructions
+                  </td>
                 </tr>
-                <!-- end title -->
                 <tr>
-                  <td height="5"></td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
+                    {!! nl2br($order->store->settings->pickupInstructions) !!}
+                  </td>
                 </tr>
-                <!-- content -->
-                @if ($order->pickup === 0)
-                @if ($order->store->settings->deliveryInstructions)
+                @endif
+                @if ($order->transfer_type === 'Delivery' && $order->store->settings->deliveryInstructions)
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">
+                    Delivery Instructions
+                  </td>
+                </tr>
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
                     {!! nl2br($order->store->settings->deliveryInstructions) !!}
                   </td>
                 </tr>
                 @endif
-                @else
-                @if ($order->store->settings->pickupInstructions)
+                @if ($order->transfer_type === 'Shipping' && $order->store->settings->shippingInstructions)
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">
+                    Shipping Instructions
+                  </td>
+                </tr>
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
-                    {!! nl2br($order->store->settings->pickupInstructions) !!} 
+                    {!! nl2br($order->store->settings->shippingInstructions) !!}
                   </td>
                 </tr>
                 @endif
-                @endif
-                
+
+
                 <!-- end content -->
                 <tr>
                   <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>

@@ -314,7 +314,7 @@ $currency = $subscription->store->settings->currency_symbol
                         Sales Tax<br>
                         @endif
                         @if ($deliveryFee > 0)
-                        Delivery Fee<br>
+                        {{ $subscription->transfer_type }} Fee<br>
                         @endif
                         @if ($processingFee > 0)
                         Processing Fee<br>
@@ -407,26 +407,7 @@ Cooler Deposit<br>
               <table align="center" width="100%" class="table-inner" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td height="20"></td>
-                </tr>
-                <!-- title -->
-                <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
-                </tr>
-                <!-- end title -->
-                <tr>
-                  <td height="5"></td>
-                </tr>
-                <!-- content -->
-                @if ($subscription->pickup === 0)
-        <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->store->details->delivery }} </td>
-                </tr>
-                @else
-                <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Pickup</td>
-                </tr>
-        @endif
-                
+                </tr>              
                 <!-- end content -->
                 <tr>
                   <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>

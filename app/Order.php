@@ -53,7 +53,8 @@ class Order extends Model
         'promotionReduction' => 'float',
         'pointsReduction' => 'float',
         'gratuity' => 'float',
-        'coolerDeposit' => 'float'
+        'coolerDeposit' => 'float',
+        'shipping' => 'boolean'
         //'created_at' => 'date:F d, Y'
     ];
 
@@ -81,7 +82,8 @@ class Order extends Model
         'customer_zip',
         'visible_items',
         'pickup_location_name',
-        'staff_member'
+        'staff_member',
+        'transfer_type'
         // 'balance'
     ];
 
@@ -480,5 +482,14 @@ class Order extends Model
         return Staff::where('id', $this->staff_id)
             ->pluck('name')
             ->first();
+    }
+
+    public function getTransferTypeAttribute()
+    {
+        if ($this->shipping) {
+            return 'Shipping';
+        } else {
+            return $this->pickup ? 'Pickup' : 'Delivery';
+        }
     }
 }

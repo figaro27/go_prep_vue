@@ -155,7 +155,7 @@
               {{ format.money(subscription.salesTax, subscription.currency) }}
             </p>
             <p v-if="subscription.deliveryFee > 0">
-              Delivery Fee:
+              {{ subscription.transfer_type }} Fee:
               {{
                 format.money(subscription.deliveryFee, subscription.currency)
               }}
@@ -230,8 +230,7 @@
           </div>
           <div class="col-md-4">
             <span v-if="!storeModules.hideTransferOptions">
-              <h4 v-if="!subscription.pickup">Delivery Day</h4>
-              <h4 v-if="subscription.pickup">Pickup Day</h4>
+              <h4>{{ subscription.transfer_type }} Day</h4>
               <span v-if="subscription.next_order">
                 {{
                   moment(subscription.next_order.delivery_date).format(
@@ -338,7 +337,7 @@
                   }})
                 </p>
                 <p v-if="subscription.deliveryFee > 0">
-                  Delivery Fee:
+                  {{ subscription.transfer_type }} Fee:
                   {{
                     format.money(
                       subscription.deliveryFee,

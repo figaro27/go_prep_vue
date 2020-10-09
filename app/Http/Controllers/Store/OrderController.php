@@ -825,6 +825,7 @@ class OrderController extends StoreController
             $order->transferTime = $request->get('transferTime');
             $order->adjusted = 1;
             $order->pickup = $request->get('pickup');
+            $order->shipping = $request->get('shipping');
             $order->preFeePreDiscount = $preFeePreDiscount;
             $order->mealPlanDiscount = $mealPlanDiscount;
             $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;

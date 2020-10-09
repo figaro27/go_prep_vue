@@ -38,7 +38,8 @@ class Subscription extends Model
         'items',
         'meal_package_items',
         'interval_title',
-        'paid_order_count'
+        'paid_order_count',
+        'transfer_type'
         // 'total_item_quantity'
     ];
 
@@ -53,7 +54,8 @@ class Subscription extends Model
         'mealPlanDiscount' => 'float',
         'monthlyPrepay' => 'boolean',
         'mealsReplaced' => 'boolean',
-        'gratuity' => 'float'
+        'gratuity' => 'float',
+        'shipping' => 'boolean'
     ];
 
     public function user()
@@ -114,6 +116,15 @@ class Subscription extends Model
         return $this->orders()
             ->orderBy('delivery_date', 'desc')
             ->first();
+    }
+
+    public function getTransferTypeAttribute()
+    {
+        if ($this->shipping) {
+            return 'Shipping';
+        } else {
+            return $this->pickup ? 'Pickup' : 'Delivery';
+        }
     }
 
     public function getLatestUnpaidMDOrder($futureDeliveryDate = true)
@@ -462,6 +473,7 @@ class Subscription extends Model
         $newOrder->currency = $this->currency;
         $newOrder->fulfilled = false;
         $newOrder->pickup = $this->pickup;
+        $newOrder->shipping = $this->shipping;
 
         $newOrder->pickup_location_id = $this->pickup_location_id;
         $newOrder->transferTime = $this->transferTime;
@@ -1719,6 +1731,7 @@ class Subscription extends Model
         $newOrder->currency = $this->currency;
         $newOrder->fulfilled = false;
         $newOrder->pickup = $this->pickup;
+        $newOrder->shipping = $this->shipping;
 
         $newOrder->pickup_location_id = $this->pickup_location_id;
         $newOrder->transferTime = $this->transferTime;

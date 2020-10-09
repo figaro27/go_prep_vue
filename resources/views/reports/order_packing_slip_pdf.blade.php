@@ -336,7 +336,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
               <td style="border:none;text-align:right;position:relative;right:8px">{{ $processingFee }}</td>
             </tr>@endif
             @if ($order->deliveryFee > 0)<tr>
-              <td style="border:none"><b>Delivery Fee</b></td>
+              <td style="border:none"><b>{{ $order->transfer_type }} Fee</b></td>
               <td style="border:none;text-align:right;position:relative;right:8px">{{ $deliveryFee }}</td>
             </tr>@endif
             @if ($order->couponReduction > 0)<tr>

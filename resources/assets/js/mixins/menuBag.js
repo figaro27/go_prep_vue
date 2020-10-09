@@ -402,6 +402,7 @@ export default {
             bag: this.bag,
             plan: this.weeklySubscription,
             pickup: this.pickup,
+            shipping: this.deliveryShipping == "Shipping" ? 1 : 0,
             store_id: this.store.id,
             salesTax: this.tax,
             coupon_id: this.couponApplied ? this.coupon.id : null,

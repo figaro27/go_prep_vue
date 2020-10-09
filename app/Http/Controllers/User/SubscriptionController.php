@@ -266,6 +266,7 @@ class SubscriptionController extends UserController
 
             $weeklyPlan = $request->get('plan');
             $pickup = $request->get('pickup');
+            $shipping = $request->get('shipping');
             $deliveryDay = $sub->delivery_day;
             $couponId = $request->get('coupon_id');
             $couponReduction = $request->get('couponReduction');
@@ -567,6 +568,7 @@ class SubscriptionController extends UserController
             $sub->coolerDeposit = $coolerDeposit;
             $sub->amount = $total;
             $sub->pickup = $request->get('pickup', 0);
+            $sub->shipping = $shipping;
             $sub->delivery_day = $deliveryDay;
             $sub->coupon_id = $couponId;
             $sub->couponReduction = $couponReduction;

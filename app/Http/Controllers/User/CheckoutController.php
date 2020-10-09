@@ -159,6 +159,7 @@ class CheckoutController extends UserController
             }
 
             $pickup = $request->get('pickup');
+            $shipping = $request->get('shipping');
             $deliveryDay = $request->get('delivery_day');
             $weekIndex = (int) date('N', strtotime($deliveryDay));
             $isMultipleDelivery = (int) $request->get('isMultipleDelivery');
@@ -423,6 +424,7 @@ class CheckoutController extends UserController
                 $order->currency = $storeSettings->currency;
                 $order->fulfilled = false;
                 $order->pickup = $request->get('pickup', 0);
+                $order->shipping = $shipping;
                 $order->delivery_date = date('Y-m-d', strtotime($deliveryDay));
                 $order->paid = true;
                 if (!$cashOrder && $total > 0.5) {
@@ -944,6 +946,7 @@ class CheckoutController extends UserController
                     $userSubscription->amount = $total;
                     $userSubscription->currency = $storeSettings->currency;
                     $userSubscription->pickup = $request->get('pickup', 0);
+                    $userSubscription->shipping = $shipping;
                     $userSubscription->interval = $interval;
                     $userSubscription->monthlyPrepay = $monthlyPrepay;
                     $userSubscription->delivery_day = date(
@@ -989,6 +992,7 @@ class CheckoutController extends UserController
                     $order->currency = $storeSettings->currency;
                     $order->fulfilled = false;
                     $order->pickup = $request->get('pickup', 0);
+                    $order->shipping = $shipping;
                     $order->delivery_date = (new Carbon(
                         $deliveryDay
                     ))->toDateString();

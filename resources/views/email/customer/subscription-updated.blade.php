@@ -141,19 +141,22 @@ $currency = $subscription->store->settings->currency_symbol
                         </td>
                       </tr>
                       @if ($subscription->store->modules->hideTransferOptions === 0)
-                      @if ($subscription->pickup === 0)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Delivery Date - {{ $subscription->next_delivery_date->format($subscription->store->settings->date_format) }}
-                          @if ($subscription->transferTime)
-                            - {{ $subscription->transferTime }}
-                          @endif
-                        </td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->transfer_type }} Date - {{ $subscription->next_delivery_date->format($subscription->store->settings->date_format) }}</td>
                       </tr>
-                      @else ($subscription->pickup === 1)
+                      @if ($subscription->pickup_location_id != null)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Pickup Date - {{ $subscription->next_delivery_date->format($subscription->store->settings->date_format) }}</td>
-                      </tr>
+                        <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#7f8c8d;"> <b>Pickup Location:</b>
+                          {{ $subscription->pickup_location->name }}, 
+                          {{ $subscription->pickup_location->address }},
+                          {{ $subscription->pickup_location->city }},
+                          {{ $subscription->pickup_location->state }},
+                          {{ $subscription->pickup_location->zip }}<br><br>
+                          @if ($subscription->pickup_location->instructions)
+                          <b>Instructions:</b> {{ $subscription->pickup_location->instructions }}
                       @endif
+                          </td>
+                      </tr>
                       @endif
                       <!-- end address -->
                       <tr>
@@ -351,7 +354,7 @@ $currency = $subscription->store->settings->currency_symbol
                         Sales Tax<br>
                         @endif
                         @if ($deliveryFee > 0)
-                        Delivery Fee<br>
+                        {{ $subscription->transfer_type }} Fee<br>
                         @endif
                         @if ($processingFee > 0)
                         Processing Fee<br>
@@ -451,39 +454,42 @@ Cooler Deposit<br>
                   <td height="20"></td>
                 </tr>
                 <!-- title -->
+                @if ($subscription->transfer_type === 'Pickup' && $subscription->store->settings->pickupInstructions)
                 <tr>
-                  @if ($subscription->pickup === 0)
-                  @if ($subscription->store->settings->deliveryInstructions)
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
-                  @endif
-                  @endif
-                  @if ($subscription->pickup === 1)
-                  @if ($subscription->store->settings->pickupInstructions)
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Pickup Instructions</td>
-                  @endif
-                  @endif
-                  
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">
+                    Pickup Instructions
+                  </td>
                 </tr>
-                <!-- end title -->
                 <tr>
-                  <td height="5"></td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
+                    {!! nl2br($subscription->store->settings->pickupInstructions) !!}
+                  </td>
                 </tr>
-                <!-- content -->
-                @if ($subscription->pickup === 0)
-                @if ($subscription->store->settings->deliveryInstructions)
-				        <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                @endif
+                @if ($subscription->transfer_type === 'Delivery' && $subscription->store->settings->deliveryInstructions)
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">
+                    Delivery Instructions
+                  </td>
+                </tr>
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
                     {!! nl2br($subscription->store->settings->deliveryInstructions) !!}
                   </td>
                 </tr>
                 @endif
-                @else
+                @if ($subscription->transfer_type === 'Shipping' && $subscription->store->settings->shippingInstructions)
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
-                    {!! nl2br($subscription->store->settings->pickupInstructions) !!}
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">
+                    Shipping Instructions
                   </td>
                 </tr>
-				        @endif
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
+                    {!! nl2br($subscription->store->settings->shippingInstructions) !!}
+                  </td>
+                </tr>
+                @endif
                 
                 <!-- end content -->
                 <tr>

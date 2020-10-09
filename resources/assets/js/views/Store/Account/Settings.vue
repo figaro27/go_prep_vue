@@ -114,6 +114,12 @@
                       class="mr-1"
                       placeholder="Rate"
                     ></b-form-input>
+                    <b-form-checkbox
+                      class="pt-1 mr-2"
+                      v-if="store.id == 148 || store.id == 3"
+                      v-model="deliveryFeeCity.shipping"
+                      >Shipping</b-form-checkbox
+                    >
                     <b-btn variant="primary" @click="addDeliveryFeeCity"
                       >Add</b-btn
                     >
@@ -136,6 +142,12 @@
                       class="mr-1"
                       placeholder="Rate"
                     ></b-form-input>
+                    <b-form-checkbox
+                      class="pt-1 mr-2"
+                      v-if="store.id == 148 || store.id == 3"
+                      v-model="deliveryFeeZipCode.shipping"
+                      >Shipping</b-form-checkbox
+                    >
                     <b-btn variant="primary" @click="addDeliveryFeeZipCode"
                       >Add</b-btn
                     >
@@ -158,6 +170,14 @@
                           type="number"
                           class="d-inline"
                         ></b-form-input>
+                      </div>
+                      <div
+                        class="col-md-3 d-flex"
+                        v-if="store.id == 148 || store.id == 3"
+                      >
+                        <b-form-checkbox
+                          v-model="dfzc.shipping"
+                        ></b-form-checkbox>
                       </div>
                     </div>
                     <hr />
@@ -597,6 +617,20 @@
                     :options="transferOptions"
                   ></b-form-checkbox-group>
                 </b-form-group>
+
+                <!-- Adding for GoEatFresh for now until full shipping feature is completed -->
+                <p v-if="store.id == 148 || store.id == 3">
+                  Shipping Instructions:
+                </p>
+                <b-form-textarea
+                  v-if="store.id == 148 || store.id == 3"
+                  type="text"
+                  rows="3"
+                  v-model="storeSettings.shippingInstructions"
+                  placeholder="Please include shipping instructions to your customers. This will be shown on the checkout page as well as email notifications the customer receives."
+                  class="mb-2"
+                ></b-form-textarea>
+
                 <p v-if="transferTypeCheckDelivery">Delivery Instructions:</p>
                 <b-form-textarea
                   v-if="transferTypeCheckDelivery"
@@ -1848,7 +1882,8 @@ export default {
         this.storeDeliveryFeesZipCodes.forEach(dfzc => {
           this.deliveryFeeZipCodes.push({
             zip_code: dfzc.zip_code,
-            delivery_fee: dfzc.delivery_fee
+            delivery_fee: dfzc.delivery_fee,
+            shipping: dfzc.shipping
           });
         });
       }
@@ -1862,7 +1897,8 @@ export default {
         if (!contains && zipCode != null) {
           this.deliveryFeeZipCodes.push({
             zip_code: zipCode,
-            delivery_fee: this.storeSettings.deliveryFee
+            delivery_fee: this.storeSettings.deliveryFee,
+            shipping: zipCode.shipping
           });
         }
       });
@@ -1910,7 +1946,8 @@ export default {
       }
       this.deliveryFeeZipCodes.push({
         delivery_fee: this.deliveryFeeZipCode.rate,
-        zip_code: this.deliveryFeeZipCode.code
+        zip_code: this.deliveryFeeZipCode.code,
+        shipping: this.deliveryFeeZipCode.shipping
       });
       this.updateDeliveryFeeZipCodes();
     },

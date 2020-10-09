@@ -317,7 +317,7 @@ $currency = $subscription->store->settings->currency_symbol
                         Sales Tax<br>
                         @endif
                         @if ($deliveryFee > 0)
-                        Delivery Fee<br>
+                        {{ $subscription->transfer_type }} Fee<br>
                         @endif
                         @if ($processingFee > 0)
                         Processing Fee<br>

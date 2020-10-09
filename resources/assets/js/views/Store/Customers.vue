@@ -242,7 +242,7 @@
                     {{ format.money(order.salesTax, order.currency) }}
                   </p>
                   <p v-if="order.deliveryFee > 0">
-                    Delivery Fee:
+                    {{ order.transfer_type }} Fee:
                     {{ format.money(order.deliveryFee, order.currency) }}
                   </p>
                   <p v-if="order.processingFee > 0">
@@ -343,7 +343,7 @@
                       }})
                     </p>
                     <p v-if="order.deliveryFee > 0">
-                      Delivery Fee:
+                      {{ order.transfer_type }} Fee:
                       {{ format.money(order.deliveryFee, order.currency) }}
                     </p>
                     <p v-if="order.processingFee > 0">
@@ -402,7 +402,7 @@
                       }})
                     </p>
                     <p v-if="order.deliveryFee > 0">
-                      Delivery Fee:
+                      {{ order.transfer_type }} Fee:
                       {{ format.money(order.deliveryFee, order.currency) }}
                     </p>
                     <p v-if="order.processingFee > 0">

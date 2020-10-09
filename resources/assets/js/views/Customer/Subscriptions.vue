@@ -162,8 +162,7 @@ f<template>
             <h4>Placed On</h4>
             <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
             <span v-if="!storeModules.hideTransferOptions" class="mt-2">
-              <h4 v-if="!subscription.pickup">Delivery Day</h4>
-              <h4 v-if="subscription.pickup">Pickup Day</h4>
+              <h4>{{ subscription.transfer_type }} Day</h4>
               {{
                 moment(subscription.next_order.delivery_date).format(
                   "dddd, MMM Do"
@@ -217,7 +216,7 @@ f<template>
               {{ format.money(subscription.salesTax, subscription.currency) }}
             </p>
             <p v-if="subscription.deliveryFee > 0">
-              Delivery Fee:
+              {{ subscription.transfer_type }} Fee:
               {{
                 format.money(subscription.deliveryFee, subscription.currency)
               }}
@@ -319,7 +318,7 @@ f<template>
                   }})
                 </p>
                 <p v-if="subscription.deliveryFee > 0">
-                  Delivery Fee:
+                  {{ subscription.transfer_type }} Fee:
                   {{
                     format.money(
                       subscription.deliveryFee,

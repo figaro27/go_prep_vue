@@ -324,7 +324,7 @@
       >
         <div class="row">
           <div class="col-6 col-md-4">
-            <strong>Delivery Fee</strong>
+            <strong>{{ selectedTransferType }} Fee</strong>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             <span v-if="!couponFreeDelivery && !promotionFreeDelivery">
@@ -631,7 +631,7 @@
                 storeOwner
             "
           >
-            <strong>Delivery</strong>
+            <strong>{{ deliveryShipping }}</strong>
           </b-form-radio>
           <b-form-radio
             :value="1"
@@ -687,7 +687,7 @@
         "
       >
         <div>
-          <strong v-if="pickup === 0">Delivery Day</strong>
+          <strong v-if="pickup === 0">{{ selectedTransferType }} Day</strong>
           <strong v-if="pickup === 1">Pickup Day</strong>
           <b-select
             v-model="deliveryDay"
@@ -725,7 +725,7 @@
                 !storeModules.hideDeliveryOption
             "
           >
-            Delivery Day
+            {{ selectedTransferType }} Day
           </strong>
           <strong
             v-if="
@@ -753,7 +753,9 @@
             class="delivery-select ml-2"
             required
           >
-            <option slot="top" disabled>-- Select delivery day --</option>
+            <option slot="top" disabled
+              >-- Select {{ selectedTransferType.toLowerCase() }} day --</option
+            >
           </b-select>
         </div>
       </li>
@@ -785,7 +787,7 @@
       >
         <div>
           <strong v-if="pickup === 0">
-            Delivery Day: {{ deliveryDateOptions[0].text }}
+            {{ selectedTransferType }} Day: {{ deliveryDateOptions[0].text }}
           </strong>
           <strong v-if="pickup === 1">
             Pickup Day: {{ deliveryDateOptions[0].text }}
@@ -856,7 +858,7 @@
       class="transfer-instruction mt-2"
       v-if="!$route.params.storeView && !storeOwner"
     >
-      <p class="strong">{{ transferText }}</p>
+      <p class="strong">{{ selectedTransferType }} Instructions</p>
       <p v-html="transferInstructions"></p>
     </li>
 
@@ -874,7 +876,8 @@
           v-if="!loading && !$route.params.storeView && !storeOwner"
           variant="warning center-text"
           show
-          >You are outside of the delivery area.</b-alert
+          >You are outside of the
+          {{ selectedTransferType.toLowerCase() }} area.</b-alert
         >
       </div>
       <div
@@ -1168,7 +1171,8 @@
           "
         >
           <b-alert v-if="!loading" variant="danger center-text" show
-            >You are outside of the delivery area.</b-alert
+            >You are outside of the
+            {{ selectedTransferType.toLowerCase() }} area.</b-alert
           >
         </div>
       </div>
@@ -1507,6 +1511,53 @@ export default {
       context: "context",
       deliveryFee: "bagDeliveryFee"
     }),
+    deliveryShipping() {
+      let {
+        applyDeliveryFee,
+        deliveryFee,
+        deliveryFeeType,
+        mileageBase,
+        mileagePerMile
+      } = this.bagDeliverySettings;
+      if (deliveryFeeType == "zip" && this.loggedIn) {
+        let userZip = this.user.user_detail.zip.replace(/\s/g, "");
+        let zip = this.deliveryFeeZipCodes.find(dfzc => {
+          dfzc.zip_code = dfzc.zip_code.replace(/\s/g, "");
+          return dfzc.zip_code === userZip;
+        });
+        if (zip.shipping) {
+          return "Shipping";
+        }
+      }
+
+      return "Delivery";
+    },
+    selectedTransferType() {
+      let {
+        applyDeliveryFee,
+        deliveryFee,
+        deliveryFeeType,
+        mileageBase,
+        mileagePerMile
+      } = this.bagDeliverySettings;
+
+      if (!this.bagPickup) {
+        if (deliveryFeeType == "zip" && this.loggedIn) {
+          let userZip = this.user.user_detail.zip.replace(/\s/g, "");
+          let zip = this.deliveryFeeZipCodes.find(dfzc => {
+            dfzc.zip_code = dfzc.zip_code.replace(/\s/g, "");
+            return dfzc.zip_code === userZip;
+          });
+          if (zip.shipping) {
+            return "Shipping";
+          }
+        }
+
+        return "Delivery";
+      } else {
+        return "Pickup";
+      }
+    },
     addMore() {
       if (this.isMultipleDelivery) {
         if (this.minimumDeliveryDayAmount > 0) {
@@ -1873,6 +1924,12 @@ export default {
       } else return;
       this.storeSettings.deliveryInstructions;
     },
+    shippingInstructions() {
+      if (this.storeSettings.shippingInstructions != null) {
+        return this.storeSettings.shippingInstructions.replace(/\n/g, "<br>");
+      } else return;
+      this.storeSettings.shippingInstructions;
+    },
     pickupInstructions() {
       if (this.selectedPickupLocation !== null) {
         return _.find(this.pickupLocationOptions, loc => {
@@ -1885,8 +1942,17 @@ export default {
       this.storeSettings.pickupInstructions;
     },
     transferInstructions() {
-      if (this.pickup === 0) return this.deliveryInstructions;
-      else if (this.pickup === 1) return this.pickupInstructions;
+      switch (this.selectedTransferType) {
+        case "Pickup":
+          return this.pickupInstructions;
+          break;
+        case "Delivery":
+          return this.deliveryInstructions;
+          break;
+        case "Shipping":
+          return this.shippingInstructions;
+          break;
+      }
     },
     pickupLocationOptions() {
       return this.pickupLocations.map(loc => {
@@ -2007,41 +2073,17 @@ export default {
       //     newHourOptions.unshift("7 AM - 8 AM");
       //   }
       // }
-
-      // Livoti's Thanksgiving 2020
       if (
-        this.bagDeliveryDate === "2020-11-25 00:00:00" &&
+        this.bagDeliveryDate === "2020-07-04 00:00:00" &&
         (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
       ) {
-        newHourOptions.pop();
-        if (this.storeId === 110) {
-          newHourOptions.unshift("8 AM - 9 AM");
-        }
-      }
-
-      if (
-        this.bagDeliveryDate === "2020-11-26 00:00:00" &&
-        (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
-      ) {
-        for (let i = 0; i <= 5; i++) {
-          newHourOptions.pop();
-        }
-        if (this.storeId === 110) {
-          newHourOptions.unshift("8 AM - 9 AM");
-        }
-        newHourOptions.unshift("7 AM - 8 AM");
+        for (let i = 0; i <= 5; i++) newHourOptions.pop();
       }
 
       return newHourOptions;
     },
     transferType() {
       return this.storeSettings.transferType.split(",");
-    },
-    transferText() {
-      if (this.pickup === 0 && this.deliveryInstructions != null)
-        return "Delivery Instructions";
-      else if (this.pickup === 1 && this.pickupInstructions != null)
-        return "Pickup Instructions";
     },
     transferTypeCheckDelivery() {
       if (_.includes(this.transferType, "delivery")) return true;
@@ -3080,6 +3122,7 @@ use next_delivery_dates
           deliveryDate: this.deliveryDay,
           isMultipleDelivery: this.isMultipleDelivery,
           pickup: this.pickup,
+          shipping: this.selectedTransferType == "Shipping" ? 1 : 0,
           transferTime: this.transferTime,
           subtotal: this.subtotal,
           mealPlanDiscount: this.mealPlanDiscount,
@@ -3302,6 +3345,7 @@ use next_delivery_dates
           plan_interval: this.subscriptionInterval,
           monthlyPrepay: this.hasMonthlyPrepaySubscriptionItems,
           pickup: this.pickup,
+          shipping: this.selectedTransferType == "Shipping" ? 1 : 0,
           isMultipleDelivery: this.isMultipleDelivery,
           delivery_day: this.deliveryDay
             ? this.deliveryDay
