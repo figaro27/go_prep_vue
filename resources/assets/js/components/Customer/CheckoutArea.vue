@@ -622,7 +622,7 @@
         >Orders are closed until {{ storeSettings.menuReopening }}.</b-alert
       >
       <b-form-group>
-        <b-form-radio-group v-model="pickup" v-on:input="changePickup">
+        <b-form-radio-group v-model="pickup" @change="changePickup">
           <b-form-radio
             :value="0"
             v-if="
@@ -636,9 +636,10 @@
           <b-form-radio
             :value="1"
             v-if="
-              storeSettings.next_orderable_pickup_dates.length > 0 ||
+              (storeSettings.next_orderable_pickup_dates.length > 0 ||
                 $route.params.storeView ||
-                storeOwner
+                storeOwner) &&
+                deliveryShipping !== 'Shipping'
             "
           >
             <strong>Pickup</strong>
@@ -1464,6 +1465,10 @@ export default {
     if (this.isMultipleDelivery) {
       this.minimumDeliveryDayAmount = this.store.delivery_days[0].minimum;
     }
+
+    if (this.deliveryShipping == "Shipping") {
+      this.setBagPickup(0);
+    }
   },
   mixins: [MenuBag],
   computed: {
@@ -1520,7 +1525,9 @@ export default {
         mileagePerMile
       } = this.bagDeliverySettings;
       if (deliveryFeeType == "zip" && this.loggedIn) {
-        let userZip = this.user.user_detail.zip.replace(/\s/g, "");
+        let userZip = this.customerModel
+          ? this.customerModel.zip.replace(/\s/g, "")
+          : this.user.user_detail.zip.replace(/\s/g, "");
         let zip = this.deliveryFeeZipCodes.find(dfzc => {
           dfzc.zip_code = dfzc.zip_code.replace(/\s/g, "");
           return dfzc.zip_code === userZip;
@@ -1543,7 +1550,9 @@ export default {
 
       if (!this.bagPickup) {
         if (deliveryFeeType == "zip" && this.loggedIn) {
-          let userZip = this.user.user_detail.zip.replace(/\s/g, "");
+          let userZip = this.customerModel
+            ? this.customerModel.zip.replace(/\s/g, "")
+            : this.user.user_detail.zip.replace(/\s/g, "");
           let zip = this.deliveryFeeZipCodes.find(dfzc => {
             dfzc.zip_code = dfzc.zip_code.replace(/\s/g, "");
             return dfzc.zip_code === userZip;
@@ -2329,7 +2338,9 @@ use next_delivery_dates
               if (!this.loggedIn) {
                 fee = deliveryFee;
               } else {
-                let userZip = this.user.user_detail.zip.replace(/\s/g, "");
+                let userZip = this.customerModel
+                  ? this.customerModel.zip.replace(/\s/g, "")
+                  : this.user.user_detail.zip.replace(/\s/g, "");
                 let zip = this.deliveryFeeZipCodes.find(dfzc => {
                   dfzc.zip_code = dfzc.zip_code.replace(/\s/g, "");
                   return dfzc.zip_code === userZip;
@@ -3061,6 +3072,9 @@ use next_delivery_dates
     changeCustomer(val) {
       this.setBagCustomerModel(val);
       this.updateParentData();
+      if (this.deliveryShipping == "Shipping") {
+        this.setBagPickup(0);
+      }
     },
     setWeeklySubscriptionValue(v) {
       this.weeklySubscriptionValue = v;
@@ -3207,8 +3221,7 @@ use next_delivery_dates
           if (
             this.store.id === 108 ||
             this.store.id === 109 ||
-            this.store.id === 110 ||
-            this.store.id === 3
+            this.store.id === 110
           ) {
             this.setBagPickup(1);
           }
@@ -3427,8 +3440,7 @@ use next_delivery_dates
           if (
             this.store.id === 108 ||
             this.store.id === 109 ||
-            this.store.id === 110 ||
-            this.store.id === 3
+            this.store.id === 110
           ) {
             this.setBagPickup(1);
           }
@@ -3463,13 +3475,19 @@ use next_delivery_dates
             await this.refreshSubscriptions();
             this.$router.push({
               path: "/customer/subscriptions",
-              query: { created: true, pickup: this.pickup === 1 ? true : false }
+              query: {
+                created: true,
+                pickup: this.bagPickup === 1 ? true : false
+              }
             });
           } else {
             // await this.refreshCustomerOrders();
             this.$router.push({
               path: "/customer/orders",
-              query: { created: true, pickup: this.pickup === 1 ? true : false }
+              query: {
+                created: true,
+                pickup: this.bagPickup === 1 ? true : false
+              }
             });
           }
           this.emptyBag();
@@ -3671,7 +3689,8 @@ use next_delivery_dates
             if (customer) {
               vm.customerOptions.push({
                 text: customer.name,
-                value: parseInt(customer.id)
+                value: parseInt(customer.id),
+                zip: customer.zip
               });
             }
           });
