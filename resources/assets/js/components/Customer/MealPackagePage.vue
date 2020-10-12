@@ -1860,7 +1860,7 @@ export default {
       return macros;
     },
     async changeSize(sizeId = null) {
-      if (!this.mealPackageSizeOptions[0].id == sizeId) {
+      if (!this.mealPackageSizeOptions[0].value == sizeId) {
         this.defaultSizeSelected = false;
         this.mealPackage.selectedSizeId = sizeId;
       } else {
@@ -1869,7 +1869,7 @@ export default {
 
       let mp = { ...this.mealPackage };
 
-      if (!sizeId || this.defaultSizeSelected) {
+      if (this.mealPackageSizeOptions[0].value == sizeId) {
         axios.get("/api/refresh/meal_package/" + mp.id).then(resp => {
           this.$parent.mealPackage = resp.data.package;
           this.$parent.mealPackageSize = undefined;
