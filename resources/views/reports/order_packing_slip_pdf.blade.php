@@ -151,7 +151,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
           <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">Order ID: {{$order->order_number}}</p>
           @endif
           @if ($order->pickup === 0)
-          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;font-size:25px">Delivery</p>
+          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;font-size:25px">{{$order->transfer_type}}</p>
           @endif
           @if ($order->pickup === 1)
           <p>Pickup</p>
