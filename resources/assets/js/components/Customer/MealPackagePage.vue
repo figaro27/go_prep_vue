@@ -39,14 +39,14 @@
         </b-col>
       </b-row>
 
-      <div v-if="mealPackageSizeOptions.length > 0">
+      <div v-if="mealPackageSizeOptions.length > 1">
         <h3 class="center-text mb-3">
           Sizes
         </h3>
         <b-form-radio-group
           buttons
           v-model="selectedSizeId"
-          class="storeFilters"
+          class="filters small flexibleButtonGroup mb-2"
           :options="mealPackageSizeOptions"
           @change="val => changeSize(val)"
         ></b-form-radio-group>
