@@ -20,26 +20,31 @@
             </div>
 
             <span slot="beforeLimit">
-              <b-btn
+              <!-- <b-btn
                 variant="success"
                 @click="print('pdf', 'ingredients_by_meal')"
               >
                 <i class="fa fa-print"></i>&nbsp; Print Ingredients By Meal
-              </b-btn>
-              <b-btn variant="primary" @click="print('pdf')">
-                <i class="fa fa-print"></i>&nbsp; Print
-              </b-btn>
-              <b-dropdown class="mx-1" right text="Export as">
-                <b-dropdown-item @click="exportData('csv')"
-                  >CSV</b-dropdown-item
+              </b-btn> -->
+              <div class="d-flex">
+                <b-form-checkbox class="pt-1 mr-2" v-model="ingredientsByMeal"
+                  >Ingredients By Meal</b-form-checkbox
                 >
-                <b-dropdown-item @click="exportData('xls')"
-                  >XLS</b-dropdown-item
-                >
-                <b-dropdown-item @click="exportData('pdf')"
-                  >PDF</b-dropdown-item
-                >
-              </b-dropdown>
+                <b-btn variant="primary" @click="print('pdf')">
+                  <i class="fa fa-print"></i>&nbsp; Print
+                </b-btn>
+                <b-dropdown class="mx-1" right text="Export as">
+                  <b-dropdown-item @click="exportData('csv')"
+                    >CSV</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('xls')"
+                    >XLS</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('pdf')"
+                    >PDF</b-dropdown-item
+                  >
+                </b-dropdown>
+              </div>
               <!--
               <label>Weight unit:</label>
               <b-select v-model="weightUnit" :options="weightUnitOptions">
@@ -121,6 +126,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      ingredientsByMeal: false,
       dateColor: "",
       filters: {
         delivery_dates: {
@@ -306,8 +312,11 @@ export default {
         };
       }
 
+      let report = this.ingredientsByMeal
+        ? "ingredients_by_meal"
+        : "ingredient_quantities";
       axios
-        .get(`/api/me/print/ingredient_quantities/${format}`, {
+        .get(`/api/me/print/${report}/${format}`, {
           params
         })
         .then(response => {
@@ -320,7 +329,7 @@ export default {
           this.loading = false;
         });
     },
-    async print(format = "pdf", report = "ingredient_quantities") {
+    async print(format = "pdf") {
       if (
         this.filters.delivery_dates.start === null &&
         this.storeModules.multipleDeliveryDays
@@ -360,7 +369,9 @@ export default {
           to: this.filters.delivery_dates.start
         };
       }
-
+      let report = this.ingredientsByMeal
+        ? "ingredients_by_meal"
+        : "ingredient_quantities";
       axios
         .get(`/api/me/print/${report}/${format}`, {
           params
