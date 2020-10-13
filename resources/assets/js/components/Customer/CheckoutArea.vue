@@ -1524,6 +1524,17 @@ export default {
         mileageBase,
         mileagePerMile
       } = this.bagDeliverySettings;
+
+      if (this.order && this.order.shipping) {
+        return "Shipping";
+      }
+      if (
+        this.$route.params.subscription &&
+        this.$route.params.subscription.shipping
+      ) {
+        return "Shipping";
+      }
+
       if (deliveryFeeType == "zip" && this.loggedIn) {
         let userZip = this.customerModel
           ? this.customerModel.zip.replace(/\s/g, "")
