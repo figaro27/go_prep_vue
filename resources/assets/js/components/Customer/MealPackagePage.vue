@@ -46,7 +46,7 @@
         <b-form-radio-group
           buttons
           v-model="selectedSizeId"
-          class="filters small flexibleButtonGroup mb-2"
+          class="filters small mb-2"
           :options="mealPackageSizeOptions"
           @change="val => changeSize(val)"
         ></b-form-radio-group>
