@@ -80,14 +80,18 @@ class DeliveryFeeZipCodeController extends StoreController
             ])->first();
             if ($dfzc) {
                 $dfzc->delivery_fee = $row['delivery_fee'];
-                $dfzc->shipping = $row['shipping'];
+                $dfzc->shipping = isset($row['shipping'])
+                    ? $row['shipping']
+                    : 0;
                 $dfzc->update();
             } else {
                 $dfzc = new DeliveryFeeZipCode();
                 $dfzc->store_id = $this->store->id;
                 $dfzc->zip_code = $row['zip_code'];
                 $dfzc->delivery_fee = $row['delivery_fee'];
-                $dfzc->shipping = $row['shipping'];
+                $dfzc->shipping = isset($row['shipping'])
+                    ? $row['shipping']
+                    : 0;
                 $dfzc->save();
             }
         }
