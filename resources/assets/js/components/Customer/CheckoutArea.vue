@@ -1155,7 +1155,7 @@
           >ADJUST ORDER</b-btn
         >
 
-        <div v-if="subscriptionId">
+        <div v-if="subscriptionId && minimumMet">
           <b-btn
             class="menu-bag-btn update-meals-btn"
             @click="updateSubscriptionMeals"
