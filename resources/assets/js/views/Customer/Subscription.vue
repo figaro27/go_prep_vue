@@ -130,7 +130,7 @@ export default {
 
       let delivery_days = [];
 
-      if (this.store.modules.multipleDeliveryDays && this.context == "store") {
+      if (this.store.modules.multipleDeliveryDays) {
         let today = new Date();
         let year = today.getFullYear();
         let month = today.getMonth();
