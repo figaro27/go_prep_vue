@@ -24,6 +24,7 @@ class Subscriptions
         $params = $this->params;
         $subscriptions = $this->store
             ->subscriptions()
+            ->where('status', '!=', 'cancelled')
             ->with(['user', 'orders', 'orders.meals'])
             ->get()
             ->map(function ($sub) {
