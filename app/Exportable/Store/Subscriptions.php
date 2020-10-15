@@ -29,6 +29,7 @@ class Subscriptions
             ->get()
             ->map(function ($sub) {
                 return [
+                    $sub->status,
                     $sub->stripe_id,
                     $sub->user->name,
                     $sub->user->details->address,
@@ -42,6 +43,7 @@ class Subscriptions
 
         if ($type !== 'pdf') {
             $subscriptions->prepend([
+                'Status',
                 'Subscription #',
                 'Name',
                 'Address',

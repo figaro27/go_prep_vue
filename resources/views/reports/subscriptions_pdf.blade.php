@@ -13,6 +13,7 @@
       <table border="1" width="100">
         <thead>
           <tr>
+            <th>Status</th>
             <th>Subscription #</th>
             <th>Name</th>
             <th>Address</th>
