@@ -219,7 +219,7 @@ class MealPackage extends Model implements HasMedia
                 'meal_id' => $meal['id'],
                 'meal_size_id' => $meal['meal_size_id'] ?? null,
                 'meal_package_id' => $package->id,
-                'quantity' => $meal['quantity'],
+                'quantity' => isset($meal['quantity']) ? $meal['quantity'] : 1,
                 'delivery_day_id' => $meal['delivery_day_id'] ?? null
             ]);
         }
@@ -255,7 +255,9 @@ class MealPackage extends Model implements HasMedia
                 $meals = [];
                 foreach ($size['meals'] as $meal) {
                     $meals[$meal['id']] = [
-                        'quantity' => $meal['quantity'],
+                        'quantity' => isset($meal['quantity'])
+                            ? $meal['quantity']
+                            : 1,
                         'meal_size_id' => $meal['meal_size_id'] ?? null,
                         'delivery_day_id' => $meal['delivery_day_id'] ?? null
                     ];
@@ -335,7 +337,9 @@ class MealPackage extends Model implements HasMedia
                     $meals = [];
                     foreach ($optionArr['meals'] as $meal) {
                         $meals[$meal['id']] = [
-                            'quantity' => $meal['quantity'],
+                            'quantity' => isset($meal['quantity'])
+                                ? $meal['quantity']
+                                : 1,
                             'meal_size_id' => $meal['meal_size_id'] ?? null,
                             'price' => $meal['price'] ?? 0
                         ];
@@ -393,7 +397,9 @@ class MealPackage extends Model implements HasMedia
                 $meals = [];
                 foreach ($addon['meals'] as $meal) {
                     $meals[$meal['id']] = [
-                        'quantity' => $meal['quantity'],
+                        'quantity' => isset($meal['quantity'])
+                            ? $meal['quantity']
+                            : 1,
                         'meal_size_id' => $meal['meal_size_id'] ?? null,
                         'price' => $meal['price'] ?? 0,
                         'delivery_day_id' => $meal['delivery_day_id'] ?? null
@@ -516,7 +522,9 @@ class MealPackage extends Model implements HasMedia
                 $meals = [];
                 foreach ($size['meals'] as $meal) {
                     $meals[$meal['id']] = [
-                        'quantity' => $meal['quantity'],
+                        'quantity' => isset($meal['quantity'])
+                            ? $meal['quantity']
+                            : 1,
                         'meal_size_id' => $meal['meal_size_id'] ?? null,
                         'delivery_day_id' => $meal['delivery_day_id'] ?? null
                     ];
@@ -599,7 +607,9 @@ class MealPackage extends Model implements HasMedia
                     $meals = [];
                     foreach ($optionArr['meals'] as $meal) {
                         $meals[$meal['id']] = [
-                            'quantity' => $meal['quantity'],
+                            'quantity' => isset($meal['quantity'])
+                                ? $meal['quantity']
+                                : 1,
                             'meal_size_id' => $meal['meal_size_id'] ?? null,
                             'price' => $meal['price'] ?? 0
                         ];
@@ -686,7 +696,9 @@ class MealPackage extends Model implements HasMedia
                 $meals = [];
                 foreach ($addon['meals'] as $meal) {
                     $meals[$meal['id']] = [
-                        'quantity' => $meal['quantity'],
+                        'quantity' => isset($meal['quantity'])
+                            ? $meal['quantity']
+                            : 1,
                         'meal_size_id' => $meal['meal_size_id'] ?? null,
                         'price' => $meal['price'] ?? 0
                     ];
