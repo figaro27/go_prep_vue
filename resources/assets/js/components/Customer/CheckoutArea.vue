@@ -1207,7 +1207,7 @@
       </div>
     </li>
 
-    <li v-if="!minimumMet">
+    <li v-if="!minimumMet && context !== 'store'">
       <p class="strong">
         {{ addMore }}
       </p>

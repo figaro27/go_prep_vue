@@ -705,7 +705,6 @@ Cooler Deposit<br>
 $referralSettings = $order->store->referralSettings;
 $host = $order->store->details->host ? $order->store->details->host : '.goprep.';
 $referralURL = 'https://' . $order->store->details->domain . $host . 'com/customer/menu?r=' . $order->user->referralUrlCode;
-$percentAmount = trim($referralSettings->amount, ".00");
 @endphp
 @if ($referralSettings->enabled && $referralSettings->showInNotifications)
 
@@ -732,13 +731,17 @@ $percentAmount = trim($referralSettings->amount, ".00");
 
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
-                  Give out your referral link to customers and if they order using your link, you will receive 
-                  @if ($referralSettings->type === 'flat')
-                    ${{ $referralSettings->amount }}
-                  @else
-                    {{ $percentAmount }}%
+                  Give out your referral link to customers and if they order
+                  @if ($referralSettings->frequency == 'urlOnly')
+                  using your link 
                   @endif
-                  on each order that comes in. Your referral link is: <a href="{{$referralURL}}">{{$referralURL}}</a>
+                  you will receive {{ $referralSettings->amountFormat }} credit
+                  @if ($referralSettings->frequency === 'firstOrder')
+                    on the first order they place.
+                  @else
+                    on every future order they place.
+                  @endif
+                  Your referral link is: <a href="{{$referralURL}}">{{$referralURL}}</a>
                   </td>
                 </tr>
                
