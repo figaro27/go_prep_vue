@@ -4,7 +4,7 @@
       <div class="row" v-if="!bagView">
         <div class="col-md-7">
           <p
-            class="mt-2 ml-2"
+            class="mt-2 ml-2 strong font-17"
             style="margin-bottom:0;"
             v-if="!minimumMet && !storeView"
           >
@@ -20,6 +20,13 @@
           </h4>
         </div>
       </div>
+
+      <b-btn
+        @click="checkMinimum"
+        v-if="!minimumMet && !storeView && !bagView"
+        class="menu-bag-btn gray"
+        >NEXT</b-btn
+      >
 
       <b-btn
         :to="{
@@ -139,6 +146,11 @@ export default {
   methods: {
     addDeliveryDay() {
       this.$parent.showDeliveryDayModal = true;
+    },
+    checkMinimum() {
+      if (!this.minimumMet && !this.storeView) {
+        this.$toastr.w(this.addMore);
+      }
     }
   },
   computed: {

@@ -148,7 +148,6 @@
             Select Day
             </button> -->
           </div>
-
           <div
             v-for="(item, mealId) in groupItem.items"
             :key="`bag-${mealId}`"
@@ -347,6 +346,12 @@
               </li>
             </ul>
           </div>
+          <h5
+            class="align-right"
+            v-if="isMultipleDelivery && groupItem.delivery_day"
+          >
+            {{ getDeliveryDayTotal(groupItem) }}
+          </h5>
         </li>
       </ul>
       <!-- <center>
@@ -577,6 +582,7 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../mixins/menuBag";
 import store from "../../store";
 import ZipCodeModal from "../../views/Customer/Modals/ZipCodeModal";
+import format from "../../lib/format";
 
 export default {
   components: {
@@ -1227,6 +1233,14 @@ export default {
       });
 
       this.loadDeliveryDayMenu(deliveryDay);
+    },
+    getDeliveryDayTotal(groupItem) {
+      return format.money(
+        groupItem.items.reduce((acc, item) => {
+          return (acc = acc + item.price * item.quantity);
+        }, 0),
+        this.store.settings.currency
+      );
     }
   }
 };
