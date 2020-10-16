@@ -740,6 +740,10 @@ const mutations = {
 
     const delivery_day = meal.delivery_day ? meal.delivery_day : null;
 
+    if (components == null) {
+      components = {};
+    }
+
     let guid = CryptoJS.MD5(
       JSON.stringify({
         meal: mealId,
