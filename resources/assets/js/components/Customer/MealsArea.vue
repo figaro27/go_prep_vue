@@ -148,15 +148,20 @@
       "
     >
       <h5 class="center-text">Referral Program</h5>
-      <p class="center-text" v-if="referralFrequency !== 'firstOrder'">
-        Share this link with friends and family to get back
-        {{ referralAmount }} for every order they place.<br />
-        Your referral link is <a :href="referralUrl">{{ referralUrl }}</a>
-      </p>
-      <p class="center-text" v-if="referralFrequency == 'firstOrder'">
-        Share this link with friends and family to get back
-        {{ referralAmount }} for every first time order.<br />
-        Your referral link is <a :href="referralUrl">{{ referralUrl }}</a>
+      <p class="center-text">
+        Give out your referral link to customers and if they order
+        <span v-if="referralSettings.frequency == 'urlOnly'">
+          using your link
+        </span>
+        you will receive {{ referralSettings.amountFormat }} credit
+        <span v-if="referralSettings.frequency == 'firstOrder'">
+          on the first order they place.
+        </span>
+        <span v-else>
+          on every future order they place.
+        </span>
+        <br />Your referral link is
+        <a :href="referralUrl">{{ referralUrl }}</a>
       </p>
     </div>
 
@@ -893,6 +898,9 @@ export default {
       minMeals: "minimumMeals",
       minPrice: "minimumPrice"
     }),
+    referralSettings() {
+      return this.store.referral_settings;
+    },
     smallScreen() {
       const width =
         window.innerWidth ||

@@ -17,9 +17,18 @@
       >
         <h5 class="center-text">Referral Program</h5>
         <p class="center-text">
-          Give out your referral link to customers and if they order using your
-          link, you will receive {{ referralAmount }} on each order that comes
-          in. <br />Your referral link is
+          Give out your referral link to customers and if they order
+          <span v-if="referralSettings.frequency == 'urlOnly'">
+            using your link
+          </span>
+          you will receive {{ referralSettings.amountFormat }} credit
+          <span v-if="referralSettings.frequency == 'firstOrder'">
+            on the first order they place.
+          </span>
+          <span v-else>
+            on every future order they place.
+          </span>
+          <br />Your referral link is
           <a :href="referralUrl">{{ referralUrl }}</a>
         </p>
       </div>
@@ -474,6 +483,9 @@ export default {
         return this.$route.query.subscriptionId;
       }
       return this.$route.params.subscriptionId;
+    },
+    referralSettings() {
+      return this.store.referral_settings;
     },
     referralAmount() {
       return this.store.referral_settings.amountFormat;
