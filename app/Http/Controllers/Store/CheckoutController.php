@@ -896,7 +896,9 @@ class CheckoutController extends StoreController
                 $userSubscription->user_id = $customerUser->id;
                 $userSubscription->customer_id = $customer->id;
                 $userSubscription->card_id = $cardId;
-                $userSubscription->stripe_customer_id = $storeCustomer->id;
+                $userSubscription->stripe_customer_id = !$cashOrder
+                    ? $storeCustomer->id
+                    : 'Cash';
                 $userSubscription->store_id = $store->id;
                 $userSubscription->name =
                     "Weekly subscription (" . $store->storeDetail->name . ")";
@@ -905,7 +907,7 @@ class CheckoutController extends StoreController
                     $userSubscription->stripe_id = substr($subscription->id, 4);
                 } else {
                     $userSubscription->stripe_id =
-                        'C -' .
+                        'C-' .
                         strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
                     $userSubscription->stripe_plan = 'cash';
                 }
@@ -940,6 +942,7 @@ class CheckoutController extends StoreController
                 $userSubscription->transferTime = $transferTime;
                 $userSubscription->cashOrder = $cashOrder;
                 $userSubscription->isMultipleDelivery = $isMultipleDelivery;
+                $userSubscription->currency = $store->settings->currency;
                 $userSubscription->save();
 
                 // Create initial order
@@ -1434,6 +1437,15 @@ class CheckoutController extends StoreController
                         'subscription' => $userSubscription ?? null
                     ]);
                 } catch (\Exception $e) {
+                }
+
+                if (
+                    $userSubscription->cashOrder &&
+                    $store->settings->subscriptionRenewalType !== 'cutoff' &&
+                    $diff <= 7
+                ) {
+                    // Renew & create the first order right away since you aren't waiting for Stripe's 1 hour gap.
+                    $userSubscription->renew();
                 }
             }
 

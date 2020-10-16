@@ -22,7 +22,12 @@ use App\MealSubscriptionAddon;
 
 class Subscription extends Model
 {
-    protected $fillable = ['status', 'cancelled_at', 'weekCount'];
+    protected $fillable = [
+        'status',
+        'cancelled_at',
+        'weekCount',
+        'next_renewal_at'
+    ];
 
     protected $appends = [
         'store_name',
@@ -44,7 +49,7 @@ class Subscription extends Model
     ];
 
     protected $casts = [
-        'next_renewal_at' => 'date',
+        'next_renewal_at' => 'datetime',
         'preFeePreDiscount' => 'float',
         'afterDiscountBeforeFees' => 'float',
         'processingFee' => 'float',
@@ -370,8 +375,10 @@ class Subscription extends Model
      *
      * @return boolean
      */
-    public function renew(Collection $stripeInvoice, Collection $stripeEvent)
-    {
+    public function renew(
+        Collection $stripeInvoice = null,
+        Collection $stripeEvent = null
+    ) {
         $isMultipleDelivery = (int) $this->isMultipleDelivery;
 
         $latestOrder = null;
@@ -388,32 +395,38 @@ class Subscription extends Model
         }
 
         // Ensure we haven't already processed this payment
-        if (
-            $this->orders()
-                ->where('stripe_id', $stripeInvoice->get('charge'))
-                ->count() &&
-            !$this->monthlyPrepay &&
-            $this->amount > 0 &&
-            $this->status !== 'paused'
-        ) {
-            return;
+        if (!$this->cashOrder) {
+            if (
+                $this->orders()
+                    ->where('stripe_id', $stripeInvoice->get('charge'))
+                    ->count() &&
+                !$this->monthlyPrepay &&
+                $this->amount > 0 &&
+                $this->status !== 'paused'
+            ) {
+                return;
+            }
         }
 
         // Retrieve the subscription from Stripe
-        $subscription = \Stripe\Subscription::retrieve(
-            'sub_' . $this->stripe_id,
-            ['stripe_account' => $this->store->settings->stripe_id]
-        );
+        if (!$this->cashOrder) {
+            $subscription = \Stripe\Subscription::retrieve(
+                'sub_' . $this->stripe_id,
+                ['stripe_account' => $this->store->settings->stripe_id]
+            );
+        }
 
         $latestOrder->paid = $this->status != 'paused' ? 1 : 0;
         $latestOrder->paid_at = new Carbon();
-        $latestOrder->stripe_id = $stripeInvoice->get('charge', null);
+        $latestOrder->stripe_id = !$this->cashOrder
+            ? $stripeInvoice->get('charge', null)
+            : null;
         // $latestOrder->stripe_id = $stripeInvoice->get('id', null);
         $latestOrder->save();
 
         $latestOrder->events()->create([
             'type' => 'payment_succeeded',
-            'stripe_event' => $stripeEvent
+            'stripe_event' => !$this->cashOrder ? $stripeEvent : null
         ]);
 
         $order_transaction = new OrderTransaction();
@@ -474,6 +487,7 @@ class Subscription extends Model
         $newOrder->fulfilled = false;
         $newOrder->pickup = $this->pickup;
         $newOrder->shipping = $this->shipping;
+        $newOrder->cashOrder = $this->cashOrder;
 
         $newOrder->pickup_location_id = $this->pickup_location_id;
         $newOrder->transferTime = $this->transferTime;
@@ -640,7 +654,20 @@ class Subscription extends Model
             // }
 
             // Store next charge time as reported by Stripe
-            $this->next_renewal_at = $subscription->current_period_end;
+            if (!$this->cashOrder) {
+                $this->next_renewal_at = $subscription->current_period_end;
+            } else {
+                if ($this->interval == 'week') {
+                    $this->next_renewal_at = $this->next_renewal_at->addWeeks(
+                        1
+                    );
+                }
+                if ($this->interval == 'month') {
+                    $this->next_renewal_at = $this->next_renewal_at->addWeeks(
+                        4
+                    );
+                }
+            }
             $this->save();
 
             // Send new order notification to store at the cutoff once the order is paid
@@ -1305,20 +1332,23 @@ class Subscription extends Model
      */
     public function cancel()
     {
-        try {
-            $subscription = \Stripe\Subscription::retrieve(
-                'sub_' . $this->stripe_id,
-                [
-                    'stripe_account' => $this->store->settings->stripe_id
-                ]
-            );
+        if (!$this->cashOrder) {
+            try {
+                $subscription = \Stripe\Subscription::retrieve(
+                    'sub_' . $this->stripe_id,
+                    [
+                        'stripe_account' => $this->store->settings->stripe_id
+                    ]
+                );
 
-            // $subscription->cancel_at_period_end = true;
-            $subscription->cancel();
-        } catch (\Exception $e) {
-            throw new \Exception(
-                'Failed to cancel Subscription in Stripe - ' . $this->stripe_id
-            );
+                // $subscription->cancel_at_period_end = true;
+                $subscription->cancel();
+            } catch (\Exception $e) {
+                throw new \Exception(
+                    'Failed to cancel Subscription in Stripe - ' .
+                        $this->stripe_id
+                );
+            }
         }
 
         $this->update([
@@ -1357,17 +1387,19 @@ class Subscription extends Model
     public function pause($withStripe = true)
     {
         if ($withStripe) {
-            $subscription = \Stripe\Subscription::update(
-                'sub_' . $this->stripe_id,
-                [
-                    'pause_collection' => [
-                        'behavior' => 'void'
+            if (!$this->cashOrder) {
+                $subscription = \Stripe\Subscription::update(
+                    'sub_' . $this->stripe_id,
+                    [
+                        'pause_collection' => [
+                            'behavior' => 'void'
+                        ]
+                    ],
+                    [
+                        'stripe_account' => $this->store->settings->stripe_id
                     ]
-                ],
-                [
-                    'stripe_account' => $this->store->settings->stripe_id
-                ]
-            );
+                );
+            }
 
             // Old method of pausing before Stripe released the pause feature
 
@@ -1418,15 +1450,17 @@ class Subscription extends Model
     public function resume($withStripe = true)
     {
         if ($withStripe) {
-            $subscription = \Stripe\Subscription::update(
-                'sub_' . $this->stripe_id,
-                [
-                    'pause_collection' => ''
-                ],
-                [
-                    'stripe_account' => $this->store->settings->stripe_id
-                ]
-            );
+            if (!$this->cashOrder) {
+                $subscription = \Stripe\Subscription::update(
+                    'sub_' . $this->stripe_id,
+                    [
+                        'pause_collection' => ''
+                    ],
+                    [
+                        'stripe_account' => $this->store->settings->stripe_id
+                    ]
+                );
+            }
 
             // Old method of resuming before Stripe released the pause feature
 
@@ -1440,9 +1474,16 @@ class Subscription extends Model
             // $subscription->save();
         }
 
+        $nextRenewalAt = $this->next_renewal_at;
+
+        if ($nextRenewalAt->isPast()) {
+            $nextRenewalAt = Carbon::now()->addMinutes('30');
+        }
+
         $this->update([
             'status' => 'active',
-            'paused_at' => null
+            'paused_at' => null,
+            'next_renewal_at' => $nextRenewalAt
         ]);
 
         $this->store->clearCaches();
@@ -1624,10 +1665,10 @@ class Subscription extends Model
         }
     }
 
-    public function renewTest()
-    {
-        // Same as renew but removes the need for Stripe's webhook
-
+    public function renewTest(
+        Collection $stripeInvoice = null,
+        Collection $stripeEvent = null
+    ) {
         $isMultipleDelivery = (int) $this->isMultipleDelivery;
 
         $latestOrder = null;
@@ -1644,34 +1685,36 @@ class Subscription extends Model
         }
 
         // Ensure we haven't already processed this payment
-
-        // This check messes up the flow when subscriptions are paused since I believe $stripeInvoice passes a null charge and it's finding that null paused order so it returns. Removing for now. Will recheck.
-        // if (
-        //     $this->orders()
-        //         ->where('stripe_id', null)
-        //         ->count() &&
-        //     !$this->monthlyPrepay &&
-        //     $this->amount > 0 &&
-        //     $this->status !== 'paused'
-        // ) {
-        //     return;
+        // if (!$this->cashOrder){
+        //     if (
+        //         $this->orders()
+        //             ->where('stripe_id', $stripeInvoice->get('charge'))
+        //             ->count() &&
+        //         !$this->monthlyPrepay &&
+        //         $this->amount > 0 &&
+        //         $this->status !== 'paused'
+        //     ) {
+        //         return;
+        //     }
         // }
 
         // Retrieve the subscription from Stripe
-        $subscription = \Stripe\Subscription::retrieve(
-            'sub_' . $this->stripe_id,
-            ['stripe_account' => $this->store->settings->stripe_id]
-        );
+        if (!$this->cashOrder) {
+            $subscription = \Stripe\Subscription::retrieve(
+                'sub_' . $this->stripe_id,
+                ['stripe_account' => $this->store->settings->stripe_id]
+            );
+        }
 
         $latestOrder->paid = $this->status != 'paused' ? 1 : 0;
         $latestOrder->paid_at = new Carbon();
-        // $latestOrder->stripe_id = $stripeInvoice->get('charge', null);
+        // $latestOrder->stripe_id = !$this->cashOrder ? $stripeInvoice->get('charge', null) : null;
         // $latestOrder->stripe_id = $stripeInvoice->get('id', null);
         $latestOrder->save();
 
         // $latestOrder->events()->create([
         //     'type' => 'payment_succeeded',
-        //     'stripe_event' => $stripeEvent
+        //     'stripe_event' => !$this->cashOrder ? $stripeEvent : null
         // ]);
 
         $order_transaction = new OrderTransaction();
@@ -1732,6 +1775,7 @@ class Subscription extends Model
         $newOrder->fulfilled = false;
         $newOrder->pickup = $this->pickup;
         $newOrder->shipping = $this->shipping;
+        $newOrder->cashOrder = $this->cashOrder;
 
         $newOrder->pickup_location_id = $this->pickup_location_id;
         $newOrder->transferTime = $this->transferTime;
@@ -1793,7 +1837,7 @@ class Subscription extends Model
             }
 
             if ($mealSub->meal_package_subscription_id !== null) {
-                $mealPackageSub = MeaLPackageSubscription::where(
+                $mealPackageSub = MealPackageSubscription::where(
                     'id',
                     $mealSub->meal_package_subscription_id
                 )->first();
@@ -1869,82 +1913,99 @@ class Subscription extends Model
             }
         }
 
-        // Increment the week count by 1
-        $this->update([
-            'weekCount' => $this->weekCount + 1
-        ]);
-
-        // Only charge once per month on monthly prepay subscriptions
-        if (
-            $this->monthlyPrepay &&
-            ($this->weekCount !== 0 || $this->weekCount % 4 !== 0)
-        ) {
-            $this->apply100offCoupon();
-        } else {
-            $this->remove100offCoupon();
-        }
-
-        // Cancelling the subscription for next month if cancelled_at is marked
-        if (
-            $this->monthlyPrepay &&
-            $this->cancelled_at !== null &&
-            $this->weekCount % 4 === 0
-        ) {
-            $this->cancel();
-            return;
-        }
-
-        // Store next charge time as reported by Stripe
-        $this->next_renewal_at = $subscription->current_period_end;
-        $this->save();
-
-        // Send new order notification to store at the cutoff once the order is paid
-        if ($this->store->settings->notificationEnabled('new_order')) {
-            $this->store->sendNotification('new_order', [
-                'order' => $latestOrder ?? null,
-                'pickup' => $latestOrder->pickup ?? null,
-                'card' => null,
-                'customer' => $latestOrder->customer ?? null,
-                'subscription' => $this ?? null
+        if ($this->status !== 'paused') {
+            // Increment the week count by 1
+            $this->update([
+                'weekCount' => $this->weekCount + 1
             ]);
-        }
 
-        // Send new order notification to customer at the cutoff once the order is paid
-        if ($this->user->details->notificationEnabled('new_order')) {
-            $this->user->sendNotification('new_order', [
-                'order' => $latestOrder ?? null,
-                'pickup' => $latestOrder->pickup ?? null,
-                'card' => null,
-                'customer' => $latestOrder->customer ?? null,
-                'subscription' => $this ?? null
-            ]);
-        }
+            // Only charge once per month on monthly prepay subscriptions
 
-        // Updating item stock
-        if ($this->store->modules->stockManagement) {
-            foreach ($this->meal_subscriptions as $mealSub) {
-                $meal = Meal::where('id', $mealSub->meal_id)->first();
-                if ($meal && $meal->stock !== null) {
-                    if ($meal->stock === 0) {
-                        $mealSub->delete();
-                        $this->syncPrices();
-                    } elseif ($meal->stock < $mealSub->quantity) {
-                        $unitPrice = $mealSub->price / $mealSub->quantity;
-                        $mealSub->quantity = $meal->stock;
-                        $mealSub->price = $unitPrice * $mealSub->quantity;
-                        $mealSub->update();
-                        $meal->stock = 0;
-                        $meal->lastOutOfStock = date('Y-m-d H:i:s');
-                        $meal->active = 0;
-                        $this->syncPrices();
-                    } else {
-                        $meal->stock -= $mealSub->quantity;
+            // Update this for monthly prepay subscriptions
+            // if (
+            //     $this->monthlyPrepay &&
+            //     ($this->weekCount !== 0 || $this->weekCount % 4 !== 0)
+            // ) {
+            //     $this->apply100offCoupon();
+            // } else {
+            //     $this->remove100offCoupon();
+            // }
+
+            // // Cancelling the subscription for next month if cancelled_at is marked
+            // if (
+            //     $this->monthlyPrepay &&
+            //     $this->cancelled_at !== null &&
+            //     $this->weekCount % 4 === 0
+            // ) {
+            //     $this->cancel();
+            //     return;
+            // }
+
+            // Store next charge time as reported by Stripe
+            if (!$this->cashOrder) {
+                $this->next_renewal_at = $subscription->current_period_end;
+            } else {
+                if ($this->interval == 'week') {
+                    $this->next_renewal_at = $this->next_renewal_at->addWeeks(
+                        1
+                    );
+                }
+                if ($this->interval == 'month') {
+                    $this->next_renewal_at = $this->next_renewal_at->addWeeks(
+                        4
+                    );
+                }
+            }
+            $this->save();
+
+            // Send new order notification to store at the cutoff once the order is paid
+            if ($this->store->settings->notificationEnabled('new_order')) {
+                $this->store->sendNotification('new_order', [
+                    'order' => $latestOrder ?? null,
+                    'pickup' => $latestOrder->pickup ?? null,
+                    'card' => null,
+                    'customer' => $latestOrder->customer ?? null,
+                    'subscription' => $this ?? null
+                ]);
+            }
+
+            // Send new order notification to customer at the cutoff once the order is paid
+            if ($this->user->details->notificationEnabled('new_order')) {
+                $this->user->sendNotification('new_order', [
+                    'order' => $latestOrder ?? null,
+                    'pickup' => $latestOrder->pickup ?? null,
+                    'card' => null,
+                    'customer' => $latestOrder->customer ?? null,
+                    'subscription' => $this ?? null
+                ]);
+            }
+
+            // Updating item stock
+            if ($this->store->modules->stockManagement) {
+                foreach ($this->meal_subscriptions as $mealSub) {
+                    $meal = Meal::where('id', $mealSub->meal_id)->first();
+                    if ($meal && $meal->stock !== null) {
                         if ($meal->stock === 0) {
+                            $mealSub->delete();
+                            $this->syncPrices();
+                        } elseif ($meal->stock < $mealSub->quantity) {
+                            $unitPrice = $mealSub->price / $mealSub->quantity;
+                            $mealSub->quantity = $meal->stock;
+                            $mealSub->price = $unitPrice * $mealSub->quantity;
+                            $mealSub->update();
+                            $meal->stock = 0;
                             $meal->lastOutOfStock = date('Y-m-d H:i:s');
                             $meal->active = 0;
+                            $this->syncPrices();
+                        } else {
+                            $meal->stock -= $mealSub->quantity;
+                            if ($meal->stock === 0) {
+                                $meal->lastOutOfStock = date('Y-m-d H:i:s');
+                                $meal->active = 0;
+                            }
                         }
+                        $meal->update();
                     }
-                    $meal->update();
                 }
             }
         }

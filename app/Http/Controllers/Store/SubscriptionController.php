@@ -174,18 +174,21 @@ class SubscriptionController extends StoreController
             }
             $store = $sub->store;
 
-            try {
-                $subscription = \Stripe\Subscription::retrieve(
-                    'sub_' . $sub->stripe_id,
-                    ['stripe_account' => $store->settings->stripe_id]
-                );
-            } catch (\Exception $e) {
-                return response()->json(
-                    [
-                        'error' => 'Subscription not found at payment gateway.'
-                    ],
-                    404
-                );
+            if (!$sub->cashOrder) {
+                try {
+                    $subscription = \Stripe\Subscription::retrieve(
+                        'sub_' . $sub->stripe_id,
+                        ['stripe_account' => $store->settings->stripe_id]
+                    );
+                } catch (\Exception $e) {
+                    return response()->json(
+                        [
+                            'error' =>
+                                'Subscription not found at payment gateway.'
+                        ],
+                        404
+                    );
+                }
             }
 
             $user = auth('api')->user();
@@ -291,74 +294,77 @@ class SubscriptionController extends StoreController
             }
 
             // Delete existing stripe plan
-            try {
-                $plan = \Stripe\Plan::retrieve($sub->stripe_plan, [
-                    'stripe_account' => $sub->store->settings->stripe_id
-                ]);
-                $plan->delete();
-            } catch (\Exception $e) {
-                return response()->json(
-                    [
-                        'error' =>
-                            'Failed to update subscription. Please get in touch'
-                    ],
-                    500
-                );
-            }
-
-            // Create stripe plan with new pricing
-            $plan = \Stripe\Plan::create(
-                [
-                    "amount" => round($total * 100),
-                    "interval" => "week",
-                    "product" => [
-                        "name" =>
-                            "Weekly subscription (" .
-                            $store->storeDetail->name .
-                            ")"
-                    ],
-                    "currency" => $store->settings->currency
-                ],
-                ['stripe_account' => $store->settings->stripe_id]
-            );
-
-            // Assign plan to stripe subscription
-            \Stripe\Subscription::update(
-                $subscription->id,
-                [
-                    'cancel_at_period_end' => false,
-                    'items' => [
+            if (!$sub->cashOrder) {
+                try {
+                    $plan = \Stripe\Plan::retrieve($sub->stripe_plan, [
+                        'stripe_account' => $sub->store->settings->stripe_id
+                    ]);
+                    $plan->delete();
+                } catch (\Exception $e) {
+                    return response()->json(
                         [
-                            'id' => $subscription->items->data[0]->id,
-                            'plan' => $plan->id
-                        ]
-                    ],
-                    'prorate' => false
-                ],
-                ['stripe_account' => $store->settings->stripe_id]
-            );
+                            'error' =>
+                                'Failed to update subscription. Please get in touch'
+                        ],
+                        500
+                    );
+                }
 
-            // Assign new plan ID to subscription
-            $sub->stripe_plan = $plan->id;
-
-            // If the current subscription is in draft state (within 1 hour before renewal, add line item to current invoice)
-            $invoice = \Stripe\Invoice::retrieve(
-                $subscription->latest_invoice,
-                [
-                    'stripe_account' => $store->settings->stripe_id
-                ]
-            );
-            if ($invoice->status === 'draft') {
-                $invoiceItem = \Stripe\InvoiceItem::create(
+                // Create stripe plan with new pricing
+                $plan = \Stripe\Plan::create(
                     [
-                        'invoice' => $invoice->id,
-                        'customer' => $subscription->customer,
-                        'amount' => round(($total - $sub->amount) * 100),
-                        'currency' => $this->store->settings->currency,
-                        'description' => 'Subscription updated in draft state.'
+                        "amount" => round($total * 100),
+                        "interval" => "week",
+                        "product" => [
+                            "name" =>
+                                "Weekly subscription (" .
+                                $store->storeDetail->name .
+                                ")"
+                        ],
+                        "currency" => $store->settings->currency
                     ],
                     ['stripe_account' => $store->settings->stripe_id]
                 );
+
+                // Assign plan to stripe subscription
+                \Stripe\Subscription::update(
+                    $subscription->id,
+                    [
+                        'cancel_at_period_end' => false,
+                        'items' => [
+                            [
+                                'id' => $subscription->items->data[0]->id,
+                                'plan' => $plan->id
+                            ]
+                        ],
+                        'prorate' => false
+                    ],
+                    ['stripe_account' => $store->settings->stripe_id]
+                );
+
+                // Assign new plan ID to subscription
+                $sub->stripe_plan = $plan->id;
+
+                // If the current subscription is in draft state (within 1 hour before renewal, add line item to current invoice)
+                $invoice = \Stripe\Invoice::retrieve(
+                    $subscription->latest_invoice,
+                    [
+                        'stripe_account' => $store->settings->stripe_id
+                    ]
+                );
+                if ($invoice->status === 'draft') {
+                    $invoiceItem = \Stripe\InvoiceItem::create(
+                        [
+                            'invoice' => $invoice->id,
+                            'customer' => $subscription->customer,
+                            'amount' => round(($total - $sub->amount) * 100),
+                            'currency' => $this->store->settings->currency,
+                            'description' =>
+                                'Subscription updated in draft state.'
+                        ],
+                        ['stripe_account' => $store->settings->stripe_id]
+                    );
+                }
             }
 
             // Update meals in subscription

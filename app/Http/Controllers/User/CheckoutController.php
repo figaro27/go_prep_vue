@@ -908,178 +908,223 @@ class CheckoutController extends UserController
                         $transactionId = $billing->subscribe($subscription);
                         $subscription->id = $transactionId;
                     }
+                }
 
-                    $userSubscription = new Subscription();
-                    $userSubscription->user_id = $user->id;
-                    $userSubscription->customer_id = $customer->id;
-                    $userSubscription->card_id = $cardId;
-                    $userSubscription->stripe_customer_id = $storeCustomer->id;
-                    $userSubscription->store_id = $store->id;
-                    $userSubscription->name =
-                        ucwords($period) .
-                        " subscription (" .
-                        $store->storeDetail->name .
-                        ")";
-                    if (!$cashOrder) {
-                        $userSubscription->stripe_plan = $plan->id;
-                        $userSubscription->stripe_id = substr(
-                            $subscription->id,
-                            4
-                        );
-                    } else {
-                        $userSubscription->stripe_id =
-                            'C -' .
-                            strtoupper(
-                                substr(uniqid(rand(10, 99), false), 0, 10)
-                            );
-                        $userSubscription->stripe_plan = 'cash';
-                    }
-                    $userSubscription->quantity = 1;
-                    $userSubscription->preFeePreDiscount = $preFeePreDiscount;
-                    $userSubscription->mealPlanDiscount = $mealPlanDiscount;
-                    $userSubscription->afterDiscountBeforeFees = $afterDiscountBeforeFees;
-                    $userSubscription->processingFee = $processingFee;
-                    $userSubscription->deliveryFee = $deliveryFee;
-                    $userSubscription->gratuity = $gratuity;
-                    $userSubscription->coolerDeposit = $coolerDeposit;
-                    $userSubscription->salesTax = $salesTax;
-                    $userSubscription->amount = $total;
-                    $userSubscription->currency = $storeSettings->currency;
-                    $userSubscription->pickup = $request->get('pickup', 0);
-                    $userSubscription->shipping = $shipping;
-                    $userSubscription->interval = $interval;
-                    $userSubscription->monthlyPrepay = $monthlyPrepay;
-                    $userSubscription->delivery_day = date(
-                        'N',
-                        strtotime($deliveryDay)
-                    );
-                    $userSubscription->coupon_id = $couponId;
-                    $userSubscription->couponReduction = $couponReduction;
-                    $userSubscription->couponCode = $couponCode;
-                    $userSubscription->applied_referral_id = $appliedReferralId;
-                    $userSubscription->referralReduction = $referralReduction;
-                    $userSubscription->promotionReduction = $promotionReduction;
-                    $userSubscription->pointsReduction = $pointsReduction;
-                    // In this case the 'next renewal time' is actually the first charge time
-                    $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
-                    $userSubscription->pickup_location_id = $pickupLocation;
-                    $userSubscription->transferTime = $transferTime;
-                    $userSubscription->cashOrder = $cashOrder;
-                    $userSubscription->isMultipleDelivery = $isMultipleDelivery;
-                    $userSubscription->save();
+                $userSubscription = new Subscription();
+                $userSubscription->user_id = $user->id;
+                $userSubscription->customer_id = $customer->id;
+                $userSubscription->card_id = $cardId;
+                $userSubscription->stripe_customer_id = !$cashOrder
+                    ? $storeCustomer->id
+                    : 'Cash';
+                $userSubscription->store_id = $store->id;
+                $userSubscription->name =
+                    ucwords($period) .
+                    " subscription (" .
+                    $store->storeDetail->name .
+                    ")";
+                if (!$cashOrder) {
+                    $userSubscription->stripe_plan = $plan->id;
+                    $userSubscription->stripe_id = substr($subscription->id, 4);
+                } else {
+                    $userSubscription->stripe_id =
+                        'C-' .
+                        strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
+                    $userSubscription->stripe_plan = 'cash';
+                }
+                $userSubscription->quantity = 1;
+                $userSubscription->preFeePreDiscount = $preFeePreDiscount;
+                $userSubscription->mealPlanDiscount = $mealPlanDiscount;
+                $userSubscription->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+                $userSubscription->processingFee = $processingFee;
+                $userSubscription->deliveryFee = $deliveryFee;
+                $userSubscription->gratuity = $gratuity;
+                $userSubscription->coolerDeposit = $coolerDeposit;
+                $userSubscription->salesTax = $salesTax;
+                $userSubscription->amount = $total;
+                $userSubscription->currency = $storeSettings->currency;
+                $userSubscription->pickup = $request->get('pickup', 0);
+                $userSubscription->shipping = $shipping;
+                $userSubscription->interval = $interval;
+                $userSubscription->monthlyPrepay = $monthlyPrepay;
+                $userSubscription->delivery_day = date(
+                    'N',
+                    strtotime($deliveryDay)
+                );
+                $userSubscription->coupon_id = $couponId;
+                $userSubscription->couponReduction = $couponReduction;
+                $userSubscription->couponCode = $couponCode;
+                $userSubscription->applied_referral_id = $appliedReferralId;
+                $userSubscription->referralReduction = $referralReduction;
+                $userSubscription->promotionReduction = $promotionReduction;
+                $userSubscription->pointsReduction = $pointsReduction;
+                // In this case the 'next renewal time' is actually the first charge time
+                $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
+                $userSubscription->pickup_location_id = $pickupLocation;
+                $userSubscription->transferTime = $transferTime;
+                $userSubscription->cashOrder = $cashOrder;
+                $userSubscription->isMultipleDelivery = $isMultipleDelivery;
+                $userSubscription->currency = $store->settings->currency;
+                $userSubscription->save();
 
-                    // Create initial order
-                    $order = new Order();
-                    $order->user_id = $user->id;
-                    $order->customer_id = $customer->id;
-                    $order->card_id = $cardId;
-                    $order->store_id = $store->id;
-                    $order->subscription_id = $userSubscription->id;
-                    $order->order_number =
-                        strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
-                        chr(rand(65, 90)) .
-                        rand(10, 99);
-                    $order->preFeePreDiscount = $preFeePreDiscount;
-                    $order->mealPlanDiscount = $mealPlanDiscount;
-                    $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
-                    $order->deliveryFee = $deliveryFee;
-                    $order->gratuity = $gratuity;
-                    $order->coolerDeposit = $coolerDeposit;
-                    $order->processingFee = $processingFee;
-                    $order->salesTax = $salesTax;
-                    $order->customSalesTax = $customSalesTax;
-                    $order->amount = $total;
-                    $order->currency = $storeSettings->currency;
-                    $order->fulfilled = false;
-                    $order->pickup = $request->get('pickup', 0);
-                    $order->shipping = $shipping;
-                    $order->delivery_date = (new Carbon(
-                        $deliveryDay
-                    ))->toDateString();
-                    $order->coupon_id = $couponId;
-                    $order->couponReduction = $couponReduction;
-                    $order->couponCode = $couponCode;
-                    $order->promotionReduction = $promotionReduction;
-                    $order->pointsReduction = $pointsReduction;
-                    $order->applied_referral_id = $appliedReferralId;
-                    $order->referralReduction = $referralReduction;
-                    $order->pickup_location_id = $pickupLocation;
-                    $order->transferTime = $transferTime;
-                    $order->dailyOrderNumber = $dailyOrderNumber;
-                    $order->originalAmount = $total * $deposit;
-                    $order->cashOrder = $cashOrder;
-                    $order->isMultipleDelivery = $isMultipleDelivery;
-                    $order->save();
+                // Create initial order
+                $order = new Order();
+                $order->user_id = $user->id;
+                $order->customer_id = $customer->id;
+                $order->card_id = $cardId;
+                $order->store_id = $store->id;
+                $order->subscription_id = $userSubscription->id;
+                $order->order_number =
+                    strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
+                    chr(rand(65, 90)) .
+                    rand(10, 99);
+                $order->preFeePreDiscount = $preFeePreDiscount;
+                $order->mealPlanDiscount = $mealPlanDiscount;
+                $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
+                $order->deliveryFee = $deliveryFee;
+                $order->gratuity = $gratuity;
+                $order->coolerDeposit = $coolerDeposit;
+                $order->processingFee = $processingFee;
+                $order->salesTax = $salesTax;
+                $order->customSalesTax = $customSalesTax;
+                $order->amount = $total;
+                $order->currency = $storeSettings->currency;
+                $order->fulfilled = false;
+                $order->pickup = $request->get('pickup', 0);
+                $order->shipping = $shipping;
+                $order->delivery_date = (new Carbon(
+                    $deliveryDay
+                ))->toDateString();
+                $order->coupon_id = $couponId;
+                $order->couponReduction = $couponReduction;
+                $order->couponCode = $couponCode;
+                $order->promotionReduction = $promotionReduction;
+                $order->pointsReduction = $pointsReduction;
+                $order->applied_referral_id = $appliedReferralId;
+                $order->referralReduction = $referralReduction;
+                $order->pickup_location_id = $pickupLocation;
+                $order->transferTime = $transferTime;
+                $order->dailyOrderNumber = $dailyOrderNumber;
+                $order->originalAmount = $total * $deposit;
+                $order->cashOrder = $cashOrder;
+                $order->isMultipleDelivery = $isMultipleDelivery;
+                $order->save();
 
-                    $orderId = $order->id;
+                $orderId = $order->id;
 
-                    foreach ($bag->getItems() as $item) {
-                        if ($this->store->modules->stockManagement) {
-                            $meal = Meal::where(
-                                'id',
-                                $item['meal']['id']
-                            )->first();
-                            if ($meal && $meal->stock !== null) {
-                                $meal->stock -= $item['quantity'];
-                                if (
-                                    $meal->stock === 0 ||
-                                    $meal->stock <=
-                                        $this->getReservedStock($meal)
-                                ) {
-                                    $meal->lastOutOfStock = date('Y-m-d H:i:s');
-                                    $meal->active = 0;
-                                    Subscription::syncStock($meal);
-                                }
-                            }
-                            $meal->update();
-                        }
-                        $mealOrder = new MealOrder();
-                        $mealOrder->order_id = $order->id;
-                        $mealOrder->store_id = $store->id;
-                        $mealOrder->meal_id = $item['meal']['id'];
-                        $mealOrder->quantity = $item['quantity'];
-                        $mealOrder->price =
-                            isset($item['top_level']) &&
-                            $item['top_level'] == true
-                                ? 0
-                                : $item['price'] * $item['quantity'];
-
-                        if (
-                            isset($item['meal_package_variation']) &&
-                            $item['meal_package_variation']
-                        ) {
-                            $mealOrder->meal_package_variation = 1;
-                        }
-
-                        if (
-                            isset($item['delivery_day']) &&
-                            $item['delivery_day']
-                        ) {
-                            $mealOrder->delivery_date =
-                                $item['delivery_day']['day_friendly'];
-                        }
-
-                        if (isset($item['size']) && $item['size']) {
-                            $mealOrder->meal_size_id = $item['size']['id'];
-                        }
-                        if (isset($item['special_instructions'])) {
-                            $mealOrder->special_instructions =
-                                $item['special_instructions'];
-                        }
-                        if (isset($item['free'])) {
-                            $mealOrder->free = $item['free'];
-                        }
-                        if ($item['meal_package']) {
-                            $mealOrder->meal_package = $item['meal_package'];
-                        }
-                        if (isset($item['meal_package_title'])) {
-                            $mealOrder->meal_package_title =
-                                $item['meal_package_title'];
-                        }
-
-                        if ($item['meal_package'] === true) {
+                foreach ($bag->getItems() as $item) {
+                    if ($this->store->modules->stockManagement) {
+                        $meal = Meal::where('id', $item['meal']['id'])->first();
+                        if ($meal && $meal->stock !== null) {
+                            $meal->stock -= $item['quantity'];
                             if (
-                                MealPackageOrder::where([
+                                $meal->stock === 0 ||
+                                $meal->stock <= $this->getReservedStock($meal)
+                            ) {
+                                $meal->lastOutOfStock = date('Y-m-d H:i:s');
+                                $meal->active = 0;
+                                Subscription::syncStock($meal);
+                            }
+                        }
+                        $meal->update();
+                    }
+                    $mealOrder = new MealOrder();
+                    $mealOrder->order_id = $order->id;
+                    $mealOrder->store_id = $store->id;
+                    $mealOrder->meal_id = $item['meal']['id'];
+                    $mealOrder->quantity = $item['quantity'];
+                    $mealOrder->price =
+                        isset($item['top_level']) && $item['top_level'] == true
+                            ? 0
+                            : $item['price'] * $item['quantity'];
+
+                    if (
+                        isset($item['meal_package_variation']) &&
+                        $item['meal_package_variation']
+                    ) {
+                        $mealOrder->meal_package_variation = 1;
+                    }
+
+                    if (isset($item['delivery_day']) && $item['delivery_day']) {
+                        $mealOrder->delivery_date =
+                            $item['delivery_day']['day_friendly'];
+                    }
+
+                    if (isset($item['size']) && $item['size']) {
+                        $mealOrder->meal_size_id = $item['size']['id'];
+                    }
+                    if (isset($item['special_instructions'])) {
+                        $mealOrder->special_instructions =
+                            $item['special_instructions'];
+                    }
+                    if (isset($item['free'])) {
+                        $mealOrder->free = $item['free'];
+                    }
+                    if ($item['meal_package']) {
+                        $mealOrder->meal_package = $item['meal_package'];
+                    }
+                    if (isset($item['meal_package_title'])) {
+                        $mealOrder->meal_package_title =
+                            $item['meal_package_title'];
+                    }
+
+                    if ($item['meal_package'] === true) {
+                        if (
+                            MealPackageOrder::where([
+                                'meal_package_id' => $item['meal_package_id'],
+                                'meal_package_size_id' =>
+                                    $item['meal_package_size_id'],
+                                'order_id' => $order->id,
+                                'mappingId' => isset($item['mappingId'])
+                                    ? $item['mappingId']
+                                    : null
+                            ])
+                                ->get()
+                                ->count() === 0
+                        ) {
+                            $mealPackageOrder = new MealPackageOrder();
+                            $mealPackageOrder->store_id = $store->id;
+                            $mealPackageOrder->order_id = $order->id;
+                            $mealPackageOrder->meal_package_id =
+                                $item['meal_package_id'];
+                            $mealPackageOrder->meal_package_size_id =
+                                $item['meal_package_size_id'];
+                            $mealPackageOrder->quantity =
+                                $item['package_quantity'];
+                            // $mealPackageOrder->price =
+                            //     $item['meal_package_size_id'] !== null
+                            //         ? MealPackageSize::where(
+                            //             'id',
+                            //             $item['meal_package_size_id']
+                            //         )
+                            //             ->pluck('price')
+                            //             ->first()
+                            //         : MealPackage::where(
+                            //             'id',
+                            //             $item['meal_package_id']
+                            //         )
+                            //             ->pluck('price')
+                            //             ->first();
+                            $mealPackageOrder->price = $item['package_price'];
+                            if (
+                                isset($item['delivery_day']) &&
+                                $item['delivery_day']
+                            ) {
+                                $mealPackageOrder->delivery_date =
+                                    $item['delivery_day']['day_friendly'];
+                            }
+                            $mealPackageOrder->mappingId = isset(
+                                $item['mappingId']
+                            )
+                                ? $item['mappingId']
+                                : null;
+                            $mealPackageOrder->save();
+
+                            $mealOrder->meal_package_order_id =
+                                $mealPackageOrder->id;
+                        } else {
+                            $mealOrder->meal_package_order_id = MealPackageOrder::where(
+                                [
                                     'meal_package_id' =>
                                         $item['meal_package_id'],
                                     'meal_package_size_id' =>
@@ -1088,350 +1133,290 @@ class CheckoutController extends UserController
                                     'mappingId' => isset($item['mappingId'])
                                         ? $item['mappingId']
                                         : null
-                                ])
-                                    ->get()
-                                    ->count() === 0
-                            ) {
-                                $mealPackageOrder = new MealPackageOrder();
-                                $mealPackageOrder->store_id = $store->id;
-                                $mealPackageOrder->order_id = $order->id;
-                                $mealPackageOrder->meal_package_id =
-                                    $item['meal_package_id'];
-                                $mealPackageOrder->meal_package_size_id =
-                                    $item['meal_package_size_id'];
-                                $mealPackageOrder->quantity =
-                                    $item['package_quantity'];
-                                // $mealPackageOrder->price =
-                                //     $item['meal_package_size_id'] !== null
-                                //         ? MealPackageSize::where(
-                                //             'id',
-                                //             $item['meal_package_size_id']
-                                //         )
-                                //             ->pluck('price')
-                                //             ->first()
-                                //         : MealPackage::where(
-                                //             'id',
-                                //             $item['meal_package_id']
-                                //         )
-                                //             ->pluck('price')
-                                //             ->first();
-                                $mealPackageOrder->price =
-                                    $item['package_price'];
-                                if (
-                                    isset($item['delivery_day']) &&
-                                    $item['delivery_day']
-                                ) {
-                                    $mealPackageOrder->delivery_date =
-                                        $item['delivery_day']['day_friendly'];
-                                }
-                                $mealPackageOrder->mappingId = isset(
-                                    $item['mappingId']
-                                )
-                                    ? $item['mappingId']
-                                    : null;
-                                $mealPackageOrder->save();
-
-                                $mealOrder->meal_package_order_id =
-                                    $mealPackageOrder->id;
-                            } else {
-                                $mealOrder->meal_package_order_id = MealPackageOrder::where(
-                                    [
-                                        'meal_package_id' =>
-                                            $item['meal_package_id'],
-                                        'meal_package_size_id' =>
-                                            $item['meal_package_size_id'],
-                                        'order_id' => $order->id,
-                                        'mappingId' => isset($item['mappingId'])
-                                            ? $item['mappingId']
-                                            : null
-                                    ]
-                                )
-                                    ->pluck('id')
-                                    ->first();
-                            }
+                                ]
+                            )
+                                ->pluck('id')
+                                ->first();
                         }
+                    }
 
-                        $mealOrder->save();
+                    $mealOrder->save();
 
-                        if (isset($item['components']) && $item['components']) {
-                            foreach (
-                                $item['components']
-                                as $componentId => $choices
-                            ) {
-                                foreach ($choices as $optionId) {
-                                    MealOrderComponent::create([
-                                        'meal_order_id' => $mealOrder->id,
-                                        'meal_component_id' => $componentId,
-                                        'meal_component_option_id' => $optionId
-                                    ]);
-                                }
-                            }
-                        }
-
-                        if (isset($item['addons']) && $item['addons']) {
-                            foreach ($item['addons'] as $addonId) {
-                                MealOrderAddon::create([
+                    if (isset($item['components']) && $item['components']) {
+                        foreach (
+                            $item['components']
+                            as $componentId => $choices
+                        ) {
+                            foreach ($choices as $optionId) {
+                                MealOrderComponent::create([
                                     'meal_order_id' => $mealOrder->id,
-                                    'meal_addon_id' => $addonId
+                                    'meal_component_id' => $componentId,
+                                    'meal_component_option_id' => $optionId
                                 ]);
-                            }
-                        }
-
-                        $attachments = MealAttachment::where([
-                            'meal_id' => $item['meal']['id'],
-                            'applyToAll' => 1
-                        ])->get();
-
-                        $explicitAttachments = MealAttachment::where([
-                            'applyToAll' => 0,
-                            'meal_id' => $item['meal']['id'],
-                            'meal_size_id' => isset($item['size']['id'])
-                                ? $item['size']['id']
-                                : null
-                        ])->get();
-
-                        foreach ($explicitAttachments as $explicitAttachment) {
-                            $attachments->push($explicitAttachment);
-                        }
-
-                        if ($attachments) {
-                            foreach ($attachments as $attachment) {
-                                $mealOrder = new MealOrder();
-                                $mealOrder->order_id = $order->id;
-                                $mealOrder->store_id = $store->id;
-                                $mealOrder->meal_id =
-                                    $attachment->attached_meal_id;
-                                $mealOrder->meal_size_id =
-                                    $attachment->attached_meal_size_id;
-                                $mealOrder->quantity =
-                                    $attachment->quantity * $item['quantity'];
-                                if (
-                                    isset($item['delivery_day']) &&
-                                    $item['delivery_day']
-                                ) {
-                                    $mealOrder->delivery_date =
-                                        $item['delivery_day']['day_friendly'];
-                                }
-                                $mealOrder->save();
                             }
                         }
                     }
 
-                    foreach ($bag->getItems() as $item) {
-                        $mealSub = new MealSubscription();
-                        $mealSub->subscription_id = $userSubscription->id;
-                        $mealSub->store_id = $store->id;
-                        $mealSub->meal_id = $item['meal']['id'];
-                        $mealSub->quantity = $item['quantity'];
-                        $mealSub->price =
-                            isset($item['top_level']) &&
-                            $item['top_level'] == true
-                                ? 0
-                                : $item['price'] * $item['quantity'];
-                        if (
-                            isset($item['delivery_day']) &&
-                            $item['delivery_day']
-                        ) {
-                            $mealSub->delivery_date =
-                                $item['delivery_day']['day_friendly'];
+                    if (isset($item['addons']) && $item['addons']) {
+                        foreach ($item['addons'] as $addonId) {
+                            MealOrderAddon::create([
+                                'meal_order_id' => $mealOrder->id,
+                                'meal_addon_id' => $addonId
+                            ]);
                         }
-                        if (isset($item['size']) && $item['size']) {
-                            $mealSub->meal_size_id = $item['size']['id'];
-                        }
-                        if (isset($item['special_instructions'])) {
-                            $mealSub->special_instructions =
-                                $item['special_instructions'];
-                        }
-                        if (isset($item['free'])) {
-                            $mealSub->free = $item['free'];
-                        }
-                        if ($item['meal_package']) {
-                            $mealSub->meal_package = $item['meal_package'];
-                        }
-                        if ($item['meal_package'] === true) {
+                    }
+
+                    $attachments = MealAttachment::where([
+                        'meal_id' => $item['meal']['id'],
+                        'applyToAll' => 1
+                    ])->get();
+
+                    $explicitAttachments = MealAttachment::where([
+                        'applyToAll' => 0,
+                        'meal_id' => $item['meal']['id'],
+                        'meal_size_id' => isset($item['size']['id'])
+                            ? $item['size']['id']
+                            : null
+                    ])->get();
+
+                    foreach ($explicitAttachments as $explicitAttachment) {
+                        $attachments->push($explicitAttachment);
+                    }
+
+                    if ($attachments) {
+                        foreach ($attachments as $attachment) {
+                            $mealOrder = new MealOrder();
+                            $mealOrder->order_id = $order->id;
+                            $mealOrder->store_id = $store->id;
+                            $mealOrder->meal_id = $attachment->attached_meal_id;
+                            $mealOrder->meal_size_id =
+                                $attachment->attached_meal_size_id;
+                            $mealOrder->quantity =
+                                $attachment->quantity * $item['quantity'];
                             if (
-                                MealPackageSubscription::where([
+                                isset($item['delivery_day']) &&
+                                $item['delivery_day']
+                            ) {
+                                $mealOrder->delivery_date =
+                                    $item['delivery_day']['day_friendly'];
+                            }
+                            $mealOrder->save();
+                        }
+                    }
+                }
+
+                foreach ($bag->getItems() as $item) {
+                    $mealSub = new MealSubscription();
+                    $mealSub->subscription_id = $userSubscription->id;
+                    $mealSub->store_id = $store->id;
+                    $mealSub->meal_id = $item['meal']['id'];
+                    $mealSub->quantity = $item['quantity'];
+                    $mealSub->price =
+                        isset($item['top_level']) && $item['top_level'] == true
+                            ? 0
+                            : $item['price'] * $item['quantity'];
+                    if (isset($item['delivery_day']) && $item['delivery_day']) {
+                        $mealSub->delivery_date =
+                            $item['delivery_day']['day_friendly'];
+                    }
+                    if (isset($item['size']) && $item['size']) {
+                        $mealSub->meal_size_id = $item['size']['id'];
+                    }
+                    if (isset($item['special_instructions'])) {
+                        $mealSub->special_instructions =
+                            $item['special_instructions'];
+                    }
+                    if (isset($item['free'])) {
+                        $mealSub->free = $item['free'];
+                    }
+                    if ($item['meal_package']) {
+                        $mealSub->meal_package = $item['meal_package'];
+                    }
+                    if ($item['meal_package'] === true) {
+                        if (
+                            MealPackageSubscription::where([
+                                'meal_package_id' => $item['meal_package_id'],
+                                'meal_package_size_id' =>
+                                    $item['meal_package_size_id'],
+                                'subscription_id' => $userSubscription->id,
+                                'customTitle' => isset($item['customTitle'])
+                                    ? $item['customTitle']
+                                    : null,
+                                'mappingId' => isset($item['mappingId'])
+                                    ? $item['mappingId']
+                                    : null
+                            ])
+                                ->get()
+                                ->count() === 0
+                        ) {
+                            $mealPackageSubscription = new MealPackageSubscription();
+                            $mealPackageSubscription->store_id = $store->id;
+                            $mealPackageSubscription->subscription_id =
+                                $userSubscription->id;
+                            $mealPackageSubscription->meal_package_id =
+                                $item['meal_package_id'];
+                            $mealPackageSubscription->meal_package_size_id =
+                                $item['meal_package_size_id'];
+                            $mealPackageSubscription->quantity =
+                                $item['package_quantity'];
+                            $mealPackageSubscription->price =
+                                $item['package_price'];
+                            $mealPackageSubscription->customTitle = isset(
+                                $item['customTitle']
+                            )
+                                ? $item['customTitle']
+                                : null;
+                            $mealPackageSubscription->customSize = isset(
+                                $item['customSize']
+                            )
+                                ? $item['customSize']
+                                : null;
+                            $mealPackageSubscription->mappingId = isset(
+                                $item['mappingId']
+                            )
+                                ? $item['mappingId']
+                                : null;
+                            if (
+                                isset($item['delivery_day']) &&
+                                $item['delivery_day']
+                            ) {
+                                $mealPackageSubscription->delivery_date =
+                                    $item['delivery_day']['day_friendly'];
+                            }
+                            $mealPackageSubscription->save();
+
+                            $mealSub->meal_package_subscription_id =
+                                $mealPackageSubscription->id;
+                        } else {
+                            $mealSub->meal_package_subscription_id = MealPackageSubscription::where(
+                                [
                                     'meal_package_id' =>
                                         $item['meal_package_id'],
                                     'meal_package_size_id' =>
                                         $item['meal_package_size_id'],
                                     'subscription_id' => $userSubscription->id,
-                                    'customTitle' => isset($item['customTitle'])
-                                        ? $item['customTitle']
-                                        : null,
                                     'mappingId' => isset($item['mappingId'])
                                         ? $item['mappingId']
                                         : null
-                                ])
-                                    ->get()
-                                    ->count() === 0
-                            ) {
-                                $mealPackageSubscription = new MealPackageSubscription();
-                                $mealPackageSubscription->store_id = $store->id;
-                                $mealPackageSubscription->subscription_id =
-                                    $userSubscription->id;
-                                $mealPackageSubscription->meal_package_id =
-                                    $item['meal_package_id'];
-                                $mealPackageSubscription->meal_package_size_id =
-                                    $item['meal_package_size_id'];
-                                $mealPackageSubscription->quantity =
-                                    $item['package_quantity'];
-                                $mealPackageSubscription->price =
-                                    $item['package_price'];
-                                $mealPackageSubscription->customTitle = isset(
-                                    $item['customTitle']
-                                )
-                                    ? $item['customTitle']
-                                    : null;
-                                $mealPackageSubscription->customSize = isset(
-                                    $item['customSize']
-                                )
-                                    ? $item['customSize']
-                                    : null;
-                                $mealPackageSubscription->mappingId = isset(
-                                    $item['mappingId']
-                                )
-                                    ? $item['mappingId']
-                                    : null;
-                                if (
-                                    isset($item['delivery_day']) &&
-                                    $item['delivery_day']
-                                ) {
-                                    $mealPackageSubscription->delivery_date =
-                                        $item['delivery_day']['day_friendly'];
-                                }
-                                $mealPackageSubscription->save();
-
-                                $mealSub->meal_package_subscription_id =
-                                    $mealPackageSubscription->id;
-                            } else {
-                                $mealSub->meal_package_subscription_id = MealPackageSubscription::where(
-                                    [
-                                        'meal_package_id' =>
-                                            $item['meal_package_id'],
-                                        'meal_package_size_id' =>
-                                            $item['meal_package_size_id'],
-                                        'subscription_id' =>
-                                            $userSubscription->id,
-                                        'mappingId' => isset($item['mappingId'])
-                                            ? $item['mappingId']
-                                            : null
-                                    ]
-                                )
-                                    ->pluck('id')
-                                    ->first();
-                            }
+                                ]
+                            )
+                                ->pluck('id')
+                                ->first();
                         }
+                    }
 
-                        $mealSub->save();
+                    $mealSub->save();
 
-                        if (isset($item['components']) && $item['components']) {
-                            foreach (
-                                $item['components']
-                                as $componentId => $choices
-                            ) {
-                                foreach ($choices as $optionId) {
-                                    MealSubscriptionComponent::create([
-                                        'meal_subscription_id' => $mealSub->id,
-                                        'meal_component_id' => $componentId,
-                                        'meal_component_option_id' => $optionId
-                                    ]);
-                                }
-                            }
-                        }
-
-                        if (isset($item['addons']) && $item['addons']) {
-                            foreach ($item['addons'] as $addonId) {
-                                MealSubscriptionAddon::create([
+                    if (isset($item['components']) && $item['components']) {
+                        foreach (
+                            $item['components']
+                            as $componentId => $choices
+                        ) {
+                            foreach ($choices as $optionId) {
+                                MealSubscriptionComponent::create([
                                     'meal_subscription_id' => $mealSub->id,
-                                    'meal_addon_id' => $addonId
+                                    'meal_component_id' => $componentId,
+                                    'meal_component_option_id' => $optionId
                                 ]);
                             }
                         }
+                    }
 
-                        $attachments = MealAttachment::where([
-                            'meal_id' => $item['meal']['id'],
-                            'applyToAll' => 1
-                        ])->get();
-
-                        $explicitAttachments = MealAttachment::where([
-                            'applyToAll' => 0,
-                            'meal_id' => $item['meal']['id'],
-                            'meal_size_id' => isset($item['size']['id'])
-                                ? $item['size']['id']
-                                : null
-                        ])->get();
-
-                        foreach ($explicitAttachments as $explicitAttachment) {
-                            $attachments->push($explicitAttachment);
+                    if (isset($item['addons']) && $item['addons']) {
+                        foreach ($item['addons'] as $addonId) {
+                            MealSubscriptionAddon::create([
+                                'meal_subscription_id' => $mealSub->id,
+                                'meal_addon_id' => $addonId
+                            ]);
                         }
+                    }
 
-                        if ($attachments) {
-                            foreach ($attachments as $attachment) {
-                                $mealSub = new MealSubscription();
-                                $mealSub->subscription_id =
-                                    $userSubscription->id;
-                                $mealSub->store_id = $store->id;
-                                $mealSub->meal_id =
-                                    $attachment->attached_meal_id;
-                                $mealOrder->meal_size_id =
-                                    $attachment->attached_meal_size_id;
-                                $mealSub->quantity =
-                                    $attachment->quantity * $item['quantity'];
-                                if (
-                                    isset($item['delivery_day']) &&
-                                    $item['delivery_day']
-                                ) {
-                                    $mealSub->delivery_date =
-                                        $item['delivery_day']['day_friendly'];
-                                }
-                                $mealSub->save();
+                    $attachments = MealAttachment::where([
+                        'meal_id' => $item['meal']['id'],
+                        'applyToAll' => 1
+                    ])->get();
+
+                    $explicitAttachments = MealAttachment::where([
+                        'applyToAll' => 0,
+                        'meal_id' => $item['meal']['id'],
+                        'meal_size_id' => isset($item['size']['id'])
+                            ? $item['size']['id']
+                            : null
+                    ])->get();
+
+                    foreach ($explicitAttachments as $explicitAttachment) {
+                        $attachments->push($explicitAttachment);
+                    }
+
+                    if ($attachments) {
+                        foreach ($attachments as $attachment) {
+                            $mealSub = new MealSubscription();
+                            $mealSub->subscription_id = $userSubscription->id;
+                            $mealSub->store_id = $store->id;
+                            $mealSub->meal_id = $attachment->attached_meal_id;
+                            $mealOrder->meal_size_id =
+                                $attachment->attached_meal_size_id;
+                            $mealSub->quantity =
+                                $attachment->quantity * $item['quantity'];
+                            if (
+                                isset($item['delivery_day']) &&
+                                $item['delivery_day']
+                            ) {
+                                $mealSub->delivery_date =
+                                    $item['delivery_day']['day_friendly'];
                             }
+                            $mealSub->save();
                         }
                     }
+                }
 
-                    // Send notification to store
-                    if (
-                        $storeSettings->notificationEnabled('new_subscription')
-                    ) {
-                        $store->sendNotification('new_subscription', [
-                            'order' => $order ?? null,
-                            'pickup' => $pickup ?? null,
-                            'card' => $card ?? null,
-                            'customer' => $customer ?? null,
-                            'subscription' => $userSubscription ?? null
-                        ]);
-                    }
+                // Send notification to store
+                if ($storeSettings->notificationEnabled('new_subscription')) {
+                    $store->sendNotification('new_subscription', [
+                        'order' => $order ?? null,
+                        'pickup' => $pickup ?? null,
+                        'card' => $card ?? null,
+                        'customer' => $customer ?? null,
+                        'subscription' => $userSubscription ?? null
+                    ]);
+                }
 
-                    // if ($bagItems && count($bagItems) > 0) {
-                    //     foreach ($bagItems as $bagItem) {
-                    //         $orderBag = new OrderBag();
-                    //         $orderBag->order_id = (int) $order->id;
-                    //         $orderBag->bag = json_encode($bagItem);
-                    //         $orderBag->save();
-                    //     }
-                    // }
+                // if ($bagItems && count($bagItems) > 0) {
+                //     foreach ($bagItems as $bagItem) {
+                //         $orderBag = new OrderBag();
+                //         $orderBag->order_id = (int) $order->id;
+                //         $orderBag->bag = json_encode($bagItem);
+                //         $orderBag->save();
+                //     }
+                // }
 
-                    // if ($bagItems && count($bagItems) > 0) {
-                    //     foreach ($bagItems as $bagItem) {
-                    //         $subscriptionBag = new SubscriptionBag();
-                    //         $subscriptionBag->subscription_id =
-                    //             (int) $userSubscription->id;
-                    //         $subscriptionBag->bag = json_encode($bagItem);
-                    //         $subscriptionBag->save();
-                    //     }
-                    // }
+                // if ($bagItems && count($bagItems) > 0) {
+                //     foreach ($bagItems as $bagItem) {
+                //         $subscriptionBag = new SubscriptionBag();
+                //         $subscriptionBag->subscription_id =
+                //             (int) $userSubscription->id;
+                //         $subscriptionBag->bag = json_encode($bagItem);
+                //         $subscriptionBag->save();
+                //     }
+                // }
 
-                    try {
-                        $user->sendNotification('meal_plan', [
-                            'order' => $order ?? null,
-                            'pickup' => $pickup ?? null,
-                            'card' => $card ?? null,
-                            'customer' => $customer ?? null,
-                            'subscription' => $userSubscription ?? null
-                        ]);
-                    } catch (\Exception $e) {
-                    }
+                try {
+                    $user->sendNotification('meal_plan', [
+                        'order' => $order ?? null,
+                        'pickup' => $pickup ?? null,
+                        'card' => $card ?? null,
+                        'customer' => $customer ?? null,
+                        'subscription' => $userSubscription ?? null
+                    ]);
+                } catch (\Exception $e) {
+                }
+                if (
+                    $userSubscription->cashOrder &&
+                    $store->settings->subscriptionRenewalType !== 'cutoff' &&
+                    $diff <= 7
+                ) {
+                    // Renew & create the first order right away since you aren't waiting for Stripe's 1 hour gap.
+                    $userSubscription->renew();
                 }
             }
 

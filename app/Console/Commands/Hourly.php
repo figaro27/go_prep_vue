@@ -154,6 +154,9 @@ class Hourly extends Command
         $this->info($count . ' `Subscription Renewing` notifications sent');
         $count = 0;
 
+        // Renew cash subscriptions
+        $this->renewCashSubscriptions();
+
         // Delivery Today Emails
 
         $orders = Order::where([
@@ -285,5 +288,28 @@ class Hourly extends Command
             }
         }
         $this->info($count . ' `Order Reminder` SMS texts sent');
+    }
+
+    public function renewCashSubscriptions()
+    {
+        $dateRange = [
+            Carbon::now('utc')
+                ->subMinutes(30)
+                ->toDateTimeString(),
+            Carbon::now('utc')
+                ->addMinutes(30)
+                ->toDateTimeString()
+        ];
+        $cashSubs = Subscription::whereBetween('next_renewal_at', $dateRange)
+            ->where('status', 'active')
+            ->where('cashOrder', 1)
+            ->get();
+
+        $count = 0;
+        foreach ($cashSubs as $cashSub) {
+            $cashSub->renew();
+            $count++;
+        }
+        $this->info($count . ' Cash subscriptions renewed');
     }
 }
