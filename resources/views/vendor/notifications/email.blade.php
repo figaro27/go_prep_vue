@@ -38,11 +38,11 @@
 @endforeach
 
 {{-- Salutation --}}
-@if (! empty($salutation))
+<!-- @if (! empty($salutation))
 {{ $salutation }}
 @else
 @lang('Regards'),<br>{{ config('app.name') }}
-@endif
+@endif -->
 
 {{-- Subcopy --}}
 @isset($actionText)
