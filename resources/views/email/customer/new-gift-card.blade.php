@@ -1,6 +1,6 @@
 @php
 $giftersName = $order->user->details->firstname . ' ' . $order->user->details->lastname;
-$storeUrl = 'https://' . $order->store->details->domain . '.goprep.com';
+$storeUrl = $order->store->details->full_url;
 $purchasedGiftCardCode = $purchasedGiftCard->code;
 $purchasedGiftCardAmount = $purchasedGiftCard->amount;
 $currency = $order->store->settings->currency_symbol

@@ -99,7 +99,7 @@ class StoreDetail extends Model implements HasMedia
 
     public function getFullURLAttribute()
     {
-        $host = $this->host ? $this->host : 'goprep';
-        return 'https://' . $this->domain . '.' . $host . '.com';
+        $host = $this->host ? $this->host : 'goprep.com';
+        return 'https://' . $this->domain . '.' . $host;
     }
 }
