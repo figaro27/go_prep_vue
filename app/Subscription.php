@@ -837,23 +837,27 @@ class Subscription extends Model
      */
     public function syncPrices($mealsReplaced = true)
     {
-        try {
-            $subscription = \Stripe\Subscription::retrieve(
-                'sub_' . $this->stripe_id,
-                ['stripe_account' => $this->store->settings->stripe_id]
-            );
-        } catch (\Exception $e) {
-            return response()->json(
-                [
-                    'error' => 'Subscription not found at payment gateway'
-                ],
-                404
-            );
-        }
+        if (!$this->cashOrder) {
+            try {
+                $subscription = \Stripe\Subscription::retrieve(
+                    'sub_' . $this->stripe_id,
+                    ['stripe_account' => $this->store->settings->stripe_id]
+                );
+            } catch (\Exception $e) {
+                return response()->json(
+                    [
+                        'error' => 'Subscription not found at payment gateway'
+                    ],
+                    404
+                );
+            }
 
-        // Cancelled subscription. Halt here
-        if ($subscription->status === \Stripe\Subscription::STATUS_CANCELED) {
-            return;
+            // Cancelled subscription. Halt here
+            if (
+                $subscription->status === \Stripe\Subscription::STATUS_CANCELED
+            ) {
+                return;
+            }
         }
 
         $items = $this->fresh()->meal_subscriptions->map(function ($meal) {
@@ -1007,59 +1011,61 @@ class Subscription extends Model
         $this->save();
 
         // Delete existing stripe plan
-        try {
-            $plan = \Stripe\Plan::retrieve($this->stripe_plan, [
-                'stripe_account' => $this->store->settings->stripe_id
-            ]);
-            $plan->delete();
-        } catch (\Exception $e) {
-        }
+        if (!$this->cashOrder) {
+            try {
+                $plan = \Stripe\Plan::retrieve($this->stripe_plan, [
+                    'stripe_account' => $this->store->settings->stripe_id
+                ]);
+                $plan->delete();
+            } catch (\Exception $e) {
+            }
 
-        // Create stripe plan with new pricing
-        $plan = \Stripe\Plan::create(
-            [
-                "amount" => (floor($total * 100) / 100) * 100,
-                "interval" => "week",
-                "product" => [
-                    "name" =>
-                        "Weekly subscription (" .
-                        $this->store->storeDetail->name .
-                        ")"
+            // Create stripe plan with new pricing
+            $plan = \Stripe\Plan::create(
+                [
+                    "amount" => (floor($total * 100) / 100) * 100,
+                    "interval" => "week",
+                    "product" => [
+                        "name" =>
+                            "Weekly subscription (" .
+                            $this->store->storeDetail->name .
+                            ")"
+                    ],
+                    "currency" => $this->store->settings->currency
                 ],
-                "currency" => $this->store->settings->currency
-            ],
-            ['stripe_account' => $this->store->settings->stripe_id]
-        );
+                ['stripe_account' => $this->store->settings->stripe_id]
+            );
 
-        // If the subscription is paused, resume then update then pause again. Stripe doesn't allow updating a paused subscription.
-        $paused = false;
+            // If the subscription is paused, resume then update then pause again. Stripe doesn't allow updating a paused subscription.
+            $paused = false;
 
-        if ($this->status === 'paused') {
-            $paused = true;
-            $this->resume();
-        }
+            if ($this->status === 'paused') {
+                $paused = true;
+                $this->resume();
+            }
 
-        \Stripe\Subscription::update(
-            $subscription->id,
-            [
-                'cancel_at_period_end' => false,
-                'items' => [
-                    [
-                        'id' => $subscription->items->data[0]->id,
-                        'plan' => $plan->id
-                    ]
+            \Stripe\Subscription::update(
+                $subscription->id,
+                [
+                    'cancel_at_period_end' => false,
+                    'items' => [
+                        [
+                            'id' => $subscription->items->data[0]->id,
+                            'plan' => $plan->id
+                        ]
+                    ],
+                    'prorate' => false
                 ],
-                'prorate' => false
-            ],
-            ['stripe_account' => $this->store->settings->stripe_id]
-        );
+                ['stripe_account' => $this->store->settings->stripe_id]
+            );
 
-        if ($paused) {
-            $this->pause();
+            if ($paused) {
+                $this->pause();
+            }
+
+            // Assign new plan ID to subscription
+            $this->stripe_plan = $plan->id;
         }
-
-        // Assign new plan ID to subscription
-        $this->stripe_plan = $plan->id;
         if ($mealsReplaced) {
             $this->mealsReplaced = 1;
         }
