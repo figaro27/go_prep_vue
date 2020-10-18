@@ -63,11 +63,7 @@ f<template>
             slot-scope="props"
             v-if="storeSettings.timezone"
           >
-            {{
-              moment(props.row.next_renewal_at)
-                .subtract("hours", props.row.utcOffset)
-                .format("dddd")
-            }}
+            {{ moment(props.row.renewalOffset.date).format("dddd") }}
           </div>
           <div slot="actions" class="text-nowrap" slot-scope="props">
             <button

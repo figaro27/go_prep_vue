@@ -45,7 +45,7 @@ class Subscription extends Model
         'interval_title',
         'paid_order_count',
         'transfer_type',
-        'utcOffset'
+        'renewalOffset'
         // 'total_item_quantity'
     ];
 
@@ -112,7 +112,7 @@ class Subscription extends Model
         return $this->belongsTo('App\PickupLocation');
     }
 
-    public function getUtcOffsetAttribute()
+    public function getRenewalOffsetAttribute()
     {
         $utcDate = (int) Carbon::parse(
             $this->next_renewal_at,
@@ -125,7 +125,7 @@ class Subscription extends Model
             $this->store->settings->timezone
         )->format('H');
         $offset = $utcDate - $date;
-        return $offset;
+        return new Carbon($this->next_renewal_at->subHours($offset));
     }
 
     public function getPreCouponAttribute()
