@@ -44,7 +44,8 @@ class Subscription extends Model
         'meal_package_items',
         'interval_title',
         'paid_order_count',
-        'transfer_type'
+        'transfer_type',
+        'utcOffset'
         // 'total_item_quantity'
     ];
 
@@ -109,6 +110,22 @@ class Subscription extends Model
     public function pickup_location()
     {
         return $this->belongsTo('App\PickupLocation');
+    }
+
+    public function getUtcOffsetAttribute()
+    {
+        $utcDate = (int) Carbon::parse(
+            $this->next_renewal_at,
+            $this->store->settings->timezone
+        )
+            ->setTimezone('UTC')
+            ->format('H');
+        $date = (int) Carbon::parse(
+            $this->next_renewal_at,
+            $this->store->settings->timezone
+        )->format('H');
+        $offset = $utcDate - $date;
+        return $offset;
     }
 
     public function getPreCouponAttribute()
