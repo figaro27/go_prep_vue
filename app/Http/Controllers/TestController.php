@@ -335,7 +335,9 @@ class TestController extends Controller
         $meals = Meal::where('store_id', $storeId)->get();
         foreach ($meals as $meal) {
             $mediaItems = $meal->getMedia('featured_image');
-            $mediaItems[0]->delete();
+            if ($mediaItems) {
+                $mediaItems[0]->delete();
+            }
         }
     }
 }
