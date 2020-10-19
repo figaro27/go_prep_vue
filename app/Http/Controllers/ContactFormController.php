@@ -61,7 +61,7 @@ class ContactFormController extends Controller
         if ($store === null) {
             $store = Store::where('id', $addedByStoreId)->first();
         }
-        $lastViewedStore = $store->details->name;
+        $lastViewedStore = $store ? $store->details->name : '';
         $storeEmail = $store->user->email;
         $firstname = UserDetail::where('user_id', $id)
             ->pluck('firstname')
