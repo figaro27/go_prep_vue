@@ -613,33 +613,33 @@ class Subscription extends Model
             }
 
             // Update Meal Attachments using Explicits
-            $attachments = MealAttachment::where(
-                'meal_id',
-                $mealSub->meal_id
-            )->get();
-            if ($attachments) {
-                foreach ($attachments as $attachment) {
-                    $mealOrder = new MealOrder();
-                    $mealOrder->order_id = $order->id;
-                    $mealOrder->store_id = $store->id;
-                    $mealOrder->meal_id = $attachment->attached_meal_id;
-                    $mealOrder->quantity =
-                        $attachment->quantity * $item['quantity'];
+            // $attachments = MealAttachment::where(
+            //     'meal_id',
+            //     $mealSub->meal_id
+            // )->get();
+            // if ($attachments) {
+            //     foreach ($attachments as $attachment) {
+            //         $mealOrder = new MealOrder();
+            //         $mealOrder->order_id = $newOrder->id;
+            //         $mealOrder->store_id = $this->store->id;
+            //         $mealOrder->meal_id = $attachment->attached_meal_id;
+            //         $mealOrder->quantity =
+            //             $attachment->quantity * $item['quantity'];
 
-                    if ($isMultipleDelivery == 1 && $mealSub->delivery_date) {
-                        $mealOrder->delivery_date =
-                            $this->interval === 'week'
-                                ? $mealSub->delivery_date
-                                    ->addWeeks(1)
-                                    ->toDateString()
-                                : $mealSub->delivery_date
-                                    ->addDays(30)
-                                    ->toDateString();
-                    }
+            //         if ($isMultipleDelivery == 1 && $mealSub->delivery_date) {
+            //             $mealOrder->delivery_date =
+            //                 $this->interval === 'week'
+            //                     ? $mealSub->delivery_date
+            //                         ->addWeeks(1)
+            //                         ->toDateString()
+            //                     : $mealSub->delivery_date
+            //                         ->addDays(30)
+            //                         ->toDateString();
+            //         }
 
-                    $mealOrder->save();
-                }
-            }
+            //         $mealOrder->save();
+            //     }
+            // }
         }
 
         if ($this->status !== 'paused') {
