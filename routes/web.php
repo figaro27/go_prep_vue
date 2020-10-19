@@ -14,6 +14,11 @@
 // To Be Removed
 //Route::get('/getDeliveryRoutes', 'DeliveryRouteController@getRoutes');
 
+Route::post(
+    'deleteInactiveStoreImages',
+    'TestController@deleteInactiveStoreImages'
+);
+
 Route::get('testDeleteMealOrders', 'TestController@testDeleteMealOrders');
 
 Route::post('testRenewSubscription', 'TestController@testRenewSubscription');

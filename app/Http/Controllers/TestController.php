@@ -16,6 +16,8 @@ use App\MealOrderAddon;
 use App\Bag;
 use App\SmsContact;
 use App\SmsChat;
+use App\Meal;
+use Spatie\MediaLibrary\Models\Media;
 
 class TestController extends Controller
 {
@@ -325,5 +327,13 @@ class TestController extends Controller
                 'stripe_account' => $store->settings->stripe_id
             ]
         );
+    }
+
+    public function deleteInactiveStoreImages(Request $request)
+    {
+        $storeId = $request->get('store_id');
+        $meal = Meal::where('id', 691)->first();
+        $mediaItems = $meal->getMedia('featured_image');
+        $mediaItems[0]->delete();
     }
 }

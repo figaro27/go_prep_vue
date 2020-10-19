@@ -164,6 +164,15 @@
                 >Change Subscription Anchor</b-btn
               >
             </p>
+
+            <b-form-input
+              v-model="storeId"
+              placeholder="Store ID"
+              v-if="store.id === 3"
+            ></b-form-input>
+            <b-btn @click="deleteInactiveStoreImages" v-if="store.id === 3"
+              >Delete Inactive Store Images</b-btn
+            >
           </b-form>
 
           <!--
@@ -394,6 +403,11 @@ export default {
       axios.post("/changeSubscriptionAnchor", {
         stripe_id: this.stripeId,
         unixTimestamp: this.unixTimestamp,
+        store_id: this.storeId
+      });
+    },
+    deleteInactiveStoreImages() {
+      axios.post("/deleteInactiveStoreImages", {
         store_id: this.storeId
       });
     }
