@@ -1416,7 +1416,7 @@ export default {
       logoUpdated: false,
       acceptedTOA: 0,
       acceptedTOAcheck: 0,
-      showTOAModal: 0,
+      showTOAModal: false,
       showMealPlansModal: false,
       color: "",
       transferSelected: [],
@@ -1875,8 +1875,12 @@ export default {
     setSalesTax(rate) {
       this.salesTax = rate * 100;
     },
-    setDeliveryFeeZipCodes() {
+    async setDeliveryFeeZipCodes() {
+      this.deliveryFeeZipCodes = [];
       this.deliveryFeeCity.state = this.storeDetails.state;
+      this.deliveryFeeZipCodeModal = true;
+
+      await this.refreshStoreDeliveryFeeZipCodes();
 
       if (_.isArray(this.storeDeliveryFeesZipCodes)) {
         this.storeDeliveryFeesZipCodes.forEach(dfzc => {
@@ -1902,19 +1906,15 @@ export default {
           });
         }
       });
-
-      this.deliveryFeeZipCodeModal = true;
     },
     updateDeliveryFeeZipCodes() {
       axios
         .post("/api/me/updateDeliveryFeeZipCodes", this.deliveryFeeZipCodes)
-        .then(resp => {
-          this.refreshStoreDeliveryFeeZipCodes();
+        .then(() => {
+          this.setDeliveryFeeZipCodes();
+          this.updateStoreSettings();
+          this.deliveryFeeZipCode = {};
         });
-      this.updateStoreSettings();
-      // this.deliveryFeeZipCodeModal = false;
-      // this.deliveryFeeZipCodes = [];
-      this.deliveryFeeZipCode = {};
     },
     addDeliveryFeeCity() {
       if (this.deliveryFeeCity.rate == null) {
@@ -1925,13 +1925,11 @@ export default {
       }
       axios
         .post("/api/me/addDeliveryFeeCity", { dfc: this.deliveryFeeCity })
-        .then(resp => {
-          this.refreshStoreDeliveryFeeZipCodes();
+        .then(() => {
+          this.setDeliveryFeeZipCodes();
+          this.updateStoreSettings();
+          this.deliveryFeeCity = {};
         });
-      this.updateStoreSettings();
-      // this.deliveryFeeZipCodeModal = false;
-      this.deliveryFeeCity = {};
-      // this.deliveryFeeZipCodes = [];
     },
     addDeliveryFeeZipCode() {
       if (this.deliveryFeeZipCode.code == null) {
