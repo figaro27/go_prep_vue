@@ -2047,34 +2047,6 @@ export default {
         }
       });
 
-      // Livoti's holiday changes
-
-      // if (
-      //   this.bagDeliveryDate === "2020-11-25 00:00:00" &&
-      //   (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
-      // ) {
-      //   options.pop();
-      //   if (this.storeId === 110) {
-      //     options.unshift("8:00 AM - 8:30 AM");
-      //     options.unshift("8:30 AM - 9:00 AM");
-      //   }
-      // }
-
-      // if (
-      //   this.bagDeliveryDate === "2020-11-26 00:00:00" &&
-      //   (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
-      // ) {
-      //   for (let i = 0; i <= 5; i++) {
-      //     options.pop();
-      //   }
-      //   if (this.storeId === 110) {
-      //     options.unshift("8:00 AM - 8:30 AM");
-      //     options.unshift("8:30 AM - 9:00 AM");
-      //   }
-      //   options.unshift("7:00 AM - 7:30 AM");
-      //   options.unshift("7:30 AM - 8:00 AM");
-      // }
-
       return options;
     },
     // transferTimeOptions() {
