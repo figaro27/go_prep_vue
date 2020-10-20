@@ -1876,7 +1876,6 @@ export default {
       this.salesTax = rate * 100;
     },
     async setDeliveryFeeZipCodes() {
-      this.deliveryFeeZipCodes = [];
       this.deliveryFeeCity.state = this.storeDetails.state;
       this.deliveryFeeZipCodeModal = true;
 
