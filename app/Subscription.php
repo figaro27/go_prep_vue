@@ -125,7 +125,9 @@ class Subscription extends Model
             $this->store->settings->timezone
         )->format('H');
         $offset = $utcDate - $date;
-        return new Carbon($this->next_renewal_at->subHours($offset));
+        if ($this->next_renewal_at) {
+            return new Carbon($this->next_renewal_at->subHours($offset));
+        }
     }
 
     public function getPreCouponAttribute()
