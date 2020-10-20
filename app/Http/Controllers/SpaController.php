@@ -93,7 +93,8 @@ class SpaController extends Controller
                         'meals.components',
                         'meals.addons',
                         'meals.macros',
-                        'deliveryFeeZipCodes'
+                        'deliveryFeeZipCodes',
+                        'holidayTransferTimes'
                     ])->find(STORE_ID)
                     : null;
 
@@ -127,7 +128,8 @@ class SpaController extends Controller
                         'moduleSettings',
                         'reportSettings',
                         'smsSettings',
-                        'deliveryFeeZipCodes'
+                        'deliveryFeeZipCodes',
+                        'holidayTransferTimes'
                     ])
                     ->first();
 
@@ -171,7 +173,8 @@ class SpaController extends Controller
                         'meals.components',
                         'meals.addons',
                         'meals.macros',
-                        'deliveryFeeZipCodes'
+                        'deliveryFeeZipCodes',
+                        'holidayTransferTimes'
                     ])->find(STORE_ID)
                     : $user->last_viewed_store;
 
@@ -284,7 +287,8 @@ class SpaController extends Controller
                     'smsSettings',
                     'deliveryFeeZipCodes',
                     'deliveryDayZipCodes',
-                    'deliveryDays'
+                    'deliveryDays',
+                    'holidayTransferTimes'
                 ])
                 ->first();
 
@@ -315,7 +319,8 @@ class SpaController extends Controller
                     'lineItems',
                     'deliveryDays',
                     'deliveryFeeZipCodes',
-                    'deliveryDayZipCodes'
+                    'deliveryDayZipCodes',
+                    'holidayTransferTimes'
                 ])->find(STORE_ID)
                 : $last_viewed_store;
 
@@ -1313,7 +1318,8 @@ class SpaController extends Controller
                 'moduleSettings',
                 'reportSettings',
                 'smsSettings',
-                'deliveryFeeZipCodes'
+                'deliveryFeeZipCodes',
+                'holidayTransferTimes'
             ])
                 ->without([])
                 ->find(STORE_ID)
