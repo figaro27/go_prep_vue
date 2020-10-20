@@ -798,47 +798,31 @@
       <li
         class="checkout-item"
         v-if="
-          storeModules.pickupHours &&
-            pickup &&
-            $route.params.subscriptionId === undefined &&
+          (storeModules.pickupHours || storeModules.deliveryHours) &&
             deliveryDay !== undefined &&
-            !subscriptionId
+            $route.params.subscriptionId === undefined
         "
       >
         <div>
-          <strong>Pickup Time</strong>
+          <strong>{{ selectedTransferType }} Time</strong>
           <b-form-select
-            class="delivery-select ml-2"
+            :class="transferTimeClass"
             v-model="transferTime"
             :value="transferTime"
             :options="transferTimeOptions"
             @input="changeDeliveryTime"
           ></b-form-select>
-        </div>
-      </li>
-      <li
-        class="checkout-item"
-        v-if="
-          storeModules.deliveryHours &&
-            !pickup &&
-            $route.params.subscriptionId === undefined &&
-            deliveryDay !== undefined &&
-            !subscriptionId
-        "
-      >
-        <div>
-          <strong>Delivery Time</strong>
-          <b-form-select
-            class="delivery-select ml-2"
-            v-model="transferTime"
-            :value="transferTime"
-            :options="transferTimeOptions"
-            @input="changeDeliveryTime"
-          ></b-form-select>
+          <b-form-checkbox
+            class="d-inline ml-2"
+            style="position:relative;top:6px"
+            v-if="storeModuleSettings.transferTimeRange"
+            v-model="hourInterval"
+            >Hour Intervals</b-form-checkbox
+          >
         </div>
       </li>
 
-      <li
+      <!-- <li
         class="checkout-item"
         v-if="
           $route.params.storeView &&
@@ -853,7 +837,7 @@
             :value="transferTime"
           ></b-form-input>
         </div>
-      </li>
+      </li> -->
     </div>
     <li
       class="transfer-instruction mt-2"
@@ -1283,6 +1267,7 @@ export default {
   },
   data() {
     return {
+      hourInterval: false,
       coolerDepositChanged: false,
       includeCooler: true,
       gratuity: null,
@@ -1997,128 +1982,199 @@ export default {
       if (this.creditCards.length != 1) return null;
       else return this.creditCards[0].id;
     },
+    transferTimeClass() {
+      return this.storeModuleSettings.transferTimeRange
+        ? "delivery-select ml-2"
+        : "custom-select ml-2";
+    },
     transferTimeOptions() {
-      let startTime = null;
-      let endTime = null;
-      if (this.pickup === 1) {
-        startTime = parseInt(
-          this.storeModuleSettings.pickupStartTime.substr(0, 2)
-        );
-        endTime = parseInt(this.storeModuleSettings.pickupEndTime.substr(0, 2));
-      } else {
-        startTime = parseInt(
-          this.storeModuleSettings.deliveryStartTime.substr(0, 2)
-        );
-        endTime = parseInt(
-          this.storeModuleSettings.deliveryEndTime.substr(0, 2)
-        );
+      let options = [];
+
+      let start = this.pickup
+        ? this.storeModuleSettings.pickupStartTime
+        : this.storeModuleSettings.deliveryStartTime;
+      let end = this.pickup
+        ? this.storeModuleSettings.pickupEndTime
+        : this.storeModuleSettings.deliveryEndTime;
+      let interval = this.hourInterval
+        ? 60
+        : this.storeModuleSettings.transferTimeMinutesInterval;
+
+      while (start < end) {
+        options.push(start);
+        start = moment(start, "HH:mm:ss")
+          .add(interval, "minutes")
+          .format("HH:mm A");
       }
 
-      let hourOptions = [];
+      options.pop();
 
-      let omittedTransferTimes = this.storeModuleSettings.omittedTransferTimes;
-      let selectedDeliveryDay = moment(this.deliveryDay).format("YYYY-MM-DD");
-      let omit = [];
-
-      omittedTransferTimes.forEach(dateTime => {
-        let date = Object.keys(dateTime)[0];
-        let time = Object.values(dateTime)[0];
-
-        if (date === selectedDeliveryDay) {
-          let hour = parseInt(time.substr(0, 1));
-          if (hour < 12) hour += 12;
-          omit.push(hour);
-        }
-      });
-
-      while (startTime <= endTime) {
-        if (!omit.includes(startTime)) {
-          hourOptions.push(startTime);
-        }
-        startTime++;
-      }
-
-      let transferTimeRange = this.storeModuleSettings.transferTimeRange;
-      let newHourOptions = [];
-
-      hourOptions.forEach(option => {
-        if (option < 12) {
-          option = option.toString();
-          let period = " AM";
-          if (parseInt(option) === 11) {
-            period = " PM";
-          }
-          let hour = 1;
-          let newOption = option.concat(" AM");
-          if (transferTimeRange) {
-            newOption.concat(" - " + (parseInt(option) + hour) + period);
-            let finalOption = newOption.concat(
-              " - " + (parseInt(option) + hour) + period
-            );
-            newHourOptions.push(finalOption);
-          } else newHourOptions.push(newOption);
+      options = options.map(option => {
+        if (this.storeModuleSettings.transferTimeRange) {
+          return (
+            moment(option, "HH:mm:ss").format("h:mm A") +
+            " - " +
+            moment(option, "HH:mm:ss")
+              .add(interval, "minutes")
+              .format("h:mm A")
+          );
         } else {
-          if (option > 12) {
-            option = option - 12;
-          }
-          let hour = 1;
-          let period = " PM";
-          if (parseInt(option) === 11) {
-            period = " AM";
-          }
-          if (parseInt(option) === 12) {
-            hour = -11;
-          }
-          option = option.toString();
-          let newOption = option.concat(" PM");
-          if (transferTimeRange) {
-            newOption.concat(" - " + (parseInt(option) + hour) + period);
-            let finalOption = newOption.concat(
-              " - " + (parseInt(option) + hour) + period
-            );
-            newHourOptions.push(finalOption);
-          } else newHourOptions.push(newOption);
+          return moment(option, "HH:mm:ss").format("h:mm A");
         }
       });
 
-      // Temporary fix for Livoti's to limit Christmas day hours until hour by pickup day feature is ready
+      // Livoti's holiday changes
+
       // if (
-      //   this.bagDeliveryDate === "2019-12-24 00:00:00" &&
+      //   this.bagDeliveryDate === "2020-11-25 00:00:00" &&
       //   (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
       // ) {
-      //   for (let i = 0; i <= 3; i++) newHourOptions.pop();
+      //   options.pop();
       //   if (this.storeId === 110) {
-      //     newHourOptions.unshift("8 AM - 9 AM");
-      //     newHourOptions.unshift("7 AM - 8 AM");
+      //     options.unshift("8:00 AM - 8:30 AM");
+      //     options.unshift("8:30 AM - 9:00 AM");
       //   }
       // }
 
-      // Livoti's Thanksgiving 2020
-      if (
-        this.bagDeliveryDate === "2020-11-25 00:00:00" &&
-        (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
-      ) {
-        newHourOptions.pop();
-        if (this.storeId === 110) {
-          newHourOptions.unshift("8 AM - 9 AM");
-        }
-      }
+      // if (
+      //   this.bagDeliveryDate === "2020-11-26 00:00:00" &&
+      //   (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
+      // ) {
+      //   for (let i = 0; i <= 5; i++) {
+      //     options.pop();
+      //   }
+      //   if (this.storeId === 110) {
+      //     options.unshift("8:00 AM - 8:30 AM");
+      //     options.unshift("8:30 AM - 9:00 AM");
+      //   }
+      //   options.unshift("7:00 AM - 7:30 AM");
+      //   options.unshift("7:30 AM - 8:00 AM");
+      // }
 
-      if (
-        this.bagDeliveryDate === "2020-11-26 00:00:00" &&
-        (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
-      ) {
-        for (let i = 0; i <= 5; i++) {
-          newHourOptions.pop();
-        }
-        if (this.storeId === 110) {
-          newHourOptions.unshift("8 AM - 9 AM");
-        }
-        newHourOptions.unshift("7 AM - 8 AM");
-      }
-
-      return newHourOptions;
+      return options;
     },
+    // transferTimeOptions() {
+    //   let startTime = null;
+    //   let endTime = null;
+    //   if (this.pickup === 1) {
+    //     startTime = parseInt(
+    //       this.storeModuleSettings.pickupStartTime.substr(0, 2)
+    //     );
+    //     endTime = parseInt(this.storeModuleSettings.pickupEndTime.substr(0, 2));
+    //   } else {
+    //     startTime = parseInt(
+    //       this.storeModuleSettings.deliveryStartTime.substr(0, 2)
+    //     );
+    //     endTime = parseInt(
+    //       this.storeModuleSettings.deliveryEndTime.substr(0, 2)
+    //     );
+    //   }
+
+    //   let hourOptions = [];
+
+    //   let omittedTransferTimes = this.storeModuleSettings.omittedTransferTimes;
+    //   let selectedDeliveryDay = moment(this.deliveryDay).format("YYYY-MM-DD");
+    //   let omit = [];
+
+    //   omittedTransferTimes.forEach(dateTime => {
+    //     let date = Object.keys(dateTime)[0];
+    //     let time = Object.values(dateTime)[0];
+
+    //     if (date === selectedDeliveryDay) {
+    //       let hour = parseInt(time.substr(0, 1));
+    //       if (hour < 12) hour += 12;
+    //       omit.push(hour);
+    //     }
+    //   });
+
+    //   while (startTime <= endTime) {
+    //     if (!omit.includes(startTime)) {
+    //       hourOptions.push(startTime);
+    //     }
+    //     startTime++;
+    //   }
+
+    //   let transferTimeRange = this.storeModuleSettings.transferTimeRange;
+    //   let newHourOptions = [];
+
+    //   hourOptions.forEach(option => {
+    //     if (option < 12) {
+    //       option = option.toString();
+    //       let period = " AM";
+    //       if (parseInt(option) === 11) {
+    //         period = " PM";
+    //       }
+    //       let hour = 1;
+    //       let newOption = option.concat(" AM");
+    //       if (transferTimeRange) {
+    //         newOption.concat(" - " + (parseInt(option) + hour) + period);
+    //         let finalOption = newOption.concat(
+    //           " - " + (parseInt(option) + hour) + period
+    //         );
+    //         newHourOptions.push(finalOption);
+    //       } else newHourOptions.push(newOption);
+    //     } else {
+    //       if (option > 12) {
+    //         option = option - 12;
+    //       }
+    //       let hour = 1;
+    //       let period = " PM";
+    //       if (parseInt(option) === 11) {
+    //         period = " AM";
+    //       }
+    //       if (parseInt(option) === 12) {
+    //         hour = -11;
+    //       }
+    //       option = option.toString();
+    //       let newOption = option.concat(" PM");
+    //       if (transferTimeRange) {
+    //         newOption.concat(" - " + (parseInt(option) + hour) + period);
+    //         let finalOption = newOption.concat(
+    //           " - " + (parseInt(option) + hour) + period
+    //         );
+    //         newHourOptions.push(finalOption);
+    //       } else newHourOptions.push(newOption);
+    //     }
+    //   });
+
+    //   // Temporary fix for Livoti's to limit Christmas day hours until hour by pickup day feature is ready
+    //   // if (
+    //   //   this.bagDeliveryDate === "2019-12-24 00:00:00" &&
+    //   //   (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
+    //   // ) {
+    //   //   for (let i = 0; i <= 3; i++) newHourOptions.pop();
+    //   //   if (this.storeId === 110) {
+    //   //     newHourOptions.unshift("8 AM - 9 AM");
+    //   //     newHourOptions.unshift("7 AM - 8 AM");
+    //   //   }
+    //   // }
+
+    //   // Livoti's Thanksgiving 2020
+    //   if (
+    //     this.bagDeliveryDate === "2020-11-25 00:00:00" &&
+    //     (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
+    //   ) {
+    //     newHourOptions.pop();
+    //     if (this.storeId === 110) {
+    //       newHourOptions.unshift("8 AM - 9 AM");
+    //     }
+    //   }
+
+    //   if (
+    //     this.bagDeliveryDate === "2020-11-26 00:00:00" &&
+    //     (this.storeId === 108 || this.storeId === 109 || this.storeId === 110)
+    //   ) {
+    //     for (let i = 0; i <= 5; i++) {
+    //       newHourOptions.pop();
+    //     }
+    //     if (this.storeId === 110) {
+    //       newHourOptions.unshift("8 AM - 9 AM");
+    //     }
+    //     newHourOptions.unshift("7 AM - 8 AM");
+    //   }
+
+    //   return newHourOptions;
+    // },
     transferType() {
       return this.storeSettings.transferType.split(",");
     },
