@@ -2014,6 +2014,9 @@ export default {
 
       let start = this.pickup ? pickupStartTime : deliveryStartTime;
       let end = this.pickup ? pickupEndTime : deliveryEndTime;
+      end = moment(end, "HH:mm:ss")
+        .subtract(1, "minutes")
+        .format("HH:mm A");
 
       let interval = this.hourInterval
         ? 60
@@ -2029,6 +2032,13 @@ export default {
       }
 
       options.pop();
+
+      if (
+        this.storeModuleSettings.transferTimeRange ||
+        (day && day.transferTimeRange)
+      ) {
+        options.pop();
+      }
 
       options = options.map(option => {
         if (
