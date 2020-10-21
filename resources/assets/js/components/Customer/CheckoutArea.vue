@@ -2028,13 +2028,12 @@ export default {
           .format("HH:mm A");
       }
 
+      options.pop();
+
       if (
-        this.storeModuleSettings.transferTimeRange ||
-        (day && day.transferTimeRange)
+        !this.storeModuleSettings.transferTimeRange ||
+        (day && !day.transferTimeRange)
       ) {
-        options.pop();
-      } else {
-        options.pop();
         options.pop();
       }
 
