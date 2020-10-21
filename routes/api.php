@@ -564,6 +564,11 @@ foreach (
                                 'DeliveryFeeZipCodeController'
                             );
 
+                            Route::resource(
+                                'holidayTransferTimes',
+                                'HolidayTransferTimeController'
+                            );
+
                             Route::post(
                                 'updateDeliveryFeeZipCodes',
                                 'DeliveryFeeZipCodeController@updateDeliveryFeeZipCodes'

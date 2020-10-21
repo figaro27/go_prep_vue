@@ -127,6 +127,9 @@ const state = {
     delivery_fee_zip_codes: {
       data: {}
     },
+    holiday_transfer_times: {
+      data: {}
+    },
     report_settings: {
       data: {}
     },
@@ -921,6 +924,10 @@ const mutations = {
     state.store.delivery_fee_zip_codes.data = deliveryFeeZipCodes;
   },
 
+  storeHolidayTransferTimes(state, { holidayTransferTimes }) {
+    state.store.holiday_transfer_times.data = holidayTransferTimes;
+  },
+
   storeReportSettings(state, { reportSettings }) {
     state.store.report_settings.data = reportSettings;
   },
@@ -1536,6 +1543,16 @@ const actions = {
       ) {
         let deliveryFeeZipCodes = data.store.delivery_fee_zip_codes;
         commit("storeDeliveryFeeZipCodes", { deliveryFeeZipCodes });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.holiday_transfer_times) &&
+        _.isObject(data.store.holiday_transfer_times)
+      ) {
+        let holidayTransferTimes = data.store.holiday_transfer_times;
+        commit("storeHolidayTransferTimes", { holidayTransferTimes });
       }
     } catch (e) {}
 
@@ -2164,6 +2181,16 @@ const actions = {
       commit("storeDeliveryFeeZipCodes", { deliveryFeeZipCodes: data });
     } else {
       throw new Error("Failed to retrieve delivery fee zip codes");
+    }
+  },
+
+  async refreshStoreHolidayTransferTimes({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/holidayTransferTimes");
+    const { data } = await res;
+    if (_.isObject(data)) {
+      commit("storeHolidayTransferTimes", { holidayTransferTimes: data });
+    } else {
+      throw new Error("Failed to retrieve holiday transfer times");
     }
   },
 
@@ -3280,6 +3307,13 @@ const getters = {
       return {};
     }
   },
+  viewedStoreHolidayTransferTimes: state => {
+    try {
+      return state.viewed_store.holiday_transfer_times || {};
+    } catch (e) {
+      return {};
+    }
+  },
   viewedStoreReportSettings: state => {
     try {
       return state.viewed_store.report_settings || {};
@@ -3746,6 +3780,14 @@ const getters = {
   storeDeliveryFeeZipCodes: state => {
     try {
       return state.store.delivery_fee_zip_codes.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+
+  storeHolidayTransferTimes: state => {
+    try {
+      return state.store.holiday_transfer_times.data || {};
     } catch (e) {
       return {};
     }
