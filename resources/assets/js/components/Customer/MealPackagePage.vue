@@ -1281,8 +1281,13 @@ export default {
             }
 
             if (newMealPackage.dividePriceByComponents) {
-              newMealPackage.price =
-                newMealPackage.price / this.components.length;
+              let ddays = [];
+              this.components.forEach(component => {
+                if (!ddays.includes(component.delivery_day_id)) {
+                  ddays.push(component.delivery_day_id);
+                }
+              });
+              newMealPackage.price = newMealPackage.price / ddays.length;
             }
 
             // Addons
