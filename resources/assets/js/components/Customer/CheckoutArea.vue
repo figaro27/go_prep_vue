@@ -2033,6 +2033,9 @@ export default {
         (day && day.transferTimeRange)
       ) {
         options.pop();
+      } else {
+        options.pop();
+        options.pop();
       }
 
       options = options.map(option => {
