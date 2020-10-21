@@ -1492,7 +1492,6 @@ export default {
       referrals: "viewedStoreReferrals",
       promotions: "viewedStorePromotions",
       deliveryFeeZipCodes: "viewedStoreDeliveryFeeZipCodes",
-      holidayTransferTimes: "viewedStoreHolidayTransferTimes",
       bagPickup: "bagPickup",
       bagPickupSet: "bagPickupSet",
       staff: "storeStaff",
@@ -1984,41 +1983,21 @@ export default {
       else return this.creditCards[0].id;
     },
     transferTimeClass() {
-      let day = this.holidayTransferTimes.find(day => {
-        return day.holiday_date == this.bagDeliveryDate;
-      });
-      return this.storeModuleSettings.transferTimeRange ||
-        (day && day.transferTimeRange)
+      return this.storeModuleSettings.transferTimeRange
         ? "delivery-select ml-2"
         : "custom-select ml-2";
     },
     transferTimeOptions() {
       let options = [];
 
-      let day = this.holidayTransferTimes.find(day => {
-        return day.holiday_date == this.bagDeliveryDate;
-      });
-
-      let pickupStartTime = day
-        ? day.pickupStartTime
-        : this.storeModuleSettings.pickupStartTime;
-      let pickupEndTime = day
-        ? day.pickupEndTime
-        : this.storeModuleSettings.pickupEndTime;
-      let deliveryStartTime = day
-        ? day.deliveryStartTime
+      let start = this.pickup
+        ? this.storeModuleSettings.pickupStartTime
         : this.storeModuleSettings.deliveryStartTime;
-      let deliveryEndTime = day
-        ? day.deliveryEndTime
+      let end = this.pickup
+        ? this.storeModuleSettings.pickupEndTime
         : this.storeModuleSettings.deliveryEndTime;
-
-      let start = this.pickup ? pickupStartTime : deliveryStartTime;
-      let end = this.pickup ? pickupEndTime : deliveryEndTime;
-
       let interval = this.hourInterval
         ? 60
-        : day
-        ? day.transferTimeMinutesInterval
         : this.storeModuleSettings.transferTimeMinutesInterval;
 
       while (start < end) {
@@ -2031,10 +2010,7 @@ export default {
       options.pop();
 
       options = options.map(option => {
-        if (
-          this.storeModuleSettings.transferTimeRange ||
-          (day && day.transferTimeRange)
-        ) {
+        if (this.storeModuleSettings.transferTimeRange) {
           return (
             moment(option, "HH:mm:ss").format("h:mm A") +
             " - " +
