@@ -1865,7 +1865,7 @@ export default {
       return macros;
     },
     async changeSize(sizeId = null) {
-      if (!this.mealPackageSizeOptions[0].value == sizeId) {
+      if (this.mealPackageSizeOptions[0].value !== sizeId) {
         this.defaultSizeSelected = false;
         this.mealPackage.selectedSizeId = sizeId;
       } else {
