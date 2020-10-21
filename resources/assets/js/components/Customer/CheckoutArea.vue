@@ -2033,13 +2033,6 @@ export default {
 
       options.pop();
 
-      if (
-        this.storeModuleSettings.transferTimeRange ||
-        (day && day.transferTimeRange)
-      ) {
-        options.pop();
-      }
-
       options = options.map(option => {
         if (
           this.storeModuleSettings.transferTimeRange ||
