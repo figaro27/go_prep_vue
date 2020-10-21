@@ -909,7 +909,7 @@ import store from "../../store";
 export default {
   watch: {
     mealPackage: function() {
-      if (this.mealPackageSize == undefined) {
+      if (!this.mealPackageSize) {
         this.selectedSizeId = this.mealPackage.id;
       } else {
         this.selectedSizeId = this.mealPackageSize.id;
