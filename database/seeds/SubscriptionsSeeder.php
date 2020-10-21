@@ -30,6 +30,7 @@ class SubscriptionsSeeder extends Seeder
                     'amount' => mt_rand(1100, 2000) / 10,
                     'interval' => 'week',
                     'delivery_day' => rand(4, 7),
+                    'next_renewal_at' => Carbon::now()->subDays($i),
                     'created_at' => Carbon::now()->subDays($i),
                     'updated_at' => Carbon::now()
                 ]);

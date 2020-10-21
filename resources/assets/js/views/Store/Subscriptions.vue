@@ -55,7 +55,9 @@
               slot-scope="props"
               v-if="storeSettings.timezone"
             >
-              {{ moment(props.row.renewalOffset.date).format("dddd") }}
+              <span v-if="props.row.renewalOffset">{{
+                moment(props.row.renewalOffset.date).format("dddd")
+              }}</span>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
