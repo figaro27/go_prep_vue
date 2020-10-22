@@ -126,6 +126,10 @@ class Bag
                 if (!isset($meal_package_mapping[$mappingId])) {
                     $meal_package_mapping[$mappingId] = 0;
                 }
+
+                if ($this->store->modules->multipleDeliveryDays) {
+                    $customTitle = $item['meal']['title'];
+                }
                 $meal_package_mapping[$mappingId] += $item['quantity'];
 
                 for ($i = 0; $i < $item['quantity']; $i++) {
@@ -230,12 +234,6 @@ class Bag
                                         $title .=
                                             ' - ' . $item['size']['title'];
                                     }
-                                    $customTitle = isset($item['customTitle'])
-                                        ? $item['customTitle']
-                                        : null;
-                                    $customSize = isset($item['customSize'])
-                                        ? $item['customSize']
-                                        : null;
 
                                     $mealItem = [
                                         'meal' => $meal['meal'],

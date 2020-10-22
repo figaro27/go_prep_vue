@@ -907,31 +907,6 @@ import { required, minLength } from "vuelidate/lib/validators";
 import store from "../../store";
 
 export default {
-  watch: {
-    // mealPackage: function() {
-    //   if (!this.defaultSizeSelected) {
-    //     this.selectedSizeId = this.mealPackageSize
-    //       ? this.mealPackageSize.id
-    //       : null;
-    //   } else {
-    //     this.selectedSizeId = this.mealPackage ? this.mealPackage.id : null;
-    //   }
-    // },
-    // selectedSizeId: function() {
-    //   if (!this.defaultSizeSelected) {
-    //     this.mealPackage.selectedSizeId = this.selectedSizeId;
-    //   } else {
-    //     this.mealPackage.selectedSizeId = null;
-    //   }
-    // },
-    // defaultSizeSelected: function() {
-    //   if (this.mealPackageSizeOptions[0].value == this.selectedSizeId) {
-    //     this.defaultSizeSelected = true;
-    //   } else {
-    //     this.defaultSizeSelected = false;
-    //   }
-    // }
-  },
   data() {
     return {
       defaultSizeSelected: false,
@@ -1327,8 +1302,8 @@ export default {
             // Adjust for top level meals in the future
             // Adjust logic w addons
 
-            newMealPackage.customTitle =
-              newMealPackage.title + " - " + day.day_long;
+            // newMealPackage.customTitle =
+            //   newMealPackage.title + " - " + day.day_long;
             newMealPackage.title = newMealPackage.title + " - " + day.day_long;
 
             if (!_.isArray(newComponents) && !_.isArray(newComponents)) {
@@ -1342,76 +1317,6 @@ export default {
               );
             }
           });
-
-          // Old way of splitting the meal package. Would just split it in half based on the order meals were chosen. Replacing with variation by day above.
-
-          // if (components && deliveryDays && deliveryDay) {
-          //   for (let i in components) {
-          //     if (i && !isNaN(i)) {
-          //       const component = this.getComponent(parseInt(i));
-          //       if (component && component.maximum) {
-          //         const max = component.maximum;
-          //         const dayLength = deliveryDays.length;
-          //         const count = parseInt(max / dayLength);
-
-          //         const deliveryDaysNew = [];
-          //         deliveryDaysNew.push(deliveryDay);
-          //         deliveryDays.forEach(day => {
-          //           if (day.id != deliveryDay.id) {
-          //             deliveryDaysNew.push(day);
-          //           }
-          //         });
-
-          //         for (let option in components[i]) {
-          //           const items = components[i][option];
-
-          //           if (items && items.length > 0) {
-          //             for (let index = 0; index < dayLength; index++) {
-          //               const startIndex = count * index;
-          //               const endIndex = count * (index + 1) - 1;
-
-          //               if (i == dayLength - 1 || endIndex >= items.length) {
-          //                 endIndex = items.length - 1;
-          //               }
-          //               if (
-          //                 startIndex < items.length &&
-          //                 endIndex < items.length &&
-          //                 startIndex <= endIndex
-          //               ) {
-          //                 const itemsNew = items.slice(
-          //                   startIndex,
-          //                   endIndex + 1
-          //                 );
-          //                 if (itemsNew && itemsNew.length > 0) {
-
-          //                   const mealPackageNew = JSON.parse(
-          //                     JSON.stringify(this.mealPackage)
-          //                   );
-          //                   const componentsNew = {};
-          //                   componentsNew[i] = {};
-          //                   componentsNew[i][option] = itemsNew;
-
-          //                   mealPackageNew.delivery_day =
-          //                     deliveryDaysNew[index];
-
-          //                   mealPackageNew.price = mealPackageNew.price / 2;
-          //                   this.addOne(
-          //                     mealPackageNew,
-          //                     true,
-          //                     this.mealPackageSize,
-          //                     componentsNew,
-          //                     addons,
-          //                     null
-          //                   );
-          //                 }
-          //               }
-          //             }
-          //           }
-          //         }
-          //       }
-          //     }
-          //   }
-          // }
         } else {
           this.addOne(
             this.mealPackage,
