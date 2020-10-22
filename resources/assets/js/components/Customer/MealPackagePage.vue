@@ -936,6 +936,13 @@ export default {
     };
   },
   updated() {
+    if (this.mealPackageSizeOptions[0].value == this.selectedSizeId) {
+      this.defaultSizeSelected = true;
+    } else {
+      this.defaultSizeSelected = false;
+      this.mealPackage.selectedSizeId = sizeId;
+    }
+
     if (this.components) {
       this.$parent.mealPackagePageComponents = this.components.length;
     }
@@ -1865,13 +1872,6 @@ export default {
       return macros;
     },
     async changeSize(sizeId = null) {
-      if (!this.mealPackageSizeOptions[0].value == sizeId) {
-        this.defaultSizeSelected = false;
-        this.mealPackage.selectedSizeId = sizeId;
-      } else {
-        this.defaultSizeSelected = true;
-      }
-
       let mp = { ...this.mealPackage };
 
       if (this.mealPackageSizeOptions[0].value == sizeId) {
