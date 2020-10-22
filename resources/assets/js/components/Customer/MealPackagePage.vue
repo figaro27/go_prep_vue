@@ -945,7 +945,9 @@ export default {
     };
   },
   updated() {
-    this.selectedSizeId = this.mealPackageSize
+    let url = new URL(window.location.href);
+
+    this.selectedSizeId = url.searchParams.get("package_size")
       ? this.mealPackageSize.id
       : this.mealPackage.id;
 
