@@ -1895,15 +1895,13 @@ export default {
             this.$parent.mealPackageSize = resp.data.package_size;
           });
 
-        if (!("package_size" in this.$route.query)) {
-          this.$router.push(
-            this.$route.path +
-              `?package=` +
-              this.mealPackage.id +
-              `&package_size=` +
-              sizeId
-          );
-        }
+        this.$router.push(
+          this.$route.path +
+            `?package=` +
+            this.mealPackage.id +
+            `&package_size=` +
+            sizeId
+        );
       }
     }
   }
