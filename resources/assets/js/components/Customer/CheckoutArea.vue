@@ -812,13 +812,13 @@
             :options="transferTimeOptions"
             @input="changeDeliveryTime"
           ></b-form-select>
-          <b-form-checkbox
+          <!-- <b-form-checkbox
             class="d-inline ml-2"
             style="position:relative;top:6px"
             v-if="storeModuleSettings.transferTimeRange"
             v-model="hourInterval"
             >Hour Intervals</b-form-checkbox
-          >
+          > -->
         </div>
       </li>
 
