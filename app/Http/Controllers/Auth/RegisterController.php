@@ -432,7 +432,6 @@ class RegisterController extends Controller
             try {
                 Mail::to($user)
                     ->bcc('mike@goprep.com')
-                    ->bcc('danny@goprep.com')
                     ->send($email);
             } catch (\Exception $e) {
             }
