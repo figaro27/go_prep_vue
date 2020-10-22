@@ -910,9 +910,11 @@ export default {
   watch: {
     mealPackage: function() {
       if (!this.defaultSizeSelected) {
-        this.selectedSizeId = this.mealPackageSize.id;
+        this.selectedSizeId = this.mealPackageSize
+          ? this.mealPackageSize.id
+          : null;
       } else {
-        this.selectedSizeId = this.mealPackage.id;
+        this.selectedSizeId = this.mealPackage ? this.mealPackage.id : null;
       }
     },
     selectedSizeId: function() {
@@ -940,7 +942,6 @@ export default {
       this.defaultSizeSelected = true;
     } else {
       this.defaultSizeSelected = false;
-      this.mealPackage.selectedSizeId = sizeId;
     }
 
     if (this.components) {
