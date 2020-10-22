@@ -908,22 +908,29 @@ import store from "../../store";
 
 export default {
   watch: {
-    mealPackage: function() {
-      if (!this.defaultSizeSelected) {
-        this.selectedSizeId = this.mealPackageSize
-          ? this.mealPackageSize.id
-          : null;
-      } else {
-        this.selectedSizeId = this.mealPackage ? this.mealPackage.id : null;
-      }
-    },
-    selectedSizeId: function() {
-      if (!this.defaultSizeSelected) {
-        this.mealPackage.selectedSizeId = this.selectedSizeId;
-      } else {
-        this.mealPackage.selectedSizeId = null;
-      }
-    }
+    // mealPackage: function() {
+    //   if (!this.defaultSizeSelected) {
+    //     this.selectedSizeId = this.mealPackageSize
+    //       ? this.mealPackageSize.id
+    //       : null;
+    //   } else {
+    //     this.selectedSizeId = this.mealPackage ? this.mealPackage.id : null;
+    //   }
+    // },
+    // selectedSizeId: function() {
+    //   if (!this.defaultSizeSelected) {
+    //     this.mealPackage.selectedSizeId = this.selectedSizeId;
+    //   } else {
+    //     this.mealPackage.selectedSizeId = null;
+    //   }
+    // },
+    // defaultSizeSelected: function() {
+    //   if (this.mealPackageSizeOptions[0].value == this.selectedSizeId) {
+    //     this.defaultSizeSelected = true;
+    //   } else {
+    //     this.defaultSizeSelected = false;
+    //   }
+    // }
   },
   data() {
     return {
@@ -938,11 +945,9 @@ export default {
     };
   },
   updated() {
-    if (this.mealPackageSizeOptions[0].value == this.selectedSizeId) {
-      this.defaultSizeSelected = true;
-    } else {
-      this.defaultSizeSelected = false;
-    }
+    this.selectedSizeId = this.mealPackageSize
+      ? this.mealPackageSize.id
+      : this.mealPackage.id;
 
     if (this.components) {
       this.$parent.mealPackagePageComponents = this.components.length;
