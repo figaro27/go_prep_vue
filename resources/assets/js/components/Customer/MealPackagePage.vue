@@ -928,7 +928,7 @@ export default {
   data() {
     return {
       defaultSizeSelected: false,
-      selectedSizeId: {},
+      selectedSizeId: null,
       choices: {},
       addons: [],
       special_instructions: {},
@@ -938,6 +938,9 @@ export default {
     };
   },
   updated() {
+    if (!this.selectedSizeId) {
+      this.selectedSizeId = this.mealPackage ? this.mealPackage.id : null;
+    }
     if (this.mealPackageSizeOptions[0].value == this.selectedSizeId) {
       this.defaultSizeSelected = true;
     } else {
