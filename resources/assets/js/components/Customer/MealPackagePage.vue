@@ -938,11 +938,6 @@ export default {
     };
   },
   updated() {
-    if (this.mealPackageSize == undefined) {
-      this.$nextTick(() => {
-        this.selectedSizeId = this.mealPackage ? this.mealPackage.id : null;
-      });
-    }
     if (this.mealPackageSizeOptions[0].value == this.selectedSizeId) {
       this.defaultSizeSelected = true;
     } else {
