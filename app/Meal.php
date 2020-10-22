@@ -935,7 +935,7 @@ class Meal extends Model implements HasMedia
 
                     $mealComponent->title = $component['title'];
                     $mealComponent->minimum = isset($component['minimum'])
-                        ? $comonent['minimum']
+                        ? $component['minimum']
                         : 1;
                     $mealComponent->maximum = isset($component['maximum'])
                         ? $component['maximum']
@@ -1306,7 +1306,7 @@ class Meal extends Model implements HasMedia
 
                 $mealComponent->title = $component['title'];
                 $mealComponent->minimum = isset($component['minimum'])
-                    ? $comonent['minimum']
+                    ? $component['minimum']
                     : 1;
                 $mealComponent->maximum = isset($component['maximum'])
                     ? $component['maximum']
