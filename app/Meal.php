@@ -934,8 +934,12 @@ class Meal extends Model implements HasMedia
                     }
 
                     $mealComponent->title = $component['title'];
-                    $mealComponent->minimum = $component['minimum'];
-                    $mealComponent->maximum = $component['maximum'];
+                    $mealComponent->minimum = isset($component['minimum'])
+                        ? $comonent['minimum']
+                        : 1;
+                    $mealComponent->maximum = isset($component['maximum'])
+                        ? $component['maximum']
+                        : 1;
                     $mealComponent->save();
 
                     foreach ($component['options'] as $optionArr) {
@@ -1301,8 +1305,12 @@ class Meal extends Model implements HasMedia
                 }
 
                 $mealComponent->title = $component['title'];
-                $mealComponent->minimum = $component['minimum'];
-                $mealComponent->maximum = $component['maximum'];
+                $mealComponent->minimum = isset($component['minimum'])
+                    ? $comonent['minimum']
+                    : 1;
+                $mealComponent->maximum = isset($component['maximum'])
+                    ? $component['maximum']
+                    : 1;
                 $mealComponent->save();
 
                 foreach ($component['options'] as $optionArr) {
