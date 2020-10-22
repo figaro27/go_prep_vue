@@ -939,6 +939,7 @@ export default {
   },
   updated() {
     if (!this.selectedSizeId) {
+      this.defaultSizeSelected = true;
       this.selectedSizeId = this.mealPackage ? this.mealPackage.id : null;
     }
     if (this.mealPackageSizeOptions[0].value == this.selectedSizeId) {
