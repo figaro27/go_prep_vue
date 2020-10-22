@@ -916,10 +916,6 @@ export default {
       } else {
         this.selectedSizeId = this.mealPackage ? this.mealPackage.id : null;
       }
-      if (!this.selectedSizeId) {
-        this.defaultSizeSelected = true;
-        this.selectedSizeId = this.mealPackage ? this.mealPackage.id : null;
-      }
     },
     selectedSizeId: function() {
       if (!this.defaultSizeSelected) {
