@@ -385,6 +385,10 @@ class RegisterController extends Controller
                 if (!$payAsYouGo && $planMethod === 'credit_card') {
                     $subscription = \Stripe\Subscription::create([
                         'customer' => $customer,
+                        'trial_from_plan' =>
+                            $data['plan']['plan'] == 'free_trial'
+                                ? true
+                                : false,
                         'items' => [
                             [
                                 'plan' => $plan->get('stripe_id')
@@ -428,6 +432,7 @@ class RegisterController extends Controller
             try {
                 Mail::to($user)
                     ->bcc('mike@goprep.com')
+                    ->bcc('danny@goprep.com')
                     ->send($email);
             } catch (\Exception $e) {
             }
@@ -471,6 +476,10 @@ class RegisterController extends Controller
     {
         if ($data['store']['country'] === 'GB') {
             return 'Europe/London';
+        }
+
+        if ($data['store']['country'] === 'CA') {
+            return 'Canada/Mountain';
         }
 
         switch ($data['store']['state']) {

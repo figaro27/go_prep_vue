@@ -542,7 +542,7 @@
             <div v-if="step === 3">
               <h4>Payment Details</h4>
 
-              <b-form-group label="Billing method" horizontal>
+              <b-form-group label="Billing method" horizontal v-if="!freeTrial">
                 <b-form-radio-group
                   v-model="form[3].plan_method"
                   :options="[
@@ -552,7 +552,7 @@
                 ></b-form-radio-group>
               </b-form-group>
 
-              <b-form-group label="Billing period" horizontal>
+              <b-form-group label="Billing period" horizontal v-if="!freeTrial">
                 <b-form-radio-group
                   v-model="form[3].plan_period"
                   :options="[
@@ -562,13 +562,26 @@
                 ></b-form-radio-group>
               </b-form-group>
 
-              <b-form-group label="Select Plan" horizontal>
+              <b-form-group label="Select Plan" horizontal v-if="!freeTrial">
                 <b-form-radio-group
                   v-model="form[3].plan"
                   :options="planOptions"
                   stacked
                 ></b-form-radio-group>
               </b-form-group>
+
+              <p v-if="freeTrial">
+                Thank you for trying GoPrep. Please enter your card details
+                below to get started with your free two week trial. You will not
+                be charged now. After two weeks, you will be charged $119 for
+                our Basic Plan which allows up to 50 orders per month. To
+                upgrade your plan or to cancel before the first charge, please
+                contact us before the two weeks are finished at
+                <a href="https://www.goprep.com" target="_blank"
+                  >www.GoPrep.com</a
+                >
+                or email <a href="mailto:help@goprep.com">help@goprep.com</a>
+              </p>
 
               <div v-if="planRequiresCard" class="mb-2">
                 <card
@@ -626,6 +639,7 @@ export default {
   },
   data() {
     return {
+      freeTrial: false,
       noDeliveryInstructions: false,
       redirect: null,
       step: 0,
@@ -818,6 +832,9 @@ export default {
     }
 
     axios.get("/api/plans").then(resp => {
+      if (!this.freeTrial) {
+        delete resp.data.plans.free_trial;
+      }
       this.plans = resp.data.plans;
     });
   },
@@ -838,6 +855,11 @@ export default {
 
     if (this.$route.query === "store") {
       this.role = "store";
+    }
+
+    if (this.$route.query.free_trial) {
+      this.freeTrial = true;
+      this.planSelected = this.planOptions[0];
     }
   },
   methods: {
@@ -926,6 +948,9 @@ export default {
       }
     },
     async submit() {
+      if (this.freeTrial) {
+        this.form[3].plan = "free_trial";
+      }
       if (
         this.form[0].role === "store" &&
         this.form[3].plan === null &&
@@ -960,7 +985,8 @@ export default {
         user_details: this.form[1],
         store: this.form[2],
         plan: this.form[3],
-        planless: this.planless
+        planless: this.planless,
+        freeTrial: this.freeTrial
       };
 
       if (data.user.role === "store") {

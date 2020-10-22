@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'free_trial' => [
+        'title' => "2 Week Free Trial then Basic plan",
+        'monthly' => [
+            'price' => 11900,
+            'stripe_id' => env(
+                'PLAN_FREE_TRIAL',
+                'price_1Hej6QFJbkXmjRjE9miOKHlt'
+            )
+        ]
+    ],
     'pay-as-you-go' => [
         'title' => "Pay as you go - 5% Transaction Fee",
         'monthly' => [
