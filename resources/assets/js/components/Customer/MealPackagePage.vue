@@ -909,10 +909,10 @@ import store from "../../store";
 export default {
   watch: {
     mealPackage: function() {
-      if (this.mealPackageSize == undefined) {
-        this.selectedSizeId = this.mealPackage.id;
-      } else {
+      if (!this.defaultSizeSelected) {
         this.selectedSizeId = this.mealPackageSize.id;
+      } else {
+        this.selectedSizeId = this.mealPackage.id;
       }
     },
     selectedSizeId: function() {
