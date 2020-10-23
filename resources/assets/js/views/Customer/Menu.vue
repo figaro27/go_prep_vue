@@ -1274,7 +1274,9 @@ export default {
         this.$refs.carousel.handleNavigation("forward");
       }
     });
-    this.clearInactiveItems();
+    if (!this.adjustMealPlan && !this.adjustOrder) {
+      this.clearInactiveItems();
+    }
   },
   beforeDestroy() {
     this.showActiveFilters();
