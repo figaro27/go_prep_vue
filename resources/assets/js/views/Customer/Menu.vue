@@ -1274,6 +1274,7 @@ export default {
         this.$refs.carousel.handleNavigation("forward");
       }
     });
+    this.clearInactiveItems();
   },
   beforeDestroy() {
     this.showActiveFilters();
@@ -1802,6 +1803,22 @@ export default {
     },
     changePickup(val) {
       this.isPickup = val;
+    },
+    async clearInactiveItems() {
+      await axios.get("/api/refresh_inactive_meal_ids").then(resp => {
+        this.bag.forEach(item => {
+          if (resp.data.includes(item.meal.id)) {
+            this.minusOne(
+              item.meal,
+              item.meal_package,
+              item.size,
+              item.components,
+              item.addons,
+              item.special_instructions
+            );
+          }
+        });
+      });
     }
   }
 };

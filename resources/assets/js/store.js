@@ -3409,17 +3409,17 @@ const getters = {
     }
 
     /* Check */
-    if (menu_update_time != 0) {
-      for (let key in state.bag.items) {
-        let object = state.bag.items[key];
+    // if (menu_update_time != 0) {
+    //   for (let key in state.bag.items) {
+    //     let object = state.bag.items[key];
 
-        if (object.added < menu_update_time) {
-          Vue.delete(state.bag.items, key);
-          delete state.bag.items[key];
-          ``;
-        }
-      }
-    }
+    //     if (object.added < menu_update_time) {
+    //       Vue.delete(state.bag.items, key);
+    //       delete state.bag.items[key];
+    //       ``;
+    //     }
+    //   }
+    // }
     /* Check End */
 
     let items = _.filter(state.bag.items);
