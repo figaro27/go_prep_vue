@@ -29,6 +29,11 @@
 
 </head>
 <body>
+
+    @if (Request::is('store/*'))
+    <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=3786e357-6654-4b3c-bf81-42132cd1ce76"> </script>
+    @endif
+    
     <script type="text/javascript" language="Javascript">
         window._mfq = window._mfq || [];
         (function() {
