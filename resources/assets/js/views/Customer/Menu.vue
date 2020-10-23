@@ -1295,7 +1295,7 @@ export default {
     }
   },
   updated() {
-    this.pickup = this.bagPickup;
+    this.$parent.pickup = this.bagPickup;
   },
   methods: {
     showGallery(images, index) {
