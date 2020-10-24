@@ -1238,6 +1238,7 @@ export default {
             // Split package by looking at the components & addons delivery_day_ids
 
             let newMealPackage = { ...this.mealPackage };
+            let newMealPackageSize = { ...this.mealPackageSize };
 
             newMealPackage.delivery_day = day;
 
@@ -1278,6 +1279,8 @@ export default {
                 }
               });
               newMealPackage.price = newMealPackage.price / ddays.length;
+              newMealPackageSize.price =
+                newMealPackageSize.price / ddays.length;
             }
 
             // Addons
@@ -1310,7 +1313,7 @@ export default {
               this.addOne(
                 newMealPackage,
                 true,
-                this.mealPackageSize,
+                newMealPackageSize,
                 newComponents,
                 newAddons,
                 null
