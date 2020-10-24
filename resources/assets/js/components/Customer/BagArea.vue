@@ -63,7 +63,7 @@
               hasBothTranserTypes
           "
           buttons
-          class="storeFilters mb-3"
+          class="filters mb-3"
           v-model="isPickup"
           :options="[
             { value: 1, text: 'Pickup' },
