@@ -15,11 +15,11 @@ return [
         'title' => "Pay as you go - 5% Transaction Fee",
         'monthly' => [
             'price' => 0,
-            'price_upfront' => 19500
+            'price_upfront' => 9500
         ],
         'annually' => [
             'price' => 0,
-            'price_upfront' => 19500
+            'price_upfront' => 9500
         ]
     ],
     'basic' => [
