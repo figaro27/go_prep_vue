@@ -1810,7 +1810,7 @@ export default {
       await axios.get("/api/refresh_inactive_meal_ids").then(resp => {
         this.bag.forEach(item => {
           if (resp.data.includes(item.meal.id)) {
-            this.minusOne(
+            this.clearMealFullQuantity(
               item.meal,
               item.meal_package,
               item.size,
