@@ -926,6 +926,10 @@ export default {
       ? this.mealPackageSize.id
       : this.mealPackage.id;
 
+    this.defaultSizeSelected = url.searchParams.get("package_size")
+      ? false
+      : true;
+
     if (this.components) {
       this.$parent.mealPackagePageComponents = this.components.length;
     }
@@ -1237,8 +1241,12 @@ export default {
           deliveryDays.forEach(day => {
             // Split package by looking at the components & addons delivery_day_ids
 
-            let newMealPackage = { ...this.mealPackage };
+            let newMealPackage = this.defaultSizeSelected
+              ? { ...this.mealPackage }
+              : { ...this.mealPackageSize };
 
+            newMealPackage.components = this.components;
+            newMealPackage.addons = this.addons;
             newMealPackage.delivery_day = day;
 
             // Components
