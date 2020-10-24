@@ -22,6 +22,21 @@
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
 
+                <label>Select Time: </label>
+                <vue-timepicker
+                  v-model="selectedTimeRange.start_time"
+                  format="hh:mm a"
+                  placeholder="Start Time"
+                  :minute-interval="10"
+                ></vue-timepicker>
+                <span> to </span>
+                <vue-timepicker
+                  v-model="selectedTimeRange.end_time"
+                  format="hh:mm a"
+                  placeholder="End Time"
+                  :minute-interval="10"
+                ></vue-timepicker>
+
                 <div
                   v-if="storeModules.productionGroups"
                   class="d-flex ml-4"
@@ -214,15 +229,21 @@ import Spinner from "../../components/Spinner";
 import checkDateRange from "../../mixins/deliveryDates";
 import store from "../../store";
 import ClickOutside from "vue-click-outside";
+import VueTimepicker from "vue2-timepicker";
 
 export default {
   components: {
     vSelect,
-    Spinner
+    Spinner,
+    VueTimepicker
   },
   mixins: [checkDateRange],
   data() {
     return {
+      selectedTimeRange: {
+        start_time: { HH: "", mm: "", A: "" },
+        end_time: { HH: "", mm: "", A: "" }
+      },
       showGroups: false,
       productionGroupModal: false,
       editingId: null,
