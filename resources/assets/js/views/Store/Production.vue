@@ -28,6 +28,7 @@
                   format="hh:mm a"
                   placeholder="Start Time"
                   :minute-interval="10"
+                  @change="onChangeDateFilter"
                 ></vue-timepicker>
                 <span> to </span>
                 <vue-timepicker
@@ -35,6 +36,7 @@
                   format="hh:mm a"
                   placeholder="End Time"
                   :minute-interval="10"
+                  @change="onChangeDateFilter"
                 ></vue-timepicker>
 
                 <div
@@ -241,8 +243,8 @@ export default {
   data() {
     return {
       selectedTimeRange: {
-        start_time: { HH: "", mm: "", A: "" },
-        end_time: { HH: "", mm: "", A: "" }
+        start_time: { hh: "12", mm: "00", a: "AM" },
+        end_time: { hh: "11", mm: "59", a: "PM" }
       },
       showGroups: false,
       productionGroupModal: false,
@@ -438,7 +440,19 @@ export default {
         axios
           .post("/api/me/getMealOrdersWithDates", {
             start: this.filters.delivery_dates.start,
-            end: this.filters.delivery_dates.end
+            end: this.filters.delivery_dates.end,
+            transferTimeStart:
+              this.selectedTimeRange.start_time.hh +
+              ":" +
+              this.selectedTimeRange.start_time.mm +
+              " " +
+              this.selectedTimeRange.start_time.a,
+            transferTimeEnd:
+              this.selectedTimeRange.end_time.hh +
+              ":" +
+              this.selectedTimeRange.end_time.mm +
+              " " +
+              this.selectedTimeRange.end_time.a
           })
           .then(response => {
             this.mealOrdersByDate = response.data;

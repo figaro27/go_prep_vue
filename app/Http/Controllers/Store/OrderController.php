@@ -486,8 +486,14 @@ class OrderController extends StoreController
             $endDate = $request->get('start');
         }
 
-        $startDate = Carbon::parse($request->get('start'))->format('Y-m-d');
+        if ($request->get('transferTimeEnd')) {
+            $startDate = Carbon::parse($request->get('start'))->format('Y-m-d');
+        }
         $endDate = Carbon::parse($endDate)->format('Y-m-d');
+
+        $startTime = date("H:i", strtotime($request->get('transferTimeStart')));
+
+        $endTime = date("H:i", strtotime($request->get('transferTimeEnd')));
 
         $orders = $this->store->has('orders')
             ? $this->store
@@ -495,6 +501,8 @@ class OrderController extends StoreController
                 ->where(['paid' => 1, 'voided' => 0, 'isMultipleDelivery' => 0])
                 ->where('delivery_date', '>=', $startDate)
                 ->where('delivery_date', '<=', $endDate)
+                ->where('transferTime', '>=', $startTime)
+                ->where('transferTime', '<=', $endTime)
                 ->get()
                 ->map(function ($order) {
                     return $order->id;
