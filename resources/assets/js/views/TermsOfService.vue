@@ -651,7 +651,14 @@
         material, including all merchandise, goods and services, obtained or
         purchased by you directly or indirectly through the Company Service will
         meet your expectations or needs; and (v) any errors in the Company
-        Service will be corrected.&nbsp;</span
+        Service will be corrected; (vi) the above stipulations include any
+        external services that may be provided to you outside of the main
+        platform application service. This includes any search engine
+        optimization, search engine marketing, or other kind of marketing
+        campaign on your main website and business. The Company Service is not
+        responsible for any damages that may occur to your main website and
+        business as a result of our services including any penalizations to your
+        website by Google.&nbsp;</span
       >
     </p>
     <p>
