@@ -1026,7 +1026,8 @@ class Subscription extends Model
         if ($total < 0) {
             $total = 0;
         }
-        $this->amount = floor($total * 100) / 100;
+        // $this->amount = floor($total * 100) / 100;
+        $this->amount = $total;
         $this->save();
 
         // Delete existing stripe plan
