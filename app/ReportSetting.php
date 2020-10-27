@@ -25,7 +25,19 @@ class ReportSetting extends Model
         'lab_allergies' => 'boolean',
         'lab_packaged_by' => 'boolean',
         'lab_packaged_on' => 'boolean',
-        'lab_dailyOrderNumbers' => 'boolean'
+        'lab_dailyOrderNumbers' => 'boolean',
+        'o_lab_daily_order_number' => 'boolean',
+        'o_lab_customer' => 'boolean',
+        'o_lab_address' => 'boolean',
+        'o_lab_phone' => 'boolean',
+        'o_lab_delivery' => 'boolean',
+        'o_lab_order_number' => 'boolean',
+        'o_lab_order_date' => 'boolean',
+        'o_lab_delivery_date' => 'boolean',
+        'o_lab_amount' => 'boolean',
+        'o_lab_balance' => 'boolean',
+        'o_lab_daily_order_number' => 'boolean',
+        'o_lab_pickup_location' => 'boolean'
     ];
 
     public function store()

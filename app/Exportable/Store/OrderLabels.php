@@ -102,7 +102,11 @@ class OrderLabels
                         : 'Multiple',
                     'deliveryInstructions' => $order->user->details->delivery,
                     'pickup' => $order->pickup,
-                    'transferType' => $order->transfer_type
+                    'transferType' => $order->transfer_type,
+                    'pickupLocation' => isset($order->pickup_location)
+                        ? $order->pickup_location->name
+                        : null,
+                    'reportSettings' => $order->store->reportSettings
                     // 'numberOfItems' => $order->numberOfItems
                 ];
             });

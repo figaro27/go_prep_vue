@@ -264,7 +264,7 @@
               <div class="col-md-6">
                 <button
                   class="btn btn-warning btn-md center mt-2 pull-right"
-                  @click="showSettings('labels')"
+                  @click="showSettingsModal.labels = true"
                 >
                   Settings
                 </button>
@@ -307,7 +307,7 @@
               <div class="col-md-6">
                 <button
                   class="btn btn-warning btn-md center mt-2 pull-right"
-                  @click="showSettings('order_labels')"
+                  @click="showSettingsModal.order_labels = true"
                 >
                   Settings
                 </button>
@@ -560,6 +560,92 @@
       </div>
 
       <b-btn variant="primary" @click="updateReportSettings">Save</b-btn>
+    </b-modal>
+
+    <b-modal
+      size="xl"
+      title="Order Labels Settings"
+      v-model="showSettingsModal.order_labels"
+      v-if="showSettingsModal.order_labels"
+      no-fade
+      no-close-on-backdrop
+      @ok="updateReportSettings"
+    >
+      <div class="row">
+        <div class="col-md-5 offset-2">
+          <p class="strong">Show the Following on the Label</p>
+          <p v-if="store.modules.dailyOrderNumbers">
+            <b-form-checkbox v-model="reportSettings.o_lab_daily_order_number"
+              >Daily Order Numbers</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.o_lab_customer"
+              >Client Name</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.o_lab_address"
+              >Client Address</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.o_lab_phone"
+              >Client Phone Number</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.o_lab_delivery"
+              >Client Delivery Instructions</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.o_lab_order_number"
+              >Order ID</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.o_lab_order_date"
+              >Order Date</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.o_lab_delivery_date"
+              >Delivery Date</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.o_lab_amount"
+              >Amount</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.o_lab_balance"
+              >Balance</b-form-checkbox
+            >
+          </p>
+          <p v-if="store.modules.pickupLocations">
+            <b-form-checkbox v-model="reportSettings.o_lab_pickup_location"
+              >Daily Order Number</b-form-checkbox
+            >
+          </p>
+        </div>
+        <div class="col-md-5">
+          <p class="strong">Label Dimensions</p>
+          <b-form-group class="mt-3">
+            <b-input-group size="md" append="width">
+              <b-input v-model="reportSettings.o_lab_width" type="number" />
+            </b-input-group>
+            <b-input-group size="md" append="height">
+              <b-input v-model="reportSettings.o_lab_height" type="number" />
+            </b-input-group>
+          </b-form-group>
+        </div>
+      </div>
+
+      <b-btn variant="primary" class="float-right" @click="updateReportSettings"
+        >Save</b-btn
+      >
     </b-modal>
   </div>
 </template>
@@ -910,13 +996,6 @@ export default {
           this.delivery_dates.order_labels.start = null;
           this.delivery_dates.order_labels.end = null;
           this.$refs.orderLabelsDates.clearDates();
-          break;
-      }
-    },
-    showSettings(report) {
-      switch (report) {
-        case "labels":
-          this.showSettingsModal.labels = true;
           break;
       }
     },
