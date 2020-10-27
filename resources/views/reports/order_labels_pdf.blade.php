@@ -31,7 +31,9 @@ font-size:10px !important;
 </style>
 </head>
 
-Hey
+@foreach($orders as $i => $order)
+  <h1>$order->order_number</h1>
+@endforeach
 
 </html>
 
