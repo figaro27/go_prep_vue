@@ -83,36 +83,23 @@ class OrderLabels
                 return true;
             })
             ->map(function ($order) {
-                if ($this->params->get('livotis')) {
-                    return [
-                        $order->dailyOrderNumber,
-                        $order->user->details->lastname,
-                        $order->user->details->firstname,
-                        $order->user->details->phone,
-                        $order->transferTime,
-                        '$' . number_format($order->amount, 2),
-                        '$' . number_format($order->balance, 2),
-                        $order->pickup ? 'Pickup' : 'Delivery'
-                    ];
-                } else {
-                    return [
-                        $order->dailyOrderNumber,
-                        $order->order_number,
-                        $order->user->details->firstname,
-                        $order->user->details->lastname,
-                        $order->user->details->address,
-                        $order->user->details->zip,
-                        $order->user->details->phone,
-                        $order->user->email,
-                        '$' . number_format($order->amount, 2),
-                        '$' . number_format($order->balance, 2),
-                        $order->created_at->format('D, m/d/Y'),
-                        !$order->isMultipleDelivery
-                            ? $order->delivery_date->format('D, m/d/Y')
-                            : 'Multiple',
-                        $order->transferTime
-                    ];
-                }
+                return [
+                    'dailyOrderNumber' => $order->dailyOrderNumber,
+                    'order_number' => $order->order_number,
+                    'firstName' => $order->user->details->firstname,
+                    'lastName' => $order->user->details->lastname,
+                    'address' => $order->user->details->address,
+                    'zip' => $order->user->details->zip,
+                    'phone' => $order->user->details->phone,
+                    'emial' => $order->user->email,
+                    'amount' => '$' . number_format($order->amount, 2),
+                    'balance' => '$' . number_format($order->balance, 2),
+                    'created_at' => $order->created_at->format('D, m/d/Y'),
+                    'delivery_date' => !$order->isMultipleDelivery
+                        ? $order->delivery_date->format('D, m/d/Y')
+                        : 'Multiple',
+                    'transferTime' => $order->transferTime
+                ];
             });
 
         $orders = $orders->toArray();
