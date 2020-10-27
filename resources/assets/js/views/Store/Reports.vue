@@ -626,7 +626,7 @@
           </p>
           <p v-if="store.modules.pickupLocations">
             <b-form-checkbox v-model="reportSettings.o_lab_pickup_location"
-              >Daily Order Number</b-form-checkbox
+              >Pickup Location</b-form-checkbox
             >
           </p>
         </div>
