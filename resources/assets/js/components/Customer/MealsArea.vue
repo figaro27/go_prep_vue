@@ -233,7 +233,10 @@
                         @click="showMeal(meal, group)"
                       ></thumbnail>
                       <!-- Hard coding price difference for now for Eat Fresh until new menu design table is required-->
-                      <div class="price" v-if="store.id !== 148">
+                      <div
+                        class="price"
+                        v-if="store.id !== 148 && store.id !== 178"
+                      >
                         {{ format.money(meal.price, storeSettings.currency) }}
                       </div>
                     </div>
