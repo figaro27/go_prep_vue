@@ -32,7 +32,7 @@ font-size:10px !important;
 </head>
 
 @foreach($orders as $i => $order)
-  <h1>$order->order_number</h1>
+  <h1> {{ $order }} </h1>
 @endforeach
 
 </html>

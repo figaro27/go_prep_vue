@@ -115,37 +115,6 @@ class OrderLabels
                 }
             });
 
-        if ($type !== 'pdf') {
-            if ($this->params->get('livotis')) {
-                $orders->prepend([
-                    'Daily Order #',
-                    'Last Name',
-                    'First Name',
-                    'Phone',
-                    'Time',
-                    'Amount',
-                    'Balance',
-                    'Type'
-                ]);
-            } else {
-                $orders->prepend([
-                    'Daily Order #',
-                    'Order ID',
-                    'First Name',
-                    'Last Name',
-                    'Address',
-                    'Zip',
-                    'Phone',
-                    'Email',
-                    'Total',
-                    'Balance',
-                    'Order Placed',
-                    'Delivery Day',
-                    'Time'
-                ]);
-            }
-        }
-
         $orders = $orders->toArray();
 
         // Removing Daily Order Number column if module is not enabled
