@@ -1044,7 +1044,7 @@ class Store extends Model
                     $query->where('paid', 1);
                 }
                 if ($onlyDelivery) {
-                    $query->where('pickup', 0);
+                    $query->where('pickup', 0)->where('shipping', 0);
                 }
                 if ($couponCode != '') {
                     $query->where('couponCode', $couponCode);
