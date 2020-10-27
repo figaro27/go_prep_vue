@@ -16,7 +16,9 @@
                 v-model="delivery_dates.meal_orders"
                 ref="mealOrdersDates"
               ></delivery-date-picker>
-              <b-btn @click="clearMealOrders()" class="ml-1">Clear</b-btn>
+              <b-btn @click="clearDates('meal_orders')" class="ml-1"
+                >Clear</b-btn
+              >
             </div>
             <p class="mt-4 center-text">
               Shows how many of each meal to make based on your orders.
@@ -63,7 +65,7 @@
                 :rtl="true"
                 ref="ingredientQuantitiesDates"
               ></delivery-date-picker>
-              <b-btn @click="clearIngredientQuantities()" class="ml-1"
+              <b-btn @click="clearDates('ingredient_quantities')" class="ml-1"
                 >Clear</b-btn
               >
             </div>
@@ -129,7 +131,9 @@
                 v-model="delivery_dates.orders_by_customer"
                 ref="ordersByCustomerDates"
               ></delivery-date-picker>
-              <b-btn @click="clearOrdersByCustomer()" class="ml-1">Clear</b-btn>
+              <b-btn @click="clearDates('orders_by_customer')" class="ml-1"
+                >Clear</b-btn
+              >
             </div>
             <p class="mt-4 center-text">
               Shows how to bag up your meals for each customer.
@@ -188,7 +192,9 @@
                 :rtl="true"
                 ref="packingSlipsDates"
               ></delivery-date-picker>
-              <b-btn @click="clearPackingSlips()" class="ml-1">Clear</b-btn>
+              <b-btn @click="clearDates('packing_slips')" class="ml-1"
+                >Clear</b-btn
+              >
             </div>
             <p class="mt-4 center-text">
               Packing slips will print 15 orders per browser tab.
@@ -218,7 +224,9 @@
                 v-model="delivery_dates.delivery_routes"
                 ref="deliveryRoutesDates"
               ></delivery-date-picker>
-              <b-btn @click="clearDeliveryRoutes()" class="ml-1">Clear</b-btn>
+              <b-btn @click="clearDates('delivery_routes')" class="ml-1"
+                >Clear</b-btn
+              >
             </div>
             <p class="mt-4 center-text">
               Shows you the quickest route to make your deliveries. This report
@@ -241,15 +249,15 @@
         <div class="card">
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">
-              Labels <span class="text-danger">(Beta)</span>
+              Meal Labels <span class="text-danger">(Beta)</span>
             </h4>
             <div class="report-date-picker">
               <delivery-date-picker
                 v-model="delivery_dates.labels"
-                ref="deliveryRoutesDates"
+                ref="labelsDates"
                 :rtl="true"
               ></delivery-date-picker>
-              <b-btn @click="clearLabels()" class="ml-1">Clear</b-btn>
+              <b-btn @click="clearDates('labels')" class="ml-1">Clear</b-btn>
             </div>
             <p class="mt-4 center-text">Labels for your meal containers.</p>
             <div class="row">
@@ -279,6 +287,50 @@
           </div>
         </div>
       </div>
+      <div class="col-md-6" v-if="store.id == 3">
+        <div class="card">
+          <div class="card-body m-sm-4">
+            <h4 class="center-text mb-4">
+              Order Labels <span class="text-danger">(Beta)</span>
+            </h4>
+            <div class="report-date-picker">
+              <delivery-date-picker
+                v-model="delivery_dates.order_labels"
+                ref="orderLabelsDates"
+                :rtl="true"
+              ></delivery-date-picker>
+              <b-btn @click="clearDates('order_labels')" class="ml-1"
+                >Clear</b-btn
+              >
+            </div>
+            <p class="mt-4 center-text">Labels for your orders.</p>
+            <div class="row">
+              <div class="col-md-6">
+                <button
+                  class="btn btn-warning btn-md center mt-2 pull-right"
+                  @click="showSettings('order_labels')"
+                >
+                  Settings
+                </button>
+              </div>
+              <div class="col-md-6">
+                <button
+                  @click="print('order_labels', 'pdf')"
+                  class="btn btn-secondary btn-md mt-2"
+                >
+                  Preview
+                </button>
+                <button
+                  @click="print('order_labels', 'b64')"
+                  class="btn btn-primary btn-md mt-2"
+                >
+                  Print
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="row">
       <div class="col-md-12">
@@ -293,10 +345,10 @@
             <div class="report-date-picker">
               <delivery-date-picker
                 v-model="delivery_dates.payments"
-                ref="payments"
+                ref="paymentsDates"
                 :orderDate="true"
               ></delivery-date-picker>
-              <b-btn @click="clearDeliveryRoutes()" class="ml-1">Clear</b-btn>
+              <b-btn @click="clearDates('payments')" class="ml-1">Clear</b-btn>
             </div>
             <p class="mt-4 center-text">
               Gives you breakdowns of all your payments as well as totals for
@@ -544,10 +596,12 @@ export default {
         packing_slips: [],
         delivery_routes: [],
         payments: [],
-        labels: []
+        labels: [],
+        order_labels: []
       },
       showSettingsModal: {
-        labels: false
+        labels: false,
+        order_labels: false
       },
       labelSize: {
         width: 4,
@@ -816,40 +870,49 @@ export default {
           this.loading = false;
         });
     },
-    clearMealOrders() {
-      this.delivery_dates.meal_orders.start = null;
-      this.delivery_dates.meal_orders.end = null;
-      this.$refs.mealOrdersDates.clearDates();
-    },
-    clearIngredientQuantities() {
-      this.delivery_dates.ingredient_quantities.start = null;
-      this.delivery_dates.ingredient_quantities.end = null;
-      this.$refs.ingredientQuantitiesDates.clearDates();
-    },
-    clearOrdersByCustomer() {
-      this.delivery_dates.orders_by_customer.start = null;
-      this.delivery_dates.orders_by_customer.end = null;
-      this.$refs.ordersByCustomerDates.clearDates();
-    },
-    clearPackingSlips() {
-      this.delivery_dates.packing_slips.start = null;
-      this.delivery_dates.packing_slips.end = null;
-      this.$refs.packingSlipsDates.clearDates();
-    },
-    clearDeliveryRoutes() {
-      this.delivery_dates.delivery_routes.start = null;
-      this.delivery_dates.delivery_routes.end = null;
-      this.$refs.deliveryRoutesDates.clearDates();
-    },
-    clearPayments() {
-      this.delivery_dates.delivery_routes.start = null;
-      this.delivery_dates.delivery_routes.end = null;
-      this.$refs.payments.clearDates();
-    },
-    clearLabels() {
-      this.delivery_dates.labels.start = null;
-      this.delivery_dates.labels.end = null;
-      this.$refs.payments.clearDates();
+    clearDates(report) {
+      switch (report) {
+        case "meal_orders":
+          this.delivery_dates.meal_orders.start = null;
+          this.delivery_dates.meal_orders.end = null;
+          this.$refs.mealOrdersDates.clearDates();
+          break;
+        case "ingredient_quantities":
+          this.delivery_dates.ingredient_quantities.start = null;
+          this.delivery_dates.ingredient_quantities.end = null;
+          this.$refs.ingredientQuantitiesDates.clearDates();
+          break;
+        case "orders_by_customer":
+          this.delivery_dates.orders_by_customer.start = null;
+          this.delivery_dates.orders_by_customer.end = null;
+          this.$refs.ordersByCustomerDates.clearDates();
+          break;
+        case "packing_slips":
+          this.delivery_dates.packing_slips.start = null;
+          this.delivery_dates.packing_slips.end = null;
+          this.$refs.packingSlipsDates.clearDates();
+          break;
+        case "delivery_routes":
+          this.delivery_dates.delivery_routes.start = null;
+          this.delivery_dates.delivery_routes.end = null;
+          this.$refs.deliveryRoutesDates.clearDates();
+          break;
+        case "payments":
+          this.delivery_dates.payments.start = null;
+          this.delivery_dates.payments.end = null;
+          this.$refs.paymentsDates.clearDates();
+          break;
+        case "labels":
+          this.delivery_dates.labels.start = null;
+          this.delivery_dates.labels.end = null;
+          this.$refs.labelsDates.clearDates();
+          break;
+        case "order_labels":
+          this.delivery_dates.order_labels.start = null;
+          this.delivery_dates.order_labels.end = null;
+          this.$refs.orderLabelsDates.clearDates();
+          break;
+      }
     },
     showSettings(report) {
       switch (report) {

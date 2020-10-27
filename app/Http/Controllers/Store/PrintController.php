@@ -21,6 +21,7 @@ use App\Exportable\Store\DeliveryRoutes;
 use App\Exportable\Store\DeliveryRoutesLivotis;
 use App\Exportable\Store\Payments;
 use App\Exportable\Store\Labels;
+use App\Exportable\Store\OrderLabels;
 use App\Exportable\Store\Leads;
 use App\Exportable\Store\Referrals;
 use Illuminate\Support\Facades\Storage;
@@ -66,6 +67,10 @@ class PrintController extends StoreController
 
             case 'labels':
                 $exportable = new Labels($this->store, $params);
+                break;
+
+            case 'order_labels':
+                $exportable = new OrderLabels($this->store, $params);
                 break;
 
             case 'meal_orders':
