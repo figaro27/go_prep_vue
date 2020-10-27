@@ -37,21 +37,21 @@ font-size:10px !important;
   <center>
     <img src="{{$logo}}"/ style="width:28vh;height:28vh;margin-bottom:8px">
     <p class="text-18" style="font-weight:bold;margin-top:5px">Client: {{ $order['firstName'] }} {{ $order['lastName'] }}</p>
-    <p class="text-14" style="margin-top:5px">{{ $order['address'] }}, {{ $order['city'] }}, {{ $order['state'] }} {{ $order['zip'] }}</p>
-    <p class="text-14" style="margin-top:5px">{{ $order['phone'] }}</p>
-    <p class="text-12" style="margin-top:5px;font-style:italic">{{ $order['deliveryInstructions'] }}</p>
+    <p class="text-13" style="margin-top:5px">{{ $order['address'] }}, {{ $order['city'] }}, {{ $order['state'] }} {{ $order['zip'] }}</p>
+    <p class="text-13" style="margin-top:5px">{{ $order['phone'] }}</p>
+    <p class="text-13" style="margin-top:5px;font-style:italic">{{ $order['deliveryInstructions'] }}</p>
 
-    <div style="margin-top:10px">
-    <p class="text-14" style="font-weight:bold;margin-top:5px">Order ID: {{ $order['orderNumber'] }}</p>
-    <p class="text-14" style="font-weight:bold;margin-top:5px">Daily Order: {{ $order['dailyOrderNumber'] }}</p>
+    <div style="margin-top:20px">
+    <p class="text-13" style="margin-top:5px">Order Date - {{ $order['created_at'] }}</p>
+    <p class="text-13" style="font-weight:bold;margin-top:5px">Order ID - {{ $order['orderNumber'] }}</p>
+    <p class="text-13" style="font-weight:bold;margin-top:5px">Daily Order - {{ $order['dailyOrderNumber'] }}</p>
+    <p class="text-13" style="margin-top:5px">{{ $order['transferType']}} Date - {{ $order['deliveryDate'] }}</p>
     </div>
 
-    <div style="margin-top:10px">
-    <p class="text-14" style="margin-top:5px">Total: {{ $order['amount'] }}</p>
-    <p class="text-14" style="margin-top:5px">Balance: {{ $order['balance'] }}</p>
-    <p class="text-14" style="margin-top:5px">Order Date: {{ $order['created_at'] }}</p>
-    <p class="text-14" style="margin-top:5px">{{ $order['transferType']}} Date: {{ $order['deliveryDate'] }}</p>
-    </div>
+    <div style="margin-top:20px">
+    <p class="text-13" style="margin-top:5px">Total - {{ $order['amount'] }}</p>
+    <p class="text-15" style="margin-top:5px">Balance - {{ $order['balance'] }}</p>
+  </div>
   </center>
   </div>
 </div>
