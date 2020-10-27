@@ -100,8 +100,9 @@ class OrderLabels
                     'deliveryDate' => !$order->isMultipleDelivery
                         ? $order->delivery_date->format('D, m/d/Y')
                         : 'Multiple',
-                    'transferTime' => $order->transferTime,
-                    'deliveryInstructions' => $order->user->details->delivery
+                    'deliveryInstructions' => $order->user->details->delivery,
+                    'pickup' => $order->pickup,
+                    'transferType' => $order->transfer_type
                     // 'numberOfItems' => $order->numberOfItems
                 ];
             });

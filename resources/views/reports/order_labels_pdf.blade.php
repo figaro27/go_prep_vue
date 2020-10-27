@@ -33,18 +33,27 @@ font-size:10px !important;
 
 @foreach($orders as $i => $order)
 <div style="height:100vh">
+  <div style="margin-top:20px">
   <center>
-  <p class="text-11" style="font-weight:bold;margin-top:5px">Client: {{ $order['firstName'] }} {{ $order['lastName'] }}</p>
-  <p class="text-9" style="font-weight:bold;margin-top:5px">Order ID: {{ $order['orderNumber'] }}</p>
-  <p class="text-9" style="font-weight:bold;margin-top:5px">Daily Order: {{ $order['dailyOrderNumber'] }}</p>
-  <p class="text-9" style="font-weight:bold;margin-top:5px">Address: {{ $order['address'] }}, {{ $order['city'] }}, {{ $order['state'] }} {{ $order['zip'] }}</p>
-  <p class="text-9" style="font-weight:bold;margin-top:5px">Phone: {{ $order['phone'] }}</p>
-  <p class="text-9" style="font-weight:bold;margin-top:5px">Amount: {{ $order['amount'] }}</p>
-  <p class="text-9" style="font-weight:bold;margin-top:5px">Balance: {{ $order['balance'] }}</p>
-  <p class="text-9" style="font-weight:bold;margin-top:5px">Order Date: {{ $order['created_at'] }}</p>
-  <p class="text-9" style="font-weight:bold;margin-top:5px">Transfer Time: {{ $order['transferTime'] }}</p>
-  <p class="text-9" style="font-weight:bold;margin-top:5px">Delivery Instructions: {{ $order['deliveryInstructions'] }}</p>
+    <img src="{{$logo}}"/ style="width:28vh;height:28vh;margin-bottom:8px">
+    <p class="text-18" style="font-weight:bold;margin-top:5px">Client: {{ $order['firstName'] }} {{ $order['lastName'] }}</p>
+    <p class="text-14" style="margin-top:5px">{{ $order['address'] }}, {{ $order['city'] }}, {{ $order['state'] }} {{ $order['zip'] }}</p>
+    <p class="text-14" style="margin-top:5px">{{ $order['phone'] }}</p>
+    <p class="text-12" style="margin-top:5px;font-style:italic">{{ $order['deliveryInstructions'] }}</p>
+
+    <div style="margin-top:10px">
+    <p class="text-14" style="font-weight:bold;margin-top:5px">Order ID: {{ $order['orderNumber'] }}</p>
+    <p class="text-14" style="font-weight:bold;margin-top:5px">Daily Order: {{ $order['dailyOrderNumber'] }}</p>
+    </div>
+
+    <div style="margin-top:10px">
+    <p class="text-14" style="margin-top:5px">Total: {{ $order['amount'] }}</p>
+    <p class="text-14" style="margin-top:5px">Balance: {{ $order['balance'] }}</p>
+    <p class="text-14" style="margin-top:5px">Order Date: {{ $order['created_at'] }}</p>
+    <p class="text-14" style="margin-top:5px">{{ $order['transferType']}} Date: {{ $order['deliveryDate'] }}</p>
+    </div>
   </center>
+  </div>
 </div>
   
 @endforeach
