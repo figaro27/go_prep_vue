@@ -85,38 +85,28 @@ class OrderLabels
             ->map(function ($order) {
                 return [
                     'dailyOrderNumber' => $order->dailyOrderNumber,
-                    'order_number' => $order->order_number,
+                    'orderNumber' => $order->order_number,
                     'firstName' => $order->user->details->firstname,
                     'lastName' => $order->user->details->lastname,
                     'address' => $order->user->details->address,
+                    'city' => $order->user->details->city,
+                    'state' => $order->user->details->state,
                     'zip' => $order->user->details->zip,
                     'phone' => $order->user->details->phone,
-                    'emial' => $order->user->email,
+                    'email' => $order->user->email,
                     'amount' => '$' . number_format($order->amount, 2),
                     'balance' => '$' . number_format($order->balance, 2),
                     'created_at' => $order->created_at->format('D, m/d/Y'),
-                    'delivery_date' => !$order->isMultipleDelivery
+                    'deliveryDate' => !$order->isMultipleDelivery
                         ? $order->delivery_date->format('D, m/d/Y')
                         : 'Multiple',
-                    'transferTime' => $order->transferTime
+                    'transferTime' => $order->transferTime,
+                    'deliveryInstructions' => $order->user->details->delivery
+                    // 'numberOfItems' => $order->numberOfItems
                 ];
             });
 
         $orders = $orders->toArray();
-
-        // Removing Daily Order Number column if module is not enabled
-        if (!$this->params['show_daily_order_numbers']) {
-            for ($i = 0; $i < count($orders); $i++) {
-                array_shift($orders[$i]);
-            }
-        }
-
-        // Removing Time column if pickupHours & deliveryHours columns are not enabled
-        if (!$this->params['show_times']) {
-            for ($i = 0; $i < count($orders); $i++) {
-                array_pop($orders[$i]);
-            }
-        }
 
         return $orders;
     }

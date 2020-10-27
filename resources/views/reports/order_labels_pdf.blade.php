@@ -32,7 +32,21 @@ font-size:10px !important;
 </head>
 
 @foreach($orders as $i => $order)
-  <h1> {{ $order->firstName }} </h1>
+<div style="height:100vh">
+  <center>
+  <p class="text-11" style="font-weight:bold;margin-top:5px">Client: {{ $order['firstName'] }} {{ $order['lastName'] }}</p>
+  <p class="text-9" style="font-weight:bold;margin-top:5px">Order ID: {{ $order['orderNumber'] }}</p>
+  <p class="text-9" style="font-weight:bold;margin-top:5px">Daily Order: {{ $order['dailyOrderNumber'] }}</p>
+  <p class="text-9" style="font-weight:bold;margin-top:5px">Address: {{ $order['address'] }}, {{ $order['city'] }}, {{ $order['state'] }} {{ $order['zip'] }}</p>
+  <p class="text-9" style="font-weight:bold;margin-top:5px">Phone: {{ $order['phone'] }}</p>
+  <p class="text-9" style="font-weight:bold;margin-top:5px">Amount: {{ $order['amount'] }}</p>
+  <p class="text-9" style="font-weight:bold;margin-top:5px">Balance: {{ $order['balance'] }}</p>
+  <p class="text-9" style="font-weight:bold;margin-top:5px">Order Date: {{ $order['created_at'] }}</p>
+  <p class="text-9" style="font-weight:bold;margin-top:5px">Transfer Time: {{ $order['transferTime'] }}</p>
+  <p class="text-9" style="font-weight:bold;margin-top:5px">Delivery Instructions: {{ $order['deliveryInstructions'] }}</p>
+  </center>
+</div>
+  
 @endforeach
 
 </html>
