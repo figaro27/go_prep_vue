@@ -42,15 +42,15 @@ font-size:10px !important;
     <p class="text-13" style="margin-top:5px;font-style:italic">{{ $order['deliveryInstructions'] }}</p>
 
     <div style="margin-top:20px">
-    <p class="text-13" style="margin-top:5px">Order Date - {{ $order['created_at'] }}</p>
     <p class="text-13" style="font-weight:bold;margin-top:5px">Order ID - {{ $order['orderNumber'] }}</p>
-    <p class="text-13" style="font-weight:bold;margin-top:5px">Daily Order - {{ $order['dailyOrderNumber'] }}</p>
+    <p class="text-13" style="margin-top:5px">Daily Order - {{ $order['dailyOrderNumber'] }}</p>
+    <p class="text-13" style="margin-top:5px">Order Date - {{ $order['created_at'] }}</p>
     <p class="text-13" style="margin-top:5px">{{ $order['transferType']}} Date - {{ $order['deliveryDate'] }}</p>
     </div>
 
     <div style="margin-top:20px">
-    <p class="text-13" style="margin-top:5px">Total - {{ $order['amount'] }}</p>
-    <p class="text-15" style="margin-top:5px">Balance - {{ $order['balance'] }}</p>
+    <p class="text-13" style="font-weight:bold;margin-top:5px">Total - {{ $order['amount'] }}</p>
+    <p class="text-13" style="margin-top:5px">Balance - {{ $order['balance'] }}</p>
   </div>
   </center>
   </div>
