@@ -31,9 +31,6 @@ font-size:10px !important;
 </style>
 </head>
 @foreach($orders as $i => $order)
-@php
-$reportSettings = $order['reportSettings'];
-@endphp
 <div style="height:100vh">
   <div style="margin-top:20px">
   <center>

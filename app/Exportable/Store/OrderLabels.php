@@ -105,8 +105,7 @@ class OrderLabels
                     'transferType' => $order->transfer_type,
                     'pickupLocation' => isset($order->pickup_location)
                         ? $order->pickup_location->name
-                        : null,
-                    'reportSettings' => $order->store->reportSettings
+                        : null
                     // 'numberOfItems' => $order->numberOfItems
                 ];
             });
@@ -151,6 +150,7 @@ class OrderLabels
 
         $vars = [
             'orders' => $orders,
+            'reportSettings' => $this->store->reportSettings,
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
             'body_classes' => implode(' ', [$this->orientation]),
