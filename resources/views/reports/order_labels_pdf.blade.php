@@ -73,10 +73,10 @@ font-size:10px !important;
   </div>
 
   <div style="margin-top:20px">
-    @if ($reportSettings->website)
+    @if ($reportSettings->o_lab_website)
     <p class="text-13" style="margin-top:5px">{{ $website }}</p>
     @endif
-    @if ($reportSettings->social)
+    @if ($reportSettings->o_lab_social)
     <p class="text-13" style="margin-top:5px">{{ $social }}</p>
     @endif
   </div>
