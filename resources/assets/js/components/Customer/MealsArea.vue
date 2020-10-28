@@ -657,7 +657,7 @@
                       placeholder="0"
                       v-model="giftCardQuantities[meal.id]"
                       @change="val => setItemQuantity('giftCard', meal, val)"
-                      @click="preventMealPage"
+                      readonly
                     ></b-form-input>
                     <b-form-input
                       v-if="
@@ -671,7 +671,7 @@
                       placeholder="0"
                       v-model="mealQuantities[meal.id]"
                       @change="val => setItemQuantity('meal', meal, val)"
-                      @click="preventMealPage"
+                      readonly
                     ></b-form-input>
                     <div
                       @click.stop="minusMixOne(meal)"
@@ -1555,9 +1555,6 @@ export default {
       }
     },
     setItemQuantity(type, item, val) {
-      console.log(1);
-      this.$parent.showMealsArea = true;
-      this.$parent.showMealPage = false;
       switch (type) {
         case "meal":
           this.mealQuantities[item.id] = parseInt(val);
@@ -1566,11 +1563,6 @@ export default {
           this.giftCardQuantities[item.id] = parseInt(val);
           break;
       }
-    },
-    preventMealPage() {
-      console.log(1);
-      this.$parent.showMealsArea = true;
-      this.$parent.showMealPage = false;
     }
   }
 };
