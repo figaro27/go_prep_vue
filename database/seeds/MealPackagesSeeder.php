@@ -33,7 +33,7 @@ class MealPackagesSeeder extends Seeder
             try {
                 $package->clearMediaCollection('featured_image');
                 $package
-                    ->addMediaFromUrl('')
+                    ->addMediaFromUrl('http://lorempixel.com/1024/1024/food/')
                     ->preservingOriginal()
                     ->toMediaCollection('featured_image');
             } catch (\Exception $e) {

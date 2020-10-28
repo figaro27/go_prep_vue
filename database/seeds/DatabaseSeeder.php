@@ -39,6 +39,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ReferralsSeeder::class);
         // $this->call(ReportRecordsSeeder::class);
 
-        // Artisan::call('migrate:images');
+        Artisan::call('migrate:images');
     }
 }
