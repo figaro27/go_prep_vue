@@ -267,7 +267,7 @@ class StoreSetting extends Model
                 $upcomingWeeksDates = [];
 
                 foreach ($dates as $date) {
-                    for ($i = 1; $i <= $deliveryWeeks; $i++) {
+                    for ($i = 1; $i < $deliveryWeeks; $i++) {
                         $upcomingWeeksDates[] = $date->copy()->addWeek($i);
                     }
                 }
