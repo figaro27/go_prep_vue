@@ -232,36 +232,34 @@ class StoreSetting extends Model
                 }
 
                 foreach ($ddays as $i => $day) {
-                    $customDeliveryDay = null;
+                    if (!isset($day->single_date)) {
+                        $customDeliveryDay = null;
 
-                    if ($customDeliveryDays) {
-                        $customDeliveryDay = $day;
-                        $day = isset($customDeliveryDay->single_date)
-                            ? $customDeliveryDay->single_date
-                            : $customDeliveryDay->day_short;
-                        $this->setDeliveryDayContext($customDeliveryDay);
-                    }
+                        if ($customDeliveryDays) {
+                            $customDeliveryDay = $day;
+                            $day = $customDeliveryDay->day_short;
+                            $this->setDeliveryDayContext($customDeliveryDay);
+                        }
 
-                    $date = isset($customDeliveryDay->single_date)
-                        ? Carbon::parse($customDeliveryDay->single_date)
-                        : Carbon::createFromFormat(
+                        $date = Carbon::createFromFormat(
                             'D',
                             $day,
                             $this->timezone
                         )->setTime(0, 0, 0);
 
-                    $cutoff = $this->getCutoffDate($date);
+                        $cutoff = $this->getCutoffDate($date);
 
-                    if (!$factorCutoff || !$cutoff->isPast()) {
-                        $dates[] = $date;
-                    } else {
-                        if (!$this->preventNextWeekOrders) {
-                            $dates[] = $date->addWeek(1);
+                        if (!$factorCutoff || !$cutoff->isPast()) {
+                            $dates[] = $date;
+                        } else {
+                            if (!$this->preventNextWeekOrders) {
+                                $dates[] = $date->addWeek(1);
+                            }
                         }
-                    }
 
-                    if ($customDeliveryDays) {
-                        $this->clearDeliveryDayContext();
+                        if ($customDeliveryDays) {
+                            $this->clearDeliveryDayContext();
+                        }
                     }
                 }
 
@@ -271,6 +269,14 @@ class StoreSetting extends Model
                 foreach ($dates as $date) {
                     for ($i = 1; $i <= $deliveryWeeks; $i++) {
                         $upcomingWeeksDates[] = $date->copy()->addWeek($i);
+                    }
+                }
+
+                foreach ($ddays as $i => $day) {
+                    if (isset($day->single_date)) {
+                        $upcomingWeeksDates[] = Carbon::parse(
+                            $day->single_date
+                        );
                     }
                 }
 
