@@ -1565,8 +1565,11 @@ export default {
       }
     },
     preventMealPage() {
-      this.$parent.showMealsArea = true;
-      this.$parent.showMealPage = false;
+      console.log(1);
+      this.$nextTick(() => {
+        this.$parent.showMealsArea = true;
+        this.$parent.showMealPage = false;
+      });
     }
   }
 };
