@@ -649,7 +649,33 @@
                         {{ format.money(size.price, storeSettings.currency) }}
                       </b-dropdown-item>
                     </b-dropdown>
+
                     <b-form-input
+                      v-if="meal.gift_card"
+                      name
+                      id
+                      class="small-quantity mt-1 mb-1"
+                      placeholder="0"
+                      :value="mealMixQuantity(meal)"
+                      readonly
+                    ></b-form-input>
+                    <b-form-input
+                      v-if="
+                        !meal.meal_package &&
+                          !meal.gift_card &&
+                          !meal.hasVariations
+                      "
+                      name
+                      id
+                      class="small-quantity mt-1 mb-1"
+                      placeholder="0"
+                      :value="mealMixQuantity(meal)"
+                      readonly
+                    ></b-form-input>
+
+                    <!-- Clicking on the input box to edit the quantity takes you to the meal page because it is within the clickable box. click.stop doesn't work, @clicking to a method which hides the meal page and show meals area doesn't work. Will revisit if needed -->
+
+                    <!-- <b-form-input
                       v-if="meal.gift_card"
                       name
                       id
@@ -658,7 +684,6 @@
                       v-model="giftCardQuantities[meal.id]"
                       @change="val => setItemQuantity('giftCard', meal, val)"
                       @click.stop=""
-                      readonly
                     ></b-form-input>
                     <b-form-input
                       v-if="
@@ -673,8 +698,7 @@
                       v-model="mealQuantities[meal.id]"
                       @change="val => setItemQuantity('meal', meal, val)"
                       @click.stop=""
-                      readonly
-                    ></b-form-input>
+                    ></b-form-input> -->
                     <div
                       @click.stop="minusMixOne(meal)"
                       class="bag-plus-minus small-buttons gray white-text"
