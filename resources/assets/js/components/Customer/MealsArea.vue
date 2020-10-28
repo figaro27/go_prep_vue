@@ -657,7 +657,7 @@
                       placeholder="0"
                       v-model="giftCardQuantities[meal.id]"
                       @change="val => setItemQuantity('giftCard', meal, val)"
-                      @click.stop="doNothing"
+                      @click.stop="preventMealPage"
                     ></b-form-input>
                     <b-form-input
                       v-if="
@@ -671,7 +671,7 @@
                       placeholder="0"
                       v-model="mealQuantities[meal.id]"
                       @change="val => setItemQuantity('meal', meal, val)"
-                      @click.stop="doNothing"
+                      @click.stop="preventMealPage"
                     ></b-form-input>
                     <div
                       @click.stop="minusMixOne(meal)"
@@ -1564,8 +1564,9 @@ export default {
           break;
       }
     },
-    doNothing() {
-      // Nothing
+    preventMealPage() {
+      this.$parent.showMealsArea = true;
+      this.$parent.showMealPage = false;
     }
   }
 };
