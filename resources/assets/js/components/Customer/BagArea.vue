@@ -825,6 +825,7 @@ export default {
       setBagZipCode: "setBagZipCode"
     }),
     addToBag(item) {
+      item.meal.quantity = 1;
       if (this.isAdjustOrder() || this.isManualOrder()) {
         this.addOneFromAdjust({
           ...item,

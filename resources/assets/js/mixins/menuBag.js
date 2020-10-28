@@ -86,7 +86,7 @@ export default {
       if (meal.gift_card) {
         this.$store.commit("addToBag", {
           meal,
-          quantity: 1
+          quantity: meal.quantity ? meal.quantity : 1
         });
         return;
       }
@@ -180,7 +180,7 @@ export default {
 
       this.$store.commit("addToBag", {
         meal,
-        quantity: 1,
+        quantity: meal.quantity ? meal.quantity : 1,
         mealPackage,
         size,
         components,

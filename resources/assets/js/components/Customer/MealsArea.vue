@@ -336,12 +336,15 @@
                           </b-btn>
                           <b-form-input
                             v-if="meal.gift_card"
-                            type="text"
+                            type="number"
                             name
                             id
                             class="quantity"
-                            :value="mealMixQuantity(meal)"
-                            readonly
+                            placeholder="0"
+                            v-model="giftCardQuantities[meal.id]"
+                            @change="
+                              val => setItemQuantity('giftCard', meal, val)
+                            "
                           ></b-form-input>
 
                           <b-btn
@@ -369,12 +372,13 @@
                                 !meal.gift_card &&
                                 !meal.hasVariations
                             "
-                            type="text"
+                            type="number"
                             name
                             id
                             class="quantity"
-                            :value="mealMixQuantity(meal)"
-                            readonly
+                            placeholder="0"
+                            v-model="mealQuantities[meal.id]"
+                            @change="val => setItemQuantity('meal', meal, val)"
                           ></b-form-input>
 
                           <b-btn
@@ -645,22 +649,30 @@
                         {{ format.money(size.price, storeSettings.currency) }}
                       </b-dropdown-item>
                     </b-dropdown>
-
-                    <p
-                      class="mt-3 ml-2"
-                      v-if="!meal.meal_package && !meal.hasVariations"
-                    >
-                      {{ mealMixQuantity(meal) }}
-                    </p>
-                    <!-- <b-form-input
-                      type="text"
+                    <b-form-input
+                      v-if="meal.gift_card"
                       name
                       id
-                      class="quantity small-quantity"
-                      style="text-align: center; padding: 0;"
-                      :value="mealMixQuantity(meal)"
-                      readonly
-                    ></b-form-input> -->
+                      class="small-quantity mt-1 mb-1"
+                      placeholder="0"
+                      v-model="giftCardQuantities[meal.id]"
+                      @change="val => setItemQuantity('giftCard', meal, val)"
+                      @click.stop=""
+                    ></b-form-input>
+                    <b-form-input
+                      v-if="
+                        !meal.meal_package &&
+                          !meal.gift_card &&
+                          !meal.hasVariations
+                      "
+                      name
+                      id
+                      class="small-quantity mt-1 mb-1"
+                      placeholder="0"
+                      v-model="mealQuantities[meal.id]"
+                      @change="val => setItemQuantity('meal', meal, val)"
+                      @click.stop=""
+                    ></b-form-input>
                     <div
                       @click.stop="minusMixOne(meal)"
                       class="bag-plus-minus small-buttons gray white-text"
@@ -790,6 +802,8 @@ import store from "../../store";
 export default {
   data() {
     return {
+      mealQuantities: [],
+      giftCardQuantities: [],
       packageTitle: null,
       showFullDescription: {}
     };
@@ -1378,12 +1392,16 @@ export default {
       this.addOne(mealPackage, true, size);
     },
     async addMeal(meal, mealPackage, size) {
+      meal.quantity = this.mealQuantities[meal.id];
       if (this.$parent.selectedDeliveryDay) {
         meal.delivery_day = this.$parent.selectedDeliveryDay;
       }
       if (meal.gift_card) {
+        meal.quantity = this.giftCardQuantities[meal.id];
         this.addOne(meal);
         this.$parent.showBagClass = "shopping-cart show-right bag-area";
+        this.giftCardQuantities.splice(meal.id, 1);
+
         return;
       }
       if (meal.meal_package) {
@@ -1449,6 +1467,7 @@ export default {
         }
       }
       this.$parent.search = "";
+      this.mealQuantities.splice(meal.id, 1);
     },
     showMealPackage(mealPackage, size) {
       $([document.documentElement, document.body]).scrollTop(0);
@@ -1534,7 +1553,22 @@ export default {
           return true;
         }
       }
+    },
+    setItemQuantity(type, item, val) {
+      switch (type) {
+        case "meal":
+          this.mealQuantities[item.id] = parseInt(val);
+          break;
+        case "giftCard":
+          this.giftCardQuantities[item.id] = parseInt(val);
+          break;
+      }
     }
   }
 };
 </script>
+<style>
+.quantity::placeholder {
+  padding-left: 14px;
+}
+</style>

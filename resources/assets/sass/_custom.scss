@@ -364,8 +364,8 @@ body.sidebar-minimized {
 }
 
 .quantity {
+  width: 115px;
   border-radius: 10px;
-  opacity: 0.5;
   text-align: center;
 }
 
@@ -410,13 +410,11 @@ body.sidebar-minimized {
 .quantity {
   width: 115px;
   border-radius: 20px;
-  opacity: 0.5;
   text-align: center;
 }
 
 .small-quantity {
-  width: 18px;
-  text-align: left;
+  width: 35px;
 }
 
 .bag-actions {
@@ -685,8 +683,16 @@ body.sidebar-minimized {
   width: 60% !important;
 }
 
+.width-60px {
+  width: 60px !important;
+}
+
 .width-50 {
   width: 50% !important;
+}
+
+.width-80px {
+  width: 80px !important;
 }
 
 .width-40 {
@@ -737,8 +743,8 @@ body.sidebar-minimized {
 }
 
 .small-buttons {
-  width: 30px !important;
-  height: 30px !important;
+  width: 35px !important;
+  height: 35px !important;
 }
 
 .nf-vitamin-column:first-child {
@@ -1428,6 +1434,10 @@ body.forgotresettoken {
 
 .width-130 {
   width: 130px !important;
+}
+
+.width-115 {
+  width: 115px !important;
 }
 
 .width-100 {

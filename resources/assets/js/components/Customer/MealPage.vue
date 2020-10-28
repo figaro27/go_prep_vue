@@ -278,14 +278,21 @@
               >
                 <h6 class="strong pt-1 dark-gray">Back</h6>
               </button>
-              <button
-                type="button"
-                :style="brandColor"
-                class="btn btn-lg white-text d-inline mb-2"
-                @click="addMeal(meal)"
-              >
-                <h6 class="strong pt-1">Add To Bag</h6>
-              </button>
+              <div>
+                <b-form-input
+                  v-model="quantity"
+                  type="number"
+                  class="mb-2 width-115"
+                ></b-form-input>
+                <button
+                  type="button"
+                  :style="brandColor"
+                  class="btn btn-lg white-text d-inline mb-2"
+                  @click="addMeal(meal)"
+                >
+                  <h6 class="strong pt-1">Add To Bag</h6>
+                </button>
+              </div>
               <!-- <button
                 type="button"
                 class="btn btn-md btn-secondary d-inline"
@@ -316,6 +323,7 @@ import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 export default {
   data() {
     return {
+      quantity: 1,
       defaultMealSize: {},
       mealSizes: null,
       mealSize: null,
@@ -608,6 +616,7 @@ export default {
           );
           return;
         } else {
+          meal.quantity = parseInt(this.quantity);
           this.addOne(
             meal,
             false,
@@ -616,8 +625,10 @@ export default {
             this.addons,
             this.special_instructions
           );
+          meal.quantity = 1;
         }
       } else {
+        meal.quantity = parseInt(this.quantity);
         this.addOne(
           meal,
           false,
@@ -626,6 +637,7 @@ export default {
           this.addons,
           this.special_instructions
         );
+        meal.quantity = 1;
       }
 
       this.mealSize = null;
@@ -638,6 +650,7 @@ export default {
       this.special_instructions = null;
       this.invalid = false;
       this.showcaseNutrition = false;
+      this.quantity = 1;
     },
     back() {
       let viewedMeal = {};
