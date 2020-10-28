@@ -1555,6 +1555,9 @@ export default {
       }
     },
     setItemQuantity(type, item, val) {
+      console.log(1);
+      this.$parent.showMealsArea = true;
+      this.$parent.showMealPage = false;
       switch (type) {
         case "meal":
           this.mealQuantities[item.id] = parseInt(val);
