@@ -133,8 +133,8 @@ class OrderLabels
 
         $filename = 'public/' . md5(time()) . '.pdf';
 
-        $width = $this->store->reportSettings->lab_width;
-        $height = $this->store->reportSettings->lab_height;
+        $width = $this->store->reportSettings->o_lab_width;
+        $height = $this->store->reportSettings->o_lab_height;
 
         try {
             $logo = \App\Utils\Images::encodeB64(
