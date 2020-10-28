@@ -1566,10 +1566,9 @@ export default {
     },
     preventMealPage() {
       console.log(1);
-        this.$parent.showMealsArea = true;
-        this.$parent.showMealPage = false;
-      });
-
+      this.$parent.showMealsArea = true;
+      this.$parent.showMealPage = false;
+    }
   }
 };
 </script>
