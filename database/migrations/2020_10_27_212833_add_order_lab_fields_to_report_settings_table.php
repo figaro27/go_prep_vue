@@ -25,6 +25,8 @@ class AddOrderLabFieldsToReportSettingsTable extends Migration
             $table->boolean('o_lab_balance')->default(1);
             $table->boolean('o_lab_daily_order_number')->default(0);
             $table->boolean('o_lab_pickup_location')->default(0);
+            $table->boolean('o_lab_website')->default(0);
+            $table->boolean('o_lab_social')->default(0);
             $table->float('o_lab_width')->default(4.0);
             $table->float('o_lab_height')->default(6.0);
         });
