@@ -37,7 +37,9 @@ class ReportSetting extends Model
         'o_lab_amount' => 'boolean',
         'o_lab_balance' => 'boolean',
         'o_lab_daily_order_number' => 'boolean',
-        'o_lab_pickup_location' => 'boolean'
+        'o_lab_pickup_location' => 'boolean',
+        'o_lab_website' => 'boolean',
+        'o_lab_social' => 'boolean'
     ];
 
     public function store()

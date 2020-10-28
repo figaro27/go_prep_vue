@@ -151,6 +151,8 @@ class OrderLabels
         $vars = [
             'orders' => $orders,
             'reportSettings' => $this->store->reportSettings,
+            'website' => $this->store->settings->website,
+            'social' => $this->store->details->social,
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
             'body_classes' => implode(' ', [$this->orientation]),

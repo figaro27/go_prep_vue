@@ -629,6 +629,16 @@
               >Pickup Location</b-form-checkbox
             >
           </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.o_lab_website"
+              >Website</b-form-checkbox
+            >
+          </p>
+          <p>
+            <b-form-checkbox v-model="reportSettings.o_lab_social"
+              >Social Media Handle</b-form-checkbox
+            >
+          </p>
         </div>
         <div class="col-md-5">
           <p class="strong">Label Dimensions</p>

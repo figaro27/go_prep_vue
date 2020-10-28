@@ -71,6 +71,15 @@ font-size:10px !important;
     <p class="text-13" style="margin-top:5px">Balance - {{ $order['balance'] }}</p>
     @endif
   </div>
+
+  <div style="margin-top:20px">
+    @if ($reportSettings->website)
+    <p class="text-13" style="margin-top:5px">{{ $website }}</p>
+    @endif
+    @if ($reportSettings->social)
+    <p class="text-13" style="margin-top:5px">{{ $social }}</p>
+    @endif
+  </div>
   </center>
   </div>
 </div>
