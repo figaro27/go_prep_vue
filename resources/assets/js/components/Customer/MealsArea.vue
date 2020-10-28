@@ -650,7 +650,6 @@
                       </b-dropdown-item>
                     </b-dropdown>
                     <b-form-input
-                      type="number"
                       v-if="meal.gift_card"
                       name
                       id
@@ -659,9 +658,9 @@
                       v-model="giftCardQuantities[meal.id]"
                       @change="val => setItemQuantity('giftCard', meal, val)"
                       @click.stop=""
+                      readonly
                     ></b-form-input>
                     <b-form-input
-                      type="number"
                       v-if="
                         !meal.meal_package &&
                           !meal.gift_card &&
@@ -674,6 +673,7 @@
                       v-model="mealQuantities[meal.id]"
                       @change="val => setItemQuantity('meal', meal, val)"
                       @click.stop=""
+                      readonly
                     ></b-form-input>
                     <div
                       @click.stop="minusMixOne(meal)"
