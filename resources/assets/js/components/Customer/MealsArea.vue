@@ -657,7 +657,7 @@
                       placeholder="0"
                       v-model="giftCardQuantities[meal.id]"
                       @change="val => setItemQuantity('giftCard', meal, val)"
-                      @click.stop=""
+                      @click.stop="doNothing"
                     ></b-form-input>
                     <b-form-input
                       v-if="
@@ -671,7 +671,7 @@
                       placeholder="0"
                       v-model="mealQuantities[meal.id]"
                       @change="val => setItemQuantity('meal', meal, val)"
-                      @click.stop=""
+                      @click.stop="doNothing"
                     ></b-form-input>
                     <div
                       @click.stop="minusMixOne(meal)"
@@ -1563,6 +1563,9 @@ export default {
           this.giftCardQuantities[item.id] = parseInt(val);
           break;
       }
+    },
+    doNothing() {
+      // Nothing
     }
   }
 };
