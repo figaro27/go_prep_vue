@@ -103,60 +103,31 @@
             >{{ allergy }}</span
           >
         </div>
-        <div
-          v-if="
-            meal.macros && storeSettings.showMacros && meal.macros.macros_filled
-          "
-          class="macros mt-2 meal-page-text"
-        >
+        <div v-if="storeSettings.showMacros" class="macros mt-2 meal-page-text">
           <li>
-            <span
-              v-if="
-                !isNaN(meal.macros.calories) && meal.macros.calories !== null
-              "
-            >
+            <span>
               Calories:
-              <p class="d-inline">{{ meal.macros.calories }}</p>
-            </span>
-            <span v-else>
-              Calories:
-              <p class="d-inline">{{ nutritionalFacts.valueCalories }}</p>
+              <p class="d-inline">{{ getMacros("calories") }}</p>
             </span>
           </li>
           <li>
-            <span
-              v-if="!isNaN(meal.macros.carbs) && meal.macros.carbs !== null"
-            >
+            <span>
               Carbs:
-              <p class="d-inline">{{ meal.macros.carb }}</p>
-            </span>
-            <span v-else>
-              Carbs:
-              <p class="d-inline">{{ nutritionalFacts.valueTotalCarb }}</p>
+              <p class="d-inline">{{ getMacros("carbs") }}</p>
             </span>
           </li>
 
           <li>
-            <span
-              v-if="!isNaN(meal.macros.protein) && meal.macros.protein !== null"
-            >
+            <span>
               Protein:
-              <p class="d-inline">{{ meal.macros.protein }}</p>
-            </span>
-            <span v-else>
-              Protein:
-              <p class="d-inline">{{ nutritionalFacts.valueProteins }}</p>
+              <p class="d-inline">{{ getMacros("protein") }}</p>
             </span>
           </li>
 
           <li>
-            <span v-if="!isNaN(meal.macros.fat) && meal.macros.fat !== null">
+            <span>
               Fat:
-              <p class="d-inline">{{ meal.macros.fat }}</p>
-            </span>
-            <span v-else>
-              Fat:
-              <p class="d-inline">{{ nutritionalFacts.valueTotalFat }}</p>
+              <p class="d-inline">{{ getMacros("fat") }}</p>
             </span>
           </li>
         </div>
@@ -791,6 +762,31 @@ export default {
       let element = document.getElementById("meal-variations-area");
       element.scrollIntoView();
       window.scrollBy(0, -130);
+    },
+    getMacros(macro) {
+      let meal = this.meal;
+      switch (macro) {
+        case "calories":
+          return meal.macros && meal.macros.calories
+            ? meal.macros.calories
+            : this.nutritionalFacts.valueCalories;
+          break;
+        case "carbs":
+          return meal.macros && meal.macros.carbs
+            ? meal.macros.carbs
+            : this.nutritionalFacts.valueTotalCarb;
+          break;
+        case "protein":
+          return meal.macros && meal.macros.protein
+            ? meal.macros.protein
+            : this.nutritionalFacts.valueProteins;
+          break;
+        case "fat":
+          return meal.macros && meal.macros.fat
+            ? meal.macros.fat
+            : this.nutritionalFacts.valueTotalFat;
+          break;
+      }
     }
   }
 };
