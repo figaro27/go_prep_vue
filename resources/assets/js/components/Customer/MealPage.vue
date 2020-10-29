@@ -104,7 +104,9 @@
           >
         </div>
         <div
-          v-if="storeSettings.showMacros && meal.macros.macros_filled"
+          v-if="
+            meal.macros && storeSettings.showMacros && meal.macros.macros_filled
+          "
           class="macros mt-2 meal-page-text"
         >
           <li>
