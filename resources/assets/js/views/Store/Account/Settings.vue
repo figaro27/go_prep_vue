@@ -890,7 +890,7 @@
                 <span class="mr-1">Show Macros</span>
                 <img
                   v-b-popover.hover="
-                    'Enables input fields for your to add your meal\'s calories, carbs, protein, and fat. This then shows up underneath your meal titles on your menu page.'
+                    'Enables input fields for your to add your meal\'s calories, carbs, protein, and fat. Macros are shown on your menu. If this is turned on, and no macros are manually entered, the macros will be pulled from your nutrition facts even if nutrition facts is not enabled.'
                   "
                   title="Show Macros"
                   src="/images/store/popover.png"

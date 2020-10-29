@@ -299,26 +299,26 @@
                       >
                         <div class="d-inline mr-4">
                           <p>
-                            {{ getMacros().calories }}<br />
-                            <span>{{ meal.macros.calories }}</span>
+                            {{ getMacroTitle().calories }}<br />
+                            <span>{{ getMacros(meal, "calories") }}</span>
                           </p>
                         </div>
                         <div class="d-inline mr-4">
                           <p>
-                            {{ getMacros().carbs }}<br />
-                            <span>{{ meal.macros.carbs }}</span>
+                            {{ getMacroTitle().carbs }}<br />
+                            <span>{{ getMacros(meal, "carbs") }}</span>
                           </p>
                         </div>
                         <div class="d-inline mr-4">
                           <p>
-                            {{ getMacros().protein }}<br />
-                            <span>{{ meal.macros.protein }}</span>
+                            {{ getMacroTitle().protein }}<br />
+                            <span>{{ getMacros(meal, "protein") }}</span>
                           </p>
                         </div>
                         <div class="d-inline mr-4">
                           <p>
-                            {{ getMacros().fat }}<br />
-                            <span>{{ meal.macros.fat }}</span>
+                            {{ getMacroTitle().fat }}<br />
+                            <span>{{ getMacros(meal, "fat") }}</span>
                           </p>
                         </div>
                       </div>
@@ -734,6 +734,34 @@
                       <div class="mt-1 content-text">
                         {{ meal.description }}
                       </div>
+                      <div class="title" v-if="storeSettings.showMacros">
+                        <div class="title macrosArea d-flex ">
+                          <div class="d-inline mr-4">
+                            <p>
+                              Calories<br />
+                              <span>{{ getMacros(meal, "calories") }}</span>
+                            </p>
+                          </div>
+                          <div class="d-inline mr-4">
+                            <p>
+                              Carbs<br />
+                              <span>{{ getMacros(meal, "carbs") }}</span>
+                            </p>
+                          </div>
+                          <div class="d-inline mr-4">
+                            <p>
+                              Protein<br />
+                              <span>{{ getMacros(meal, "protein") }}</span>
+                            </p>
+                          </div>
+                          <div class="d-inline">
+                            <p>
+                              Fat<br />
+                              <span>{{ getMacros(meal, "fat") }}</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div v-else class="content-area" style="position: relative;">
@@ -754,25 +782,25 @@
                               <div class="d-inline mr-4">
                                 <p>
                                   Calories<br />
-                                  <span>{{ meal.macros.calories }}</span>
+                                  <span>{{ getMacros(meal, "calories") }}</span>
                                 </p>
                               </div>
                               <div class="d-inline mr-4">
                                 <p>
                                   Carbs<br />
-                                  <span>{{ meal.macros.carbs }}</span>
+                                  <span>{{ getMacros(meal, "carbs") }}</span>
                                 </p>
                               </div>
                               <div class="d-inline mr-4">
                                 <p>
                                   Protein<br />
-                                  <span>{{ meal.macros.protein }}</span>
+                                  <span>{{ getMacros(meal, "protein") }}</span>
                                 </p>
                               </div>
                               <div class="d-inline">
                                 <p>
                                   Fat<br />
-                                  <span>{{ meal.macros.fat }}</span>
+                                  <span>{{ getMacros(meal, "fat") }}</span>
                                 </p>
                               </div>
                             </div>
@@ -1539,7 +1567,7 @@ export default {
     getMealTitle(title) {
       return title.replace(/(\r\n|\n|\r)/gm, "<br />");
     },
-    getMacros() {
+    getMacroTitle() {
       let macros = {};
       if (!this.smallScreen) {
         macros.calories = "Calories";
@@ -1587,6 +1615,34 @@ export default {
           break;
         case "giftCard":
           this.giftCardQuantities[item.id] = parseInt(val);
+          break;
+      }
+    },
+    getMacros(meal, macro) {
+      switch (macro) {
+        case "calories":
+          return meal.macros && meal.macros.calories
+            ? meal.macros.calories
+            : this.$parent.getNutritionFacts(meal.ingredients, meal)
+                .valueCalories;
+          break;
+        case "carbs":
+          return meal.macros && meal.macros.carbs
+            ? meal.macros.carbs
+            : this.$parent.getNutritionFacts(meal.ingredients, meal)
+                .valueTotalCarb;
+          break;
+        case "protein":
+          return meal.macros && meal.macros.protein
+            ? meal.macros.protein
+            : this.$parent.getNutritionFacts(meal.ingredients, meal)
+                .valueProteins;
+          break;
+        case "fat":
+          return meal.macros && meal.macros.fat
+            ? meal.macros.fat
+            : this.$parent.getNutritionFacts(meal.ingredients, meal)
+                .valueTotalFat;
           break;
       }
     }

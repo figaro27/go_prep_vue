@@ -111,67 +111,52 @@
         >
           <li>
             <span
-              v-if="storeSettings.macrosFromNutrition && !blankNutritionFacts"
+              v-if="
+                !isNaN(meal.macros.calories) && meal.macros.calories !== null
+              "
             >
+              Calories:
+              <p class="d-inline">{{ meal.macros.calories }}</p>
+            </span>
+            <span v-else>
               Calories:
               <p class="d-inline">{{ nutritionalFacts.valueCalories }}</p>
             </span>
-            <span v-else>
-              <span
-                v-if="
-                  !isNaN(meal.macros.calories) && meal.macros.calories !== null
-                "
-                >Calories:
-                <p class="d-inline">{{ meal.macros.calories }}</p></span
-              >
-            </span>
           </li>
           <li>
             <span
-              v-if="storeSettings.macrosFromNutrition && !blankNutritionFacts"
+              v-if="!isNaN(meal.macros.carbs) && meal.macros.carbs !== null"
             >
+              Carbs:
+              <p class="d-inline">{{ meal.macros.carb }}</p>
+            </span>
+            <span v-else>
               Carbs:
               <p class="d-inline">{{ nutritionalFacts.valueTotalCarb }}</p>
             </span>
-            <span v-else>
-              <span
-                v-if="
-                  !isNaN(meal.macros.calories) && meal.macros.carbs !== null
-                "
-                >Carbs:
-                <p class="d-inline">{{ meal.macros.carbs }}</p></span
-              >
-            </span>
           </li>
+
           <li>
             <span
-              v-if="storeSettings.macrosFromNutrition && !blankNutritionFacts"
+              v-if="!isNaN(meal.macros.protein) && meal.macros.protein !== null"
             >
+              Protein:
+              <p class="d-inline">{{ meal.macros.protein }}</p>
+            </span>
+            <span v-else>
               Protein:
               <p class="d-inline">{{ nutritionalFacts.valueProteins }}</p>
             </span>
-            <span v-else>
-              <span
-                v-if="
-                  !isNaN(meal.macros.protein) && meal.macros.protein !== null
-                "
-                >Protein:
-                <p class="d-inline">{{ meal.macros.protein }}</p></span
-              >
-            </span>
           </li>
+
           <li>
-            <span
-              v-if="storeSettings.macrosFromNutrition && !blankNutritionFacts"
-            >
+            <span v-if="!isNaN(meal.macros.fat) && meal.macros.fat !== null">
+              Fat:
+              <p class="d-inline">{{ meal.macros.fat }}</p>
+            </span>
+            <span v-else>
               Fat:
               <p class="d-inline">{{ nutritionalFacts.valueTotalFat }}</p>
-            </span>
-            <span v-else>
-              <span v-if="!isNaN(meal.macros.fat) && meal.macros.fat !== null"
-                >Fat:
-                <p class="d-inline">{{ meal.macros.fat }}</p></span
-              >
             </span>
           </li>
         </div>
@@ -280,7 +265,7 @@
               </button>
               <div>
                 <b-form-input
-                  v-model="quantity"
+                  v-model="quant"
                   type="number"
                   class="mb-2 width-115"
                 ></b-form-input>
@@ -323,7 +308,7 @@ import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 export default {
   data() {
     return {
-      quantity: 1,
+      quant: 1,
       defaultMealSize: {},
       mealSizes: null,
       mealSize: null,
@@ -616,7 +601,7 @@ export default {
           );
           return;
         } else {
-          meal.quantity = parseInt(this.quantity);
+          meal.quantity = parseInt(this.quant);
           this.addOne(
             meal,
             false,
@@ -628,7 +613,7 @@ export default {
           meal.quantity = 1;
         }
       } else {
-        meal.quantity = parseInt(this.quantity);
+        meal.quantity = parseInt(this.quant);
         this.addOne(
           meal,
           false,
@@ -650,7 +635,7 @@ export default {
       this.special_instructions = null;
       this.invalid = false;
       this.showcaseNutrition = false;
-      this.quantity = 1;
+      this.quant = 1;
     },
     back() {
       let viewedMeal = {};

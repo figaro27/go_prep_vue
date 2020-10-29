@@ -1016,10 +1016,10 @@ class Meal extends Model implements HasMedia
 
         if ($meal->store->settings->showMacros) {
             $macros = $props->get('macros');
-            $calories = $macros['calories'];
-            $carbs = $macros['carbs'];
-            $protein = $macros['protein'];
-            $fat = $macros['fat'];
+            $calories = isset($macros['calories']) ? $macros['calories'] : null;
+            $carbs = isset($macros['carbs']) ? $macros['carbs'] : null;
+            $protein = isset($macros['protein']) ? $macros['protein'] : null;
+            $fat = isset($macros['fat']) ? $macros['fat'] : null;
 
             $macro = new MealMacro();
 
@@ -1434,10 +1434,10 @@ class Meal extends Model implements HasMedia
         $macros = $props->get('macros');
 
         if ($macros && $meal->store->settings->showMacros) {
-            $calories = isset($macros['calories']) ? $macros['calories'] : 0;
-            $carbs = isset($macros['carbs']) ? $macros['carbs'] : 0;
-            $protein = isset($macros['protein']) ? $macros['protein'] : 0;
-            $fat = isset($macros['fat']) ? $macros['fat'] : 0;
+            $calories = isset($macros['calories']) ? $macros['calories'] : null;
+            $carbs = isset($macros['carbs']) ? $macros['carbs'] : null;
+            $protein = isset($macros['protein']) ? $macros['protein'] : null;
+            $fat = isset($macros['fat']) ? $macros['fat'] : null;
 
             $macro = MealMacro::where('meal_id', $meal->id)->first();
 

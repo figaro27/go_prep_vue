@@ -31,7 +31,8 @@ class MealMacro extends Model
             $this->calories !== null ||
             $this->carbs !== null ||
             $this->protein !== null ||
-            $this->fat !== null
+            $this->fat !== null ||
+            count($this->meal->ingredients) > 0
         ) {
             return true;
         } else {

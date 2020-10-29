@@ -1614,7 +1614,7 @@ export default {
         }
       });
     },
-    getNutritionFacts(ingredients, meal, ref = null, servingDetails) {
+    getNutritionFacts(ingredients, meal, ref = null, servingDetails = null) {
       const nutrition = this.nutrition.getTotals(ingredients);
       const ingredientList = this.nutrition.getIngredientList(ingredients);
       let servingsPerMeal = null;
@@ -1623,11 +1623,61 @@ export default {
         servingsPerMeal = servingDetails.servingsPerMeal;
         servingSizeUnit = servingDetails.servingSizeUnit;
       } else {
-        servingsPerMeal = this.meal.servingsPerMeal;
-        servingSizeUnit = this.meal.servingSizeUnit;
+        servingsPerMeal = meal.servingsPerMeal;
+        servingSizeUnit = meal.servingSizeUnit;
       }
 
       this.nutritionalFacts = {
+        showItemName: false,
+        showServingUnitQuantity: true,
+        valueServingPerContainer: servingsPerMeal,
+        valueServingUnitQuantity: 1,
+        valueServingSizeUnit: servingSizeUnit,
+        showServingsPerContainer: true,
+        showPolyFat: false,
+        showMonoFat: false,
+        showTransFat: false,
+        showFibers: true,
+        showVitaminD: false,
+        showPotassium_2018: false,
+        showCalcium: false,
+        showIron: false,
+        showCaffeine: false,
+        itemName: meal.title,
+        ingredientList: ingredientList,
+        showIngredients: false,
+        decimalPlacesForQuantityTextbox: 2,
+        allowFDARounding: false,
+        decimalPlacesForNutrition: 0,
+        valueCalories: (nutrition.calories / servingsPerMeal).toFixed(0),
+        valueFatCalories: (nutrition.fatcalories / servingsPerMeal).toFixed(0),
+        valueTotalFat: (nutrition.totalfat / servingsPerMeal).toFixed(0),
+        valueSatFat: (nutrition.satfat / servingsPerMeal).toFixed(0),
+        valueTransFat: (nutrition.transfat / servingsPerMeal).toFixed(0),
+        valueCholesterol: (nutrition.cholesterol / servingsPerMeal).toFixed(0),
+        valueSodium: (nutrition.sodium / servingsPerMeal).toFixed(0),
+        valueTotalCarb: (nutrition.totalcarb / servingsPerMeal).toFixed(0),
+        valueFibers: (nutrition.fibers / servingsPerMeal).toFixed(0),
+        valueSugars: (nutrition.sugars / servingsPerMeal).toFixed(0),
+        valueProteins: (nutrition.proteins / servingsPerMeal).toFixed(0),
+        // valueVitaminD: (
+        //   ((nutrition.vitamind / 20000) * 100) /
+        //   servingsPerMeal
+        // ).toFixed(0),
+        // valuePotassium_2018: (
+        //   ((nutrition.potassium / 4700) * 100) /
+        //   servingsPerMeal
+        // ).toFixed(0),
+        // valueCalcium: (
+        //   ((nutrition.calcium / 1300) * 100) /
+        //   servingsPerMeal
+        // ).toFixed(0),
+        // valueIron: (((nutrition.iron / 18) * 100) / servingsPerMeal).toFixed(0),
+        valueAddedSugars: (nutrition.addedsugars / servingsPerMeal).toFixed(0),
+        showLegacyVersion: false
+      };
+
+      return {
         showItemName: false,
         showServingUnitQuantity: true,
         valueServingPerContainer: servingsPerMeal,

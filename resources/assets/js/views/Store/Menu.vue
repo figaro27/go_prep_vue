@@ -273,7 +273,7 @@
                     Macros
                     <img
                       v-b-popover.hover="
-                        'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page.'
+                        'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page. If this is turned on, and no macros are manually entered, the macros will be pulled from your nutrition facts even if nutrition facts is not enabled. If they are manually entered here, it overrides the nutrition facts macros.'
                       "
                       title="Macros"
                       src="/images/store/popover.png"
