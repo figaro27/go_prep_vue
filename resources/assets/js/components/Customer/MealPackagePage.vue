@@ -168,27 +168,27 @@
                                 "
                               >
                                 <p class="d-inline mr-4 font-11">
-                                  {{ getMacros().calories }}<br />
+                                  {{ getMacroTitle().calories }}<br />
                                   <center>
-                                    {{ mealOption.meal.macros.calories }}
+                                    {{ getMacros(mealOption.meal, "calories") }}
                                   </center>
                                 </p>
                                 <p class="d-inline mr-4 font-11">
-                                  {{ getMacros().carbs }}<br />
+                                  {{ getMacroTitle().carbs }}<br />
                                   <center>
-                                    {{ mealOption.meal.macros.carbs }}
+                                    {{ getMacros(mealOption.meal, "carbs") }}
                                   </center>
                                 </p>
                                 <p class="d-inline mr-4 font-11">
-                                  {{ getMacros().protein }}<br />
+                                  {{ getMacroTitle().protein }}<br />
                                   <center>
-                                    {{ mealOption.meal.macros.protein }}
+                                    {{ getMacros(mealOption.meal, "protein") }}
                                   </center>
                                 </p>
                                 <p class="d-inline font-11">
-                                  {{ getMacros().fat }}<br />
+                                  {{ getMacroTitle().fat }}<br />
                                   <center>
-                                    {{ mealOption.meal.macros.fat }}
+                                    {{ getMacros(mealOption.meal, "fat") }}
                                   </center>
                                 </p>
                               </div>
@@ -365,20 +365,24 @@
                                     "
                                   >
                                     <p class="d-inline mr-4 font-11">
-                                      {{ getMacros().calories }}<br />
-                                      {{ mealOption.meal.macros.calories }}
+                                      {{ getMacroTitle().calories }}<br />
+                                      {{
+                                        getMacros(mealOption.meal, "calories")
+                                      }}
                                     </p>
                                     <p class="d-inline mr-4 font-11">
-                                      {{ getMacros().carbs }}<br />
-                                      {{ mealOption.meal.macros.carbs }}
+                                      {{ getMacroTitle().carbs }}<br />
+                                      {{ getMacros(mealOption.meal, "carbs") }}
                                     </p>
                                     <p class="d-inline mr-4 font-11">
-                                      {{ getMacros().protein }}<br />
-                                      {{ mealOption.meal.macros.protein }}
+                                      {{ getMacroTitle().protein }}<br />
+                                      {{
+                                        getMacros(mealOption.meal, "protein")
+                                      }}
                                     </p>
                                     <p class="d-inline font-11">
-                                      {{ getMacros().fat }}<br />
-                                      {{ mealOption.meal.macros.fat }}
+                                      {{ getMacroTitle().fat }}<br />
+                                      {{ getMacros(mealOption.meal, "fat") }}
                                     </p>
                                   </div>
                                 </div>
@@ -423,20 +427,24 @@
                                     "
                                   >
                                     <p class="d-inline mr-4 font-11">
-                                      {{ getMacros().calories }}<br />
-                                      {{ mealOption.meal.macros.calories }}
+                                      {{ getMacroTitle().calories }}<br />
+                                      {{
+                                        getMacros(mealOption.meal, "calories")
+                                      }}
                                     </p>
                                     <p class="d-inline mr-4 font-11">
-                                      {{ getMacros().carbs }}<br />
-                                      {{ mealOption.meal.macros.carbs }}
+                                      {{ getMacroTitle().carbs }}<br />
+                                      {{ getMacros(mealOption.mea, "carbs") }}
                                     </p>
                                     <p class="d-inline mr-4 font-11">
-                                      {{ getMacros().protein }}<br />
-                                      {{ mealOption.meal.macros.protein }}
+                                      {{ getMacroTitle().protein }}<br />
+                                      {{
+                                        getMacros(mealOption.meal, "protein")
+                                      }}
                                     </p>
                                     <p class="d-inline font-11">
-                                      {{ getMacros().fat }}<br />
-                                      {{ mealOption.meal.macros.fat }}
+                                      {{ getMacroTitle().fat }}<br />
+                                      {{ getMacros(mealOption.meal, "fat") }}
                                     </p>
                                   </div>
                                 </div>
@@ -587,27 +595,27 @@
                               "
                             >
                               <p class="d-inline mr-4 font-11">
-                                {{ getMacros().calories }}<br />
+                                {{ getMacroTitle().calories }}<br />
                                 <center>
-                                  {{ mealOption.meal.macros.calories }}
+                                  {{ getMacros(mealOption.meal, "calories") }}
                                 </center>
                               </p>
                               <p class="d-inline mr-4 font-11">
-                                {{ getMacros().carbs }}<br />
+                                {{ getMacroTitle().carbs }}<br />
                                 <center>
-                                  {{ mealOption.meal.macros.carbs }}
+                                  {{ getMacros(mealOption.meal, "carbs") }}
                                 </center>
                               </p>
                               <p class="d-inline mr-4 font-11">
-                                {{ getMacros().protein }}<br />
+                                {{ getMacroTitle().protein }}<br />
                                 <center>
-                                  {{ mealOption.meal.macros.protein }}
+                                  {{ getMacros(mealOption.meal, "protein") }}
                                 </center>
                               </p>
                               <p class="d-inline font-11">
-                                {{ getMacros().fat }}<br />
+                                {{ getMacroTitle().fat }}<br />
                                 <center>
-                                  {{ mealOption.meal.macros.fat }}
+                                  {{ getMacros(mealOption.meal, "fat") }}
                                 </center>
                               </p>
                             </div>
@@ -658,27 +666,27 @@
                                 "
                               >
                                 <p class="d-inline mr-4 font-11">
-                                  {{ getMacros().calories }}<br />
+                                  {{ getMacroTitle().calories }}<br />
                                   <center>
-                                    {{ mealOption.meal.macros.calories }}
+                                    {{ getMacros(mealOption.meal, "calories") }}
                                   </center>
                                 </p>
                                 <p class="d-inline mr-4 font-11">
-                                  {{ getMacros().carbs }}<br />
+                                  {{ getMacroTitle().carbs }}<br />
                                   <center>
-                                    {{ mealOption.meal.macros.carbs }}
+                                    {{ getMacros(mealOption.meal, "carbs") }}
                                   </center>
                                 </p>
                                 <p class="d-inline mr-4 font-11">
-                                  {{ getMacros().protein }}<br />
+                                  {{ getMacroTitle().protein }}<br />
                                   <center>
-                                    {{ mealOption.meal.macros.protein }}
+                                    {{ getMacros(mealOption.meal, "protein") }}
                                   </center>
                                 </p>
                                 <p class="d-inline font-11">
-                                  {{ getMacros().fat }}<br />
+                                  {{ getMacroTitle().fat }}<br />
                                   <center>
-                                    {{ mealOption.meal.macros.fat }}
+                                    {{ getMacros(mealOption.meal, "fat") }}
                                   </center>
                                 </p>
                               </div>
@@ -762,20 +770,20 @@
                                   "
                                 >
                                   <p class="d-inline mr-4 font-11">
-                                    {{ getMacros().calories }}<br />
-                                    {{ mealOption.meal.macros.calories }}
+                                    {{ getMacroTitle().calories }}<br />
+                                    {{ getMacros(mealOption.meal, "calories") }}
                                   </p>
                                   <p class="d-inline mr-4 font-11">
-                                    {{ getMacros().carbs }}<br />
-                                    {{ mealOption.meal.macros.carbs }}
+                                    {{ getMacroTitle().carbs }}<br />
+                                    {{ getMacros(mealOption.meal, "carbs") }}
                                   </p>
                                   <p class="d-inline mr-4 font-11">
-                                    {{ getMacros().protein }}<br />
-                                    {{ mealOption.meal.macros.protein }}
+                                    {{ getMacroTitle().protein }}<br />
+                                    {{ getMacros(mealOption.meal, "protein") }}
                                   </p>
                                   <p class="d-inline font-11">
-                                    {{ getMacros().fat }}<br />
-                                    {{ mealOption.meal.macros.fat }}
+                                    {{ getMacroTitle().fat }}<br />
+                                    {{ getMacros(mealOption.meal, "fat") }}
                                   </p>
                                 </div>
                               </div>
@@ -820,20 +828,20 @@
                                   "
                                 >
                                   <p class="d-inline mr-4 font-11">
-                                    {{ getMacros().calories }}<br />
-                                    {{ mealOption.meal.macros.calories }}
+                                    {{ getMacroTitle().calories }}<br />
+                                    {{ getMacros(mealOption.meal, "calories") }}
                                   </p>
                                   <p class="d-inline mr-4 font-11">
-                                    {{ getMacros().carbs }}<br />
-                                    {{ mealOption.meal.macros.carbs }}
+                                    {{ getMacroTitle().carbs }}<br />
+                                    {{ getMacros(mealOption.meal, "carbs") }}
                                   </p>
                                   <p class="d-inline mr-4 font-11">
-                                    {{ getMacros().protein }}<br />
-                                    {{ mealOption.meal.macros.protein }}
+                                    {{ getMacroTitle().protein }}<br />
+                                    {{ getMacros(mealOption.meal, "protein") }}
                                   </p>
                                   <p class="d-inline font-11">
-                                    {{ getMacros().fat }}<br />
-                                    {{ mealOption.meal.macros.fat }}
+                                    {{ getMacroTitle().fat }}<br />
+                                    {{ getMacros(mealOption.meal, "fat") }}
                                   </p>
                                 </div>
                               </div>
@@ -1771,7 +1779,7 @@ export default {
       this.mealTitle = title;
       this.mealPackageMealModal = true;
     },
-    getMacros() {
+    getMacroTitle() {
       let macros = {};
       if (!this.smallScreen) {
         macros.calories = "Calories";
@@ -1818,6 +1826,55 @@ export default {
             `&package_size=` +
             sizeId
         );
+      }
+    },
+    getMacros(meal, macro) {
+      // Revisit after you get macros from the back end
+
+      // switch (macro) {
+      //   case "calories":
+      //     return meal.macros && meal.macros.calories
+      //       ? meal.macros.calories
+      //       : this.$parent.getNutritionFacts(meal.ingredients, meal)
+      //           .valueCalories;
+      //     break;
+      //   case "carbs":
+      //     return meal.macros && meal.macros.carbs
+      //       ? meal.macros.carbs
+      //       : this.$parent.getNutritionFacts(meal.ingredients, meal)
+      //           .valueTotalCarb;
+      //     break;
+      //   case "protein":
+      //     return meal.macros && meal.macros.protein
+      //       ? meal.macros.protein
+      //       : this.$parent.getNutritionFacts(meal.ingredients, meal)
+      //           .valueProteins;
+      //     break;
+      //   case "fat":
+      //     return meal.macros && meal.macros.fat
+      //       ? meal.macros.fat
+      //       : this.$parent.getNutritionFacts(meal.ingredients, meal)
+      //           .valueTotalFat;
+      //     break;
+      // }
+
+      switch (macro) {
+        case "calories":
+          return meal.macros && meal.macros.calories
+            ? meal.macros.calories
+            : null;
+          break;
+        case "carbs":
+          return meal.macros && meal.macros.carbs ? meal.macros.carbs : null;
+          break;
+        case "protein":
+          return meal.macros && meal.macros.protein
+            ? meal.macros.protein
+            : null;
+          break;
+        case "fat":
+          return meal.macros && meal.macros.fat ? meal.macros.fat : null;
+          break;
       }
     }
   }
