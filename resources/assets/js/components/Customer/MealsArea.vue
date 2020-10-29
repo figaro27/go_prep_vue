@@ -295,7 +295,7 @@
 
                       <div
                         class="title macrosArea d-flex d-center"
-                        v-if="meal.macros && storeSettings.showMacros"
+                        v-if="storeSettings.showMacros"
                       >
                         <div class="d-inline mr-4">
                           <p>
