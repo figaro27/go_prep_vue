@@ -1623,26 +1623,34 @@ export default {
         case "calories":
           return meal.macros && meal.macros.calories
             ? meal.macros.calories
-            : this.$parent.getNutritionFacts(meal.ingredients, meal)
-                .valueCalories;
+            : meal.ingredients
+            ? this.$parent.getNutritionFacts(meal.ingredients, meal)
+                .valueCalories
+            : null;
           break;
         case "carbs":
           return meal.macros && meal.macros.carbs
             ? meal.macros.carbs
-            : this.$parent.getNutritionFacts(meal.ingredients, meal)
-                .valueTotalCarb;
+            : meal.ingredients
+            ? this.$parent.getNutritionFacts(meal.ingredients, meal)
+                .valueTotalCarb
+            : null;
           break;
         case "protein":
           return meal.macros && meal.macros.protein
             ? meal.macros.protein
-            : this.$parent.getNutritionFacts(meal.ingredients, meal)
-                .valueProteins;
+            : meal.ingredients
+            ? this.$parent.getNutritionFacts(meal.ingredients, meal)
+                .valueProteins
+            : null;
           break;
         case "fat":
           return meal.macros && meal.macros.fat
             ? meal.macros.fat
-            : this.$parent.getNutritionFacts(meal.ingredients, meal)
-                .valueTotalFat;
+            : meal.ingredients
+            ? this.$parent.getNutritionFacts(meal.ingredients, meal)
+                .valueTotalFat
+            : null;
           break;
       }
     }
