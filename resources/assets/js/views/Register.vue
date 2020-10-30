@@ -15,12 +15,22 @@
     <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
       <div class="card">
         <div class="card-body p-lg-5">
+          <b-alert variant="success" v-if="freeTrial && step === 0" show>
+            <p class="center-text">
+              Thank you for trying GoPrep! Sign up below to get started with
+              your free two week trial.
+            </p>
+          </b-alert>
           <b-form @submit.prevent="submit" autocomplete="off" ref="form">
             <div v-if="step === 0">
               <b-form-group
                 horizontal
                 label="Account Type"
-                v-if="!$route.params.customerRegister && !$route.query.store"
+                v-if="
+                  !$route.params.customerRegister &&
+                    !$route.query.store &&
+                    !freeTrial
+                "
               >
                 <b-form-radio-group
                   horizontal
@@ -540,7 +550,7 @@
             </div>
 
             <div v-if="step === 3">
-              <h4>Payment Details</h4>
+              <h4 v-if="!freeTrial">Payment Details</h4>
 
               <b-form-group label="Billing method" horizontal v-if="!freeTrial">
                 <b-form-radio-group
@@ -569,19 +579,19 @@
                   stacked
                 ></b-form-radio-group>
               </b-form-group>
-
-              <p v-if="freeTrial">
-                Thank you for trying GoPrep. Please enter your card details
-                below to get started with your free two week trial. You will not
-                be charged now. After two weeks, you will be charged $119 for
-                our Basic Plan which allows up to 50 orders per month. To
-                upgrade your plan or to cancel before the first charge, please
-                contact us before the two weeks are finished at
-                <a href="https://www.goprep.com" target="_blank"
-                  >www.GoPrep.com</a
-                >
-                or email <a href="mailto:help@goprep.com">help@goprep.com</a>
-              </p>
+              <b-alert variant="success" v-if="freeTrial" show>
+                <p class="strong">
+                  Please enter your card details below to get started with your
+                  free two week trial. You will not be charged now. After two
+                  weeks, you will be charged $119 for our Basic Plan which
+                  allows up to 50 orders per month. <br /><br />To upgrade or
+                  cancel before the first charge, contact us before two weeks at
+                  <a href="https://www.goprep.com" target="_blank"
+                    >www.GoPrep.com</a
+                  >
+                  or email <a href="mailto:help@goprep.com">help@goprep.com</a>
+                </p>
+              </b-alert>
 
               <div v-if="planRequiresCard" class="mb-2">
                 <card
@@ -642,7 +652,7 @@ export default {
       freeTrial: false,
       noDeliveryInstructions: false,
       redirect: null,
-      step: 0,
+      step: 3,
       plans: {},
       stripeKey: window.app.stripe_key,
       stripeOptions: {},
@@ -860,6 +870,7 @@ export default {
     if (this.$route.query.free_trial) {
       this.freeTrial = true;
       this.planSelected = this.planOptions[0];
+      this.form[0].role = "store";
     }
   },
   methods: {
