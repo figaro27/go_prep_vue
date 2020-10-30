@@ -32,7 +32,7 @@ font-size:10px !important;
 </head>
 @foreach($orders as $i => $order)
 <div style="height:100vh">
-  <div style="height:20px">
+  <div style="height:30px">
   </div>
   <div>
   <center>
