@@ -32,7 +32,9 @@ font-size:10px !important;
 </head>
 @foreach($orders as $i => $order)
 <div style="height:100vh">
-  <div style="margin-top:20px">
+  <div style="height:20px">
+  </div>
+  <div>
   <center>
     <img src="{{$logo}}"/ style="width:28vh;height:28vh;margin-bottom:8px">
     @if ($reportSettings->o_lab_customer)
