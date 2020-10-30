@@ -336,11 +336,10 @@
                           </b-btn>
                           <b-form-input
                             v-if="meal.gift_card"
-                            type="number"
                             name
                             id
                             class="quantity"
-                            placeholder="0"
+                            placeholder="1"
                             v-model="giftCardQuantities[meal.id]"
                             @change="
                               val => setItemQuantity('giftCard', meal, val)
@@ -372,11 +371,10 @@
                                 !meal.gift_card &&
                                 !meal.hasVariations
                             "
-                            type="number"
                             name
                             id
                             class="quantity"
-                            placeholder="0"
+                            placeholder="1"
                             v-model="mealQuantities[meal.id]"
                             @change="val => setItemQuantity('meal', meal, val)"
                           ></b-form-input>
@@ -1658,7 +1656,7 @@ export default {
 };
 </script>
 <style>
-.quantity::placeholder {
+/*.quantity::placeholder {
   padding-left: 14px;
-}
+}*/
 </style>
