@@ -63,11 +63,17 @@
         {{ format.money(mealVariationPrice, storeSettings.currency) }}
       </h4>
     </div>
-    <div v-if="fromMealsArea" class="d-flex d-center">
+    <div v-if="fromMealsArea" class="d-center">
+      <b-form-input
+        v-model="quantity"
+        type="number"
+        class="mb-2 ml-3 width-115"
+      ></b-form-input>
+
       <button
         type="button"
         :style="brandColor"
-        class="btn btn-lg white-text d-inline mb-2"
+        class="btn btn-lg white-text d-inline mb-2 ml-3"
         @click="addMeal(meal)"
       >
         <h6 class="strong pt-1">Add To Bag</h6>
@@ -93,6 +99,7 @@ export default {
   mixins: [modal, MenuBag],
   data() {
     return {
+      quantity: 1,
       mealPackage: false,
       size: null,
       choices: {},
@@ -372,6 +379,7 @@ export default {
       return items;
     },
     addMeal(meal) {
+      meal.quantity = parseInt(this.quantity);
       if (this.$v.$invalid && this.hasVariations) {
         this.modalInvalid = true;
         this.$toastr.w("Please select the minimum/maximum required choices.");
