@@ -39,7 +39,8 @@ font-size:10px !important;
     <p class="text-18" style="font-weight:bold;margin-top:5px">Client: {{ $order['firstName'] }} {{ $order['lastName'] }}</p>
     @endif
     @if ($reportSettings->o_lab_address)
-    <p class="text-13" style="margin-top:5px">{{ $order['address'] }}, {{ $order['city'] }}, {{ $order['state'] }} {{ $order['zip'] }}</p>
+    <p class="text-13" style="margin-top:5px">{{ $order['address'] }}</p>
+    <p class="text-13">{{ $order['city'] }}, {{ $order['state'] }} {{ $order['zip'] }}</p>
     @endif
     @if ($reportSettings->o_lab_phone)
     <p class="text-13" style="margin-top:5px">{{ $order['phone'] }}</p>
