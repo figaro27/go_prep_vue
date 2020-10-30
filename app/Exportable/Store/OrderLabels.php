@@ -170,7 +170,7 @@ class OrderLabels
             'store_id',
             $this->store->id
         )->first();
-        $reportRecord->labels += 1;
+        $reportRecord->order_labels += 1;
         $reportRecord->update();
 
         if ($type === 'pdf') {

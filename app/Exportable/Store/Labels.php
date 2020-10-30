@@ -253,7 +253,7 @@ class Labels
             'store_id',
             $this->store->id
         )->first();
-        $reportRecord->labels += 1;
+        $reportRecord->meal_labels += 1;
         $reportRecord->update();
 
         if ($type === 'pdf') {
