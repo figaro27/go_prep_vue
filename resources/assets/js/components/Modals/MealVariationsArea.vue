@@ -7,7 +7,7 @@
           :key="meal.id + component.id"
           class
         >
-          <h6 :class="headingClass">{{ component.title }}</h6>
+          <h6>{{ component.title }}</h6>
           <p class="font-13">{{ getComponentLabel(component) }}</p>
           <b-form-group :label="null">
             <b-checkbox-group
@@ -46,7 +46,7 @@
 
     <b-row v-if="mealAddons.length" class="my-1 pt-3">
       <b-col>
-        <h6 :class="headingClass">Add-ons</h6>
+        <h6>Add-ons</h6>
         <b-form-group label>
           <b-checkbox-group
             v-model="addons"
@@ -58,22 +58,22 @@
       </b-col>
     </b-row>
 
-    <div v-if="fromMealsArea" class="d-flex d-center">
+    <div v-if="fromMealsArea" class="d-flex">
       <h4 class="mb-3 dark-gray ">
         {{ format.money(mealVariationPrice, storeSettings.currency) }}
       </h4>
     </div>
-    <div v-if="fromMealsArea" class="d-center">
+    <div v-if="fromMealsArea">
       <b-form-input
         v-model="quantity"
         type="number"
-        class="mb-2 ml-3 width-115"
+        class="mb-2 width-115"
       ></b-form-input>
 
       <button
         type="button"
         :style="brandColor"
-        class="btn btn-lg white-text d-inline mb-2 ml-3"
+        class="btn btn-lg white-text d-inline mb-2"
         @click="addMeal(meal)"
       >
         <h6 class="strong pt-1">Add To Bag</h6>
