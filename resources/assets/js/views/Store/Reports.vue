@@ -287,7 +287,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6" v-if="store.id == 3">
+      <div class="col-md-6">
         <div class="card">
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">
