@@ -259,7 +259,7 @@
               ></delivery-date-picker>
               <b-btn @click="clearDates('labels')" class="ml-1">Clear</b-btn>
             </div>
-            <p class="mt-4 center-text">Labels for your meal containers.</p>
+            <p class="mt-4 center-text">Labels for your meals.</p>
             <div class="row">
               <div class="col-md-6">
                 <button

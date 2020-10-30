@@ -51,64 +51,57 @@ class OrderLabels
     {
         $params = $this->params;
 
-        if (
-            $this->store->id == 108 ||
-            $this->store->id == 109 ||
-            $this->store->id == 110
-        ) {
-            $params->put('livotis', true);
+        if ($this->orderId) {
+            $orders = $this->store
+                ->orders()
+                ->where([
+                    'paid' => 1,
+                    // 'voided' => 0,
+                    'id' => $this->orderId
+                ])
+                ->get();
+        } else {
+            $orders = $this->store
+                ->getOrders(null, $this->getDeliveryDates())
+                ->filter(function ($order) use ($params) {
+                    if (
+                        $params->has('fulfilled') &&
+                        $order->fulfilled != $params->get('fulfilled')
+                    ) {
+                        return false;
+                    }
+
+                    return true;
+                });
         }
 
-        $params->put(
-            'show_daily_order_numbers',
-            $this->store->modules->dailyOrderNumbers
-        );
-
-        $params->put(
-            'show_times',
-            $this->store->modules->pickupHours ||
-                $this->store->modules->deliveryHours
-        );
-
-        $orders = $this->store
-            ->getOrders(null, $this->getDeliveryDates())
-            ->filter(function ($order) use ($params) {
-                if (
-                    $params->has('fulfilled') &&
-                    $order->fulfilled != $params->get('fulfilled')
-                ) {
-                    return false;
-                }
-
-                return true;
-            })
-            ->map(function ($order) {
-                return [
-                    'dailyOrderNumber' => $order->dailyOrderNumber,
-                    'orderNumber' => $order->order_number,
-                    'firstName' => $order->user->details->firstname,
-                    'lastName' => $order->user->details->lastname,
-                    'address' => $order->user->details->address,
-                    'city' => $order->user->details->city,
-                    'state' => $order->user->details->state,
-                    'zip' => $order->user->details->zip,
-                    'phone' => $order->user->details->phone,
-                    'email' => $order->user->email,
-                    'amount' => '$' . number_format($order->amount, 2),
-                    'balance' => '$' . number_format($order->balance, 2),
-                    'created_at' => $order->created_at->format('D, m/d/Y'),
-                    'deliveryDate' => !$order->isMultipleDelivery
-                        ? $order->delivery_date->format('D, m/d/Y')
-                        : 'Multiple',
-                    'deliveryInstructions' => $order->user->details->delivery,
-                    'pickup' => $order->pickup,
-                    'transferType' => $order->transfer_type,
-                    'pickupLocation' => isset($order->pickup_location)
-                        ? $order->pickup_location->name
-                        : null
-                    // 'numberOfItems' => $order->numberOfItems
-                ];
-            });
+        $orders = $orders->map(function ($order) {
+            return [
+                'dailyOrderNumber' => $order->dailyOrderNumber,
+                'orderNumber' => $order->order_number,
+                'firstName' => $order->user->details->firstname,
+                'lastName' => $order->user->details->lastname,
+                'address' => $order->user->details->address,
+                'city' => $order->user->details->city,
+                'state' => $order->user->details->state,
+                'zip' => $order->user->details->zip,
+                'phone' => $order->user->details->phone,
+                'email' => $order->user->email,
+                'amount' => '$' . number_format($order->amount, 2),
+                'balance' => '$' . number_format($order->balance, 2),
+                'created_at' => $order->created_at->format('D, m/d/Y'),
+                'deliveryDate' => !$order->isMultipleDelivery
+                    ? $order->delivery_date->format('D, m/d/Y')
+                    : 'Multiple',
+                'deliveryInstructions' => $order->user->details->delivery,
+                'pickup' => $order->pickup,
+                'transferType' => $order->transfer_type,
+                'pickupLocation' => isset($order->pickup_location)
+                    ? $order->pickup_location->name
+                    : null
+                // 'numberOfItems' => $order->numberOfItems
+            ];
+        });
 
         $orders = $orders->toArray();
 

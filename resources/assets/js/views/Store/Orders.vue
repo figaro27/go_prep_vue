@@ -1,21 +1,21 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
+      <b-alert style="background-color:#EBFAFF" show dismissible>
         <h5>
-          New Report - Ingredient By Meal Report
+          Order Labels
         </h5>
         <p>
-          The new Ingredient By Meal Report shows you the total amount of each
-          ingredient required to fulfill orders broken down by meal.<br />
-          <router-link to="/store/ingredients"
+          You can now print order summary labels to be put on the bags /
+          containers with your meals. Just like meal labels, these labels are
+          completely customizable.<br />
+          <router-link to="/store/reports"
             ><strong
-              >You can find the new green Print Ingredients By Meal button on
-              the Ingredients page.</strong
+              >You can print Order Labels on the Reports page.</strong
             ></router-link
           >
         </p>
-      </b-alert> -->
+      </b-alert>
 
       <div class="card">
         <div class="card-body">
@@ -605,12 +605,24 @@
               <b-btn
                 class="btn mb-2 d-inline mr-1 royalBlueBG"
                 @click="printLabel(order.id, 'labels', 'b64')"
-                >Print Label</b-btn
+                >Print Meal Labels</b-btn
               >
               <b-btn
                 class="btn mb-2 d-inline btn-secondary"
                 @click="printLabel(order.id, 'labels', 'pdf')"
-                >Preview Label</b-btn
+                >Preview Meal Labels</b-btn
+              >
+            </div>
+            <div class="d-flex">
+              <b-btn
+                class="btn mb-2 d-inline mr-1 royalBlueBG"
+                @click="printLabel(order.id, 'order_labels', 'b64')"
+                >Print Order Label</b-btn
+              >
+              <b-btn
+                class="btn mb-2 d-inline btn-secondary"
+                @click="printLabel(order.id, 'order_labels', 'pdf')"
+                >Preview Order Label</b-btn
               >
             </div>
             <div>
@@ -1345,8 +1357,16 @@ export default {
     printLabel(order_id, report, format, page = 1) {
       let params = { page };
 
-      params.width = this.reportSettings.lab_width;
-      params.height = this.reportSettings.lab_height;
+      let width = this.reportSettings.lab_width;
+      let height = this.reportSettings.lab_height;
+
+      if (report == "order_labels") {
+        width = this.reportSettings.o_lab_width;
+        height = this.reportSettings.o_lab_height;
+      }
+
+      params.width = width;
+      params.height = height;
       params.order_id = order_id;
 
       axios
@@ -1357,10 +1377,7 @@ export default {
           const { data } = response;
 
           if (format === "b64") {
-            const size = new PrintSize(
-              this.reportSettings.lab_width,
-              this.reportSettings.lab_height
-            );
+            const size = new PrintSize(width, height);
             const margins = {
               top: this.reportSettings.lab_margin_top,
               right: this.reportSettings.lab_margin_right,
