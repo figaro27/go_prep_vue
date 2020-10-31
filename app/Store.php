@@ -1078,6 +1078,22 @@ class Store extends Model
                                     $to->format('Y-m-d')
                                 );
                             }
+
+                            if (isset($dateRange['startTime'])) {
+                                $query1->where(
+                                    'transferTime',
+                                    '>=',
+                                    $dateRange['startTime']
+                                );
+                            }
+
+                            if (isset($dateRange['endTime'])) {
+                                $query1->where(
+                                    'transferTime',
+                                    '<=',
+                                    $dateRange['endTime']
+                                );
+                            }
                         })
                         ->orWhere(function ($query2) use ($dateRange) {
                             $query2->where('isMultipleDelivery', 1);
@@ -1126,6 +1142,22 @@ class Store extends Model
                     'created_at',
                     '<=',
                     $to->addDays(1)->format('Y-m-d')
+                );
+            }
+
+            if (isset($dateRange['startTime'])) {
+                $orders = $orders->where(
+                    'transferTime',
+                    '>=',
+                    $dateRange['startTime']
+                );
+            }
+
+            if (isset($dateRange['endTime'])) {
+                $orders = $orders->where(
+                    'transferTime',
+                    '<=',
+                    $dateRange['endTime']
                 );
             }
 

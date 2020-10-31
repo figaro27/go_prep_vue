@@ -253,6 +253,16 @@ trait Exportable
             ];
         }
 
+        if ($this->params && $this->params->has('delivery_time')) {
+            $d_time = json_decode($this->params->get('delivery_time'), true);
+
+            $d_time['startTime'] = date("H:i", strtotime($d_time['startTime']));
+
+            $d_time['endTime'] = date("H:i", strtotime($d_time['endTime']));
+
+            $dates = $dates + $d_time;
+        }
+
         return $dates;
     }
 

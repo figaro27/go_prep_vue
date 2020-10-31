@@ -412,6 +412,21 @@ export default {
         };
       }
 
+      params.delivery_time = {
+        startTime:
+          this.selectedTimeRange.start_time.hh +
+          ":" +
+          this.selectedTimeRange.start_time.mm +
+          " " +
+          this.selectedTimeRange.start_time.a,
+        endTime:
+          this.selectedTimeRange.end_time.hh +
+          ":" +
+          this.selectedTimeRange.end_time.mm +
+          " " +
+          this.selectedTimeRange.end_time.a
+      };
+
       axios
         .get(`/api/me/print/${report}/${format}`, {
           params
