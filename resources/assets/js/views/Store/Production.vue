@@ -21,27 +21,40 @@
                   ref="deliveryDates"
                 ></delivery-date-picker>
                 <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
-
-                <label>Select Time: </label>
-                <vue-timepicker
-                  v-model="selectedTimeRange.start_time"
-                  format="hh:mm a"
-                  placeholder="Start Time"
-                  :minute-interval="10"
-                  @change="onChangeDateFilter"
-                ></vue-timepicker>
-                <span> to </span>
-                <vue-timepicker
-                  v-model="selectedTimeRange.end_time"
-                  format="hh:mm a"
-                  placeholder="End Time"
-                  :minute-interval="10"
-                  @change="onChangeDateFilter"
-                ></vue-timepicker>
-
+                <div class="ml-2 d-flex">
+                  <div class="d-inline">
+                    <label>Select Time: </label>
+                    <vue-timepicker
+                      v-model="selectedTimeRange.start_time"
+                      format="hh:mm a"
+                      placeholder="Start Time"
+                      :minute-interval="10"
+                      @change="onChangeDateFilter"
+                    ></vue-timepicker>
+                    <span> to </span>
+                    <vue-timepicker
+                      v-model="selectedTimeRange.end_time"
+                      format="hh:mm a"
+                      placeholder="End Time"
+                      :minute-interval="10"
+                      @change="onChangeDateFilter"
+                    ></vue-timepicker>
+                  </div>
+                  <div class="ml-2 d-inline">
+                    <b-form-checkbox
+                      id="time_breakdown"
+                      v-model="show_time_breakdown"
+                      name="time_breakdown"
+                      value="true"
+                      unchecked-value="false"
+                    >
+                      Time Breakdown
+                    </b-form-checkbox>
+                  </div>
+                </div>
                 <div
                   v-if="storeModules.productionGroups"
-                  class="d-flex ml-4"
+                  class="d-flex ml-2"
                   v-click-outside="hideGroups"
                 >
                   <b-btn
@@ -246,6 +259,7 @@ export default {
         start_time: { hh: "12", mm: "00", a: "AM" },
         end_time: { hh: "11", mm: "59", a: "PM" }
       },
+      show_time_breakdown: false,
       showGroups: false,
       productionGroupModal: false,
       editingId: null,
@@ -426,6 +440,8 @@ export default {
           " " +
           this.selectedTimeRange.end_time.a
       };
+
+      params.show_time_breakdown = this.show_time_breakdown;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {

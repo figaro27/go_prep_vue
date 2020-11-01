@@ -121,10 +121,13 @@ class MealOrders
         $mealQuantities = [];
         $lineItemQuantities = [];
         $dailyOrderNumbersByMeal = [];
+        $orderTime = [];
         $showDailyOrderNumbers =
             $this->store->modules && $this->store->modules->dailyOrderNumbers;
         $dates = $this->getDeliveryDates();
         $groupByDate = 'true' === $this->params->get('group_by_date', false);
+        $groupByTime =
+            'true' === $this->params->get('show_time_breakdown', false);
         $store = $this->store;
         $params = $this->params;
         $params->date_format = $this->store->settings->date_format;
@@ -170,7 +173,9 @@ class MealOrders
             $groupByDate,
             &$allDates,
             $dates,
-            $productionGroupIds
+            $productionGroupIds,
+            $groupByTime,
+            &$orderTime
         ) {
             $date = "";
             if ($order->delivery_date) {
@@ -370,6 +375,16 @@ class MealOrders
                             ][] = $dailyOrderNumber;
                         }
                     }
+
+                    if ($groupByTime) {
+                        $transferTime = $mealOrder->order->transferTime;
+
+                        if (!isset($orderTime[$title][$transferTime])) {
+                            $orderTime[$title][$transferTime] = 0;
+                        }
+
+                        $orderTime[$title][$transferTime] += 1;
+                    }
                 }
             }
         });
@@ -402,6 +417,17 @@ class MealOrders
                         : [];
                     $numbers = array_sort($numbers);
                     $row[] = implode(', ', $numbers);
+                }
+
+                if ($groupByTime) {
+                    $transferTimeArr = $orderTime[$title];
+                    $transferTime = [];
+
+                    foreach ($transferTimeArr as $key => $value) {
+                        $transferTime[] = $key . ' x ' . $value;
+                    }
+
+                    $row[] = implode(', ', $transferTime);
                 }
 
                 $production->push($row);
