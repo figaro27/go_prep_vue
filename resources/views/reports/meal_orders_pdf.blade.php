@@ -50,6 +50,10 @@
             <th><h4>Daily Order #</h4></th>
             @endif
 
+            @if($params['show_time_breakdown'])
+            <th><h4>Times</h4></th>
+            @endif
+
             <!-- <th>Total Price</th> -->
           </tr>
         </thead>
