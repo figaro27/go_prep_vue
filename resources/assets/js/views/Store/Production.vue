@@ -20,7 +20,7 @@
                   @change="onChangeDateFilter"
                   ref="deliveryDates"
                 ></delivery-date-picker>
-                <b-btn @click="clearDeliveryDates" class="ml-1">Clear</b-btn>
+
                 <div class="ml-2 d-flex">
                   <div class="d-inline">
                     <div
@@ -47,6 +47,7 @@
                     </div>
                   </div>
                 </div>
+                <b-btn @click="clear" class="ml-2">Clear</b-btn>
                 <div
                   v-if="storeModules.productionGroups"
                   class="d-flex ml-2"
@@ -501,9 +502,11 @@ export default {
           });
       }
     },
-    clearDeliveryDates() {
+    clear() {
       this.transferTimeStart = null;
       this.transferTimeEnd = null;
+      this.selectedTimeRange.start_time = null;
+      this.selectedTimeRange.end_time = null;
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
       this.$refs.deliveryDates.clearDates();
