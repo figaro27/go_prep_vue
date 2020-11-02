@@ -1093,7 +1093,7 @@ class Store extends Model
 
                             if (isset($dateRange['endTime'])) {
                                 $endTime = Carbon::parse(
-                                    subsrt($dateRange['endTime'], 0, 8)
+                                    substr($dateRange['endTime'], 0, 8)
                                 )
                                     ->subMinutes('1')
                                     ->format('H:i:s');
