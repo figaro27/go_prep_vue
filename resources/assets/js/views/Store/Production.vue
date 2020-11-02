@@ -502,6 +502,8 @@ export default {
       }
     },
     clearDeliveryDates() {
+      this.transferTimeStart = null;
+      this.transferTimeEnd = null;
       this.filters.delivery_dates.start = null;
       this.filters.delivery_dates.end = null;
       this.$refs.deliveryDates.clearDates();
