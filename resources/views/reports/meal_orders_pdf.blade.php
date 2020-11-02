@@ -60,11 +60,11 @@
             @if($params['show_time_breakdown'] === 'true')
             <th><h4 style="width:125px">Times</h4></th>
             @endif
-            <th style="width:150px"><h4>Size</h4></th>
+            <th style="width:135px"><h4>Size</h4></th>
             <th><h4>Item</h4></th>
 
             @if($params['show_daily_order_numbers'])
-            <th><h4>D.O. #</h4></th>
+            <th><h4>Daily Order #</h4></th>
             @endif
 
 
