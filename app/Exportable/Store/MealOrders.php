@@ -290,6 +290,21 @@ class MealOrders
                             ][] = $dailyOrderNumber;
                         }
                     }
+
+                    if ($groupByTime) {
+                        $transferTime = substr(
+                            $lineItemOrder->order->transferTime,
+                            0,
+                            8
+                        );
+
+                        if (!isset($orderTime[$title][$transferTime])) {
+                            $orderTime[$title][$transferTime] = 0;
+                        }
+
+                        $orderTime[$title][$transferTime] +=
+                            $lineItemOrder->quantity;
+                    }
                 }
             }
 
