@@ -480,16 +480,21 @@ class OrderController extends StoreController
 
     public function getMealOrdersWithDates(Request $request)
     {
-        if ($request->get('end') != null) {
-            $endDate = $request->get('end');
-        } else {
-            $endDate = $request->get('start');
-        }
-
         if ($request->get('start')) {
             $startDate = Carbon::parse($request->get('start'))->format('Y-m-d');
+        } else {
+            $startDate = Carbon::now()
+                ->startOfDay()
+                ->toDateTimeString();
         }
-        $endDate = Carbon::parse($endDate)->format('Y-m-d');
+
+        if ($request->get('end')) {
+            $endDate = $request->get('end');
+        } else {
+            $endDate = Carbon::parse($startDate)
+                ->addWeeks(1)
+                ->toDateTimeString();
+        }
 
         $startTime = $request->get('transferTimeStart');
 
