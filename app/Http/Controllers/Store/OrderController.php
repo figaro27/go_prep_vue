@@ -529,7 +529,7 @@ class OrderController extends StoreController
 
         if ($endTime) {
             $endTime = Carbon::parse(substr($endTime, 0, 8))
-                ->subMinutes('1')
+                ->addMinutes('1')
                 ->format('H:i:s');
             $orders = $orders->where('transferTime', '<=', $endTime);
         }

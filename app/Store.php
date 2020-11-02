@@ -1095,7 +1095,7 @@ class Store extends Model
                                 $endTime = Carbon::parse(
                                     substr($dateRange['endTime'], 0, 8)
                                 )
-                                    ->subMinutes('1')
+                                    ->addMinutes('1')
                                     ->format('H:i:s');
                                 $query1->where('transferTime', '<=', $endTime);
                             }
