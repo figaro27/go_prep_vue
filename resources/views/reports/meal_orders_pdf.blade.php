@@ -25,6 +25,20 @@
           All Delivery Dates
         @endif
       </h2>
+      @if ($params->startTime || $params->endTime)
+        @if ($params->startTime)
+        {{ $params->startTime }}
+        @else
+        12:00 AM
+        @endif
+        -
+        @if ($params->endTime)
+        {{ $params->endTime }}
+        @else
+        11:59 PM
+        @endif
+        @endIf
+
 
       <h2 style="font-size:15px;position:relative;top:10px">{{ date('m/d/Y h:i:a')}}</h2>
       <div style="clear:both"></div>

@@ -132,6 +132,8 @@ class MealOrders
         $params = $this->params;
         $startTime = $params->get('startTime');
         $endTime = $params->get('endTime');
+        $params->startTime = $startTime;
+        $params->endTime = $endTime;
         $dates['startTime'] = $startTime;
         $dates['endTime'] = $endTime;
         $params->date_format = $this->store->settings->date_format;
