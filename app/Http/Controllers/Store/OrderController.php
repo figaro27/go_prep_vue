@@ -527,7 +527,7 @@ class OrderController extends StoreController
 
         if ($endTime) {
             $endTime = Carbon::parse($endTime)->format('H:i:s');
-            $orders = $orders->where('transferTime', '<=', $endDate);
+            $orders = $orders->where('transferTime', '<=', $endTime);
         }
 
         $orders = $orders->get()->map(function ($order) {
