@@ -448,7 +448,10 @@ export default {
           to: this.filters.delivery_dates.end
         };
       }
-      params.startTime = this.selectedTimeRange.start_time;
+      params.startTime =
+        this.selectedTimeRange.start_time == "12:00 AM"
+          ? "00:00 AM"
+          : this.selectedTimeRange.start_time;
       params.endTime = this.selectedTimeRange.end_time;
 
       params.show_time_breakdown = this.show_time_breakdown;
@@ -482,7 +485,10 @@ export default {
           .post("/api/me/getMealOrdersWithDates", {
             start: this.filters.delivery_dates.start,
             end: this.filters.delivery_dates.end,
-            transferTimeStart: this.selectedTimeRange.start_time,
+            transferTimeStart:
+              this.selectedTimeRange.start_time == "12:00 AM"
+                ? "00:00 AM"
+                : this.selectedTimeRange.start_time,
             transferTimeEnd: this.selectedTimeRange.end_time
           })
           .then(response => {
