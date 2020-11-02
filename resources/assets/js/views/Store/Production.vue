@@ -448,11 +448,8 @@ export default {
           to: this.filters.delivery_dates.end
         };
       }
-
-      params.delivery_time = {
-        startTime: this.selectedTimeRange.start_time,
-        endTime: this.selectedTimeRange.end_time
-      };
+      params.startTime = this.selectedTimeRange.start_time;
+      params.endTime = this.selectedTimeRange.end_time;
 
       params.show_time_breakdown = this.show_time_breakdown;
 

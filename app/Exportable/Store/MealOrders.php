@@ -130,6 +130,10 @@ class MealOrders
             'true' === $this->params->get('show_time_breakdown', false);
         $store = $this->store;
         $params = $this->params;
+        $startTime = $params->get('startTime');
+        $endTime = $params->get('endTime');
+        $dates['startTime'] = $startTime;
+        $dates['endTime'] = $endTime;
         $params->date_format = $this->store->settings->date_format;
         $allDates = [];
 
@@ -426,8 +430,8 @@ class MealOrders
                     foreach ($transferTimeArr as $key => $value) {
                         $transferTime[] = $key . ' x ' . $value;
                     }
-
-                    $row[] = implode(', ', $transferTime);
+                    asort($transferTime);
+                    $row[] = implode('</br>', $transferTime);
                 }
 
                 $production->push($row);

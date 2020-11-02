@@ -1030,7 +1030,6 @@ class Store extends Model
         $removeCashOrders = false
     ) {
         $orders = $this->orders()->with(['meals', 'meal_orders']);
-
         if ($orderDates === false) {
             $orders = $orders->where(function ($query) use (
                 $dateRange,
@@ -1080,19 +1079,23 @@ class Store extends Model
                             }
 
                             if (isset($dateRange['startTime'])) {
+                                $startTime = Carbon::parse(
+                                    $dateRange['startTime']
+                                )
+                                    ->subMinutes('1')
+                                    ->format('H:i:s');
                                 $query1->where(
                                     'transferTime',
                                     '>=',
-                                    $dateRange['startTime']
+                                    $startTime
                                 );
                             }
 
                             if (isset($dateRange['endTime'])) {
-                                $query1->where(
-                                    'transferTime',
-                                    '<=',
-                                    $dateRange['endTime']
-                                );
+                                $endTime = Carbon::parse($dateRange['endTime'])
+                                    ->subMinutes('1')
+                                    ->format('H:i:s');
+                                $query1->where('transferTime', '<=', $endTime);
                             }
                         })
                         ->orWhere(function ($query2) use ($dateRange) {
