@@ -521,14 +521,14 @@ class OrderController extends StoreController
             ->where('delivery_date', '<=', $endDate);
 
         if ($startTime) {
-            $startTime = Carbon::parse($startTime)
+            $startTime = Carbon::parse(substr($startTime, 0, 7))
                 ->subMinutes('1')
                 ->format('H:i:s');
             $orders = $orders->where('transferTime', '>=', $startTime);
         }
 
         if ($endTime) {
-            $endTime = Carbon::parse($endTime)
+            $endTime = Carbon::parse(substr($endTime, 0, 7))
                 ->subMinutes('1')
                 ->format('H:i:s');
             $orders = $orders->where('transferTime', '<=', $endTime);

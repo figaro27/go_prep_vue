@@ -1080,7 +1080,7 @@ class Store extends Model
 
                             if (isset($dateRange['startTime'])) {
                                 $startTime = Carbon::parse(
-                                    $dateRange['startTime']
+                                    substr($dateRange['startTime'], 0, 7)
                                 )
                                     ->subMinutes('1')
                                     ->format('H:i:s');
@@ -1092,7 +1092,9 @@ class Store extends Model
                             }
 
                             if (isset($dateRange['endTime'])) {
-                                $endTime = Carbon::parse($dateRange['endTime'])
+                                $endTime = Carbon::parse(
+                                    subsrt($dateRange['endTime'], 0, 7)
+                                )
                                     ->subMinutes('1')
                                     ->format('H:i:s');
                                 $query1->where('transferTime', '<=', $endTime);
