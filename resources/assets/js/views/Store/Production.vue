@@ -450,7 +450,7 @@ export default {
       }
       params.startTime =
         this.selectedTimeRange.start_time == "12:00 AM"
-          ? "00:00 AM"
+          ? "12:01 AM"
           : this.selectedTimeRange.start_time;
       params.endTime = this.selectedTimeRange.end_time;
 
