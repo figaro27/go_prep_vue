@@ -386,7 +386,7 @@ class MealOrders
                         $transferTime = substr(
                             $mealOrder->order->transferTime,
                             0,
-                            7
+                            8
                         );
 
                         if (!isset($orderTime[$title][$transferTime])) {
@@ -434,7 +434,7 @@ class MealOrders
                     $transferTime = [];
 
                     foreach ($transferTimeArr as $key => $value) {
-                        $transferTime[] = substr($value, 0, 7) . ' x ' . $key;
+                        $transferTime[] = substr($value, 0, 8) . ' x ' . $key;
                     }
                     asort($transferTime);
                     $row[] = implode('</br>', $transferTime);
