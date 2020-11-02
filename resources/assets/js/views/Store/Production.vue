@@ -330,8 +330,8 @@ export default {
     }),
     transferTimeOptions() {
       let options = [];
-      let start = "00:00:00";
-      for (let i = 0; i < 48; i++) {
+      let start = "00:30:00";
+      for (let i = 1; i < 48; i++) {
         options.push(start);
         start = moment(start, "HH:mm:ss")
           .add(30, "minutes")
@@ -448,10 +448,7 @@ export default {
           to: this.filters.delivery_dates.end
         };
       }
-      params.startTime =
-        this.selectedTimeRange.start_time == "12:00 AM"
-          ? "12:01 AM"
-          : this.selectedTimeRange.start_time;
+      params.startTime = this.selectedTimeRange.start_time;
       params.endTime = this.selectedTimeRange.end_time;
 
       params.show_time_breakdown = this.show_time_breakdown;
@@ -485,10 +482,7 @@ export default {
           .post("/api/me/getMealOrdersWithDates", {
             start: this.filters.delivery_dates.start,
             end: this.filters.delivery_dates.end,
-            transferTimeStart:
-              this.selectedTimeRange.start_time == "12:00 AM"
-                ? "12:01 AM"
-                : this.selectedTimeRange.start_time,
+            transferTimeStart: this.selectedTimeRange.start_time,
             transferTimeEnd: this.selectedTimeRange.end_time
           })
           .then(response => {
