@@ -393,7 +393,8 @@ class MealOrders
                             $orderTime[$title][$transferTime] = 0;
                         }
 
-                        $orderTime[$title][$transferTime] += 1;
+                        $orderTime[$title][$transferTime] +=
+                            $mealOrder->quantity;
                     }
                 }
             }
