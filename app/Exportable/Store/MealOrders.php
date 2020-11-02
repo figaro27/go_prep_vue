@@ -293,7 +293,7 @@ class MealOrders
 
                     if ($groupByTime) {
                         $transferTime = substr(
-                            $lineItemOrder->order->transferTime,
+                            $lineItemsOrder->order->transferTime,
                             0,
                             8
                         );
@@ -303,7 +303,7 @@ class MealOrders
                         }
 
                         $orderTime[$title][$transferTime] +=
-                            $lineItemOrder->quantity;
+                            $lineItemsOrder->quantity;
                     }
                 }
             }
