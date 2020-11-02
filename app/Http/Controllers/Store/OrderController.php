@@ -486,28 +486,46 @@ class OrderController extends StoreController
             $endDate = $request->get('start');
         }
 
-        if ($request->get('transferTimeEnd')) {
+        if ($request->get('start')) {
             $startDate = Carbon::parse($request->get('start'))->format('Y-m-d');
         }
         $endDate = Carbon::parse($endDate)->format('Y-m-d');
 
-        $startTime = date("H:i", strtotime($request->get('transferTimeStart')));
+        $startTime = $request->get('transferTimeStart');
 
-        $endTime = date("H:i", strtotime($request->get('transferTimeEnd')));
+        $endTime = $request->get('transferTimeEnd');
 
-        $orders = $this->store->has('orders')
-            ? $this->store
-                ->orders()
-                ->where(['paid' => 1, 'voided' => 0, 'isMultipleDelivery' => 0])
-                ->where('delivery_date', '>=', $startDate)
-                ->where('delivery_date', '<=', $endDate)
-                ->where('transferTime', '>=', $startTime)
-                ->where('transferTime', '<=', $endTime)
-                ->get()
-                ->map(function ($order) {
-                    return $order->id;
-                })
-            : [];
+        // $orders = $this->store->has('orders')
+        //     ? $this->store
+        //         ->orders()
+        //         ->where(['paid' => 1, 'voided' => 0, 'isMultipleDelivery' => 0])
+        //         ->where('delivery_date', '>=', $startDate)
+        //         ->where('delivery_date', '<=', $endDate)
+        //         ->where('transferTime', '>=', $startTime)
+        //         ->where('transferTime', '<=', $endTime)
+        //         ->get()
+        //         ->map(function ($order) {
+        //             return $order->id;
+        //         })
+        //     : [];
+
+        $orders = $this->store
+            ->orders()
+            ->where(['paid' => 1, 'voided' => 0, 'isMultipleDelivery' => 0])
+            ->where('delivery_date', '>=', $startDate)
+            ->where('delivery_date', '<=', $endDate);
+
+        if ($startTime) {
+            $orders = $orders->where('transferTime', '>=', $startTime);
+        }
+
+        if ($endTime) {
+            $orders = $orders->where('transferTime', '<=', $endDate);
+        }
+
+        $orders = $orders->get()->map(function ($order) {
+            return $order->id;
+        });
 
         // Meal Orders
 
