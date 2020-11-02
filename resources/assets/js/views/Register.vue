@@ -652,7 +652,7 @@ export default {
       freeTrial: false,
       noDeliveryInstructions: false,
       redirect: null,
-      step: 3,
+      step: 0,
       plans: {},
       stripeKey: window.app.stripe_key,
       stripeOptions: {},
