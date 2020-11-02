@@ -487,7 +487,7 @@ export default {
             end: this.filters.delivery_dates.end,
             transferTimeStart:
               this.selectedTimeRange.start_time == "12:00 AM"
-                ? "00:00 AM"
+                ? "12:01 AM"
                 : this.selectedTimeRange.start_time,
             transferTimeEnd: this.selectedTimeRange.end_time
           })
