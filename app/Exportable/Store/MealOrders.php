@@ -416,18 +416,8 @@ class MealOrders
                 $baseTitle = $titleParts[0];
                 $size =
                     $titleParts && isset($titleParts[1]) ? $titleParts[1] : "";
-                $row = [$quantity, $size, $baseTitle];
 
-                if ($showDailyOrderNumbers) {
-                    $numbers = array_key_exists(
-                        $title,
-                        $dailyOrderNumbersByMeal
-                    )
-                        ? $dailyOrderNumbersByMeal[$title]
-                        : [];
-                    $numbers = array_sort($numbers);
-                    $row[] = implode(', ', $numbers);
-                }
+                $row = [$quantity];
 
                 if ($groupByTime) {
                     $transferTimeArr = $orderTime[$title];
@@ -438,6 +428,19 @@ class MealOrders
                     }
                     asort($transferTime);
                     $row[] = implode('</br>', $transferTime);
+                }
+                $row[] = $size;
+                $row[] = $baseTitle;
+
+                if ($showDailyOrderNumbers) {
+                    $numbers = array_key_exists(
+                        $title,
+                        $dailyOrderNumbersByMeal
+                    )
+                        ? $dailyOrderNumbersByMeal[$title]
+                        : [];
+                    $numbers = array_sort($numbers);
+                    $row[] = implode(', ', $numbers);
                 }
 
                 $production->push($row);
