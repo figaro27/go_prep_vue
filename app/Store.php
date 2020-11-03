@@ -1084,18 +1084,24 @@ class Store extends Model
                                 )
                                     ->subMinutes('1')
                                     ->format('H:i:s');
-                                $query1
-                                    ->get()
-                                    ->filter(function ($order) use (
-                                        $startTime
-                                    ) {
-                                        $transferTime = Carbon::parse(
-                                            substr($order->transferTime, 0, 8)
-                                        )->format('H:i:s');
-                                        if ($transferTime >= $startTime) {
-                                            return $order;
-                                        }
-                                    });
+                                if (
+                                    !is_a(
+                                        $query1,
+                                        'Illuminate\Database\Eloquent\Collection'
+                                    )
+                                ) {
+                                    $query1 = $query1->get();
+                                }
+                                $query1 = $query1->filter(function (
+                                    $order
+                                ) use ($startTime) {
+                                    $transferTime = Carbon::parse(
+                                        substr($order->transferTime, 0, 8)
+                                    )->format('H:i:s');
+                                    if ($transferTime >= $startTime) {
+                                        return $order;
+                                    }
+                                });
                             }
 
                             if (isset($dateRange['endTime'])) {
@@ -1110,9 +1116,10 @@ class Store extends Model
                                 ) {
                                     $query1 = $query1->get();
                                 }
-                                $query1->filter(function ($order) use (
-                                    $endTime
-                                ) {
+
+                                $query1 = $query1->filter(function (
+                                    $order
+                                ) use ($endTime) {
                                     $transferTime = Carbon::parse(
                                         substr($order->transferTime, 0, 8)
                                     )->format('H:i:s');
