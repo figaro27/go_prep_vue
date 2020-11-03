@@ -521,20 +521,40 @@ class OrderController extends StoreController
             ->where('delivery_date', '<=', $endDate);
 
         if ($startTime) {
-            $startTime = Carbon::parse(substr($startTime, 0, 8))
+            $startTime = Carbon::parse($startTime)
                 ->subMinutes('1')
                 ->format('H:i:s');
-            $orders = $orders->where('transferTime', '>=', $startTime);
+            $orders = $orders
+                ->get()
+                ->filter(function ($order) use ($startTime) {
+                    $transferTime = Carbon::parse(
+                        substr($order->transferTime, 0, 8)
+                    )->format('H:i:s');
+                    if ($transferTime >= $startTime) {
+                        return $order;
+                    }
+                });
         }
 
         if ($endTime) {
-            $endTime = Carbon::parse(substr($endTime, 0, 8))
+            $endTime = Carbon::parse($endTime)
                 ->addMinutes('1')
                 ->format('H:i:s');
-            $orders = $orders->where('transferTime', '<=', $endTime);
+            $orders = $orders->get()->filter(function ($order) use ($endTime) {
+                $transferTime = Carbon::parse(
+                    substr($order->transferTime, 0, 8)
+                )->format('H:i:s');
+                if ($transferTime <= $endTime) {
+                    return $order;
+                }
+            });
         }
 
-        $orders = $orders->get()->map(function ($order) {
+        if (!is_a($orders, 'Illuminate\Database\Eloquent\Collection')) {
+            $orders = $orders->get();
+        }
+
+        $orders = $orders->map(function ($order) {
             return $order->id;
         });
 
