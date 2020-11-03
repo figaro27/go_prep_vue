@@ -442,7 +442,12 @@ class MealOrders
                     foreach ($transferTimeArr as $key => $value) {
                         $transferTime[] = substr($value, 0, 8) . ' x ' . $key;
                     }
-                    asort($transferTime);
+
+                    usort($transferTime, function ($a, $b) {
+                        return strtotime(substr($a[0], -8, 8)) -
+                            strtotime(substr($b[0], -8, 8));
+                    });
+
                     $row[] = implode('</br>', $transferTime);
                 }
                 $row[] = $size;
