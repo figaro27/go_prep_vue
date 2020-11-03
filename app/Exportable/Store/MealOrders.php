@@ -444,8 +444,8 @@ class MealOrders
                     }
 
                     usort($transferTime, function ($a, $b) {
-                        return strtotime(substr($a[0], -8, 8)) -
-                            strtotime(substr($b[0], -8, 8));
+                        return strtotime(substr($a, -8, 8)) -
+                            strtotime(substr($b, -8, 8));
                     });
 
                     $row[] = implode('</br>', $transferTime);
