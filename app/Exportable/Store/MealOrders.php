@@ -546,6 +546,7 @@ class MealOrders
         )->first();
         $reportRecord->meal_production += 1;
         $reportRecord->update();
+
         return $production->toArray();
     }
 
