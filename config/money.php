@@ -1610,7 +1610,7 @@ return [
     'USD' => [
         'name' => 'US Dollar',
         'code' => 840,
-        'precision' => 0,
+        'precision' => 2,
         'subunit' => 100,
         'symbol' => '$',
         'symbol_first' => true,
