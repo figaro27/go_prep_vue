@@ -38,7 +38,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
 }
 </style>
 @php
-$currency = $subscription->store->settings->currency_symbol
+$currency = $subscription->store->settings->currency
 @endphp
 </head>
 
@@ -206,13 +206,13 @@ $currency = $subscription->store->settings->currency_symbol
                   {{ $mealPackageItem->full_title }} 
                   </td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">
-                    {{$currency}}{{ number_format($mealPackageItem->price, 2) }}
+                    @money($mealPackageItem->price, $currency, 2)
                   </td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;font-weight: bold; ">
                     {{ $mealPackageItem->quantity }}
                   </td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;  font-weight: bold;">
-                    {{$currency}}{{ number_format($mealPackageItem->price * $mealPackageItem->quantity, 2) }}
+                    @money($mealPackageItem->price * $mealPackageItem->quantity, $currency, 2)
                   </td>
                 </tr>
 
@@ -227,7 +227,7 @@ $currency = $subscription->store->settings->currency_symbol
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;">
                     @if ($item->price > 0)
-                      In Package <span style="font-size:11px">({{$currency}}{{$item->price}})</span>
+                      In Package <span style="font-size:11px">(@money($item->price, $currency, 2))</span>
                     @else
                       In Package
                     @endif
@@ -243,11 +243,11 @@ $currency = $subscription->store->settings->currency_symbol
                 <tr>
                   <td width="263" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{!! $item->html_title !!}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">
-                    {{$currency}}{{ number_format($item->unit_price, 2) }}
+                    @money($item->unit_price, $currency, 2)
                     </td>
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;">
-                    {{$currency}}{{ number_format($item->price, 2) }}
+                    @money($item->price, $currency, 2)
                   </td>
                 </tr>
                 @endif
@@ -341,39 +341,39 @@ Cooler Deposit<br>
                     
                       
                         <td bgcolor="#e1e6e7" style="padding-left:15px;font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">
-                          {{$currency}}{{ number_format($subtotal, 2) }}<br>
+                          @money($subtotal, $currency, 2)<br>
                           @if ($coupon > 0)
-                          ({{$currency}}{{ number_format($coupon, 2) }})<br>
+                          (@money($coupon, $currency, 2))<br>
                           @endif
                           @if ($mealPlanDiscount > 0)
-                          ({{$currency}}{{ number_format($mealPlanDiscount, 2) }})<br>
+                          (@money($mealPlanDiscount, $currency, 2))<br>
                           @endif
                           @if ($salesTax > 0)
-                          {{$currency}}{{ number_format($salesTax, 2) }}<br>
+                          @money($salesTax, $currency, 2)<br>
                           @endif
                           @if ($deliveryFee > 0)
-                          {{$currency}}{{ number_format($deliveryFee, 2) }}<br>
+                          @money($deliveryFee, $currency, 2)<br>
                           @endif
                           @if ($processingFee > 0)
-                          {{$currency}}{{ number_format($processingFee, 2) }}<br>
+                          @money($processingFee, $currency, 2)<br>
                           @endif
                           @if ($referralReduction > 0)
-                          {{$currency}}{{ number_format($referralReduction, 2) }}<br>
+                          @money($referralReduction, $currency, 2)<br>
                           @endif
                           @if ($promotionReduction > 0)
-                          {{$currency}}{{ number_format($promotionReduction, 2) }}<br>
+                          @money($promotionReduction, $currency, 2)<br>
                           @endif
                           @if ($pointsReduction > 0)
-                          {{$currency}}{{ number_format($pointsReduction, 2) }}<br>
+                          @money($pointsReduction, $currency, 2)<br>
                           @endif
                           @if ($gratuity > 0)
-{{$currency}}{{ number_format($gratuity, 2) }}<br>
+@money($gratuity, $currency, 2)<br>
 @endif
 @if ($coolerDeposit > 0)
-{{$currency}}{{ number_format($coolerDeposit, 2) }}<br>
+@money($coolerDeposit, $currency, 2)<br>
 @endif
                           <br>
-                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">{{$currency}}{{ number_format($subscription->amount, 2) }}</span>
+                          <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b;  font-weight: bold;">@money($subscription->amount, $currency, 2)</span>
                         </td>
                       </tr>
                   </td>

@@ -3,7 +3,7 @@ $giftersName = $order->user->details->firstname . ' ' . $order->user->details->l
 $storeUrl = $order->store->details->full_url;
 $purchasedGiftCardCode = $purchasedGiftCard->code;
 $purchasedGiftCardAmount = $purchasedGiftCard->amount;
-$currency = $order->store->settings->currency_symbol
+$currency = $order->store->settings->currency
 @endphp
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -118,7 +118,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $order->store_name }}</td>
                       </tr>
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $giftersName }} just purchased you a gift card for {{$currency}}{{ $purchasedGiftCardAmount }}. You can visit the link below and use the code <span style="font-weight:bold">{{ $purchasedGiftCardCode }}</span>.</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $giftersName }} just purchased you a gift card for @money($purchasedGiftCardAmount, $currency, 2). You can visit the link below and use the code <span style="font-weight:bold">{{ $purchasedGiftCardCode }}</span>.</td>
                       </tr>
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; "><a href="{!! url($storeUrl); !!}">{{ $storeUrl }}</a></td>

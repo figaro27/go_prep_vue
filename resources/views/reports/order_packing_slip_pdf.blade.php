@@ -1,23 +1,23 @@
 <!doctype html>
 <html>
 @php
-$currency = $order->store->settings->currency_symbol;
-$subtotal = $currency . number_format($order->preFeePreDiscount, 2);
-$mealPlanDiscount = $currency . number_format($order->mealPlanDiscount, 2);
-$deliveryFee = $currency . number_format($order->deliveryFee, 2);
-$gratuity = $currency . number_format($order->gratuity, 2);
-$coolerDeposit = $currency . number_format($order->coolerDeposit, 2);
-$processingFee = $currency . number_format($order->processingFee, 2);
-$salesTax = $currency . number_format($order->salesTax, 2);
-$coupon = $currency . number_format($order->couponReduction, 2);
+$currency = $order->store->settings->currency;
+$subtotal = @money($order->preFeePreDiscount, $currency, 2);
+$mealPlanDiscount = @money($order->mealPlanDiscount, $currency, 2);
+$deliveryFee = @money($order->deliveryFee, $currency, 2);
+$gratuity = @money($order->gratuity, $currency, 2);
+$coolerDeposit = @money($order->coolerDeposit, $currency, 2);
+$processingFee = @money($order->processingFee, $currency, 2);
+$salesTax = @money($order->salesTax, $currency, 2);
+$coupon = @money($order->couponReduction, $currency, 2);
 $couponCode = $order->couponCode;
 $purchasedGiftCard = $order->purchased_gift_card_code;
 $purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
 $promotionReduction = $order->promotionReduction;
 $pointsReduction = $order->pointsReduction;
 $referralReduction = $order->referralReduction;
-$amount = $currency . number_format($order->amount, 2);
-$deposit = $currency . number_format($order->deposit, 2);
+$amount = @money($order->amount, $currency, 2);
+$deposit = @money($order->deposit, $currency, 2);
 $cashOrder = $order->cashOrder;
 $balance = $order->balance;
 $brandColor = $order->store->settings->color;
@@ -233,7 +233,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
             @endif
           </td>
           <td>{{ $mealPackageItem->customTitle ? $mealPackageItem->customTitle : $mealPackageItem->meal_package->title }}</td>
-          <td style="text-align:right;padding-right:12px">{{$currency}}{{number_format($mealPackageItem->price * $mealPackageItem->quantity, 2)}}</td>
+          <td style="text-align:right;padding-right:12px">@money($mealPackageItem->price * $mealPackageItem->quantity, $currency, 2)</td>
         </tr>
 
         @php
@@ -296,7 +296,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
           <td style="text-align:center">{{$lineItemOrder->quantity}}</td>
           <td>{!! $lineItemOrder->size !!}</td>
           <td>{!! $lineItemOrder->title !!}</td>
-          <td style="text-align:right;padding-right:12px">{{$currency}}{{number_format($lineItemOrder->price * $lineItemOrder->quantity, 2)}}</td>
+          <td style="text-align:right;padding-right:12px">@money($lineItemOrder->price * $lineItemOrder->quantity, $currency, 2)</td>
         </tr>
         @php
         $count += 1;
@@ -345,19 +345,19 @@ $deliveryInstructions = $order->user->userDetail->delivery;
             </tr>@endif
             @if ($order->purchasedGiftCardReduction > 0)<tr>
               <td style="border:none"><b>Coupon</b></td>
-              <td style="border:none;text-align:right;position:relative;right:8px">({{ $purchasedGiftCard }}) {{$currency}}{{number_format($purchasedGiftCardReduction, 2)}}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">({{ $purchasedGiftCard }}) @money($purchasedGiftCardReduction, $currency, 2)</td>
             </tr>@endif
             @if ($order->referralReduction > 0)<tr>
               <td style="border:none"><b>Referral Discount</b></td>
-              <td style="border:none;text-align:right;position:relative;right:8px">(Referral Discount) {{$currency}}{{number_format($referralReduction, 2)}}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">(Referral Discount) @money($referralReduction, $currency, 2)</td>
             </tr>@endif
             @if ($order->promotionReduction > 0)<tr>
               <td style="border:none"><b>Promotional Discount</b></td>
-              <td style="border:none;text-align:right;position:relative;right:8px">(Promotional Discount) {{$currency}}{{number_format($promotionReduction, 2)}}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">(Promotional Discount) @money($promotionReduction, $currency, 2)</td>
             </tr>@endif
             @if ($order->pointsReduction > 0)<tr>
               <td style="border:none"><b>Promotional Discount</b></td>
-              <td style="border:none;text-align:right;position:relative;right:8px">(Points Used) {{$currency}}{{number_format($pointsReduction, 2)}}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">(Points Used) @money($pointsReduction, $currency, 2)</td>
             </tr>@endif
             @if ($order->gratuity > 0)<tr>
               <td style="border:none"><b>Gratuity</b></td>
@@ -372,7 +372,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
               <td style="border:none;text-align:right;position:relative;right:8px">{{ $amount }}</td>
             </tr><tr>
             <td style="border:none"><b>Paid</b></td>
-              <td style="border:none;text-align:right;position:relative;right:8px">{{$currency}}{{number_format($order->amount - $order->balance, 2)}}</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">@money($order->amount - $order->balance, $currency, 2)</td>
             </tr>
             
             @if ($order->subscription && $order->subscription->monthlyPrepay && ($order->subscription->weekCount !== 1 || $order->subscription->weekCount % 4 !== 1))
@@ -390,11 +390,11 @@ $deliveryInstructions = $order->user->userDetail->delivery;
           @endif
           @if ($order->balance > 0)
             <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Amount Due</th>
-            <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{$currency}}{{number_format($order->balance, 2)}}</th>
+            <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">@money($order->balance, $currency, 2)</th>
           @endif
           @if ($order->balance < 0)
             <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Amount Owed To Customer</th>
-            <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">{{$currency}}{{number_format($order->balance * -1, 2)}}</th>
+            <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">@money($order->balance * -1, $currency, 2)</th>
           @endif
 
         </tr> 

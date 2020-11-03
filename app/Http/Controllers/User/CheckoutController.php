@@ -455,7 +455,10 @@ class CheckoutController extends UserController
 
                 $orderId = $order->id;
 
-                if ($gateway === Constants::GATEWAY_CASH) {
+                if (
+                    $gateway === Constants::GATEWAY_CASH &&
+                    $application_fee > 0
+                ) {
                     // Charge must be at least .5
                     if (
                         round($afterDiscountBeforeFees * $application_fee) /
