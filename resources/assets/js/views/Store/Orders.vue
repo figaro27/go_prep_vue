@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <b-alert style="background-color:#EBFAFF" show dismissible>
+      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
         <h5>
           Order Labels
         </h5>
@@ -15,7 +15,7 @@
             ></router-link
           >
         </p>
-      </b-alert>
+      </b-alert> -->
 
       <div class="card">
         <div class="card-body">
