@@ -1080,24 +1080,46 @@ class Store extends Model
 
                             if (isset($dateRange['startTime'])) {
                                 $startTime = Carbon::parse(
-                                    substr($dateRange['startTime'], 0, 8)
+                                    $dateRange['startTime']
                                 )
                                     ->subMinutes('1')
                                     ->format('H:i:s');
-                                $query1->where(
-                                    'transferTime',
-                                    '>=',
-                                    $startTime
-                                );
+                                $query1
+                                    ->get()
+                                    ->filter(function ($order) use (
+                                        $startTime
+                                    ) {
+                                        $transferTime = Carbon::parse(
+                                            substr($order->transferTime, 0, 8)
+                                        )->format('H:i:s');
+                                        if ($transferTime >= $startTime) {
+                                            return $order;
+                                        }
+                                    });
                             }
 
                             if (isset($dateRange['endTime'])) {
-                                $endTime = Carbon::parse(
-                                    substr($dateRange['endTime'], 0, 8)
-                                )
+                                $endTime = Carbon::parse($dateRange['endTime'])
                                     ->addMinutes('1')
                                     ->format('H:i:s');
-                                $query1->where('transferTime', '<=', $endTime);
+                                if (
+                                    !is_a(
+                                        $query1,
+                                        'Illuminate\Database\Eloquent\Collection'
+                                    )
+                                ) {
+                                    $query1 = $query1->get();
+                                }
+                                $query1->filter(function ($order) use (
+                                    $endTime
+                                ) {
+                                    $transferTime = Carbon::parse(
+                                        substr($order->transferTime, 0, 8)
+                                    )->format('H:i:s');
+                                    if ($transferTime <= $endTime) {
+                                        return $order;
+                                    }
+                                });
                             }
                         })
                         ->orWhere(function ($query2) use ($dateRange) {
@@ -1214,8 +1236,9 @@ class Store extends Model
         // if ($onlyUnfulfilled) {
         //     $orders = $orders->where('fulfilled', 0);
         // }
-
-        $orders = $orders->get();
+        if (!is_a($orders, 'Illuminate\Database\Eloquent\Collection')) {
+            $orders = $orders->get();
+        }
 
         if ($groupBy) {
             $orders = $orders->groupBy($groupBy);
