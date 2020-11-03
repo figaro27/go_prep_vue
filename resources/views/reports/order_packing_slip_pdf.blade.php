@@ -2,22 +2,22 @@
 <html>
 @php
 $currency = $order->store->settings->currency;
-$subtotal = @money($order->preFeePreDiscount, $currency, 2);
-$mealPlanDiscount = @money($order->mealPlanDiscount, $currency, 2);
-$deliveryFee = @money($order->deliveryFee, $currency, 2);
-$gratuity = @money($order->gratuity, $currency, 2);
-$coolerDeposit = @money($order->coolerDeposit, $currency, 2);
-$processingFee = @money($order->processingFee, $currency, 2);
-$salesTax = @money($order->salesTax, $currency, 2);
-$coupon = @money($order->couponReduction, $currency, 2);
+$subtotal = $order->preFeePreDiscount > 0 ? @money($order->preFeePreDiscount, $currency, 2) : 0;
+$mealPlanDiscount = $order->mealPlanDiscount > 0 ? @money($order->mealPlanDiscount, $currency, 2) : 0;
+$deliveryFee = $order->deliveryFee > 0 ? @money($order->deliveryFee, $currency, 2) : 0;
+$gratuity = $order->gratuity > 0 ? @money($order->gratuity, $currency, 2) : 0;
+$coolerDeposit = $order->coolerDeposit > 0 ? @money($order->coolerDeposit, $currency, 2) : 0;
+$processingFee = $order->processingFee > 0 ? @money($order->processingFee, $currency, 2) : 0;
+$salesTax = $order->salesTax > 0 ? @money($order->salesTax, $currency, 2) : 0;
+$coupon = $order->couponReduction > 0 ? @money($order->couponReduction, $currency, 2) : 0;
 $couponCode = $order->couponCode;
 $purchasedGiftCard = $order->purchased_gift_card_code;
 $purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
 $promotionReduction = $order->promotionReduction;
 $pointsReduction = $order->pointsReduction;
 $referralReduction = $order->referralReduction;
-$amount = @money($order->amount, $currency, 2);
-$deposit = @money($order->deposit, $currency, 2);
+$amount = $order->amount > 0 ? @money($order->amount, $currency, 2) : 0;
+$deposit = $order->deposit > 0 ? @money($order->deposit, $currency, 2) : 0;
 $cashOrder = $order->cashOrder;
 $balance = $order->balance;
 $brandColor = $order->store->settings->color;
