@@ -236,7 +236,7 @@
                       <b-btn
                         variant="danger"
                         class="center"
-                        @click="cancelMealPlans"
+                        @click="cancelSubscriptionsByDeliveryDay"
                         >Remove Day & Cancel</b-btn
                       >
                     </div>
@@ -775,42 +775,37 @@
                     <b-button variant="primary">View Stripe Account</b-button>
                   </a>
                 </div>
-                <b-form @submit.prevent="closeStore" v-if="canOpen">
-                  <p class="mt-2">
-                    <span class="mr-1 mt-2">Open</span>
-                    <img
-                      v-b-popover.hover="
-                        'You can toggle this off to stop accepting new orders from customers for any reason. Please fill out the reason for being closed below to communicate to your customers.'
-                      "
-                      title="Open or Closed"
-                      src="/images/store/popover.png"
-                      class="popover-size"
-                    />
-                  </p>
-                  <c-switch
-                    color="success"
-                    variant="pill"
-                    size="lg"
-                    v-model="storeSettings.open"
-                    @change.native="checkTOAforModal"
+
+                <p class="mt-2">
+                  <span class="mr-1 mt-2">Open</span>
+                  <img
+                    v-b-popover.hover="
+                      'You can toggle this off to stop accepting new orders from customers for any reason. Please fill out the reason for being closed below to communicate to your customers.'
+                    "
+                    title="Open or Closed"
+                    src="/images/store/popover.png"
+                    class="popover-size"
                   />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeSettings.open"
+                  @change.native="toggleCloseOpen"
+                />
 
-                  <b-form-input
-                    v-if="!storeSettings.open"
-                    type="text"
-                    v-model="storeSettings.closedReason"
-                    placeholder="Here you can indicate the reason to your customers for not accepting orders."
-                    required
-                  ></b-form-input>
+                <b-form-input
+                  v-if="!storeSettings.open"
+                  type="text"
+                  v-model="storeSettings.closedReason"
+                  placeholder="Here you can indicate the reason to your customers for not accepting orders."
+                  required
+                ></b-form-input>
 
-                  <!-- <div class="mt-3">
+                <!-- <div class="mt-3">
                     <b-button type="submit" variant="primary">Save</b-button>
                   </div> -->
-                </b-form>
-
-                <div v-else>
-                  Please enter all settings fields to open your store.
-                </div>
               </b-form>
             </b-tab>
             <b-tab title="Menu">
@@ -1342,8 +1337,9 @@
         title="Service Agreement"
         size="xl"
         @ok="allowOpen"
-        @cancel="allowOpen"
-        @hidden="allowOpen"
+        @cancel="(showTOAModal = false), (storeSettings.open = false)"
+        hide-header
+        no-close-on-backdrop
       >
         <termsOfAgreement></termsOfAgreement>
         <center>
@@ -1356,17 +1352,29 @@
         </center>
       </b-modal>
 
-      <b-modal v-model="showMealPlansModal" title="Warning">
-        <p>
-          You currently have at least one active subscription with your
-          customers. If you temporarily close your store, all of your customer's
-          subscriptions will be automatically paused and will not resume when
-          you re-open. These customers will be notified via email.
+      <b-modal
+        v-model="showSubscriptionsModal"
+        hide-header
+        hide-footer
+        no-close-on-backdrop
+      >
+        <p class="mt-3">
+          You have active subscriptions. What would you like to do with them?
         </p>
-        <p class="center-text">Continue anyway?</p>
-        <b-btn variant="danger" class="center" @click="pauseMealPlans"
-          >Continue</b-btn
-        >
+        <div class="d-flex d-inline">
+          <b-btn variant="warning" class="center" @click="pauseAllSubscriptions"
+            >Pause All</b-btn
+          >
+          <b-btn variant="danger" class="center" @click="cancelAllSubscriptions"
+            >Cancel All</b-btn
+          >
+          <b-btn
+            variant="success"
+            class="center"
+            @click="showSubscriptionsModal = false"
+            >Keep Them</b-btn
+          >
+        </div>
       </b-modal>
     </div>
   </div>
@@ -1417,7 +1425,7 @@ export default {
       acceptedTOA: 0,
       acceptedTOAcheck: 0,
       showTOAModal: false,
-      showMealPlansModal: false,
+      showSubscriptionsModal: false,
       color: "",
       transferSelected: [],
       transferOptions: [
@@ -1664,32 +1672,51 @@ export default {
 
       this.$toastr.s("Your settings have been saved.", "Success");
     },
-    closeStore() {
-      let activeSubscriptions = false;
-
-      this.storeSubscriptions.forEach(subscription => {
-        if (subscription.status === "active") activeSubscriptions = true;
-      });
-
-      if (this.storeSettings.open === false && activeSubscriptions) {
-        this.showMealPlansModal = true;
-        return;
+    toggleCloseOpen() {
+      if (this.storeSettings.open) {
+        if (this.store.accepted_toa === 0) {
+          this.showTOAModal = true;
+          return;
+        }
+      } else {
+        if (
+          this.storeSubscriptions.some(sub => {
+            return sub.status === "active" || sub.status === "paused";
+          })
+        ) {
+          this.showSubscriptionsModal = true;
+        }
       }
-
-      let settings = { ...this.storeSettings };
-
-      axios
-        .patch("/api/me/settings", settings)
-        .then(response => {
-          this.refreshStoreSettings();
-          this.$toastr.s("Your settings have been saved.", "Success");
-        })
-        .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors));
-          error = error.join(" ");
-          this.$toastr.e(error, "Error");
-        });
+      this.updateStoreSettings();
     },
+    // closeStore() {
+    //   let activeSubscriptions = false;
+
+    //   this.storeSubscriptions.forEach(subscription => {
+    //     if (subscription.status === "active") activeSubscriptions = true;
+    //   });
+
+    //   console.log(activeSubscriptions);
+
+    //   if (this.storeSettings.open === false && activeSubscriptions) {
+    //     this.showSubscriptionsModal = true;
+    //     return;
+    //   }
+
+    //   let settings = { ...this.storeSettings };
+
+    //   axios
+    //     .patch("/api/me/settings", settings)
+    //     .then(response => {
+    //       this.refreshStoreSettings();
+    //       this.$toastr.s("Your settings have been saved.", "Success");
+    //     })
+    //     .catch(response => {
+    //       let error = _.first(Object.values(response.response.data.errors));
+    //       error = error.join(" ");
+    //       this.$toastr.e(error, "Error");
+    //     });
+    // },
     updateStoreLogo() {
       let data = { ...this.storeDetails };
       axios.patch("/api/me/updateLogo", data);
@@ -1829,31 +1856,26 @@ export default {
         this.acceptedTOA = resp.data;
       });
     },
-    checkTOAforModal() {
-      if (!this.store.accepted_toa && this.storeSettings.open) {
-        this.showTOAModal = 1;
-      } else {
-        this.updateStoreSettings();
-      }
-    },
     allowOpen() {
       if (this.acceptedTOAcheck === "1") {
         this.updateStoreSettings();
       } else {
         this.$toastr.w("Please accept the terms of agreement.");
+        this.storeSettings.open = false;
         return;
       }
     },
-    pauseMealPlans() {
-      axios.post("/api/me/pauseMealPlans", {
-        closedReason: this.storeSettings.closedReason
-      });
-      this.showMealPlansModal = false;
-      this.$toastr.s("Your settings have been saved.", "Success");
+    pauseAllSubscriptions() {
+      axios.get("/api/me/pauseAllSubscriptions");
+      this.showSubscriptionsModal = false;
     },
-    cancelMealPlans() {
+    cancelAllSubscriptions() {
+      axios.get("/api/me/cancelAllSubscriptions");
+      this.showSubscriptionsModal = false;
+    },
+    cancelSubscriptionsByDeliveryDay() {
       this.removeDeliveryDay();
-      axios.post("/api/me/cancelMealPlans", {
+      axios.post("/api/me/cancelSubscriptionsByDeliveryDay", {
         deliveryDay: this.deselectedDeliveryDay
       });
       this.$refs.deliveryDaysModal.hide();

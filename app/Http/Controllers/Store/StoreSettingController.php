@@ -141,42 +141,25 @@ class StoreSettingController extends StoreController
         }
     }
 
-    public function pauseMealPlans(Request $request)
+    public function pauseAllSubscriptions()
     {
-        $settings = $this->store->settings;
-        $settings->open = 0;
-        $settings->closedReason = $request->closedReason;
-        $settings->save();
-
-        $subscriptions = $this->store->subscriptions;
-
-        foreach ($subscriptions as $subscription) {
-            if ($subscription->status === 'active') {
-                $customer = $subscription->customer;
-                $emailAddress = $customer->user->email;
-
-                /*$email = new MealPLanPaused([
-                    'customer' => $customer,
-                    'subscription' => $subscription
-                ]);
-                Mail::to($emailAddress)->send($email);*/
-
-                $customer->user->sendNotification('meal_plan_paused', [
-                    'customer' => $customer,
-                    'subscription' => $subscription
-                ]);
-
-                sleep(1);
+        foreach ($this->store->subscriptions as $sub) {
+            if ($sub->status !== 'cancelled') {
+                $sub->pause();
             }
-        }
-
-        foreach ($subscriptions as $subscription) {
-            $subscription->status = 'paused';
-            $subscription->save();
         }
     }
 
-    public function cancelMealPlans(Request $request)
+    public function cancelAllSubscriptions()
+    {
+        foreach ($this->store->subscriptions as $sub) {
+            if ($sub->status !== 'cancelled') {
+                $sub->cancel();
+            }
+        }
+    }
+
+    public function cancelSubscriptionsByDeliveryDay(Request $request)
     {
         $deliveryDay = $request->deliveryDay;
         $day = null;

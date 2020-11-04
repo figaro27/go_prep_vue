@@ -480,13 +480,18 @@ foreach (
                                 'PromotionController@update'
                             );
 
-                            Route::post(
-                                'pauseMealPlans',
-                                'StoreSettingController@pauseMealPlans'
+                            Route::get(
+                                'pauseAllSubscriptions',
+                                'StoreSettingController@pauseAllSubscriptions'
                             );
+                            Route::get(
+                                'cancelAllSubscriptions',
+                                'StoreSettingController@cancelAllSubscriptions'
+                            );
+
                             Route::post(
-                                'cancelMealPlans',
-                                'StoreSettingController@cancelMealPlans'
+                                'cancelSubscriptionsByDeliveryDay',
+                                'StoreSettingController@cancelSubscriptionsByDeliveryDay'
                             );
 
                             Route::get(
