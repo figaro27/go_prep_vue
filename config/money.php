@@ -160,7 +160,7 @@ return [
         'code' => 48,
         'precision' => 2,
         'subunit' => 1000,
-        'symbol' => 'BD',
+        'symbol' => 'BD.',
         'symbol_first' => false,
         'decimal_mark' => '.',
         'thousands_separator' => ','

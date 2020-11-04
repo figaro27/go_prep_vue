@@ -5,7 +5,7 @@ export default {
   money(val, currency = "USD") {
     let symbol = getSymbolFromCurrency(currency);
     if (currency == "BHD") {
-      return numeral(val).format("0,0.00") + " BD";
+      return numeral(val).format("0,0.00") + " BD.";
     }
     return symbol + numeral(val).format("0,0.00");
   },
