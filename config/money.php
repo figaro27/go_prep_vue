@@ -161,7 +161,7 @@ return [
         'precision' => 2,
         'subunit' => 1000,
         'symbol' => 'BD',
-        'symbol_first' => true,
+        'symbol_first' => false,
         'decimal_mark' => '.',
         'thousands_separator' => ','
     ],
