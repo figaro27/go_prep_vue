@@ -38,7 +38,8 @@ u + .body .full { width:100% !important; width:100vw !important;}
 }
 </style>
 @php
-$currency = $order->store->settings->currency
+$currency = $order->store->settings->currency;
+$orderBalance = $order->balance > 0 ? $order->balance : 0;
 @endphp
 </head>
 
@@ -204,7 +205,7 @@ $currency = $order->store->settings->currency
           @if ($order->pickup === 0)
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your delivery is coming today.
-                    @if ($order->balance === 0 || $order->balance === null)
+                    @if ($orderBalance === 0 || $orderBalance === null)
                       This order is paid in full.
                     @endif
                   </td>
@@ -212,7 +213,7 @@ $currency = $order->store->settings->currency
                 @else
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> Your pickup is scheduled for today.
-                    @if ($order->balance === 0 || $order->balance === null)
+                    @if ($orderBalance === 0 || $orderBalance === null)
                   This order is paid in full.
                 @endif
                   </td>
@@ -446,7 +447,7 @@ $currency = $order->store->settings->currency
                         $coupon = $order->couponReduction;
                         $couponCode = $order->couponCode;
                         $deposit = $order->deposit;
-                        $balance = $order->balance;
+                        $balance = $orderBalance;
                         $purchasedGiftCard = $order->purchased_gift_card_code;
                         $purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
                         @endphp
@@ -525,9 +526,9 @@ Cooler Deposit<br>
                           
                           
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;position:relative;top:5px">
-                            @money($order->amount - $order->balance, $currency, 2)</span><br>
+                            @money($order->amount - $orderBalance, $currency, 2)</span><br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;position:relative;top:5px">
-                            @money($order->balance, $currency, 2)</span>
+                            @money($orderBalance, $currency, 2)</span>
                           
                           @if ($order->subscription && $order->subscription->monthlyPrepay && ($order->subscription->weekCount !== 1 || $order->subscription->weekCount % 4 !== 1))
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">Prepaid</span>
