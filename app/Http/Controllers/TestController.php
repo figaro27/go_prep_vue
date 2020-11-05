@@ -17,7 +17,9 @@ use App\Bag;
 use App\SmsContact;
 use App\SmsChat;
 use App\Meal;
+use App\MealSubscription;
 use Spatie\MediaLibrary\Models\Media;
+use App\SmsList;
 
 class TestController extends Controller
 {
@@ -307,6 +309,37 @@ class TestController extends Controller
         }
     }
 
+    public function testGetReservedStockDifference()
+    {
+        $removeTheseMeals = [];
+
+        $meals = Meal::where('store_id', 112)->get();
+
+        foreach ($meals as $meal) {
+            $mealSubs = MealSubscription::where('meal_id', $meal->id)->get();
+            $quantity = 0;
+            foreach ($mealSubs as $mealSub) {
+                $sub = Subscription::where(
+                    'id',
+                    $mealSub->subscription_id
+                )->first();
+                if ($sub->status == 'active' && $sub->weekCount > 0) {
+                    $quantity += $mealSub->quantity;
+                }
+            }
+
+            if (
+                $meal->stock &&
+                $meal->active == 1 &&
+                $quantity > $meal->stock
+            ) {
+                array_push($removeTheseMeals, $meal->id);
+            }
+        }
+
+        return $removeTheseMeals;
+    }
+
     public function changeSubscriptionAnchor(Request $request)
     {
         $stripeId = $request->get('stripe_id');
@@ -350,6 +383,10 @@ class TestController extends Controller
         $store->moduleSettings->delete();
         $store->reportSettings->delete();
         $store->smsSettings->delete();
+        $lists = SmsList::where('store_id', $store->id)->get();
+        foreach ($lists as $list) {
+            $list->delete();
+        }
         $store->reportRecords->delete();
         $store->referralSettings->delete();
         $store->delete();
