@@ -533,7 +533,6 @@
             >
               <div
                 class="card card-text-menu border-light p-3 mr-1"
-                @click="showMeal(meal, group)"
                 style="height: 100%;"
               >
                 <!--<div class="bag-item-quantity row">!-->
@@ -647,8 +646,9 @@
                         {{ format.money(size.price, storeSettings.currency) }}
                       </b-dropdown-item>
                     </b-dropdown>
+                    <!-- Old read only box showing quantity of meal added to the bag already instead of input box -->
 
-                    <b-form-input
+                    <!-- <b-form-input
                       v-if="meal.gift_card"
                       name
                       id
@@ -669,16 +669,14 @@
                       placeholder="0"
                       :value="mealMixQuantity(meal)"
                       readonly
-                    ></b-form-input>
+                    ></b-form-input> -->
 
-                    <!-- Clicking on the input box to edit the quantity takes you to the meal page because it is within the clickable box. click.stop doesn't work, @clicking to a method which hides the meal page and show meals area doesn't work. Will revisit if needed -->
-
-                    <!-- <b-form-input
+                    <b-form-input
                       v-if="meal.gift_card"
                       name
                       id
                       class="small-quantity mt-1 mb-1"
-                      placeholder="0"
+                      placeholder="1"
                       v-model="giftCardQuantities[meal.id]"
                       @change="val => setItemQuantity('giftCard', meal, val)"
                       @click.stop=""
@@ -692,11 +690,11 @@
                       name
                       id
                       class="small-quantity mt-1 mb-1"
-                      placeholder="0"
+                      placeholder="1"
                       v-model="mealQuantities[meal.id]"
                       @change="val => setItemQuantity('meal', meal, val)"
                       @click.stop=""
-                    ></b-form-input> -->
+                    ></b-form-input>
                     <div
                       @click.stop="minusMixOne(meal)"
                       class="bag-plus-minus small-buttons gray white-text"
@@ -711,6 +709,7 @@
                     v-if="meal.image != null"
                     class="content-area"
                     style="position: relative;"
+                    @click="showMeal(meal, group)"
                   >
                     <div class="image-area" style="position: relative;">
                       <thumbnail
@@ -762,7 +761,12 @@
                       </div>
                     </div>
                   </div>
-                  <div v-else class="content-area" style="position: relative;">
+                  <div
+                    v-else
+                    class="content-area"
+                    style="position: relative;"
+                    @click="showMeal(meal, group)"
+                  >
                     <div class="content-text-wrap d-flex">
                       <!--<div v-else class="col-md-11">!-->
                       <div style="flex-basis:75%">
