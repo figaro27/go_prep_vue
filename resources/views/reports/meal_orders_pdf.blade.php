@@ -57,7 +57,7 @@
                 </th>
               @endforeach
             @endif
-            @if($params['show_time_breakdown'] === 'true')
+            @if(isset($params['show_time_breakdown']) && $params['show_time_breakdown'] === 'true')
             <th><h4 style="width:125px">Times</h4></th>
             @endif
             <th style="width:135px"><h4>Size</h4></th>
