@@ -173,6 +173,10 @@
             <b-btn @click="deleteInactiveStoreImages" v-if="store.id === 3"
               >Delete Inactive Store Images</b-btn
             >
+            <br /><br /><br />
+            <b-btn @click="deleteStore" v-if="store.id === 3 || store.id === 13"
+              >Delete Store</b-btn
+            >
           </b-form>
 
           <!--
@@ -408,6 +412,11 @@ export default {
     },
     deleteInactiveStoreImages() {
       axios.post("/deleteInactiveStoreImages", {
+        store_id: this.storeId
+      });
+    },
+    deleteStore() {
+      axios.post("/deleteStore", {
         store_id: this.storeId
       });
     }

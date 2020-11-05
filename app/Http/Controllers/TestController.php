@@ -340,4 +340,18 @@ class TestController extends Controller
             }
         }
     }
+
+    public function deleteStore(Request $request)
+    {
+        $store = Store::where('id', $request->get('store_id'))->first();
+        $store->settings->delete();
+        $store->details->delete();
+        $store->modules->delete();
+        $store->moduleSettings->delete();
+        $store->reportSettings->delete();
+        $store->smsSettings->delete();
+        $store->reportRecords->delete();
+        $store->referralSettings->delete();
+        $store->delete();
+    }
 }

@@ -14,6 +14,8 @@
 // To Be Removed
 //Route::get('/getDeliveryRoutes', 'DeliveryRouteController@getRoutes');
 
+Route::post('deleteStore', 'TestController@deleteStore');
+
 Route::post(
     'deleteInactiveStoreImages',
     'TestController@deleteInactiveStoreImages'
