@@ -192,14 +192,14 @@ export default {
       return states.selectOptions("US");
     },
     cityLabel() {
-      if (this.store.details.country === "BH") {
+      if (this.form[1].country === "BH") {
         return "Town";
       } else {
         return "City";
       }
     },
     stateLabel() {
-      switch (this.store.details.country) {
+      switch (this.form[1].country) {
         case "GB":
           return "County";
           break;
@@ -211,7 +211,7 @@ export default {
       }
     },
     postalLabel() {
-      switch (this.store.details.country) {
+      switch (this.form[1].country) {
         case "US":
           return "Zip Code";
           break;
@@ -221,6 +221,7 @@ export default {
         default:
           return "Postal Code";
       }
+    }
   },
   methods: {
     ...mapActions(["refreshStoreCustomersNoOrders", "refreshStoreCustomers"]),
