@@ -168,7 +168,7 @@
             <b-form-input
               v-model="storeId"
               placeholder="Store ID"
-              v-if="store.id === 3"
+              v-if="store.id === 3 || store.id === 13"
             ></b-form-input>
             <b-btn @click="deleteInactiveStoreImages" v-if="store.id === 3"
               >Delete Inactive Store Images</b-btn
