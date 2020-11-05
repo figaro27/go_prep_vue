@@ -102,7 +102,11 @@
             placeholder="City"
           ></b-form-input>
         </b-form-group>
-        <b-form-group horizontal label="State" v-if="!noAddress">
+        <b-form-group
+          horizontal
+          label="State"
+          v-if="!noAddress && store.details.state"
+        >
           <v-select
             v-model="form.state"
             label="name"
