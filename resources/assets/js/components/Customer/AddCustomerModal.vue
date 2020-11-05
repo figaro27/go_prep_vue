@@ -94,17 +94,17 @@
             placeholder="Address"
           ></b-form-input>
         </b-form-group>
-        <b-form-group horizontal label="City" v-if="!noAddress">
+        <b-form-group horizontal :label="cityLabel" v-if="!noAddress">
           <b-form-input
             v-model="form.city"
             type="text"
             required
-            placeholder="City"
+            :placeholder="cityLabel"
           ></b-form-input>
         </b-form-group>
         <b-form-group
           horizontal
-          label="State"
+          :label="stateLabel"
           v-if="!noAddress && store.details.state"
         >
           <v-select
@@ -114,12 +114,12 @@
             @keypress.enter.native.prevent=""
           ></v-select>
         </b-form-group>
-        <b-form-group horizontal label="Zip" v-if="!noAddress">
+        <b-form-group horizontal :label="postalLabel" v-if="!noAddress">
           <b-form-input
             v-model="form.zip"
             type="text"
             required
-            placeholder="Zip"
+            :placeholder="postalLabel"
           ></b-form-input>
         </b-form-group>
         <b-form-group horizontal label="Delivery" v-if="!noAddress">
@@ -190,7 +190,37 @@ export default {
     }),
     stateNames() {
       return states.selectOptions("US");
-    }
+    },
+    cityLabel() {
+      if (this.store.details.country === "BH") {
+        return "Town";
+      } else {
+        return "City";
+      }
+    },
+    stateLabel() {
+      switch (this.store.details.country) {
+        case "GB":
+          return "County";
+          break;
+        case "CA":
+          return "Province";
+          break;
+        default:
+          return "State";
+      }
+    },
+    postalLabel() {
+      switch (this.store.details.country) {
+        case "US":
+          return "Zip Code";
+          break;
+        case "BH":
+          return "Block";
+          break;
+        default:
+          return "Postal Code";
+      }
   },
   methods: {
     ...mapActions(["refreshStoreCustomersNoOrders", "refreshStoreCustomers"]),
