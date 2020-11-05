@@ -673,14 +673,6 @@
         packages. Customers will see the updated meals in an email reminding
         them of their subscription renewal the day before and have the ability
         to edit their subscriptions if they don't want the replacement meal.
-        <!-- <img
-            v-b-popover.hover="
-              'You currently have one or more subscriptions with your customers that contain this meal OR a meal package that contains this meal. Please select a substitute replacement meal. The recommended meals below are the closest meals in your menu to the meal being deleted in terms of allergies, meal tags, and categories. We also limit the recommended meals to be within 20% of the price of the meal being deleted.'
-            "
-            title="Replacement Meal"
-            src="/images/store/popover.png"
-            class="popover-size"
-          /> -->
       </p>
       <center>
         <div class="d-inline">
@@ -708,10 +700,7 @@
           class="popover-size"
           style="position:relative;top:8px"
         />
-        <h5 class="mb-4 mt-4" v-if="!deleteMeal">
-          Choose a replacement meal from the dropdown.
-        </h5>
-        <h5 class="mb-4 mt-4" v-if="deleteMeal">
+        <h5 class="mb-4 mt-4">
           Choose a replacement meal from the dropdown.
         </h5>
 
@@ -728,27 +717,26 @@
           style="margin:0px 100px"
           class="mb-4"
         ></v-select>
-        <h4
+        <h5
           class="center-text mb-4"
           v-if="substituteMeal && !substituteMeal.active"
         >
           This substitute meal is currently inactive. Choosing this meal will
           make it active on your menu.
-        </h4>
+        </h5>
         <div
           v-if="
             deactivatingMeal.hasVariations &&
               substituteMeal &&
-              mealSubsHaveVariations &&
               (inActiveSubscriptionsOrPackages(deactivatingMeal.sizes) ||
                 inActiveSubscriptions(deactivatingMeal.components) ||
                 inActiveSubscriptions(deactivatingMeal.addons))
           "
           :key="substitute_id"
         >
-          <h4 class="center-text mb-3">
-            This meal has variations.
-          </h4>
+          <h5 class="center-text mb-3" v-if="substituteMeal">
+            This meal has variations. Please choose replacement variations.
+          </h5>
 
           <!-- Hiding until Transfer Variations is fixed -->
 
@@ -798,7 +786,7 @@
                   inActiveSubscriptionsOrPackages(deactivatingMeal.sizes)
               "
             >
-              <h4>Sizes</h4>
+              <h5>Sizes</h5>
               <b-row>
                 <b-col
                   v-for="size in deactivatingMeal.sizes"
@@ -831,7 +819,7 @@
                   inActiveSubscriptions(deactivatingMeal.addons)
               "
             >
-              <h4>Addons</h4>
+              <h5>Addons</h5>
               <b-row>
                 <b-col
                   v-for="addon in deactivatingMeal.addons"
@@ -864,7 +852,7 @@
                   inActiveSubscriptions(deactivatingMeal.components)
               "
             >
-              <h4>Components</h4>
+              <h5>Components</h5>
               <b-row>
                 <b-col
                   v-for="component in deactivatingMeal.components"
@@ -2065,7 +2053,7 @@ export default {
     inActiveSubscriptionsOrPackages(variations) {
       let status = false;
       variations.forEach(variation => {
-        if (variation.activeSubscriptionsOrPackages) {
+        if (variation.activeSubscriptionsOrPackage) {
           status = true;
         }
       });
