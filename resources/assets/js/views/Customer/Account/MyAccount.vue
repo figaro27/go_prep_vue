@@ -49,12 +49,13 @@
           ></b-form-input>
           <hr />
           <b-form-input
+            v-if="store.details.state"
             type="text"
             v-model="userDetail.state"
             placeholder="State"
             required
           ></b-form-input>
-          <hr />
+          <hr v-if="store.details.state" />
           <b-form-input
             type="text"
             v-model="userDetail.zip"

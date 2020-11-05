@@ -70,7 +70,6 @@ class RegisterController extends Controller
 
             'user_details.address' => 'required',
             'user_details.city' => 'required',
-            'user_details.state' => 'required',
             'user_details.zip' => 'required'
         ]);
 
@@ -85,7 +84,6 @@ class RegisterController extends Controller
                 ],
                 'store.address' => 'required',
                 'store.city' => 'required',
-                'store.state' => 'required',
                 'store.zip' => 'required'
             ],
             function ($data) {
@@ -115,7 +113,6 @@ class RegisterController extends Controller
                 $v = Validator::make($request->all(), [
                     'address' => 'required',
                     'city' => 'required',
-                    'state' => 'required',
                     'zip' => 'required',
                     'accepted_tos' => 'in:1'
                 ]);
@@ -132,7 +129,6 @@ class RegisterController extends Controller
                     //'currency' => ['required', 'in:USD,GBP,CAD'],
                     'address' => 'required',
                     'city' => 'required',
-                    'state' => 'required',
                     'zip' => 'required',
                     'accepted_tos' => 'in:1'
                     //'accepted_toa' => 'in:1'

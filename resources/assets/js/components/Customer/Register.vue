@@ -164,7 +164,7 @@
             ></b-input>
           </b-form-group>
 
-          <b-form-group horizontal label="City" :state="state(1, 'city')">
+          <b-form-group horizontal :label="cityLabel" :state="state(1, 'city')">
             <b-input
               v-model="form[1].city"
               type="text"
@@ -179,8 +179,9 @@
 
           <b-form-group
             horizontal
-            :label="stateWording"
+            :label="stateLabel"
             :state="state(1, 'state')"
+            v-if="showStatesBox"
           >
             <b-select
               label="name"
@@ -191,7 +192,11 @@
             ></b-select>
           </b-form-group>
 
-          <b-form-group horizontal label="Postal Code" :state="state(1, 'zip')">
+          <b-form-group
+            horizontal
+            :label="postalLabel"
+            :state="state(1, 'zip')"
+          >
             <b-input
               v-model="form[1].zip"
               type="text"
@@ -491,6 +496,7 @@ export default {
   },
   data() {
     return {
+      showStatesBox: true,
       redirect: null,
       step: 0,
 
@@ -536,13 +542,35 @@ export default {
     ...mapGetters({
       store: "viewedStore"
     }),
-    stateWording() {
-      if (this.form[1].country == "GB") {
-        return "County";
-      } else if (this.form[1].country == "CA") {
-        return "Province";
+    cityLabel() {
+      if (this.form[1].country === "BH") {
+        return "Town";
       } else {
-        return "State";
+        return "City";
+      }
+    },
+    stateLabel() {
+      switch (this.form[1].country) {
+        case "GB":
+          return "County";
+          break;
+        case "CA":
+          return "Province";
+          break;
+        default:
+          return "State";
+      }
+    },
+    postalLabel() {
+      switch (this.form[1].country) {
+        case "US":
+          return "Zip Code";
+          break;
+        case "BH":
+          return "Block";
+          break;
+        default:
+          return "Postal Code";
       }
     },
     countryNames() {
@@ -593,7 +621,6 @@ export default {
       1: {
         address: validators.address,
         city: validators.city,
-        state: validators.state,
         zip: validators.zip,
         country: validators.required,
         delivery: validators.delivery,
@@ -604,7 +631,6 @@ export default {
         domain: validators.domain,
         address: validators.address,
         city: validators.city,
-        state: validators.state,
         zip: validators.zip,
         country: validators.required,
         accepted_tos: validators.required
@@ -633,6 +659,9 @@ export default {
   methods: {
     ...mapActions(["init", "setToken"]),
     getStateNames(country = "US") {
+      if (country == "BH") {
+        this.showStatesBox = false;
+      }
       return states.selectOptions(country);
     },
     state(step, key) {

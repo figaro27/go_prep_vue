@@ -106,7 +106,11 @@
               ></b-form-input>
             </b-form-group>
 
-            <b-form-group label="State" :state="true">
+            <b-form-group
+              label="State"
+              :state="true"
+              v-if="store.details.state"
+            >
               <b-form-input
                 type="text"
                 v-model="storeDetail.state"
