@@ -174,14 +174,15 @@ export default {
   },
   mounted() {
     if (this.store.details) {
-      this.form.state = this.store.details.state;
       this.form.country = this.store.details.country;
-      let stateAbr = this.store.details.state;
-      let state = this.stateNames.filter(stateName => {
-        return stateName.value.toLowerCase() === stateAbr.toLowerCase();
-      });
-
-      this.form.state = state[0].value;
+      if (this.store.details.state) {
+        this.form.state = this.store.details.state;
+        let stateAbr = this.store.details.state;
+        let state = this.stateNames.filter(stateName => {
+          return stateName.value.toLowerCase() === stateAbr.toLowerCase();
+        });
+        this.form.state = state[0].value;
+      }
     }
   },
   computed: {
@@ -192,14 +193,14 @@ export default {
       return states.selectOptions("US");
     },
     cityLabel() {
-      if (this.form[1].country === "BH") {
+      if (this.store.details.country === "BH") {
         return "Town";
       } else {
         return "City";
       }
     },
     stateLabel() {
-      switch (this.form[1].country) {
+      switch (this.store.details.country) {
         case "GB":
           return "County";
           break;
@@ -211,7 +212,7 @@ export default {
       }
     },
     postalLabel() {
-      switch (this.form[1].country) {
+      switch (this.store.details.country) {
         case "US":
           return "Zip Code";
           break;
