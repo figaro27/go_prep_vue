@@ -325,7 +325,7 @@ class SpaController extends Controller
                 : $last_viewed_store;
 
             if ($store !== null) {
-                $store = $store->makeHidden(['coupons']);
+                $store = $store->makeHidden(['coupons', 'purhcasedGiftCards']);
             }
 
             if ($store && $user) {
