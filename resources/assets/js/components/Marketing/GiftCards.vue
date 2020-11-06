@@ -21,6 +21,11 @@
           filterable: false
         }"
       >
+        <div slot="purchased_by" slot-scope="props">
+          <p>
+            {{ getPurchasedByUser(props.row.user_id) }}
+          </p>
+        </div>
         <div slot="created_at" slot-scope="props">
           <p>
             {{ moment(props.row.created_at).format("dddd MMM Do") }}
@@ -65,7 +70,8 @@ export default {
       storeCoupons: "storeCoupons",
       isLoading: "isLoading",
       initialized: "initialized",
-      purchasedGiftCards: "storePurchasedGiftCards"
+      purchasedGiftCards: "storePurchasedGiftCards",
+      customers: "storeCustomers"
     }),
     purchasedGiftCardTableData() {
       if (this.purchasedGiftCards.length > 0) return this.purchasedGiftCards;
@@ -74,7 +80,18 @@ export default {
   },
   methods: {
     ...mapActions({}),
-    formatMoney: format.money
+    formatMoney: format.money,
+    getPurchasedByUser(userId) {
+      let user =
+        this.customers.length > 0
+          ? this.customers.find(customer => {
+              return customer.user_id === userId;
+            })
+          : null;
+      if (user) {
+        return user.firstname + " " + user.lastname;
+      }
+    }
   }
 };
 </script>
