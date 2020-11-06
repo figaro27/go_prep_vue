@@ -127,18 +127,11 @@
                 <span
                   v-if="
                     storeSettings.mealPlanDiscount > 0 &&
-                      storeSettings.mealPlanDiscount > 0
+                      storeSettings.applyMealPlanDiscount
                   "
-                  >& Save</span
+                  >& Save {{ storeSettings.mealPlanDiscount }}%</span
                 >
-                <span
-                  v-if="
-                    storeSettings.applyMealPlanDiscount &&
-                      storeSettings.mealPlanDiscount > 0
-                  "
-                  >{{ storeSettings.mealPlanDiscount }}%</span
-                ></strong
-              >
+              </strong>
             </h3>
           </div>
         </div>
