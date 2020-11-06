@@ -170,6 +170,7 @@
                       setBagPurchasedGiftCard(null);
                       updateParentData();
                       setBagMealPlan(val);
+                      syncDiscounts();
                     }
                   "
                 /></p
@@ -548,7 +549,7 @@
       </li>
 
       <!-- Coupon Area -->
-      <li v-if="store.hasPromoCodes">
+      <li v-if="store.hasPromoCodes && showDiscounts.coupons">
         <h5 v-if="!loggedIn">Promo codes entered during checkout.</h5>
         <div class="row">
           <div class="col-xs-6 pl-3">
@@ -1267,6 +1268,11 @@ export default {
   },
   data() {
     return {
+      showDiscounts: {
+        subscriptionDiscount: true,
+        coupons: true,
+        promotions: true
+      },
       hourInterval: false,
       coolerDepositChanged: false,
       includeCooler: true,
@@ -2334,8 +2340,10 @@ use next_delivery_dates
         this.adjustMealPlan ||
         this.$route.query.sub === "true" ||
         this.mealPlan
-      )
+      ) {
         return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
+      }
+      return 0;
     },
     subscribeAndSaveAmount() {
       return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
@@ -3747,6 +3755,20 @@ use next_delivery_dates
             this.setBagCoupon(resp.data);
           }
         });
+    },
+    syncDiscounts() {
+      this.$nextTick(() => {
+        switch (this.store.settings.discountSyncType) {
+          case 1:
+            if (this.mealPlanDiscount > 0) {
+              this.showDiscounts.coupons = false;
+              this.removeCoupon();
+            } else {
+              this.showDiscounts.coupons = true;
+            }
+            break;
+        }
+      });
     },
     search: _.debounce((loading, search, vm) => {
       axios
