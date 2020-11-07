@@ -24,7 +24,8 @@ class CouponController extends Controller
         $couponCode = $request->get('couponCode');
         $coupon = Coupon::where([
             'store_id' => $storeId,
-            'code' => $couponCode
+            'code' => $couponCode,
+            'active' => 1
         ])->first();
         if (isset($coupon)) {
             return $coupon;

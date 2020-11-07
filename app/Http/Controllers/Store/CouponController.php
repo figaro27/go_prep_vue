@@ -26,7 +26,8 @@ class CouponController extends StoreController
         $couponCode = $request->get('couponCode');
         $coupon = Coupon::where([
             'store_id' => $storeId,
-            'code' => $couponCode
+            'code' => $couponCode,
+            'active' => 1
         ])->first();
         if (isset($coupon)) {
             return $coupon;
@@ -126,9 +127,9 @@ class CouponController extends StoreController
     {
         $coupon = Coupon::where('id', $request->get('id'))->first();
         $referredUser = $coupon->referral_user_id;
+        $coupon->active = $request->get('active');
         $coupon->referral_user_id = $request->get('referral_user_id');
         $coupon->update();
-        return $referredUser;
     }
 
     /**

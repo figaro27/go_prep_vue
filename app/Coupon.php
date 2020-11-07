@@ -11,6 +11,7 @@ class Coupon extends Model
 
     protected $appends = ['referredUserName'];
     protected $casts = [
+        'active' => 'boolean',
         'freeDelivery' => 'boolean'
     ];
 

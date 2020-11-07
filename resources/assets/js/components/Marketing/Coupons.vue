@@ -5,17 +5,7 @@
       <v-client-table
         :columns="columns"
         :data="tableData"
-        :options="{
-          orderBy: {
-            column: 'id',
-            ascending: true
-          },
-          headings: {
-            freeDelivery: 'Free Delivery',
-            oneTime: 'One Time'
-          },
-          filterable: false
-        }"
+        :options="tableOptions"
       >
         <div slot="beforeTable" class="mb-2">
           <b-form @submit.prevent="saveCoupon">
@@ -89,6 +79,16 @@
           </b-form>
         </div>
 
+        <div slot="active" slot-scope="props">
+          <b-form-checkbox
+            class="mediumCheckbox"
+            style="padding-left:45px;padding-top:10px"
+            type="checkbox"
+            v-model="props.row.active"
+            @change="val => updated(props.row.id, val)"
+          ></b-form-checkbox>
+        </div>
+
         <div slot="freeDelivery" slot-scope="props">
           <p v-if="props.row.freeDelivery" class="text-success">✓</p>
           <p v-if="!props.row.freeDelivery" class="red">X</p>
@@ -130,6 +130,7 @@ export default {
     return {
       coupon: { type: "flat", freeDelivery: 0, oneTime: 0 },
       columns: [
+        "active",
         "code",
         "type",
         "amount",
@@ -137,7 +138,25 @@ export default {
         "oneTime",
         "minimum",
         "actions"
-      ]
+      ],
+      tableOptions: {
+        orderBy: {
+          column: "id",
+          ascending: true
+        },
+        headings: {
+          active: "Active",
+          freeDelivery: "Free Delivery",
+          oneTime: "One Time"
+        },
+
+        filterable: false,
+        rowClassCallback: function(row) {
+          let classes = `coupon coupon-${row.id}`;
+          classes += row.active ? "" : " faded";
+          return classes;
+        }
+      }
     };
   },
   created() {},
@@ -206,6 +225,14 @@ export default {
           this.coupon.amount = newPrice;
         }
       }
+    },
+    updated(couponId, val) {
+      axios
+        .patch("/api/me/coupons", { id: couponId, active: val })
+        .then(resp => {
+          this.$toastr.s("Coupon Updated", "Success");
+          this.refreshStoreCoupons();
+        });
     }
   }
 };
