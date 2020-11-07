@@ -1452,6 +1452,10 @@ export default {
     if (this.deliveryShipping == "Shipping") {
       this.setBagPickup(0);
     }
+
+    if (!this.hasDeliveryOption) {
+      this.setBagPickup(1);
+    }
   },
   mixins: [MenuBag],
   computed: {
@@ -1500,6 +1504,16 @@ export default {
       context: "context",
       deliveryFee: "bagDeliveryFee"
     }),
+    hasDeliveryOption() {
+      return (
+        this.store.settings.transferType.includes("delivery") ||
+        ((this.store.modules.customDeliveryDays ||
+          this.store.modules.multipleDeliveryDays) &&
+          this.store.delivery_days.some(day => {
+            return day.type == "delivery";
+          }))
+      );
+    },
     deliveryShipping() {
       let {
         applyDeliveryFee,

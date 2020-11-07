@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-if="!willDeliver && loggedIn && !storeView"
+      v-if="!willDeliver && loggedIn && !storeView && hasDeliveryOption"
       v-bind:class="
         store.settings.menuStyle === 'image'
           ? 'main-customer-container customer-menu-container'
@@ -30,7 +30,17 @@ export default {
       store: "viewedStore",
       willDeliver: "viewedStoreWillDeliver",
       loggedIn: "loggedIn"
-    })
+    }),
+    hasDeliveryOption() {
+      return (
+        this.store.settings.transferType.includes("delivery") ||
+        ((this.store.modules.customDeliveryDays ||
+          this.store.modules.multipleDeliveryDays) &&
+          this.store.delivery_days.some(day => {
+            return day.type == "delivery";
+          }))
+      );
+    }
   }
 };
 </script>
