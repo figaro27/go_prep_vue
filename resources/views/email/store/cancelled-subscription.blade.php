@@ -302,6 +302,7 @@ $currency = $subscription->store->settings->currency
                         $coupon = $subscription->couponReduction;
                         $couponCode = $subscription->couponCode;
                         $referralReduction = $subscription->referralReduction;
+                        $purchasedGiftCardReduction = $subscription->purchasedGiftCardReduction;
                         $promotionReduction = $subscription->promotionReduction;
                         $pointsReduction = $subscription->pointsReduction;
                         @endphp
@@ -330,6 +331,9 @@ $currency = $subscription->store->settings->currency
                         @endif
                         @if ($pointsReduction > 0)
                         Points Discount<br>
+                        @endif
+                        @if ($purchasedGiftCardReduction > 0)
+                        Gift Card Discount<br>
                         @endif
                         @if ($gratuity > 0)
 Gratuity<br>
@@ -368,6 +372,9 @@ Cooler Deposit<br>
                           @endif
                           @if ($pointsReduction > 0)
                           @money($pointsReduction, $currency, 2)<br>
+                          @endif
+                          @if ($purchasedGiftCardReduction > 0)
+                          @money($purchasedGiftCardReduction, $currency, 2)<br>
                           @endif
                           @if ($gratuity > 0)
 @money($gratuity, $currency, 2)<br>

@@ -160,7 +160,6 @@
                   @change="
                     val => {
                       setWeeklySubscriptionValue(val);
-                      setBagPurchasedGiftCard(null);
                       updateParentData();
                       setBagMealPlan(val);
                       syncDiscounts();
@@ -1266,6 +1265,7 @@ export default {
         coupons: true,
         promotions: true
       },
+      lastUsedDiscountCode: null,
       hourInterval: false,
       coolerDepositChanged: false,
       includeCooler: true,
@@ -2328,11 +2328,12 @@ use next_delivery_dates
     },
     mealPlanDiscount() {
       if (
-        this.weeklySubscription ||
-        this.inSub ||
-        this.adjustMealPlan ||
-        this.$route.query.sub === "true" ||
-        this.mealPlan
+        (this.weeklySubscription ||
+          this.inSub ||
+          this.adjustMealPlan ||
+          this.$route.query.sub === "true" ||
+          this.mealPlan) &&
+        this.storeSettings.applyMealPlanDiscount
       ) {
         return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
       }
@@ -2491,7 +2492,17 @@ use next_delivery_dates
         return 0;
       }
 
-      return parseFloat(this.purchasedGiftCard.balance);
+      let grandTotal =
+        this.afterFeesAndTax -
+        this.totalNonGiftCardDiscountReduction +
+        this.coolerDeposit +
+        this.tip;
+
+      if (parseFloat(this.purchasedGiftCard.balance) > grandTotal) {
+        return grandTotal;
+      } else {
+        return parseFloat(this.purchasedGiftCard.balance);
+      }
     },
     referralReduction() {
       if (!this.referral) {
@@ -2606,6 +2617,13 @@ use next_delivery_dates
         total = 0;
       }
       return total;
+    },
+    totalNonGiftCardDiscountReduction() {
+      return (
+        this.referralReduction +
+        this.promotionReduction +
+        this.promotionPointsReduction
+      );
     },
     totalDiscountReduction() {
       return (
@@ -2981,6 +2999,7 @@ use next_delivery_dates
       }
     },
     async applyDiscountCode() {
+      this.lastUsedDiscountCode = this.discountCode;
       let coupon = {};
       await axios
         .post(this.prefix + "findCoupon", {
@@ -3028,10 +3047,10 @@ use next_delivery_dates
         return;
       }
 
-      if (this.weeklySubscriptionValue) {
-        this.$toastr.w("Gift cards are allowed on one time orders only.");
-        return;
-      }
+      // if (this.weeklySubscriptionValue) {
+      //   this.$toastr.w("Gift cards are allowed on one time orders only.");
+      //   return;
+      // }
 
       let purchasedGiftCard = {};
       await axios
@@ -3057,9 +3076,7 @@ use next_delivery_dates
           );
           return;
         }
-        if (purchasedGiftCard.balance > this.grandTotal) {
-          purchasedGiftCard.balance = this.grandTotal;
-        }
+
         this.purchasedGiftCard = purchasedGiftCard;
 
         this.setBagPurchasedGiftCard(purchasedGiftCard);
@@ -3755,15 +3772,18 @@ use next_delivery_dates
           case 1:
             if (this.mealPlanDiscount > 0) {
               this.showDiscounts.coupons = false;
-              this.removeCoupon();
-              this.removePurchasedGiftCard();
-              this.removeReferral();
+              this.removeDiscounts();
             } else {
               this.showDiscounts.coupons = true;
             }
             break;
         }
       });
+    },
+    removeDiscounts() {
+      this.removeCoupon();
+      this.removePurchasedGiftCard();
+      this.removeReferral();
     },
     search: _.debounce((loading, search, vm) => {
       axios

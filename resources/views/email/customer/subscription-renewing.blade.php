@@ -38,7 +38,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
 }
 </style>
 @php
-$currency, 2 = $subscription->store->settings->currency
+$currency = $subscription->store->settings->currency
 @endphp
 </head>
 
@@ -393,8 +393,10 @@ $currency, 2 = $subscription->store->settings->currency
                         $couponCode = $subscription->couponCode;
                         $couponReduction = $subscription->couponReduction;
                         $referralReduction = $subscription->referralReduction;
+                        $purchasedGiftCardReduction = $subscription->purchasedGiftCardReduction;
                         $promotionReduction = $subscription->promotionReduction;
                         $pointsReduction = $subscription->pointsReduction;
+                        $purchasedGiftCardReduction = $subscription->purchasedGiftCardReduction;
                         @endphp
 
                         Subtotal: <br>
@@ -431,6 +433,9 @@ $currency, 2 = $subscription->store->settings->currency
                         @if ($pointsReduction > 0)
                         @money($pointsReduction, $currency, 2)<br>
                         @endif
+                        @if ($purchasedGiftCardReduction > 0)
+                          Gift Card Discount<br>
+                          @endif
                         @if ($gratuity > 0)
 Gratuity<br>
 @endif
@@ -460,6 +465,18 @@ Cooler Deposit<br>
                           @endif
                           @if ($processingFee > 0)
                           @money($processingFee, $currency, 2)<br>
+                          @endif
+                          @if ($referralReduction > 0)
+                          @money($referralReduction, $currency, 2)<br>
+                          @endif
+                          @if ($promotionReduction > 0)
+                          @money($promotionReduction, $currency, 2)<br>
+                          @endif
+                          @if ($pointsReduction > 0)
+                          @money($pointsReduction, $currency, 2)<br>
+                          @endif
+                          @if ($purchasedGiftCardReduction > 0)
+                          @money($purchasedGiftCardReduction, $currency, 2)<br>
                           @endif
                           @if ($gratuity > 0)
 @money($gratuity, $currency, 2)<br>

@@ -750,14 +750,6 @@ class CheckoutController extends StoreController
                     ->send($email);
             } catch (\Exception $e) {
             }*/
-                if (isset($purchasedGiftCardId)) {
-                    $purchasedGiftCard = PurchasedGiftCard::where(
-                        'id',
-                        $purchasedGiftCardId
-                    )->first();
-                    $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
-                    $purchasedGiftCard->update();
-                }
 
                 // if ($bagItems && count($bagItems) > 0) {
                 //     foreach ($bagItems as $bagItem) {
@@ -937,6 +929,8 @@ class CheckoutController extends StoreController
                 $userSubscription->couponCode = $couponCode;
                 $userSubscription->applied_referral_id = $appliedReferralId;
                 $userSubscription->referralReduction = $referralReduction;
+                $userSubscription->purchased_gift_card_id = $purchasedGiftCardId;
+                $userSubscription->purchasedGiftCardReduction = $purchasedGiftCardReduction;
                 $userSubscription->promotionReduction = $promotionReduction;
                 $userSubscription->pointsReduction = $pointsReduction;
                 // In this case the 'next renewal time' is actually the first charge time
@@ -982,6 +976,8 @@ class CheckoutController extends StoreController
                 $order->couponReduction = $couponReduction;
                 $order->applied_referral_id = $appliedReferralId;
                 $order->referralReduction = $referralReduction;
+                $order->purchased_gift_card_id = $purchasedGiftCardId;
+                $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
                 $order->promotionReduction = $promotionReduction;
                 $order->pointsReduction = $pointsReduction;
                 $order->couponCode = $couponCode;
@@ -1450,6 +1446,15 @@ class CheckoutController extends StoreController
                     // Renew & create the first order right away since you aren't waiting for Stripe's 1 hour gap.
                     $userSubscription->renew();
                 }
+            }
+
+            if (isset($purchasedGiftCardId)) {
+                $purchasedGiftCard = PurchasedGiftCard::where(
+                    'id',
+                    $purchasedGiftCardId
+                )->first();
+                $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
+                $purchasedGiftCard->update();
             }
 
             if ($referralReduction > 0) {

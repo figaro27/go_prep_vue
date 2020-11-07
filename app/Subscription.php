@@ -19,9 +19,12 @@ use App\MealComponent;
 use App\MealComponentOption;
 use App\MealSubscriptionComponent;
 use App\MealSubscriptionAddon;
+use App\PurchasedGiftCard;
 
 class Subscription extends Model
 {
+    protected $preReductionTotal = 0;
+
     protected $fillable = [
         'status',
         'cancelled_at',
@@ -498,6 +501,9 @@ class Subscription extends Model
         $newOrder->couponReduction = $this->couponReduction;
         $newOrder->couponCode = $this->couponCode;
         $newOrder->referralReduction = $this->referralReduction;
+        $newOrder->purchased_gift_card_id = $this->purchased_gift_card_id;
+        $newOrder->purchasedGiftCardReduction =
+            $this->purchasedGiftCardReduction;
         $newOrder->promotionReduction = $this->promotionReduction;
         $newOrder->pointsReduction = $this->pointsReduction;
         $newOrder->originalAmount = $this->amount;
@@ -771,7 +777,8 @@ class Subscription extends Model
                 }
                 if ($promotion->conditionType === 'meals') {
                     if (
-                        $this->total_item_quantity >= $promotion->condtionAmount
+                        $this->total_item_quantity >=
+                        $promotion->conditionAmount
                     ) {
                         if ($promotion->promotionType === 'flat') {
                             $this->promotionReduction +=
@@ -835,6 +842,24 @@ class Subscription extends Model
             $this->store->referralSettings->frequency !== 'allOrders'
         ) {
             $this->referralReduction = 0;
+            $this->update();
+        }
+
+        // Update the purchased gift card amount
+
+        if ($this->purchased_gift_card_id) {
+            $purchasedGiftCard = PurchasedGiftCard::where(
+                'id',
+                $this->purchased_gift_card_id
+            )->first();
+            $purchasedGiftCardBalance = $purchasedGiftCard->balance;
+            if ($purchasedGiftCardBalance >= $this->preReductionTotal) {
+                $purchasedGiftCardBalance = $this->preReductionTotal;
+            }
+
+            $purchasedGiftCard->balance -= $purchasedGiftCardBalance;
+            $purchasedGiftCard->update();
+            $this->purchasedGiftCardReduction = $purchasedGiftCardBalance;
             $this->update();
         }
     }
@@ -1017,10 +1042,13 @@ class Subscription extends Model
 
         $this->save();
 
+        $this->preReductionTotal = $total;
+
         $this->syncDiscountPrices();
         $total -= $this->referralReduction;
         $total -= $this->promotionReduction;
         $total -= $this->pointsReduction;
+        $total -= $this->purchasedGiftCardReduction;
         $this->gratuity = $gratuity;
         $this->coolerDeposit = $coolerDeposit;
         if ($total < 0) {
@@ -1128,6 +1156,9 @@ class Subscription extends Model
             $order->coupon_id = $this->coupon_id;
             $order->couponReduction = $this->couponReduction;
             $order->couponCode = $this->couponCode;
+            $order->purchased_gift_card_id = $this->purchased_gift_card_id;
+            $order->purchasedGiftCardReduction =
+                $this->purchasedGiftCardReduction;
             $order->amount = $this->amount;
             $order->save();
 
@@ -1793,6 +1824,9 @@ class Subscription extends Model
         $newOrder->couponReduction = $this->couponReduction;
         $newOrder->couponCode = $this->couponCode;
         $newOrder->referralReduction = $this->referralReduction;
+        $newOrder->purchased_gift_card_id = $this->purchased_gift_card_id;
+        $newOrder->purchasedGiftCardReduction =
+            $this->purchasedGiftCardReduction;
         $newOrder->promotionReduction = $this->promotionReduction;
         $newOrder->pointsReduction = $this->pointsReduction;
         $newOrder->originalAmount = $this->amount;

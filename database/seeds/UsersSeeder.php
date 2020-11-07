@@ -53,7 +53,7 @@ class UsersSeeder extends Seeder
                 DB::table('customers')->insert([
                     'store_id' => $u,
                     'user_id' => $i,
-                    'stripe_id' => 'cus_I1jBGKjKvgu2wK',
+                    'stripe_id' => 'cus_IKVOMjV8Ee2eVs',
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);

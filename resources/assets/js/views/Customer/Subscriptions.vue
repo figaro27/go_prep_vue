@@ -229,6 +229,17 @@ f<template>
                 format.money(subscription.processingFee, subscription.currency)
               }}
             </p>
+            <p
+              v-if="subscription.purchasedGiftCardReduction > 0"
+              class="text-success"
+            >
+              Gift Card Discount: ({{
+                format.money(
+                  subscription.purchasedGiftCardReduction,
+                  subscription.currency
+                )
+              }})
+            </p>
             <p v-if="subscription.referralReduction > 0" class="text-success">
               Referral Discount: ({{
                 format.money(

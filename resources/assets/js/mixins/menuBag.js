@@ -418,6 +418,10 @@ export default {
             processingFee: this.processingFeeAmount,
             mealPlanDiscount: this.mealPlanDiscount,
             referralReduction: this.referralReduction,
+            purchased_gift_card_id: this.purchasedGiftCardApplied
+              ? this.purchasedGiftCard.id
+              : null,
+            purchasedGiftCardReduction: this.purchasedGiftCardReduction,
             promotionReduction: this.promotionReduction,
             pointsReduction: this.promotionPointsReduction,
             gratuity: this.gratuity,

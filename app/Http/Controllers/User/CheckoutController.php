@@ -759,14 +759,6 @@ class CheckoutController extends UserController
                         }
                     }
                 }
-                if (isset($purchasedGiftCardId)) {
-                    $purchasedGiftCard = PurchasedGiftCard::where(
-                        'id',
-                        $purchasedGiftCardId
-                    )->first();
-                    $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
-                    $purchasedGiftCard->update();
-                }
 
                 // if ($bagItems && count($bagItems) > 0) {
                 //     foreach ($bagItems as $bagItem) {
@@ -955,6 +947,8 @@ class CheckoutController extends UserController
                 $userSubscription->couponCode = $couponCode;
                 $userSubscription->applied_referral_id = $appliedReferralId;
                 $userSubscription->referralReduction = $referralReduction;
+                $userSubscription->purchased_gift_card_id = $purchasedGiftCardId;
+                $userSubscription->purchasedGiftCardReduction = $purchasedGiftCardReduction;
                 $userSubscription->promotionReduction = $promotionReduction;
                 $userSubscription->pointsReduction = $pointsReduction;
                 // In this case the 'next renewal time' is actually the first charge time
@@ -1001,6 +995,8 @@ class CheckoutController extends UserController
                 $order->pointsReduction = $pointsReduction;
                 $order->applied_referral_id = $appliedReferralId;
                 $order->referralReduction = $referralReduction;
+                $order->purchased_gift_card_id = $purchasedGiftCardId;
+                $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
                 $order->pickup_location_id = $pickupLocation;
                 $order->transferTime = $transferTime;
                 $order->dailyOrderNumber = $dailyOrderNumber;
@@ -1529,6 +1525,15 @@ class CheckoutController extends UserController
                         ]);
                     }
                 }
+            }
+
+            if (isset($purchasedGiftCardId)) {
+                $purchasedGiftCard = PurchasedGiftCard::where(
+                    'id',
+                    $purchasedGiftCardId
+                )->first();
+                $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
+                $purchasedGiftCard->update();
             }
 
             if ($referralReduction > 0) {

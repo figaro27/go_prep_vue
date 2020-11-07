@@ -19,6 +19,7 @@ use App\MealPackageSize;
 use App\MealPackageSubscription;
 use App\MealPackageOrder;
 use App\Subscription;
+use App\PurchasedGiftCard;
 
 class SubscriptionController extends UserController
 {
@@ -295,6 +296,10 @@ class SubscriptionController extends UserController
             $appliedReferralId = $request->get('applied_referral_id');
             $referralReduction = $request->get('referralReduction');
             $pointsReduction = $request->get('pointsReduction');
+            $purchasedGiftCardId = $request->get('purchased_gift_card_id');
+            $purchasedGiftCardReduction = $request->get(
+                'purchasedGiftCardReduction'
+            );
 
             // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             //     $discount = $store->settings->mealPlanDiscount / 100;
@@ -581,6 +586,8 @@ class SubscriptionController extends UserController
             $sub->couponCode = $couponCode;
             $sub->pickup_location_id = $pickupLocation;
             $sub->referralReduction = $referralReduction;
+            $sub->purchased_gift_card_id = $purchasedGiftCardId;
+            $sub->purchasedGiftCardReduction = $purchasedGiftCardReduction;
             $sub->promotionReduction = $promotionReduction;
             $sub->pointsReduction = $pointsReduction;
             $sub->customer_updated = Carbon::now(
@@ -613,6 +620,8 @@ class SubscriptionController extends UserController
                 $order->couponCode = $couponCode;
                 $order->salesTax = $salesTax;
                 $order->referralReduction = $referralReduction;
+                $order->purchased_gift_card_id = $purchasedGiftCardId;
+                $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
                 $order->promotionReduction = $promotionReduction;
                 $order->pointsReduction = $pointsReduction;
                 $order->amount = $total;
@@ -767,6 +776,15 @@ class SubscriptionController extends UserController
                         $mealOrder->update();
                     }
                 }
+            }
+
+            if (isset($purchasedGiftCardId)) {
+                $purchasedGiftCard = PurchasedGiftCard::where(
+                    'id',
+                    $purchasedGiftCardId
+                )->first();
+                $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
+                $purchasedGiftCard->update();
             }
         } catch (\Exception $e) {
             return response()->json(

@@ -340,12 +340,13 @@ $currency = $subscription->store->settings->currency
                         $coupon = $subscription->couponReduction;
                         $couponCode = $subscription->couponCode;
                         $referralReduction = $subscription->referralReduction;
+                        $purchasedGiftCardReduction = $subscription->purchasedGiftCardReduction;
                         $promotionReduction = $subscription->promotionReduction;
                         $pointsReduction = $subscription->pointsReduction;
                         @endphp
 
                         Subtotal: <br>
-                        @if ($coupon > 0)
+                        @if ($couponCode)
                         Coupon ({{ $couponCode }})<br>
                         @endif
                         @if ($mealPlanDiscount > 0)
@@ -369,6 +370,15 @@ $currency = $subscription->store->settings->currency
                         @if ($pointsReduction > 0)
                         Points Discount<br>
                         @endif
+                        @if ($referralReduction > 0)
+                        @money($referralReduction, $currency, 2)<br>
+                        @endif
+                        @if ($promotionReduction > 0)
+                        @money($promotionReduction, $currency, 2)<br>
+                        @endif
+                        @if ($pointsReduction > 0)
+                        @money($pointsReduction, $currency, 2)<br>
+                        @endif
                         @if ($gratuity > 0)
 Gratuity<br>
 @endif
@@ -383,30 +393,33 @@ Cooler Deposit<br>
                     
                       
                         <td bgcolor="#e1e6e7" style="padding-left:15px;font-family: 'Open Sans', Arial, sans-serif; font-size:12px; color:#3b3b3b; line-height:26px; text-transform:uppercase;line-height:24px;">
-                          @money($subtotal, $currency)<br>
+                          @money($subtotal, $currency, 2)<br>
                           @if ($coupon > 0)
-                          (@money($coupon, $currency))<br>
+                          (@money($coupon, $currency, 2))<br>
                           @endif
                           @if ($mealPlanDiscount > 0)
-                          (@money($mealPlanDiscount, $currency))<br>
+                          (@money($mealPlanDiscount, $currency, 2))<br>
                           @endif
                           @if ($salesTax > 0)
-                          @money($salesTax, $currency)<br>
+                          @money($salesTax, $currency, 2)<br>
                           @endif
                           @if ($deliveryFee > 0)
-                          @money($deliveryFee, $currency)<br>
+                          @money($deliveryFee, $currency, 2)<br>
                           @endif
                           @if ($processingFee > 0)
-                          @money($processingFee, $currency)<br>
+                          @money($processingFee, $currency, 2)<br>
                           @endif
                           @if ($referralReduction > 0)
-                          @money($referralReduction, $currency)<br>
+                          @money($referralReduction, $currency, 2)<br>
                           @endif
                           @if ($promotionReduction > 0)
-                          @money($promotionReduction, $currency)<br>
+                          @money($promotionReduction, $currency, 2)<br>
                           @endif
                           @if ($pointsReduction > 0)
-                          @money($pointsReduction, $currency)<br>
+                          @money($pointsReduction, $currency, 2)<br>
+                          @endif
+                          @if ($purchasedGiftCardReduction > 0)
+                          @money($purchasedGiftCardReduction, $currency, 2)<br>
                           @endif
                           @if ($gratuity > 0)
 @money($gratuity, $currency)<br>
