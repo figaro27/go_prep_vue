@@ -127,8 +127,13 @@ class CouponController extends StoreController
     {
         $coupon = Coupon::where('id', $request->get('id'))->first();
         $referredUser = $coupon->referral_user_id;
-        $coupon->active = $request->get('active');
-        $coupon->referral_user_id = $request->get('referral_user_id');
+
+        if ($request->has('active')) {
+            $coupon->active = $request->get('active');
+        }
+        if ($request->has('referral_user_id')) {
+            $coupon->referral_user_id = $request->get('referral_user_id');
+        }
         $coupon->update();
     }
 
