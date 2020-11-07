@@ -3756,6 +3756,8 @@ use next_delivery_dates
             if (this.mealPlanDiscount > 0) {
               this.showDiscounts.coupons = false;
               this.removeCoupon();
+              this.removePurchasedGiftCard();
+              this.removeReferral();
             } else {
               this.showDiscounts.coupons = true;
             }
