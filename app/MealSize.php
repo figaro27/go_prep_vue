@@ -6,6 +6,9 @@ use App\Meal;
 use Illuminate\Database\Eloquent\Model;
 use App\MealSubscription;
 use App\MealMealPackage;
+use App\MealMealPackageSize;
+use App\MealMealPackageComponentOption;
+use App\MealMealPackageAddon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Utils\Data\Format;
 
@@ -81,13 +84,33 @@ class MealSize extends Model
             })
             ->count();
 
-        $mealPackages = MealMealPackage::where('meal_size_id', $this->id)
-            ->whereHas('meal_package', function ($pkg) {
-                $pkg->where('active', 1);
-            })
-            ->count();
+        $mealMealPackages = MealMealPackage::where(
+            'meal_size_id',
+            $this->id
+        )->count();
 
-        if ($mealSubs > 0 || $mealPackages > 0) {
+        $mealMealPackageSizes = MealMealPackageSize::where(
+            'meal_size_id',
+            $this->id
+        )->count();
+
+        $mealMealPackageComponentOptions = MealMealPackageComponentOption::where(
+            'meal_size_id',
+            $this->id
+        )->count();
+
+        $mealMealPackageAddons = MealMealPackageAddon::where(
+            'meal_size_id',
+            $this->id
+        )->count();
+
+        if (
+            $mealSubs > 0 ||
+            $mealMealPackages > 0 ||
+            $mealMealPackageSizes > 0 ||
+            $mealMealPackageComponentOptions ||
+            $mealMealPackageAddons
+        ) {
             return true;
         } else {
             return false;
