@@ -424,7 +424,7 @@ export default {
             purchasedGiftCardReduction: this.purchasedGiftCardReduction,
             promotionReduction: this.promotionReduction,
             pointsReduction: this.promotionPointsReduction,
-            gratuity: this.gratuity,
+            gratuity: this.tip,
             coolerDeposit: this.coolerDeposit
           }
         );

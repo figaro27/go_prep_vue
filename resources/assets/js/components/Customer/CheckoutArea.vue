@@ -481,19 +481,17 @@
               :options="gratuityOptions"
               v-model="gratuityType"
               class="ml-2 w-100px"
-              @input="changeGratuity"
             ></b-form-select>
           </div>
           <div class="col-6 col-md-3 offset-md-5 d-flex">
             <b-form-input
-              v-model="gratuity"
+              type="number"
+              v-model="customGratuity"
               placeholder="Gratuity"
               class="w-80px"
               v-if="gratuityType == 'custom'"
             ></b-form-input>
-            <span v-else>{{
-              format.money(gratuity, storeSettings.currency)
-            }}</span>
+            <span v-else>{{ format.money(tip, storeSettings.currency) }}</span>
           </div>
         </div>
       </li>
@@ -1268,11 +1266,11 @@ export default {
         coupons: true,
         promotions: true
       },
+      customGratuity: 0,
       lastUsedDiscountCode: null,
       hourInterval: false,
       coolerDepositChanged: false,
       includeCooler: true,
-      gratuity: null,
       gratuityType: 0,
       customerOptions: [],
       coupons: [],
@@ -1406,20 +1404,6 @@ export default {
 
     this.form.billingState = state[0];
 
-    if (this.$route.params.storeView || this.storeOwner) {
-      if (this.$route.params.adjustOrder) {
-        this.gratuity = this.order.gratuity;
-      } else {
-        // Apparently more of a nuisance than convenience to auto select the last staff member
-        // axios.get("/api/me/getLastStaffMemberId").then(resp => {
-        //   this.staffMember = resp.data;
-        // });
-      }
-    }
-
-    this.gratuity = this.$parent.$route.params.subscription
-      ? this.$parent.$route.params.subscription.gratuity
-      : null;
     this.setSubscriptionCoupon();
 
     if (
@@ -1458,6 +1442,19 @@ export default {
 
     if (!this.hasDeliveryOption) {
       this.setBagPickup(1);
+    }
+
+    if (this.$route.params.adjustOrder) {
+      this.gratuityType = "custom";
+      this.customGratuity = this.order.gratuity > 0 ? this.order.gratuity : 0;
+    }
+
+    if (this.$parent.$route.params.subscription) {
+      this.gratuityType = "custom";
+      this.customGratuity =
+        this.$parent.$route.params.subscription.gratuity > 0
+          ? this.$parent.$route.params.subscription.gratuity
+          : 0;
     }
   },
   mixins: [MenuBag],
@@ -2591,15 +2588,11 @@ use next_delivery_dates
       return this.pointsReduction;
     },
     tip() {
-      let gratuity = 0;
-      if (
-        this.gratuity !== "" &&
-        this.gratuity !== null &&
-        this.gratuity !== undefined
-      ) {
-        gratuity = parseFloat(this.gratuity);
+      if (this.gratuityType !== "custom") {
+        return this.afterDiscount * (this.gratuityType / 100);
+      } else {
+        return this.customGratuity ? parseFloat(this.customGratuity) : 0;
       }
-      return gratuity;
     },
     coolerDeposit() {
       if (this.bagPickup == 1) {
@@ -3750,11 +3743,6 @@ use next_delivery_dates
         this.customerOptions = [];
         loading(true);
         this.search(loading, search, this);
-      }
-    },
-    changeGratuity() {
-      if (this.gratuityType !== "custom") {
-        this.gratuity = this.afterDiscount * (this.gratuityType / 100);
       }
     },
     showAuthModal() {
