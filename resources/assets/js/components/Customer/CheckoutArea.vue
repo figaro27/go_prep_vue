@@ -362,7 +362,10 @@
           </div>
         </div>
       </li>
-      <li class="checkout-item" v-if="storeSettings.applyProcessingFee">
+      <li
+        class="checkout-item"
+        v-if="storeSettings.applyProcessingFee && !cashOrder"
+      >
         <div class="row">
           <div class="col-6 col-md-4">
             <strong>Processing Fee:</strong>
@@ -2462,6 +2465,9 @@ use next_delivery_dates
       } else return 0;
     },
     processingFeeAmount() {
+      if (this.cashOrder) {
+        return 0;
+      }
       if (this.storeSettings.applyProcessingFee) {
         if (this.storeSettings.processingFeeType === "flat") {
           return this.storeSettings.processingFee;
