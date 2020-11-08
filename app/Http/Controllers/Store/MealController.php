@@ -199,41 +199,94 @@ class MealController extends StoreController
         )->get();
 
         foreach ($mealMealPackages as $mealMealPackage) {
-            $existingMealMealPackage = MealMealPackage::where([
-                'meal_id' => $subId,
-                'meal_size_id' => null,
-                'meal_package_id' => $mealMealPackage->meal_package_id
-            ])->first();
-            if ($existingMealMealPackage) {
-                $quantity =
-                    $existingMealMealPackage->quantity +
-                    $mealMealPackage->quantity;
-                $existingMealMealPackage->quantity = $quantity;
-                $existingMealMealPackage->update();
-                $mealMealPackage->delete();
+            if (count($substituteMealSizes) > 0) {
+                foreach (
+                    $substituteMealSizes
+                    as $oldMealSizeId => $newMealSizeId
+                ) {
+                    $existing = MealMealPackage::where([
+                        'meal_id' => $subId,
+                        'meal_size_id' => $oldMealSizeId,
+                        'meal_package_id' => $mealMealPackage->meal_package_id
+                    ])->first();
+
+                    if (!$existing) {
+                        $mealMealPackage->update([
+                            'meal_id' => $subId,
+                            'meal_size_id' => $newMealSizeId
+                        ]);
+                    } else {
+                        $existingQuantity = $existing->quantity;
+                        $quantity = $mealMealPackage->quantity;
+                        $existing->update([
+                            'quantity' => $existingQuantity + $quantity
+                        ]);
+                        $mealMealPackage->delete();
+                    }
+                }
             } else {
-                $mealMealPackage->meal_id = $subId;
-                $mealMealPackage->update();
+                $existing = MealMealPackage::where([
+                    'meal_id' => $subId,
+                    'meal_package_id' => $mealMealPackage->meal_package_id
+                ])->first();
+
+                if (!$existing) {
+                    $mealMealPackage->update(['meal_id' => $subId]);
+                } else {
+                    $existingQuantity = $existing->quantity;
+                    $quantity = $mealMealPackage->quantity;
+                    $existing->update([
+                        'quantity' => $existingQuantity + $quantity
+                    ]);
+                    $mealMealPackage->delete();
+                }
             }
         }
 
         foreach ($mealMealPackageSizes as $mealMealPackageSize) {
-            $existingMealMealPackageSize = MealMealPackageSize::where([
-                'meal_id' => $subId,
-                'meal_size_id' => null,
-                'meal_package_size_id' =>
-                    $mealMealPackageSize->meal_package_size_id
-            ])->first();
-            if ($existingMealMealPackageSize) {
-                $quantity =
-                    $existingMealMealPackageSize->quantity +
-                    $mealMealPackageSize->quantity;
-                $existingMealMealPackageSize->quantity = $quantity;
-                $existingMealMealPackageSize->update();
-                $mealMealPackageSize->delete();
+            if (count($substituteMealSizes) > 0) {
+                foreach (
+                    $substituteMealSizes
+                    as $oldMealSizeId => $newMealSizeId
+                ) {
+                    $existing = MealMealPackageSize::where([
+                        'meal_id' => $subId,
+                        'meal_size_id' => $oldMealSizeId,
+                        'meal_package_size_id' =>
+                            $mealMealPackageSize->meal_package_size_id
+                    ])->first();
+
+                    if (!$existing) {
+                        $mealMealPackageSize->update([
+                            'meal_id' => $subId,
+                            'meal_size_id' => $newMealSizeId
+                        ]);
+                    } else {
+                        $existingQuantity = $existing->quantity;
+                        $quantity = $mealMealPackageSize->quantity;
+                        $existing->update([
+                            'quantity' => $existingQuantity + $quantity
+                        ]);
+                        $mealMealPackageSize->delete();
+                    }
+                }
             } else {
-                $mealMealPackage->meal_id = $subId;
-                $mealMealPackage->update();
+                $existing = MealMealPackageSize::where([
+                    'meal_id' => $subId,
+                    'meal_package_size_id' =>
+                        $mealMealPackageSize->meal_package_size_id
+                ])->first();
+
+                if (!$existing) {
+                    $mealMealPackageSize->update(['meal_id' => $subId]);
+                } else {
+                    $existingQuantity = $existing->quantity;
+                    $quantity = $mealMealPackageSize->quantity;
+                    $existing->update([
+                        'quantity' => $existingQuantity + $quantity
+                    ]);
+                    $mealMealPackageSize->delete();
+                }
             }
         }
 
@@ -241,129 +294,138 @@ class MealController extends StoreController
             $mealMealPackageComponentOptions
             as $mealMealPackageComponentOption
         ) {
-            $existingMealMealPackageComponentOption = MealMealPackageComponentOption::where(
-                [
-                    'meal_id' => $subId,
-                    'meal_size_id' => null,
-                    'meal_package_component_option_id' =>
-                        $mealMealPackageComponentOption->meal_package_component_option_id
-                ]
-            )->first();
-            if ($existingMealMealPackageComponentOption) {
-                $quantity =
-                    $existingMealMealPackageComponentOption->quantity +
-                    $mealMealPackageComponentOption->quantity;
-                $existingMealMealPackageComponentOption->quantity = $quantity;
-                $existingMealMealPackageComponentOption->update();
-                $mealMealPackageComponentOption->delete();
-            } else {
-                $mealMealPackageComponentOption->meal_id = $subId;
-                $mealMealPackageComponentOption->update();
-            }
-        }
-        foreach ($mealMealPackageAddons as $mealMealPackageAddon) {
-            $existingMealMealPackageAddon = MealMealPackageAddon::where([
-                'meal_id' => $subId,
-                'meal_size_id' => null,
-                'meal_package_addon_id' =>
-                    $mealMealPackageAddon->meal_package_addon_id
-            ])->first();
-            if ($existingMealMealPackageAddon) {
-                $quantity =
-                    $existingMealMealPackageAddon->quantity +
-                    $mealMealPackageAddon->quantity;
-                $existingMealMealPackageAddon->quantity = $quantity;
-                $existingMealMealPackageAddon->update();
-                $mealMealPackageAddon->delete();
-            } else {
-                $mealMealPackageAddon->meal_id = $subId;
-                $mealMealPackageAddon->update();
-            }
-        }
-
-        foreach ($substituteMealSizes as $oldMealSizeId => $newMealSizeId) {
-            foreach ($mealMealPackages as $mealMealPackage) {
-                if ($mealMealPackage->meal_size_id === $oldMealSizeId) {
-                    $mealMealPackage->meal_size_id = $newMealSizeId;
-                    $mealMealPackage->update();
-                }
-            }
-            foreach ($mealMealPackageSizes as $mealMealPackageSize) {
-                if ($mealMealPackageSize->meal_size_id === $oldMealSizeId) {
-                    $existingMealMealPackageSize = MealMealPackageSize::where([
+            if (count($substituteMealSizes) > 0) {
+                foreach (
+                    $substituteMealSizes
+                    as $oldMealSizeId => $newMealSizeId
+                ) {
+                    $existing = MealMealPackageComponentOption::where([
                         'meal_id' => $subId,
-                        'meal_size_id' => $newMealSizeId,
-                        'meal_package_size_id' =>
-                            $mealMealPackageSize->meal_package_size_id
+                        'meal_size_id' => $oldMealSizeId,
+                        'meal_package_component_option_id' =>
+                            $mealMealPackageComponentOption->meal_package_component_option_id
                     ])->first();
 
-                    if ($existingMealMealPackageSize) {
-                        $quantity =
-                            $existingMealMealPackageSize->quantity +
-                            $mealMealPackageSize->quantity;
-                        $existingMealMealPackageSize->quantity = $quantity;
-                        $existingMealMealPackageSize->update();
-                        $mealMealPackageSize->delete();
+                    if (!$existing) {
+                        $mealMealPackageComponentOption->update([
+                            'meal_id' => $subId,
+                            'meal_size_id' => $newMealSizeId
+                        ]);
                     } else {
-                        $mealMealPackageSize->meal_id = $subId;
-                        $mealMealPackageSize->meal_size_id = $newMealSizeId;
-                        $mealMealPackageSize->update();
+                        $mealPackageComponentOption = MealPackageComponentOption::where(
+                            'id',
+                            $existing->meal_package_component_option_id
+                        )->first();
+                        if (
+                            $mealPackageComponentOption &&
+                            !$mealPackageComponentOption->selectable
+                        ) {
+                            $existingQuantity = $existing->quantity;
+                            $quantity =
+                                $mealMealPackageComponentOption->quantity;
+                            $existing->update([
+                                'quantity' => $existingQuantity + $quantity
+                            ]);
+                            $mealMealPackageComponentOption->delete();
+                        } else {
+                            $mealMealPackageComponentOption->delete();
+                        }
                     }
                 }
-            }
-            foreach (
-                $mealMealPackageComponentOptions
-                as $mealMealPackageComponentOption
-            ) {
-                if (
-                    $mealMealPackageComponentOption->meal_size_id ===
-                    $oldMealSizeId
-                ) {
-                    $existingMealMealPackageComponentOption = MealMealPackageComponentOption::where(
-                        [
-                            'meal_id' => $subId,
-                            'meal_size_id' => $newMealSizeId,
-                            'meal_package_component_option_id' =>
-                                $mealMealPackageComponentOption->meal_package_component_option_id
-                        ]
-                    )->first();
+            } else {
+                $existing = MealMealPackageComponentOption::where([
+                    'meal_id' => $subId,
+                    'meal_package_component_option_id' =>
+                        $mealMealPackageComponentOption->meal_package_component_option_id
+                ])->first();
 
-                    if ($existingMealMealPackageComponentOption) {
-                        $quantity =
-                            $existingMealMealPackageComponentOption->quantity +
-                            $mealMealPackageComponentOption->quantity;
-                        $existingMealMealPackageComponentOption->quantity = $quantity;
-                        $existingMealMealPackageComponentOption->update();
+                if (!$existing) {
+                    $mealMealPackageComponentOption->update([
+                        'meal_id' => $subId
+                    ]);
+                } else {
+                    $mealPackageComponentOption = MealPackageComponentOption::where(
+                        'id',
+                        $existing->meal_package_component_option_id
+                    )->first();
+                    if (
+                        $mealPackageComponentOption &&
+                        !$mealPackageComponentOption->selectable
+                    ) {
+                        $existingQuantity = $existing->quantity;
+                        $quantity = $mealMealPackageComponentOption->quantity;
+                        $existing->update([
+                            'quantity' => $existingQuantity + $quantity
+                        ]);
                         $mealMealPackageComponentOption->delete();
                     } else {
-                        $mealMealPackageComponentOption->meal_id = $subId;
-                        $mealMealPackageComponentOption->meal_size_id = $newMealSizeId;
-                        $mealMealPackageComponentOption->update();
+                        $mealMealPackageComponentOption->delete();
                     }
                 }
             }
-            foreach ($mealMealPackageAddons as $mealMealPackageAddon) {
-                if ($mealMealPackageAddon->meal_size_id === $oldMealSizeId) {
-                    $existingMealMealPackageAddon = MealMealPackageAddon::where(
-                        [
-                            'meal_id' => $subId,
-                            'meal_size_id' => $newMealSizeId,
-                            'meal_package_addon_id' =>
-                                $mealMealPackageAddon->meal_package_addon_id
-                        ]
-                    )->first();
+        }
 
-                    if ($existingMealMealPackageAddon) {
-                        $quantity =
-                            $existingMealMealPackageAddon->quantity +
-                            $mealMealPackageAddon->quantity;
-                        $existingMealMealPackageAddon->quantity = $quantity;
-                        $existingMealMealPackageAddon->update();
+        foreach ($mealMealPackageAddons as $mealMealPackageAddon) {
+            if (count($substituteMealSizes) > 0) {
+                foreach (
+                    $substituteMealSizes
+                    as $oldMealSizeId => $newMealSizeId
+                ) {
+                    $existing = MealMealPackageAddon::where([
+                        'meal_id' => $subId,
+                        'meal_size_id' => $oldMealSizeId,
+                        'meal_package_addon_id' =>
+                            $mealMealPackageAddon->meal_package_addon_id
+                    ])->first();
+
+                    if (!$existing) {
+                        $mealMealPackageAddon->update([
+                            'meal_id' => $subId,
+                            'meal_size_id' => $newMealSizeId
+                        ]);
+                    } else {
+                        $mealPackageAddon = MealPackageAddon::where(
+                            'id',
+                            $existing->meal_package_addon_id
+                        )->first();
+                        if (
+                            $mealPackageAddon &&
+                            !$mealPackageAddon->selectable
+                        ) {
+                            $existingQuantity = $existing->quantity;
+                            $quantity = $mealMealPackageAddon->quantity;
+                            $existing->update([
+                                'quantity' => $existingQuantity + $quantity
+                            ]);
+                            $mealMealPackageAddon->delete();
+                        } else {
+                            $mealMealPackageAddon->delete();
+                        }
+                    }
+                }
+            } else {
+                $existing = MealMealPackageAddon::where([
+                    'meal_id' => $subId,
+                    'meal_package_addon_id' =>
+                        $mealMealPackageAddon->meal_package_addon_id
+                ])->first();
+
+                if (!$existing) {
+                    $mealMealPackageAddon->update(['meal_id' => $subId]);
+                } else {
+                    $mealPackageAddon = MealPackageAddon::where(
+                        'id',
+                        $existing->meal_package_addon_id
+                    )->first();
+                    if ($mealPackageAddon && !$mealPackageAddon->selectable) {
+                        $existingQuantity = $existing->quantity;
+                        $quantity = $mealMealPackageAddon->quantity;
+                        $existing->update([
+                            'quantity' => $existingQuantity + $quantity
+                        ]);
                         $mealMealPackageAddon->delete();
                     } else {
-                        $mealMealPackageAddon->meal_id = $subId;
-                        $mealMealPackageAddon->meal_size_id = $newMealSizeId;
-                        $mealMealPackageAddon->update();
+                        $mealMealPackageAddon->delete();
                     }
                 }
             }
