@@ -495,7 +495,7 @@
         </div>
       </li>
 
-      <li class="checkout-item" v-if="storeModules.cooler">
+      <li class="checkout-item" v-if="storeModules.cooler && !bagPickup">
         <div class="row">
           <div class="col-6 col-md-4">
             <span>
@@ -2596,6 +2596,9 @@ use next_delivery_dates
       return gratuity;
     },
     coolerDeposit() {
+      if (this.bagPickup == 1) {
+        return 0;
+      }
       if (
         this.$route.params.adjustOrder &&
         !this.coolerDepositChanged &&
