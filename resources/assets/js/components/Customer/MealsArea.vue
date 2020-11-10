@@ -295,7 +295,7 @@
 
                       <div
                         class="title macrosArea d-flex d-center"
-                        v-if="storeSettings.showMacros"
+                        v-if="storeSettings.showMacros && showMacros(meal)"
                       >
                         <div class="d-inline mr-4">
                           <p>
@@ -731,7 +731,10 @@
                       <div class="mt-1 content-text">
                         {{ meal.description }}
                       </div>
-                      <div class="title" v-if="storeSettings.showMacros">
+                      <div
+                        class="title"
+                        v-if="storeSettings.showMacros && showMacros(meal)"
+                      >
                         <div class="title macrosArea d-flex ">
                           <div class="d-inline mr-4">
                             <p>
@@ -773,13 +776,12 @@
                         <p v-html="getMealTitle(meal.title)"></p>
                         <span class="content-text">
                           {{ meal.description }}
-                          <div
-                            class="title"
-                            v-if="meal.macros && storeSettings.showMacros"
-                          >
+                          <div class="title" v-if="storeSettings.showMacros">
                             <div
-                              class="title macrosArea d-flex d-center"
-                              v-if="meal.macros && storeSettings.showMacros"
+                              class="title macrosArea d-flex pt-2"
+                              v-if="
+                                storeSettings.showMacros && showMacros(meal)
+                              "
                             >
                               <div class="d-inline mr-4">
                                 <p>
@@ -1654,6 +1656,15 @@ export default {
                 .valueTotalFat
             : null;
           break;
+      }
+    },
+    showMacros(meal) {
+      if (
+        !meal.meal_package &&
+        !meal.gift_card &&
+        this.getMacros(meal, "calories") > 0
+      ) {
+        return true;
       }
     }
   }
