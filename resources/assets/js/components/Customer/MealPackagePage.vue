@@ -164,7 +164,7 @@
                                 class="d-flex d-center mt-1"
                                 v-if="
                                   storeSettings.showMacros &&
-                                    mealOption.meal.macros
+                                    showMacros(mealOption.meal)
                                 "
                               >
                                 <p class="d-inline mr-4 font-11">
@@ -361,7 +361,7 @@
                                     class="d-flex mt-1"
                                     v-if="
                                       storeSettings.showMacros &&
-                                        mealOption.meal.macros
+                                        showMacros(mealOption.meal)
                                     "
                                   >
                                     <p class="d-inline mr-4 font-11">
@@ -423,7 +423,7 @@
                                     class="d-flex mt-1"
                                     v-if="
                                       storeSettings.showMacros &&
-                                        mealOption.meal.macros
+                                        showMacros(mealOption.meal)
                                     "
                                   >
                                     <p class="d-inline mr-4 font-11">
@@ -591,7 +591,7 @@
                               class="d-flex d-center mt-1"
                               v-if="
                                 storeSettings.showMacros &&
-                                  mealOption.meal.macros
+                                  showMacros(mealOption.meal)
                               "
                             >
                               <p class="d-inline mr-4 font-11">
@@ -662,7 +662,7 @@
                                 class="d-flex d-center mt-1"
                                 v-if="
                                   storeSettings.showMacros &&
-                                    mealOption.meal.macros
+                                    showMacros(mealOption.meal)
                                 "
                               >
                                 <p class="d-inline mr-4 font-11">
@@ -766,7 +766,7 @@
                                   class="d-flex mt-1"
                                   v-if="
                                     storeSettings.showMacros &&
-                                      mealOption.meal.macros
+                                      showMacros(mealOption.meal)
                                   "
                                 >
                                   <p class="d-inline mr-4 font-11">
@@ -824,7 +824,7 @@
                                   class="d-flex mt-1"
                                   v-if="
                                     storeSettings.showMacros &&
-                                      mealOption.meal.macros
+                                      showMacros(mealOption.meal)
                                   "
                                 >
                                   <p class="d-inline mr-4 font-11">
@@ -1875,6 +1875,11 @@ export default {
         case "fat":
           return meal.macros && meal.macros.fat ? meal.macros.fat : null;
           break;
+      }
+    },
+    showMacros(meal) {
+      if (this.getMacros(meal, "calories") > 0) {
+        return true;
       }
     }
   }
