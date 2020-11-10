@@ -1732,33 +1732,53 @@ class Meal extends Model implements HasMedia
 
                 $subscriptionMeal->price = $price * $subscriptionMeal->quantity;
 
-                try {
+                $existingSubscriptionMeal = MealSubscription::where([
+                    ['meal_id', $subId],
+                    ['subscription_id', $subscriptionMeal->subscription_id]
+                ])->first();
+
+                if ($existingSubscriptionMeal) {
+                    $quantity =
+                        $existingSubscriptionMeal->quantity +
+                        $subscriptionMeal->quantity;
+                    $unitPrice =
+                        $existingSubscriptionMeal->price /
+                        $existingSubscriptionMeal->quantity;
+                    $existingSubscriptionMeal->quantity = $quantity;
+                    $existingSubscriptionMeal->price = $unitPrice * $quantity;
+                    $existingSubscriptionMeal->update();
+                    $subscriptionMeal->delete();
+                    $existingSubscriptionMeal->subscription->syncPrices();
+                } else {
                     $subscriptionMeal->save();
-                } catch (\Illuminate\Database\QueryException $e) {
-                    $errorCode = $e->errorInfo[1];
-
-                    // If this subscription already has the same meal
-                    // add to the quantity
-                    if ($errorCode == 1062) {
-                        $qty = $subscriptionMeal->quantity;
-                        $subscriptionMeal->delete();
-
-                        $subscriptionMeal = MealSubscription::where([
-                            ['meal_id', $subId],
-                            [
-                                'subscription_id',
-                                $subscriptionMeal->subscription_id
-                            ]
-                        ])->first();
-
-                        $subscriptionMeal->quantity += $qty;
-                        $subscriptionMeal->save();
-                    }
+                    $subscriptionMeal->fresh()->subscription->syncPrices();
                 }
 
-                $subscriptionMeal->fresh()->subscription->syncPrices();
+                // try {
+                //     $subscriptionMeal->save();
+                // } catch (\Illuminate\Database\QueryException $e) {
+                //     $errorCode = $e->errorInfo[1];
 
-                $user = $subscriptionMeal->subscription->user;
+                //     // If this subscription already has the same meal
+                //     // add to the quantity
+                //     if ($errorCode == 1062) {
+                //         $qty = $subscriptionMeal->quantity;
+                //         $subscriptionMeal->delete();
+
+                //         $subscriptionMeal = MealSubscription::where([
+                //             ['meal_id', $subId],
+                //             [
+                //                 'subscription_id',
+                //                 $subscriptionMeal->subscription_id
+                //             ]
+                //         ])->first();
+
+                //         $subscriptionMeal->quantity += $qty;
+                //         $subscriptionMeal->save();
+                //     }
+                // }
+
+                // $user = $subscriptionMeal->subscription->user;
 
                 // if ($user) {
                 //     $user->sendNotification('subscription_meal_substituted', [
