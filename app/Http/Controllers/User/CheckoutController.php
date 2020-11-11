@@ -169,7 +169,9 @@ class CheckoutController extends UserController
             $purchasedGiftCardId = $request->get('purchased_gift_card_id');
             $purchasedGiftCardReduction = $request->get(
                 'purchasedGiftCardReduction'
-            );
+            )
+                ? $request->get('purchasedGiftCardReduction')
+                : 0;
             $promotionReduction = $request->get('promotionReduction');
             $appliedReferralId = $request->get('applied_referral_id');
             $referralReduction = $request->get('referralReduction');

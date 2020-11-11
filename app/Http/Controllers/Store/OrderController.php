@@ -838,7 +838,9 @@ class OrderController extends StoreController
             $purchasedGiftCardId = $request->get('purchased_gift_card_id');
             $purchasedGiftCardReduction = $request->get(
                 'purchasedGiftCardReduction'
-            );
+            )
+                ? $request->get('purchasedGiftCardReduction')
+                : 0;
             $promotionReduction = $request->get('promotionReduction');
             $pointsReduction = $request->get('pointsReduction');
             $deliveryFee = $request->get('deliveryFee');

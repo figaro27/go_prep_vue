@@ -259,7 +259,9 @@ class SubscriptionController extends StoreController
             $purchasedGiftCardId = $request->get('purchased_gift_card_id');
             $purchasedGiftCardReduction = $request->get(
                 'purchasedGiftCardReduction'
-            );
+            )
+                ? $request->get('purchasedGiftCardReduction')
+                : 0;
             // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
             //     $discount = $store->settings->mealPlanDiscount / 100;
             //     $mealPlanDiscount = $total * $discount;
