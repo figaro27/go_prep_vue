@@ -304,6 +304,7 @@
                         <b-form-input
                           id="macros-calories"
                           type="number"
+                          min="0"
                           v-model="meal.macros.calories"
                           required
                         ></b-form-input>
@@ -312,6 +313,7 @@
                         <b-form-input
                           id="macros-carbs"
                           type="number"
+                          min="0"
                           v-model="meal.macros.carbs"
                           required
                         ></b-form-input>
@@ -320,6 +322,7 @@
                         <b-form-input
                           id="macros-protein"
                           type="number"
+                          min="0"
                           v-model="meal.macros.protein"
                           required
                         ></b-form-input>
@@ -328,6 +331,7 @@
                         <b-form-input
                           id="macros-fat"
                           type="number"
+                          min="0"
                           v-model="meal.macros.fat"
                           required
                         ></b-form-input>
@@ -508,6 +512,7 @@
                   id="meal-instructions"
                   class="form-control"
                   type="number"
+                  min="0"
                 ></b-form-input>
               </b-tab>
 
