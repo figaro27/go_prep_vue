@@ -201,7 +201,7 @@
           </h5>
           <div class="row">
             <div
-              class="item col-sm-6 col-md-6 col-lg-6 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
+              :class="itemColumnClass"
               v-for="(meal, index) in group.meals"
               v-if="displayMeal(meal)"
               :key="
@@ -239,10 +239,7 @@
                         @click="showMeal(meal, group)"
                       ></thumbnail>
                       <!-- Hard coding price difference for now for Eat Fresh until new menu design table is required-->
-                      <div
-                        class="price"
-                        v-if="store.id !== 148 && store.id !== 178"
-                      >
+                      <div class="price" v-if="!menuSettings.hidePrice">
                         {{ format.money(meal.price, storeSettings.currency) }}
                       </div>
                     </div>
@@ -531,7 +528,7 @@
           </h2>
           <div class="row">
             <div
-              class="item item-text col-sm-6 col-md-6 col-lg-12 col-xl-6"
+              :class="itemColumnClass"
               v-for="(meal, index) in group.meals"
               v-if="displayMeal(meal)"
               :key="'meal_' + meal.id + '_' + index"
@@ -962,11 +959,6 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       context: "context",
-      //total: "bagQuantity",
-      //hasMeal: "bagHasMeal",
-      //minOption: "minimumOption",
-      //minMeals: "minimumMeals",
-      //minPrice: "minimumPrice",
       bag: "bagItems",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
@@ -977,10 +969,22 @@ export default {
       loggedIn: "loggedIn",
       totalBagPricePreFees: "totalBagPricePreFees",
       minMeals: "minimumMeals",
-      minPrice: "minimumPrice"
+      minPrice: "minimumPrice",
+      menuSettings: "viewedStoreMenuSettings"
     }),
     referralSettings() {
       return this.store.referral_settings;
+    },
+    itemColumnClass() {
+      let card =
+        this.store.settings.menuStyle === "image"
+          ? "item col-sm-6 col-md-6 col-lg-6 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2 col-xl-"
+          : "item item-text col-md-6 col-lg-12 col-sm-6 col-xl-";
+      let columnClass =
+        this.store.settings.menuStyle === "image"
+          ? (12 / this.menuSettings.image_columns).toString()
+          : (12 / this.menuSettings.text_columns).toString();
+      return card.concat(columnClass);
     },
     smallScreen() {
       const width =

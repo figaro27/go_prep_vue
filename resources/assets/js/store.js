@@ -134,6 +134,9 @@ const state = {
     report_settings: {
       data: {}
     },
+    menu_settings: {
+      data: {}
+    },
     sms_settings: {
       data: {}
     },
@@ -940,6 +943,10 @@ const mutations = {
     state.store.report_settings.data = reportSettings;
   },
 
+  storemMenuSettings(state, { menuSettings }) {
+    state.store.menu_settings.data = menuSettings;
+  },
+
   storeSMSSettings(state, { smsSettings }) {
     state.store.sms_settings.data = smsSettings;
   },
@@ -1523,6 +1530,16 @@ const actions = {
         commit("storeReportSettings", { reportSettings });
       }
     } catch (e) {}
+
+    // try {
+    //   if (
+    //     !_.isEmpty(data.store.menu_settings) &&
+    //     _.isObject(data.store.menu_settings)
+    //   ) {
+    //     let menuSettings = data.store.menu_settings;
+    //     commit("storeMenuSettings", { menuSettings });
+    //   }
+    // } catch (e) {}
 
     try {
       if (
@@ -2210,6 +2227,17 @@ const actions = {
       commit("storeReportSettings", { report_settings: data });
     } else {
       throw new Error("Failed to retrieve report settings");
+    }
+  },
+
+  async refreshStoreMenuSettings({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/menuSettings");
+    const { data } = await res;
+
+    if (_.isObject(data)) {
+      commit("storeMenuSettings", { menu_settings: data });
+    } else {
+      throw new Error("Failed to retrieve menu settings");
     }
   },
 
@@ -3329,6 +3357,13 @@ const getters = {
       return {};
     }
   },
+  viewedStoreMenuSettings: state => {
+    try {
+      return state.viewed_store.menu_settings || {};
+    } catch (e) {
+      return {};
+    }
+  },
   viewedStoreReferrals: state => {
     try {
       return state.viewed_store.referrals || {};
@@ -3770,6 +3805,13 @@ const getters = {
   storeReportSettings: state => {
     try {
       return state.store.report_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeMenuSettings: state => {
+    try {
+      return state.store.menu_settings.data || {};
     } catch (e) {
       return {};
     }

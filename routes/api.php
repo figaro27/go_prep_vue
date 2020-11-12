@@ -434,6 +434,11 @@ foreach (
                             );
 
                             Route::resource(
+                                'menuSettings',
+                                'MenuSettingController'
+                            );
+
+                            Route::resource(
                                 'reportSettings',
                                 'ReportSettingController'
                             );
