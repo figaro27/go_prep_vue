@@ -396,6 +396,7 @@
 
                           <b-dropdown
                             right
+                            offset="45"
                             v-if="
                               !meal.meal_package &&
                                 !meal.gift_card &&
@@ -486,6 +487,7 @@
                             class="mx-auto"
                             size="lg"
                             right
+                            offset="45"
                           >
                             <span class="white-text" slot="button-content"
                               >Select</span
