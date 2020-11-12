@@ -199,11 +199,21 @@
             ></strong>
           </div>
         </div>
-
-        <div
-          v-if="weeklySubscription && storeModules.monthlyPlans"
-          class="d-inline"
-        >
+        <div v-if="weeklySubscriptionValue">
+          <p>
+            A subscription is a weekly recurring order. Your card will be
+            automatically charged every week. You can change the items in your
+            subscription and you can cancel the subscription after
+            {{ store.settings.minimumSubWeeks }}
+            orders.
+          </p>
+        </div>
+      </li>
+      <li
+        class="checkout-item"
+        v-if="weeklySubscription && storeModules.monthlyPlans"
+      >
+        <div class="d-inline">
           <div class="d-inline">
             <strong>Billing Period:</strong>
           </div>
@@ -217,24 +227,7 @@
             </b-select>
           </div>
         </div>
-        <div v-if="weeklySubscriptionValue">
-          <p>
-            A subscription is a weekly recurring order. Your card will be
-            automatically charged every week. You can change the items in your
-            subscription and you can cancel the subscription after
-            {{ store.settings.minimumSubWeeks }}
-            orders.
-          </p>
-        </div>
       </li>
-      <!-- <li class="checkout-item">
-        <p>
-          <strong>
-            {{ total }} {{ singOrPluralTotal }}
-            {{ deliveryPlanText }}
-          </strong>
-        </p>
-      </li> -->
 
       <li class="checkout-item">
         <div class="row">
@@ -1431,7 +1424,7 @@ export default {
     }
   },
   mounted: function() {
-    if (this.bagHasOnlySubItems) {
+    if (this.bagHasMultipleFrequencyItems || this.bagHasOnlySubItems) {
       this.setFrequencySubscription("sub");
     } else {
       this.setFrequencySubscription(null);
@@ -3473,11 +3466,13 @@ use next_delivery_dates
       let bag = this.bag;
       if (this.storeModules.frequencyItems) {
         if (this.bagHasMultipleFrequencyItems) {
+          this.setFrequencySubscription(null);
           if (!this.doubleCheckout) {
             bag = this.bag.filter(item => {
               return item.meal.frequencyType !== "sub";
             });
           } else {
+            this.setFrequencySubscription("sub");
             bag = this.bag.filter(item => {
               return item.meal.frequencyType === "sub";
             });
@@ -3552,7 +3547,6 @@ use next_delivery_dates
           ) {
             this.doubleCheckout = true;
             this.checkingOut = false;
-            this.setFrequencySubscription("sub");
             this.checkout();
           } else {
             // See if this is needed
