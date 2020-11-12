@@ -44,7 +44,7 @@ font-size:10px !important;
         @endif
   <center>
           @if ($reportSettings->lab_logo)
-      <img src="{{$logo}}"/ style="width:28vh;height:28vh;margin-top:8px;margin-bottom:4px">
+      <img src="{{$logo}}"/ style="width:25vh;height:25vh;margin-top:8px;margin-bottom:4px">
       @else
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="/ style="width:25vh;height:15vh;margin-top:8px;margin-bottom:4px">
       @endif
@@ -66,12 +66,12 @@ font-size:10px !important;
         @endif
 
         @if ($mealOrder->meal && $reportSettings->lab_instructions)
-        <p class="text-9">
+        <p class="text-8">
         {!! $mealOrder->meal->instructions !!}
         </p>
         @endif
         @if ($mealOrder->meal && $reportSettings->lab_expiration)
-        <p class="text-9">
+        <p class="text-8">
         Consume Before: {!! $mealOrder->expirationDate !!}
         </p>
         @endif
@@ -94,10 +94,10 @@ font-size:10px !important;
         @endif
 
 @if ($mealOrder->meal && $reportSettings->lab_ingredients && strlen($mealOrder['ingredientList']) > 0)
-<p class="text-9"><b>Ingredients:</b> {{ $mealOrder['ingredientList'] }}</p>
+<p class="text-8"><b>Ingredients:</b> {{ $mealOrder['ingredientList'] }}</p>
 @endif
 @if ($mealOrder->meal && $reportSettings->lab_allergies && strlen($mealOrder['allergyList']) > 0)
-<p class="text-9"><b>Allergens:</b> {{ $mealOrder['allergyList'] }}</p>
+<p class="text-8"><b>Allergens:</b> {{ $mealOrder['allergyList'] }}</p>
 @endif
 @if ($reportSettings->lab_website)
         <p class="text-9"><b>
