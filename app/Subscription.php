@@ -1072,10 +1072,11 @@ class Subscription extends Model
             $plan = \Stripe\Plan::create(
                 [
                     "amount" => (floor($total * 100) / 100) * 100,
-                    "interval" => "week",
+                    "interval" => $this->interval,
                     "product" => [
                         "name" =>
-                            "Weekly subscription (" .
+                            $this->interval .
+                            "ly subscription (" .
                             $this->store->storeDetail->name .
                             ")"
                     ],

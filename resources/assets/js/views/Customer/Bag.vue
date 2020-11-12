@@ -35,13 +35,16 @@
       <auth-modal :showAuthModal="showAuthModal"></auth-modal>
       <spinner v-if="loading" position="absolute"></spinner>
 
-      <b-alert show variant="success" v-if="$route.query.sub === true">
+      <b-alert show variant="success" v-if="$route.query.sub === 'true'">
         <h5 class="center-text">
-          Weekly Subscription
+          {{
+            subscriptions[0].interval.charAt(0).toUpperCase() +
+              subscriptions[0].interval.slice(1)
+          }}ly Subscription
         </h5>
         <p class="center-text">
-          You have an active weekly subscription with us. Update your meals for
-          your next renewal on
+          You have an active {{ subscriptions[0].interval }}ly subscription with
+          us. Update your meals for your next renewal on
           {{ moment(subscriptions[0].next_renewal).format("dddd, MMM Do") }}.
         </p>
       </b-alert>

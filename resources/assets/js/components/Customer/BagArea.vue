@@ -289,7 +289,7 @@
                   v-if="
                     store.modules.frequencyItems &&
                       item.meal &&
-                      !adjustingScreen
+                      !$parent.adjustingScreen
                   "
                 >
                   <span
@@ -708,18 +708,6 @@ export default {
       bagZipCode: "bagZipCode",
       multDDZipCode: "bagMultDDZipCode"
     }),
-    adjustingScreen() {
-      if (
-        this.adjustOrder ||
-        this.$route.params.adjustOrder ||
-        this.adjustMealPlan ||
-        this.$route.params.adjustMealPlan
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    },
     hasBothTranserTypes() {
       let hasPickup = false;
       let hasDelivery = false;

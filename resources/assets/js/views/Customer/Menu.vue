@@ -710,6 +710,19 @@ export default {
       minOption: "minimumOption",
       totalBagPricePreFees: "totalBagPricePreFees"
     }),
+    adjustingScreen() {
+      if (
+        this.adjustOrder ||
+        this.$route.params.adjustOrder ||
+        this.adjustMealPlan ||
+        this.$route.params.adjustMealPlan ||
+        this.$route.query.sub === "true"
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     hasBothTranserTypes() {
       let hasPickup = false;
       let hasDelivery = false;
@@ -1884,9 +1897,9 @@ export default {
       let meals = category ? category.meals : [];
 
       if (this.store.modules.frequencyItems) {
-        if (this.adjustMealPlan) {
+        if (this.adjustMealPlan || this.$route.query.sub === "true") {
           meals = meals.filter(meal => {
-            return meal.frequencyType === "sub";
+            return meal.frequencyType !== "order";
           });
         }
         if (this.adjustOrder) {

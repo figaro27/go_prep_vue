@@ -101,7 +101,7 @@ class CheckoutController extends UserController
                 return response()->json(
                     [
                         'message' =>
-                            'You have an active weekly subscription. Please go to the subscriptions page if you\'d like to change the meals for your next order which will be automatically placed for you.'
+                            'You have an active subscription. Please go to the subscriptions page if you\'d like to change the meals for your next order which will be automatically placed for you.'
                     ],
                     400
                 );

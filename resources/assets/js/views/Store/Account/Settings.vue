@@ -412,9 +412,9 @@
                     <span class="mr-1">Subscription Discount</span>
                     <img
                       v-b-popover.hover="
-                        'Give your customers an incentive to create a weekly subscription with you by offering a discount percentage. The customer is locked into at least 2 orders before they can cancel their subscription through our system in order to prevent users from abusing the discount. They would have to contact you if they want to cancel the subscription before at least 2 orders in which you can cancel it for them if you agree.'
+                        'Give your customers an incentive to create a subscription with you by offering a discount percentage. The customer is locked into at least 2 orders before they can cancel their subscription through our system in order to prevent users from abusing the discount. They would have to contact you if they want to cancel the subscription before at least 2 orders in which you can cancel it for them if you agree.'
                       "
-                      title="Weekly Subscription Discount"
+                      title="Subscription Discount"
                       src="/images/store/popover.png"
                       class="popover-size"
                     />
@@ -429,7 +429,7 @@
                     v-if="storeSettings.applyMealPlanDiscount"
                     id="meal-plan-discount"
                     v-model="storeSettings.mealPlanDiscount"
-                    placeholder="Weekly Subscription Discount %"
+                    placeholder="Subscription Discount %"
                     required
                   ></b-form-input>
                 </b-form-group>

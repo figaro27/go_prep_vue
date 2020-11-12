@@ -138,18 +138,18 @@
               <img
                 v-if="!mobile"
                 v-b-popover.hover.bottom="
-                  'Choose a weekly subscription instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals or cancel the subscription after two paid orders.'
+                  'Choose a subscription instead of a one time order and meals will be given to you on a recurring basis.'
                 "
-                title="Weekly Subscription"
+                title="Subscription"
                 src="/images/store/popover.png"
                 class="popover-size ml-1"
               />
               <img
                 v-if="mobile"
                 v-b-popover.click.top="
-                  'Choose a weekly subscription instead of a one time order and meals will be given to you on a weekly basis. You can swap out meals or cancel the subscription after two paid orders.'
+                  'Choose a subscription instead of a one time order and meals will be given to you on a recurring basis.'
                 "
-                title="Weekly Subscription"
+                title="Subscription"
                 src="/images/store/popover.png"
                 class="popover-size ml-1"
               />
@@ -1073,8 +1073,8 @@
           class="alert alert-warning"
           role="alert"
         >
-          You already have an active weekly subscription with us and may have
-          already been charged for an order this week.
+          You already have an active subscription with us and may have already
+          been charged for an order.
         </div>
         <b-alert
           show

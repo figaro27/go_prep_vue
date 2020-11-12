@@ -362,10 +362,11 @@ class SubscriptionController extends UserController
                 $plan = \Stripe\Plan::create(
                     [
                         "amount" => round($total * 100),
-                        "interval" => "week",
+                        "interval" => $sub->interval,
                         "product" => [
                             "name" =>
-                                "Weekly subscription (" .
+                                $sub->interval .
+                                "ly subscription (" .
                                 $store->storeDetail->name .
                                 ")"
                         ],

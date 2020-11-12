@@ -896,7 +896,10 @@ class CheckoutController extends StoreController
                     : 'Cash';
                 $userSubscription->store_id = $store->id;
                 $userSubscription->name =
-                    "Weekly subscription (" . $store->storeDetail->name . ")";
+                    ucwords($period) .
+                    " subscription (" .
+                    $store->storeDetail->name .
+                    ")";
                 if (!$cashOrder) {
                     $userSubscription->stripe_plan = $plan->id;
                     $userSubscription->stripe_id = substr($subscription->id, 4);
