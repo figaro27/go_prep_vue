@@ -130,7 +130,8 @@ class MealController extends StoreController
                 'production_group_id',
                 'salesTax',
                 'stock',
-                'expirationDays'
+                'expirationDays',
+                'frequencyType'
             ]),
             'menu'
         );

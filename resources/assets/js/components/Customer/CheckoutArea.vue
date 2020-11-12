@@ -98,7 +98,38 @@
           storeSettings.allowMealPlans &&
             $route.params.subscriptionId === undefined &&
             $parent.orderId === undefined &&
-            !subscriptionId
+            store.modules.frequencyItems
+        "
+      >
+        <div class="row">
+          <div class="col-md-12 pb-1" v-if="bagHasMultipleFrequencyItems">
+            <b-form-radio-group
+              buttons
+              class="filters frequencyFilters mb-3"
+              v-model="frequencyType"
+              :options="[
+                { value: null, text: 'One Time Order' },
+                { value: 'sub', text: 'Subscription' }
+              ]"
+              @input="val => setFrequencySubscription(val)"
+            ></b-form-radio-group>
+          </div>
+          <div class="col-md-12 pb-1" v-if="bagHasOnlyOrderItems">
+            <h4>One Time Order</h4>
+          </div>
+          <div class="col-md-12 pb-1" v-if="bagHasOnlySubItems">
+            <h4>Subscription</h4>
+          </div>
+        </div>
+      </li>
+      <li
+        class="bag-item"
+        v-if="
+          storeSettings.allowMealPlans &&
+            $route.params.subscriptionId === undefined &&
+            $parent.orderId === undefined &&
+            !subscriptionId &&
+            !store.modules.frequencyItems
         "
       >
         <div class="row" v-if="!manualOrder && !store.modules.subscriptionOnly">
@@ -155,7 +186,6 @@
                   color="success"
                   variant="pill"
                   size="lg"
-                  :checked="weeklySubscription"
                   class="pt-2"
                   @change="
                     val => {
@@ -475,7 +505,7 @@
 
       <li class="checkout-item" v-if="storeModules.gratuity">
         <div class="row">
-          <div class="col-6 col-md-4">
+          <div class="col-6 col-md-4 d-flex d-inilne">
             <strong>Tip</strong>
             <b-form-select
               :options="gratuityOptions"
@@ -909,7 +939,7 @@
               @input="val => changeCustomer(val)"
               placeholder="Type name, email, phone, or address."
               :filterable="false"
-              v-model="customerModel"
+              :value="customerModel"
             >
             </v-select>
           </b-form-group>
@@ -1020,7 +1050,7 @@
             :selectable="true"
             :creditCards="creditCardList"
             v-model="card"
-            class="mb-3"
+            class="mb-2"
             ref="cardPicker"
             :gateway="gateway"
           ></card-picker>
@@ -1102,6 +1132,16 @@
             >Don't Adjust Balance
           </b-form-checkbox>
         </div>
+
+        <b-alert
+          show
+          v-if="store.modules.frequencyItems && bagHasMultipleFrequencyItems"
+          variant="secondary"
+        >
+          <p class="center-text strong">
+            Checking out will create both a one time order and a subscription.
+          </p>
+        </b-alert>
 
         <b-btn
           v-if="
@@ -1241,6 +1281,11 @@
         >
       </b-form>
     </b-modal>
+
+    <v-style>
+      .frequencyFilters .active{ background-color:
+      {{ store.settings.color }} !important; }
+    </v-style>
   </div>
 </template>
 
@@ -1266,6 +1311,7 @@ export default {
         coupons: true,
         promotions: true
       },
+      doubleCheckout: false,
       customGratuity: 0,
       lastUsedDiscountCode: null,
       hourInterval: false,
@@ -1385,6 +1431,12 @@ export default {
     }
   },
   mounted: function() {
+    if (this.bagHasOnlySubItems) {
+      this.setFrequencySubscription("sub");
+    } else {
+      this.setFrequencySubscription(null);
+    }
+
     if (this.customer) {
       this.customerModel = this.getCustomerObject(this.customer);
     } else {
@@ -1475,6 +1527,7 @@ export default {
       mealPlan: "bagMealPlan",
       hasMeal: "bagHasMeal",
       totalBagPricePreFees: "totalBagPricePreFees",
+      totalBagPricePreFeesBothTypes: "totalBagPricePreFeesBothTypes",
       totalBagPrice: "totalBagPrice",
       willDeliver: "viewedStoreWillDeliver",
       isLoading: "isLoading",
@@ -1502,8 +1555,51 @@ export default {
       staffMember: "bagStaffMember",
       customerModel: "bagCustomerModel",
       context: "context",
-      deliveryFee: "bagDeliveryFee"
+      deliveryFee: "bagDeliveryFee",
+      frequencyType: "bagFrequencyType"
     }),
+    bagHasMultipleFrequencyItems() {
+      let hasSubItems = this.bag.some(item => {
+        return item.meal.frequencyType === "sub";
+      });
+      let hasOrderItems = this.bag.some(item => {
+        return item.meal.frequencyType !== "sub";
+      });
+
+      if (hasSubItems && hasOrderItems) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    bagHasOnlySubItems() {
+      if (
+        this.bag.some(item => {
+          return item.meal.frequencyType == "sub";
+        }) &&
+        !this.bag.some(item => {
+          return item.meal.frequencyType !== "sub";
+        })
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    bagHasOnlyOrderItems() {
+      if (
+        this.bag.some(item => {
+          return item.meal.frequencyType !== "sub";
+        }) &&
+        !this.bag.some(item => {
+          return item.meal.frequencyType === "sub";
+        })
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     hasDeliveryOption() {
       return (
         this.store.settings.transferType.includes("delivery") ||
@@ -2397,7 +2493,6 @@ use next_delivery_dates
         if (this.deliveryFee) {
           return parseFloat(this.deliveryFee);
         }
-
         if (this.customDeliveryFee !== null) {
           return parseFloat(this.customDeliveryFee);
         }
@@ -2410,6 +2505,7 @@ use next_delivery_dates
         if (this.removeDeliveryFee) {
           return 0;
         }
+
         if (
           !this.couponFreeDelivery &&
           !this.promotionFreeDelivery &&
@@ -2456,13 +2552,23 @@ use next_delivery_dates
               return mddFee;
             }
             fee = fee * this.groupBag.length;
+
+            if (this.storeModules.frequencyItems) {
+              if (this.bagHasOnlySubItems && !this.frequencyType) {
+                return 0;
+              }
+              if (this.bagHasOnlyOrderItems && this.frequencyType === "sub") {
+                return 0;
+              }
+            }
+
             return fee;
           } else return 0;
         } else return 0;
       } else return 0;
     },
     processingFeeAmount() {
-      if (this.cashOrder) {
+      if (this.cashOrder || this.totalBagPricePreFees == 0) {
         return 0;
       }
       if (this.storeSettings.applyProcessingFee) {
@@ -2891,7 +2997,7 @@ use next_delivery_dates
       if (
         (this.minOption === "meals" && this.total >= this.minimumMeals) ||
         (this.minOption === "price" &&
-          this.totalBagPricePreFees >= this.minPrice) ||
+          this.totalBagPricePreFeesBothTypes >= this.minPrice) ||
         this.$route.params.storeView ||
         this.storeOwner ||
         (this.storeSettings.minimumDeliveryOnly && this.pickup) ||
@@ -2970,7 +3076,8 @@ use next_delivery_dates
       "setBagPickup",
       "setBagTransferTime",
       "setBagCustomerModel",
-      "setBagDeliveryFee"
+      "setBagDeliveryFee",
+      "setBagFrequencyType"
     ]),
     preventNegative() {
       if (this.total < 0) {
@@ -3214,7 +3321,9 @@ use next_delivery_dates
             if (response.data.length) {
               this.creditCardId = response.data[0].id;
               this.creditCard = response.data[0];
-              this.$refs.cardPicker.setCard(response.data[0].id);
+              if (this.$refs.cardPicker) {
+                this.$refs.cardPicker.setCard(response.data[0].id);
+              }
             }
           });
       });
@@ -3343,129 +3452,42 @@ use next_delivery_dates
       this.selectedPickupLocation = this.pickupLocationOptions[0].value;
     },
     checkout() {
-      this.subscriptionItemsCheck();
-
-      if (this.hasMultipleSubscriptionItems) {
-        this.$toastr.w(
-          "You have multiple subscription types in your bag (e.g weekly & monthly). Please checkout one subscription type at a time."
-        );
-        return;
-      }
-
-      if (
-        this.staffMember == null &&
-        this.store.modules.showStaff &&
-        this.$route.params.manualOrder
-      ) {
-        this.$toastr.w("Please select a staff member.");
-        return;
-      }
-
-      if (
-        this.pickup === 1 &&
-        this.store.modules.pickupLocations &&
-        this.pickupLocationOptions.length > 0 &&
-        !this.selectedPickupLocation
-      ) {
-        this.$toastr.w("Please select a pickup location from the dropdown.");
-        return;
-      }
-      if (!this.isMultipleDelivery && !this.store.modules.hideTransferOptions) {
-        if (!this.bagDeliveryDate) {
-          if (this.pickup === 1) {
-            this.$toastr.w("Please select a pickup date from the dropdown.");
-          }
-          if (this.pickup === 0) {
-            this.$toastr.w("Please select a delivery date from the dropdown.");
-          }
-          return;
-        }
-      }
-
-      if (
-        this.store.modules.pickupHours &&
-        this.pickup === 1 &&
-        this.transferTime === null
-      ) {
-        this.$toastr.w("Please select a pickup time from the dropdown.");
-        return;
-      }
-
-      if (
-        this.store.modules.deliveryHours &&
-        this.pickup === 0 &&
-        this.transferTime === null
-      ) {
-        this.$toastr.w("Please select a delivery time from the dropdown.");
-        return;
-      }
-
-      // if (this.creditCardId === null && this.card === null && !this.cashOrder) {
-      //   this.$toastr.w("Please add a payment method.");
-      //   return;
-      // }
-
-      // if (this.grandTotal <= 0 && !this.cashOrder) {
-      //   this.$toastr.e(
-      //     "At least .50 cents is required to process an order.",
-      //     "Error"
-      //   );
-      //   return;
-      // }
-
       if (this.checkingOut) {
         return;
       }
 
+      if (this.showCheckoutErrorToasts()) {
+        return;
+      }
+
       this.checkingOut = true;
-
-      this.deliveryFee = this.deliveryFeeAmount;
-      if (this.pickup === 0) {
-        this.selectedPickupLocation = null;
-      }
-
-      // if (!this.deliveryDay && this.deliveryDateOptions) {
-      //   this.deliveryDay = this.deliveryDateOptions[0].value;
-      // }
-
-      let deposit = this.deposit;
-      if (deposit !== null && deposit.toString().includes("%")) {
-        deposit.replace("%", "");
-        deposit = parseInt(deposit);
-      }
-
-      let endPoint = "";
-      if (this.$route.params.manualOrder) {
-        endPoint = "/api/me/checkout";
-      } else {
-        endPoint = "/api/bag/checkout";
-      }
-
-      let cardId = this.card;
-
-      // if (this.grandTotal === 0) {
-      //   this.cashOrder = true;
-      // }
-
-      if (this.cashOrder === true) {
-        cardId = 0;
-      }
-
-      if (this.cashOrder === null) {
-        this.cashOrder = 0;
-      }
-
-      // let weeklySubscriptionValue = this.storeSettings.allowMealPlans
-      //   ? this.weeklySubscriptionValue
-      //   : 0;
-
-      let weeklySubscriptionValue = this.weeklySubscriptionValue;
+      this.subscriptionItemsCheck();
 
       if (this.bagDeliveryDate && !this.deliveryDay) {
         this.deliveryDay = this.bagDeliveryDate.value
           ? this.bagDeliveryDate.value
           : this.bagDeliveryDate;
       }
+
+      // Filter the bag for one time order items & subscription items in frequencyType stores.
+      let bag = this.bag;
+      if (this.storeModules.frequencyItems) {
+        if (this.bagHasMultipleFrequencyItems) {
+          if (!this.doubleCheckout) {
+            bag = this.bag.filter(item => {
+              return item.meal.frequencyType !== "sub";
+            });
+          } else {
+            bag = this.bag.filter(item => {
+              return item.meal.frequencyType === "sub";
+            });
+          }
+        }
+      }
+
+      let endPoint = this.$route.params.manualOrder
+        ? "/api/me/checkout"
+        : "/api/bag/checkout";
 
       axios
         .post(endPoint, {
@@ -3474,8 +3496,8 @@ use next_delivery_dates
           subtotal: this.subtotal,
           mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
-          bag: this.bag,
-          plan: weeklySubscriptionValue ? weeklySubscriptionValue : 0,
+          bag: bag,
+          plan: this.weeklySubscriptionValue ? this.weeklySubscriptionValue : 0,
           plan_interval: this.subscriptionInterval,
           monthlyPrepay: this.hasMonthlyPrepaySubscriptionItems,
           pickup: this.pickup,
@@ -3483,10 +3505,8 @@ use next_delivery_dates
           isMultipleDelivery: this.isMultipleDelivery,
           delivery_day: this.deliveryDay
             ? this.deliveryDay
-            : // : this.bagDeliveryDate
-              // ? this.bagDeliveryDate
-              this.deliveryDateOptions[0].value,
-          card_id: cardId,
+            : this.deliveryDateOptions[0].value,
+          card_id: !this.cashOrder ? this.card : 0,
           store_id: this.store.id,
           salesTax: this.tax,
           customSalesTax: this.customSalesTax !== null ? 1 : 0,
@@ -3502,12 +3522,13 @@ use next_delivery_dates
           promotionReduction: this.promotionReduction,
           deliveryFee: this.deliveryFeeAmount,
           processingFee: this.processingFeeAmount,
-          pickupLocation: this.selectedPickupLocation,
+          pickupLocation:
+            this.pickup === 1 ? this.selectedPickupLocation : null,
           customer: this.customerModel
             ? this.customerModel.value
             : this.customer,
-          deposit: deposit,
-          cashOrder: this.cashOrder,
+          deposit: this.deposit,
+          cashOrder: this.cashOrder ? this.cashOrder : 0,
           noBalance: this.noBalance,
           hot: this.hot ? this.hot : false,
           transferTime: this.transferTime,
@@ -3522,80 +3543,58 @@ use next_delivery_dates
           coolerDeposit: this.coolerDeposit
         })
         .then(async resp => {
-          //this.checkingOut = false;
-          //return false;
-          if (this.purchasedGiftCard !== null) {
-            this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
-          }
-          let weeklyDelivery = this.weeklySubscription;
-          this.setBagMealPlan(false);
-          this.setBagCoupon(null);
-          this.setBagPurchasedGiftCard(null);
-          this.setBagReferral(null);
-          this.clearBagDeliveryDate();
-          this.clearBagTransferTime();
-          this.clearBagStaffMember();
-          this.clearBagCustomerModel();
-          this.clearBagDeliveryFee();
-          this.refreshCards();
+          // Check if the order contains subscription & order items in frequencyTypes stores and if so, checkout again (first order then subscription)
 
-          // Always select pickup for Livotis
           if (
-            this.store.id === 108 ||
-            this.store.id === 109 ||
-            this.store.id === 110
+            this.storeModules.frequencyItems &&
+            this.bagHasMultipleFrequencyItems &&
+            !this.doubleCheckout
           ) {
-            this.setBagPickup(1);
-          }
-
-          if (this.isManualOrder) {
-            this.refreshResource("orders");
-            // this.refreshStoreCustomers();
-            this.refreshStorePurchasedGiftCards();
-          }
-
-          if (this.$route.params.manualOrder && weeklyDelivery) {
-            this.refreshStoreSubscriptions();
-            this.$router.push({
-              path: "/store/subscriptions"
-            });
-            return;
-          } else if (this.$route.params.manualOrder && !weeklyDelivery) {
-            // this.refreshOrdersToday();
-            // this.refreshOrders();
-            // this.refreshUpcomingOrders();
-            // this.refreshUpcomingOrdersWithoutItems();
-            this.$router.push({
-              name: "store-orders",
-              params: {
-                autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip,
-                orderId: resp.data
-              }
-            });
-            return;
-          }
-          if (weeklySubscriptionValue) {
-            await this.refreshSubscriptions();
-            this.$router.push({
-              path: "/customer/subscriptions",
-              query: {
-                created: true,
-                pickup: this.bagPickup === 1 ? true : false
-              }
-            });
+            this.doubleCheckout = true;
+            this.checkingOut = false;
+            this.setFrequencySubscription("sub");
+            this.checkout();
           } else {
-            // await this.refreshCustomerOrders();
-            this.$router.push({
-              path: "/customer/orders",
-              query: {
-                created: true,
-                pickup: this.bagPickup === 1 ? true : false
-              }
-            });
-          }
-          this.emptyBag();
-          if (this.store.settings.fbPixel) {
-            Vue.analytics.fbq.event("track", "Purchase");
+            // See if this is needed
+
+            if (this.purchasedGiftCard !== null) {
+              this.purchasedGiftCard.balance -= this.purchasedGiftCardReduction;
+            }
+
+            // Clear everything
+
+            this.setBagMealPlan(false);
+            this.setBagCoupon(null);
+            this.setBagPurchasedGiftCard(null);
+            this.setBagReferral(null);
+            this.clearBagDeliveryDate();
+            this.clearBagTransferTime();
+            this.clearBagStaffMember();
+            this.clearBagCustomerModel();
+            this.clearBagDeliveryFee();
+            this.refreshCards();
+            this.emptyBag();
+
+            // Always select pickup for Livotis
+            if (
+              this.store.id === 108 ||
+              this.store.id === 109 ||
+              this.store.id === 110
+            ) {
+              this.setBagPickup(1);
+            }
+
+            // Redirect
+
+            this.redirectAfterCheckoutOrAdjust(resp);
+
+            // Facebook pixel log
+
+            if (this.store.settings.fbPixel) {
+              Vue.analytics.fbq.event("track", "Purchase");
+            }
+
+            this.loading = false;
           }
         })
         .catch(async response => {
@@ -3619,9 +3618,6 @@ use next_delivery_dates
 
           this.checkingOut = false;
           this.$toastr.w(error);
-        })
-        .finally(() => {
-          this.loading = false;
         });
     },
     inputCustomer(id) {
@@ -3795,6 +3791,15 @@ use next_delivery_dates
       this.removeCoupon();
       this.removePurchasedGiftCard();
       this.removeReferral();
+    },
+    setFrequencySubscription(val) {
+      this.setBagFrequencyType(val);
+      val = val == "sub" ? true : false;
+      this.setBagMealPlan(val);
+      val = val == true ? 1 : 0;
+      this.setWeeklySubscriptionValue(val);
+      this.updateParentData();
+      this.syncDiscounts();
     },
     search: _.debounce((loading, search, vm) => {
       axios

@@ -367,7 +367,7 @@
               <div v-if="finalCategoriesSub && finalCategoriesSub.length > 0">
                 <div
                   v-for="(cat, index) in finalCategoriesSub"
-                  v-if="isCategoryVisible(cat)"
+                  v-if="isCategoryVisible(cat) && hasItems(null, cat)"
                   :key="'com_' + cat.id"
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
@@ -381,7 +381,9 @@
               <div v-else>
                 <div
                   v-for="(cat, index) in finalCategories"
-                  v-if="isCategoryVisible(cat) && cat.visible"
+                  v-if="
+                    isCategoryVisible(cat) && cat.visible && hasItems(null, cat)
+                  "
                   :key="cat.category"
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
@@ -1871,6 +1873,29 @@ export default {
           }
         });
       });
+    },
+    hasItems(category = null, group = null) {
+      if (group) {
+        category = this.mealsMix.find(cat => {
+          return cat.category_id === group.id;
+        });
+      }
+
+      let meals = category ? category.meals : [];
+
+      if (this.store.modules.frequencyItems) {
+        if (this.adjustMealPlan) {
+          meals = meals.filter(meal => {
+            return meal.frequencyType === "sub";
+          });
+        }
+        if (this.adjustOrder) {
+          meals = meals.filter(meal => {
+            return meal.frequencyType !== "sub";
+          });
+        }
+      }
+      return meals.length > 0 ? true : false;
     }
   }
 };

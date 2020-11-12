@@ -187,17 +187,20 @@
         "
       >
         <div v-if="storeSettings.menuStyle === 'image'">
-          <h2 class="text-center mb-2 dbl-underline">
+          <h2 class="text-center mb-2 dbl-underline" v-if="hasItems(group)">
             {{ group.category }}
           </h2>
-          <h5 v-if="group.subtitle !== null" class="text-center mb-4">
+          <h5
+            v-if="group.subtitle !== null && hasItems(group)"
+            class="text-center mb-4"
+          >
             {{ group.subtitle }}
           </h5>
           <div class="row">
             <div
               class="item col-sm-6 col-md-6 col-lg-6 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
               v-for="(meal, index) in group.meals"
-              v-if="!meal.hideFromMenu && assignedToDeliveryDay(meal)"
+              v-if="displayMeal(meal)"
               :key="
                 meal.meal_package
                   ? 'meal_package_' +
@@ -527,7 +530,7 @@
             <div
               class="item item-text col-sm-6 col-md-6 col-lg-12 col-xl-6"
               v-for="(meal, index) in group.meals"
-              v-if="!meal.hideFromMenu && assignedToDeliveryDay(meal)"
+              v-if="displayMeal(meal)"
               :key="'meal_' + meal.id + '_' + index"
               style="margin-bottom: 10px !important;"
             >
@@ -1666,6 +1669,22 @@ export default {
       ) {
         return true;
       }
+    },
+    displayMeal(meal) {
+      if (this.store.modules.frequencyItems) {
+        if (this.$parent.adjustMealPlan && meal.frequencyType !== "sub") {
+          return false;
+        }
+        if (this.$parent.adjustOrder && meal.frequencyType === "sub") {
+          return false;
+        }
+      }
+      if (!meal.hideFromMenu && this.assignedToDeliveryDay(meal)) {
+        return true;
+      }
+    },
+    hasItems(category = null, categoryId = null) {
+      return this.$parent.hasItems(category, categoryId);
     }
   }
 };

@@ -15,7 +15,10 @@
           <p class="small pl-2 pt-2">Subtotal</p>
           <h4 class="pl-2">
             {{
-              format.money(totalBagPricePreFees, this.storeSettings.currency)
+              format.money(
+                totalBagPricePreFeesBothTypes,
+                this.storeSettings.currency
+              )
             }}
           </h4>
         </div>
@@ -166,7 +169,7 @@ export default {
       deliveryPlan: "bagMealPlan",
       mealPlan: "bagMealPlan",
       hasMeal: "bagHasMeal",
-      totalBagPricePreFees: "totalBagPricePreFees",
+      totalBagPricePreFeesBothTypes: "totalBagPricePreFeesBothTypes",
       totalBagPrice: "totalBagPrice",
       willDeliver: "viewedStoreWillDeliver",
       isLoading: "isLoading",
@@ -205,7 +208,7 @@ export default {
       return this.minMeals - this.total;
     },
     remainingPrice() {
-      return this.minPrice - this.totalBagPricePreFees;
+      return this.minPrice - this.totalBagPricePreFeesBothTypes;
     },
     singOrPlural() {
       if (this.remainingMeals > 1) {
@@ -248,7 +251,7 @@ export default {
       if (
         (this.minOption === "meals" && this.total >= this.minMeals) ||
         (this.minOption === "price" &&
-          this.totalBagPricePreFees >= this.minPrice) ||
+          this.totalBagPricePreFeesBothTypes >= this.minPrice) ||
         this.store.settings.minimumDeliveryOnly ||
         giftCardOnly
       )

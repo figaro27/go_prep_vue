@@ -14,7 +14,7 @@ class AddFrequencyTypeColumnToMealsTable extends Migration
     public function up()
     {
         Schema::table('meals', function (Blueprint $table) {
-            $table->string('frequencyType')->nullable();
+            $table->string('frequencyType')->default('none');
         });
     }
 

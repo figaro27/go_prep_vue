@@ -8,7 +8,7 @@ f<template>
           variant="success"
         >
           <p class="center-text mt-3">
-            Thank you for your order.
+            Thank you for your subscription.
             <span v-if="!storeModules.hideTransferOptions">
               <span v-if="$route.query.pickup"
                 >You can pick up your order on</span
@@ -29,6 +29,17 @@ f<template>
                 and we will deliver to the updated address.
               </p>
             </span>
+          </p>
+        </b-alert>
+
+        <b-alert
+          :show="!!$route.query.order || false"
+          variant="primary"
+          class="pt-3"
+        >
+          <p class="center-text mt-3">
+            You also placed one time order. You can view that order
+            <router-link :to="'/customer/orders'">here.</router-link>
           </p>
         </b-alert>
 

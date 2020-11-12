@@ -495,6 +495,108 @@ export default {
       }
 
       return true;
+    },
+
+    showCheckoutErrorToasts() {
+      if (this.hasMultipleSubscriptionItems) {
+        this.$toastr.w(
+          "You have multiple subscription types in your bag (e.g weekly & monthly). Please checkout one subscription type at a time."
+        );
+        return true;
+      }
+
+      if (
+        this.staffMember == null &&
+        this.store.modules.showStaff &&
+        this.$route.params.manualOrder
+      ) {
+        this.$toastr.w("Please select a staff member.");
+        return true;
+      }
+
+      if (
+        this.pickup === 1 &&
+        this.store.modules.pickupLocations &&
+        this.pickupLocationOptions.length > 0 &&
+        !this.selectedPickupLocation
+      ) {
+        this.$toastr.w("Please select a pickup location from the dropdown.");
+        return true;
+      }
+      if (!this.isMultipleDelivery && !this.store.modules.hideTransferOptions) {
+        if (!this.bagDeliveryDate) {
+          if (this.pickup === 1) {
+            this.$toastr.w("Please select a pickup date from the dropdown.");
+          }
+          if (this.pickup === 0) {
+            this.$toastr.w("Please select a delivery date from the dropdown.");
+          }
+          return true;
+        }
+      }
+
+      if (
+        this.store.modules.pickupHours &&
+        this.pickup === 1 &&
+        this.transferTime === null
+      ) {
+        this.$toastr.w("Please select a pickup time from the dropdown.");
+        return true;
+      }
+
+      if (
+        this.store.modules.deliveryHours &&
+        this.pickup === 0 &&
+        this.transferTime === null
+      ) {
+        this.$toastr.w("Please select a delivery time from the dropdown.");
+        return true;
+      }
+    },
+
+    async redirectAfterCheckoutOrAdjust(resp) {
+      if (this.isManualOrder) {
+        this.refreshStorePurchasedGiftCards();
+        this.refreshResource("orders");
+        if (this.weeklySubscription) {
+          this.refreshStoreSubscriptions();
+          this.$router.push({
+            path: "/store/subscriptions"
+          });
+        } else {
+          this.$router.push({
+            name: "store-orders",
+            params: {
+              autoPrintPackingSlip: this.storeModules.autoPrintPackingSlip,
+              orderId: resp.data
+            }
+          });
+        }
+        return;
+      } else {
+        if (this.weeklySubscription) {
+          await this.refreshSubscriptions();
+          let query = {
+            created: true,
+            pickup: this.bagPickup === 1 ? true : false
+          };
+          if (this.doubleCheckout) {
+            query.order = true;
+          }
+          this.$router.push({
+            path: "/customer/subscriptions",
+            query: query
+          });
+        } else {
+          this.$router.push({
+            path: "/customer/orders",
+            query: {
+              created: true,
+              pickup: this.bagPickup === 1 ? true : false
+            }
+          });
+        }
+      }
     }
   }
 };

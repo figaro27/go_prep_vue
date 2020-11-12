@@ -431,6 +431,26 @@
                     class="storeFilters"
                   ></b-form-checkbox-group>
 
+                  <h4 class="mt-4" v-if="store.modules.frequencyItems">
+                    Order Restrictions
+                    <img
+                      v-b-popover.hover="
+                        'Set items to be available for subscription only, one time order only, or no restrictions.'
+                      "
+                      title="Restrictions"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </h4>
+                  <b-form-radio-group
+                    v-if="store.modules.frequencyItems"
+                    buttons
+                    v-model="meal.frequencyType"
+                    :options="frequencyOptions"
+                    @input="val => updateMeal(meal.id, { frequencyType: val })"
+                    class="storeFilters"
+                  ></b-form-radio-group>
+
                   <div v-if="store.modules.customSalesTax">
                     <h4 class="mt-4">
                       Custom Sales Tax
@@ -1296,6 +1316,13 @@ export default {
         };
       });
     },
+    frequencyOptions() {
+      return [
+        { text: "No Restriction", value: "none" },
+        { text: "Subscription Only", value: "sub" },
+        { text: "Order Only", value: "order" }
+      ];
+    },
     weightUnitOptions() {
       return units.mass.selectOptions();
     },
@@ -1704,6 +1731,7 @@ export default {
         .get(`/api/me/meals/${id}`)
         .then(response => {
           this.meal = response.data;
+
           if (!response.data.macros) {
             this.meal.macros = {};
           }

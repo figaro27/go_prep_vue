@@ -49,7 +49,8 @@ class Meal extends Model implements HasMedia
         'production_group_id',
         'salesTax',
         'stock',
-        'expirationDays'
+        'expirationDays',
+        'frequencyType'
     ];
 
     protected $casts = [
@@ -90,7 +91,8 @@ class Meal extends Model implements HasMedia
         'item_quantity',
         'in_package',
         'meal_size_id',
-        'hasVariations'
+        'hasVariations',
+        'subItem'
     ];
 
     protected $hidden = [
@@ -120,6 +122,15 @@ class Meal extends Model implements HasMedia
             return $this->pivot->quantity;
         } else {
             return null;
+        }
+    }
+
+    public function getSubItemAttribute()
+    {
+        if ($this->frequencyType == 'sub') {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -704,7 +715,8 @@ class Meal extends Model implements HasMedia
             'stock',
             'expirationDays',
             'servingsPerMeal',
-            'servingSizeUnit'
+            'servingSizeUnit',
+            'frequencyType'
         ]);
 
         $meal = new Meal();
@@ -1097,7 +1109,8 @@ class Meal extends Model implements HasMedia
             'production_group_id',
             'salesTax',
             'stock',
-            'expirationDays'
+            'expirationDays',
+            'frequencyType'
         ]);
 
         if ($props->has('featured_image')) {

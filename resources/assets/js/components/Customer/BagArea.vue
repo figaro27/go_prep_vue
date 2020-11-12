@@ -259,7 +259,9 @@
                   </div>
                 </span>
 
-                <p class="small">{{ item.special_instructions }}</p>
+                <p v-if="item.special_instructions" class="small">
+                  {{ item.special_instructions }}
+                </p>
                 <ul
                   v-if="!item.meal_package && (item.components || item.addons)"
                   class="plain"
@@ -283,6 +285,58 @@
                 <!-- <div v-if="!$route.params.storeView && !storeView">
                   <span>{{format.money(item.price * item.quantity, storeSettings.currency ) }}</span>
                 </div> -->
+                <span
+                  v-if="
+                    store.modules.frequencyItems &&
+                      item.meal &&
+                      !adjustingScreen
+                  "
+                >
+                  <span
+                    v-if="
+                      item.meal &&
+                        item.meal.frequencyType &&
+                        item.meal.frequencyType === 'sub' &&
+                        !item.meal.toggled
+                    "
+                  >
+                    <i
+                      class="fas fa-check-circle text-primary pt-1 font-15"
+                      @click="showSubOnlyToast(true)"
+                    ></i>
+                    Subscription
+                  </span>
+                  <span
+                    v-if="
+                      item.meal &&
+                        item.meal.frequencyType &&
+                        item.meal.frequencyType === 'order' &&
+                        !item.meal.toggled
+                    "
+                  >
+                    <i
+                      class="fas fa-times-circle pt-1 font-15"
+                      @click="showSubOnlyToast(false)"
+                    ></i>
+                    Subscription
+                  </span>
+                  <span
+                    v-if="
+                      (item.meal &&
+                        item.meal.frequencyType &&
+                        item.meal.frequencyType === 'none') ||
+                        item.meal.toggled
+                    "
+                    class="d-flex d-inline"
+                  >
+                    <b-form-checkbox
+                      v-model="item.meal.subItem"
+                      @input="val => changeFrequencyType(item, val)"
+                      readonly
+                    ></b-form-checkbox
+                    >Subscription
+                  </span>
+                </span>
               </div>
 
               <div class="flex-grow-0">
@@ -654,6 +708,18 @@ export default {
       bagZipCode: "bagZipCode",
       multDDZipCode: "bagMultDDZipCode"
     }),
+    adjustingScreen() {
+      if (
+        this.adjustOrder ||
+        this.$route.params.adjustOrder ||
+        this.adjustMealPlan ||
+        this.$route.params.adjustMealPlan
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     hasBothTranserTypes() {
       let hasPickup = false;
       let hasDelivery = false;
@@ -822,7 +888,8 @@ export default {
     ...mapMutations({
       setBagPickup: "setBagPickup",
       setMultDDZipCode: "setMultDDZipCode",
-      setBagZipCode: "setBagZipCode"
+      setBagZipCode: "setBagZipCode",
+      updateBagItemFrequency: "updateBagItemFrequency"
     }),
     addToBag(item) {
       item.meal.quantity = 1;
@@ -1242,6 +1309,26 @@ export default {
         }, 0),
         this.store.settings.currency
       );
+    },
+    showSubOnlyToast(val) {
+      if (val) {
+        this.$toastr.w("This is subscription only item.");
+      } else {
+        this.$toastr.w("This item is not subscribable.");
+      }
+    },
+    changeFrequencyType(item, val) {
+      let sub = val == true ? "sub" : null;
+      item.meal.frequencyType = sub;
+      item.meal.toggled = true;
+      if (sub == null) {
+        sub = false;
+      } else {
+        sub = true;
+      }
+      item.meal.subItem = sub;
+
+      this.updateBagItemFrequency(item);
     }
   }
 };

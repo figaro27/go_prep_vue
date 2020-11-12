@@ -26,7 +26,8 @@ class StoreModule extends Model
         'pickupOnly' => 'boolean',
         'gratuity' => 'boolean',
         'cooler' => 'boolean',
-        'allowMultipleSubscriptions' => 'boolean'
+        'allowMultipleSubscriptions' => 'boolean',
+        'frequencyItems' => 'boolean'
     ];
 
     protected $guarded = [];

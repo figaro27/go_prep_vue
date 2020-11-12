@@ -87,6 +87,29 @@
                 class="storeFilters"
               ></b-form-checkbox-group>
 
+              <h4 class="mt-4" v-if="store.modules.frequencyItems">
+                Order Restrictions
+                <img
+                  v-b-popover.hover="
+                    'Set items to be available for subscription only, one time order only, or no restrictions.'
+                  "
+                  title="Restrictions"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </h4>
+              <b-form-radio-group
+                v-if="store.modules.frequencyItems && mealPackage.frequencyType"
+                buttons
+                v-model="mealPackage.frequencyType"
+                :options="frequencyOptions"
+                @input="
+                  val =>
+                    updateMealPackage(mealPackage.id, { frequencyType: val })
+                "
+                class="storeFilters"
+              ></b-form-radio-group>
+
               <!-- <p class="mt-4">
                 <span class="mr-1">Display Included Meals in Packages</span>
                 <hint title="Display Included Meals in Packages">
@@ -332,6 +355,13 @@ export default {
         };
       });
     },
+    frequencyOptions() {
+      return [
+        { text: "No Restriction", value: "none" },
+        { text: "Subscription Only", value: "sub" },
+        { text: "Order Only", value: "order" }
+      ];
+    },
     tableData() {
       return this.meals.map(meal => {
         meal.included = this.hasMeal(meal.id);
@@ -359,6 +389,7 @@ export default {
     if (this.store.modules.multipleDeliveryDays) {
       this.columns.push("delivery_day_id");
     }
+
     this.$refs.modal.show();
     setTimeout(() => {
       this.$refs.featuredImageInput.onResize();

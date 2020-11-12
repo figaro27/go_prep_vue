@@ -71,7 +71,8 @@ const state = {
     transferTime: null,
     staffMember: null,
     customerModel: null,
-    deliveryFee: null
+    deliveryFee: null,
+    frequencyType: null
   },
   delivery_date: null,
   zip_code: null,
@@ -288,6 +289,10 @@ const mutations = {
   },
   addBagItems(state, items) {
     state.bag.items = _.keyBy(items, "id");
+  },
+  updateBagItemFrequency(state, item) {
+    state.bag.items[item.guid].frequencyType = item.meal.frequencyType;
+    state.bag.items[item.guid].subItem = item.meal.subItem;
   },
   updateBagTotal(state, total) {
     state.bag.total += total;
@@ -862,6 +867,9 @@ const mutations = {
   },
   setBagDeliveryFee({ state, dispatch }, deliveryFee) {
     this.state.bag.deliveryFee = deliveryFee;
+  },
+  setBagFrequencyType({ state, dispatch }, frequencyType) {
+    this.state.bag.frequencyType = frequencyType;
   },
   updateBagItem(state, item) {
     if (item.guid) {
@@ -3479,6 +3487,9 @@ const getters = {
   bagDeliveryFee(state) {
     return state.bag.deliveryFee;
   },
+  bagFrequencyType(state) {
+    return state.bag.frequencyType;
+  },
   bagDeliverySettings(state, getters) {
     const { bagCustomDeliveryDay } = getters;
 
@@ -3604,80 +3615,43 @@ const getters = {
 
     if (items) {
       items.forEach(item => {
-        if (!isNaN(item.price) && !isNaN(item.quantity) && !item.free) {
-          totalBagPricePreFees += item.price * item.quantity;
+        if (state.bag.frequencyType === "sub") {
+          if (
+            !isNaN(item.price) &&
+            !isNaN(item.quantity) &&
+            !item.free &&
+            item.meal.frequencyType == "sub"
+          ) {
+            totalBagPricePreFees += item.price * item.quantity;
+          }
+        } else {
+          if (
+            !isNaN(item.price) &&
+            !isNaN(item.quantity) &&
+            !item.free &&
+            item.meal.frequencyType !== "sub"
+          ) {
+            totalBagPricePreFees += item.price * item.quantity;
+          }
         }
       });
     }
 
     return totalBagPricePreFees;
-    // Old Flow
-    /*
-    let items = _.compact(_.toArray(state.bag.items));
-    let totalBagPricePreFees = 0;
-    items.forEach(item => {
-      let price = item.size ? item.size.price : item.meal.price;
-      let meal = getters.viewedStoreMeal(item.meal.id);
-      if (item.components) {
-        _.forEach(item.components, (choices, componentId) => {
-          let component = _.find(item.meal.components, {
-            id: parseInt(componentId)
-          });
-          if (!item.meal_package) {
-            _.forEach(choices, optionId => {
-              let option = _.find(component.options, {
-                id: parseInt(optionId)
-              });
-              price += option.price;
-            });
-          } else {
-            if (component.price) {
-              price += component.price;
-            }
-            _.forEach(choices, (choices, optionId) => {
-              let option = _.find(component.options, {
-                id: parseInt(optionId)
-              });
-              price += option.price;
+  },
+  totalBagPricePreFeesBothTypes(state, getters) {
+    let totalBagPricePreFeesBothTypes = 0;
+    let items = getters.bagItems;
 
-              _.forEach(choices, choice => {
-                if (choice.price) {
-                  price += choice.price;
-                }
-              });
-            });
-          }
-        });
-      }
-      if (item.addons) {
-        if (!item.meal_package) {
-          _.forEach(item.addons, addonId => {
-            let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
-            price += addon.price;
-          });
-        } else {
-          _.forEach(item.addons, (choices, addonId) => {
-            let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
-
-            // Add base addon price * choices selected
-            if (addon.price) {
-              price += addon.price * Math.max(1, choices.length);
-            }
-
-            // Add addon choice prices
-            _.forEach(choices, choice => {
-              if (choice.price) {
-                price += choice.price;
-              }
-            });
-          });
+    if (items) {
+      items.forEach(item => {
+        if (!isNaN(item.price) && !isNaN(item.quantity) && !item.free) {
+          totalBagPricePreFeesBothTypes += item.price * item.quantity;
         }
-      }
-      totalBagPricePreFees += item.quantity * price;
-    });
-    */
+      });
+    }
 
-    return totalBagPricePreFees;
+    return totalBagPricePreFeesBothTypes;
   },
   totalBagPrice(state, getters) {
     let totalBagPrice = 0;

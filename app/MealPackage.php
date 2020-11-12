@@ -22,7 +22,8 @@ class MealPackage extends Model implements HasMedia
         'price',
         'active',
         'default_size_title',
-        'meal_carousel'
+        'meal_carousel',
+        'frequencyType'
     ];
     public $appends = ['image', 'category_ids', 'delivery_day_ids'];
     public $hidden = ['store', 'categories'];
@@ -168,7 +169,8 @@ class MealPackage extends Model implements HasMedia
             'addons',
             'meal_carousel',
             'category_ids',
-            'delivery_day_ids'
+            'delivery_day_ids',
+            'frequencyType'
         ]);
 
         $package = MealPackage::create(
@@ -435,7 +437,8 @@ class MealPackage extends Model implements HasMedia
             'addons',
             'meal_carousel',
             'category_ids',
-            'delivery_day_ids'
+            'delivery_day_ids',
+            'frequencyType'
         ]);
 
         if ($props->has('featured_image')) {

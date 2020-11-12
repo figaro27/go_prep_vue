@@ -70,6 +70,29 @@
                 class="storeFilters"
               ></b-form-checkbox-group>
 
+              <h4 class="mt-4" v-if="store.modules.frequencyItems">
+                Order Restrictions
+                <img
+                  v-b-popover.hover="
+                    'Set items to be available for subscription only, one time order only, or no restrictions.'
+                  "
+                  title="Restrictions"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </h4>
+              <b-form-radio-group
+                v-if="store.modules.frequencyItems"
+                buttons
+                v-model="mealPackage.frequencyType"
+                :options="frequencyOptions"
+                @input="
+                  val =>
+                    updateMealPackage(mealPackage.id, { frequencyType: val })
+                "
+                class="storeFilters"
+              ></b-form-radio-group>
+
               <!-- <p class="mt-4">
                 <span class="mr-1">Display Included Items in Packages</span>
                 <hint title="Display Included Items in Packages">
@@ -288,6 +311,13 @@ export default {
         };
       });
     },
+    frequencyOptions() {
+      return [
+        { text: "No Restriction", value: "none" },
+        { text: "Subscription Only", value: "sub" },
+        { text: "Order Only", value: "order" }
+      ];
+    },
     tableData() {
       return this.meals.map(meal => {
         meal.included = this.hasMeal(meal.id);
@@ -444,7 +474,7 @@ export default {
         e.preventDefault();
         let error = _.first(Object.values(response.response.data.errors));
         error = error.join(" ");
-        this.$toastr.e(error, "Error");
+        this.$toastr.w(error, "Error");
         return;
       }
 

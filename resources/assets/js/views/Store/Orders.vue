@@ -1153,8 +1153,7 @@ export default {
     if (
       this.store.id === 108 ||
       this.store.id === 109 ||
-      this.store.id === 110 ||
-      this.store.id === 3
+      this.store.id === 110
     ) {
       this.setBagPickup(1);
     } else {
