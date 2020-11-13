@@ -8,10 +8,11 @@
     </div>
 
     <b-modal
-      size="lg"
+      size="md"
       :title="mealTitle"
       v-model="mealPackageMealModal"
       v-if="mealPackageMealModal"
+      class="mt-4"
       hide-backdrop
     >
       <p v-html="mealDescription"></p>
@@ -1777,9 +1778,11 @@ export default {
     showMealPackageMealModal(description, title) {
       this.mealDescription = description
         ? description.replace(/(\r\n|\n|\r)/gm, "<br />")
-        : "";
+        : null;
       this.mealTitle = title;
-      this.mealPackageMealModal = true;
+      if (this.mealDescription) {
+        this.mealPackageMealModal = true;
+      }
     },
     getMacroTitle() {
       let macros = {};
