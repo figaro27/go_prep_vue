@@ -1775,7 +1775,9 @@ export default {
       });
     },
     showMealPackageMealModal(description, title) {
-      this.mealDescription = description.replace(/(\r\n|\n|\r)/gm, "<br />");
+      this.mealDescription = description
+        ? description.replace(/(\r\n|\n|\r)/gm, "<br />")
+        : "";
       this.mealTitle = title;
       this.mealPackageMealModal = true;
     },
