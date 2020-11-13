@@ -281,7 +281,7 @@
           >
             <div class="d-flex flex-column h-100">
               <i class="fa fa-shopping-cart text-white"></i>
-              <i v-if="total" class="text-white mt-1">{{ total }}</i>
+              <!-- <i v-if="total" class="text-white mt-1">{{ total }}</i> -->
             </div>
           </floating-action-button>
 

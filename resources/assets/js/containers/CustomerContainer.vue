@@ -32,7 +32,7 @@
       <i
         class="fas fa-arrow-circle-left customer-nav-icon"
         :style="brandColor"
-        style="position:relative;right:35px"
+        style="position:relative;right:35px;font-size:45px"
         v-if="onBagPage && mobile"
         @click.prevent="goToMenuPage()"
       ></i>
