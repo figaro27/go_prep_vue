@@ -521,7 +521,7 @@ class Subscription extends Model
         $newOrder->delivery_date =
             $this->interval === 'week'
                 ? $latestOrder->delivery_date->addWeeks(1)
-                : $latestOrder->delivery_date->addDays(30);
+                : $latestOrder->delivery_date->addMonths(1);
         $newOrder->isMultipleDelivery = $this->isMultipleDelivery;
         $newOrder->save();
 
@@ -542,7 +542,7 @@ class Subscription extends Model
                 $mealPackageSub->delivery_date =
                     $this->interval === 'week'
                         ? $mealPackageSub->delivery_date->addWeeks(1)
-                        : $mealPackageSub->delivery_date->addDays(30);
+                        : $mealPackageSub->delivery_date->addMonths(1);
                 $mealPackageSub->save();
                 $mealPackageOrder->delivery_date =
                     $mealPackageSub->delivery_date;
@@ -593,7 +593,7 @@ class Subscription extends Model
                 $mealSub->delivery_date =
                     $this->interval === 'week'
                         ? $mealSub->delivery_date->addWeeks(1)
-                        : $mealSub->delivery_date->addDays(30);
+                        : $mealSub->delivery_date->addMonths(1);
                 $mealSub->save();
                 $mealOrder->delivery_date = $mealSub->delivery_date;
             }
@@ -641,7 +641,7 @@ class Subscription extends Model
             //                         ->addWeeks(1)
             //                         ->toDateString()
             //                     : $mealSub->delivery_date
-            //                         ->addDays(30)
+            //                         ->addMonths(1)
             //                         ->toDateString();
             //         }
 
@@ -1845,7 +1845,7 @@ class Subscription extends Model
         $newOrder->delivery_date =
             $this->interval === 'week'
                 ? $latestOrder->delivery_date->addWeeks(1)
-                : $latestOrder->delivery_date->addDays(30);
+                : $latestOrder->delivery_date->addMonths(1);
         $newOrder->isMultipleDelivery = $this->isMultipleDelivery;
         $newOrder->save();
 
@@ -1866,7 +1866,7 @@ class Subscription extends Model
                 $mealPackageSub->delivery_date =
                     $this->interval === 'week'
                         ? $mealPackageSub->delivery_date->addWeeks(1)
-                        : $mealPackageSub->delivery_date->addDays(30);
+                        : $mealPackageSub->delivery_date->addMonths(1);
                 $mealPackageSub->save();
                 $mealPackageOrder->delivery_date =
                     $mealPackageSub->delivery_date;
@@ -1917,7 +1917,7 @@ class Subscription extends Model
                 $mealSub->delivery_date =
                     $this->interval === 'week'
                         ? $mealSub->delivery_date->addWeeks(1)
-                        : $mealSub->delivery_date->addDays(30);
+                        : $mealSub->delivery_date->addMonths(1);
                 $mealSub->save();
                 $mealOrder->delivery_date = $mealSub->delivery_date;
             }
@@ -1965,7 +1965,7 @@ class Subscription extends Model
                                     ->addWeeks(1)
                                     ->toDateString()
                                 : $mealSub->delivery_date
-                                    ->addDays(30)
+                                    ->addMonths(1)
                                     ->toDateString();
                     }
 
