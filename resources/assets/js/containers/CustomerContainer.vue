@@ -14,15 +14,28 @@
 
       <i
         class="fas fa-filter customer-nav-icon"
+        :style="brandColor"
+        style="position:relative;left:105px"
         @click.prevent="showFilterArea()"
         v-if="showBagAndFilters && mobile"
       ></i>
       <i
         class="fas fa-shopping-cart customer-nav-icon"
         v-if="showBagAndFilters && mobile"
+        :style="brandColor"
+        style="position:relative;right:35px"
         @click.prevent="goToBagPage()"
-        ><span :class="bagCounter">{{ total }}</span></i
+        ><span :class="bagCounter" style="font-size:17px;padding-left:5px">{{
+          total
+        }}</span></i
       >
+      <i
+        class="fas fa-arrow-circle-left customer-nav-icon"
+        :style="brandColor"
+        style="position:relative;right:35px"
+        v-if="onBagPage && mobile"
+        @click.prevent="goToMenuPage()"
+      ></i>
       <!-- <div class="navbar-brand"></div> -->
       <b-collapse
         is-nav
@@ -213,6 +226,16 @@ export default {
       total: "bagQuantity",
       subscriptions: "subscriptions"
     }),
+    onBagPage() {
+      if (this.$route.path === "/customer/bag") {
+        return true;
+      }
+    },
+    brandColor() {
+      let style = "color:";
+      style += this.store.settings.color + " !important";
+      return style;
+    },
     userHasSubscriptions() {
       if (
         this.loggedIn &&
@@ -331,6 +354,9 @@ export default {
     },
     goToBagPage() {
       this.$router.replace("/customer/bag");
+    },
+    goToMenuPage() {
+      this.$router.replace("/customer/menu");
     }
   }
 };
