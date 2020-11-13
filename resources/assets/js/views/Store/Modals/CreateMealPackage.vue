@@ -25,12 +25,13 @@
               </b-form-group>
               <h4>Package Description</h4>
               <b-form-group label-for="meal-description" :state="true">
-                <textarea
+                <wysiwyg v-model.lazy="mealPackage.description" />
+                <!-- <textarea
                   v-model.lazy="mealPackage.description"
                   id="meal-description"
                   class="form-control"
                   :rows="4"
-                ></textarea>
+                ></textarea> -->
               </b-form-group>
               <b-form-group>
                 <h4>Price</h4>

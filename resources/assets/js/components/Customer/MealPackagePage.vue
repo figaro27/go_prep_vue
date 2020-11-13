@@ -34,7 +34,7 @@
       <b-row class="my-3" v-if="mealPackage.description != null">
         <b-col>
           <div>
-            <p v-html="mealPackageDescription" class="mt-3 strong"></p>
+            <p v-html="mealPackageDescription" class="mt-3"></p>
           </div>
         </b-col>
       </b-row>
