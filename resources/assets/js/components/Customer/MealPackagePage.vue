@@ -11,14 +11,13 @@
       size="lg"
       v-model="mealPackageMealModal"
       v-if="mealPackageMealModal"
-      style="z-index:999;position:relative;top:50px"
       hide-backdrop
       hide-header
+      centered
     >
       <h4 class="center-text pt-3">{{ mealTitle }}</h4>
       <p class="pt-2" v-html="mealDescription"></p>
     </b-modal>
-
     <!-- v-model="viewMealModal"
         v-if="viewMealModal"
         :key="`view-meal-modal${meal.id}`"
