@@ -15,7 +15,7 @@
       <i
         class="fas fa-filter customer-nav-icon"
         :style="brandColor"
-        style="position:relative;left:55px"
+        style="position:relative;left:75px"
         @click.prevent="showFilterArea()"
         v-if="showBagAndFilters && mobile"
       ></i>
@@ -32,7 +32,7 @@
       <i
         class="fas fa-arrow-circle-left customer-nav-icon"
         :style="brandColor"
-        style="position:relative;right:35px;font-size:45px"
+        style="position:relative;right:25px;font-size:45px"
         v-if="onBagPage && mobile"
         @click.prevent="goToMenuPage()"
       ></i>
