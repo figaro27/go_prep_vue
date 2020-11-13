@@ -21,8 +21,10 @@ class CreateMenuSettingsTable extends Migration
                 ->references('id')
                 ->on('stores');
             $table->unsignedInteger('image_columns')->default(4);
-            $table->boolean('hidePrice')->default(0);
             $table->unsignedInteger('text_columns')->default(2);
+            $table->boolean('hidePrice')->default(0);
+            $table->string('spinner')->default('pan');
+            $table->boolean('redirectToCheckout')->default(0);
             $table->timestamps();
         });
     }

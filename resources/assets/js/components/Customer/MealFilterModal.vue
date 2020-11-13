@@ -1,7 +1,14 @@
 <template>
   <div>
     <div class="modal-basic">
-      <b-modal size="lg" v-model="view" @hide="hide" hide-header no-fade>
+      <b-modal
+        size="lg"
+        v-model="view"
+        @hide="hide"
+        hide-header
+        no-fade
+        centered
+      >
         <div>
           <h4 class="center-text mt-4">Allergies</h4>
           <p class="center-text">Hide Items That Contain:</p>

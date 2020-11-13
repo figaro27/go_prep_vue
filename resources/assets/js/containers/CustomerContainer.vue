@@ -18,6 +18,12 @@
         @click.prevent="showFilterArea()"
         v-if="showBagAndFilters && mobile"
       ></i>
+      <i
+        class="fas fa-shopping-cart customer-nav-icon"
+        v-if="showBagAndFilters && mobile"
+        @click.prevent="goToBagPage()"
+        ><span :class="bagCounter">{{ total }}</span></i
+      >
       <!-- <div class="navbar-brand"></div> -->
       <b-collapse
         is-nav
@@ -323,6 +329,9 @@ export default {
     },
     backToMenu() {
       this.$eventBus.$emit("backToMenu");
+    },
+    goToBagPage() {
+      this.$router.replace("/customer/bag");
     }
   }
 };

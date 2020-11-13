@@ -956,7 +956,8 @@ export default {
       deliveryDay: "viewedStoreDeliveryDay",
       store: "viewedStore",
       bagZipCode: "bagZipCode",
-      bagPickup: "bagPickup"
+      bagPickup: "bagPickup",
+      menuSettings: "viewedStoreMenuSettings"
     }),
     mealPackageSizeOptions() {
       let sizeTitles = this.mealPackage.sizesTitles.map(sizeTitle => {
@@ -1337,6 +1338,10 @@ export default {
             addons,
             null
           );
+        }
+
+        if (this.menuSettings.redirectToCheckout) {
+          this.$router.replace("/customer/bag");
         }
 
         this.back();

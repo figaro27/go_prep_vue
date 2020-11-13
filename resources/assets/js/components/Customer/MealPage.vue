@@ -335,7 +335,8 @@ export default {
       getMealPackage: "viewedStoreMealPackage",
       storeModules: "viewedStoreModules",
       storeModuleSettings: "viewedStoreModuleSettings",
-      context: "context"
+      context: "context",
+      menuSettings: "viewedStoreMenuSettings"
     }),
     galleryStyle() {
       if (this.showNutritionFacts) {
@@ -598,6 +599,10 @@ export default {
 
       this.mealSize = null;
       this.back();
+      if (this.menuSettings.redirectToCheckout) {
+        this.$router.replace("/customer/bag");
+      }
+
       if (this.$parent.showBagClass.includes("hidden")) this.$parent.showBag();
       this.mealSize = null;
       this.components = null;
