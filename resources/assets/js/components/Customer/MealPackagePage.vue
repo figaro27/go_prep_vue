@@ -12,7 +12,6 @@
       v-model="mealPackageMealModal"
       v-if="mealPackageMealModal"
       hide-backdrop
-      hide-header
       centered
     >
       <h4 class="center-text pt-3">{{ mealTitle }}</h4>
