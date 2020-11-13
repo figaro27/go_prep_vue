@@ -15,7 +15,7 @@
       <i
         class="fas fa-filter customer-nav-icon"
         :style="brandColor"
-        style="position:relative;left:75px"
+        style="position:relative;left:65px"
         @click.prevent="showFilterArea()"
         v-if="showBagAndFilters && mobile"
       ></i>
