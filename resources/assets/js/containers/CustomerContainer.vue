@@ -15,7 +15,7 @@
       <i
         class="fas fa-filter customer-nav-icon"
         :style="brandColor"
-        style="position:relative;left:65px"
+        style="position:relative;left:55px"
         @click.prevent="showFilterArea()"
         v-if="showBagAndFilters && mobile"
       ></i>
@@ -23,7 +23,7 @@
         class="fas fa-shopping-cart customer-nav-icon"
         v-if="showBagAndFilters && mobile"
         :style="brandColor"
-        style="position:relative;right:35px"
+        style="position:relative;right:25px"
         @click.prevent="goToBagPage()"
         ><span :class="bagCounter" style="font-size:17px;padding-left:5px">{{
           total
