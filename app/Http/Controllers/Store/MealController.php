@@ -236,8 +236,8 @@ class MealController extends StoreController
                     $existingMealMealPackageSize->update();
                     $mealMealPackageSize->delete();
                 } else {
-                    $mealMealPackage->meal_id = $subId;
-                    $mealMealPackage->update();
+                    $mealMealPackageSize->meal_id = $subId;
+                    $mealMealPackageSize->update();
                 }
             }
         }
