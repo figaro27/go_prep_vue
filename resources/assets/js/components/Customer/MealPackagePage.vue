@@ -145,7 +145,7 @@
                             ></thumbnail>
 
                             <div class="price" v-if="mealOption.price > 0">
-                              {{
+                              +{{
                                 format.money(
                                   mealOption.price,
                                   storeSettings.currency
@@ -342,7 +342,7 @@
                                   style="top: 5px !important; right: 5px !important;"
                                   v-if="mealOption.price > 0"
                                 >
-                                  {{
+                                  +{{
                                     format.money(
                                       mealOption.price,
                                       storeSettings.currency
@@ -641,14 +641,14 @@
                             "
                           ></thumbnail>
 
-                          <div class="price" v-if="mealOption.price > 0">
+                          <!-- <div class="price" v-if="mealOption.price > 0">
                             {{
                               format.money(
                                 mealOption.price,
                                 storeSettings.currency
                               )
                             }}
-                          </div>
+                          </div> -->
                         </div>
                         <!-- Image End !-->
 
@@ -747,7 +747,7 @@
                                 style="top: 5px !important; right: 5px !important;"
                                 v-if="mealOption.price > 0"
                               >
-                                {{
+                                +{{
                                   format.money(
                                     mealOption.price,
                                     storeSettings.currency
@@ -853,7 +853,7 @@
                                 style="top: 0 !important; right: 0 !important;"
                                 v-if="mealOption.price > 0"
                               >
-                                {{
+                                +{{
                                   format.money(
                                     mealOption.price,
                                     storeSettings.currency
