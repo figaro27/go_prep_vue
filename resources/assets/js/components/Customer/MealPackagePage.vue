@@ -11,7 +11,7 @@
       size="lg"
       v-model="mealPackageMealModal"
       v-if="mealPackageMealModal"
-      style="z-index:99999999999999999"
+      style="z-index:999;position:relative;top:50px"
       hide-backdrop
       hide-header
     >
