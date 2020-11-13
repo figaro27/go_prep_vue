@@ -13,6 +13,11 @@ class MenuSettingsSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $stores = Store::all();
+        foreach ($stores as $store) {
+            MenuSetting::create([
+                'store_id' => $store->id
+            ]);
+        }
     }
 }
