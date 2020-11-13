@@ -1613,11 +1613,7 @@ class Meal extends Model implements HasMedia
                     $subscriptionMeal->meal_size_id = $subSizeId;
                 }
 
-                $price = isset($subSize)
-                    ? $subSize->price
-                    : Meal::where('id', $subId)
-                        ->pluck('price')
-                        ->first();
+                $price = isset($subSize) ? $subSize->price : 0;
 
                 // Substitute components
                 foreach ($subscriptionMeal->components as $component) {
