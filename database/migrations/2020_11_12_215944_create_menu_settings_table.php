@@ -24,6 +24,7 @@ class CreateMenuSettingsTable extends Migration
             $table->unsignedInteger('text_columns')->default(2);
             $table->boolean('hidePrice')->default(0);
             $table->string('spinner')->default('pan');
+            $table->string('favicon')->default('default.png');
             $table->boolean('redirectToCheckout')->default(0);
             $table->timestamps();
         });

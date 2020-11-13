@@ -1,17 +1,33 @@
 <template>
-  <div id="cooking" :style="{ position }">
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div id="area">
-      <div id="sides">
-        <div id="pan"></div>
-        <div id="handle"></div>
+  <div>
+    <div
+      id="cooking"
+      :style="{ position }"
+      v-if="menuSettings.spinner === 'pan'"
+    >
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div id="area">
+        <div id="sides">
+          <div id="pan"></div>
+          <div id="handle"></div>
+        </div>
+        <div id="pancake">
+          <div id="pastry"></div>
+        </div>
       </div>
-      <div id="pancake">
-        <div id="pastry"></div>
+    </div>
+    <div v-if="menuSettings.spinner !== 'pan'">
+      <div
+        class="spinner-border"
+        id="center"
+        style="color:#595959;position:fixed"
+        role="status"
+      >
+        <span class="sr-only">Loading...</span>
       </div>
     </div>
   </div>
@@ -29,6 +45,17 @@ $color: #333; // the rest
 
 .app.customer #cooking {
   left: 0;
+}
+
+#center {
+  position: fixed;
+  margin: auto;
+  top: 0;
+  left: 70px;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 1000;
 }
 
 #cooking {
@@ -262,6 +289,8 @@ $color: #333; // the rest
 </style>
 
 <script>
+import { mapGetters, mapActions, mapMutations } from "vuex";
+
 export default {
   components: {},
   props: {
@@ -271,6 +300,13 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    ...mapGetters({
+      store: "viewedStore",
+      storeSettings: "storeSettings",
+      menuSettings: "viewedStoreMenuSettings"
+    })
   },
   mounted() {},
   methods: {}
