@@ -8,14 +8,15 @@
     </div>
 
     <b-modal
-      size="md"
-      :title="mealTitle"
+      size="lg"
       v-model="mealPackageMealModal"
       v-if="mealPackageMealModal"
-      class="mt-4"
+      style="z-index:99999999999999999"
       hide-backdrop
+      hide-header
     >
-      <p v-html="mealDescription"></p>
+      <h4 class="center-text pt-3">{{ mealTitle }}</h4>
+      <p class="pt-2" v-html="mealDescription"></p>
     </b-modal>
 
     <!-- v-model="viewMealModal"
@@ -636,8 +637,8 @@
                             style="background-color:#ffffff"
                             @click="
                               showMealPackageMealModal(
-                                mealOption.meal.description,
-                                mealOption.meal.title
+                                mealOption.description,
+                                mealOption.title
                               )
                             "
                           ></thumbnail>
