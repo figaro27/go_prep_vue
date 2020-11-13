@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Store;
+use App\MenuSetting;
 
 class MenuSettingsSeeder extends Seeder
 {

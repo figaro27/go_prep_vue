@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use App\Store;
-use App\MenuSetting;
+use App\ReportRecord;
 
 class ReportRecordsSeeder extends Seeder
 {
@@ -16,7 +16,7 @@ class ReportRecordsSeeder extends Seeder
     {
         $stores = Store::all();
         foreach ($stores as $store) {
-            MenuSetting::create([
+            ReportRecord::create([
                 'store_id' => $store->id
             ]);
         }
