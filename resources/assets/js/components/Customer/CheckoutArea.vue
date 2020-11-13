@@ -1421,6 +1421,16 @@ export default {
     },
     customDeliveryFee: function(val) {
       this.setBagDeliveryFee(val);
+    },
+    bagHasOnlySubItems: function(val) {
+      if (val === true) {
+        this.setFrequencySubscription("sub");
+      }
+    },
+    bagHasOnlyOrderItems: function(val) {
+      if (val === true) {
+        this.setFrequencySubscription(null);
+      }
     }
   },
   mounted: function() {
