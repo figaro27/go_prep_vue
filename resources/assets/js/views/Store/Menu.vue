@@ -246,7 +246,7 @@
                     class="form-control"
                     :rows="4"
                   ></textarea> -->
-                  <wysiwyg v-model="meal.description" />
+                  <wysiwyg :state="true" v-model="meal.description" />
                   <br />
                   <h4>Price</h4>
                   <money

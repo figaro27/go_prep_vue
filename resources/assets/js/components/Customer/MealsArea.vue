@@ -1460,6 +1460,10 @@ export default {
       }
 
       this.addOne(mealPackage, true, size);
+
+      if (this.menuSettings.redirectToCheckout) {
+        this.$router.replace("/customer/bag");
+      }
     },
     async addMeal(meal, mealPackage, size) {
       meal.quantity = this.mealQuantities[meal.id];
@@ -1534,6 +1538,9 @@ export default {
           this.$parent.showBagClass += " area-scroll";
         } else if (this.$parent.showBagScrollbar) {
           this.$parent.showBagClass -= " area-scroll";
+        }
+        if (this.menuSettings.redirectToCheckout) {
+          this.$router.replace("/customer/bag");
         }
       }
       this.$parent.search = "";

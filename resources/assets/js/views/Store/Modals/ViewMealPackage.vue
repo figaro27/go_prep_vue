@@ -25,7 +25,7 @@
               </b-form-group>
               <h4>Package Description</h4>
               <b-form-group label-for="meal-description" :state="true">
-                <wysiwyg v-model.lazy="mealPackage.description" />
+                <wysiwyg :state="true" v-model.lazy="mealPackage.description" />
                 <!-- <textarea
                   v-model.lazy="mealPackage.description"
                   id="meal-description"

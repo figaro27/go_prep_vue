@@ -129,7 +129,8 @@ export default {
   computed: {
     ...mapGetters({
       storeSettings: "storeSettings",
-      getMeal: "viewedStoreMeal"
+      getMeal: "viewedStoreMeal",
+      menuSettings: "viewedStoreMenuSettings"
     }),
     headingClass() {
       if (this.fromMealsArea) {
@@ -428,6 +429,10 @@ export default {
 
       this.showcaseNutrition = false;
       this.$emit("closeVariationsModal");
+
+      if (this.menuSettings.redirectToCheckout) {
+        this.$router.replace("/customer/bag");
+      }
     }
   }
 };

@@ -31,7 +31,7 @@
                   class="form-control"
                   :rows="4"
                 ></textarea> -->
-                <wysiwyg v-model="meal.description" />
+                <wysiwyg :state="true" v-model="meal.description" />
               </b-form-group>
               <b-form-group>
                 <h4>Price</h4>
