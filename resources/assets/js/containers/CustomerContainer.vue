@@ -12,13 +12,13 @@
 
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
-      <i
+      <!-- <i
         class="fas fa-filter customer-nav-icon"
         :style="brandColor"
         style="position:relative;left:75px"
         @click.prevent="showFilterArea()"
         v-if="showBagAndFilters && mobile"
-      ></i>
+      ></i> -->
       <i
         class="fas fa-shopping-cart customer-nav-icon"
         v-if="showBagAndFilters && mobile"
