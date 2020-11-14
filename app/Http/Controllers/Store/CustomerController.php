@@ -166,24 +166,32 @@ class CustomerController extends StoreController
         $customerId = $request->get('id');
         $customer = Customer::where('id', $customerId)->first();
         $user = User::where('id', $customer->user_id)->first();
+        $added_by_store_id = $user->added_by_store_id;
 
-        $storeId = $this->store->id;
+        $store = $this->store;
         $gateway = $this->store->settings->payment_gateway;
+
+        $shared_store_ids = explode(",", $store->shared_store_ids);
+        $shared = false;
+
+        if (in_array($added_by_store_id, $shared_store_ids)) {
+            $shared = true;
+        }
 
         $orders = Order::where([
             'user_id' => $user->id,
-            'store_id' => $storeId
+            'store_id' => $store->id
         ])->count();
 
         // Only return cards if the store manually added the user or if the user has ordered from the store.
-        if ($user->added_by_store_id === $storeId || $orders > 0) {
+        if ($added_by_store_id === $store->id || $orders > 0 || $shared) {
             return $customer->user
                 ->cards()
                 ->where('payment_gateway', $gateway)
                 ->get()
-                ->filter(function ($card) use ($storeId, $gateway) {
+                ->filter(function ($card) use ($store, $gateway) {
                     if ($gateway === 'authorize') {
-                        return $card->store_id === $storeId;
+                        return $card->store_id === $store->id;
                     } else {
                         return true;
                     }
