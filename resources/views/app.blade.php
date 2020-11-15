@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+@if ($store != null)
 @php
-$faviconUrl = isset($store) && isset($store->menuSettings) $store->menuSettings->favicon : null;
+$faviconUrl = isset($store->menuSettings) $store->menuSettings->favicon : null;
 @endphp
+@endif
 <head>
     @if ($store != null)
     <title>{{ $store->details->name }} </title>
