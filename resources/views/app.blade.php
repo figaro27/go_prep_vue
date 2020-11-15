@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 @php
-$faviconUrl = isset($store) ? $store->menuSettings->favicon : null;
+$faviconUrl = isset($store) && isset($store->menuSettings) $store->menuSettings->favicon : null;
 @endphp
 <head>
     @if ($store != null)
