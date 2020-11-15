@@ -3,7 +3,7 @@
     <div
       id="cooking"
       :style="{ position }"
-      v-if="menuSettings.spinner === 'pan'"
+      v-if="menuSettings && menuSettings.spinner === 'pan'"
     >
       <div class="bubble"></div>
       <div class="bubble"></div>
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <div v-if="menuSettings.spinner !== 'pan'">
+    <div v-else>
       <div
         class="spinner-border"
         id="center"
