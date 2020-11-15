@@ -18,11 +18,10 @@ $faviconUrl = $store->menuSettings->favicon;
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600" rel="stylesheet">
     @if (isset($faviconUrl))
-    <link rel="shortcut icon" href="{{{ config('app.url').'/images/'. $faviconUrl }}}">
+    <link rel="shortcut icon" href="{{{ config('app.url').'/images/favicons/'. $faviconUrl }}}">
     @else
-    <link rel="shortcut icon" href="{{{ config('app.url').'/images/default.png' }}}">
+    <link rel="shortcut icon" href="{{{ config('app.url').'/images/favicons/default.png' }}}">
     @endif
-    <link rel="shortcut icon" href="{{{ config('app.url').'/images/default.png' }}}">
     <script>
     window.app = {
       domain: "{{ config('app.domain') }}",
