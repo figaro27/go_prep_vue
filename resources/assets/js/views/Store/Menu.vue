@@ -240,13 +240,13 @@
                 </b-form-group>
                 <h4>Meal Description</h4>
                 <b-form-group label-for="meal-description" :state="true">
-                  <!-- <textarea
+                  <textarea
                     v-model="meal.description"
                     id="meal-description"
                     class="form-control"
                     :rows="4"
-                  ></textarea> -->
-                  <wysiwyg :state="true" v-model="meal.description" />
+                  ></textarea>
+                  <!-- <wysiwyg v-model="meal.description" /> -->
                   <br />
                   <h4>Price</h4>
                   <money
