@@ -305,6 +305,8 @@ class RegisterController extends Controller
 
             $storeReportRecords = $store->reportRecords()->create();
 
+            $storeMenuSettings = $store->menuSettings()->create();
+
             try {
                 $key = new \Cloudflare\API\Auth\APIKey(
                     config('services.cloudflare.user'),
