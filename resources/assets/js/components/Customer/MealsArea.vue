@@ -1632,6 +1632,9 @@ export default {
       }
     },
     setItemQuantity(type, item, val) {
+      if (val < 0) {
+        val = val * -1;
+      }
       switch (type) {
         case "meal":
           this.mealQuantities[item.id] = parseInt(val);
