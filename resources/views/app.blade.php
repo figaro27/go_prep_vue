@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-@if ($store != null)
+@if ($store != null && $store->menuSettings != null)
 @php
-$faviconUrl = isset($store->menuSettings) $store->menuSettings->favicon : null;
+$faviconUrl = $store->menuSettings->favicon;
 @endphp
 @endif
 <head>
