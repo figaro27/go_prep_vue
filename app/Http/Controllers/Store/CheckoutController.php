@@ -765,6 +765,19 @@ class CheckoutController extends StoreController
                     $card->delete();
                 }
 
+                // Send notification to store
+                if ($store->modules->manualOrderEmails) {
+                    if ($storeSettings->notificationEnabled('new_order')) {
+                        $store->sendNotification('new_order', [
+                            'order' => $order ?? null,
+                            'pickup' => $pickup ?? null,
+                            'card' => $card ?? null,
+                            'customer' => $customer ?? null,
+                            'subscription' => null
+                        ]);
+                    }
+                }
+
                 if ($request->get('emailCustomer')) {
                     try {
                         $customerUser->sendNotification('new_order', [
@@ -1385,14 +1398,20 @@ class CheckoutController extends StoreController
                 }
 
                 // Send notification to store
-                if ($store->settings->notificationEnabled('new_subscription')) {
-                    $store->sendNotification('new_subscription', [
-                        'order' => $order ?? null,
-                        'pickup' => $pickup ?? null,
-                        'card' => $card ?? null,
-                        'customer' => $customer ?? null,
-                        'subscription' => $userSubscription ?? null
-                    ]);
+                if ($store->modules->manualOrderEmails) {
+                    if (
+                        $store->settings->notificationEnabled(
+                            'new_subscription'
+                        )
+                    ) {
+                        $store->sendNotification('new_subscription', [
+                            'order' => $order ?? null,
+                            'pickup' => $pickup ?? null,
+                            'card' => $card ?? null,
+                            'customer' => $customer ?? null,
+                            'subscription' => $userSubscription ?? null
+                        ]);
+                    }
                 }
 
                 // Send notification
