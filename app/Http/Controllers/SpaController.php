@@ -906,7 +906,6 @@ class SpaController extends Controller
                 'ingredients',
                 // 'ingredient_ids',
                 'nutrition',
-                'description',
                 'allergy_titles',
                 'nutrition',
                 'substitute',
