@@ -99,7 +99,8 @@ class StoreSetting extends Model
         'mealPlanDiscount' => 'float',
         'mealInstructions' => 'boolean',
         'enableSalesTax' => 'boolean',
-        'minimumDeliveryOnly' => 'boolean'
+        'minimumDeliveryOnly' => 'boolean',
+        'salesTaxAfterFees' => 'boolean'
     ];
 
     public function setAttributeVisibility()

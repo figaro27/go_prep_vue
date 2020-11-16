@@ -711,6 +711,30 @@
                       ></b-form-input>
                     </b-form-group>
                   </div>
+
+                  <div v-if="storeSettings.enableSalesTax">
+                    <p class="mt-4 mb-0 pb-0">
+                      <span class="mr-1">Apply Sales Tax After Fees</span>
+                      <img
+                        v-b-popover.hover="
+                          'Apply sales tax on the subtotal or on the subtotal plus any additional fees.'
+                        "
+                        title="Sales Tax Order"
+                        src="/images/store/popover.png"
+                        class="popover-size"
+                      />
+                    </p>
+
+                    <c-switch
+                      class="mt-3 mb-2"
+                      color="success"
+                      variant="pill"
+                      size="lg"
+                      v-model="storeSettings.salesTaxAfterFees"
+                      @change.native="updateStoreSettings"
+                    />
+                  </div>
+
                   <p class="mt-2">
                     <span class="mr-1">Google Analytics Code</span>
                     <img

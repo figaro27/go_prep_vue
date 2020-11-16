@@ -285,7 +285,11 @@
         </div>
       </li>
 
-      <li class="checkout-item" v-if="storeSettings.enableSalesTax">
+      <!-- Show sales tax after subtotal if salesTaxAfterFees is turned off -->
+      <li
+        class="checkout-item"
+        v-if="storeSettings.enableSalesTax && !storeSettings.salesTaxAfterFees"
+      >
         <div class="row">
           <div class="col-6 col-md-4">
             <strong>Sales Tax </strong
@@ -547,6 +551,59 @@
             <span v-else>
               {{ format.money(0, storeSettings.currency) }}
             </span>
+          </div>
+        </div>
+      </li>
+
+      <!-- Show sales tax after fees if salesTaxAfterFees is turned on -->
+      <li
+        class="checkout-item"
+        v-if="storeSettings.enableSalesTax && storeSettings.salesTaxAfterFees"
+      >
+        <div class="row">
+          <div class="col-6 col-md-4">
+            <strong>Sales Tax </strong
+            ><!-- {{ salesTax * 100 }}% -->
+            <p
+              v-if="$route.params.adjustOrder && order.customSalesTax"
+              class="small"
+            >
+              Custom Amount Entered
+            </p>
+          </div>
+          <div class="col-6 col-md-3 offset-md-5">
+            <span v-if="editingSalesTax">
+              <b-form-input
+                type="number"
+                v-model="customSalesTax"
+                class="d-inline width-70"
+              ></b-form-input>
+              <i
+                class="fas fa-check-circle text-primary pt-2 pl-1"
+                @click="editingSalesTax = false"
+              ></i>
+            </span>
+            <span v-else>
+              {{ format.money(tax, storeSettings.currency) }}
+            </span>
+            <i
+              v-if="($route.params.storeView || storeOwner) && !editingSalesTax"
+              @click="editSalesTax"
+              class="fa fa-edit text-warning"
+            ></i>
+            <i
+              class="fas fa-undo-alt text-secondary"
+              v-if="customSalesTax !== null && editingSalesTax === false"
+              @click="
+                customSalesTax = null;
+                editingSalesTax = false;
+              "
+            ></i>
+            <i
+              class="fas fa-undo-alt"
+              v-if="$route.params.adjustOrder && order.customSalesTax"
+              @click="order.customSalesTax = 0"
+            ></i>
           </div>
         </div>
       </li>
@@ -2943,8 +3000,14 @@ use next_delivery_dates
         }
       });
 
-      let taxableAmount =
-        this.afterDiscount - removableItemAmount + customSalesTaxAmount;
+      let taxableAmount = 0;
+      if (!this.storeSettings.salesTaxAfterFees) {
+        taxableAmount =
+          this.afterDiscount - removableItemAmount + customSalesTaxAmount;
+      } else {
+        taxableAmount =
+          this.afterFees - removableItemAmount + customSalesTaxAmount;
+      }
 
       if (taxableAmount < 0) {
         taxableAmount = 0;
