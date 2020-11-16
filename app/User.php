@@ -495,7 +495,7 @@ class User extends Authenticatable implements JWTSubject
         }
 
         $bcc = false;
-        $receipt = $data['receipt'];
+        $receipt = isset($data['receipt']) ? $data['receipt'] : false;
 
         switch ($notif) {
             case 'delivery_today':
