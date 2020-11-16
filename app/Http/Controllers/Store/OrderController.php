@@ -1412,7 +1412,8 @@ class OrderController extends StoreController
         try {
             $customerUser->sendNotification('new_order', [
                 'order' => $order ?? null,
-                'pickup' => $order->pickup ?? null
+                'pickup' => $order->pickup ?? null,
+                'receipt' => true
             ]);
         } catch (\Exception $e) {
         }

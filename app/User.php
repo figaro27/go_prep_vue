@@ -495,6 +495,7 @@ class User extends Authenticatable implements JWTSubject
         }
 
         $bcc = false;
+        $receipt = $data['receipt'];
 
         switch ($notif) {
             case 'delivery_today':
@@ -530,7 +531,7 @@ class User extends Authenticatable implements JWTSubject
 
         if ($email && strpos($this->email, 'noemail-') === false) {
             try {
-                if ($bcc === true) {
+                if ($bcc === true && $receipt === false) {
                     Mail::to($this)
                         ->bcc('orders@goprep.com')
                         ->send($email);
