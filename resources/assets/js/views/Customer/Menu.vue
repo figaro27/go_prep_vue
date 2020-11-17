@@ -388,7 +388,7 @@
                   :class="
                     index == 0 ? 'categoryNavItem active' : 'categoryNavItem'
                   "
-                  @click="backToMenu('categorySection_' + cat.id)"
+                  @click="backToMenu('categorySection_' + cat.id, 700)"
                   :target="'categorySection_' + cat.id"
                 >
                   {{ cat.category }}
@@ -516,7 +516,7 @@ let scrollToCategory;
 $(function() {
   var byPassScroll = false;
 
-  scrollToCategory = target => {
+  scrollToCategory = (target, speed = 700) => {
     byPassScroll = true;
 
     $(".categoryNavItem").removeClass("active");
@@ -524,9 +524,9 @@ $(function() {
     $([document.documentElement, document.body]).animate(
       {
         scrollTop:
-          $(".categorySection[target='" + target + "']").offset().top - 89
+          $(".categorySection[target='" + target + "']").offset().top + 89
       },
-      700
+      speed
     );
 
     setTimeout(() => {
@@ -625,6 +625,7 @@ export default {
   },
   data() {
     return {
+      activeCatId: 0,
       isPickup: 0,
       showVariationsModal: false,
       bagPageURL: "/customer/bag",
@@ -1310,6 +1311,11 @@ export default {
     },
     bagPickup(val) {
       this.changePickup(val);
+    },
+    mealMixItems(val) {
+      if (this.$route.query.cat && !val.isRunningLazy) {
+        this.backToMenu("categorySection_" + this.$route.query.cat, 0);
+      }
     }
   },
   updated() {
@@ -1778,19 +1784,21 @@ export default {
         ? this.filters.categories.push(category)
         : Vue.delete(this.filters.categories, i);
     },
-    backToMenu(categoryTarget = null) {
+    backToMenu(categoryTarget = null, speed = 700) {
+      this.activeCatId = categoryTarget.substring(
+        categoryTarget.indexOf("_") + 1
+      );
       this.showMealsArea = true;
       this.showMealPackagesArea = true;
       this.mealPageView = false;
       this.mealPackagePageView = false;
       this.finalCategoriesSub = [];
-
       if (categoryTarget) {
         this.$nextTick(() => {
-          scrollToCategory(categoryTarget);
+          scrollToCategory(categoryTarget, speed);
         });
       }
-      this.$router.push(this.$route.path);
+      // this.$router.push(this.$route.path);
     },
     backFromPackagePage() {
       this.$refs.mealPackagePage.back();

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="$parent.showMealsArea"
-    style="min-height: 100%;"
+    style="min-height: 100%;padding-bottom:500px"
     v-bind:class="
       storeSettings.menuStyle === 'image'
         ? 'left-right-box-shadow main-customer-container'
@@ -1546,7 +1546,9 @@ export default {
       this.$parent.search = "";
       this.mealQuantities.splice(meal.id, 1);
     },
-    showMealPackage(mealPackage, size) {
+    showMealPackage(mealPackage, size, group = null) {
+      this.$parent.activeCatId = group ? group.category_id : null;
+
       $([document.documentElement, document.body]).scrollTop(0);
       this.$parent.showMealPackagePage(mealPackage, size);
       this.$parent.showMealsArea = false;
@@ -1554,6 +1556,8 @@ export default {
       this.$parent.search = "";
     },
     async showMeal(meal, group, size) {
+      this.$parent.activeCatId = group ? group.category_id : null;
+
       if (meal.gift_card) {
         return;
       }
@@ -1566,7 +1570,7 @@ export default {
 
       if (meal.meal_package) {
         let mealPackage = await store.dispatch("refreshStoreMealPackage", meal);
-        this.showMealPackage(mealPackage, size);
+        this.showMealPackage(mealPackage, size, group);
       } else {
         $([document.documentElement, document.body]).scrollTop(0);
         this.$parent.showMealPage(meal, size ? size.id : null);

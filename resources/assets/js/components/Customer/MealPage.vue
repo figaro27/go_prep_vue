@@ -612,6 +612,7 @@ export default {
       this.invalid = false;
       this.showcaseNutrition = false;
       this.quant = 1;
+      this.$parent.backToMenu("categorySection_" + this.$parent.activeCatId, 0);
     },
     back() {
       let viewedMeal = {};
@@ -640,6 +641,7 @@ export default {
       this.invalidCheck = false;
       this.showcaseNutrition = false;
 
+      this.$parent.backToMenu("categorySection_" + this.$parent.activeCatId, 0);
       this.$router.push(this.$route.path);
     },
     getMealVariationPrice() {
