@@ -1216,7 +1216,7 @@
     </li>
 
     <li v-else>
-      <div class="row">
+      <div class="row" v-if="minimumMet">
         <b-btn @click="showAuthModal()" class="menu-bag-btn mb-4"
           >CONTINUE CHECKOUT</b-btn
         >
@@ -3751,7 +3751,9 @@ use next_delivery_dates
       this.syncDiscounts();
     },
     checkWillDeliver() {
-      this.$toastr.w("You are outside the delivery area.");
+      if (this.loggedIn) {
+        this.$toastr.w("You are outside the delivery area.");
+      }
     },
     search: _.debounce((loading, search, vm) => {
       axios
