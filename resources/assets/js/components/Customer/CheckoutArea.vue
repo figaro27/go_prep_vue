@@ -3764,9 +3764,6 @@ use next_delivery_dates
         }
       }
     },
-    checkPaymentMethod() {
-      return false;
-    },
     search: _.debounce((loading, search, vm) => {
       axios
         .post("/api/me/searchCustomer", {
