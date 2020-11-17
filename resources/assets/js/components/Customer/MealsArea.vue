@@ -199,6 +199,15 @@
           >
             {{ group.subtitle }}
           </h5>
+          <h6 v-if="getCategoryMinimum(group) > 0" class="text-center">
+            <span v-if="group.minimumType === 'price'"
+              >{{
+                format.money(getCategoryMinimum(group), storeSettings.currency)
+              }}
+              Remaining</span
+            >
+            <span v-else>{{ getCategoryMinimum(group) }} Remaining</span>
+          </h6>
           <div class="row">
             <div
               :class="itemColumnClass"
@@ -351,7 +360,7 @@
 
                           <b-btn
                             v-if="meal.gift_card"
-                            @click.stop="addMeal(meal, null)"
+                            @click.stop="addMeal(meal, null, null, group)"
                             class="menu-bag-btn plus-minus"
                           >
                             <i>+</i>
@@ -388,7 +397,7 @@
                                 !meal.gift_card &&
                                 !meal.hasVariations
                             "
-                            @click.stop="addMeal(meal, null)"
+                            @click.stop="addMeal(meal, null, null, group)"
                             class="menu-bag-btn plus-minus"
                           >
                             <i>+</i>
@@ -414,7 +423,7 @@
                               >Select</span
                             >
                             <b-dropdown-item
-                              @click="addMeal(meal, false)"
+                              @click="addMeal(meal, false, null, group)"
                               class="variation-dropdown"
                             >
                               {{ meal.default_size_title || "Regular" }} -
@@ -426,7 +435,7 @@
                               class="variation-dropdown"
                               v-for="(size, index) in meal.sizes"
                               :key="'size_' + size.id + '_' + index"
-                              @click.stop="addMeal(meal, false, size)"
+                              @click.stop="addMeal(meal, false, size, group)"
                             >
                               {{ size.title }} -
                               {{
@@ -442,7 +451,7 @@
                                 meal.hasVariations &&
                                 meal.sizes.length === 0
                             "
-                            @click.stop="addMeal(meal, null)"
+                            @click.stop="addMeal(meal, null, null, group)"
                             size="lg"
                             class="mx-auto variation-dropdown brand-color white-text"
                             style="height:45px"
@@ -470,7 +479,7 @@
                                 !meal.gift_card &&
                                 (!meal.sizes || meal.sizes.length === 0)
                             "
-                            @click="addMeal(meal, true)"
+                            @click="addMeal(meal, true, null, group)"
                             >Select</b-btn
                           >
 
@@ -494,7 +503,7 @@
                             >
 
                             <b-dropdown-item
-                              @click="addMeal(meal, true)"
+                              @click="addMeal(meal, true, null, group)"
                               class="variation-dropdown"
                             >
                               {{ meal.default_size_title || "Regular" }} -
@@ -506,7 +515,7 @@
                               class="variation-dropdown"
                               v-for="(size, index) in meal.sizes"
                               :key="'size_' + size.id + '_' + index"
-                              @click="addMealPackage(meal, true, size)"
+                              @click="addMealPackage(meal, true, size, group)"
                             >
                               {{ size.title }} -
                               {{
@@ -556,7 +565,7 @@
 
                     <b-btn
                       v-if="!meal.meal_package && !meal.hasVariations"
-                      @click.stop="addMeal(meal, null)"
+                      @click.stop="addMeal(meal, null, null, group)"
                       class="menu-bag-btn small-buttons plus-minus"
                     >
                       <i>+</i>
@@ -577,7 +586,7 @@
                         >Select</span
                       >
                       <b-dropdown-item
-                        @click.stop="addMeal(meal, false)"
+                        @click.stop="addMeal(meal, false, null, group)"
                         class="variation-dropdown"
                       >
                         {{ meal.default_size_title || "Regular" }} -
@@ -587,7 +596,7 @@
                         class="variation-dropdown"
                         v-for="(size, index) in meal.sizes"
                         :key="'size_' + size.id + '_' + index"
-                        @click.stop="addMeal(meal, false, size)"
+                        @click.stop="addMeal(meal, false, size, group)"
                       >
                         {{ size.title }} -
                         {{ format.money(size.price, storeSettings.currency) }}
@@ -600,7 +609,7 @@
                           meal.hasVariations &&
                           meal.sizes.length === 0
                       "
-                      @click.stop="addMeal(meal, null)"
+                      @click.stop="addMeal(meal, null, null, group)"
                       size="lg"
                       class="mx-auto variation-dropdown brand-color white-text"
                       style="height:45px"
@@ -617,7 +626,7 @@
                           !meal.hasVariations &&
                           meal.sizes.length === 0
                       "
-                      @click="addMeal(meal, true)"
+                      @click="addMeal(meal, true, null, group)"
                       >Select</b-btn
                     >
 
@@ -635,7 +644,7 @@
                       >
 
                       <b-dropdown-item
-                        @click="addMeal(meal, true)"
+                        @click="addMeal(meal, true, null, group)"
                         class="variation-dropdown"
                       >
                         {{ meal.default_size_title || "Regular" }} -
@@ -645,7 +654,7 @@
                         class="variation-dropdown"
                         v-for="(size, index) in meal.sizes"
                         :key="'size_' + size.id + '_' + index"
-                        @click="addMealPackage(meal, true, size)"
+                        @click="addMealPackage(meal, true, size, group)"
                       >
                         {{ size.title }} -
                         {{ format.money(size.price, storeSettings.currency) }}
@@ -861,6 +870,7 @@ import { mapGetters, mapActions } from "vuex";
 import OutsideDeliveryArea from "../../components/Customer/OutsideDeliveryArea";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 import store from "../../store";
+import format from "../../lib/format";
 
 export default {
   data() {
@@ -1287,7 +1297,8 @@ export default {
 
       return hasVar;
     },
-    async addMealPackage(mealPackage, condition = false, size) {
+    async addMealPackage(mealPackage, condition = false, size, group) {
+      mealPackage.category_id = group.category_id;
       if (size === undefined) {
         size = null;
       }
@@ -1316,12 +1327,16 @@ export default {
         mealPackage.delivery_day = this.$parent.finalDeliveryDay;
       }
 
+      let category_id = mealPackage.category_id;
+
       if (!("package" in this.$route.query)) {
         mealPackage = await store.dispatch(
           "refreshStoreMealPackage",
           mealPackage
         );
       }
+
+      mealPackage.category_id = category_id;
 
       this.$parent.forceShow = false;
       // } else {
@@ -1358,7 +1373,7 @@ export default {
       }
 
       if (showDetail) {
-        this.showMealPackage(mealPackage, size);
+        this.showMealPackage(mealPackage, size, group);
         return false;
       }
 
@@ -1465,8 +1480,9 @@ export default {
         this.$router.replace("/customer/bag");
       }
     },
-    async addMeal(meal, mealPackage, size) {
+    async addMeal(meal, mealPackage, size, group) {
       meal.quantity = this.mealQuantities[meal.id];
+      meal.category_id = group.category_id;
       if (this.$parent.selectedDeliveryDay) {
         meal.delivery_day = this.$parent.selectedDeliveryDay;
       }
@@ -1479,7 +1495,7 @@ export default {
         return;
       }
       if (meal.meal_package) {
-        this.addMealPackage(meal, true);
+        this.addMealPackage(meal, true, null, group);
       } else {
         if (
           meal.sizes & (meal.sizes.length > 0) &&
@@ -1548,6 +1564,7 @@ export default {
     },
     showMealPackage(mealPackage, size, group = null) {
       this.$parent.activeCatId = group ? group.category_id : null;
+      mealPackage.category_id = group ? group.category_id : 0;
 
       $([document.documentElement, document.body]).scrollTop(0);
       this.$parent.showMealPackagePage(mealPackage, size);
@@ -1557,7 +1574,7 @@ export default {
     },
     async showMeal(meal, group, size) {
       this.$parent.activeCatId = group ? group.category_id : null;
-
+      meal.category_id = group.category_id;
       if (meal.gift_card) {
         return;
       }
