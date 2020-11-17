@@ -524,7 +524,7 @@ $(function() {
     $([document.documentElement, document.body]).animate(
       {
         scrollTop:
-          $(".categorySection[target='" + target + "']").offset().top + 89
+          $(".categorySection[target='" + target + "']").offset().top - 100
       },
       speed
     );
