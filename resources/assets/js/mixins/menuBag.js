@@ -6,10 +6,21 @@ export default {
   computed: {
     ...mapGetters({
       storeSetting: "viewedStoreSetting",
-      bagDeliveryDate: "bagDeliveryDate"
+      bagDeliveryDate: "bagDeliveryDate",
+      store: "viewedStore"
     }),
     deliveryDateOptions() {
-      return this.storeSetting("next_orderable_delivery_dates", []).map(
+      let deliveryDays = this.storeSetting(
+        "next_orderable_delivery_dates",
+        []
+      ).map(date => {
+        return {
+          value: date.date,
+          text: moment(date.date).format("dddd MMM Do"),
+          moment: moment(date.date)
+        };
+      });
+      let pickupDays = this.storeSetting("next_orderable_pickup_dates", []).map(
         date => {
           return {
             value: date.date,
@@ -18,6 +29,20 @@ export default {
           };
         }
       );
+
+      let orderableDates = !this.store.modules.pickupOnly
+        ? deliveryDays.concat(pickupDays)
+        : pickupDays;
+
+      orderableDates = orderableDates
+        .filter((obj, pos, arr) => {
+          return (
+            arr.map(mapObj => mapObj["value"]).indexOf(obj["value"]) === pos
+          );
+        })
+        .sort((a, b) => (a.value > b.value ? 1 : -1));
+
+      return orderableDates;
     },
     /**
      * Whether at least one category has a delivery date restriction,
