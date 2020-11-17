@@ -696,7 +696,7 @@
         >Orders are closed until {{ storeSettings.menuReopening }}.</b-alert
       >
       <b-form-group>
-        <b-form-radio-group v-model="pickup" @change="changePickup">
+        <b-form-radio-group v-model="$parent.pickup" @change="changePickup">
           <b-form-radio
             :value="0"
             v-if="
@@ -1223,7 +1223,7 @@
       </div>
     </li>
 
-    <li v-if="context !== 'store' && !willDeliver && pickup != 1">
+    <li v-if="context !== 'store' && !willDeliver && !pickup">
       <b-alert v-if="!loading" variant="warning" show class="pb-0 mb-0">
         <p class="strong center-text font-14">
           You are outside of the {{ selectedTransferType.toLowerCase() }} area.
@@ -1237,13 +1237,17 @@
       </b-alert>
     </li>
 
+    <li v-if="loggedIn && !card && !cashOrder">
+      <b-alert variant="warning" show class="pb-0 mb-0">
+        <p class="strong center-text font-14">Please enter a payment method.</p>
+      </b-alert>
+    </li>
+
     <li
-      v-if="
-        context !== 'store' && (!minimumMet || (!willDeliver && pickup != 1))
-      "
+      v-if="context !== 'store' && (!minimumMet || (!willDeliver && !pickup))"
     >
       <b-btn
-        @click="checkMinimum(), checkWillDeliver()"
+        @click="checkMinimum(), blockedCheckoutMessage()"
         class="menu-bag-btn gray"
         >CHECKOUT</b-btn
       >
@@ -1381,7 +1385,7 @@ export default {
     //   this.chooseCustomer();
     // });
     if (this.bagPickupSet) {
-      this.pickup = this.bagPickup;
+      this.$parent.pickup = this.bagPickup;
     }
 
     if (this.coupon && this.coupon.minimum > 0) {
@@ -3750,10 +3754,18 @@ use next_delivery_dates
       this.updateParentData();
       this.syncDiscounts();
     },
-    checkWillDeliver() {
+    blockedCheckoutMessage() {
       if (this.loggedIn) {
-        this.$toastr.w("You are outside the delivery area.");
+        if (!this.willDeliver && !this.pickup) {
+          this.$toastr.w("You are outside the delivery area.");
+        }
+        if (!this.card && !this.cashOrder) {
+          this.$toastr.w("Please enter a payment method.");
+        }
       }
+    },
+    checkPaymentMethod() {
+      return false;
     },
     search: _.debounce((loading, search, vm) => {
       axios
