@@ -1164,7 +1164,6 @@
 
         <!-- <b-btn
           v-if="
-            // Condense all this logic / put in computed prop
             (card != null || cashOrder || grandTotal === 0) &&
               (minimumMet || $route.params.storeView || storeOwner) &&
               $route.params.adjustOrder != true &&
@@ -1206,7 +1205,7 @@
           >
         </div>
       </div>
-      <b-alert
+      <!-- <b-alert
         show
         variant="warning"
         class="pb-0 mb-0"
@@ -1219,7 +1218,7 @@
         <p class="strong center-text font-14">
           Please choose a customer.
         </p>
-      </b-alert>
+      </b-alert> -->
     </li>
 
     <li v-else>
@@ -1257,7 +1256,10 @@
     </li>
 
     <li v-if="invalidCheckout">
-      <b-btn @click="blockedCheckoutMessage()" class="menu-bag-btn gray"
+      <b-btn
+        @click="blockedCheckoutMessage()"
+        class="menu-bag-btn"
+        style="background:#a7a7a7 !important"
         >CHECKOUT</b-btn
       >
     </li>
@@ -3060,6 +3062,14 @@ use next_delivery_dates
         this.transferTime === null
       ) {
         return "Please select a delivery time from the dropdown.";
+      }
+
+      if (
+        this.context === "store" &&
+        this.customerModel === null &&
+        this.$route.params.manualOrder
+      ) {
+        return "Please choose a customer.";
       }
 
       if (
