@@ -696,7 +696,7 @@
         >Orders are closed until {{ storeSettings.menuReopening }}.</b-alert
       >
       <b-form-group>
-        <b-form-radio-group v-model="$parent.pickup" @change="changePickup">
+        <b-form-radio-group v-model="bagPickup" @change="changePickup">
           <b-form-radio
             :value="0"
             v-if="
@@ -3027,9 +3027,6 @@ use next_delivery_dates
       if (this.context !== "store" && !this.minimumMet) {
         return this.addMore;
       }
-      if (this.loggedIn && !this.card && !this.cashOrder) {
-        return "Please enter a payment method.";
-      }
       if (
         this.bagPickup === 1 &&
         this.store.modules.pickupLocations &&
@@ -3065,6 +3062,14 @@ use next_delivery_dates
       }
 
       if (
+        this.staffMember == null &&
+        this.store.modules.showStaff &&
+        this.$route.params.manualOrder
+      ) {
+        return "Please select a staff member.";
+      }
+
+      if (
         this.context === "store" &&
         this.customerModel === null &&
         this.$route.params.manualOrder
@@ -3072,12 +3077,8 @@ use next_delivery_dates
         return "Please choose a customer.";
       }
 
-      if (
-        this.staffMember == null &&
-        this.store.modules.showStaff &&
-        this.$route.params.manualOrder
-      ) {
-        return "Please select a staff member.";
+      if (this.loggedIn && !this.card && !this.cashOrder) {
+        return "Please enter a payment method.";
       }
 
       if (this.hasMultipleSubscriptionItems) {

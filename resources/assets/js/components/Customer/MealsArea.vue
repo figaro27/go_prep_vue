@@ -190,16 +190,19 @@
         "
       >
         <div v-if="storeSettings.menuStyle === 'image'">
-          <h2 class="text-center mb-2 dbl-underline" v-if="hasItems(group)">
+          <h2 class="text-center mb-4 dbl-underline" v-if="hasItems(group)">
             {{ group.category }}
           </h2>
           <h5
             v-if="group.subtitle !== null && hasItems(group)"
-            class="text-center mb-4"
+            class="text-center mt-2 mb-2"
           >
             {{ group.subtitle }}
           </h5>
-          <h6 v-if="getCategoryMinimum(group) > 0" class="text-center">
+          <h6
+            v-if="getCategoryMinimum(group) > 0 && context !== 'store'"
+            class="text-center"
+          >
             <span v-if="group.minimumType === 'price'"
               >{{
                 format.money(getCategoryMinimum(group), storeSettings.currency)
