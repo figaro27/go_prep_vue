@@ -1245,7 +1245,10 @@
 
     <li
       v-if="
-        context !== 'store' && (!minimumMet || (!willDeliver && pickup === 0))
+        context !== 'store' &&
+          (!minimumMet ||
+            (!willDeliver && pickup === 0) ||
+            (loggedIn && !card && !cashOrder))
       "
     >
       <b-btn @click="blockedCheckoutMessage()" class="menu-bag-btn gray"
