@@ -924,6 +924,23 @@
     <li v-if="loggedIn">
       <div
         v-if="
+          !willDeliver &&
+            !manualOrder &&
+            pickup != 1 &&
+            !$route.params.storeView &&
+            !storeOwner
+        "
+      >
+        <b-alert
+          v-if="!loading && !$route.params.storeView && !storeOwner"
+          variant="warning center-text"
+          show
+          >You are outside of the
+          {{ selectedTransferType.toLowerCase() }} area.</b-alert
+        >
+      </div>
+      <div
+        v-if="
           ($route.params.storeView || storeOwner) && store.modules.showStaff
         "
       >
@@ -1212,11 +1229,47 @@
             >UPDATE MEALS</b-btn
           >
         </div>
+
+        <div
+          v-if="
+            !willDeliver &&
+              $route.params.manualOrder === null &&
+              pickup != 1 &&
+              $parent.orderId === undefined
+          "
+        >
+          <b-alert v-if="!loading" variant="danger center-text" show
+            >You are outside of the
+            {{ selectedTransferType.toLowerCase() }} area.</b-alert
+          >
+        </div>
       </div>
     </li>
 
     <li v-else>
       <div class="row" v-if="minimumMet">
+        <!-- <div class="col-md-6">
+          <router-link
+            :to="{
+              path: '/login',
+              query: { redirect: bagURL }
+            }"
+          >
+            <b-btn class="menu-bag-btn">LOG IN</b-btn>
+          </router-link>
+        </div>
+        <div class="col-md-6">
+          <router-link
+            :to="{
+              name: 'register',
+              query: { redirect: bagURL },
+              params: { customerRegister: true }
+            }"
+          >
+            <b-btn class="menu-bag-btn">REGISTER</b-btn>
+          </router-link>
+        </div> -->
+
         <b-btn @click="showAuthModal()" class="menu-bag-btn mb-4"
           >CONTINUE CHECKOUT</b-btn
         >
@@ -1251,6 +1304,14 @@
         class="menu-bag-btn gray"
         >CHECKOUT</b-btn
       >
+      =======
+    </li>
+
+    <li v-if="!minimumMet && context !== 'store'">
+      <p class="strong">
+        {{ addMore }}
+      </p>
+      >>>>>>> parent of bc1080626... Category minimums
     </li>
 
     <add-customer-modal
@@ -1588,8 +1649,7 @@ export default {
       customerModel: "bagCustomerModel",
       context: "context",
       deliveryFee: "bagDeliveryFee",
-      frequencyType: "bagFrequencyType",
-      mealMixItems: "mealMixItems"
+      frequencyType: "bagFrequencyType"
     }),
     bagHasMultipleFrequencyItems() {
       let hasSubItems = this.bag.some(item => {
@@ -1704,6 +1764,49 @@ export default {
       } else {
         return "Pickup";
       }
+    },
+    addMore() {
+      if (this.isMultipleDelivery) {
+        if (this.minimumDeliveryDayAmount > 0) {
+          let groupTotal = [];
+          this.groupBag.forEach((group, index) => {
+            groupTotal[index] = 0;
+            group.items.forEach(item => {
+              groupTotal[index] += item.price * item.quantity;
+            });
+          });
+
+          if (
+            !groupTotal.every(item => {
+              return item > this.minimumDeliveryDayAmount;
+            })
+          ) {
+            return (
+              "A minimum of " +
+              format.money(
+                this.minimumDeliveryDayAmount,
+                this.storeSettings.currency
+              ) +
+              " for each delivery day is required to place your order."
+            );
+          }
+        }
+      }
+
+      if (this.minOption === "meals")
+        return (
+          "Please add " +
+          this.remainingMeals +
+          " " +
+          this.singOrPlural +
+          " to continue."
+        );
+      else if (this.minOption === "price")
+        return (
+          "Please add " +
+          format.money(this.remainingPrice, this.storeSettings.currency) +
+          " more to continue."
+        );
     },
     groupBag() {
       let grouped = [];
@@ -2958,6 +3061,50 @@ use next_delivery_dates
       }
       return this.$route.params.subscriptionId;
     },
+    minimumMet() {
+      if (this.isMultipleDelivery) {
+        if (this.minimumDeliveryDayAmount > 0) {
+          let groupTotal = [];
+          this.groupBag.forEach((group, index) => {
+            groupTotal[index] = 0;
+            group.items.forEach(item => {
+              groupTotal[index] += item.price * item.quantity;
+            });
+          });
+
+          if (
+            groupTotal.every(item => {
+              return item > this.minimumDeliveryDayAmount;
+            })
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
+      let giftCardOnly = true;
+      this.bag.forEach(item => {
+        if (!item.meal.gift_card) {
+          giftCardOnly = false;
+        }
+      });
+      if (this.bag.length == 0) {
+        giftCardOnly = false;
+      }
+
+      if (
+        (this.minOption === "meals" && this.total >= this.minimumMeals) ||
+        (this.minOption === "price" &&
+          this.totalBagPricePreFeesBothTypes >= this.minPrice) ||
+        this.$route.params.storeView ||
+        this.storeOwner ||
+        (this.storeSettings.minimumDeliveryOnly && this.pickup) ||
+        giftCardOnly
+      )
+        return true;
+      else return false;
+    },
     hidePaymentArea() {
       let params = this.$route.params;
       if (
@@ -3753,16 +3900,6 @@ use next_delivery_dates
       this.setWeeklySubscriptionValue(val);
       this.updateParentData();
       this.syncDiscounts();
-    },
-    blockedCheckoutMessage() {
-      if (this.loggedIn) {
-        if (!this.willDeliver && !this.pickup) {
-          this.$toastr.w("You are outside the delivery area.");
-        }
-        if (!this.card && !this.cashOrder) {
-          this.$toastr.w("Please enter a payment method.");
-        }
-      }
     },
     search: _.debounce((loading, search, vm) => {
       axios

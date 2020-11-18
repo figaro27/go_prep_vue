@@ -1,7 +1,6 @@
 import SalesTax from "sales-tax";
 import store from "../store";
 import { mapGetters, mapMutations } from "vuex";
-import format from "../lib/format";
 
 export default {
   computed: {
@@ -10,114 +9,6 @@ export default {
       bagDeliveryDate: "bagDeliveryDate",
       store: "viewedStore"
     }),
-    addMore() {
-      let message = "";
-      if (this.isMultipleDelivery) {
-        if (this.minimumDeliveryDayAmount > 0) {
-          let groupTotal = [];
-          this.groupBag.forEach((group, index) => {
-            groupTotal[index] = 0;
-            group.items.forEach(item => {
-              groupTotal[index] += item.price * item.quantity;
-            });
-          });
-
-          if (
-            !groupTotal.every(item => {
-              return item > this.minimumDeliveryDayAmount;
-            })
-          ) {
-            message =
-              "Please add at least " +
-              format.money(
-                this.minimumDeliveryDayAmount,
-                this.storeSettings.currency
-              ) +
-              " for each day.";
-          }
-        }
-      }
-
-      if (this.minOption === "meals")
-        message =
-          "Please add " +
-          this.remainingMeals +
-          " " +
-          this.singOrPlural +
-          " to continue.";
-      else if (this.minOption === "price")
-        message =
-          "Please add " +
-          format.money(this.remainingPrice, this.storeSettings.currency) +
-          " more to continue.";
-
-      if (
-        this.mealMixItems.finalCategories.some(cat => {
-          return cat.minimumType !== null;
-        }) &&
-        !this.checkCategoryMinimums()
-      ) {
-        message = this.categoryMinimumMessage();
-      }
-
-      return message;
-    },
-    minimumMet() {
-      let passed = true;
-
-      if (this.isMultipleDelivery) {
-        if (this.minimumDeliveryDayAmount > 0) {
-          let groupTotal = [];
-          this.groupBag.forEach((group, index) => {
-            groupTotal[index] = 0;
-            group.items.forEach(item => {
-              groupTotal[index] += item.price * item.quantity;
-            });
-          });
-
-          if (
-            groupTotal.every(item => {
-              return item > this.minimumDeliveryDayAmount;
-            })
-          ) {
-            // return true;
-          } else {
-            passed = false;
-          }
-        }
-      }
-
-      if (
-        this.mealMixItems.finalCategories.some(cat => {
-          return cat.minimumType !== null;
-        })
-      ) {
-        passed = this.checkCategoryMinimums();
-      }
-
-      let giftCardOnly = true;
-      this.bag.forEach(item => {
-        if (!item.meal.gift_card) {
-          giftCardOnly = false;
-        }
-      });
-      if (this.bag.length == 0) {
-        giftCardOnly = false;
-      }
-
-      if (
-        (this.minOption === "meals" && this.total >= this.minMeals) ||
-        (this.minOption === "price" &&
-          this.totalBagPricePreFeesBothTypes >= this.minPrice) ||
-        this.store.settings.minimumDeliveryOnly ||
-        giftCardOnly
-      ) {
-        // return true;
-      } else {
-        passed = false;
-      }
-      return passed;
-    },
     deliveryDateOptions() {
       let deliveryDays = this.storeSetting(
         "next_orderable_delivery_dates",
@@ -229,6 +120,7 @@ export default {
       } else {
         meal = this.getMealPackage(meal.id, meal);
       }
+
       if (!meal) {
         return;
       }
@@ -729,107 +621,6 @@ export default {
             }
           });
         }
-      }
-    },
-    checkCategoryMinimums() {
-      let passed = true;
-      this.mealMixItems.finalCategories.forEach(category => {
-        if (category.minimumType === "price") {
-          let bagCategoryPrice = 0;
-          this.bag.forEach(item => {
-            if (item.meal.category_id === category.id) {
-              bagCategoryPrice += item.price * item.quantity;
-            }
-          });
-          if (bagCategoryPrice < category.minimum) {
-            passed = false;
-          }
-        }
-        if (category.minimumType === "items") {
-          let bagCategoryQuantity = 0;
-          this.bag.forEach(item => {
-            if (item.meal.category_id === category.id) {
-              bagCategoryQuantity += item.quantity;
-            }
-          });
-          if (bagCategoryQuantity < category.minimum) {
-            passed = false;
-          }
-        }
-      });
-      return passed;
-    },
-    getCategoryMinimum(group) {
-      if (!group.minimumType) {
-        return;
-      }
-      if (group.minimumType === "price") {
-        return (
-          group.minimum -
-          this.bag.reduce((acc, item) => {
-            return item.meal.category_id === group.category_id
-              ? (acc = acc + item.price * item.quantity)
-              : acc;
-          }, 0)
-        );
-      } else {
-        return (
-          group.minimum -
-          this.bag.reduce((acc, item) => {
-            return item.meal.category_id === group.category_id
-              ? (acc = acc + item.quantity)
-              : acc;
-          }, 0)
-        );
-      }
-    },
-    categoryMinimumMessage() {
-      let message = "";
-      let cont = true;
-      this.mealMixItems.finalCategories.forEach(category => {
-        if (category.minimumType === "price" && cont) {
-          let bagCategoryPrice = 0;
-          this.bag.forEach(item => {
-            if (item.meal.category_id === category.id) {
-              bagCategoryPrice += item.price * item.quantity;
-            }
-          });
-          if (bagCategoryPrice < category.minimum) {
-            message =
-              "Please add " +
-              format.money(
-                category.minimum - bagCategoryPrice,
-                this.storeSettings.currency
-              ) +
-              " more to the " +
-              category.category +
-              " category";
-            cont = false;
-          }
-        }
-        if (category.minimumType === "items" && cont) {
-          let bagCategoryQuantity = 0;
-          this.bag.forEach(item => {
-            if (item.meal.category_id === category.id) {
-              bagCategoryQuantity += item.quantity;
-            }
-          });
-          if (bagCategoryQuantity < category.minimum) {
-            message =
-              "Please add " +
-              (category.minimum - bagCategoryQuantity) +
-              " more items to the " +
-              category.category +
-              " category";
-            cont = false;
-          }
-        }
-      });
-      return message;
-    },
-    checkMinimum() {
-      if (!this.minimumMet && !this.storeView) {
-        this.$toastr.w(this.addMore);
       }
     }
   }

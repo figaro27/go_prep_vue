@@ -2,17 +2,17 @@
   <div>
     <div>
       <div class="row" v-if="!bagView">
-        <!-- <div class="col-md-7">
+        <div class="col-md-7">
           <p
-            class="mt-2 ml-2 strong font-16"
+            class="mt-2 ml-2 strong font-17"
             style="margin-bottom:0;"
             v-if="!minimumMet && !storeView"
           >
             {{ addMore }}
           </p>
-        </div> -->
-        <div class="col-md-5 offset-7">
-          <span class="small pl-2 pt-2">Subtotal</span>
+        </div>
+        <div class="col-md-5">
+          <p class="small pl-2 pt-2">Subtotal</p>
           <h4 class="pl-2">
             {{
               format.money(
@@ -23,15 +23,6 @@
           </h4>
         </div>
       </div>
-
-      <b-alert
-        variant="warning"
-        show
-        v-if="!minimumMet && context !== 'store' && !bagView"
-        class="mb-0 mt-0 pb-0 pt-2"
-      >
-        <p class="strong center-text font-13">{{ addMore }} to continue.</p>
-      </b-alert>
 
       <b-btn
         @click="checkMinimum"
@@ -158,6 +149,11 @@ export default {
   methods: {
     addDeliveryDay() {
       this.$parent.showDeliveryDayModal = true;
+    },
+    checkMinimum() {
+      if (!this.minimumMet && !this.storeView) {
+        this.$toastr.w(this.addMore);
+      }
     }
   },
   computed: {
@@ -187,9 +183,7 @@ export default {
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       _orders: "orders",
-      loggedIn: "loggedIn",
-      mealMixItems: "mealMixItems",
-      context: "context"
+      loggedIn: "loggedIn"
     }),
     subId() {
       return this.$route.params.subscriptionId
@@ -221,6 +215,91 @@ export default {
         return "items";
       }
       return "item";
+    },
+    minimumMet() {
+      if (this.isMultipleDelivery) {
+        if (this.minimumDeliveryDayAmount > 0) {
+          let groupTotal = [];
+          this.groupBag.forEach((group, index) => {
+            groupTotal[index] = 0;
+            group.items.forEach(item => {
+              groupTotal[index] += item.price * item.quantity;
+            });
+          });
+
+          if (
+            groupTotal.every(item => {
+              return item > this.minimumDeliveryDayAmount;
+            })
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
+      let giftCardOnly = true;
+      this.bag.forEach(item => {
+        if (!item.meal.gift_card) {
+          giftCardOnly = false;
+        }
+      });
+      if (this.bag.length == 0) {
+        giftCardOnly = false;
+      }
+
+      if (
+        (this.minOption === "meals" && this.total >= this.minMeals) ||
+        (this.minOption === "price" &&
+          this.totalBagPricePreFeesBothTypes >= this.minPrice) ||
+        this.store.settings.minimumDeliveryOnly ||
+        giftCardOnly
+      )
+        return true;
+      else return false;
+    },
+    addMore() {
+      if (this.isMultipleDelivery) {
+        if (this.minimumDeliveryDayAmount > 0) {
+          let groupTotal = [];
+          this.groupBag.forEach((group, index) => {
+            groupTotal[index] = 0;
+            group.items.forEach(item => {
+              groupTotal[index] += item.price * item.quantity;
+            });
+          });
+
+          if (
+            !groupTotal.every(item => {
+              return item > this.minimumDeliveryDayAmount;
+            })
+          ) {
+            return (
+              "Please add at least " +
+              format.money(
+                this.minimumDeliveryDayAmount,
+                this.storeSettings.currency
+              ) +
+              " for each day."
+            );
+          }
+        }
+      }
+
+      if (this.minOption === "meals")
+        return (
+          "Please add " +
+          this.remainingMeals +
+          " " +
+          this.singOrPlural +
+          " to continue."
+        );
+      else if (this.minOption === "price")
+        return (
+          "Please add " +
+          format.money(this.remainingPrice, this.storeSettings.currency) +
+          " more to continue."
+        );
     },
     bagView() {
       if (
