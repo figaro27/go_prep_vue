@@ -1223,7 +1223,7 @@
       </div>
     </li>
 
-    <li v-if="context !== 'store' && !willDeliver && pickup === 0">
+    <li v-if="context !== 'store' && !willDeliver && bagPickup === 0">
       <b-alert v-if="!loading" variant="warning" show class="pb-0 mb-0">
         <p class="strong center-text font-14">
           You are outside of the {{ selectedTransferType.toLowerCase() }} area.
@@ -3760,7 +3760,7 @@ use next_delivery_dates
     blockedCheckoutMessage() {
       this.checkMinimum();
       if (this.loggedIn) {
-        if (!this.willDeliver && this.pickup === 0) {
+        if (!this.willDeliver && this.bagPickup === 0) {
           this.$toastr.w("You are outside the delivery area.");
         }
         if (!this.card && !this.cashOrder) {
