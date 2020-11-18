@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     ...mapActions(["refreshSubscriptions"]),
-    ...mapMutations(["setBagPickup"]),
+    ...mapMutations(["setBagPickup", "setBagPickupLocation"]),
     getSub() {
       axios.get("/api/me/subscriptions/" + this.subscriptionId).then(resp => {
         this.subscription = resp.data;
@@ -81,6 +81,7 @@ export default {
       // Setting pickup here
       this.pickup = subscription.pickup;
       this.setBagPickup(subscription.pickup);
+      this.setBagPickupLocation(subscription.pickup_location_id);
 
       let stop = false;
 

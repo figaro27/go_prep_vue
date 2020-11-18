@@ -77,7 +77,11 @@ export default {
     ...mapActions({
       refreshUpcomingOrders: "refreshUpcomingOrders"
     }),
-    ...mapMutations(["setBagStaffMember", "setBagPickup"]),
+    ...mapMutations([
+      "setBagStaffMember",
+      "setBagPickup",
+      "setBagPickupLocation"
+    ]),
     async initBag() {
       // await this.refreshUpcomingOrders();
       // const order = _.find(this.upcomingOrders, {
@@ -89,6 +93,7 @@ export default {
       // }
       this.setBagStaffMember(this.order.staff_id);
       this.setBagPickup(this.order.pickup);
+      this.setBagPickupLocation(this.order.pickup_location_id);
       this.clearAll();
 
       // axios.get("/api/me/order_bag/" + this.order.id).then(resp => {

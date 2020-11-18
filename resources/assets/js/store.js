@@ -72,7 +72,8 @@ const state = {
     staffMember: null,
     customerModel: null,
     deliveryFee: null,
-    frequencyType: null
+    frequencyType: null,
+    pickupLocation: null
   },
   delivery_date: null,
   zip_code: null,
@@ -829,6 +830,9 @@ const mutations = {
     }
 
     Vue.delete(state.bag.items, guid);
+  },
+  setBagPickupLocation({ state, dispatch }, pickupLocation) {
+    this.state.bag.pickupLocation = pickupLocation;
   },
   setBagZipCode({ state, dispatch }, zipCode) {
     this.state.zip_code = zipCode;
@@ -3513,6 +3517,9 @@ const getters = {
   },
   bagZipCode(state) {
     return state.zip_code;
+  },
+  bagPickupLocation(state) {
+    return state.bag.pickupLocation;
   },
   bagTransferTime(state) {
     return state.bag.transferTime;

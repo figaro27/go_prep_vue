@@ -723,17 +723,14 @@
     </li>
     <li
       :class="pickupLocationClass"
-      v-if="
-        storeModules.pickupLocations &&
-          pickup &&
-          $route.params.subscriptionId === undefined
-      "
+      v-if="storeModules.pickupLocations && pickup"
     >
       <div>
         <strong>Pickup Location</strong>
         <b-select
           v-model="selectedPickupLocation"
           :options="pickupLocationOptions"
+          @input="val => setBagPickupLocation(val)"
           class="delivery-select ml-2"
           required
         ></b-select>
@@ -1383,10 +1380,10 @@ export default {
       weeklySubscriptionValue: null,
       existingCustomerAdded: false,
       emailCustomer: true,
-      selectedPickupLocation:
-        this.order && this.order.pickup_location_id
-          ? this.order.pickup_location_id
-          : null,
+      // selectedPickupLocation:
+      //   this.order && this.order.pickup_location_id
+      //     ? this.order.pickup_location_id
+      //     : null,
       minimumDeliveryDayAmount: 0
     };
   },
@@ -1601,7 +1598,8 @@ export default {
       context: "context",
       deliveryFee: "bagDeliveryFee",
       frequencyType: "bagFrequencyType",
-      mealMixItems: "mealMixItems"
+      mealMixItems: "mealMixItems",
+      selectedPickupLocation: "bagPickupLocation"
     }),
     adjusting() {
       if (this.$route.params.adjustOrder || this.subscriptionId) {
@@ -3112,7 +3110,8 @@ use next_delivery_dates
       "setBagTransferTime",
       "setBagCustomerModel",
       "setBagDeliveryFee",
-      "setBagFrequencyType"
+      "setBagFrequencyType",
+      "setBagPickupLocation"
     ]),
     preventNegative() {
       if (this.total < 0) {
