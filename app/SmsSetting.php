@@ -309,7 +309,9 @@ class SmsSetting extends Model
         }
 
         // If there are no adjusted next delivery dates in the future (factoring in cutoff and order reminder hours), then take the next upcoming date and add 1 week.
-        return $nextDeliveryDates[0]->addWeeks(1);
+        if (count($nextDeliveryDates) > 0) {
+            return $nextDeliveryDates[0]->addWeeks(1);
+        }
     }
 
     public function getNextCutoffAttribute()
