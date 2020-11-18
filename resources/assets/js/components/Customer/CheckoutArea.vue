@@ -1246,9 +1246,7 @@
     <li
       v-if="context !== 'store' && (!minimumMet || (!willDeliver && !pickup))"
     >
-      <b-btn
-        @click="checkMinimum(), blockedCheckoutMessage()"
-        class="menu-bag-btn gray"
+      <b-btn @click="blockedCheckoutMessage()" class="menu-bag-btn gray"
         >CHECKOUT</b-btn
       >
     </li>
@@ -3755,6 +3753,7 @@ use next_delivery_dates
       this.syncDiscounts();
     },
     blockedCheckoutMessage() {
+      this.checkMinimum();
       if (this.loggedIn) {
         if (!this.willDeliver && !this.pickup) {
           this.$toastr.w("You are outside the delivery area.");
