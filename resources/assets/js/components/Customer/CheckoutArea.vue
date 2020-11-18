@@ -1116,18 +1116,7 @@
           You already have an active subscription with us and may have already
           been charged for an order.
         </div>
-        <b-alert
-          show
-          variant="warning"
-          class="center-text pt-2"
-          v-if="
-            ($route.params.storeView || storeOwner) &&
-              customerModel === null &&
-              $route.params.manualOrder
-          "
-          >Please choose a customer.</b-alert
-        >
-        <b-alert
+        <!-- <b-alert
           show
           variant="warning"
           class="center-text pt-2"
@@ -1138,7 +1127,7 @@
               customerModel != null
           "
           >Please choose a payment method.</b-alert
-        >
+        > -->
         <div
           v-if="
             ($route.params.adjustOrder || $route.params.manualOrder) &&
@@ -1176,7 +1165,7 @@
           </p>
         </b-alert>
 
-        <b-btn
+        <!-- <b-btn
           v-if="
             // Condense all this logic / put in computed prop
             (card != null || cashOrder || grandTotal === 0) &&
@@ -1192,6 +1181,13 @@
                 storeOwner) &&
               (customerModel != null || !$route.params.storeView || !storeOwner)
           "
+          @click="checkout"
+          :disabled="checkingOut"
+          class="menu-bag-btn mb-4"
+          >CHECKOUT</b-btn
+        > -->
+        <b-btn
+          v-if="!invalidCheckout && !adjusting"
           @click="checkout"
           :disabled="checkingOut"
           class="menu-bag-btn mb-4"
@@ -1213,17 +1209,31 @@
           >
         </div>
       </div>
+      <b-alert
+        show
+        variant="warning"
+        class="pb-0 mb-0"
+        v-if="
+          context === 'store' &&
+            customerModel === null &&
+            $route.params.manualOrder
+        "
+      >
+        <p class="strong center-text font-14">
+          Please choose a customer.
+        </p>
+      </b-alert>
     </li>
 
     <li v-else>
-      <div class="row" v-if="minimumMet">
+      <div class="row" v-if="!invalidCheckout && !adjusting">
         <b-btn @click="showAuthModal()" class="menu-bag-btn mb-4"
           >CONTINUE CHECKOUT</b-btn
         >
       </div>
     </li>
 
-    <li v-if="context !== 'store' && !willDeliver && bagPickup === 0">
+    <!-- <li v-if="context !== 'store' && !willDeliver && bagPickup === 0">
       <b-alert v-if="!loading" variant="warning" show class="pb-0 mb-0">
         <p class="strong center-text font-14">
           You are outside of the {{ selectedTransferType.toLowerCase() }} area.
@@ -1241,16 +1251,15 @@
       <b-alert variant="warning" show class="pb-0 mb-0">
         <p class="strong center-text font-14">Please enter a payment method.</p>
       </b-alert>
+    </li> -->
+
+    <li v-if="invalidCheckout">
+      <b-alert variant="warning" show class="pb-0 mb-0">
+        <p class="strong center-text font-14">{{ invalidCheckout }}</p>
+      </b-alert>
     </li>
 
-    <li
-      v-if="
-        context !== 'store' &&
-          (!minimumMet ||
-            (!willDeliver && pickup === 0) ||
-            (loggedIn && !card && !cashOrder))
-      "
-    >
+    <li v-if="invalidCheckout">
       <b-btn @click="blockedCheckoutMessage()" class="menu-bag-btn gray"
         >CHECKOUT</b-btn
       >
@@ -1594,6 +1603,11 @@ export default {
       frequencyType: "bagFrequencyType",
       mealMixItems: "mealMixItems"
     }),
+    adjusting() {
+      if (this.$route.params.adjustOrder || this.subscriptionId) {
+        return true;
+      }
+    },
     bagHasMultipleFrequencyItems() {
       let hasSubItems = this.bag.some(item => {
         return item.meal.frequencyType === "sub";
@@ -2997,6 +3011,72 @@ use next_delivery_dates
         }
       });
       return customerEmail;
+    },
+    invalidCheckout() {
+      if (
+        this.context !== "store" &&
+        !this.willDeliver &&
+        this.bagPickup === 0
+      ) {
+        return (
+          "You are outside of the " +
+          this.selectedTransferType.toLowerCase() +
+          " area."
+        );
+      }
+      if (this.context !== "store" && !this.minimumMet) {
+        return this.addMore;
+      }
+      if (this.loggedIn && !this.card && !this.cashOrder) {
+        return "Please enter a payment method.";
+      }
+      if (
+        this.bagPickup === 1 &&
+        this.store.modules.pickupLocations &&
+        this.pickupLocationOptions.length > 0 &&
+        !this.selectedPickupLocation
+      ) {
+        return "Please select a pickup location from the dropdown.";
+      }
+      if (!this.isMultipleDelivery && !this.store.modules.hideTransferOptions) {
+        if (!this.bagDeliveryDate) {
+          if (this.bagPickup === 1) {
+            return "Please select a pickup date from the dropdown.";
+          }
+          if (this.bagPickup === 0) {
+            return "Please select a delivery date from the dropdown.";
+          }
+        }
+      }
+      if (
+        this.store.modules.pickupHours &&
+        this.bagPickup === 1 &&
+        this.transferTime === null
+      ) {
+        return "Please select a pickup time from the dropdown.";
+      }
+
+      if (
+        this.store.modules.deliveryHours &&
+        this.bagPickup === 0 &&
+        this.transferTime === null
+      ) {
+        return "Please select a delivery time from the dropdown.";
+      }
+
+      if (
+        this.staffMember == null &&
+        this.store.modules.showStaff &&
+        this.$route.params.manualOrder
+      ) {
+        return "Please select a staff member.";
+      }
+
+      if (this.hasMultipleSubscriptionItems) {
+        return "You have multiple subscription types in your bag (e.g weekly & monthly). Please checkout one subscription type at a time.";
+      }
+
+      return null;
     }
   },
   created() {},
@@ -3758,15 +3838,7 @@ use next_delivery_dates
       this.syncDiscounts();
     },
     blockedCheckoutMessage() {
-      this.checkMinimum();
-      if (this.loggedIn) {
-        if (!this.willDeliver && this.bagPickup === 0) {
-          this.$toastr.w("You are outside the delivery area.");
-        }
-        if (!this.card && !this.cashOrder) {
-          this.$toastr.w("Please enter a payment method.");
-        }
-      }
+      this.$toastr.w(this.invalidCheckout);
     },
     search: _.debounce((loading, search, vm) => {
       axios
