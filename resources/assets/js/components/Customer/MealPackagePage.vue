@@ -1121,7 +1121,10 @@ export default {
     },
     components() {
       return _.filter(this.mealPackage.components, component => {
-        if (this.store.modules.multipleDeliveryDays) {
+        if (
+          this.store.modules.multipleDeliveryDays &&
+          this.mealPackage.divideByComponents
+        ) {
           if (
             this.availableDeliveryDayIds.includes(component.delivery_day_id)
           ) {
@@ -1176,7 +1179,6 @@ export default {
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPackagePageView = false;
       this.$parent.finalCategoriesSub = [];
-      this.$parent.backToMenu("categorySection_" + this.$parent.activeCatId, 0);
     },
     done() {
       this.$v.$touch();
@@ -1241,8 +1243,8 @@ export default {
           }
         }
         /* Checking Special Instructions End */
-        if (this.isMultipleDelivery) {
-          const deliveryDays = this.deliveryDays;
+        if (this.isMultipleDelivery && this.mealPackage.divideByComponents) {
+          let deliveryDays = this.deliveryDays;
 
           deliveryDays.forEach(day => {
             // Split package by looking at the components & addons delivery_day_ids
@@ -1331,6 +1333,9 @@ export default {
             }
           });
         } else {
+          if (this.isMultipleDelivery && !this.mealPackage.divideByComponents) {
+            this.mealPackage.delivery_day = this.$parent.selectedDeliveryDay;
+          }
           this.addOne(
             this.mealPackage,
             true,
@@ -1349,8 +1354,6 @@ export default {
         if (this.$parent.showBagClass.includes("hidden"))
           this.$parent.showBag();
       }
-
-      this.$parent.backToMenu("categorySection_" + this.$parent.activeCatId, 0);
     },
     optionMealSelected(componentId, optionId, mealId) {
       return this.optionSelected(componentId, optionId)
@@ -1445,7 +1448,11 @@ export default {
     getTotalRemainingMeals() {
       let totalRemainingMeals = 0;
       this.mealPackage.components.forEach(component => {
-        if (this.store.modules.multipleDeliveryDays) {
+        if (
+          this.store.modules.multipleDeliveryDays &&
+          this.store.id !== 156 &&
+          this.store.id !== 3
+        ) {
           if (
             this.availableDeliveryDayIds.includes(component.delivery_day_id)
           ) {

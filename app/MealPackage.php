@@ -34,7 +34,8 @@ class MealPackage extends Model implements HasMedia
         'created_at' => 'date:F d, Y',
         'created_at_local' => 'date:F d, Y',
         'meal_carousel' => 'boolean',
-        'dividePriceByComponents' => 'boolean'
+        'dividePriceByComponents' => 'boolean',
+        'divideByComponents' => 'boolean'
     ];
 
     public function days()
