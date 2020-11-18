@@ -940,7 +940,7 @@
         </v-select>
       </div>
       <div>
-        <div v-if="$route.params.manualOrder">
+        <div v-if="context === 'store' && !adjusting">
           <b-form-group>
             <h4 class="mt-2 mb-3">Customer</h4>
             <!--<v-select
