@@ -174,13 +174,14 @@
             }}
           </p>
           <div class="d-flex">
-            <b-form-select
+            <b-form-input
+              type="number"
               v-model="smsSettings.autoSendOrderReminderHours"
               :options="reminderHoursOptions"
-              class="d-inline"
+              class="d-inline w-180"
               style="height:30px"
               @change="updateSettings"
-            ></b-form-select>
+            ></b-form-input>
             <img
               v-b-popover.hover="
                 'Select the number of hours before your next cutoff that you want the order reminder text to be sent. The time above will update.'
@@ -249,14 +250,15 @@
             @change.native="updateSettings"
           />
 
-          <b-form-select
+          <b-form-input
+            type="number"
             v-model="smsSettings.autoSendDeliveryTime"
             v-if="smsSettings.autoSendDelivery"
             :options="deliveryTimeOptions"
-            class="d-inline"
+            class="d-inline w-180"
             style="height:30px"
             @change="updateSettings"
-          ></b-form-select>
+          ></b-form-input>
         </div>
         <div>
           <b-btn

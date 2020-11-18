@@ -294,7 +294,6 @@ class SmsSetting extends Model
     {
         $nextDeliveryDates = $this->store->settings->getNextDeliveryDates(true);
 
-        // Not the next available delivery date but the next delivery date in which factoring the cutoff and reminder time is in the future
         foreach ($nextDeliveryDates as $nextDeliveryDate) {
             $storeSettings = $this->store->settings;
             $nextCutoff = $storeSettings
@@ -304,9 +303,13 @@ class SmsSetting extends Model
                 $this->autoSendOrderReminderHours
             );
             if (!$reminderTime->isPast()) {
+                // Not the next available delivery date but the next delivery date in which factoring the cutoff and reminder time is in the future
                 return $nextDeliveryDate;
             }
         }
+
+        // If there are no adjusted next delivery dates in the future (factoring in cutoff and order reminder hours), then take the next upcoming date and add 1 week.
+        return $nextDeliveryDates[0]->addWeeks(1);
     }
 
     public function getNextCutoffAttribute()
