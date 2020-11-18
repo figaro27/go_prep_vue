@@ -696,7 +696,7 @@
         >Orders are closed until {{ storeSettings.menuReopening }}.</b-alert
       >
       <b-form-group>
-        <b-form-radio-group v-model="$parent.pickup" @change="changePickup">
+        <b-form-radio-group v-model="pickup" @change="changePickup">
           <b-form-radio
             :value="0"
             v-if="
@@ -1223,7 +1223,7 @@
       </div>
     </li>
 
-    <li v-if="context !== 'store' && !willDeliver && !pickup">
+    <li v-if="context !== 'store' && !willDeliver && pickup != 1">
       <b-alert v-if="!loading" variant="warning" show class="pb-0 mb-0">
         <p class="strong center-text font-14">
           You are outside of the {{ selectedTransferType.toLowerCase() }} area.
@@ -1237,17 +1237,13 @@
       </b-alert>
     </li>
 
-    <li v-if="loggedIn && !card && !cashOrder">
-      <b-alert variant="warning" show class="pb-0 mb-0">
-        <p class="strong center-text font-14">Please enter a payment method.</p>
-      </b-alert>
-    </li>
-
     <li
-      v-if="context !== 'store' && (!minimumMet || (!willDeliver && !pickup))"
+      v-if="
+        context !== 'store' && (!minimumMet || (!willDeliver && pickup != 1))
+      "
     >
       <b-btn
-        @click="checkMinimum(), blockedCheckoutMessage()"
+        @click="checkMinimum(), checkWillDeliver()"
         class="menu-bag-btn gray"
         >CHECKOUT</b-btn
       >
@@ -1385,7 +1381,7 @@ export default {
     //   this.chooseCustomer();
     // });
     if (this.bagPickupSet) {
-      this.$parent.pickup = this.bagPickup;
+      this.pickup = this.bagPickup;
     }
 
     if (this.coupon && this.coupon.minimum > 0) {
@@ -3754,14 +3750,9 @@ use next_delivery_dates
       this.updateParentData();
       this.syncDiscounts();
     },
-    blockedCheckoutMessage() {
+    checkWillDeliver() {
       if (this.loggedIn) {
-        if (!this.willDeliver && !this.pickup) {
-          this.$toastr.w("You are outside the delivery area.");
-        }
-        if (!this.card && !this.cashOrder) {
-          this.$toastr.w("Please enter a payment method.");
-        }
+        this.$toastr.w("You are outside the delivery area.");
       }
     },
     search: _.debounce((loading, search, vm) => {
