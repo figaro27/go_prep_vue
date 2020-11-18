@@ -1249,13 +1249,13 @@
       </b-alert>
     </li> -->
 
-    <li v-if="invalidCheckout">
+    <li v-if="invalidCheckout && !adjusting">
       <b-alert variant="warning" show class="pb-0 mb-0">
         <p class="strong center-text font-14">{{ invalidCheckout }}</p>
       </b-alert>
     </li>
 
-    <li v-if="invalidCheckout">
+    <li v-if="invalidCheckout && !adjusting">
       <b-btn
         @click="blockedCheckoutMessage()"
         class="menu-bag-btn"

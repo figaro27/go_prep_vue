@@ -1179,6 +1179,7 @@ export default {
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPackagePageView = false;
       this.$parent.finalCategoriesSub = [];
+      this.$parent.backToMenu("categorySection_" + this.$parent.activeCatId, 0);
     },
     done() {
       this.$v.$touch();
