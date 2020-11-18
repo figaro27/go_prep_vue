@@ -576,7 +576,9 @@ class SpaController extends Controller
                     'date_range',
                     'date_range_exclusive',
                     'date_range_from',
-                    'date_range_to'
+                    'date_range_to',
+                    'minimumType',
+                    'minimum'
                 )->where(['store_id' => $store_id, 'activeForStore' => 1]);
 
                 if ($user === null || $user->user_role_id === 1) {
