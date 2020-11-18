@@ -1223,7 +1223,7 @@
       </div>
     </li>
 
-    <li v-if="context !== 'store' && !willDeliver && !pickup">
+    <li v-if="context !== 'store' && !willDeliver && pickup === 0">
       <b-alert v-if="!loading" variant="warning" show class="pb-0 mb-0">
         <p class="strong center-text font-14">
           You are outside of the {{ selectedTransferType.toLowerCase() }} area.
@@ -1244,7 +1244,9 @@
     </li>
 
     <li
-      v-if="context !== 'store' && (!minimumMet || (!willDeliver && !pickup))"
+      v-if="
+        context !== 'store' && (!minimumMet || (!willDeliver && pickup === 0))
+      "
     >
       <b-btn @click="blockedCheckoutMessage()" class="menu-bag-btn gray"
         >CHECKOUT</b-btn
@@ -1383,7 +1385,7 @@ export default {
     //   this.chooseCustomer();
     // });
     if (this.bagPickupSet) {
-      this.$parent.pickup = this.bagPickup;
+      this.pickup = this.bagPickup;
     }
 
     if (this.coupon && this.coupon.minimum > 0) {
@@ -3755,7 +3757,7 @@ use next_delivery_dates
     blockedCheckoutMessage() {
       this.checkMinimum();
       if (this.loggedIn) {
-        if (!this.willDeliver && !this.pickup) {
+        if (!this.willDeliver && this.pickup === 0) {
           this.$toastr.w("You are outside the delivery area.");
         }
         if (!this.card && !this.cashOrder) {
