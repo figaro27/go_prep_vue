@@ -868,6 +868,10 @@ export default {
     ) {
       this.autoPickAdjustDD();
     }
+
+    if (this.$route.params.lineItemOrders) {
+      this.orderLineItems = this.$route.params.lineItemOrders;
+    }
   },
   methods: {
     loadDeliveryDayMenu(deliveryDay) {
@@ -1160,6 +1164,7 @@ export default {
           this.selectedLineItem = { title: "", price: null, quantity: 1 };
         });
       }
+      this.$parent.checkoutData.lineItemOrders = this.orderLineItems;
     },
     updateLineItems(orderLineItem, increment) {
       orderLineItem.quantity += increment;

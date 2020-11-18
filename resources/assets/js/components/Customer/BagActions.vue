@@ -146,8 +146,7 @@ export default {
     checkoutData: null,
     forceValue: false,
     inSub: null,
-    weeklySubscriptionValue: null,
-    lineItemOrders: null
+    weeklySubscriptionValue: null
   },
   data() {
     return {
@@ -191,6 +190,11 @@ export default {
       mealMixItems: "mealMixItems",
       context: "context"
     }),
+    lineItemOrders() {
+      return this.$route.params.checkoutData
+        ? this.$route.params.checkoutData.lineItemOrders
+        : null;
+    },
     subId() {
       return this.$route.params.subscriptionId
         ? this.$route.params.subscriptionId
