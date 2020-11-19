@@ -133,6 +133,8 @@ class CategoryController extends StoreController
         }
 
         $category->active = $request->get('active');
+        $category->minimumType = $request->get('minimumType');
+        $category->minimum = $request->get('minimum');
         $category->activeForStore = $request->get('activeForStore');
 
         $category->save();

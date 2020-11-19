@@ -37,10 +37,10 @@
             <li
               v-for="category in categories"
               :key="`category-${category.id}`"
-              class="mb-3"
+              class="center-flex mb-3"
             >
-              <div class="center-flex">
-                <h5 v-if="!editing || editingId !== category.id" class="d-flex">
+              <div>
+                <h5 v-if="!editing || editingId !== category.id">
                   <i
                     v-if="category.id"
                     @click="editCategory(category)"
@@ -54,37 +54,58 @@
                   <span class="category-name">{{ category.category }}</span>
                 </h5>
               </div>
-              <div v-if="editing && editingId === category.id">
-                <div class="d-flex mr-2">
-                  <div class="d-flex mr-2 pt-1">
-                    <div class="mr-1">
-                      <b-form-checkbox
-                        v-model="category.active"
-                        @change="setActive(category.active)"
-                      ></b-form-checkbox>
-                    </div>
-                    <div>Active for Customers</div>
+              <div class="center-text">
+                <div v-if="editing && editingId === category.id">
+                  <div class="d-flex d-inline">
+                    <p class="mr-2">Title</p>
+                    <b-input
+                      v-model="editing.category"
+                      placeholder="Enter updated category name."
+                      class="w-180"
+                    ></b-input>
                   </div>
-                  <div class="d-flex mr-2 pt-1">
-                    <div class="mr-1">
-                      <b-form-checkbox
-                        v-model="category.activeForStore"
-                        @change="setActiveForStore(category.activeForStore)"
-                      ></b-form-checkbox>
-                    </div>
-                    <div>Active for You</div>
+                  <div class="d-flex d-inline">
+                    <p class="mr-2">Minimum Type</p>
+                    <b-form-select
+                      v-model="editing.minimumType"
+                      :options="[
+                        { value: null, text: 'None' },
+                        { value: 'price', text: 'Price' },
+                        { value: 'items', text: 'Items' }
+                      ]"
+                    ></b-form-select>
                   </div>
-                  <b-input
-                    v-model="editing.category"
-                    placeholder="Enter updated category name."
-                    class="w-50 mr-2"
-                  ></b-input>
-                  <b-btn @click.prevent="updateCategory" variant="primary"
-                    >Save</b-btn
-                  >
+                  <div class="d-flex d-inline">
+                    <p class="mr-2">Minimum</p>
+                    <b-form-input
+                      type="number"
+                      minimum="0"
+                      v-model="editing.minimum"
+                      class="w-80px"
+                    ></b-form-input>
+                  </div>
+                  <div class="d-flex d-inline">
+                    <p class="mr-2">Active for Customers</p>
+                    <b-form-checkbox
+                      v-model="category.active"
+                      @change="setActive(category.active)"
+                    ></b-form-checkbox>
+                  </div>
+                  <div class="d-flex d-inline">
+                    <p class="mr-2">Active for You</p>
+                    <b-form-checkbox
+                      v-model="category.activeForStore"
+                      @change="setActiveForStore(category.activeForStore)"
+                    ></b-form-checkbox>
+                  </div>
+                  <div class="d-flex d-inline">
+                    <b-btn @click.prevent="updateCategory" variant="primary"
+                      >Save</b-btn
+                    >
+                  </div>
                 </div>
-
-                <div v-if="storeModules.category_restrictions" class="mt-3">
+              </div>
+              <!-- <div v-if="storeModules.category_restrictions" class="mt-3">
                   <b-form-group>
                     <b-checkbox v-model="editing.date_range"
                       >Enable category between dates</b-checkbox
@@ -111,8 +132,7 @@
                       is-inline
                     />
                   </b-form-group>
-                </div>
-              </div>
+                </div> -->
             </li>
           </draggable>
         </div>
@@ -202,7 +222,9 @@ export default {
         date_range_from,
         date_range_to,
         date_range_exclusive_from,
-        date_range_exclusive_to
+        date_range_exclusive_to,
+        minimumType,
+        minimum
       } = cat;
 
       const rangeFrom = new Date(date_range_from || new Date());
@@ -241,6 +263,7 @@ export default {
           this.showCategoriesModal = false;
           this.fetchCategories();
           this.$toastr.s("Category updated.");
+          this.editingId = null;
         });
     },
     setActive(value) {
