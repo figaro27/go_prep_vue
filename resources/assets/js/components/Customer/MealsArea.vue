@@ -1479,7 +1479,7 @@ export default {
 
       this.addOne(mealPackage, true, size);
 
-      if (this.menuSettings.redirectToCheckout) {
+      if (this.context !== "store" && this.menuSettings.redirectToCheckout) {
         this.$router.replace("/customer/bag");
       }
     },
@@ -1558,7 +1558,7 @@ export default {
         } else if (this.$parent.showBagScrollbar) {
           this.$parent.showBagClass -= " area-scroll";
         }
-        if (this.menuSettings.redirectToCheckout) {
+        if (this.context !== "store" && this.menuSettings.redirectToCheckout) {
           this.$router.replace("/customer/bag");
         }
       }
