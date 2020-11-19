@@ -599,7 +599,7 @@ export default {
 
       this.mealSize = null;
       this.back();
-      if (this.menuSettings.redirectToCheckout) {
+      if (this.context !== "store" && this.menuSettings.redirectToCheckout) {
         this.$router.replace("/customer/bag");
       }
 
