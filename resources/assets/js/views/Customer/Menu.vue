@@ -1785,9 +1785,11 @@ export default {
         : Vue.delete(this.filters.categories, i);
     },
     backToMenu(categoryTarget = null, speed = 700) {
-      this.activeCatId = categoryTarget.substring(
-        categoryTarget.indexOf("_") + 1
-      );
+      if (categoryTarget) {
+        this.activeCatId = categoryTarget.substring(
+          categoryTarget.indexOf("_") + 1
+        );
+      }
       this.showMealsArea = true;
       this.showMealPackagesArea = true;
       this.mealPageView = false;
