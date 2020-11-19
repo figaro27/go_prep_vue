@@ -30,7 +30,7 @@
         v-if="!minimumMet && context !== 'store' && !bagView"
         class="mb-0 mt-0 pb-0 pt-2"
       >
-        <p class="strong center-text font-13">{{ addMore }} to continue.</p>
+        <p class="strong center-text font-13">{{ addMore }}</p>
       </b-alert>
 
       <b-btn
