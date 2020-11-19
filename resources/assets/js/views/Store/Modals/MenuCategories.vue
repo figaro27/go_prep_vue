@@ -75,7 +75,10 @@
                       ]"
                     ></b-form-select>
                   </div>
-                  <div class="d-flex d-inline">
+                  <div
+                    class="d-flex d-inline"
+                    v-if="editing.minimumType !== null"
+                  >
                     <p class="mr-2">Minimum</p>
                     <b-form-input
                       type="number"
