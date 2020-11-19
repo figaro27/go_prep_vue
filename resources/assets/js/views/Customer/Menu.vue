@@ -1898,6 +1898,9 @@ export default {
       });
     },
     hasItems(category = null, group = null) {
+      if (this.mealPackagePageView) {
+        return true;
+      }
       if (group) {
         category = this.mealsMix.find(cat => {
           return cat.category_id === group.id;
