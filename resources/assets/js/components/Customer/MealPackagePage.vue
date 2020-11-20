@@ -13,7 +13,13 @@
       v-if="mealPackageMealModal"
       hide-backdrop
       centered
+      hide-header
     >
+      <i
+        class="fas fa-times-circle float-right pt-3"
+        style="font-size:35px"
+        @click="mealPackageMealModal = false"
+      ></i>
       <h4 class="center-text pt-3">{{ mealTitle }}</h4>
       <p class="pt-2" v-html="mealDescription"></p>
     </b-modal>
@@ -387,7 +393,7 @@
                                   </div>
                                 </div>
                                 <div class="mt-1 content-text">
-                                  {{ mealOption.meal.description }}
+                                  <p v-html="mealOption.meal.description"></p>
                                 </div>
 
                                 <b-form-textarea
@@ -449,7 +455,7 @@
                                   </div>
                                 </div>
                                 <div class="mt-1 content-text">
-                                  {{ mealOption.meal.description }}
+                                  <p v-html="mealOption.meal.description"></p>
                                 </div>
                                 <div
                                   class="price-no-bg"
@@ -788,7 +794,7 @@
                                 </div>
                               </div>
                               <div class="mt-1 content-text">
-                                {{ mealOption.meal.description }}
+                                <p v-html="mealOption.meal.description"></p>
                               </div>
 
                               <b-form-textarea
@@ -846,7 +852,7 @@
                                 </div>
                               </div>
                               <div class="mt-1 content-text">
-                                {{ mealOption.meal.description }}
+                                <p v-html="mealOption.meal.description"></p>
                               </div>
                               <div
                                 class="price-no-bg"

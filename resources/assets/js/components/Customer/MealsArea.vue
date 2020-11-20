@@ -302,10 +302,9 @@
                         class="description d-md-none"
                         @click="showMeal(meal)"
                       >
-                        <span>
-                          {{ truncate(meal.description, 150, "...") }} Show
-                          more</span
-                        >
+                        <p v-html="getHTMLItemDescription(meal.description)">
+                          Show more
+                        </p>
                       </div>
 
                       <div
@@ -746,7 +745,7 @@
                         v-html="getMealTitle(meal.title)"
                       ></p>
                       <div class="mt-1 content-text">
-                        {{ meal.description }}
+                        <p v-html="meal.description"></p>
                       </div>
                       <div
                         class="title"
@@ -792,7 +791,7 @@
                       <div style="flex-basis:75%">
                         <p v-html="getMealTitle(meal.title)"></p>
                         <span class="content-text">
-                          {{ meal.description }}
+                          <p v-html="meal.description"></p>
                           <div class="title" v-if="storeSettings.showMacros">
                             <div
                               class="title macrosArea d-flex pt-2"
@@ -1731,6 +1730,14 @@ export default {
     },
     hasItems(category = null, categoryId = null) {
       return this.$parent.hasItems(category, categoryId);
+    },
+    getHTMLItemDescription(description) {
+      if (description) {
+        return description.length > 150
+          ? description.substr(0, 150) + "..."
+          : description.substr(0, 150);
+      }
+      return null;
     }
   }
 };

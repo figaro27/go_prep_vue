@@ -2,7 +2,7 @@
   <div class="category-slider d-block d-md-none">
     <div class="text-center" v-if="showCategorySlider">
       <slick
-        v-if="categories.length > 4"
+        v-if="categories.length > 4 && store.id !== 106"
         :key="categories.length"
         ref="categorySlider"
         :options="{
