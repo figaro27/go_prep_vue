@@ -18,7 +18,7 @@
     >
       <i
         class="fas fa-times-circle pt-5"
-        style="font-size:35px"
+        style="font-size:40px"
         @click="mealPackageMealModal = false"
       ></i>
       <h4 class="center-text pt-3">{{ mealTitle }}</h4>
@@ -26,7 +26,7 @@
       <i
         v-if="mealDescription.length > 150"
         class="fas fa-times-circle pt-2 mb-3"
-        style="font-size:35px"
+        style="font-size:40px"
         @click="mealPackageMealModal = false"
       ></i>
     </b-modal>
@@ -596,7 +596,7 @@
                       v-for="mealOption in getTopLevel()"
                       :key="mealOption.meal_id"
                     >
-                      <div :class="includedItemClass">
+                      <div class="item-wrap">
                         <div class="title d-md-none center-text">
                           <div>
                             <p class="d-flex d-center strong mt-2">
@@ -647,7 +647,7 @@
                             :spinner="false"
                             class="menu-item-img"
                             width="100%"
-                            style="background-color:#ffffff"
+                            :style="includedItemClass"
                             @click="
                               showMealPackageMealModal(
                                 mealOption.description,
@@ -981,9 +981,9 @@ export default {
     },
     includedItemClass() {
       if (!this.mobile) {
-        return "item-wrap";
+        return "background-color:#ffffff";
       } else {
-        return "d-flex d-center";
+        return "background-color:#ffffff;position:relative;right:100px";
       }
     },
     mealPackageSizeOptions() {
