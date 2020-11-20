@@ -1812,29 +1812,39 @@ const actions = {
   },
 
   async refreshSMSMessages({ commit, state }, args = {}) {
+    state.isLoading = true;
     const res = await axios.get("/api/me/SMSMessages");
     const { data } = await res;
     commit("setSMSMessages", { messages: data });
+    state.isLoading = false;
   },
   async refreshSMSTemplates({ commit, state }, args = {}) {
+    state.isLoading = true;
     const res = await axios.get("/api/me/SMSTemplates");
     const { data } = await res;
     commit("setSMSTemplates", { templates: data });
+    state.isLoading = false;
   },
   async refreshSMSLists({ commit, state }, args = {}) {
+    state.isLoading = true;
     const res = await axios.get("/api/me/SMSLists");
     const { data } = await res;
     commit("setSMSLists", { lists: data });
+    state.isLoading = false;
   },
   async refreshSMSContacts({ commit, state }, args = {}) {
+    state.isLoading = true;
     const res = await axios.get("/api/me/SMSContacts");
     const { data } = await res;
     commit("setSMSContacts", { contacts: data });
+    state.isLoading = false;
   },
   async refreshSMSChats({ commit, state }, args = {}) {
+    state.isLoading = true;
     const res = await axios.get("/api/me/SMSChats");
     const { data } = await res;
     commit("setSMSChats", { chats: data });
+    state.isLoading = false;
   },
 
   async initStore({ commit, state, dispatch }, data = {}) {
@@ -2621,6 +2631,7 @@ const actions = {
   },
 
   async refreshStoreCustomers({ commit, state }, args = {}) {
+    state.isLoading = true;
     const res = await axios.get("/api/me/customers");
     const { data } = await res;
     const customers = data;
@@ -2630,6 +2641,7 @@ const actions = {
     } else {
       throw new Error("Failed to retrieve customers");
     }
+    state.isLoading = false;
   },
 
   async refreshStoreCustomersNoOrders({ commit, state }, args = {}) {
@@ -2645,6 +2657,7 @@ const actions = {
   },
 
   async refreshStoreLeads({ commit, state }, args = {}) {
+    state.isLoading = true;
     const res = await axios.get("/api/me/leads");
     const { data } = await res;
     const leads = data;
@@ -2654,6 +2667,7 @@ const actions = {
     } else {
       throw new Error("Failed to retrieve leads");
     }
+    state.isLoading = false;
   },
 
   async refreshStoreStaff({ commit, state }, args = {}) {
@@ -2727,6 +2741,7 @@ const actions = {
   },
 
   async refreshOrderIngredients({ commit, state }, args = {}) {
+    state.isLoading = true;
     const res = await axios.get("/api/me/orders/ingredients", {
       params: args
     });
@@ -2743,6 +2758,7 @@ const actions = {
     } else {
       throw new Error("Failed to retrieve order ingredients");
     }
+    state.isLoading = false;
   },
 
   async refreshIngredientUnits({ commit, state }, args = {}) {
