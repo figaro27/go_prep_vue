@@ -14,14 +14,21 @@
       hide-backdrop
       centered
       hide-header
+      hide-footer
     >
       <i
-        class="fas fa-times-circle float-right pt-3"
+        class="fas fa-times-circle pt-5"
         style="font-size:35px"
         @click="mealPackageMealModal = false"
       ></i>
       <h4 class="center-text pt-3">{{ mealTitle }}</h4>
       <p class="pt-2" v-html="mealDescription"></p>
+      <i
+        v-if="mealDescription.length > 150"
+        class="fas fa-times-circle pt-2 mb-3"
+        style="font-size:35px"
+        @click="mealPackageMealModal = false"
+      ></i>
     </b-modal>
     <!-- v-model="viewMealModal"
         v-if="viewMealModal"
@@ -166,6 +173,8 @@
                               <p class="d-flex d-center strong mt-3">
                                 {{ mealOption.title }}
                               </p>
+                              <!-- <p class="mt-3" v-html="mealOption.meal.description">
+                              </p> -->
                               <div
                                 class="d-flex d-center mt-1"
                                 v-if="
@@ -587,10 +596,10 @@
                       v-for="mealOption in getTopLevel()"
                       :key="mealOption.meal_id"
                     >
-                      <div class="item-wrap">
+                      <div :class="includedItemClass">
                         <div class="title d-md-none center-text">
                           <div>
-                            <p class="d-flex d-center strong">
+                            <p class="d-flex d-center strong mt-2">
                               {{ mealOption.title }}
                             </p>
                             <div
@@ -966,6 +975,17 @@ export default {
       menuSettings: "viewedStoreMenuSettings",
       context: "context"
     }),
+    mobile() {
+      if (window.innerWidth < 500) return true;
+      else return false;
+    },
+    includedItemClass() {
+      if (!this.mobile) {
+        return "item-wrap";
+      } else {
+        return "d-flex d-center";
+      }
+    },
     mealPackageSizeOptions() {
       let sizeTitles = this.mealPackage.sizesTitles.map(sizeTitle => {
         return { value: sizeTitle.id, text: sizeTitle.title };
