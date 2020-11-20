@@ -321,6 +321,17 @@ import DeliveryTemplate from "./Modals/DeliveryTemplate.vue";
 import SubscriptionTemplate from "./Modals/SubscriptionTemplate.vue";
 
 export default {
+  props: {
+    tabs: null
+  },
+  watch: {
+    tabs(val) {
+      if (val === 3 && !this.loaded) {
+        this.refreshSMSSettings();
+        this.loaded = true;
+      }
+    }
+  },
   components: {
     Spinner,
     vSelect,
@@ -333,6 +344,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      loaded: false,
       showActivateModal: false,
       reminderTemplateModal: false,
       orderConfirmationTemplateModal: false,

@@ -63,6 +63,17 @@ import store from "../../../store";
 import ViewChat from "./Modals/ViewChat.vue";
 
 export default {
+  props: {
+    tabs: null
+  },
+  watch: {
+    tabs(val) {
+      if (val === 1 && !this.loaded) {
+        this.refreshSMSChats();
+        this.loaded = true;
+      }
+    }
+  },
   components: {
     Spinner,
     vSelect,
@@ -71,6 +82,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      loaded: false,
       showViewChatModal: false,
       modalOpened: false,
       chat: null,

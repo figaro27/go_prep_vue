@@ -1803,7 +1803,7 @@ const actions = {
     });
   },
 
-  async initSMS({ commit, state, dispatch }, data = {}) {
+  async refreshSMS({ commit, state, dispatch }, data = {}) {
     dispatch("refreshSMSChats");
     dispatch("refreshSMSMessages");
     dispatch("refreshSMSTemplates");
@@ -1849,13 +1849,12 @@ const actions = {
 
     dispatch("refreshInactiveMeals"),
       dispatch("refreshStoreSubscriptions"),
-      dispatch("refreshStoreCustomers"),
-      dispatch("refreshStoreLeads"),
-      dispatch("refreshStoreStaff"),
-      dispatch("refreshOrderIngredients"),
-      dispatch("refreshIngredients");
-    dispatch("refreshStoreSubscriptions");
-    dispatch("initSMS");
+      // dispatch("refreshStoreCustomers"),
+      // dispatch("refreshStoreLeads"),
+      dispatch("refreshStoreStaff");
+    // dispatch("refreshOrderIngredients"),
+    // dispatch("refreshIngredients");
+    // dispatch("refreshSMS");
     // dispatch("refreshUpcomingOrders");
   },
 

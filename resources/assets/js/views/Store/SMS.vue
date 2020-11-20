@@ -3,12 +3,12 @@
     <div class="col-md-12">
       <Spinner v-if="isLoading" />
       <b-card no-body>
-        <b-tabs>
+        <b-tabs v-model="tabs">
           <b-tab title="Messages">
             <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
-            <messages></messages>
+            <messages :tabs="tabs"></messages>
           </b-tab>
           <b-tab title="Chats">
             <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
@@ -22,13 +22,13 @@
               >
               Chats
             </template> -->
-            <chats></chats>
+            <chats :tabs="tabs"></chats>
           </b-tab>
           <b-tab title="Contacts">
             <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
-            <contacts></contacts>
+            <contacts :tabs="tabs"></contacts>
           </b-tab>
           <!-- <b-tab title="Lists">
             <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
@@ -40,7 +40,7 @@
             <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
               {{ unreadSMSMessages }} {{ chatsText }}
             </div>
-            <settings></settings>
+            <settings :tabs="tabs"></settings>
           </b-tab>
         </b-tabs>
       </b-card>
@@ -74,11 +74,15 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      pageView: "chats"
+      pageView: "chats",
+      tabs: 0
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    // this.refreshSMS();
+    this.refreshSMSMessages();
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -107,7 +111,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      refreshSMS: "refreshSMS",
+      refreshSMSMessages: "refreshSMSMessages"
+    }),
     formatMoney: format.money,
     truncate(text, length, suffix) {
       if (text) {

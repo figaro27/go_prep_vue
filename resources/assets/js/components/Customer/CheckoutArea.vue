@@ -1140,7 +1140,7 @@
           </b-form-checkbox>
           <b-form-checkbox
             v-model="emailCustomer"
-            class="pb-2 mediumCheckbox mt-1 mb-1 pl-5"
+            class="pb-2 mediumCheckbox mt-1 mb-1"
           >
             Email Customer
           </b-form-checkbox>

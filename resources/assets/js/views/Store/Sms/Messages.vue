@@ -274,6 +274,16 @@ import ViewMessage from "./Modals/ViewMessage.vue";
 import Activate from "./Modals/Activate.vue";
 
 export default {
+  props: {
+    tabs: null
+  },
+  watch: {
+    tabs(val) {
+      if (val === 0 && !this.loaded) {
+        this.loaded = true;
+      }
+    }
+  },
   components: {
     Spinner,
     vSelect,
@@ -286,6 +296,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      loaded: false,
       showActivateModal: false,
       showNewSMSArea: false,
       showTagDropdown: false,

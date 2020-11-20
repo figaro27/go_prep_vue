@@ -226,12 +226,13 @@ export default {
       );
     }
   },
-  async created() {
+  created() {
     // Set initial weight unit to user default
     this.weightUnit = this.defaultWeightUnit || "oz";
-
-    await this.refreshIngredients();
-    await this.refreshIngredientUnits();
+  },
+  mounted() {
+    this.refreshIngredients();
+    this.refreshIngredientUnits();
     this.refreshOrderIngredients();
   },
   methods: {

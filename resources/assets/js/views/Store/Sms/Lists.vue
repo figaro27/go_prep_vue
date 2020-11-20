@@ -127,6 +127,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      loaded: false,
       columns: ["name", "membersCount", "actions"],
       showEditListModal: false,
       showCreateListModal: false,

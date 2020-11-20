@@ -572,9 +572,10 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.customers.length <= 1) {
-      this.refreshStoreCustomers();
-    }
+    this.refreshStoreCustomers();
+    // if (this.customers.length <= 1) {
+    //   this.refreshStoreCustomers();
+    // }
   },
   methods: {
     ...mapActions({

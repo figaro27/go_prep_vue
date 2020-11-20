@@ -126,6 +126,18 @@ import EditContact from "./Modals/EditContact.vue";
 import Lists from "./Lists.vue";
 
 export default {
+  props: {
+    tabs: null
+  },
+  watch: {
+    tabs(val) {
+      if (val === 2 && !this.loaded) {
+        this.refreshSMSContacts();
+        this.refreshSMSLists();
+        this.loaded = true;
+      }
+    }
+  },
   components: {
     Spinner,
     vSelect,
@@ -137,6 +149,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      loaded: false,
       page: "contacts",
       columns: ["firstName", "lastName", "phone", "actions"],
       showCreateContactModal: false,
@@ -166,7 +179,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      refreshSMSContacts: "refreshSMSContacts"
+      refreshSMSContacts: "refreshSMSContacts",
+      refreshSMSLists: "refreshSMSLists"
     }),
     formatMoney: format.money,
     refreshTable() {

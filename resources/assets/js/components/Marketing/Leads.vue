@@ -118,7 +118,9 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.refreshLeads();
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -131,7 +133,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      refreshLeads: "refreshStoreLeads"
+    }),
     formatMoney: format.money,
     exportData(report, format = "pdf", print = false) {
       axios
