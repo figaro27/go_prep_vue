@@ -17,8 +17,9 @@
         <div class="card-body p-lg-5">
           <b-alert variant="success" v-if="freeTrial && step === 0" show>
             <p class="center-text">
-              Thank you for trying GoPrep! Sign up below to get started with
-              your free two week trial.
+              Thank you for trying GoPrep! Enter your info below to get started
+              with your free two week trial. You'll be able to do everything a
+              paid user can do and you can cancel at any point.
             </p>
           </b-alert>
           <b-form @submit.prevent="submit" autocomplete="off" ref="form">
