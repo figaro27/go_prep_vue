@@ -2,7 +2,7 @@
   <div class="category-slider d-block d-md-none">
     <div class="text-center" v-if="showCategorySlider">
       <slick
-        v-if="categories.length > 4 || store.id == 106"
+        v-if="categories.length > 4 || categoriesCharacterCount > 30"
         :key="categories.length"
         ref="categorySlider"
         :options="{
@@ -79,6 +79,11 @@ export default {
       isLazy: "isLazy",
       mealMixItems: "mealMixItems"
     }),
+    categoriesCharacterCount() {
+      return this.categories.reduce((acc, category) => {
+        return acc + category.category.length;
+      }, 0);
+    },
     showCategorySlider() {
       let { finalCategories, isRunningLazy } = this.mealMixItems;
 

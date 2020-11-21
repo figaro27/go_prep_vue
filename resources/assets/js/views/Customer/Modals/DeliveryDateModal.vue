@@ -23,6 +23,7 @@
           v-model="date"
           :options="deliveryDateOptions"
           class="delivery-select ml-2 width-140"
+          style="font-size:16px"
           required
         >
           <option slot="top" disabled>-- Select delivery day --</option>
