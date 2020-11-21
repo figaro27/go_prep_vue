@@ -542,7 +542,8 @@
 
               <div
                 v-if="addon.selectable && addonSelected(addon.id)"
-                class="my-2 px-2 py-2 px-lg-3 py-lg-3 bg-light"
+                class="my-2 px-2 py-2 px-lg-3 py-lg-3"
+                :style="brandColor"
               >
                 <b-checkbox-group
                   class="meal-checkboxes"
@@ -1070,12 +1071,9 @@ export default {
       }
     },
     brandColor() {
-      console.log(1);
       if (this.store.settings) {
-        console.log(this.store.settings);
         let style = "background-color:";
         style += this.store.settings.color;
-        console.log(style);
         return style;
       }
     },
