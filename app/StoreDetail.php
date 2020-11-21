@@ -45,7 +45,7 @@ class StoreDetail extends Model implements HasMedia
             ->performOnCollections('logo');
 
         $this->addMediaConversion('thumb')
-            ->fit(Manipulations::FIT_MAX, 180, 180)
+            ->fit(Manipulations::FIT_MAX, 200, 200)
             ->performOnCollections('logo');
 
         $this->addMediaConversion('medium')
