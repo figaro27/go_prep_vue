@@ -78,7 +78,8 @@ export default {
             r: this.$route.query.r
           },
           params: {
-            checkoutData: this.checkoutData
+            checkoutData: this.checkoutData,
+            backFromBagPage: true
           }
         };
       } else if (this.$route.params.preview) return "/store/menu/preview";
