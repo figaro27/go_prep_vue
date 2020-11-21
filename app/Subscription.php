@@ -25,6 +25,8 @@ class Subscription extends Model
 {
     protected $preReductionTotal = 0;
 
+    protected $hidden = ['orders'];
+
     protected $fillable = [
         'status',
         'cancelled_at',
