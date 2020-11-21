@@ -1070,9 +1070,12 @@ export default {
       }
     },
     brandColor() {
+      console.lgo(1);
       if (this.store.settings) {
+        console.log(this.store.settings);
         let style = "background-color:";
         style += this.store.settings.color;
+        console.log(style);
         return style;
       }
     },
