@@ -825,10 +825,11 @@ class Subscription extends Model
             $this->update();
         }
 
+        // Maybe add option in the future on user checkout to continue applying accumulated points to subscription renewal or not
         if ($pointsRate > 0) {
             $customer = Customer::where('id', $this->customer_id)->first();
             $customer->points -= $this->pointsReduction * 100;
-            $customer->points += $this->afterDiscountBeforeFees * $pointsRate;
+            $customer->points += $this->preFeePreDiscount * $pointsRate;
             $customer->update();
         }
 
