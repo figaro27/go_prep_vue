@@ -1597,6 +1597,8 @@ class Meal extends Model implements HasMedia
                     return;
                 }
 
+                $price = $sub->price;
+
                 // Substitute size
                 if ($subscriptionMeal->meal_size_id) {
                     $subSizeId = $substituteMealSizes->get(
@@ -1611,9 +1613,8 @@ class Meal extends Model implements HasMedia
                     $subscriptionMeal->last_meal_size_id =
                         $subscriptionMeal->meal_size_id;
                     $subscriptionMeal->meal_size_id = $subSizeId;
+                    $price = $subSize->price;
                 }
-
-                $price = isset($subSize) ? $subSize->price : 0;
 
                 // Substitute components
                 foreach ($subscriptionMeal->components as $component) {
