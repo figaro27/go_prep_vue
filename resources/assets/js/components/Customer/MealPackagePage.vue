@@ -523,7 +523,7 @@
               <b-btn
                 @click="toggleAddon(addon.id)"
                 :style="brandColor"
-                style="color:#ffffff;width:140px;height:60px"
+                style="color:#ffffff;"
               >
                 <h5 class="pt-1">
                   {{ addon.title }}
