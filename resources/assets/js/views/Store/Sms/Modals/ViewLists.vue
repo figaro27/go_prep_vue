@@ -5,7 +5,7 @@
 
       <v-client-table
         :columns="columns"
-        :data="SMSLists"
+        :data="SMSListsTableData"
         :options="{
           orderBy: {
             column: 'id',
@@ -85,7 +85,10 @@ export default {
       initialized: "initialized",
       customers: "storeCustomers",
       SMSLists: "SMSLists"
-    })
+    }),
+    SMSListsTableData() {
+      return this.SMSLists ? Object.values(this.SMSLists) : [];
+    }
   },
   methods: {
     ...mapActions({}),

@@ -4,7 +4,7 @@
       <Spinner v-if="isLoading" />
       <v-client-table
         :columns="columns"
-        :data="SMSTemplates"
+        :data="SMSTemplateTableData"
         :options="{
           orderBy: {
             column: 'id',
@@ -142,6 +142,9 @@ export default {
       initialized: "initialized",
       SMSTemplates: "SMSTemplates"
     }),
+    SMSTemplateTableData() {
+      return this.SMSTemplates ? Object.values(this.SMSTemplates) : [];
+    },
     tags() {
       return ["First name", "Last name", "Phone", "Email", "Unsubscribe"];
     }

@@ -70,9 +70,7 @@
         <view-message :messageId="messageId" :text="text"></view-message>
       </b-modal>
 
-      <b-btn variant="success" @click="showNewSMSArea = !showNewSMSArea"
-        >Compose New SMS</b-btn
-      >
+      <b-btn variant="success" @click="composeSMS">Compose New SMS</b-btn>
 
       <div class="newSMSArea mt-4" v-if="showNewSMSArea">
         <div>
@@ -373,7 +371,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      refreshSMSMessages: "refreshSMSMessages"
+      refreshSMSMessages: "refreshSMSMessages",
+      refreshSMSContacts: "refreshSMSContacts",
+      refreshSMSLists: "refreshSMSLists"
     }),
     formatMoney: format.money,
     truncate(text, length, suffix) {
@@ -476,6 +476,11 @@ export default {
     },
     removePhone(phone) {
       this.phones.pop(phone);
+    },
+    composeSMS() {
+      this.showNewSMSArea = !this.showNewSMSArea;
+      this.refreshSMSContacts();
+      this.refreshSMSLists();
     }
   }
 };

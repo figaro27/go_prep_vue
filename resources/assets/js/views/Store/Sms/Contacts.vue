@@ -132,8 +132,10 @@ export default {
   watch: {
     tabs(val) {
       if (val === 2 && !this.loaded) {
-        this.refreshSMSContacts();
-        this.refreshSMSLists();
+        if (Object.keys(this.SMSContacts).length === 0) {
+          this.refreshSMSContacts();
+          this.refreshSMSLists();
+        }
         this.loaded = true;
       }
     }
