@@ -949,6 +949,9 @@ export default {
       mealPackageMealModal: false
     };
   },
+  destroyed() {
+    this.addonAdded = {};
+  },
   updated() {
     let url = new URL(window.location.href);
 
