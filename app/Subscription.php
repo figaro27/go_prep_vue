@@ -882,7 +882,7 @@ class Subscription extends Model
      *
      * @return void
      */
-    public function syncPrices($mealsReplaced = true)
+    public function syncPrices($mealsReplaced = false)
     {
         if (!$this->cashOrder) {
             try {

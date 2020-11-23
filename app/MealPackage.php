@@ -775,7 +775,7 @@ class MealPackage extends Model implements HasMedia
                         $subscriptionMeal->save();
                     }
                 }
-                $subscriptionMeal->subscription->syncPrices();
+                $subscriptionMeal->subscription->syncPrices(true);
 
                 $user = $subscriptionMeal->subscription->user;
 

@@ -1758,10 +1758,10 @@ class Meal extends Model implements HasMedia
                     $existingSubscriptionMeal->price = $unitPrice * $quantity;
                     $existingSubscriptionMeal->update();
                     $subscriptionMeal->delete();
-                    $existingSubscriptionMeal->subscription->syncPrices();
+                    $existingSubscriptionMeal->subscription->syncPrices(true);
                 } else {
                     $subscriptionMeal->save();
-                    $subscriptionMeal->fresh()->subscription->syncPrices();
+                    $subscriptionMeal->fresh()->subscription->syncPrices(true);
                 }
 
                 // try {
