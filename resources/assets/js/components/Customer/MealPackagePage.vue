@@ -524,7 +524,20 @@
                 @click="toggleAddon(addon.id)"
                 class="addonButton"
                 style="color:#ffffff;"
-                :disabled="addonAdded[addon.id] === true"
+                v-if="!addonAdded[addon.id]"
+              >
+                <h5 class="pt-1">
+                  {{ addon.title }}
+                  <p class="small pt-1" v-if="addon.price > 0">
+                    +{{ format.money(addon.price, storeSettings.currency) }}
+                  </p>
+                </h5>
+              </b-btn>
+
+              <b-btn
+                @click="toggleAddon(addon.id)"
+                style="background-color:#DADEE1;color:#ffffff;border:none"
+                v-if="addonAdded[addon.id]"
               >
                 <h5 class="pt-1">
                   {{ addon.title }}
@@ -1721,8 +1734,13 @@ export default {
         this.$delete(this.addons, addonId);
       }
       if (addon.selectable == 0) {
-        this.$toastr.s("Addon applied successfully.");
-        this.$set(this.addonAdded, addonId, true);
+        if (!this.addonAdded[addonId]) {
+          this.$toastr.s("Addon applied.");
+          this.$set(this.addonAdded, addonId, true);
+        } else {
+          this.$toastr.s("Addon removed.");
+          this.$set(this.addonAdded, addonId, false);
+        }
       }
     },
     getOptionChoiceQuantity(componentId, optionId, mealId) {
