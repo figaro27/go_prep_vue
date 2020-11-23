@@ -315,16 +315,16 @@
               <div class="col-md-6">
                 <button
                   @click="print('order_labels', 'pdf')"
-                  class="btn btn-secondary btn-md mt-2"
-                >
-                  Preview
-                </button>
-                <button
-                  @click="print('order_labels', 'b64')"
                   class="btn btn-primary btn-md mt-2"
                 >
                   Print
                 </button>
+                <!-- <button
+                  @click="print('order_labels', 'b64')"
+                  class="btn btn-primary btn-md mt-2"
+                >
+                  Print
+                </button> -->
               </div>
             </div>
           </div>
