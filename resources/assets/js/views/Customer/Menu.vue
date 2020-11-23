@@ -1801,7 +1801,7 @@ export default {
           scrollToCategory(categoryTarget, speed);
         });
       }
-      // this.$router.push(this.$route.path);
+      this.$router.push(this.$route.path);
     },
     backFromPackagePage() {
       this.$refs.mealPackagePage.back();
