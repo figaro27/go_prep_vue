@@ -658,17 +658,21 @@ const mutations = {
       } else {
         _.forEach(item.addons, (choices, addonId) => {
           let addon = _.find(item.meal.addons, { id: parseInt(addonId) });
-          // Add base addon price * choices selected
-          if (addon.price) {
-            price += addon ? addon.price * Math.max(1, choices.length) : 0;
-          }
-
-          // Add addon choice prices
-          _.forEach(choices, choice => {
-            if (choice.price) {
-              price += choice ? choice.price : 0;
+          if (addon.selectable === 0) {
+            price += addon ? addon.price : 0;
+          } else {
+            // Add base addon price * choices selected
+            if (addon.price) {
+              price += addon ? addon.price * Math.max(1, choices.length) : 0;
             }
-          });
+
+            // Add addon choice prices
+            _.forEach(choices, choice => {
+              if (choice.price) {
+                price += choice ? choice.price : 0;
+              }
+            });
+          }
         });
       }
     } // End IF
