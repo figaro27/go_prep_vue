@@ -544,7 +544,7 @@
               <div
                 v-if="addon.selectable && addonSelected(addon.id)"
                 class="my-2 px-2 py-2 px-lg-3 py-lg-3"
-                :style="brandColor"
+                style="background-color:#DADEE1"
               >
                 <b-checkbox-group
                   class="meal-checkboxes"
@@ -949,9 +949,6 @@ export default {
       mealPackageMealModal: false
     };
   },
-  destroyed() {
-    this.addonAdded = {};
-  },
   updated() {
     let url = new URL(window.location.href);
 
@@ -1214,6 +1211,7 @@ export default {
       this.$parent.showMealsArea = true;
       this.$parent.showMealPackagesArea = true;
       this.$parent.mealPackagePageView = false;
+      this.addonAdded = {};
       this.$parent.finalCategoriesSub = [];
       this.$parent.backToMenu("categorySection_" + this.$parent.activeCatId, 0);
     },
