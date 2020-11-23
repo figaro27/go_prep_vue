@@ -522,8 +522,9 @@
             <div v-for="addon in mealAddons" :key="addon.id" class="col-md-3">
               <b-btn
                 @click="toggleAddon(addon.id)"
-                :style="brandColor"
+                class="addonButton"
                 style="color:#ffffff;"
+                :disabled="addonAdded[addon.id] === true"
               >
                 <h5 class="pt-1">
                   {{ addon.title }}
@@ -921,6 +922,10 @@
       </button>
     </div> -->
     <!-- Content End !-->
+    <v-style>
+      .addonButton { background: {{ brandColor }}
+      };
+    </v-style>
   </div>
 </template>
 <script>
@@ -933,6 +938,7 @@ import store from "../../store";
 export default {
   data() {
     return {
+      addonAdded: {},
       defaultSizeSelected: false,
       selectedSizeId: null,
       choices: {},
@@ -1071,11 +1077,7 @@ export default {
       }
     },
     brandColor() {
-      if (this.store.settings) {
-        let style = "background-color:";
-        style += this.store.settings.color;
-        return style;
-      }
+      return this.store.settings.color;
     },
     mealPackageDescription() {
       return this.mealPackage.description.replace(/(\r\n|\n|\r)/gm, "<br />");
@@ -1714,6 +1716,8 @@ export default {
       } else {
         this.$delete(this.addons, addonId);
       }
+      this.$toastr.s("Addon applied successfully.");
+      this.$set(this.addonAdded, addonId, true);
     },
     getOptionChoiceQuantity(componentId, optionId, mealId) {
       return this.optionSelected(componentId, optionId)
