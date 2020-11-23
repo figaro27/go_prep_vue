@@ -1720,8 +1720,10 @@ export default {
       } else {
         this.$delete(this.addons, addonId);
       }
-      this.$toastr.s("Addon applied successfully.");
-      this.$set(this.addonAdded, addonId, true);
+      if (addon.selectable == 0) {
+        this.$toastr.s("Addon applied successfully.");
+        this.$set(this.addonAdded, addonId, true);
+      }
     },
     getOptionChoiceQuantity(componentId, optionId, mealId) {
       return this.optionSelected(componentId, optionId)
