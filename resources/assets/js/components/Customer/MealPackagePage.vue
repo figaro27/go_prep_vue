@@ -923,7 +923,7 @@
     </div> -->
     <!-- Content End !-->
     <v-style>
-      .addonButton { background: {{ brandColor }}
+      .addonButton { background: {{ brandColorCode }}
       };
     </v-style>
   </div>
@@ -1077,6 +1077,9 @@ export default {
       }
     },
     brandColor() {
+      return "background-color:" + this.store.settings.color;
+    },
+    brandColorCode() {
       return this.store.settings.color;
     },
     mealPackageDescription() {
