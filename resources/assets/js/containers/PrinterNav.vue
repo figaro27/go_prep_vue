@@ -97,7 +97,7 @@ export default {
   },
   mixins: [printer],
   async mounted() {
-    await this.printerConnect();
+    // await this.printerConnect();
   },
   computed: {
     ...mapGetters(["viewedStore"]),
