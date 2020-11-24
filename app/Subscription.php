@@ -248,7 +248,9 @@ class Subscription extends Model
             if ($date->isFuture()) {
                 return $date;
             }
-            return $date->addWeek();
+            return $this->interval == 'week'
+                ? $date->addWeeks(1)
+                : $date->addWeeks(4);
         }
 
         // Catch all
