@@ -27,7 +27,6 @@ class Customer extends Model
     protected $appends = [
         'joined',
         'added_by_store_id',
-        'first_order',
         'last_order',
         'total_payments',
         'total_paid',
@@ -65,15 +64,6 @@ class Customer extends Model
             ->orderBy('created_at', 'desc');
     }
 
-    public function getStoreID()
-    {
-        $id = Auth::user()->id;
-        $storeID = Store::where('user_id', $id)
-            ->pluck('id')
-            ->first();
-        return $storeID;
-    }
-
     public function getEmailAttribute()
     {
         return $this->user->email;
@@ -89,21 +79,10 @@ class Customer extends Model
         return $this->user->created_at->format('m/d/Y');
     }
 
-    public function getFirstOrderAttribute()
-    {
-        if (count($this->user->order) === 0) {
-            return $this->user->created_at->format('m/d/Y');
-        }
-        $date = $this->user->order
-            ->where('store_id', $this->getStoreID())
-            ->min("created_at");
-        return $date ? $date->format('F d, Y') : null;
-    }
-
     public function getLastOrderAttribute()
     {
         $date = $this->user->order
-            ->where('store_id', $this->getStoreID())
+            ->where('store_id', $this->store_id)
             ->max("created_at");
         return $date ? $date->format('m/d/Y') : null;
     }
@@ -111,7 +90,7 @@ class Customer extends Model
     public function getTotalPaymentsAttribute()
     {
         return $this->user->order
-            ->where('store_id', $this->getStoreID())
+            ->where('store_id', $this->store_id)
             ->where('paid', 1)
             ->count();
     }
@@ -119,7 +98,7 @@ class Customer extends Model
     public function getTotalPaidAttribute()
     {
         return $this->user->order
-            ->where('store_id', $this->getStoreID())
+            ->where('store_id', $this->store_id)
             ->where('paid', 1)
             ->sum("amount");
     }
