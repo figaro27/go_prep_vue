@@ -42,6 +42,7 @@ class SubscriptionController extends StoreController
             'latest_order',
             'latest_paid_order',
             'latest_unpaid_order',
+            'next_order',
             'meal_ids',
             'meal_quantities',
             'store',
