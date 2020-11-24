@@ -69,6 +69,15 @@ return [
         ],
         'myquickstartup.com' => [
             'front_url' => 'https://test.myquickstartup.com/customer/menu'
+        ],
+        'letscook.ca' => [
+            'front_url' => 'http://order.letscook.ca/customer/menu'
+        ],
+        'lachefs.ca' => [
+            'front_url' => 'http://order.lachefs.ca/customer/menu'
+        ],
+        'uptownchefs.ca' => [
+            'front_url' => 'http://order.uptownchefs.ca/customer/menu'
         ]
     ],
 
