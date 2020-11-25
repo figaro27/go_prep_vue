@@ -1108,7 +1108,8 @@ class Subscription extends Model
                             'plan' => $plan->id
                         ]
                     ],
-                    'prorate' => false
+                    'prorate' => false,
+                    'billing_cycle_anchor' => 'unchanged'
                 ],
                 ['stripe_account' => $this->store->settings->stripe_id]
             );
@@ -1456,7 +1457,8 @@ class Subscription extends Model
                     [
                         'pause_collection' => [
                             'behavior' => 'void'
-                        ]
+                        ],
+                        'billing_cycle_anchor' => 'unchanged'
                     ],
                     [
                         'stripe_account' => $this->store->settings->stripe_id
@@ -1517,7 +1519,8 @@ class Subscription extends Model
                 $subscription = \Stripe\Subscription::update(
                     'sub_' . $this->stripe_id,
                     [
-                        'pause_collection' => ''
+                        'pause_collection' => '',
+                        'billing_cycle_anchor' => 'unchanged'
                     ],
                     [
                         'stripe_account' => $this->store->settings->stripe_id

@@ -386,7 +386,8 @@ class SubscriptionController extends UserController
                                 'plan' => $plan->id
                             ]
                         ],
-                        'prorate' => false
+                        'prorate' => false,
+                        'billing_cycle_anchor' => 'unchanged'
                     ],
                     ['stripe_account' => $store->settings->stripe_id]
                 );
