@@ -135,6 +135,10 @@ class CouponController extends StoreController
             $coupon->referral_user_id = $request->get('referral_user_id');
         }
         $coupon->update();
+
+        if (!$coupon->active) {
+            $this->updateSubscriptions($coupon);
+        }
     }
 
     /**
@@ -147,5 +151,14 @@ class CouponController extends StoreController
     {
         $coupon = $this->store->coupons()->findOrFail($id);
         $coupon->delete();
+        $this->updateSubscriptions($coupon);
+    }
+
+    public function updateSubscriptions($coupon)
+    {
+        $subscriptions = Subscription::where('coupon_id', $coupon->id)->get();
+        foreach ($subscriptions as $subscription) {
+            $subscription->syncPrices();
+        }
     }
 }
