@@ -76,8 +76,8 @@ return [
         'lachefs.ca' => [
             'front_url' => 'http://order.lachefs.ca/customer/menu'
         ],
-        'uptownchefs.ca' => [
-            'front_url' => 'http://order.uptownchefs.ca/customer/menu'
+        'uptownchefs.com' => [
+            'front_url' => 'http://order.uptownchefs.com/customer/menu'
         ]
     ],
 
