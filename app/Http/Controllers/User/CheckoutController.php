@@ -46,6 +46,7 @@ use Exception;
 use App\Traits\DeliveryDates;
 use App\SmsSetting;
 use App\Billing\Exceptions\BillingException;
+use App\Error;
 
 class CheckoutController extends UserController
 {
@@ -1555,6 +1556,13 @@ class CheckoutController extends UserController
                 $smsSetting->sendOrderConfirmationSMS($customer, $order);
             }
         } catch (\Exception $e) {
+            $error = new Error();
+            $error->store_id = 1;
+            $error->user_id = 1;
+            $error->type = 'Checkout';
+            $error->error = $e->getMessage();
+            $error->save();
+
             return response()->json(
                 [
                     'message' => $e->getMessage()

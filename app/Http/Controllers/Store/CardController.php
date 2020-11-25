@@ -10,6 +10,7 @@ use App\User;
 use App\Card;
 use App\Billing\Authorize;
 use App\Subscription;
+use App\Error;
 
 class CardController extends StoreController
 {
@@ -75,6 +76,20 @@ class CardController extends StoreController
                     $user->createCard($token);
                 }
             } catch (\Stripe\Error\Card $e) {
+                $declineCode = isset($e->jsonBody['error']['decline_code'])
+                    ? $e->jsonBody['error']['decline_code']
+                    : $e->jsonBody['error']['code'];
+                $error = new Error();
+                $error->store_id = $this->store->id;
+                $error->user_id = $user->id;
+                $error->type = 'Adding Card';
+                $error->error =
+                    trim(json_encode($e->jsonBody['error']['message']), '"') .
+                    ' Decline Code: "' .
+                    $declineCode .
+                    '"';
+                $error->save();
+
                 return response()->json(
                     [
                         'error' => trim(

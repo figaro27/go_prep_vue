@@ -21,6 +21,7 @@ use App\MealPackageSubscription;
 use App\MealPackageOrder;
 use App\Subscription;
 use App\PurchasedGiftCard;
+use App\Error;
 
 class SubscriptionController extends StoreController
 {
@@ -752,6 +753,12 @@ class SubscriptionController extends StoreController
                 $purchasedGiftCard->update();
             }
         } catch (\Exception $e) {
+            $error = new Error();
+            $error->store_id = $store->id;
+            $error->user_id = $this->user->id;
+            $error->type = 'Updating Subscription';
+            $error->error = $e->getMessage();
+            $error->save();
             return response()->json(
                 [
                     'message' => $e->getMessage()

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Store;
 use App\Subscription;
 use App\Card;
+use App\Error;
 
 class CardController extends UserController
 {
@@ -89,6 +90,20 @@ class CardController extends UserController
                     $this->user->createCard($token);
                 }
             } catch (\Stripe\Error\Card $e) {
+                $declineCode = isset($e->jsonBody['error']['decline_code'])
+                    ? $e->jsonBody['error']['decline_code']
+                    : $e->jsonBody['error']['code'];
+                $error = new Error();
+                $error->store_id = $this->user->last_viewed_store_id;
+                $error->user_id = $this->user->id;
+                $error->type = 'Adding Card';
+                $error->error =
+                    trim(json_encode($e->jsonBody['error']['message']), '"') .
+                    ' Decline Code: "' .
+                    $declineCode .
+                    '"';
+                $error->save();
+
                 return response()->json(
                     [
                         'error' => trim(

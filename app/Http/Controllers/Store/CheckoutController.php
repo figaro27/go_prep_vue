@@ -45,6 +45,7 @@ use DB;
 use App\Traits\DeliveryDates;
 use App\Referral;
 use App\SmsSetting;
+use App\Error;
 
 class CheckoutController extends StoreController
 {
@@ -1499,6 +1500,13 @@ class CheckoutController extends StoreController
 
             return $orderId;
         } catch (\Exception $e) {
+            $error = new Error();
+            $error->store_id = $store->id;
+            $error->user_id = $user->id;
+            $error->type = 'Checkout';
+            $error->error = $e->getMessage();
+            $error->save();
+
             return response()->json(
                 [
                     'message' => $e->getMessage()
