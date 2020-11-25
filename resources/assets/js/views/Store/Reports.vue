@@ -402,10 +402,10 @@
           adjust the dimensions & margins below to see if it prints correctly
           for you. You can also try adjusting Printer Preferences on your
           computer. Try not to check all the boxes below as not everything can
-          fit on the label. Utilize the Preview Label button to check.
+          fit on the label.
         </p>
       </b-alert>
-      <b-alert variant="info" show>
+      <!-- <b-alert variant="info" show>
         <h6 class="center-text">Setup Instructions</h6>
         <p>
           #1
@@ -439,7 +439,7 @@
           #5 Click the "Preview" button to see if the labels are coming out
           correctly. Test on a single order first on the orders page.
         </p>
-      </b-alert>
+      </b-alert> -->
       <div class="row">
         <div class="col-md-4">
           <p class="strong">Show the Following on the Label</p>
