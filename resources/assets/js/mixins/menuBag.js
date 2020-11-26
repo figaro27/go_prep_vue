@@ -804,40 +804,56 @@ export default {
       let cont = true;
       this.mealMixItems.finalCategories.forEach(category => {
         if (category.minimumType === "price" && cont) {
-          let bagCategoryPrice = 0;
-          this.bag.forEach(item => {
-            if (item.meal.category_id === category.id) {
-              bagCategoryPrice += item.price * item.quantity;
+          if (
+            !category.minimumOnlyIfCategoryAdded ||
+            (category.minimumOnlyIfCategoryAdded &&
+              this.bag.some(item => {
+                return item.meal.category_id === category.id;
+              }))
+          ) {
+            let bagCategoryPrice = 0;
+            this.bag.forEach(item => {
+              if (item.meal.category_id === category.id) {
+                bagCategoryPrice += item.price * item.quantity;
+              }
+            });
+            if (bagCategoryPrice < category.minimum) {
+              message =
+                "Please add " +
+                format.money(
+                  category.minimum - bagCategoryPrice,
+                  this.storeSettings.currency
+                ) +
+                " more to the " +
+                category.category +
+                " category";
+              cont = false;
             }
-          });
-          if (bagCategoryPrice < category.minimum) {
-            message =
-              "Please add " +
-              format.money(
-                category.minimum - bagCategoryPrice,
-                this.storeSettings.currency
-              ) +
-              " more to the " +
-              category.category +
-              " category";
-            cont = false;
           }
         }
         if (category.minimumType === "items" && cont) {
-          let bagCategoryQuantity = 0;
-          this.bag.forEach(item => {
-            if (item.meal.category_id === category.id) {
-              bagCategoryQuantity += item.quantity;
+          if (
+            !category.minimumOnlyIfCategoryAdded ||
+            (category.minimumOnlyIfCategoryAdded &&
+              this.bag.some(item => {
+                return item.meal.category_id === category.id;
+              }))
+          ) {
+            let bagCategoryQuantity = 0;
+            this.bag.forEach(item => {
+              if (item.meal.category_id === category.id) {
+                bagCategoryQuantity += item.quantity;
+              }
+            });
+            if (bagCategoryQuantity < category.minimum) {
+              message =
+                "Please add " +
+                (category.minimum - bagCategoryQuantity) +
+                " more items to the " +
+                category.category +
+                " category";
+              cont = false;
             }
-          });
-          if (bagCategoryQuantity < category.minimum) {
-            message =
-              "Please add " +
-              (category.minimum - bagCategoryQuantity) +
-              " more items to the " +
-              category.category +
-              " category";
-            cont = false;
           }
         }
       });
