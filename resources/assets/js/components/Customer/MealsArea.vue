@@ -203,13 +203,18 @@
             v-if="getCategoryMinimum(group) > 0 && context !== 'store'"
             class="text-center"
           >
-            <span v-if="group.minimumType === 'price'"
-              >{{
-                format.money(getCategoryMinimum(group), storeSettings.currency)
-              }}
-              Remaining</span
-            >
-            <span v-else>{{ getCategoryMinimum(group) }} Remaining</span>
+            <div v-if="minimumOnlyIfCategoryAdded(group)">
+              <span v-if="group.minimumType === 'price'"
+                >{{
+                  format.money(
+                    getCategoryMinimum(group),
+                    storeSettings.currency
+                  )
+                }}
+                Remaining</span
+              >
+              <span v-else>{{ getCategoryMinimum(group) }} Remaining</span>
+            </div>
           </h6>
           <div class="row">
             <div
@@ -1738,6 +1743,17 @@ export default {
           : description.substr(0, 150);
       }
       return null;
+    },
+    minimumOnlyIfCategoryAdded(group) {
+      if (
+        !group.minimumOnlyIfCategoryAdded ||
+        (group.minimumOnlyIfCategoryAdded &&
+          this.bag.some(item => {
+            return item.meal.category_id === group.category_id;
+          }))
+      ) {
+        return true;
+      }
     }
   }
 };

@@ -736,24 +736,40 @@ export default {
       this.mealMixItems.finalCategories.forEach(category => {
         if (category.minimumType === "price") {
           let bagCategoryPrice = 0;
-          this.bag.forEach(item => {
-            if (item.meal.category_id === category.id) {
-              bagCategoryPrice += item.price * item.quantity;
+          if (
+            !category.minimumOnlyIfCategoryAdded ||
+            (category.minimumOnlyIfCategoryAdded &&
+              this.bag.some(item => {
+                return item.meal.category_id === category.id;
+              }))
+          ) {
+            this.bag.forEach(item => {
+              if (item.meal.category_id === category.id) {
+                bagCategoryPrice += item.price * item.quantity;
+              }
+            });
+            if (bagCategoryPrice < category.minimum) {
+              passed = false;
             }
-          });
-          if (bagCategoryPrice < category.minimum) {
-            passed = false;
           }
         }
         if (category.minimumType === "items") {
           let bagCategoryQuantity = 0;
-          this.bag.forEach(item => {
-            if (item.meal.category_id === category.id) {
-              bagCategoryQuantity += item.quantity;
+          if (
+            !category.minimumOnlyIfCategoryAdded ||
+            (category.minimumOnlyIfCategoryAdded &&
+              this.bag.some(item => {
+                return item.meal.category_id === category.id;
+              }))
+          ) {
+            this.bag.forEach(item => {
+              if (item.meal.category_id === category.id) {
+                bagCategoryQuantity += item.quantity;
+              }
+            });
+            if (bagCategoryQuantity < category.minimum) {
+              passed = false;
             }
-          });
-          if (bagCategoryQuantity < category.minimum) {
-            passed = false;
           }
         }
       });

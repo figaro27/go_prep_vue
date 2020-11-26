@@ -1397,7 +1397,8 @@ const triggerLazy = (
               date_range_exclusive_from,
               date_range_exclusive_to,
               minimumType,
-              minimum
+              minimum,
+              minimumOnlyIfCategoryAdded
             } = finalCategories[i];
             const itemData = {
               category: category,
@@ -1412,7 +1413,8 @@ const triggerLazy = (
               date_range_exclusive_from,
               date_range_exclusive_to,
               minimumType,
-              minimum
+              minimum,
+              minimumOnlyIfCategoryAdded
             };
             items.push(itemData);
           }
