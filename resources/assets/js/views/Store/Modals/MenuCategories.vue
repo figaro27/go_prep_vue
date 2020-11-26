@@ -87,6 +87,23 @@
                       class="w-80px"
                     ></b-form-input>
                   </div>
+                  <div
+                    class="d-flex d-inline"
+                    v-if="editing.minimumType !== null"
+                  >
+                    <p class="mr-2">Minimum Only If Added</p>
+                    <b-form-checkbox
+                      v-model="editing.minimumIfAdded"
+                    ></b-form-checkbox>
+                    <img
+                      v-b-popover.hover="
+                        'Apply the minimum rules to the category only if at least one item from the category is added to the bag.'
+                      "
+                      title="Minimum Only If Added"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </div>
                   <div class="d-flex d-inline">
                     <p class="mr-2">Active for Customers</p>
                     <b-form-checkbox

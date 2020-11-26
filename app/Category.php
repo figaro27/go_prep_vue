@@ -23,7 +23,7 @@ class Category extends Model
         'date_range_exclusive' => 'boolean',
         'active' => 'boolean',
         'activeForStore' => 'boolean',
-        'minimumOnlyIfCategoryAdded' => 'boolean'
+        'minimumIfAdded' => 'boolean'
     ];
 
     public function store()

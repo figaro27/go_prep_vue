@@ -737,8 +737,8 @@ export default {
         if (category.minimumType === "price") {
           let bagCategoryPrice = 0;
           if (
-            !category.minimumOnlyIfCategoryAdded ||
-            (category.minimumOnlyIfCategoryAdded &&
+            !category.minimumIfAdded ||
+            (category.minimumIfAdded &&
               this.bag.some(item => {
                 return item.meal.category_id === category.id;
               }))
@@ -756,8 +756,8 @@ export default {
         if (category.minimumType === "items") {
           let bagCategoryQuantity = 0;
           if (
-            !category.minimumOnlyIfCategoryAdded ||
-            (category.minimumOnlyIfCategoryAdded &&
+            !category.minimumIfAdded ||
+            (category.minimumIfAdded &&
               this.bag.some(item => {
                 return item.meal.category_id === category.id;
               }))
@@ -805,8 +805,8 @@ export default {
       this.mealMixItems.finalCategories.forEach(category => {
         if (category.minimumType === "price" && cont) {
           if (
-            !category.minimumOnlyIfCategoryAdded ||
-            (category.minimumOnlyIfCategoryAdded &&
+            !category.minimumIfAdded ||
+            (category.minimumIfAdded &&
               this.bag.some(item => {
                 return item.meal.category_id === category.id;
               }))
@@ -833,8 +833,8 @@ export default {
         }
         if (category.minimumType === "items" && cont) {
           if (
-            !category.minimumOnlyIfCategoryAdded ||
-            (category.minimumOnlyIfCategoryAdded &&
+            !category.minimumIfAdded ||
+            (category.minimumIfAdded &&
               this.bag.some(item => {
                 return item.meal.category_id === category.id;
               }))
