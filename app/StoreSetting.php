@@ -343,7 +343,8 @@ class StoreSetting extends Model
                 'cutoff' => $cutoff->toDateTimeString(),
                 'cutoff_passed' => $cutoff->isPast(),
                 'week_index' => (int) $date->format('w'),
-                'day_friendly' => $date->format('Y-m-d')
+                'day_friendly' => $date->format('Y-m-d'),
+                'type' => 'delivery'
             ];
         });
     }
@@ -366,7 +367,8 @@ class StoreSetting extends Model
                     'cutoff' => $cutoff->toDateTimeString(),
                     'cutoff_passed' => $cutoff->isPast(),
                     'week_index' => (int) $date->format('w'),
-                    'day_friendly' => $date->format('Y-m-d')
+                    'day_friendly' => $date->format('Y-m-d'),
+                    'type' => 'pickup'
                 ];
             }
         );

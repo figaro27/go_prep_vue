@@ -73,7 +73,10 @@ class DeliveryDay extends Model
     {
         $nextDate = '';
         foreach ($this->next_orderable_dates() as $date) {
-            if ($date['week_index'] == $this->day) {
+            if (
+                $date['week_index'] == $this->day &&
+                $date['type'] == $this->type
+            ) {
                 $nextDate = $date['day_friendly'];
             }
         }
