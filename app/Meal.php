@@ -1744,6 +1744,7 @@ class Meal extends Model implements HasMedia
 
                 $existingSubscriptionMeal = MealSubscription::where([
                     ['meal_id', $subId],
+                    ['delivery_date', $subscriptionMeal->delivery_date],
                     ['subscription_id', $subscriptionMeal->subscription_id]
                 ])->first();
 
@@ -1756,6 +1757,8 @@ class Meal extends Model implements HasMedia
                         $existingSubscriptionMeal->quantity;
                     $existingSubscriptionMeal->quantity = $quantity;
                     $existingSubscriptionMeal->price = $unitPrice * $quantity;
+                    $existingSubscriptionMeal->delivery_date =
+                        $subscriptionMeal->delivery_date;
                     $existingSubscriptionMeal->update();
                     $subscriptionMeal->delete();
                     $existingSubscriptionMeal->subscription->syncPrices(true);

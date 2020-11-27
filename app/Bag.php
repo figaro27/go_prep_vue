@@ -87,6 +87,10 @@ class Bag
                     isset($item['delivery_day']) && $item['delivery_day']
                         ? $item['delivery_day']
                         : null,
+                'delivery_date' =>
+                    isset($item['delivery_date']) && $item['delivery_date']
+                        ? $item['delivery_date']
+                        : null,
                 'guid' => isset($item['guid']) ? $item['guid'] : null
             ])
         );

@@ -926,7 +926,8 @@ class Subscription extends Model
                 return [
                     'quantity' => $meal->quantity,
                     'meal' => $meal->meal,
-                    'price' => $price
+                    'price' => $price,
+                    'delivery_date' => $meal->delivery_date
                 ];
             }
         });
