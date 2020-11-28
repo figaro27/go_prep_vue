@@ -21,11 +21,11 @@
           filterable: false
         }"
       >
-        <div slot="purchased_by" slot-scope="props">
+        <!-- <div slot="purchased_by" slot-scope="props">
           <p>
             {{ getPurchasedByUser(props.row.user_id) }}
           </p>
-        </div>
+        </div> -->
         <div slot="created_at" slot-scope="props">
           <p>
             {{ moment(props.row.created_at).format("dddd MMM Do") }}
@@ -80,18 +80,18 @@ export default {
   },
   methods: {
     ...mapActions({}),
-    formatMoney: format.money,
-    getPurchasedByUser(userId) {
-      let user =
-        this.customers.length > 0
-          ? this.customers.find(customer => {
-              return customer.user_id === userId;
-            })
-          : null;
-      if (user) {
-        return user.firstname + " " + user.lastname;
-      }
-    }
+    formatMoney: format.money
+    // getPurchasedByUser(userId) {
+    //   let user =
+    //     this.customers.length > 0
+    //       ? this.customers.find(customer => {
+    //           return customer.user_id === userId;
+    //         })
+    //       : null;
+    //   if (user) {
+    //     return user.firstname + " " + user.lastname;
+    //   }
+    // }
   }
 };
 </script>

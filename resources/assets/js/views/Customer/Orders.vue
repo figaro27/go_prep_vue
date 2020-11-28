@@ -582,14 +582,12 @@ export default {
       });
 
       order.purchased_gift_cards.forEach(purchasedGiftCard => {
-        if (purchasedGiftCard.length === 5) {
-          data.push({
-            meal: "Gift Card Code: " + purchasedGiftCard.code,
-            quantity: 1,
-            unit_price: format.money(purchasedGiftCard.amount, order.currency),
-            subtotal: format.money(purchasedGiftCard.amount, order.currency)
-          });
-        }
+        data.push({
+          meal: "Gift Card Code: " + purchasedGiftCard.code,
+          quantity: 1,
+          unit_price: format.money(purchasedGiftCard.amount, order.currency),
+          subtotal: format.money(purchasedGiftCard.amount, order.currency)
+        });
       });
       data = _.orderBy(data, "delivery_date");
       return _.filter(data);
