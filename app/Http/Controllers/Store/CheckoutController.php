@@ -445,9 +445,16 @@ class CheckoutController extends StoreController
                                     chr(rand(65, 90)) .
                                     rand(10, 99)
                             );
-                            $purchasedGiftCard->amount = $item['meal']['price'];
-                            $purchasedGiftCard->balance =
-                                $item['meal']['price'];
+                            $purchasedGiftCard->amount = isset(
+                                $item['meal']['value']
+                            )
+                                ? $item['meal']['value']
+                                : $item['meal']['price'];
+                            $purchasedGiftCard->balance = isset(
+                                $item['meal']['value']
+                            )
+                                ? $item['meal']['value']
+                                : $item['meal']['price'];
                             $purchasedGiftCard->emailRecipient = isset(
                                 $item['emailRecipient']
                             )

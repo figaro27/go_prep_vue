@@ -39,6 +39,7 @@ class GiftCardController extends StoreController
         $giftCard->store_id = $this->store->id;
         $giftCard->title = $request->get('title');
         $giftCard->price = $request->get('price');
+        $giftCard->value = $request->get('value');
 
         if ($request->has('featured_image')) {
             $imagePath = \App\Utils\Images::uploadB64(
@@ -96,6 +97,7 @@ class GiftCardController extends StoreController
             $giftCard = GiftCard::where('id', $request->get('id'))->first();
             $giftCard->title = $request->get('title');
             $giftCard->price = $request->get('price');
+            $giftCard->value = $request->get('value');
 
             $categories = $request->get('category_ids');
             if (is_array($categories)) {

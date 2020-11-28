@@ -31,7 +31,18 @@
               v-bind="{ prefix: storeCurrencySymbol }"
             ></money>
           </b-form-group>
-
+          <b-form-checkbox checked v-model="sameValuePrice"
+            >Value Same as Price
+          </b-form-checkbox>
+          <b-form-group v-if="!sameValuePrice" class="mt-2">
+            <h4>Value</h4>
+            <money
+              v-model="giftCard.value"
+              :min="0.0"
+              class="form-control"
+              v-bind="{ prefix: storeCurrencySymbol }"
+            ></money>
+          </b-form-group>
           <h4 class="mt-4">Categories</h4>
           <b-form-checkbox-group
             buttons
@@ -71,7 +82,8 @@ export default {
   },
   data() {
     return {
-      giftCard: {}
+      giftCard: {},
+      sameValuePrice: true
     };
   },
   computed: {

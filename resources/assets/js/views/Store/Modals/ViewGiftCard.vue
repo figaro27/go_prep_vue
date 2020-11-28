@@ -31,7 +31,21 @@
               v-bind="{ prefix: storeCurrencySymbol }"
             ></money>
           </b-form-group>
-
+          <b-form-checkbox
+            checked
+            v-model="sameValuePrice"
+            @input="syncValuePrice"
+            >Value Same as Price
+          </b-form-checkbox>
+          <b-form-group v-if="!sameValuePrice" class="mt-2">
+            <h4>Value</h4>
+            <money
+              v-model="giftCard.value"
+              :min="0.0"
+              class="form-control"
+              v-bind="{ prefix: storeCurrencySymbol }"
+            ></money>
+          </b-form-group>
           <h4 class="mt-4">Categories</h4>
           <b-form-checkbox-group
             buttons
@@ -74,7 +88,9 @@ export default {
     giftCard: null
   },
   data() {
-    return {};
+    return {
+      sameValuePrice: true
+    };
   },
   computed: {
     ...mapGetters({
@@ -95,6 +111,13 @@ export default {
     }
   },
   mounted() {
+    if (
+      this.giftCard.value !== null &&
+      this.giftCard.value > 0 &&
+      this.giftCard.price !== this.giftCard.value
+    ) {
+      this.sameValuePrice = false;
+    }
     this.$refs.viewGiftCardModal.show();
     setTimeout(() => {
       this.$refs.featuredImageInput.onResize();
@@ -124,6 +147,11 @@ export default {
           this.refreshGiftCards();
           if (cat !== 1) this.toggleModal();
         });
+    },
+    syncValuePrice() {
+      if (this.sameValuePrice) {
+        this.giftCard.value = this.giftCard.price;
+      }
     }
   }
 };
