@@ -607,27 +607,27 @@
               >
             </div>
             <div class="d-flex">
-              <b-btn
+              <!-- <b-btn
                 class="btn mb-2 d-inline mr-1 royalBlueBG"
                 @click="printLabel(order.id, 'order_labels', 'b64')"
                 >Print Order Label</b-btn
-              >
+              > -->
               <b-btn
-                class="btn mb-2 d-inline btn-secondary"
+                class="btn mb-2 d-inline royalBlueBG"
                 @click="printLabel(order.id, 'order_labels', 'pdf')"
-                >Preview Order Label</b-btn
+                >Print Order Label</b-btn
               >
             </div>
             <div class="d-flex">
-              <b-btn
+              <!-- <b-btn
                 class="btn mb-2 d-inline mr-1 royalBlueBG"
                 @click="printLabel(order.id, 'labels', 'b64')"
                 >Print Meal Labels</b-btn
-              >
+              > -->
               <b-btn
-                class="btn mb-2 d-inline btn-secondary"
+                class="btn mb-2 d-inline royalBlueBG"
                 @click="printLabel(order.id, 'labels', 'pdf')"
-                >Preview Meal Labels</b-btn
+                >Print Meal Labels</b-btn
               >
             </div>
             <div>
