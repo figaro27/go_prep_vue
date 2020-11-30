@@ -87,6 +87,7 @@ export default {
         }
       }
 
+      let giftCardOnly = true;
       if (
         this.mealMixItems.finalCategories.some(cat => {
           return cat.minimumType !== null;
@@ -95,7 +96,6 @@ export default {
         passed = this.checkCategoryMinimums();
       }
 
-      let giftCardOnly = true;
       this.bag.forEach(item => {
         if (!item.meal.gift_card) {
           giftCardOnly = false;
@@ -116,6 +116,11 @@ export default {
       } else {
         passed = false;
       }
+
+      if (giftCardOnly) {
+        passed = true;
+      }
+
       return passed;
     },
     deliveryDateOptions() {
