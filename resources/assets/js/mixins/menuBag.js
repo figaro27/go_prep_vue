@@ -21,11 +21,11 @@ export default {
               groupTotal[index] += item.price * item.quantity;
             });
           });
-
           if (
             !groupTotal.every(item => {
               return item > this.minimumDeliveryDayAmount;
-            })
+            }) ||
+            groupTotal.length == 0
           ) {
             message =
               "Please add at least " +
@@ -34,6 +34,8 @@ export default {
                 this.storeSettings.currency
               ) +
               " for each day.";
+
+            return message;
           }
         }
       }
@@ -64,7 +66,7 @@ export default {
     },
     minimumMet() {
       let passed = true;
-
+      let mddPassed = true;
       if (this.isMultipleDelivery) {
         if (this.minimumDeliveryDayAmount > 0) {
           let groupTotal = [];
@@ -78,11 +80,12 @@ export default {
           if (
             groupTotal.every(item => {
               return item > this.minimumDeliveryDayAmount;
-            })
+            }) ||
+            groupTotal.length == 0
           ) {
-            // return true;
+            mddPassed = true;
           } else {
-            passed = false;
+            mddPassed = false;
           }
         }
       }
@@ -106,13 +109,14 @@ export default {
       }
 
       if (
-        (this.minOption === "meals" && this.total >= this.minMeals) ||
-        (this.minOption === "price" &&
-          this.totalBagPricePreFeesBothTypes >= this.minPrice) ||
-        this.store.settings.minimumDeliveryOnly ||
-        giftCardOnly
+        mddPassed &&
+        ((this.minOption === "meals" && this.total >= this.minMeals) ||
+          (this.minOption === "price" &&
+            this.totalBagPricePreFeesBothTypes >= this.minPrice) ||
+          this.store.settings.minimumDeliveryOnly ||
+          giftCardOnly)
       ) {
-        // return true;
+        passed = true;
       } else {
         passed = false;
       }
