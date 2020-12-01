@@ -287,7 +287,7 @@ class Store extends Model
             $ca = 'ca_ER2OYlaTUrWz7LRQvhtKLIjZsRcM8mh9';
         }
 
-        if (in_array($this->details->country, ['US', 'CA'])) {
+        if (in_array($this->details->country, ['US', 'CA', 'FR'])) {
             return "https://connect.stripe.com/express/oauth/authorize?client_id=$ca";
         } else {
             return "https://connect.stripe.com/oauth/authorize?client_id=$ca&response_type=code&scope=read_write";

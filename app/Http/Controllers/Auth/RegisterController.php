@@ -451,7 +451,10 @@ class RegisterController extends Controller
                     );
                 }
             }
-            $redirect = $user->store->getConnectUrl(); //'/store/account/settings';
+            $redirect =
+                $request['plan']['plan'] === 'free_trial'
+                    ? '/store/account/settings'
+                    : $user->store->getConnectUrl();
         } else {
             $store = defined('STORE_ID') ? Store::find(STORE_ID) : null;
             $redirect = $store ? '/customer/menu' : '/customer/home';
