@@ -33,6 +33,7 @@ use App\Billing\Billing;
 use App\MealSize;
 use App\Subscription;
 use App\MealSubscription;
+use App\Mail\Customer\NewGiftCard;
 
 class OrderController extends StoreController
 {
@@ -925,6 +926,49 @@ class OrderController extends StoreController
             $order->meal_package_orders()->delete();
             $order->lineItemsOrder()->delete();
             foreach ($bag->getItems() as $item) {
+                if (
+                    isset($item['meal']['gift_card']) &&
+                    $item['meal']['gift_card']
+                ) {
+                    $quantity = $item['quantity'];
+
+                    for ($i = 0; $i < $quantity; $i++) {
+                        $purchasedGiftCard = new PurchasedGiftCard();
+                        $purchasedGiftCard->store_id = $store->id;
+                        $purchasedGiftCard->gift_card_id = $item['meal']['id'];
+                        $purchasedGiftCard->user_id = $order->user->id;
+                        $purchasedGiftCard->order_id = $order->id;
+                        $purchasedGiftCard->code = strtoupper(
+                            substr(uniqid(rand(10, 99), false), 0, 6) .
+                                chr(rand(65, 90)) .
+                                rand(10, 99)
+                        );
+                        $purchasedGiftCard->amount = isset(
+                            $item['meal']['value']
+                        )
+                            ? $item['meal']['value']
+                            : $item['meal']['price'];
+                        $purchasedGiftCard->balance = isset(
+                            $item['meal']['value']
+                        )
+                            ? $item['meal']['value']
+                            : $item['meal']['price'];
+                        $purchasedGiftCard->emailRecipient = isset(
+                            $item['emailRecipient']
+                        )
+                            ? $item['emailRecipient']
+                            : null;
+                        $purchasedGiftCard->save();
+
+                        if (isset($item['emailRecipient'])) {
+                            $store->sendNotification('new_gift_card', [
+                                'order' => $order ?? null,
+                                'purchasedGiftCard' => $purchasedGiftCard,
+                                'emailRecipient' => $item['emailRecipient']
+                            ]);
+                        }
+                    }
+                }
                 $mealOrder = new MealOrder();
                 $mealOrder->order_id = $order->id;
                 $mealOrder->store_id = $store->id;
