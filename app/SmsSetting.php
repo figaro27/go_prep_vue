@@ -293,18 +293,23 @@ class SmsSetting extends Model
     public function getNextDeliveryDateAttribute()
     {
         $nextDeliveryDates = $this->store->settings->getNextDeliveryDates(true);
+        $nextPickupDates = $this->store->settings->getNextDeliveryDates(
+            true,
+            'pickup'
+        );
+        $nextDates = $nextDeliveryDates->merge($nextPickupDates);
 
-        foreach ($nextDeliveryDates as $nextDeliveryDate) {
+        foreach ($nextDates as $nextDate) {
             $storeSettings = $this->store->settings;
             $nextCutoff = $storeSettings
-                ->getCutoffDate($nextDeliveryDate)
+                ->getCutoffDate($nextDate)
                 ->setTimezone($storeSettings->timezone);
             $reminderTime = $nextCutoff->subHours(
                 $this->autoSendOrderReminderHours
             );
             if (!$reminderTime->isPast()) {
                 // Not the next available delivery date but the next delivery date in which factoring the cutoff and reminder time is in the future
-                return $nextDeliveryDate;
+                return $nextDate;
             }
         }
 
