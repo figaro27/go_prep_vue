@@ -48,7 +48,8 @@ export default {
         this.$route.params.subscriptionId != null
       )
         return {
-          path: "/store/adjust-meal-plan/" + this.$route.params.subscriptionId,
+          path:
+            "/store/adjust-subscription/" + this.$route.params.subscriptionId,
           query: { back: true }
         };
       else if (

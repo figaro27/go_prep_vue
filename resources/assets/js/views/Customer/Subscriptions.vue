@@ -87,7 +87,7 @@ f<template>
             </button>
             <router-link
               :to="
-                `/customer/subscriptions/${props.row.id}` +
+                `/customer/adjust-subscription/${props.row.id}` +
                   '?subscriptionId=' +
                   props.row.id
               "
@@ -141,7 +141,11 @@ f<template>
       <center>
         <b-btn variant="danger" @click="cancelSubscription">Cancel</b-btn>
         <router-link
-          :to="`/customer/subscriptions/${subId}` + '?subscriptionId=' + subId"
+          :to="
+            `/customer/adjust-subscription/${subId}` +
+              '?subscriptionId=' +
+              subId
+          "
         >
           <b-btn class="btn btn-success btn-md">Change Meals</b-btn>
         </router-link>
@@ -160,7 +164,9 @@ f<template>
           <div class="col-md-4">
             <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
-            <router-link :to="`/customer/subscriptions/${subscription.id}`">
+            <router-link
+              :to="`/customer/adjust-subscription/${subscription.id}`"
+            >
               <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
             </router-link>
             <button

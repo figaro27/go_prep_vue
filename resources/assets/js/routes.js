@@ -16,7 +16,7 @@ import CustomerMenu from "./views/Customer/Menu.vue";
 import CustomerContact from "./views/Customer/Account/Contact.vue";
 import CustomerMyAccount from "./views/Customer/Account/MyAccount.vue";
 import CustomerSubscriptions from "./views/Customer/Subscriptions.vue";
-import CustomerSubscriptionChange from "./views/Customer/Subscription.vue";
+import CustomerAdjustSubscription from "./views/Customer/AdjustSubscription.vue";
 import CustomerOrders from "./views/Customer/Orders.vue";
 
 import StoreCustomers from "./views/Store/Customers.vue";
@@ -34,7 +34,7 @@ import StoreSettings from "./views/Store/Account/Settings.vue";
 import StoreMenuPreview from "./views/Store/MenuPreview.vue";
 import StoreManualOrder from "./views/Store/ManualOrder.vue";
 import StoreAdjustOrder from "./views/Store/AdjustOrder.vue";
-import StoreAdjustMealPlan from "./views/Store/AdjustMealPlan.vue";
+import StoreAdjustSubscription from "./views/Store/AdjustSubscription.vue";
 import StoreBag from "./views/Store/Bag.vue";
 import StoreUpdates from "./views/Store/Updates.vue";
 import StoreMarketing from "./views/Store/Marketing.vue";
@@ -135,9 +135,9 @@ let routes = [
     name: "customer-subscriptions"
   },
   {
-    path: "/customer/subscriptions/:id",
-    component: CustomerSubscriptionChange,
-    name: "customer-subscription-changes"
+    path: "/customer/adjust-subscription/:id",
+    component: CustomerAdjustSubscription,
+    name: "customer-adjust-subscription"
   },
   {
     path: "/customer/orders",
@@ -220,9 +220,9 @@ let routes = [
     name: "store-adjust-order"
   },
   {
-    path: "/store/adjust-meal-plan/:id",
-    component: StoreAdjustMealPlan,
-    name: "store-adjust-meal-plan"
+    path: "/store/adjust-subscription/:id",
+    component: StoreAdjustSubscription,
+    name: "store-adjust-subscription"
   },
   {
     path: "/store/bag",
