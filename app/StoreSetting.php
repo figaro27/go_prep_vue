@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use App\OmittedDeliveryDates;
+use Illuminate\Support\Arr;
 
 class StoreSetting extends Model
 {
@@ -54,6 +55,7 @@ class StoreSetting extends Model
         'next_delivery_dates',
         'next_orderable_delivery_dates',
         'next_orderable_pickup_dates',
+        'next_orderable_dates',
         'subscribed_delivery_days', // Delivery days with active subscriptionss
         'stripe',
         'currency_symbol',
@@ -371,6 +373,18 @@ class StoreSetting extends Model
                     'type' => 'pickup'
                 ];
             }
+        );
+    }
+
+    public function getNextOrderableDatesAttribute()
+    {
+        $nextOrderableDates = $this->next_orderable_delivery_dates->merge(
+            $this->next_orderable_pickup_dates
+        );
+        return array_values(
+            Arr::sort($nextOrderableDates, function ($date) {
+                return $date['date'];
+            })
         );
     }
 
