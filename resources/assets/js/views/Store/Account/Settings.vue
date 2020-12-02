@@ -9,7 +9,23 @@
         <b-col>
           <b-tabs>
             <b-tab title="Orders" active>
-              <b-form-group label="Logo" :state="true" class="pb-3">
+              <div v-if="!storeSettings.stripe_id">
+                <b-form-group :state="true">
+                  <b-button variant="primary" :href="stripeConnectUrl"
+                    >Connect Bank Account</b-button
+                  >
+                </b-form-group>
+              </div>
+              <div v-else class="mt-3">
+                <!-- <b-form-group :state="true"
+                    >ID: {{ storeSettings.stripe_id }}</b-form-group
+                  > -->
+                <a :href="payments_url" target="_blank">
+                  <b-button variant="primary">View Stripe Account</b-button>
+                </a>
+              </div>
+
+              <b-form-group :state="true" class="mt-4">
                 <picture-input
                   :ref="`storeImageInput`"
                   :prefill="logoPrefill"
@@ -23,18 +39,37 @@
                   @change="val => updateLogo(val)"
                 ></picture-input>
               </b-form-group>
-              <b-form @submit.prevent="updateStoreSettings">
+              <br /><br />
+              <b-form @submit.prevent="updateStoreSettings(true)">
+                <b-form-group label="Transfer Type" v-if="!customDeliveryDays">
+                  <b-form-checkbox-group
+                    v-model="transferSelected"
+                    :options="transferOptions"
+                    @input="updateStoreSettings()"
+                  ></b-form-checkbox-group>
+                </b-form-group>
+
                 <b-form-group
                   v-if="!customDeliveryDays"
-                  label="Delivery / Pickup Day(s)"
                   label-for="delivery-days"
                   :state="true"
+                  class="mt-4"
                 >
+                  <p>
+                    Delivery / Pickup Days
+                    <img
+                      v-b-popover.hover="
+                        'These are the day(s) you plan on delivering your order or allowing pickup to your customers and will show up as options on the checkout page for the customer. At least one day needs to be set to allow ordering.'
+                      "
+                      title="Delivery / Pickup Day(s)"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
                   <b-form-checkbox-group
                     buttons
-                    v-model="storeSettings.delivery_days"
+                    v-model="delivery_days"
                     class="storeFilters"
-                    @change="val => onChangeDeliveryDays(val)"
                     :options="[
                       { value: 'sun', text: 'Sunday' },
                       { value: 'mon', text: 'Monday' },
@@ -45,14 +80,6 @@
                       { value: 'sat', text: 'Saturday' }
                     ]"
                   ></b-form-checkbox-group>
-                  <img
-                    v-b-popover.hover="
-                      'These are the day(s) you plan on delivering your order or allowing pickup to your customers and will show up as options on the checkout page for the customer. At least one day needs to be set to allow ordering.'
-                    "
-                    title="Delivery / Pickup Day(s)"
-                    src="/images/store/popover.png"
-                    class="popover-size"
-                  />
                 </b-form-group>
 
                 <b-modal
@@ -78,7 +105,7 @@
                   <b-btn
                     class="center"
                     variant="primary"
-                    @click="showCutoffModal = false"
+                    @click="(showCutoffModal = false), updateStoreSettings()"
                     >Confirm</b-btn
                   >
                 </b-modal>
@@ -243,11 +270,18 @@
                   </div>
                 </b-modal>
 
-                <b-form-group
-                  label="Delivery Distance Type"
-                  label-for="delivery-distance-type"
-                  :state="true"
-                >
+                <b-form-group label-for="delivery-distance-type" :state="true">
+                  <p>
+                    Delivery Distance Type
+                    <img
+                      v-b-popover.hover="
+                        'As you do local delivery, you may have a certain cutoff distance. Here you can set this distance by radius by the number of miles around you or by zip codes separated by commas. If you offer pickup, and the customer chooses pickup, this will not apply to them.'
+                      "
+                      title="Delivery Distance Type"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
                   <b-form-radio-group
                     buttons
                     v-model="storeSettings.delivery_distance_type"
@@ -256,27 +290,31 @@
                       { value: 'radius', text: 'Radius' },
                       { value: 'zipcodes', text: 'Zip Codes' }
                     ]"
+                    @input="updateStoreSettings()"
                   ></b-form-radio-group>
-                  <img
-                    v-b-popover.hover="
-                      'As you do local delivery, you may have a certain cutoff distance. Here you can set this distance by radius by the number of miles around you or by zip codes separated by commas. If you offer pickup, and the customer chooses pickup, this will not apply to them.'
-                    "
-                    title="Delivery Distance Type"
-                    src="/images/store/popover.png"
-                    class="popover-size"
-                  />
                 </b-form-group>
                 <b-form-group
                   v-if="storeSettings.delivery_distance_type === 'radius'"
-                  label="Delivery Distance Radius"
                   label-for="delivery-distance-radius"
                   :state="true"
                 >
+                  <p>
+                    Delivery Distance Radius
+                    <img
+                      v-b-popover.hover="
+                        'Add the radius in miles. The system looks the difference between your postal code and the customer\'s postal code.'
+                      "
+                      title="Delivery Distance Radius"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
                   <b-form-input
                     type="number"
                     v-model="storeSettings.delivery_distance_radius"
                     placeholder="Radius (miles)"
                     required
+                    @input="updateStoreSettings()"
                   ></b-form-input>
                 </b-form-group>
                 <b-form-group
@@ -287,18 +325,14 @@
                   :state="true"
                 >
                   <textarea
-                    v-model="deliveryDistanceZipcodes"
-                    @input="
-                      e => {
-                        updateZips(e);
-                      }
-                    "
+                    v-model="delivery_distance_zipcodes"
                     class="form-control"
                     placeholder="Zip Codes"
                   ></textarea>
                 </b-form-group>
 
                 <b-form-group
+                  class="mt-2"
                   v-if="!customDeliveryDays"
                   label="Cut Off Period Type"
                   label-for="cut-off-period-type"
@@ -311,6 +345,7 @@
                       { text: 'Timed', value: 'timed' },
                       { text: 'Single Day', value: 'single_day' }
                     ]"
+                    @input="updateStoreSettings()"
                   >
                     <img
                       v-b-popover.hover="
@@ -324,6 +359,7 @@
                 </b-form-group>
 
                 <b-form-group
+                  class="mt-2"
                   v-if="!customDeliveryDays"
                   :label="
                     storeSettings.cutoff_type === 'timed'
@@ -360,12 +396,15 @@
                   <b-form-radio-group
                     v-model="storeSettings.minimumOption"
                     :options="minimumOptions"
+                    @input="updateStoreSettings()"
+                    class="mt-2"
                   ></b-form-radio-group>
                 </b-form-group>
 
                 <b-form-group
                   :state="true"
                   v-if="storeSettings.minimumOption === 'price'"
+                  class="mt-2"
                 >
                   <p>
                     <span class="mr-1">Minimum Price Requirement</span>
@@ -383,6 +422,7 @@
                     v-model="storeSettings.minimumPrice"
                     placeholder="Minimum Price"
                     required
+                    @input="updateStoreSettings()"
                   ></b-form-input>
                 </b-form-group>
                 <b-form-group
@@ -405,6 +445,7 @@
                     v-model="storeSettings.minimumMeals"
                     placeholder="Minimum Number of Items"
                     required
+                    @input="updateStoreSettings()"
                   ></b-form-input>
                 </b-form-group>
                 <b-form-group :state="true">
@@ -424,6 +465,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.applyMealPlanDiscount"
+                    @change.native="updateStoreSettings()"
                   />
                   <b-form-input
                     v-if="storeSettings.applyMealPlanDiscount"
@@ -431,6 +473,7 @@
                     v-model="storeSettings.mealPlanDiscount"
                     placeholder="Subscription Discount %"
                     required
+                    @input="updateStoreSettings()"
                   ></b-form-input>
                 </b-form-group>
 
@@ -449,6 +492,7 @@
                   <b-form-input
                     v-model="storeSettings.minimumSubWeeks"
                     required
+                    @input="updateStoreSettings()"
                   ></b-form-input>
                 </b-form-group>
 
@@ -467,6 +511,7 @@
                   <b-form-radio-group
                     v-model="storeSettings.subscriptionRenewalType"
                     :options="subscriptionRenewalTypeOptions"
+                    @input="updateStoreSettings()"
                   ></b-form-radio-group>
                 </b-form-group>
                 <b-form-group :state="true">
@@ -486,6 +531,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.applyDeliveryFee"
+                    @change.native="updateStoreSettings()"
                   />
 
                   <div v-if="storeSettings.applyDeliveryFee">
@@ -500,7 +546,10 @@
                         class="popover-size"
                       />
                     </p>
-                    <b-form-radio-group v-model="storeSettings.deliveryFeeType">
+                    <b-form-radio-group
+                      v-model="storeSettings.deliveryFeeType"
+                      @input="updateStoreSettings()"
+                    >
                       <b-form-radio name="flat" value="flat">Flat</b-form-radio>
                       <b-form-radio name="zip" value="zip"
                         >Flat By Zip</b-form-radio
@@ -520,6 +569,7 @@
                       v-model="storeSettings.deliveryFee"
                       placeholder="Delivery Fee"
                       required
+                      @input="updateStoreSettings()"
                     ></b-form-input>
                     <b-btn
                       variant="primary"
@@ -543,6 +593,7 @@
                           v-model="storeSettings.mileageBase"
                           placeholder="Base Amount"
                           required
+                          @input="updateStoreSettings()"
                         ></b-form-input>
                       </div>
                       <div class="col-md-6">
@@ -556,6 +607,7 @@
                           v-model="storeSettings.mileagePerMile"
                           placeholder="Per Mile"
                           required
+                          @input="updateStoreSettings()"
                         ></b-form-input>
                       </div>
                     </div>
@@ -578,6 +630,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.applyProcessingFee"
+                    @change.native="updateStoreSettings()"
                   />
                 </b-form-group>
 
@@ -591,11 +644,13 @@
                       title="Processing Fee Type"
                       src="/images/store/popover.png"
                       class="popover-size"
+                      @input="updateStoreSettings()"
                     />
                   </p>
                   <b-form-radio-group
                     v-model="storeSettings.processingFeeType"
                     class="mt-2 mb-2"
+                    @input="updateStoreSettings()"
                   >
                     <b-form-radio name="flat" value="flat">Flat</b-form-radio>
                     <b-form-radio name="percent" value="percent"
@@ -608,15 +663,9 @@
                     v-model="storeSettings.processingFee"
                     placeholder="Processing Fee"
                     required
+                    @input="updateStoreSettings()"
                   ></b-form-input>
                 </div>
-
-                <b-form-group label="I Will Be:" v-if="!customDeliveryDays">
-                  <b-form-checkbox-group
-                    v-model="transferSelected"
-                    :options="transferOptions"
-                  ></b-form-checkbox-group>
-                </b-form-group>
 
                 <!-- Adding for GoEatFresh for now until full shipping feature is completed -->
                 <p v-if="store.id == 148 || store.id == 3">
@@ -626,7 +675,7 @@
                   v-if="store.id == 148 || store.id == 3"
                   type="text"
                   rows="3"
-                  v-model="storeSettings.shippingInstructions"
+                  v-model="shippingInstructions"
                   placeholder="Please include shipping instructions to your customers. This will be shown on the checkout page as well as email notifications the customer receives."
                   class="mb-2"
                 ></b-form-textarea>
@@ -636,7 +685,7 @@
                   v-if="transferTypeCheckDelivery"
                   type="text"
                   rows="3"
-                  v-model="storeSettings.deliveryInstructions"
+                  v-model="deliveryInstructions"
                   placeholder="Please include delivery instructions to your customers (time window, how long your driver will wait, etc.) This will be shown on the checkout page as well as email notifications the customer receives."
                   class="mb-2"
                 ></b-form-textarea>
@@ -645,7 +694,7 @@
                   v-if="transferTypeCheckPickup"
                   type="text"
                   rows="3"
-                  v-model="storeSettings.pickupInstructions"
+                  v-model="pickupInstructions"
                   placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time). This will be shown on the checkout page as well as email notifications the customer receives."
                 ></b-form-textarea>
 
@@ -663,7 +712,7 @@
                 <b-form-textarea
                   type="text"
                   rows="3"
-                  v-model="storeSettings.notesForCustomer"
+                  v-model="notesForCustomer"
                   placeholder="Thank you for your order."
                 ></b-form-textarea>
 
@@ -688,6 +737,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.enableSalesTax"
+                    @change.native="updateStoreSettings()"
                   />
                   <div v-if="storeSettings.enableSalesTax">
                     <p class="mt-3 mb-0 pb-0">
@@ -708,6 +758,7 @@
                         type="text"
                         v-model="salesTax"
                         required
+                        @input="updateStoreSettings()"
                       ></b-form-input>
                     </b-form-group>
                   </div>
@@ -731,7 +782,7 @@
                       variant="pill"
                       size="lg"
                       v-model="storeSettings.salesTaxAfterFees"
-                      @change.native="updateStoreSettings"
+                      @change.native="updateStoreSettings()"
                     />
                   </div>
 
@@ -752,6 +803,7 @@
                       type="text"
                       v-model="storeSettings.gaCode"
                       placeholder="UA-00000000-00"
+                      @input="updateStoreSettings()"
                     ></b-form-input>
                   </b-form-group>
 
@@ -771,34 +823,19 @@
                     <b-form-input
                       type="text"
                       v-model="storeSettings.fbPixel"
+                      @input="updateStoreSettings()"
                     ></b-form-input>
                   </b-form-group>
 
-                  <b-button type="submit" variant="primary">Save</b-button>
-                </b-form>
-                <p class="mt-2">Timezone</p>
-                <b-select
-                  :options="timezoneOptions"
-                  v-model="storeSettings.timezone"
-                  class="d-inline w-auto mr-1"
-                  @change.native="val => onChangeTimezone(val)"
-                >
-                </b-select>
-                <div v-if="!storeSettings.stripe_id">
-                  <b-form-group :state="true">
-                    <b-button variant="primary" :href="stripeConnectUrl"
-                      >Connect Bank Account</b-button
-                    >
-                  </b-form-group>
-                </div>
-                <div v-else class="mt-2">
-                  <b-form-group :state="true"
-                    >ID: {{ storeSettings.stripe_id }}</b-form-group
+                  <p class="mt-2">Timezone</p>
+                  <b-select
+                    :options="timezoneOptions"
+                    v-model="storeSettings.timezone"
+                    class="d-inline w-auto mr-1"
+                    @input="updateStoreSettings()"
                   >
-                  <a :href="payments_url" target="_blank">
-                    <b-button variant="primary">View Stripe Account</b-button>
-                  </a>
-                </div>
+                  </b-select>
+                </b-form>
 
                 <p class="mt-2">
                   <span class="mr-1 mt-2">Open</span>
@@ -825,6 +862,7 @@
                   v-model="storeSettings.closedReason"
                   placeholder="Here you can indicate the reason to your customers for not accepting orders."
                   required
+                  @input="updateStoreSettings()"
                 ></b-form-input>
 
                 <!-- <div class="mt-3">
@@ -876,7 +914,7 @@
                 buttons
                 v-model="storeSettings.menuStyle"
                 class="storeFilters mb-2"
-                @input="updateStoreSettings"
+                @input="updateStoreSettings()"
                 :options="[
                   { value: 'image', text: 'Image Based' },
                   { value: 'text', text: 'Text Based' }
@@ -901,7 +939,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.showNutrition"
-                    @change.native="updateStoreSettings"
+                    @change.native="updateStoreSettings()"
                   />
                 </b-form-group>
               </b-form>
@@ -923,7 +961,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.showMacros"
-                    @change.native="updateStoreSettings"
+                    @change.native="updateStoreSettings()"
                   />
                 </b-form-group>
               </b-form>
@@ -945,7 +983,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.showIngredients"
-                    @change.native="updateStoreSettings"
+                    @change.native="updateStoreSettings()"
                   />
                 </b-form-group>
               </b-form>
@@ -969,7 +1007,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.allowMealPlans"
-                    @change.native="updateStoreSettings"
+                    @change.native="updateStoreSettings()"
                   />
                 </b-form-group>
               </b-form>
@@ -993,7 +1031,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.mealInstructions"
-                    @change.native="updateStoreSettings"
+                    @change.native="updateStoreSettings()"
                   />
                 </b-form-group>
               </b-form>
@@ -1011,7 +1049,10 @@
                       class="popover-size"
                     />
                   </p>
-                  <swatches v-model="color"></swatches>
+                  <swatches
+                    v-model="color"
+                    @input="updateStoreSettings()"
+                  ></swatches>
                 </b-form-group>
                 <b-form-group :state="true" v-if="!storeModules.hideBranding">
                   <p>
@@ -1029,13 +1070,17 @@
                     id="website"
                     v-model="storeSettings.website"
                     placeholder="Example: http://goprep.com"
+                    @input="updateStoreSettings()"
                   ></b-form-input>
                 </b-form-group>
                 <b-form-group
                   label="About (Shown at the top of your menu)"
                   :state="true"
                 >
-                  <wysiwyg v-model="storeDetails.description" />
+                  <wysiwyg
+                    v-model="description"
+                    @input="updateStoreDetails()"
+                  />
                 </b-form-group>
 
                 <router-link
@@ -1052,8 +1097,8 @@
                   tag="button"
                   >Preview Menu</a
                 >
-                <br /><br />
-                <b-button type="submit" variant="primary mt-2">Save</b-button>
+                <!-- <br /><br /> -->
+                <!-- <b-button type="submit" variant="primary mt-2">Save</b-button> -->
               </b-form>
             </b-tab>
 
@@ -1065,7 +1110,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.notifications.new_order"
-                    @change.native="updateStoreSettings"
+                    @change.native="updateStoreSettings()"
                   />
                 </b-form-group>
 
@@ -1075,7 +1120,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.notifications.new_subscription"
-                    @change.native="updateStoreSettings"
+                    @change.native="updateStoreSettings()"
                   />
                 </b-form-group>
 
@@ -1085,7 +1130,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.notifications.cancelled_subscription"
-                    @change.native="updateStoreSettings"
+                    @change.native="updateStoreSettings()"
                   />
                 </b-form-group>
 
@@ -1095,13 +1140,13 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.notifications.ready_to_print"
-                    @change.native="updateStoreSettings"
+                    @change.native="updateStoreSettings()"
                   />
                 </b-form-group>
               </b-form>
             </b-tab>
             <b-tab title="Advanced">
-              <b-form @submit.prevent="updateStoreModules">
+              <b-form @submit.prevent="updateStoreModules(true)">
                 <p class="mt-2">
                   <span class="mr-1 mt-2">Production Groups</span>
                   <img
@@ -1118,7 +1163,7 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModules.productionGroups"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules()"
                 />
 
                 <p class="mt-2">
@@ -1137,7 +1182,7 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModules.specialInstructions"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules()"
                 />
                 <span v-if="storeModules.specialInstructions">
                   <p class="mt-2">
@@ -1158,7 +1203,7 @@
                     variant="pill"
                     size="lg"
                     v-model="storeModuleSettings.specialInstructionsStoreOnly"
-                    @change.native="updateStoreModules"
+                    @change.native="updateStoreModules()"
                   />
                 </span>
                 <p class="mt-2">
@@ -1177,7 +1222,7 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModules.stockManagement"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules()"
                 />
 
                 <p class="mt-2">
@@ -1196,7 +1241,7 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModules.autoPrintPackingSlip"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules()"
                 />
 
                 <p class="mt-2">
@@ -1215,7 +1260,7 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModuleSettings.cashAllowedForCustomer"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules(false, true)"
                 />
 
                 <p class="mt-2">
@@ -1234,7 +1279,7 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModules.mealExpiration"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules()"
                 />
 
                 <p class="mt-2">
@@ -1253,7 +1298,7 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModules.cashOrderNoBalance"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules()"
                 />
 
                 <p class="mt-2">
@@ -1272,7 +1317,7 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModules.gratuity"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules()"
                 />
 
                 <p class="mt-2">
@@ -1291,7 +1336,7 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModules.allowMultipleSubscriptions"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules()"
                 />
 
                 <p class="mt-2">
@@ -1310,7 +1355,7 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModules.cooler"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules()"
                 />
                 <p class="mt-2 ml-5" v-if="storeModules.cooler">
                   <span class="mr-1 mt-2">Optional</span>
@@ -1330,7 +1375,7 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModuleSettings.coolerOptional"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules()"
                 />
                 <p class="mt-2 ml-5" v-if="storeModules.cooler">
                   <span class="mr-1 mt-2">Cooler Bag Deposit Amount</span>
@@ -1348,7 +1393,7 @@
                   class="w-80px ml-5"
                   v-model="storeModuleSettings.coolerDeposit"
                   type="number"
-                  @change.native="updateStoreModules"
+                  @change.native="updateStoreModules(false, true)"
                 ></b-form-input>
               </b-form>
             </b-tab>
@@ -1439,8 +1484,58 @@ export default {
     TermsOfAgreement,
     PictureInput
   },
+  watch: {
+    description: _.debounce(function() {
+      if (this.loaded) {
+        this.storeDetail.description = this.description;
+        this.updateStoreDetails();
+      }
+    }, 1000),
+    delivery_days() {
+      this.storeSettings.delivery_days = this.delivery_days;
+      this.updateStoreSettings();
+    },
+    delivery_distance_zipcodes: _.debounce(function() {
+      if (this.loaded) {
+        this.storeSettings.delivery_distance_zipcodes = this.delivery_distance_zipcodes;
+        this.updateStoreSettings();
+      }
+    }, 1000),
+    pickupInstructions: _.debounce(function() {
+      if (this.loaded) {
+        this.storeSettings.pickupInstructions = this.pickupInstructions;
+        this.updateStoreSettings();
+      }
+    }, 1000),
+    deliveryInstructions: _.debounce(function() {
+      if (this.loaded) {
+        this.storeSettings.deliveryInstructions = this.deliveryInstructions;
+        this.updateStoreSettings();
+      }
+    }, 1000),
+    shippingInstructions: _.debounce(function() {
+      if (this.loaded) {
+        this.storeSettings.shippingInstructions = this.shippingInstructions;
+        this.updateStoreSettings();
+      }
+    }, 1000),
+    notesForCustomer: _.debounce(function() {
+      if (this.loaded) {
+        this.storeSettings.notesForCustomer = this.notesForCustomer;
+        this.updateStoreSettings();
+      }
+    }, 1000)
+  },
   data() {
     return {
+      loaded: false,
+      description: null,
+      delivery_days: null,
+      delivery_distance_zipcodes: null,
+      pickupInstructions: null,
+      deliveryInstructions: null,
+      shippingInstructions: null,
+      notesForCustomer: null,
       deliveryFeeCity: {},
       deliveryFeeZipCode: {},
       deliveryFeeZipCodeModal: false,
@@ -1453,8 +1548,8 @@ export default {
       color: "",
       transferSelected: [],
       transferOptions: [
-        { text: "Delivering to Customers", value: "delivery" },
-        { text: "Letting Customers Pickup", value: "pickup" }
+        { text: "Delivery", value: "delivery" },
+        { text: "Pickup", value: "pickup" }
       ],
       subscriptionRenewalTypeOptions: [
         { text: "Renew Now", value: "now" },
@@ -1487,7 +1582,8 @@ export default {
       storeSubscriptions: "storeSubscriptions",
       storeModules: "storeModules",
       storeModuleSettings: "storeModuleSettings",
-      storeDeliveryFeesZipCodes: "storeDeliveryFeeZipCodes"
+      storeDeliveryFeesZipCodes: "storeDeliveryFeeZipCodes",
+      isLoading: "isLoading"
     }),
     storeDetails() {
       return this.storeDetail;
@@ -1534,11 +1630,6 @@ export default {
         ss: "00"
       };
       //storeSettings.cutoff_time
-    },
-    deliveryDistanceZipcodes() {
-      return _.isArray(this.storeSettings.delivery_distance_zipcodes)
-        ? this.storeSettings.delivery_distance_zipcodes.join(",")
-        : [];
     },
     transferType() {
       return this.storeSettings.transferType;
@@ -1596,6 +1687,7 @@ export default {
     });
   },
   mounted() {
+    this.disableSpinner();
     if (this.storeSettings.salesTax !== null) {
       this.salesTax = this.storeSettings.salesTax;
     } else {
@@ -1619,7 +1711,15 @@ export default {
       }
     });
 
+    this.setTextFields();
     this.checkAcceptedTOA();
+
+    setTimeout(() => {
+      this.loaded = true;
+    }, 5000);
+  },
+  destroyed() {
+    this.enableSpinner();
   },
   methods: {
     ...mapActions([
@@ -1627,9 +1727,11 @@ export default {
       "refreshStoreSettings",
       "refreshStoreModules",
       "refreshStoreModuleSettings",
-      "refreshStoreDeliveryFeeZipCodes"
+      "refreshStoreDeliveryFeeZipCodes",
+      "disableSpinner",
+      "enableSpinner"
     ]),
-    updateStoreSettings() {
+    updateStoreSettings(toast = false) {
       this.spliceCharacters();
       let settings = { ...this.storeSettings };
 
@@ -1646,7 +1748,6 @@ export default {
       }
       settings.salesTax = this.salesTax;
       settings.transferType = this.transferTypes;
-      settings.delivery_distance_zipcodes = this.zipCodes;
       settings.color = this.color;
 
       if (this.logoUpdated) {
@@ -1656,24 +1757,27 @@ export default {
       axios
         .patch("/api/me/settings", settings)
         .then(response => {
-          this.refreshStoreSettings();
-          this.$toastr.s("Your settings have been saved.", "Success");
+          // this.refreshStoreSettings();
+          if (toast) {
+            this.$toastr.s("Your settings have been saved.", "Success");
+          }
         })
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors));
           error = error.join(" ");
           this.$toastr.w(error);
         });
-
+    },
+    updateStoreDetails() {
       axios.patch("/api/me/details", { ...this.storeDetails });
     },
-    updateStoreModules() {
+    updateStoreModules(toast = false, moduleSettings = false) {
       let modules = { ...this.storeModules };
 
       axios
         .post("/api/me/updateModules", modules)
         .then(response => {
-          this.refreshStoreModules();
+          // this.refreshStoreModules();
         })
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors));
@@ -1681,20 +1785,23 @@ export default {
           this.$toastr.e(error, "Error");
         });
 
-      let moduleSettings = { ...this.storeModuleSettings };
+      if (moduleSettings) {
+        let moduleSettings = { ...this.storeModuleSettings };
 
-      axios
-        .post("/api/me/updateModuleSettings", moduleSettings)
-        .then(response => {
-          this.refreshStoreModuleSettings();
-        })
-        .catch(response => {
-          let error = _.first(Object.values(response.response.data.errors));
-          error = error.join(" ");
-          this.$toastr.e(error, "Error");
-        });
-
-      this.$toastr.s("Your settings have been saved.", "Success");
+        axios
+          .post("/api/me/updateModuleSettings", moduleSettings)
+          .then(response => {
+            // this.refreshStoreModuleSettings();
+            if (toast) {
+              this.$toastr.s("Your settings have been saved.", "Success");
+            }
+          })
+          .catch(response => {
+            let error = _.first(Object.values(response.response.data.errors));
+            error = error.join(" ");
+            this.$toastr.e(error, "Error");
+          });
+      }
     },
     toggleCloseOpen() {
       if (this.storeSettings.open) {
@@ -1829,14 +1936,12 @@ export default {
           break;
       }
     },
-    onChangeTimezone(val) {
-      if (val) {
-        this.storeSettings.timezone = val.value;
-      }
-    },
     onChangeDeliveryDays(days) {
       // Get unselected day
+      console.log(days);
+      console.log(this.storeSettings.delivery_days);
       let diff = _.difference(this.storeSettings.delivery_days, days);
+      console.log(diff);
 
       if (_.isEmpty(diff)) {
         return;
@@ -1860,15 +1965,13 @@ export default {
         // Show modal
         this.$refs.deliveryDaysModal.show();
       }
+      this.updateStoreSettings();
     },
     removeDeliveryDay() {
       let day = this.deselectedDeliveryDay;
       let index = this.storeSettings.delivery_days.indexOf(day);
       this.storeSettings.delivery_days.splice(index, 1);
       this.$refs.deliveryDaysModal.hide();
-    },
-    updateZips(e) {
-      this.zipCodes = e.target.value.split(",");
     },
     async updateLogo(logo) {
       this.logoUpdated = true;
@@ -1911,6 +2014,8 @@ export default {
     checkCutoffMealPlans() {
       if (this.storeSubscriptions.length > 0) {
         this.showCutoffModal = true;
+      } else {
+        this.updateStoreSettings();
       }
     },
     getSalesTax(state) {
@@ -1996,6 +2101,15 @@ export default {
     },
     getStateNames(country = "US") {
       return states.selectOptions(country);
+    },
+    setTextFields() {
+      this.description = this.storeDetail.description;
+      this.delivery_days = this.storeSettings.delivery_days;
+      this.delivery_distance_zipcodes = this.storeSettings.delivery_distance_zipcodes;
+      this.pickupInstructions = this.storeSettings.pickupInstructions;
+      this.deliveryInstructions = this.storeSettings.deliveryInstructions;
+      this.shippingInstructions = this.storeSettings.shippingInstructions;
+      this.notesForCustomer = this.storeSettings.notesForCustomer;
     }
   }
 };

@@ -90,14 +90,19 @@ class StoreSettingController extends StoreController
             'currency_symbol',
             'date_format',
             'next_orderable_pickup_dates',
-            'menuReopening'
+            'menuReopening',
+            'next_orderable_dates'
         ]);
         $values['delivery_days'] = json_encode($values['delivery_days']);
-        $values['delivery_distance_zipcodes'] = json_encode(
-            $values['delivery_distance_zipcodes']
-        );
         $values['notifications'] = json_encode($values['notifications']);
-
+        $values['delivery_distance_zipcodes'] =
+            '[' .
+            str_replace(
+                '"',
+                "",
+                json_encode($values['delivery_distance_zipcodes'])
+            ) .
+            ']';
         $settings->update($values);
 
         $store = Store::where('id', $this->store->id)->first();
