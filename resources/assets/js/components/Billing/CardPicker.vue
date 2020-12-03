@@ -25,9 +25,11 @@
     </b-modal>
     <b-form-group label="Add New Card" v-if="gateway === 'stripe'">
       <card
+        v-if="!isLoading"
         class="stripe-card"
         :class="{ newCard }"
         :stripe="stripeKey"
+        :options="{ hidePostalCode: hidePostalCode }"
         @change="newCard = $event.complete"
       />
     </b-form-group>
@@ -155,6 +157,7 @@ export default {
   },
   data() {
     return {
+      hidePostalCode: false,
       showDeleteCardModal: false,
       cardId: null,
       stripeKey: window.app.stripe_key,
@@ -168,8 +171,15 @@ export default {
   computed: {
     ...mapGetters({
       cards: "cards",
-      storeSettings: "viewedStoreSettings"
+      storeSettings: "viewedStoreSettings",
+      store: "viewedStore",
+      isLoading: "isLoading"
     })
+  },
+  mounted() {
+    if (this.store.details.country !== "US") {
+      this.hidePostalCode = true;
+    }
   },
   methods: {
     ...mapActions(["refreshCards", "refreshSubscriptions"]),
