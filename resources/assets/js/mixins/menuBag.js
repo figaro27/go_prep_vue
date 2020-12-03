@@ -65,8 +65,12 @@ export default {
       return message;
     },
     minimumMet() {
-      let passed = true;
-      let mddPassed = true;
+      let settingsPassed = true;
+      let deliveryDayMinimumPassed = true;
+      let categoryMinimumPassed = true;
+      let giftCardOnly = true;
+
+      // Check delivery day minimum passes
       if (this.isMultipleDelivery) {
         if (this.minimumDeliveryDayAmount > 0) {
           let groupTotal = [];
@@ -83,22 +87,35 @@ export default {
             }) ||
             groupTotal.length == 0
           ) {
-            mddPassed = true;
+            deliveryDayMinimumPassed = true;
           } else {
-            mddPassed = false;
+            deliveryDayMinimumPassed = false;
           }
         }
       }
 
-      let giftCardOnly = true;
+      // Check if category minimum passes
       if (
         this.mealMixItems.finalCategories.some(cat => {
           return cat.minimumType !== null;
         })
       ) {
-        passed = this.checkCategoryMinimums();
+        categoryMinimumPassed = this.checkCategoryMinimums();
       }
 
+      // Check if general settings minimum passes
+      if (
+        (this.minOption === "meals" && this.total >= this.minMeals) ||
+        (this.minOption === "price" &&
+          this.totalBagPricePreFeesBothTypes >= this.minPrice) ||
+        (this.store.settings.minimumDeliveryOnly && this.bagPickup == 1)
+      ) {
+        settingsPassed = true;
+      } else {
+        settingsPassed = false;
+      }
+
+      // Check if the bag contains only a gift card
       this.bag.forEach(item => {
         if (!item.meal.gift_card) {
           giftCardOnly = false;
@@ -109,23 +126,13 @@ export default {
       }
 
       if (
-        mddPassed &&
-        ((this.minOption === "meals" && this.total >= this.minMeals) ||
-          (this.minOption === "price" &&
-            this.totalBagPricePreFeesBothTypes >= this.minPrice) ||
-          this.store.settings.minimumDeliveryOnly ||
-          giftCardOnly)
+        (settingsPassed && deliveryDayMinimumPassed && categoryMinimumPassed) ||
+        giftCardOnly
       ) {
-        passed = true;
+        return true;
       } else {
-        passed = false;
+        return false;
       }
-
-      if (giftCardOnly) {
-        passed = true;
-      }
-
-      return passed;
     },
     deliveryDateOptions() {
       let deliveryDays = this.storeSetting(
