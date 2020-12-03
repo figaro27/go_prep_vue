@@ -1933,24 +1933,25 @@ export default {
       //           .valueTotalFat;
       //     break;
       // }
-
-      switch (macro) {
-        case "calories":
-          return meal.macros && meal.macros.calories
-            ? meal.macros.calories
-            : null;
-          break;
-        case "carbs":
-          return meal.macros && meal.macros.carbs ? meal.macros.carbs : null;
-          break;
-        case "protein":
-          return meal.macros && meal.macros.protein
-            ? meal.macros.protein
-            : null;
-          break;
-        case "fat":
-          return meal.macros && meal.macros.fat ? meal.macros.fat : null;
-          break;
+      if (meal) {
+        switch (macro) {
+          case "calories":
+            return meal.macros && meal.macros.calories
+              ? meal.macros.calories
+              : null;
+            break;
+          case "carbs":
+            return meal.macros && meal.macros.carbs ? meal.macros.carbs : null;
+            break;
+          case "protein":
+            return meal.macros && meal.macros.protein
+              ? meal.macros.protein
+              : null;
+            break;
+          case "fat":
+            return meal.macros && meal.macros.fat ? meal.macros.fat : null;
+            break;
+        }
       }
     },
     showMacros(meal) {

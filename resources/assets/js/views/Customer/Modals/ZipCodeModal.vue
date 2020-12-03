@@ -39,7 +39,7 @@
     </h5>
     <b-form class="mt-2 text-center" @submit.prevent="setZipCode">
       <center>
-        <b-form-group :state="true" class="d-flex">
+        <b-form-group :state="true" class="d-flex d-center">
           <b-form-input
             v-if="delivery && !bagZipCode && !noAvailableDays"
             placeholder="Zip Code"
