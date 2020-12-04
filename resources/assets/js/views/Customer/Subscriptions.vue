@@ -490,7 +490,8 @@ export default {
       },
       optionsMeal: {
         headings: {
-          unit_price: "Unit Price"
+          unit_price: "Unit Price",
+          meal: "Item"
         },
         rowClassCallback: function(row) {
           let classes = `subscription-${row.id}`;

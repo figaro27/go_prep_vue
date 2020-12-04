@@ -1064,7 +1064,8 @@ export default {
       columnsMeal: ["size", "meal", "quantity", "unit_price", "subtotal"],
       optionsMeal: {
         headings: {
-          unit_price: "Unit Price"
+          unit_price: "Unit Price",
+          meal: "Item"
         },
         rowClassCallback: function(row) {
           let classes = `order-${row.id}`;
