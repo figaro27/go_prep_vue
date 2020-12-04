@@ -490,7 +490,7 @@ Cooler Deposit<br>
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">
                             @money($order->balance, $currency, 2)</span>
                           @endif
-                          @if ($order->subscription && $order->subscription->monthlyPrepay && ($order->subscription->weekCount !== 1 || $order->subscription->weekCount % 4 !== 1))
+                          @if ($order->subscription && $order->subscription->monthlyPrepay)
                           <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">Prepaid</span>
                           @endif
                         </td>

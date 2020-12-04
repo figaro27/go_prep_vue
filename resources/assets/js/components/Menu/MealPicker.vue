@@ -26,7 +26,7 @@
             >
               Preset
               <hint title="Preset" class="ml-1"
-                >Choose this option to pre-select the meals that will be
+                >Choose this option to pre-select the items that will be
                 included in this variation.</hint
               >
             </b-form-radio>
@@ -38,7 +38,7 @@
             >
               Selectable
               <hint title="Selectable" class="ml-1"
-                >Choose this option to let your customer choose which meals they
+                >Choose this option to let your customer choose which items they
                 want to make up this variation.</hint
               >
             </b-form-radio>
@@ -105,7 +105,7 @@
           :disabled="!canSave"
           @click.prevent="save"
           class="pull-right mr-2"
-          >Save Meals</b-button
+          >Save Items</b-button
         >
       </span>
 
@@ -167,7 +167,7 @@
           variant="primary"
           :disabled="!canSave"
           @click.prevent="save"
-          >Save Meals</b-button
+          >Save Items</b-button
         >
       </div>
     </v-client-table>
@@ -351,7 +351,7 @@ export default {
         meals: this.selected,
         selectable: this.meals_selectable
       });
-      this.$toastr.s("Meals saved.");
+      this.$toastr.s("Items saved.");
     },
     getMealDeliveryDay(id) {
       const index = this.findMealIndex(id);

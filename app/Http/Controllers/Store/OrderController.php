@@ -773,7 +773,7 @@ class OrderController extends StoreController
                 'id',
                 $mealSub->subscription_id
             )->first();
-            if ($sub->status == 'active' && $sub->weekCount > 0) {
+            if ($sub->status == 'active' && $sub->renewalCount > 0) {
                 $quantity += $mealSub->quantity;
             }
         }

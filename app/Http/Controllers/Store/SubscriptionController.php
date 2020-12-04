@@ -322,11 +322,12 @@ class SubscriptionController extends StoreController
                 $plan = \Stripe\Plan::create(
                     [
                         "amount" => round($total * 100),
-                        "interval" => $sub->interval,
+                        "interval" => 'week',
+                        "interval_count" => $sub->intervalCount,
                         "product" => [
                             "name" =>
-                                $sub->interval .
-                                "ly subscription (" .
+                                $sub->interval_title .
+                                " subscription (" .
                                 $store->storeDetail->name .
                                 ")"
                         ],

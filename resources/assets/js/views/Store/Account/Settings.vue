@@ -39,7 +39,7 @@
                   @change="val => updateLogo(val)"
                 ></picture-input>
               </b-form-group>
-              <br /><br />
+              <br /><br /><br />
               <b-form @submit.prevent="updateStoreSettings(true)">
                 <b-form-group label="Transfer Type" v-if="!customDeliveryDays">
                   <b-form-checkbox-group
@@ -326,7 +326,7 @@
                 >
                   <textarea
                     v-model="delivery_distance_zipcodes"
-                    class="form-control"
+                    class="form-control w-600"
                     placeholder="Zip Codes"
                   ></textarea>
                 </b-form-group>
@@ -418,11 +418,13 @@
                     />
                   </p>
                   <b-form-input
-                    type="text"
                     v-model="storeSettings.minimumPrice"
                     placeholder="Minimum Price"
                     required
                     @input="updateStoreSettings()"
+                    class="w-180"
+                    type="number"
+                    min="0"
                   ></b-form-input>
                 </b-form-group>
                 <b-form-group
@@ -441,79 +443,15 @@
                     />
                   </p>
                   <b-form-input
-                    type="text"
                     v-model="storeSettings.minimumMeals"
                     placeholder="Minimum Number of Items"
                     required
                     @input="updateStoreSettings()"
-                  ></b-form-input>
-                </b-form-group>
-                <b-form-group :state="true">
-                  <p>
-                    <span class="mr-1">Subscription Discount</span>
-                    <img
-                      v-b-popover.hover="
-                        'Give your customers an incentive to create a subscription with you by offering a discount percentage. The customer is locked into at least 2 orders before they can cancel their subscription through our system in order to prevent users from abusing the discount. They would have to contact you if they want to cancel the subscription before at least 2 orders in which you can cancel it for them if you agree.'
-                      "
-                      title="Subscription Discount"
-                      src="/images/store/popover.png"
-                      class="popover-size"
-                    />
-                  </p>
-                  <c-switch
-                    color="success"
-                    variant="pill"
-                    size="lg"
-                    v-model="storeSettings.applyMealPlanDiscount"
-                    @change.native="updateStoreSettings()"
-                  />
-                  <b-form-input
-                    v-if="storeSettings.applyMealPlanDiscount"
-                    id="meal-plan-discount"
-                    v-model="storeSettings.mealPlanDiscount"
-                    placeholder="Subscription Discount %"
-                    required
-                    @input="updateStoreSettings()"
+                    type="number"
+                    min="0"
                   ></b-form-input>
                 </b-form-group>
 
-                <b-form-group :state="true">
-                  <p>
-                    <span class="mr-1">Minimum Subscription Weeks</span>
-                    <img
-                      v-b-popover.hover="
-                        'Type in the number of weeks of orders your customer will be locked into when creating a subscription. The Cancel button will only show for them after they meet this minimum requirement. They would have to contact you directly if they want to cancel. This is a way to prevent abuse of the subscription discount if you have one.'
-                      "
-                      title="Minimum Subscription Weeks"
-                      src="/images/store/popover.png"
-                      class="popover-size"
-                    />
-                  </p>
-                  <b-form-input
-                    v-model="storeSettings.minimumSubWeeks"
-                    required
-                    @input="updateStoreSettings()"
-                  ></b-form-input>
-                </b-form-group>
-
-                <b-form-group :state="true" class="mt-4 mb-4">
-                  <p>
-                    <span class="mr-1">Subscription Renewal Timing</span>
-                    <img
-                      v-b-popover.hover="
-                        'Choose \'Renew Now\' for your customer\'s subscription renewal/lock in day to be the day they created the subscription. Choose \'Renew At Cutoff\' for the subscription renewal date to be moved to the cutoff day for the delivery day the customer chooses. The first option renews & creates the order immediately and on the same day each week the subscription was created, but there will be a gap between the renewal time and your cutoff time in which your customer is able to update their subscription. The second option gives your customer all the way until your cutoff to update their subscription, but their card is not charged and order is not created and shown until your cutoff.'
-                      "
-                      title="Subscription Renewal Timing"
-                      src="/images/store/popover.png"
-                      class="popover-size"
-                    />
-                  </p>
-                  <b-form-radio-group
-                    v-model="storeSettings.subscriptionRenewalType"
-                    :options="subscriptionRenewalTypeOptions"
-                    @input="updateStoreSettings()"
-                  ></b-form-radio-group>
-                </b-form-group>
                 <b-form-group :state="true">
                   <p>
                     <span class="mr-1">Delivery Fee</span>
@@ -560,16 +498,17 @@
                     </b-form-radio-group>
 
                     <b-form-input
-                      class="mt-3"
+                      class="mt-3 w-180"
                       v-if="
                         storeSettings.applyDeliveryFee &&
                           storeSettings.deliveryFeeType === 'flat'
                       "
-                      type="text"
                       v-model="storeSettings.deliveryFee"
                       placeholder="Delivery Fee"
                       required
                       @input="updateStoreSettings()"
+                      type="number"
+                      min="0"
                     ></b-form-input>
                     <b-btn
                       variant="primary"
@@ -589,7 +528,8 @@
                             storeSettings.applyDeliveryFee &&
                               storeSettings.deliveryFeeType === 'mileage'
                           "
-                          type="text"
+                          type="number"
+                          min="0"
                           v-model="storeSettings.mileageBase"
                           placeholder="Base Amount"
                           required
@@ -603,7 +543,8 @@
                             storeSettings.applyDeliveryFee &&
                               storeSettings.deliveryFeeType === 'mileage'
                           "
-                          type="text"
+                          type="number"
+                          min="0"
                           v-model="storeSettings.mileagePerMile"
                           placeholder="Per Mile"
                           required
@@ -658,8 +599,9 @@
                     >
                   </b-form-radio-group>
                   <b-form-input
-                    class="mb-4"
-                    type="text"
+                    class="mb-4 w-180"
+                    type="number"
+                    min="0"
                     v-model="storeSettings.processingFee"
                     placeholder="Processing Fee"
                     required
@@ -677,7 +619,7 @@
                   rows="3"
                   v-model="shippingInstructions"
                   placeholder="Please include shipping instructions to your customers. This will be shown on the checkout page as well as email notifications the customer receives."
-                  class="mb-2"
+                  class="mb-2 w-600"
                 ></b-form-textarea>
 
                 <p v-if="transferTypeCheckDelivery">Delivery Instructions:</p>
@@ -687,7 +629,7 @@
                   rows="3"
                   v-model="deliveryInstructions"
                   placeholder="Please include delivery instructions to your customers (time window, how long your driver will wait, etc.) This will be shown on the checkout page as well as email notifications the customer receives."
-                  class="mb-2"
+                  class="mb-2 w-600"
                 ></b-form-textarea>
                 <p v-if="transferTypeCheckPickup">Pickup Instructions:</p>
                 <b-form-textarea
@@ -696,6 +638,7 @@
                   rows="3"
                   v-model="pickupInstructions"
                   placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time). This will be shown on the checkout page as well as email notifications the customer receives."
+                  class="mb-2 w-600"
                 ></b-form-textarea>
 
                 <p class="mt-2">
@@ -714,6 +657,7 @@
                   rows="3"
                   v-model="notesForCustomer"
                   placeholder="Thank you for your order."
+                  class="w-600"
                 ></b-form-textarea>
 
                 <!-- <b-button type="submit" variant="primary" class="mt-3"
@@ -754,8 +698,9 @@
                     <b-form-group :state="true">
                       <b-form-input
                         label="Sales Tax"
-                        class="mt-3"
-                        type="text"
+                        class="mt-3 w-180"
+                        type="number"
+                        min="0"
                         v-model="salesTax"
                         required
                         @input="updateStoreSettings()"
@@ -786,47 +731,6 @@
                     />
                   </div>
 
-                  <p class="mt-2">
-                    <span class="mr-1">Google Analytics Code</span>
-                    <img
-                      v-b-popover.hover="
-                        'Create a Google Analytics account and paste in your tracking code below. You\'ll then be able to see all kinds of traffic reports about who viewed your menu page. Please follow the exact format that is shown to you which looks like this: UA-00000000-00.'
-                      "
-                      title="Google Analytics"
-                      src="/images/store/popover.png"
-                      class="popover-size"
-                    />
-                  </p>
-
-                  <b-form-group :state="true" class="mt-2">
-                    <b-form-input
-                      type="text"
-                      v-model="storeSettings.gaCode"
-                      placeholder="UA-00000000-00"
-                      @input="updateStoreSettings()"
-                    ></b-form-input>
-                  </b-form-group>
-
-                  <p class="mt-2">
-                    <span class="mr-1">Facebook Pixel Code</span>
-                    <img
-                      v-b-popover.hover="
-                        'If you are running a Facebook advertising campaign, you can paste your Facebook pixel code here in order to track traffic and orders from Facebook.'
-                      "
-                      title="Facebook Pixel"
-                      src="/images/store/popover.png"
-                      class="popover-size"
-                    />
-                  </p>
-
-                  <b-form-group :state="true" class="mt-2">
-                    <b-form-input
-                      type="text"
-                      v-model="storeSettings.fbPixel"
-                      @input="updateStoreSettings()"
-                    ></b-form-input>
-                  </b-form-group>
-
                   <p class="mt-2">Timezone</p>
                   <b-select
                     :options="timezoneOptions"
@@ -837,7 +741,7 @@
                   </b-select>
                 </b-form>
 
-                <p class="mt-2">
+                <p class="mt-3">
                   <span class="mr-1 mt-2">Open</span>
                   <img
                     v-b-popover.hover="
@@ -932,17 +836,17 @@
                   class="popover-size"
                 />
               </p>
-              <b-form @submit.prevent="updateStoreSettings">
-                <b-form-group :state="true">
-                  <c-switch
-                    color="success"
-                    variant="pill"
-                    size="lg"
-                    v-model="storeSettings.showNutrition"
-                    @change.native="updateStoreSettings()"
-                  />
-                </b-form-group>
-              </b-form>
+
+              <b-form-group :state="true">
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeSettings.showNutrition"
+                  @change.native="updateStoreSettings()"
+                />
+              </b-form-group>
+
               <p>
                 <span class="mr-1">Show Macros</span>
                 <img
@@ -954,17 +858,13 @@
                   class="popover-size"
                 />
               </p>
-              <b-form @submit.prevent="updateStoreSettings">
-                <b-form-group :state="true">
-                  <c-switch
-                    color="success"
-                    variant="pill"
-                    size="lg"
-                    v-model="storeSettings.showMacros"
-                    @change.native="updateStoreSettings()"
-                  />
-                </b-form-group>
-              </b-form>
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.showMacros"
+                @change.native="updateStoreSettings()"
+              />
               <p>
                 <span class="mr-1">Show Ingredients</span>
                 <img
@@ -976,41 +876,13 @@
                   class="popover-size"
                 />
               </p>
-              <b-form @submit.prevent="updateStoreSettings">
-                <b-form-group :state="true">
-                  <c-switch
-                    color="success"
-                    variant="pill"
-                    size="lg"
-                    v-model="storeSettings.showIngredients"
-                    @change.native="updateStoreSettings()"
-                  />
-                </b-form-group>
-              </b-form>
-
-              <p>
-                <span class="mr-1">Allow Weekly Subscriptions</span>
-                <img
-                  v-b-popover.hover="
-                    'Shows a section on your bag/checkout page that lets the customer opt in for a weekly subscription for an optional discount. The customer will then be charged every week. They can cancel, or change meals in their subscriptions. Users are locked into two weeks before being able to cancel. They have to contact you bif they wish to cancel beforehand.'
-                  "
-                  title="Allow Weekly Subscriptions"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </p>
-
-              <b-form @submit.prevent="updateStoreSettings">
-                <b-form-group :state="true">
-                  <c-switch
-                    color="success"
-                    variant="pill"
-                    size="lg"
-                    v-model="storeSettings.allowMealPlans"
-                    @change.native="updateStoreSettings()"
-                  />
-                </b-form-group>
-              </b-form>
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.showIngredients"
+                @change.native="updateStoreSettings()"
+              />
 
               <p>
                 <span class="mr-1">Enable Meal Instructions</span>
@@ -1035,6 +907,49 @@
                   />
                 </b-form-group>
               </b-form>
+
+              <p class="mt-2">
+                <span class="mr-1">Google Analytics Code</span>
+                <img
+                  v-b-popover.hover="
+                    'Create a Google Analytics account and paste in your tracking code below. You\'ll then be able to see all kinds of traffic reports about who viewed your menu page. Please follow the exact format that is shown to you which looks like this: UA-00000000-00.'
+                  "
+                  title="Google Analytics"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+
+              <b-form-group :state="true" class="mt-2">
+                <b-form-input
+                  type="text"
+                  v-model="storeSettings.gaCode"
+                  placeholder="UA-00000000-00"
+                  @input="updateStoreSettings()"
+                  class="w-180"
+                ></b-form-input>
+              </b-form-group>
+
+              <p class="mt-2">
+                <span class="mr-1">Facebook Pixel Code</span>
+                <img
+                  v-b-popover.hover="
+                    'If you are running a Facebook advertising campaign, you can paste your Facebook pixel code here in order to track traffic and orders from Facebook.'
+                  "
+                  title="Facebook Pixel"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+
+              <b-form-group :state="true" class="mt-2">
+                <b-form-input
+                  type="text"
+                  v-model="storeSettings.fbPixel"
+                  @input="updateStoreSettings()"
+                  class="w-180"
+                ></b-form-input>
+              </b-form-group>
 
               <b-form @submit.prevent="updateStoreSettings">
                 <b-form-group :state="true" v-if="!storeModules.hideBranding">
@@ -1071,6 +986,7 @@
                     v-model="storeSettings.website"
                     placeholder="Example: http://goprep.com"
                     @input="updateStoreSettings()"
+                    class="w-600"
                   ></b-form-input>
                 </b-form-group>
                 <b-form-group
@@ -1078,6 +994,7 @@
                   :state="true"
                 >
                   <wysiwyg
+                    class="w-600"
                     v-model="description"
                     @input="updateStoreDetails()"
                   />
@@ -1101,7 +1018,168 @@
                 <!-- <b-button type="submit" variant="primary mt-2">Save</b-button> -->
               </b-form>
             </b-tab>
+            <b-tab title="Subscriptions">
+              <p>
+                <span class="mr-1">Allow Weekly Subscriptions</span>
+                <img
+                  v-b-popover.hover="
+                    'Shows a section on your bag/checkout page that lets the customer opt in for a weekly subscription for an optional discount. The customer will then be charged every week. They can cancel, or change items in their subscriptions.'
+                  "
+                  title="Allow Weekly Subscriptions"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.allowWeeklySubscriptions"
+                @change.native="updateStoreSettings()"
+              />
+              <b-form-group
+                :state="true"
+                v-if="storeSettings.allowWeeklySubscriptions"
+              >
+                <p class="mt-3">
+                  <span class="mr-1">Minimum Subscription Weeks</span>
+                  <img
+                    v-b-popover.hover="
+                      'Type in the number of weeks of orders your customer will be locked into when creating a weekly subscription. The Cancel button will only show for them after they meet this minimum requirement. They would have to contact you directly if they want to cancel. This is a way to prevent abuse of the subscription discount if you have one.'
+                    "
+                    title="Minimum Subscription Weeks"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <b-form-input
+                  v-model="storeSettings.minimumSubWeeks"
+                  required
+                  @input="updateStoreSettings()"
+                  class="w-180"
+                  type="number"
+                  min="0"
+                ></b-form-input>
+              </b-form-group>
+              <!-- <p v-if="storeSettings.allowWeeklySubscriptions || storeSettings.allowMonthlySubscriptions" class="mt-3">
+                <span class="mr-1">Weekly Subscriptions Paid Monthly</span>
+                <img
+                  v-b-popover.hover="
+                    'Subscription orders are created every week just like a regular weekly subscription, but customers prepay all at once for 4 weeks and are locked in for 4 weeks. If they cancel the subscription on week 2 for example, the cancellation applies to next month\'s renewal and they will still receive orders for weeks 3 and 4.'
+                  "
+                  title="Weekly Subscriptions Paid Monthly"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+                <c-switch
+                  v-if="storeSettings.allowWeeklySubscriptions || storeSettings.allowMonthlySubscriptions"
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeSettings.monthlyPrepaySubscriptions"
+                  @change.native="updateStoreSettings()"
+                /> -->
+              <p class="mt-3">
+                <span class="mr-1">Allow Monthly Subscriptions</span>
+                <img
+                  v-b-popover.hover="
+                    'Shows a section on your bag/checkout page that lets the customer opt in for a monthly subscription for an optional discount. The customer will then be charged once every 4 weeks and receive 1 order every 4 weeks. They can cancel, or change items in their subscriptions.'
+                  "
+                  title="Allow Monthly Subscriptions"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.allowMonthlySubscriptions"
+                @change.native="updateStoreSettings()"
+              />
+              <p class="mt-3">
+                <span class="mr-1">Allow Multiple Subscriptions</span>
+                <img
+                  v-b-popover.hover="
+                    'Allow a single customer to create multiple subscriptions. Caveat - some customers may forget about their existing subscription and create another one despite the alert messages we show them about their existing subscription. They will then unintentionally be charged twice and have two orders created for the week and ask for a cancellation/refund.'
+                  "
+                  title="Allow Multiple Subscriptions"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.allowMultipleSubscriptions"
+                @change.native="updateStoreSettings()"
+              />
+              <b-form-group
+                :state="true"
+                v-if="
+                  storeSettings.allowWeeklySubscriptions ||
+                    storeSettings.allowMonthlySubscriptions
+                "
+              >
+                <p class="mt-3">
+                  <span class="mr-1">Subscription Discount</span>
+                  <img
+                    v-b-popover.hover="
+                      'Give your customers an incentive to create a subscription with you by offering a discount percentage. The customer is locked into at least 2 orders before they can cancel their subscription through our system in order to prevent users from abusing the discount. They would have to contact you if they want to cancel the subscription before at least 2 orders in which you can cancel it for them if you agree.'
+                    "
+                    title="Subscription Discount"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeSettings.applyMealPlanDiscount"
+                  @change.native="updateStoreSettings()"
+                />
+                <b-form-input
+                  v-if="storeSettings.applyMealPlanDiscount"
+                  id="meal-plan-discount"
+                  v-model="storeSettings.mealPlanDiscount"
+                  placeholder="Subscription Discount %"
+                  required
+                  @input="updateStoreSettings()"
+                  type="number"
+                  min="0"
+                  class="w-180"
+                ></b-form-input>
+              </b-form-group>
 
+              <b-form-group
+                :state="true"
+                class="mt-4 mb-4"
+                v-if="
+                  storeSettings.allowWeeklySubscriptions ||
+                    storeSettings.allowMonthlySubscriptions
+                "
+              >
+                <p>
+                  <span class="mr-1">Subscription Renewal Timing</span>
+                  <img
+                    v-b-popover.hover="
+                      'Choose \'Renew Now\' for your customer\'s subscription renewal/lock in day to be the day they created the subscription. Choose \'Renew At Cutoff\' for the subscription renewal date to be moved to the cutoff day for the delivery day the customer chooses. The first option renews & creates the order immediately and on the same day each week the subscription was created, but there will be a gap between the renewal time and your cutoff time in which your customer is able to update their subscription. The second option gives your customer all the way until your cutoff to update their subscription, but their card is not charged and order is not created and shown until your cutoff occurs.'
+                    "
+                    title="Subscription Renewal Timing"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <b-form-radio-group
+                  v-model="storeSettings.subscriptionRenewalType"
+                  :options="subscriptionRenewalTypeOptions"
+                  @input="updateStoreSettings()"
+                ></b-form-radio-group>
+              </b-form-group>
+            </b-tab>
             <b-tab title="Notifications">
               <b-form @submit.prevent="updateStoreSettings">
                 <b-form-group label="New Orders" :state="true">
@@ -1335,7 +1413,7 @@
                   color="success"
                   variant="pill"
                   size="lg"
-                  v-model="storeModules.allowMultipleSubscriptions"
+                  v-model="storeSettings.allowMultipleSubscriptions"
                   @change.native="updateStoreModules()"
                 />
 

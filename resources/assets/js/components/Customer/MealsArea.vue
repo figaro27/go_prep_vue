@@ -963,7 +963,7 @@ export default {
         this.user.id &&
         this.subscriptions.length > 0 &&
         !this.$route.params.id &&
-        !this.store.modules.allowMultipleSubscriptions
+        !this.store.settings.allowMultipleSubscriptions
       ) {
         this.$router.push({
           path: "/customer/subscriptions/" + this.subscriptions[0].id,

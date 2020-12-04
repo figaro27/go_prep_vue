@@ -235,8 +235,7 @@
                       >
                         <p>
                           Your order is locked in for this week. You will be
-                          able to pause, cancel, or change meals in your meal
-                          plan the day after your food gets delivered on
+                          able to pause, cancel, or change items in your subscription the day after your items get delivered on
                           {{
                             moment(
                               subscription.latest_paid_order.delivery_date
@@ -278,9 +277,9 @@
                           Your card will be charged on
                           {{
                             moment(subscription.next_renewal_at).format("dddd")
-                          }}. You can Pause, Cancel, or Change Meals up until
+                          }}. You can Pause, Cancel, or Change Items up until
                           that time to affect this weeks order. If you Pause,
-                          Cancel, or Change Meals after this day, it will be
+                          Cancel, or Change Items after this day, it will be
                           applied to <strong>next week's</strong> order.
                         </p>
                       </div>

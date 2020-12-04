@@ -79,7 +79,7 @@ class SubscriptionController extends UserController
         }
 
         if ($sub->monthlyPrepay) {
-            if ($sub->weekCount % 4 === 0) {
+            if ($sub->renewalCount % 4 === 0) {
                 $sub->cancel();
             } else {
                 try {
@@ -363,11 +363,12 @@ class SubscriptionController extends UserController
                 $plan = \Stripe\Plan::create(
                     [
                         "amount" => round($total * 100),
-                        "interval" => $sub->interval,
+                        "interval" => 'week',
+                        "interval_count" => $sub->intervalCount,
                         "product" => [
                             "name" =>
-                                $sub->interval .
-                                "ly subscription (" .
+                                $sub->interval_title .
+                                " subscription (" .
                                 $store->storeDetail->name .
                                 ")"
                         ],

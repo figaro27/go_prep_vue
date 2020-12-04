@@ -44,7 +44,7 @@
         </h5>
         <p class="center-text">
           You have an active {{ subscriptions[0].interval }}ly subscription with
-          us. Update your meals for your next renewal on
+          us. Update your items for your next renewal on
           {{ moment(subscriptions[0].next_renewal).format("dddd, MMM Do") }}.
         </p>
       </b-alert>
@@ -219,7 +219,7 @@ export default {
         this.user.id &&
         this.store.modules.subscriptionOnly &&
         this.subscriptions.length > 0 &&
-        !this.store.modules.allowMultipleSubscriptions
+        !this.store.settings.allowMultipleSubscriptions
       ) {
         this.$router.push({
           path: "/customer/subscriptions/" + this.subscriptions[0].id
@@ -503,7 +503,7 @@ export default {
         this.user.id &&
         this.subscriptions.length > 0 &&
         !this.$route.params.id &&
-        !this.store.modules.allowMultipleSubscriptions
+        !this.store.settings.allowMultipleSubscriptions
       ) {
         this.$router.push({
           path: "/customer/bag",

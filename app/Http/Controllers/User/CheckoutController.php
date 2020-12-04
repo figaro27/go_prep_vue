@@ -62,7 +62,7 @@ class CheckoutController extends UserController
                 'id',
                 $mealSub->subscription_id
             )->first();
-            if ($sub->status == 'active' && $sub->weekCount > 0) {
+            if ($sub->status == 'active' && $sub->renewalCount > 0) {
                 $quantity += $mealSub->quantity;
             }
         }
@@ -97,7 +97,7 @@ class CheckoutController extends UserController
 
             if (
                 $user->has_active_subscription &&
-                !$store->modules->allowMultipleSubscriptions
+                !$store->settings->allowMultipleSubscriptions
             ) {
                 return response()->json(
                     [
@@ -831,11 +831,17 @@ class CheckoutController extends UserController
 
                 if (
                     $interval == Constants::INTERVAL_MONTH &&
-                    !$store->modules->monthlyPlans
+                    !$store->settings->allowMonthlySubscriptions
                 ) {
                     throw new Exception(
                         'Cannot create monthly plan with this store'
                     );
+                }
+
+                if ($interval === 'week' || $monthlyPrepay) {
+                    $intervalCount = 1;
+                } elseif ($interval === 'month') {
+                    $intervalCount = 4;
                 }
 
                 // Get cutoff date for selected delivery day
@@ -866,12 +872,17 @@ class CheckoutController extends UserController
                     $billingAnchor = $cutoff->copy();
                 }
 
+                if ($monthlyPrepay) {
+                    $period = 'Monthly prepay';
+                }
+
                 if (!$cashOrder) {
                     if ($gateway === Constants::GATEWAY_STRIPE) {
                         $plan = \Stripe\Plan::create(
                             [
                                 "amount" => round($total * 100),
-                                "interval" => $interval,
+                                "interval" => 'week',
+                                'interval_count' => $intervalCount,
                                 "product" => [
                                     "name" =>
                                         ucwords($period) .
@@ -959,7 +970,8 @@ class CheckoutController extends UserController
                 $userSubscription->currency = $storeSettings->currency;
                 $userSubscription->pickup = $request->get('pickup', 0);
                 $userSubscription->shipping = $shipping;
-                $userSubscription->interval = $interval;
+                $userSubscription->interval = 'week';
+                $userSubscription->intervalCount = $intervalCount;
                 $userSubscription->monthlyPrepay = $monthlyPrepay;
                 $userSubscription->delivery_day = date(
                     'N',

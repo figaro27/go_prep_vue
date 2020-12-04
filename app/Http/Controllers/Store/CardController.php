@@ -204,7 +204,7 @@ class CardController extends StoreController
         }
 
         if ($sub->monthlyPrepay) {
-            if ($sub->weekCount % 4 === 0) {
+            if ($sub->renewalCount % 4 === 0) {
                 $sub->cancel();
             } else {
                 try {

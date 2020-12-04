@@ -26,7 +26,6 @@ class StoreModule extends Model
         'pickupOnly' => 'boolean',
         'gratuity' => 'boolean',
         'cooler' => 'boolean',
-        'allowMultipleSubscriptions' => 'boolean',
         'frequencyItems' => 'boolean',
         'manualOrderEmails' => 'boolean'
     ];

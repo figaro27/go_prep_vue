@@ -375,7 +375,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
               <td style="border:none;text-align:right;position:relative;right:8px">@money($order->amount - $order->balance, $currency, 2)</td>
             </tr>
             
-            @if ($order->subscription && $order->subscription->monthlyPrepay && ($order->subscription->weekCount !== 1 || $order->subscription->weekCount % 4 !== 1))
+            @if ($order->subscription && $order->subscription->monthlyPrepay)
               <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">Prepaid</span>
             @endif
           </table>

@@ -92,10 +92,14 @@ f<template>
                   props.row.id
               "
             >
-              <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
+              <b-btn class="btn btn-success btn-sm">Change Items</b-btn>
             </router-link>
             <button
-              v-if="props.row.paid_order_count >= storeSettings.minimumSubWeeks"
+              v-if="
+                props.row.paid_order_count >= storeSettings.minimumSubWeeks ||
+                  (props.row.intervalCount === 4 &&
+                    props.row.paid_order_count > 0)
+              "
               class="btn btn-danger btn-sm"
               @click="
                 {
@@ -135,7 +139,7 @@ f<template>
     >
       <p class="center-text mt-3 mb-3">
         Are you sure you want to cancel your subscription? If you want to change
-        your meals you can click "Change Meals" instead to edit this
+        your items you can click "Change Items" instead to edit this
         subscription.
       </p>
       <center>
@@ -147,7 +151,7 @@ f<template>
               subId
           "
         >
-          <b-btn class="btn btn-success btn-md">Change Meals</b-btn>
+          <b-btn class="btn btn-success btn-md">Change Items</b-btn>
         </router-link>
       </center>
     </b-modal>
@@ -167,10 +171,15 @@ f<template>
             <router-link
               :to="`/customer/adjust-subscription/${subscription.id}`"
             >
-              <b-btn class="btn btn-success btn-sm">Change Meals</b-btn>
+              <b-btn class="btn btn-success btn-sm">Change Items</b-btn>
             </router-link>
             <button
-              v-if="subscription.paid_order_count >= 2"
+              v-if="
+                subscription.paid_order_count >=
+                  storeSettings.minimumSubWeeks ||
+                  (subscription.intervalCount === 4 &&
+                    subscription.paid_order_count > 0)
+              "
               class="btn btn-danger btn-sm"
               @click="cancelSubscription"
             >

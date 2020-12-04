@@ -58,7 +58,7 @@
               'id' in viewedStore &&
                 name != 'customer-subscription-changes' &&
                 (!userHasSubscriptions ||
-                  store.modules.allowMultipleSubscriptions)
+                  store.settings.allowMultipleSubscriptions)
             "
             :to="menuURL"
             @click.prevent="backToMenu()"
@@ -69,7 +69,7 @@
               'id' in viewedStore &&
                 name != 'customer-subscription-changes' &&
                 (!userHasSubscriptions ||
-                  store.modules.allowMultipleSubscriptions)
+                  store.settings.allowMultipleSubscriptions)
             "
             :to="bagURL"
             >Checkout</b-nav-item

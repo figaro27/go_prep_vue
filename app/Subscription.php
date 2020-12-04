@@ -30,7 +30,7 @@ class Subscription extends Model
     protected $fillable = [
         'status',
         'cancelled_at',
-        'weekCount',
+        'renewalCount',
         'next_renewal_at'
     ];
 
@@ -66,7 +66,8 @@ class Subscription extends Model
         'monthlyPrepay' => 'boolean',
         'mealsReplaced' => 'boolean',
         'gratuity' => 'float',
-        'shipping' => 'boolean'
+        'shipping' => 'boolean',
+        'manual' => 'boolean'
     ];
 
     public function user()
@@ -248,9 +249,7 @@ class Subscription extends Model
             if ($date->isFuture()) {
                 return $date;
             }
-            return $this->interval == 'week'
-                ? $date->addWeeks(1)
-                : $date->addWeeks(4);
+            return $date->addWeeks($this->intervalCount);
         }
 
         // Catch all
@@ -281,23 +280,32 @@ class Subscription extends Model
 
     public function getIntervalTitleAttribute()
     {
-        switch ($this->interval) {
-            case 'day':
-                return 'Daily';
-                break;
-
-            case 'week':
-                return 'Weekly';
-                break;
-
-            case 'biweek':
-                return 'Bi-Weekly';
-                break;
-
-            case 'month':
-                return 'Monthly';
-                break;
+        if ($this->intervalCount == 1 && !$this->monthlyPrepay) {
+            return 'Weekly';
         }
+        if ($this->intervalCount == 1 && $this->monthlyPrepay) {
+            return 'Weekly (Charged Monthly)';
+        }
+        if ($this->intervalCount == 4) {
+            return 'Monthly';
+        }
+        // switch ($this->interval) {
+        //     case 'day':
+        //         return 'Daily';
+        //         break;
+
+        //     case 'week':
+        //         return 'Weekly';
+        //         break;
+
+        //     case 'biweek':
+        //         return 'Bi-Weekly';
+        //         break;
+
+        //     case 'month':
+        //         return 'Monthly';
+        //         break;
+        // }
     }
 
     public function getMealIdsAttribute()
@@ -523,10 +531,9 @@ class Subscription extends Model
         $newOrder->transferTime = $this->transferTime;
 
         // Refine this
-        $newOrder->delivery_date =
-            $this->interval === 'week'
-                ? $latestOrder->delivery_date->addWeeks(1)
-                : $latestOrder->delivery_date->addWeeks(4);
+        $newOrder->delivery_date = $latestOrder->delivery_date->addWeeks(
+            $this->intervalCount
+        );
         $newOrder->isMultipleDelivery = $this->isMultipleDelivery;
         $newOrder->save();
 
@@ -544,10 +551,9 @@ class Subscription extends Model
             $mealPackageOrder->customTitle = $mealPackageSub->customTitle;
             $mealPackageOrder->customSize = $mealPackageSub->customSize;
             if ($isMultipleDelivery == 1 && $mealPackageSub->delivery_date) {
-                $mealPackageSub->delivery_date =
-                    $this->interval === 'week'
-                        ? $mealPackageSub->delivery_date->addWeeks(1)
-                        : $mealPackageSub->delivery_date->addWeeks(4);
+                $mealPackageSub->delivery_date = $mealPackageSub->delivery_date->addWeeks(
+                    $this->intervalCount
+                );
                 $mealPackageSub->save();
                 $mealPackageOrder->delivery_date =
                     $mealPackageSub->delivery_date;
@@ -597,10 +603,10 @@ class Subscription extends Model
             }
 
             if ($isMultipleDelivery == 1 && $mealSub->delivery_date) {
-                $mealSub->delivery_date =
-                    $this->interval === 'week'
-                        ? $mealSub->delivery_date->addWeeks(1)
-                        : $mealSub->delivery_date->addWeeks(4);
+                $mealSub->delivery_date = $mealSub->delivery_date->addWeeks(
+                    $this->intervalCount
+                );
+
                 $mealSub->save();
                 $mealOrder->delivery_date = $mealSub->delivery_date;
             }
@@ -660,45 +666,37 @@ class Subscription extends Model
         if ($this->status !== 'paused') {
             // Increment the week count by 1
             $this->update([
-                'weekCount' => $this->weekCount + 1
+                'renewalCount' => $this->renewalCount + 1
             ]);
 
             // Only charge once per month on monthly prepay subscriptions
 
-            // Update this for monthly prepay subscriptions
-            // if (
-            //     $this->monthlyPrepay &&
-            //     ($this->weekCount !== 0 || $this->weekCount % 4 !== 0)
-            // ) {
-            //     $this->apply100offCoupon();
-            // } else {
-            //     $this->remove100offCoupon();
-            // }
+            if (
+                $this->monthlyPrepay &&
+                ($this->renewalCount !== 0 && $this->renewalCount % 4 !== 0)
+            ) {
+                $this->apply100offCoupon();
+            } else {
+                $this->remove100offCoupon();
+            }
 
-            // // Cancelling the subscription for next month if cancelled_at is marked
-            // if (
-            //     $this->monthlyPrepay &&
-            //     $this->cancelled_at !== null &&
-            //     $this->weekCount % 4 === 0
-            // ) {
-            //     $this->cancel();
-            //     return;
-            // }
+            // Cancelling the subscription for next month if cancelled_at is marked
+            if (
+                $this->monthlyPrepay &&
+                $this->cancelled_at !== null &&
+                $this->renewalCount % 4 === 0
+            ) {
+                $this->cancel();
+                return;
+            }
 
             // Store next charge time as reported by Stripe
             if (!$this->cashOrder) {
                 $this->next_renewal_at = $subscription->current_period_end;
             } else {
-                if ($this->interval == 'week') {
-                    $this->next_renewal_at = $this->next_renewal_at->addWeeks(
-                        1
-                    );
-                }
-                if ($this->interval == 'month') {
-                    $this->next_renewal_at = $this->next_renewal_at->addWeeks(
-                        4
-                    );
-                }
+                $this->next_renewal_at = $this->next_renewal_at->addWeeks(
+                    $this->intervalCount
+                );
             }
             $this->save();
 
@@ -1081,11 +1079,12 @@ class Subscription extends Model
             $plan = \Stripe\Plan::create(
                 [
                     "amount" => (floor($total * 100) / 100) * 100,
-                    "interval" => $this->interval,
+                    "interval" => 'week',
+                    "interval_count" => $this->intervalCount,
                     "product" => [
                         "name" =>
-                            $this->interval .
-                            "ly subscription (" .
+                            $this->interval_title .
+                            " subscription (" .
                             $this->store->storeDetail->name .
                             ")"
                     ],
@@ -1377,7 +1376,7 @@ class Subscription extends Model
         ]);
 
         if ($stripeInvoice->get('status') === 'void') {
-            $latestOrder->delivery_date->addWeeks(1);
+            $latestOrder->delivery_date->addWeeks($this->intervalCount);
             $latestOrder->save();
         }
 
@@ -1566,14 +1565,14 @@ class Subscription extends Model
     public function apply100offCoupon()
     {
         try {
-            $coupon = \Stripe\Coupon::retrieve('subscription-paused', [
+            $coupon = \Stripe\Coupon::retrieve('100-off-coupon', [
                 'stripe_account' => $this->store->settings->stripe_id
             ]);
         } catch (\Exception $e) {
             $coupon = \Stripe\Coupon::create(
                 [
                     'duration' => 'forever',
-                    'id' => 'subscription-paused',
+                    'id' => '100-off-coupon',
                     'percent_off' => 100
                 ],
                 [
@@ -1588,7 +1587,7 @@ class Subscription extends Model
                 'stripe_account' => $this->store->settings->stripe_id
             ]
         );
-        $subscription->coupon = 'subscription-paused';
+        $subscription->coupon = '100-off-coupon';
         $subscription->save();
     }
 
@@ -1853,11 +1852,9 @@ class Subscription extends Model
         $newOrder->pickup_location_id = $this->pickup_location_id;
         $newOrder->transferTime = $this->transferTime;
 
-        // Refine this
-        $newOrder->delivery_date =
-            $this->interval === 'week'
-                ? $latestOrder->delivery_date->addWeeks(1)
-                : $latestOrder->delivery_date->addWeeks(4);
+        $newOrder->delivery_date = $latestOrder->delivery_date->addWeeks(
+            $this->intervalCount
+        );
         $newOrder->isMultipleDelivery = $this->isMultipleDelivery;
         $newOrder->save();
 
@@ -1875,10 +1872,9 @@ class Subscription extends Model
             $mealPackageOrder->customTitle = $mealPackageSub->customTitle;
             $mealPackageOrder->customSize = $mealPackageSub->customSize;
             if ($isMultipleDelivery == 1 && $mealPackageSub->delivery_date) {
-                $mealPackageSub->delivery_date =
-                    $this->interval === 'week'
-                        ? $mealPackageSub->delivery_date->addWeeks(1)
-                        : $mealPackageSub->delivery_date->addWeeks(4);
+                $mealPackageSub->delivery_date = $mealPackageSub->delivery_date->addWeeks(
+                    $this->intervalCount
+                );
                 $mealPackageSub->save();
                 $mealPackageOrder->delivery_date =
                     $mealPackageSub->delivery_date;
@@ -1928,10 +1924,9 @@ class Subscription extends Model
             }
 
             if ($isMultipleDelivery == 1 && $mealSub->delivery_date) {
-                $mealSub->delivery_date =
-                    $this->interval === 'week'
-                        ? $mealSub->delivery_date->addWeeks(1)
-                        : $mealSub->delivery_date->addWeeks(4);
+                $mealSub->delivery_date = $mealSub->delivery_date->addWeeks(
+                    $this->intervalCount
+                );
                 $mealSub->save();
                 $mealOrder->delivery_date = $mealSub->delivery_date;
             }
@@ -1973,14 +1968,9 @@ class Subscription extends Model
                         $attachment->quantity * $item['quantity'];
 
                     if ($isMultipleDelivery == 1 && $mealSub->delivery_date) {
-                        $mealOrder->delivery_date =
-                            $this->interval === 'week'
-                                ? $mealSub->delivery_date
-                                    ->addWeeks(1)
-                                    ->toDateString()
-                                : $mealSub->delivery_date
-                                    ->addWeeks(4)
-                                    ->toDateString();
+                        $mealOrder->delivery_date = $mealSub->delivery_date
+                            ->addWeeks($this->intervalCount)
+                            ->toDateString();
                     }
 
                     $mealOrder->save();
@@ -1991,45 +1981,37 @@ class Subscription extends Model
         if ($this->status !== 'paused') {
             // Increment the week count by 1
             $this->update([
-                'weekCount' => $this->weekCount + 1
+                'renewalCount' => $this->renewalCount + 1
             ]);
 
             // Only charge once per month on monthly prepay subscriptions
 
-            // Update this for monthly prepay subscriptions
-            // if (
-            //     $this->monthlyPrepay &&
-            //     ($this->weekCount !== 0 || $this->weekCount % 4 !== 0)
-            // ) {
-            //     $this->apply100offCoupon();
-            // } else {
-            //     $this->remove100offCoupon();
-            // }
+            if (
+                $this->monthlyPrepay &&
+                ($this->renewalCount !== 0 && $this->renewalCount % 4 !== 0)
+            ) {
+                $this->apply100offCoupon();
+            } else {
+                $this->remove100offCoupon();
+            }
 
-            // // Cancelling the subscription for next month if cancelled_at is marked
-            // if (
-            //     $this->monthlyPrepay &&
-            //     $this->cancelled_at !== null &&
-            //     $this->weekCount % 4 === 0
-            // ) {
-            //     $this->cancel();
-            //     return;
-            // }
+            // Cancelling the subscription for next month if cancelled_at is marked
+            if (
+                $this->monthlyPrepay &&
+                $this->cancelled_at !== null &&
+                $this->renewalCount % 4 === 0
+            ) {
+                $this->cancel();
+                return;
+            }
 
             // Store next charge time as reported by Stripe
             if (!$this->cashOrder) {
                 $this->next_renewal_at = $subscription->current_period_end;
             } else {
-                if ($this->interval == 'week') {
-                    $this->next_renewal_at = $this->next_renewal_at->addWeeks(
-                        1
-                    );
-                }
-                if ($this->interval == 'month') {
-                    $this->next_renewal_at = $this->next_renewal_at->addWeeks(
-                        4
-                    );
-                }
+                $this->next_renewal_at = $this->next_renewal_at->addWeeks(
+                    $this->intervalCount
+                );
             }
             $this->save();
 

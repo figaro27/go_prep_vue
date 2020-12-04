@@ -84,7 +84,9 @@ class StoreSetting extends Model
         'showIngredients' => 'boolean',
         'applyDeliveryFee' => 'boolean',
         'applyProcessingFee' => 'boolean',
-        'allowMealPlans' => 'boolean',
+        'allowWeeklySubscriptions' => 'boolean',
+        'allowMonthlySubscriptions' => 'boolean',
+        'monthlyPrepaySubscriptions' => 'boolean',
         'applyMealPlanDiscount' => 'boolean',
         'allowPickup' => 'boolean',
         'meal_packages' => 'boolean',
@@ -102,7 +104,8 @@ class StoreSetting extends Model
         'mealInstructions' => 'boolean',
         'enableSalesTax' => 'boolean',
         'minimumDeliveryOnly' => 'boolean',
-        'salesTaxAfterFees' => 'boolean'
+        'salesTaxAfterFees' => 'boolean',
+        'allowMultipleSubscriptions' => 'boolean'
     ];
 
     public function setAttributeVisibility()

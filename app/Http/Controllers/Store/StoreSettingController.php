@@ -95,14 +95,24 @@ class StoreSettingController extends StoreController
         ]);
         $values['delivery_days'] = json_encode($values['delivery_days']);
         $values['notifications'] = json_encode($values['notifications']);
-        $values['delivery_distance_zipcodes'] =
-            '[' .
-            str_replace(
-                '"',
-                "",
-                json_encode($values['delivery_distance_zipcodes'])
-            ) .
-            ']';
+        // $values['delivery_distance_zipcodes'] =
+        //     '[' .
+        //     str_replace(
+        //         '"',
+        //         "",
+        //         json_encode($values['delivery_distance_zipcodes'])
+        //     ) .
+        //     ']';
+        if (is_array($values['delivery_distance_zipcodes'])) {
+            $values['delivery_distance_zipcodes'] =
+                (string) '[' .
+                implode(',', $values['delivery_distance_zipcodes']) .
+                ']';
+        } else {
+            $values['delivery_distance_zipcodes'] =
+                (string) '[' . $values['delivery_distance_zipcodes'] . ']';
+        }
+
         $settings->update($values);
 
         $store = Store::where('id', $this->store->id)->first();

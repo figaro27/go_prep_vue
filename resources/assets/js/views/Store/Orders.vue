@@ -772,14 +772,7 @@
                 class="popover-size d-inline"
               />
             </div>
-            <div
-              v-if="
-                order.subscription &&
-                  order.subscription.monthlyPrepay &&
-                  (order.subscription.weekCount !== 1 ||
-                    order.subscription.weekCount % 4 !== 1)
-              "
-            >
+            <div v-if="order.subscription && order.subscription.monthlyPrepay">
               Prepaid
             </div>
           </div>

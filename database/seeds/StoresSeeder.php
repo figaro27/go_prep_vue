@@ -102,7 +102,6 @@ class StoresSeeder extends Seeder
                 'store_id' => $i,
                 'manualOrders' => 1,
                 'manualCustomers' => 1,
-                'monthlyPlans' => 1,
                 'productionGroups' => 1,
                 'deposits' => 1,
                 'lineItems' => 1,

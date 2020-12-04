@@ -95,7 +95,8 @@
       <li
         class="bag-item"
         v-if="
-          storeSettings.allowMealPlans &&
+          (storeSettings.allowWeeklySubscriptions ||
+            storeSettings.allowMonthlySubscriptions) &&
             $route.params.subscriptionId === undefined &&
             $parent.orderId === undefined &&
             store.modules.frequencyItems
@@ -125,7 +126,7 @@
       <li
         class="bag-item"
         v-if="
-          storeSettings.allowMealPlans &&
+          storeSettings.allowWeeklySubscriptions &&
             $route.params.subscriptionId === undefined &&
             $parent.orderId === undefined &&
             !subscriptionId &&
@@ -211,7 +212,7 @@
       </li>
       <li
         class="checkout-item"
-        v-if="weeklySubscription && storeModules.monthlyPlans"
+        v-if="weeklySubscription && storeSettings.allowMonthlySubscriptions"
       >
         <div class="d-inline">
           <div class="d-inline">
@@ -3402,7 +3403,7 @@ use next_delivery_dates
         deposit = parseInt(deposit);
       }
 
-      let weeklySubscriptionValue = this.storeSettings.allowMealPlans
+      let weeklySubscriptionValue = this.storeSettings.allowWeeklySubscriptions
         ? this.weeklySubscriptionValue
         : 0;
 
@@ -3549,7 +3550,9 @@ use next_delivery_dates
           bag: bag,
           plan: this.weeklySubscriptionValue ? this.weeklySubscriptionValue : 0,
           plan_interval: this.subscriptionInterval,
-          monthlyPrepay: this.hasMonthlyPrepaySubscriptionItems,
+          monthlyPrepay:
+            this.hasMonthlyPrepaySubscriptionItems ||
+            this.storeSettings.monthlyPrepaySubscriptions,
           pickup: this.pickup,
           shipping: this.selectedTransferType == "Shipping" ? 1 : 0,
           isMultipleDelivery: this.isMultipleDelivery,
