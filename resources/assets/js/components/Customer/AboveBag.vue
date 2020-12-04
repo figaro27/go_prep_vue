@@ -40,7 +40,7 @@ export default {
           ? this.$route.params.subscriptionId
           : this.$route.query.subscriptionId;
         return {
-          path: "/customer/subscriptions/" + subId,
+          path: "/customer/adjust-subscription/" + subId,
           query: { sub: this.$route.query.sub }
         };
       } else if (
