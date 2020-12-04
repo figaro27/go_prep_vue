@@ -966,7 +966,7 @@ export default {
         !this.store.settings.allowMultipleSubscriptions
       ) {
         this.$router.push({
-          path: "/customer/subscriptions/" + this.subscriptions[0].id,
+          path: "/customer/adjust-subscription/" + this.subscriptions[0].id,
           params: { subscriptionId: this.subscriptions[0].id },
           query: { sub: true }
         });
