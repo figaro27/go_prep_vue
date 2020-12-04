@@ -675,6 +675,12 @@ class CheckoutController extends UserController
                                 )
                                     ? $item['mappingId']
                                     : null;
+
+                                $mealPackageOrder->category_id = isset(
+                                    $item['category_id']
+                                )
+                                    ? $item['category_id']
+                                    : null;
                                 $mealPackageOrder->save();
 
                                 $mealOrder->meal_package_order_id =
@@ -701,6 +707,11 @@ class CheckoutController extends UserController
                             ->pluck('hidden')
                             ->first();
                         $mealOrder->hidden = $hidden;
+                        $mealOrder->category_id = isset(
+                            $item['meal']['category_id']
+                        )
+                            ? $item['meal']['category_id']
+                            : null;
 
                         $mealOrder->save();
 
@@ -1125,6 +1136,11 @@ class CheckoutController extends UserController
                             )
                                 ? $item['mappingId']
                                 : null;
+                            $mealPackageOrder->category_id = isset(
+                                $item['category_id']
+                            )
+                                ? $item['category_id']
+                                : null;
                             $mealPackageOrder->save();
 
                             $mealOrder->meal_package_order_id =
@@ -1146,6 +1162,12 @@ class CheckoutController extends UserController
                                 ->first();
                         }
                     }
+
+                    $mealOrder->category_id = isset(
+                        $item['meal']['category_id']
+                    )
+                        ? $item['meal']['category_id']
+                        : null;
 
                     $mealOrder->save();
 
@@ -1290,6 +1312,11 @@ class CheckoutController extends UserController
                                 $mealPackageSubscription->delivery_date =
                                     $item['delivery_day']['day_friendly'];
                             }
+                            $mealPackageSubscription->category_id = isset(
+                                $item['category_id']
+                            )
+                                ? $item['category_id']
+                                : null;
                             $mealPackageSubscription->save();
 
                             $mealSub->meal_package_subscription_id =
@@ -1311,7 +1338,9 @@ class CheckoutController extends UserController
                                 ->first();
                         }
                     }
-
+                    $mealSub->category_id = isset($item['meal']['category_id'])
+                        ? $item['meal']['category_id']
+                        : null;
                     $mealSub->save();
 
                     if (isset($item['components']) && $item['components']) {

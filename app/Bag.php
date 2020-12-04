@@ -117,7 +117,6 @@ class Bag
             $meals
         ) {
             $itemId = $this->getItemId($item);
-
             if (isset($item['meal_package']) && $item['meal_package']) {
                 // Repeat for item quantity
                 $mappingId = $this->getMealPackageMappingId($item);
@@ -131,6 +130,14 @@ class Bag
                     $meal_package_mapping[$mappingId] = 0;
                 }
 
+                $categoryId = null;
+                if (isset($item['meal']['category_id'])) {
+                    $categoryId = $item['meal']['category_id'];
+                }
+                if (isset($item['category_id'])) {
+                    $categoryId = $item['category_id'];
+                }
+
                 if ($this->store->modules->multipleDeliveryDays) {
                     $customTitle = $item['meal']['title'];
                 }
@@ -138,7 +145,6 @@ class Bag
 
                 for ($i = 0; $i < $item['quantity']; $i++) {
                     // Add regular package meals
-
                     if (isset($item['components']) && $item['components']) {
                         foreach (
                             $item['components']
@@ -492,7 +498,8 @@ class Bag
                                 'guid' => isset($item['guid'])
                                     ? $item['guid']
                                     : null,
-                                'top_level' => true
+                                'top_level' => true,
+                                'category_id' => $categoryId
                             ];
 
                             $mealItemId = isset($meal['item_id'])
@@ -568,7 +575,8 @@ class Bag
                                     'guid' => isset($item['guid'])
                                         ? $item['guid']
                                         : null,
-                                    'top_level' => true
+                                    'top_level' => true,
+                                    'category_id' => $categoryId
                                 ];
 
                                 $mealItemId = isset($meal['item_id'])

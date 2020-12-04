@@ -197,6 +197,8 @@ export default {
           }
           meal_package.customTitle = pkgItem.customTitle;
 
+          meal_package.category_id = pkgItem.category_id;
+
           for (let i = 0; i < pkgItem.quantity; i++) {
             this.addOne(
               meal_package,
@@ -243,6 +245,8 @@ export default {
             });
             meal.delivery_day = deliveryDay;
           }
+
+          meal.category_id = item.category_id;
 
           for (let i = 0; i < item.quantity; i++) {
             this.addOne(

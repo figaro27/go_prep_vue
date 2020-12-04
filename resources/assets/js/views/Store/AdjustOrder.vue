@@ -197,6 +197,7 @@ export default {
 
           meal_package.adjustOrder = true;
           meal_package.customTitle = pkgItem.customTitle;
+          meal_package.category_id = pkgItem.category_id;
 
           for (let i = 0; i < pkgItem.quantity; i++) {
             this.addOne(
@@ -246,6 +247,8 @@ export default {
 
           meal.customTitle = item.customTitle;
           meal.customSize = item.customSize;
+
+          meal.category_id = item.category_id;
 
           for (let i = 0; i < item.quantity; i++) {
             this.addOne(

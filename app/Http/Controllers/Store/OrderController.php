@@ -1057,6 +1057,11 @@ class OrderController extends StoreController
                         $mealPackageOrder->mappingId = isset($item['mappingId'])
                             ? $item['mappingId']
                             : null;
+                        $mealPackageOrder->category_id = isset(
+                            $item['category_id']
+                        )
+                            ? $item['category_id']
+                            : null;
                         $mealPackageOrder->save();
 
                         $mealOrder->meal_package_order_id =
@@ -1081,7 +1086,9 @@ class OrderController extends StoreController
                     }
                     $mealOrder->price = $item['price'];
                 }
-
+                $mealOrder->category_id = isset($item['meal']['category_id'])
+                    ? $item['meal']['category_id']
+                    : null;
                 $mealOrder->save();
 
                 if (isset($item['components']) && $item['components']) {

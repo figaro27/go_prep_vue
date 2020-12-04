@@ -399,6 +399,7 @@ class Order extends Model
                     'meal_package_title' => $mealOrder->meal_package_title,
                     'meal_package_variation' =>
                         $mealOrder->meal_package_variation,
+                    'category_id' => $mealOrder->category_id,
                     'components' => $mealOrder->components->map(function (
                         $component
                     ) {

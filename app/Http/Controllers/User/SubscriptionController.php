@@ -498,6 +498,11 @@ class SubscriptionController extends UserController
                         )
                             ? $item['mappingId']
                             : null;
+                        $mealPackageSubscription->category_id = isset(
+                            $item['category_id']
+                        )
+                            ? $item['category_id']
+                            : null;
                         $mealPackageSubscription->save();
 
                         $mealSub->meal_package_subscription_id =
@@ -522,6 +527,9 @@ class SubscriptionController extends UserController
                     $mealSub->delivery_date =
                         $item['delivery_day']['day_friendly'];
                 }
+                $mealSub->category_id = isset($item['meal']['category_id'])
+                    ? $item['meal']['category_id']
+                    : null;
                 $mealSub->save();
 
                 if (isset($item['components']) && $item['components']) {
