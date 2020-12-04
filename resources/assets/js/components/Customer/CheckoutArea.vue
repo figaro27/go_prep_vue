@@ -2480,7 +2480,8 @@ use next_delivery_dates
         this.inSub ||
         this.adjustMealPlan ||
         this.$route.query.sub === "true" ||
-        this.mealPlan
+        this.mealPlan ||
+        this.subscriptionId
       ) {
         return this.afterCoupon - this.mealPlanDiscount;
       } else return this.afterCoupon;
