@@ -95,6 +95,9 @@ class StoreSettingController extends StoreController
         ]);
         $values['delivery_days'] = json_encode($values['delivery_days']);
         $values['notifications'] = json_encode($values['notifications']);
+        $values['color'] = isset($values['color'])
+            ? $values['color']
+            : $settings->color;
         // $values['delivery_distance_zipcodes'] =
         //     '[' .
         //     str_replace(
