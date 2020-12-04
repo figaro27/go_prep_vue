@@ -110,7 +110,7 @@
                 />
               </b-form-group> -->
             </b-tab>
-            <b-tab title="Meals">
+            <b-tab title="Items">
               <h4>Items</h4>
               <v-client-table
                 ref="packageMealsTable"

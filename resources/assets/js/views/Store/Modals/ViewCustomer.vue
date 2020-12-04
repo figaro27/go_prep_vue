@@ -56,7 +56,7 @@
         <b-collapse :id="'collapse' + order.id" class="mt-2">
           <b-card>
             <p class="card-text">
-              Meals Info
+              Items Info
             </p>
           </b-card>
         </b-collapse>

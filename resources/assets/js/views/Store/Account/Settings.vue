@@ -231,7 +231,7 @@
                     </div>
                     <div class="col-sm-4">
                       <p class="center-text">
-                        Remove this delivery day, but I will still fulfill meal
+                        Remove this delivery day, but I will still fulfill item
                         plan orders attached to this day.
                       </p>
                     </div>
@@ -807,7 +807,7 @@
                 Menu Style
                 <img
                   v-b-popover.hover="
-                    'Choose image based if you have images of your meals and want to showcase your meals visually. Choose text based if you don\'t have many images and want to emphasize descriptions more. Text based still shows images of your meals but in a smaller size.'
+                    'Choose image based if you have images of your items and want to showcase your items visually. Choose text based if you don\'t have many images and want to emphasize descriptions more. Text based still shows images of your items but in a smaller size.'
                   "
                   title="Menu Style"
                   src="/images/store/popover.png"
@@ -829,7 +829,7 @@
                 <span class="mr-1">Show Nutrition Facts</span>
                 <img
                   v-b-popover.hover="
-                    'Nutrition facts are generated based on the ingredients you enter in for each meal on your Menu page, or you enter nutritional info directly. The nutrition is then shown to your customers if they click on any of your meals when ordering from you.'
+                    'Nutrition facts are generated based on the ingredients you enter in for each item on your Menu page, or you enter nutritional info directly. The nutrition is then shown to your customers if they click on any of your items when ordering from you.'
                   "
                   title="Show Nutrition Facts"
                   src="/images/store/popover.png"
@@ -851,7 +851,7 @@
                 <span class="mr-1">Show Macros</span>
                 <img
                   v-b-popover.hover="
-                    'Enables input fields for your to add your meal\'s calories, carbs, protein, and fat. Macros are shown on your menu. If this is turned on, and no macros are manually entered, the macros will be pulled from your nutrition facts even if nutrition facts is not enabled.'
+                    'Enables input fields for your to add your item\'s calories, carbs, protein, and fat. Macros are shown on your menu. If this is turned on, and no macros are manually entered, the macros will be pulled from your nutrition facts even if nutrition facts is not enabled.'
                   "
                   title="Show Macros"
                   src="/images/store/popover.png"
@@ -869,7 +869,7 @@
                 <span class="mr-1">Show Ingredients</span>
                 <img
                   v-b-popover.hover="
-                    'Ingredients of your meals are shown for each meal on your menu if the user clicks on the meal. You can choose to show or hide them with this option.'
+                    'Ingredients of your items are shown for each item on your menu if the user clicks on the item. You can choose to show or hide them with this option.'
                   "
                   title="Show Ingredients"
                   src="/images/store/popover.png"
@@ -885,12 +885,12 @@
               />
 
               <p>
-                <span class="mr-1">Enable Meal Instructions</span>
+                <span class="mr-1">Enable Item Instructions</span>
                 <img
                   v-b-popover.hover="
-                    'Adds a new form field on each of your meals on the Menu page on your dashboard. Within that box you can type in special instructions specific to that particular meal such as heating instructions. If your customer orders that particular meal, these instructions will then be shown in their packing slips & email receipts.'
+                    'Adds a new form field on each of your items on the Menu page on your dashboard. Within that box you can type in special instructions specific to that particular item such as heating instructions. If your customer orders that particular item, these instructions will then be shown in their packing slips & email receipts.'
                   "
-                  title="Enable Meal Instructions"
+                  title="Enable Item Instructions"
                   src="/images/store/popover.png"
                   class="popover-size"
                 />
@@ -1342,12 +1342,12 @@
                 />
 
                 <p class="mt-2">
-                  <span class="mr-1 mt-2">Meal Expiration</span>
+                  <span class="mr-1 mt-2">Item Expiration</span>
                   <img
                     v-b-popover.hover="
-                      'Set expiration periods on your meals and show expiration dates on your menu & labels.'
+                      'Set expiration periods on your items and show expiration dates on your menu & labels.'
                     "
-                    title="Meal Expiration"
+                    title="Item Expiration"
                     src="/images/store/popover.png"
                     class="popover-size"
                   />
@@ -1636,7 +1636,7 @@ export default {
       minimumSelected: "price",
       minimumOptions: [
         { text: "Require Minimum Price", value: "price" },
-        { text: "Require Minimum Meals", value: "meals" }
+        { text: "Require Minimum Items", value: "meals" }
       ],
       loginAlertSuccess: false,
       loginAlertFail: false,

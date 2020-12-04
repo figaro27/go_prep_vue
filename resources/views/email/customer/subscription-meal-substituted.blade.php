@@ -91,7 +91,7 @@ $currency = $subscription->store->settings->currency_symbol
                       </tr>
                       <!-- title -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Meal Replaced</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Item Replaced</td>
                       </tr>
                       <!-- end title -->
                       <tr>
@@ -170,14 +170,14 @@ $currency = $subscription->store->settings->currency_symbol
                 </tr>
                 <!-- content -->
                 <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> A meal was replaced in your active subscription with {{ $store->details->name }}
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> An item was replaced in your active subscription with {{ $store->details->name }}
                   </td>
                 </tr>
                 <tr>
-                	<td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Old Meal: {{ $old_meal->title }}</td>
+                	<td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Old Item: {{ $old_meal->title }}</td>
                 </tr>
                 <tr>
-                	<td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; font-weight: bold;">New Meal: {{ $sub_meal->title }}</td>
+                	<td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; font-weight: bold;">New Item: {{ $sub_meal->title }}</td>
                 </tr>
                 <tr>
                 	<td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Click the button below if you would like to update your subscription.</td>

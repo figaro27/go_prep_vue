@@ -459,15 +459,15 @@ export default {
     },
     singOrPlural() {
       if (this.remainingMeals > 1) {
-        return "meals";
+        return "items";
       }
-      return "meal";
+      return "item";
     },
     singOrPluralTotal() {
       if (this.total > 1) {
-        return "Meals";
+        return "Items";
       }
-      return "Meal";
+      return "Item";
     },
     deliveryPlanText() {
       if (this.deliveryPlan) return "Prepared Weekly";

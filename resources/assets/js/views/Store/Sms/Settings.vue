@@ -275,7 +275,7 @@
           <span class="mr-1">Auto Send Subscription Renewal Text</span>
           <img
             v-b-popover.hover="
-              '24 hours before the customer\'s subscription renews, send them a reminder text telling them they have 24 hours left to update their meals if they wish. The customer also automatically receives a reminder email 24 hours before.'
+              '24 hours before the customer\'s subscription renews, send them a reminder text telling them they have 24 hours left to update their items if they wish. The customer also automatically receives a reminder email 24 hours before.'
             "
             title="Auto Send Subscription Renewal"
             src="/images/store/popover.png"

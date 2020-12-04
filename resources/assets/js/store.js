@@ -2871,7 +2871,7 @@ const actions = {
     if (_.isArray(data)) {
       state.store.meal_packages.data = data;
     } else {
-      throw new Error("Failed to retrieve meal packages");
+      throw new Error("Failed to retrieve packages");
     }
   },
 

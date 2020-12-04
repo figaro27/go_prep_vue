@@ -7,7 +7,7 @@
         </h5>
         <p>
           You can now print order summary labels to be put on the bags /
-          containers with your meals. Just like meal labels, these labels are
+          containers with your items. Just like meal labels, these labels are
           completely customizable.<br />
           <router-link to="/store/reports"
             ><strong
@@ -582,7 +582,7 @@
               <img
                 v-if="order.voided === 0"
                 v-b-popover.hover="
-                  'Voiding an order removes the order information & meals from all of your reporting. It does not refund the customer.'
+                  'Voiding an order removes the order information & items from all of your reporting. It does not refund the customer.'
                 "
                 title="Voids"
                 src="/images/store/popover.png"

@@ -15,7 +15,7 @@
         <thead>
           <tr>
             <th>
-              <h4>Meal</h4>
+              <h4>Item</h4>
             </th>
             <th>
               <h4>Ingredient</h4>

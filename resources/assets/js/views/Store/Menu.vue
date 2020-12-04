@@ -25,7 +25,7 @@
                   class="btn btn-success btn-md mb-2 mb-sm-0"
                   @click="createMeal"
                 >
-                  Add Meal
+                  Add Item
                 </button>
 
                 <button
@@ -76,7 +76,7 @@
                   @click="exportData('meals_ingredients', 'pdf', true)"
                   class="mb-2 mb-sm-0"
                 >
-                  <i class="fa fa-print"></i>&nbsp; Print Meals Ingredients
+                  <i class="fa fa-print"></i>&nbsp; Print Items Ingredients
                 </b-btn>
                 <b-btn
                   variant="primary"
@@ -217,7 +217,7 @@
     <div class="modal-full modal-tabs">
       <b-modal
         size="xl"
-        title="View Meal"
+        title="View Item"
         v-model="viewMealModal"
         v-if="viewMealModal"
         :key="`view-meal-modal${meal.id}`"
@@ -228,7 +228,7 @@
           <b-col>
             <b-tabs>
               <b-tab title="General" active>
-                <h4>Meal Title</h4>
+                <h4>Item Title</h4>
                 <b-form-group label-for="meal-title" :state="true">
                   <b-form-textarea
                     id="meal-title"
@@ -238,7 +238,7 @@
                     required
                   ></b-form-textarea>
                 </b-form-group>
-                <h4>Meal Description</h4>
+                <h4>Item Description</h4>
                 <b-form-group label-for="meal-description" :state="true">
                   <textarea
                     v-model="meal.description"
@@ -274,7 +274,7 @@
                     Macros
                     <img
                       v-b-popover.hover="
-                        'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page. If this is turned on, and no macros are manually entered, the macros will be pulled from your nutrition facts even if nutrition facts is not enabled. If they are manually entered here, it overrides the nutrition facts macros.'
+                        'Here you can enter the main macro-nutrients for your items which will then show underneath the item titles on your menu page. If this is turned on, and no macros are manually entered, the macros will be pulled from your nutrition facts even if nutrition facts is not enabled. If they are manually entered here, it overrides the nutrition facts macros.'
                       "
                       title="Macros"
                       src="/images/store/popover.png"
@@ -361,7 +361,7 @@
                     Categories
                     <img
                       v-b-popover.hover="
-                        'Categories show up as different sections of your menu to your customers. You can have the same meal show up in multiple categories.'
+                        'Categories show up as different sections of your menu to your customers. You can have the same item show up in multiple categories.'
                       "
                       title="Categories"
                       src="/images/store/popover.png"
@@ -380,7 +380,7 @@
                     Tags
                     <img
                       v-b-popover.hover="
-                        'Meal tags describe the nutritional benefits contained in your meal. These allow your meals to be filtered by your customer on your menu page for anyone with specific dietary preferences.'
+                        'Tags describe the nutritional benefits contained in your item. These allow your items to be filtered by your customer on your menu page for anyone with specific dietary preferences.'
                       "
                       title="Tags"
                       src="/images/store/popover.png"
@@ -399,7 +399,7 @@
                     Contains
                     <img
                       v-b-popover.hover="
-                        'Indicate if your meal contains any of the below. These allow your meals to be filtered by your customer on your menu page for anyone looking to avoid meals that contain any of these.'
+                        'Indicate if your item contains any of the below. These allow your items to be filtered by your customer on your menu page for anyone looking to avoid items that contain any of these.'
                       "
                       title="Contains"
                       src="/images/store/popover.png"
@@ -418,7 +418,7 @@
                     Delivery Days
                     <img
                       v-b-popover.hover="
-                        'Here you can restrict this meal to be only available on the highlighted delivery days. Leave blank for the meal to be available on ALL days.'
+                        'Here you can restrict this item to be only available on the highlighted delivery days. Leave blank for the item to be available on ALL days.'
                       "
                       title="Delivery Days"
                       src="/images/store/popover.png"
@@ -461,7 +461,7 @@
                       Custom Sales Tax
                       <img
                         v-b-popover.hover="
-                          'If this meal should be charged different sales tax rate or even 0 sales tax, you can type the amount in this field.'
+                          'If this item should be charged different sales tax rate or even 0 sales tax, you can type the amount in this field.'
                         "
                         title="Custom Sales Tax"
                         src="/images/store/popover.png"
@@ -479,9 +479,9 @@
                   Instructions
                   <img
                     v-b-popover.hover="
-                      'Here you can include special heating or preparation instructions to your customers for this particular meal. If this meal is ordered, these specific instructions will be shown on the customer\'s packing slips & email receipts as well as labels if you choose.'
+                      'Here you can include special heating or preparation instructions to your customers for this particular item. If this item is ordered, these specific instructions will be shown on the customer\'s packing slips & email receipts as well as labels if you choose.'
                     "
-                    title="Special Meal Instructions"
+                    title="Special Item Instructions"
                     src="/images/store/popover.png"
                     class="popover-size"
                   />
@@ -502,7 +502,7 @@
                     v-b-popover.hover="
                       'Set the number of expiration days after delivery to show the expiration date on your labels.'
                     "
-                    title="Meal Expiration"
+                    title="Item Expiration"
                     src="/images/store/popover.png"
                     class="popover-size"
                   />
@@ -645,18 +645,18 @@
       >
     </b-modal>
     <b-modal
-      title="Delete Meal Package"
+      title="Delete Package"
       v-model="deleteMealPackageModal"
       v-if="deleteMealPackageModal"
       :hide-footer="true"
       no-fade
     >
       <p class="center-text mb-3 mt-3">
-        Are you sure you want to delete this meal package?
+        Are you sure you want to delete this package?
       </p>
       <p class="center-text mb-3 mt-3">
-        Note: This does not delete the meals inside the meal package. You may
-        have active subscriptions with those meals that will be unaffected.
+        Note: This does not delete the items inside the package. You may have
+        active subscriptions with those items that will be unaffected.
       </p>
       <b-btn
         variant="danger"
@@ -693,12 +693,12 @@
       no-close-on-backdrop
     >
       <p class="mt-3 featured strong">
-        This meal is in one or more active subscriptions or meal packages.
-        Please select a replacement meal below. This will automatically replace
-        the old meal with the newly selected meal in all subscriptions and meal
-        packages. Customers will see the updated meals in an email reminding
+        This item is in one or more active subscriptions or item packages.
+        Please select a replacement item below. This will automatically replace
+        the old item with the newly selected item in all subscriptions and item
+        packages. Customers will see the updated items in an email reminding
         them of their subscription renewal the day before and have the ability
-        to edit their subscriptions if they don't want the replacement meal.
+        to edit their subscriptions if they don't want the replacement item.
       </p>
       <center>
         <div class="d-inline">
@@ -719,7 +719,7 @@
         <img
           v-if="!deleteMeal"
           v-b-popover.hover="
-            'Deactivate the meal from your menu, but keep the meal in current subscriptions & meal packages.'
+            'Deactivate the item from your menu, but keep the item in current subscriptions & item packages.'
           "
           title="Deactivate & Replacement"
           src="/images/store/popover.png"
@@ -727,7 +727,7 @@
           style="position:relative;top:8px"
         />
         <h5 class="mb-4 mt-4">
-          Choose a replacement meal from the dropdown.
+          Choose a replacement item from the dropdown.
         </h5>
 
         <v-select
@@ -747,7 +747,7 @@
           class="center-text mb-4"
           v-if="substituteMeal && !substituteMeal.active"
         >
-          This substitute meal is currently inactive. Choosing this meal will
+          This substitute item is currently inactive. Choosing this item will
           make it active on your menu.
         </h5>
         <div
@@ -761,7 +761,7 @@
           :key="substitute_id"
         >
           <h5 class="center-text mb-3" v-if="substituteMeal">
-            This meal has variations. Please choose replacement variations.
+            This item has variations. Please choose replacement variations.
           </h5>
 
           <!-- Hiding until Transfer Variations is fixed -->
@@ -776,7 +776,7 @@
                 Transfer Variations
                 <img
                   v-b-popover.hover="
-                    'Take the variations that are on the meal you are removing and pass them on to the replacement meal even if that variation isn\'t offered on the replacement meal on your menu. E.G. If one of your customers has a subscription with an \'Extra Protein\' addon on the meal you are removing, it will be transfered onto the replacement meal.'
+                    'Take the variations that are on the item you are removing and pass them on to the replacement item even if that variation isn\'t offered on the replacement item on your menu. E.G. If one of your customers has a subscription with an \'Extra Protein\' addon on the item you are removing, it will be transfered onto the replacement item.'
                   "
                   title="Transfer Variations"
                   src="/images/store/popover.png"
@@ -793,7 +793,7 @@
                 Individually Replace Variations
                 <img
                   v-b-popover.hover="
-                    'Go through each variation that exists on the meal you are removing and manually select the variation replacement found on the replacemnet meal.'
+                    'Go through each variation that exists on the item you are removing and manually select the variation replacement found on the replacement item.'
                   "
                   title="Replace Variations"
                   src="/images/store/popover.png"
@@ -994,9 +994,9 @@
           </b-list-group>
 
           <div v-if="mealSubstituteOptions(deactivatingMeal).length <= 0">
-            There are currently no substitute options for this meal. Please add
-            a similar meal that 1) doesn't contain the same allergies, and 2) is
-            within the same meal category.
+            There are currently no substitute options for this item. Please add
+            a similar item that 1) doesn't contain the same allergies, and 2) is
+            within the same item category.
           </div>
 
           <button
@@ -1487,7 +1487,7 @@ export default {
         const meal = await this._updateMeal({ id, data: changes, updateLocal });
 
         if (toast) {
-          this.$toastr.s("Meal updated.");
+          this.$toastr.s("Item updated.");
         }
 
         if (id === this.meal.id) {
@@ -1503,7 +1503,7 @@ export default {
             error = error.join(" ");
             this.$toastr.w(error);
           } else {
-            this.$toastr.e("Failed to update meal.");
+            this.$toastr.e("Failed to update item.");
           }
         }
 
@@ -1583,9 +1583,9 @@ export default {
       }
 
       if (active) {
-        this.$toastr.s("Meal activated!");
+        this.$toastr.s("Item activated!");
       } else {
-        this.$toastr.s("Meal deactivated!");
+        this.$toastr.s("Item deactivated!");
       }
 
       this.deactivateMealModal = false;
@@ -1669,8 +1669,8 @@ export default {
     ) {
       if (!this.canDeactivateAndReplace) {
         this.$toastr.w(
-          "Please choose variation substitutes, or transfer them to the substitute meal.",
-          "Cannot deactivate meal"
+          "Please choose variation substitutes, or transfer them to the substitute item.",
+          "Cannot deactivate item"
         );
         return false;
       }
@@ -1723,7 +1723,7 @@ export default {
         this.createPackageModal = true;
       } else {
         this.$toastr.e(
-          "Please add at least one meal before creating a meal package.",
+          "Please add at least one item before creating a package.",
           "Error"
         );
       }
@@ -1806,7 +1806,7 @@ export default {
         .then(resp => {
           this.refreshTable();
           this.deleteMealModalNonSubstitute = false;
-          this.$toastr.s("Meal deleted!");
+          this.$toastr.s("Item deleted!");
         });
     },
     deleteMealPackage(id) {

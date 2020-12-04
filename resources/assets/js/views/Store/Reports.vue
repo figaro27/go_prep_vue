@@ -10,7 +10,7 @@
         <div class="card">
           <Spinner v-if="isLoading" />
           <div class="card-body m-sm-4">
-            <h4 class="center-text mb-4">Meals</h4>
+            <h4 class="center-text mb-4">Production</h4>
             <div class="report-date-picker">
               <delivery-date-picker
                 v-model="delivery_dates.meal_orders"
@@ -21,7 +21,7 @@
               >
             </div>
             <p class="mt-4 center-text">
-              Shows how many of each meal to make based on your orders.
+              Shows how many of each items to make based on your orders.
             </p>
             <div class="row">
               <div class="col-md-6">
@@ -136,7 +136,7 @@
               >
             </div>
             <p class="mt-4 center-text">
-              Shows how to bag up your meals for each customer.
+              Shows how to bag up your items for each customer.
             </p>
 
             <div class="row">
@@ -249,7 +249,7 @@
         <div class="card">
           <div class="card-body m-sm-4">
             <h4 class="center-text mb-4">
-              Meal Labels <span class="text-danger">(Beta)</span>
+              Item Labels <span class="text-danger">(Beta)</span>
             </h4>
             <div class="report-date-picker">
               <delivery-date-picker
@@ -259,7 +259,7 @@
               ></delivery-date-picker>
               <b-btn @click="clearDates('labels')" class="ml-1">Clear</b-btn>
             </div>
-            <p class="mt-4 center-text">Labels for your meals.</p>
+            <p class="mt-4 center-text">Labels for your items.</p>
             <div class="row">
               <div class="col-md-6">
                 <button
@@ -480,17 +480,17 @@
           </p>
           <!-- <p>
           <b-form-checkbox v-model="reportSettings.lab_description"
-            >Meal Description</b-form-checkbox
+            >Item Description</b-form-checkbox
           >
         </p> -->
           <p>
             <b-form-checkbox v-model="reportSettings.lab_instructions"
-              >Meal Instructions</b-form-checkbox
+              >Item Instructions</b-form-checkbox
             >
           </p>
           <p v-if="store.modules.mealExpiration">
             <b-form-checkbox v-model="reportSettings.lab_expiration"
-              >Meal Expiration</b-form-checkbox
+              >Item Expiration</b-form-checkbox
             >
           </p>
           <p>

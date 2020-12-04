@@ -2,7 +2,7 @@
   <div class="modal-full modal-tabs">
     <b-modal
       size="xl"
-      title="Add Meal"
+      title="Add Item"
       ref="createMealModal"
       @ok.prevent="e => storeMeal(e)"
       @cancel.prevent="toggleModal()"
@@ -13,7 +13,7 @@
         <b-col>
           <b-tabs>
             <b-tab title="General" active>
-              <h4>Meal Title</h4>
+              <h4>Item Title</h4>
               <b-form-group label-for="meal-title" :state="true">
                 <b-form-textarea
                   id="meal-title"
@@ -58,7 +58,7 @@
                 Macros
                 <img
                   v-b-popover.hover="
-                    'Here you can enter the main macro-nutrients for your meals which will then show underneath the meal titles on your menu page. If this is turned on, and no macros are manually entered, the macros will be pulled from your nutrition facts even if nutrition facts is not enabled. If they are manually entered here, it overrides the nutrition facts macros.'
+                    'Here you can enter the main macro-nutrients for your items which will then show underneath the item titles on your menu page. If this is turned on, and no macros are manually entered, the macros will be pulled from your nutrition facts even if nutrition facts is not enabled. If they are manually entered here, it overrides the nutrition facts macros.'
                   "
                   title="Macros"
                   src="/images/store/popover.png"
@@ -155,7 +155,7 @@
                 Delivery Days
                 <img
                   v-b-popover.hover="
-                    'Here you can restrict this meal to be only available on the highlighted delivery days. Leave blank for the meal to be available on ALL days.'
+                    'Here you can restrict this item to be only available on the highlighted delivery days. Leave blank for the item to be available on ALL days.'
                   "
                   title="Delivery Days"
                   src="/images/store/popover.png"
@@ -231,7 +231,7 @@
                   v-b-popover.hover="
                     'Set the number of expiration days after delivery to show the expiration date on your labels.'
                   "
-                  title="Meal Expiration"
+                  title="Item Expiration"
                   src="/images/store/popover.png"
                   class="popover-size"
                 />

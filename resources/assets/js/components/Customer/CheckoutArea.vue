@@ -1203,7 +1203,7 @@
           <b-btn
             class="menu-bag-btn update-meals-btn"
             @click="updateSubscriptionMeals"
-            >UPDATE MEALS</b-btn
+            >UPDATE ITEMS</b-btn
           >
         </div>
       </div>

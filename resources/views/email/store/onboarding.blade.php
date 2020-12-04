@@ -139,7 +139,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <p>To open your menu for orders, all you need to complete is the following: </p>
                   <ul>
                   <li>Pick Your Delivery / Pickup Day(s)</li>
-                  <li>Add At Least One Meal On Your Menu Page</li>
+                  <li>Add At Least One Item On Your Menu Page</li>
                   <li>Toggle on 'Open' at the bottom of the Settings page</li>
                   </ul>
 
