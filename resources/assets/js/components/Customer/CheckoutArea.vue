@@ -268,7 +268,8 @@
         class="checkout-item"
         v-if="
           applyMealPlanDiscount &&
-            (weeklySubscription ||
+            (subscriptionId ||
+              weeklySubscription ||
               inSub ||
               this.adjustMealPlan ||
               this.$route.query.sub === 'true' ||
@@ -2445,7 +2446,8 @@ use next_delivery_dates
     },
     mealPlanDiscount() {
       if (
-        (this.weeklySubscription ||
+        (this.subscriptionId ||
+          this.weeklySubscription ||
           this.inSub ||
           this.adjustMealPlan ||
           this.$route.query.sub === "true" ||
