@@ -325,9 +325,10 @@
                   :state="true"
                 >
                   <textarea
-                    v-model="delivery_distance_zipcodes"
+                    v-model="storeSettings.delivery_distance_zipcodes"
                     class="form-control w-600"
                     placeholder="Zip Codes"
+                    @input="formatZips()"
                   ></textarea>
                 </b-form-group>
 
@@ -1573,12 +1574,6 @@ export default {
       this.storeSettings.delivery_days = this.delivery_days;
       this.updateStoreSettings();
     },
-    delivery_distance_zipcodes: _.debounce(function() {
-      if (this.loaded) {
-        this.storeSettings.delivery_distance_zipcodes = this.delivery_distance_zipcodes;
-        this.updateStoreSettings();
-      }
-    }, 1000),
     pickupInstructions: _.debounce(function() {
       if (this.loaded) {
         this.storeSettings.pickupInstructions = this.pickupInstructions;
@@ -1609,7 +1604,6 @@ export default {
       loaded: false,
       description: null,
       delivery_days: null,
-      delivery_distance_zipcodes: null,
       pickupInstructions: null,
       deliveryInstructions: null,
       shippingInstructions: null,
@@ -2183,12 +2177,18 @@ export default {
     setTextFields() {
       this.description = this.storeDetail.description;
       this.delivery_days = this.storeSettings.delivery_days;
-      this.delivery_distance_zipcodes = this.storeSettings.delivery_distance_zipcodes;
       this.pickupInstructions = this.storeSettings.pickupInstructions;
       this.deliveryInstructions = this.storeSettings.deliveryInstructions;
       this.shippingInstructions = this.storeSettings.shippingInstructions;
       this.notesForCustomer = this.storeSettings.notesForCustomer;
-    }
+    },
+    formatZips: _.debounce(function() {
+      this.storeSettings.delivery_distance_zipcodes = this.storeSettings.delivery_distance_zipcodes
+        .toString()
+        .replace('"', "")
+        .split(",");
+      this.updateStoreSettings();
+    }, 1000)
   }
 };
 </script>

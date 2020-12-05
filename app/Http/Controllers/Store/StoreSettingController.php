@@ -98,23 +98,9 @@ class StoreSettingController extends StoreController
         $values['color'] = isset($values['color'])
             ? $values['color']
             : $settings->first()->color;
-        // $values['delivery_distance_zipcodes'] =
-        //     '[' .
-        //     str_replace(
-        //         '"',
-        //         "",
-        //         json_encode($values['delivery_distance_zipcodes'])
-        //     ) .
-        //     ']';
-        if (is_array($values['delivery_distance_zipcodes'])) {
-            $values['delivery_distance_zipcodes'] =
-                (string) '[' .
-                implode(',', $values['delivery_distance_zipcodes']) .
-                ']';
-        } else {
-            $values['delivery_distance_zipcodes'] =
-                (string) '[' . $values['delivery_distance_zipcodes'] . ']';
-        }
+        $values['delivery_distance_zipcodes'] = json_encode(
+            $values['delivery_distance_zipcodes']
+        );
 
         $settings->update($values);
 
