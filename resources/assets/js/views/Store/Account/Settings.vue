@@ -9,6 +9,17 @@
         <b-col>
           <b-tabs>
             <b-tab title="Orders" active>
+              <b-alert
+                show
+                dismissible
+                style="width:650px;background-color:#EBFAFF"
+                class="mb-2"
+              >
+                <p class="strong pt-3">
+                  Update - There is no longer a Save button. Every setting will
+                  now save automatically.
+                </p>
+              </b-alert>
               <div v-if="!storeSettings.stripe_id">
                 <b-form-group :state="true">
                   <b-button variant="primary" :href="stripeConnectUrl"
@@ -837,17 +848,13 @@
                   class="popover-size"
                 />
               </p>
-
-              <b-form-group :state="true">
-                <c-switch
-                  color="success"
-                  variant="pill"
-                  size="lg"
-                  v-model="storeSettings.showNutrition"
-                  @change.native="updateStoreSettings()"
-                />
-              </b-form-group>
-
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.showNutrition"
+                @change.native="updateStoreSettings()"
+              />
               <p>
                 <span class="mr-1">Show Macros</span>
                 <img
@@ -897,17 +904,13 @@
                 />
               </p>
 
-              <b-form @submit.prevent="updateStoreSettings">
-                <b-form-group :state="true">
-                  <c-switch
-                    color="success"
-                    variant="pill"
-                    size="lg"
-                    v-model="storeSettings.mealInstructions"
-                    @change.native="updateStoreSettings()"
-                  />
-                </b-form-group>
-              </b-form>
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.mealInstructions"
+                @change.native="updateStoreSettings()"
+              />
 
               <p class="mt-2">
                 <span class="mr-1">Google Analytics Code</span>
@@ -1103,7 +1106,7 @@
                 <span class="mr-1">Allow Multiple Subscriptions</span>
                 <img
                   v-b-popover.hover="
-                    'Allow a single customer to create multiple subscriptions. Caveat - some customers may forget about their existing subscription and create another one despite the alert messages we show them about their existing subscription. They will then unintentionally be charged twice and have two orders created for the week and ask for a cancellation/refund.'
+                    'Allow a single customer to create multiple subscriptions. As a caveat, some customers may forget about their existing subscription and create another one despite the alert messages we show them about their existing subscription. They will then unintentionally be charged twice and have two orders created for the week and ask for a cancellation/refund on one of them.'
                   "
                   title="Allow Multiple Subscriptions"
                   src="/images/store/popover.png"
@@ -1230,7 +1233,7 @@
                   <span class="mr-1 mt-2">Production Groups</span>
                   <img
                     v-b-popover.hover="
-                      'Divide up your production report into separate production groups. Add new groups on the Production page and then assign each meal to a group on the Menu page.'
+                      'Divide up your production report into separate production groups. Add new groups on the Production page and then assign each item to a group on the Menu page.'
                     "
                     title="Production Groups"
                     src="/images/store/popover.png"
@@ -1289,7 +1292,7 @@
                   <span class="mr-1 mt-2">Stock Management</span>
                   <img
                     v-b-popover.hover="
-                      'Set the stock of each meal on the Menu page. When the item is out of stock, the meal will automatically become inactive until you activate it again and set the updated stock.'
+                      'Set the stock of each meal on the Menu page. When the item is out of stock, the item will automatically become inactive until you activate it again and set the updated stock.'
                     "
                     title="Stock Management"
                     src="/images/store/popover.png"
@@ -1327,7 +1330,7 @@
                   <span class="mr-1 mt-2">Cash Orders for Customers</span>
                   <img
                     v-b-popover.hover="
-                      'Allow your customers to check a box on the checkout page which indicates they want to place cash on delivery order. They will not be charged.'
+                      'Allow your customers to check a box on the checkout page which indicates they want to place a cash on delivery order. The credit card area will then be hidden and they will not be charged.'
                     "
                     title="Cash Orders for Customers"
                     src="/images/store/popover.png"
@@ -1340,25 +1343,6 @@
                   size="lg"
                   v-model="storeModuleSettings.cashAllowedForCustomer"
                   @change.native="updateStoreModules(false, true)"
-                />
-
-                <p class="mt-2">
-                  <span class="mr-1 mt-2">Item Expiration</span>
-                  <img
-                    v-b-popover.hover="
-                      'Set expiration periods on your items and show expiration dates on your menu & labels.'
-                    "
-                    title="Item Expiration"
-                    src="/images/store/popover.png"
-                    class="popover-size"
-                  />
-                </p>
-                <c-switch
-                  color="success"
-                  variant="pill"
-                  size="lg"
-                  v-model="storeModules.mealExpiration"
-                  @change.native="updateStoreModules()"
                 />
 
                 <p class="mt-2">
@@ -1381,6 +1365,25 @@
                 />
 
                 <p class="mt-2">
+                  <span class="mr-1 mt-2">Item Expiration</span>
+                  <img
+                    v-b-popover.hover="
+                      'Set expiration periods on your items and show expiration dates on your menu & labels.'
+                    "
+                    title="Item Expiration"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeModules.mealExpiration"
+                  @change.native="updateStoreModules()"
+                />
+
+                <p class="mt-2">
                   <span class="mr-1 mt-2">Gratuity</span>
                   <img
                     v-b-popover.hover="
@@ -1396,25 +1399,6 @@
                   variant="pill"
                   size="lg"
                   v-model="storeModules.gratuity"
-                  @change.native="updateStoreModules()"
-                />
-
-                <p class="mt-2">
-                  <span class="mr-1 mt-2">Allow Multiple Subscriptions</span>
-                  <img
-                    v-b-popover.hover="
-                      'Allow each customer to have more than one subscription with you. As a caveat, this sometimes causes confusion among customers and they place multiple subscriptions unintentionally.'
-                    "
-                    title="Allow Multiple Subscriptions"
-                    src="/images/store/popover.png"
-                    class="popover-size"
-                  />
-                </p>
-                <c-switch
-                  color="success"
-                  variant="pill"
-                  size="lg"
-                  v-model="storeSettings.allowMultipleSubscriptions"
                   @change.native="updateStoreModules()"
                 />
 
