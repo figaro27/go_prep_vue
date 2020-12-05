@@ -65,18 +65,28 @@ f<template>
           <div slot="interval" class="text-nowrap" slot-scope="props">
             {{ props.row.interval_title }}
           </div>
-          <div slot="delivery_day" class="text-nowrap" slot-scope="props">
-            {{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
-          </div>
           <div
-            slot="charge_day"
+            slot="created_at"
             class="text-nowrap"
             slot-scope="props"
             v-if="storeSettings.timezone"
           >
             <span v-if="props.row.renewalOffset">{{
-              moment(props.row.renewalOffset.date).format("dddd")
+              moment(props.row.created_at).format("dddd, MMM Do")
             }}</span>
+          </div>
+          <div
+            slot="next_renewal"
+            class="text-nowrap"
+            slot-scope="props"
+            v-if="storeSettings.timezone"
+          >
+            <span v-if="props.row.renewalOffset">{{
+              moment(props.row.renewalOffset.date).format("dddd, MMM Do")
+            }}</span>
+          </div>
+          <div slot="delivery_day" class="text-nowrap" slot-scope="props">
+            {{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
           </div>
           <div slot="actions" class="text-nowrap" slot-scope="props">
             <button
@@ -434,11 +444,11 @@ export default {
       columns: [
         "stripe_id",
         "interval",
-        "store_name",
+        // "store_name",
         "amount",
         "created_at",
+        "next_renewal",
         "delivery_day",
-        "charge_day",
         "status",
         "actions"
       ],
@@ -457,8 +467,8 @@ export default {
           interval: "Interval",
           amount: "Total",
           created_at: "Subscription Placed",
-          delivery_day: "Delivery Day",
-          charge_day: "Charge Day",
+          next_renewal: "Next Renewal",
+          delivery_day: "Next Delivery",
           status: "Status",
           actions: "Actions"
         },
