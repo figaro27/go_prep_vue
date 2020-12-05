@@ -629,9 +629,10 @@
                   v-if="store.id == 148 || store.id == 3"
                   type="text"
                   rows="3"
-                  v-model="shippingInstructions"
+                  v-model="storeSettings.shippingInstructions"
                   placeholder="Please include shipping instructions to your customers. This will be shown on the checkout page as well as email notifications the customer receives."
                   class="mb-2 w-600"
+                  @input="saveTextInput()"
                 ></b-form-textarea>
 
                 <p v-if="transferTypeCheckDelivery">Delivery Instructions:</p>
@@ -639,18 +640,20 @@
                   v-if="transferTypeCheckDelivery"
                   type="text"
                   rows="3"
-                  v-model="deliveryInstructions"
+                  v-model="storeSettings.deliveryInstructions"
                   placeholder="Please include delivery instructions to your customers (time window, how long your driver will wait, etc.) This will be shown on the checkout page as well as email notifications the customer receives."
                   class="mb-2 w-600"
+                  @input="saveTextInput()"
                 ></b-form-textarea>
                 <p v-if="transferTypeCheckPickup">Pickup Instructions:</p>
                 <b-form-textarea
                   v-if="transferTypeCheckPickup"
                   type="text"
                   rows="3"
-                  v-model="pickupInstructions"
+                  v-model="storeSettings.pickupInstructions"
                   placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time). This will be shown on the checkout page as well as email notifications the customer receives."
                   class="mb-2 w-600"
+                  @input="saveTextInput()"
                 ></b-form-textarea>
 
                 <p class="mt-2">
@@ -667,9 +670,10 @@
                 <b-form-textarea
                   type="text"
                   rows="3"
-                  v-model="notesForCustomer"
+                  v-model="storeSettings.notesForCustomer"
                   placeholder="Thank you for your order."
                   class="w-600"
+                  @input="saveTextInput()"
                 ></b-form-textarea>
 
                 <!-- <b-button type="submit" variant="primary" class="mt-3"
@@ -1000,7 +1004,7 @@
                   <wysiwyg
                     class="w-600"
                     v-model="description"
-                    @input="updateStoreDetails()"
+                    @input="saveTextInput()"
                   />
                 </b-form-group>
 
@@ -1548,50 +1552,14 @@ export default {
     PictureInput
   },
   watch: {
-    description: _.debounce(function() {
-      if (this.loaded) {
-        this.storeDetail.description = this.description;
-        this.updateStoreDetails();
-      }
-    }, 1000),
     delivery_days() {
       this.storeSettings.delivery_days = this.delivery_days;
       this.updateStoreSettings();
-    },
-    pickupInstructions: _.debounce(function() {
-      if (this.loaded) {
-        this.storeSettings.pickupInstructions = this.pickupInstructions;
-        this.updateStoreSettings();
-      }
-    }, 1000),
-    deliveryInstructions: _.debounce(function() {
-      if (this.loaded) {
-        this.storeSettings.deliveryInstructions = this.deliveryInstructions;
-        this.updateStoreSettings();
-      }
-    }, 1000),
-    shippingInstructions: _.debounce(function() {
-      if (this.loaded) {
-        this.storeSettings.shippingInstructions = this.shippingInstructions;
-        this.updateStoreSettings();
-      }
-    }, 1000),
-    notesForCustomer: _.debounce(function() {
-      if (this.loaded) {
-        this.storeSettings.notesForCustomer = this.notesForCustomer;
-        this.updateStoreSettings();
-      }
-    }, 1000)
+    }
   },
   data() {
     return {
-      loaded: false,
-      description: null,
       delivery_days: null,
-      pickupInstructions: null,
-      deliveryInstructions: null,
-      shippingInstructions: null,
-      notesForCustomer: null,
       deliveryFeeCity: {},
       deliveryFeeZipCode: {},
       deliveryFeeZipCodeModal: false,
@@ -1767,12 +1735,9 @@ export default {
       }
     });
 
-    this.setTextFields();
     this.checkAcceptedTOA();
 
-    setTimeout(() => {
-      this.loaded = true;
-    }, 5000);
+    this.delivery_days = this.storeSettings.delivery_days;
   },
   destroyed() {
     this.enableSpinner();
@@ -2158,19 +2123,14 @@ export default {
     getStateNames(country = "US") {
       return states.selectOptions(country);
     },
-    setTextFields() {
-      this.description = this.storeDetail.description;
-      this.delivery_days = this.storeSettings.delivery_days;
-      this.pickupInstructions = this.storeSettings.pickupInstructions;
-      this.deliveryInstructions = this.storeSettings.deliveryInstructions;
-      this.shippingInstructions = this.storeSettings.shippingInstructions;
-      this.notesForCustomer = this.storeSettings.notesForCustomer;
-    },
     formatZips: _.debounce(function() {
       this.storeSettings.delivery_distance_zipcodes = this.storeSettings.delivery_distance_zipcodes
         .toString()
         .replace('"', "")
         .split(",");
+      this.updateStoreSettings();
+    }, 1000),
+    saveTextInput: _.debounce(function() {
       this.updateStoreSettings();
     }, 1000)
   }
