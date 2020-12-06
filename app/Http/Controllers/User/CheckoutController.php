@@ -1605,8 +1605,8 @@ class CheckoutController extends UserController
             }
         } catch (\Exception $e) {
             $error = new Error();
-            $error->store_id = 1;
-            $error->user_id = 1;
+            $error->store_id = $store->id;
+            $error->user_id = $user->id;
             $error->type = 'Checkout';
             $error->error = $e->getMessage();
             $error->save();
