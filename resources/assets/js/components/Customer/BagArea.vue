@@ -675,7 +675,7 @@ export default {
   },
   watch: {
     bagPickup(val) {
-      this.changePickup(val);
+      // this.changePickup(val);
     }
   },
   mixins: [MenuBag],
