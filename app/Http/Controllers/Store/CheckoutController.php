@@ -888,6 +888,8 @@ class CheckoutController extends StoreController
                     $period = 'Monthly prepay';
                 }
 
+                $billingAnchor = $billingAnchor->addMinutes(2);
+
                 if (!$cashOrder) {
                     $plan = \Stripe\Plan::create(
                         [

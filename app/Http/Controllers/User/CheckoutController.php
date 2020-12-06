@@ -854,7 +854,7 @@ class CheckoutController extends UserController
                 $diff = (strtotime($deliveryDay) - time()) / 86400;
 
                 // Set billing anchor to now +2 mins
-                $billingAnchor = Carbon::now()->addMinutes(2);
+                $billingAnchor = Carbon::now();
 
                 // Selected start date is more than 1 week into the future.
                 // Wait until next week to start billing cycle
@@ -875,6 +875,8 @@ class CheckoutController extends UserController
                 if ($monthlyPrepay) {
                     $period = 'Monthly prepay';
                 }
+
+                $billingAnchor = $billingAnchor->addMinutes(2);
 
                 if (!$cashOrder) {
                     if ($gateway === Constants::GATEWAY_STRIPE) {
