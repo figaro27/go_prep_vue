@@ -670,14 +670,15 @@ class Subscription extends Model
             ]);
 
             // Only charge once per month on monthly prepay subscriptions
-
-            if (
-                $this->monthlyPrepay &&
-                ($this->renewalCount !== 0 && $this->renewalCount % 4 !== 0)
-            ) {
-                $this->apply100offCoupon();
-            } else {
-                $this->remove100offCoupon();
+            if ($this->monthlyPrepay) {
+                if (
+                    $this->renewalCount !== 0 &&
+                    $this->renewalCount % 4 !== 0
+                ) {
+                    $this->apply100offCoupon();
+                } else {
+                    $this->remove100offCoupon();
+                }
             }
 
             // Cancelling the subscription for next month if cancelled_at is marked
