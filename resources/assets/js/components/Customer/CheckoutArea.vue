@@ -989,10 +989,11 @@
         </div>
         <div
           v-if="
-            !hidePaymentArea &&
-              ((($route.params.storeView || storeOwner) &&
-                customerModel != null) ||
-                (!$route.params.storeView && !storeOwner))
+            storeSettings.payment_gateway !== 'cash' &&
+              !hidePaymentArea &&
+                ((($route.params.storeView || storeOwner) &&
+                  customerModel != null) ||
+                  (!$route.params.storeView && !storeOwner))
           "
         >
           <h4 class="mt-2 mb-3">
