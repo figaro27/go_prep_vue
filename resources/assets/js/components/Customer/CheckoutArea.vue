@@ -989,11 +989,10 @@
         </div>
         <div
           v-if="
-            storeSettings.payment_gateway !== 'cash' &&
-              !hidePaymentArea &&
-                ((($route.params.storeView || storeOwner) &&
-                  customerModel != null) ||
-                  (!$route.params.storeView && !storeOwner))
+            !hidePaymentArea &&
+              ((($route.params.storeView || storeOwner) &&
+                customerModel != null) ||
+                (!$route.params.storeView && !storeOwner))
           "
         >
           <h4 class="mt-2 mb-3">
@@ -1079,7 +1078,7 @@
             </p>
           </div> -->
           <card-picker
-            v-if="!cashOrder"
+            v-if="!cashOrder && storeSettings.payment_gateway !== 'cash'"
             :selectable="true"
             :creditCards="creditCardList"
             v-model="card"
