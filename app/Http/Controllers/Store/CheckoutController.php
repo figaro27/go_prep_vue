@@ -201,7 +201,7 @@ class CheckoutController extends StoreController
                 : 0;
 
             $cashOrder = $request->get('cashOrder');
-            if ($cashOrder) {
+            if ($cashOrder || $request->get('grandTotal') === 0) {
                 $cardId = null;
                 $card = null;
                 $gateway = Constants::GATEWAY_CASH;
