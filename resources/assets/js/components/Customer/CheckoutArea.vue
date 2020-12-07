@@ -3081,7 +3081,12 @@ use next_delivery_dates
         return "Please choose a customer.";
       }
 
-      if (this.loggedIn && !this.card && !this.cashOrder) {
+      if (
+        this.loggedIn &&
+        !this.card &&
+        !this.cashOrder &&
+        this.grandTotal > 0
+      ) {
         return "Please enter a payment method.";
       }
 
