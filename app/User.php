@@ -317,7 +317,7 @@ class User extends Authenticatable implements JWTSubject
 
         try {
             if (count($body->rows) > 0) {
-                if ($body->rows[0]->elements[0]->distance) {
+                if (isset($body->rows[0]->elements[0]->distance)) {
                     $distance = $body->rows[0]->elements[0]->distance->value;
                     return $distance * 0.000621371;
                 }
