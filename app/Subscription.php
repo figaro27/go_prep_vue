@@ -51,7 +51,7 @@ class Subscription extends Model
         'paid_order_count',
         'transfer_type',
         'adjustedRenewal',
-        'adjustRenewalUTC'
+        'adjustedRenewalUTC'
         // 'total_item_quantity'
     ];
 
