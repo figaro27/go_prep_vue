@@ -102,36 +102,10 @@
                   )
                 }}
               </span>
+              <span v-else>
+                {{ props.row.next_delivery_date }}
+              </span>
             </div>
-            <!-- <div slot="actions" class="text-nowrap" slot-scope="props">
-              <button
-                class="btn view btn-primary btn-sm"
-                @click="viewSubscription(props.row.id)"
-              >
-                View
-              </button>
-              <b-btn
-                v-if="props.row.status === 'active'"
-                class="btn btn-secondary btn-sm"
-                @click.stop="() => pauseSubscription(props.row.id)"
-                >Pause</b-btn
-              >
-              <b-btn
-                v-if="props.row.status === 'paused'"
-                class="btn btn-secondary btn-sm"
-                @click.stop="() => resumeSubscription(props.row.id)"
-                >Resume</b-btn
-              >
-              <router-link :to="`/store/adjust-subscription/${props.row.id}`">
-                <b-btn class="btn btn-warning btn-sm">Adjust</b-btn>
-              </router-link>
-              <button
-                class="btn btn-danger btn-sm"
-                @click="showCancellationModal(props.row.id)"
-              >
-                Cancel
-              </button>
-            </div> -->
             <div slot="actions" class="text-nowrap" slot-scope="props">
               <!-- Keeping but hiding for purposes of double clicking the row to open the modal -->
               <button
