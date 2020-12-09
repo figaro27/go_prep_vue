@@ -180,7 +180,7 @@ class SubscriptionController extends StoreController
 
         if ($request->get('time')) {
             $newTime = new Carbon($request->get('time'));
-            $newTime = $newTime->toTimeString();
+            $newTime = $newTime->setTimezone('utc')->toTimeString();
         } else {
             $newTime = null;
         }
