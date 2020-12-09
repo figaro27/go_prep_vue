@@ -2346,14 +2346,14 @@ const actions = {
 
     if (_.isArray(data)) {
       const subscriptions = _.map(data, subscription => {
-        subscription.created_at = moment.utc(subscription.created_at).local(); //.format('ddd, MMMM Do')
-        subscription.updated_at = moment.utc(subscription.updated_at).local();
+        subscription.created_at = moment(subscription.created_at).local(); //.format('ddd, MMMM Do')
+        subscription.updated_at = moment(subscription.updated_at).local();
         subscription.next_delivery_date = subscription.next_delivery_date
-          ? moment.utc(subscription.next_delivery_date.date)
+          ? moment(subscription.next_delivery_date.date)
           : null;
-        subscription.next_renewal_at = moment
-          .utc(subscription.next_renewal_at)
-          .local();
+        subscription.next_renewal_at = moment(
+          subscription.next_renewal_at
+        ).local();
         //.local(); //.format('ddd, MMMM Do')
         return subscription;
       });
