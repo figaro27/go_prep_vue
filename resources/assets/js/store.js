@@ -2987,12 +2987,8 @@ const actions = {
 
     if (_.isArray(data)) {
       const subscriptions = _.map(data, subscription => {
-        subscription.created_at = moment.utc(subscription.created_at).local(); //.format('ddd, MMMM Do')
-        subscription.updated_at = moment.utc(subscription.updated_at).local(); //.format('ddd, MMMM Do')
-        subscription.next_delivery_date = moment.utc(
-          subscription.next_delivery_date.date
-        );
-        //.local(); //.format('ddd, MMMM Do')
+        subscription.created_at = moment.utc(subscription.created_at).local();
+        subscription.updated_at = moment.utc(subscription.updated_at).local();
         return subscription;
       });
 

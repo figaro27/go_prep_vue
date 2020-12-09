@@ -133,22 +133,22 @@
             !store.modules.frequencyItems
         "
       >
-        <div class="row" v-if="!manualOrder && !store.modules.subscriptionOnly">
+        <div class="row" v-if="!store.modules.subscriptionOnly">
           <div class="col-md-12 pb-1">
             <h3>
               <img
-                v-if="!mobile"
+                v-if="!mobile && !manualOrder"
                 v-b-popover.hover.bottom="
-                  'Choose a subscription instead of a one time order and meals will be given to you on a recurring basis.'
+                  'Choose a subscription instead of a one time order and items will be given to you on a recurring basis.'
                 "
                 title="Subscription"
                 src="/images/store/popover.png"
                 class="popover-size ml-1"
               />
               <img
-                v-if="mobile"
+                v-if="mobile && !manualOrder"
                 v-b-popover.click.top="
-                  'Choose a subscription instead of a one time order and meals will be given to you on a recurring basis.'
+                  'Choose a subscription instead of a one time order and items will be given to you on a recurring basis.'
                 "
                 title="Subscription"
                 src="/images/store/popover.png"
@@ -164,43 +164,24 @@
                   >& Save {{ storeSettings.mealPlanDiscount }}%</span
                 >
               </strong>
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                class="pt-2"
+                @change="
+                  val => {
+                    setWeeklySubscriptionValue(val);
+                    updateParentData();
+                    setBagMealPlan(val);
+                    syncDiscounts();
+                  }
+                "
+              />
             </h3>
           </div>
         </div>
-        <div class="row" v-if="!store.modules.subscriptionOnly">
-          <div class="col-md-9">
-            <strong
-              ><p class="mr-1">
-                <span
-                  v-if="
-                    storeSettings.applyMealPlanDiscount &&
-                      storeSettings.mealPlanDiscount > 0
-                  "
-                >
-                  Subscribe &amp; save
-                  <span class="text-success standout">{{
-                    format.money(subscribeAndSaveAmount, storeSettings.currency)
-                  }}</span>
-                  on each order.
-                </span>
-                <c-switch
-                  color="success"
-                  variant="pill"
-                  size="lg"
-                  class="pt-2"
-                  @change="
-                    val => {
-                      setWeeklySubscriptionValue(val);
-                      updateParentData();
-                      setBagMealPlan(val);
-                      syncDiscounts();
-                    }
-                  "
-                /></p
-            ></strong>
-          </div>
-        </div>
-        <div v-if="weeklySubscriptionValue">
+        <div v-if="weeklySubscriptionValue && !manualOrder">
           <p>
             A subscription is a weekly recurring order. Your card will be
             automatically charged every week. You can change the items in your
@@ -212,7 +193,12 @@
       </li>
       <li
         class="checkout-item"
-        v-if="weeklySubscription && storeSettings.allowMonthlySubscriptions"
+        v-if="
+          weeklySubscription &&
+            (storeSettings.allowMonthlySubscriptions ||
+              storeSettings.allowBiWeeklySubscriptions) &&
+            !adjusting
+        "
       >
         <div class="d-inline">
           <div class="d-inline">
@@ -223,8 +209,19 @@
               v-model="subscriptionInterval"
               class="mb-1 delivery-select"
             >
-              <option value="week">Weekly</option>
-              <option value="month">Monthly</option>
+              <option value="week" v-if="storeSettings.allowWeeklySubscriptions"
+                ><strong>Weekly</strong></option
+              >
+              <option
+                value="biweek"
+                v-if="storeSettings.allowBiWeeklySubscriptions"
+                ><strong>Bi-Weekly</strong></option
+              >
+              <option
+                value="month"
+                v-if="storeSettings.allowMonthlySubscriptions"
+                ><strong>Monthly</strong></option
+              >
             </b-select>
           </div>
         </div>
@@ -265,18 +262,7 @@
         </div>
       </li>
 
-      <li
-        class="checkout-item"
-        v-if="
-          applyMealPlanDiscount &&
-            (subscriptionId ||
-              weeklySubscription ||
-              inSub ||
-              this.adjustMealPlan ||
-              this.$route.query.sub === 'true' ||
-              this.mealPlan)
-        "
-      >
+      <li class="checkout-item" v-if="mealPlanDiscount > 0">
         <div class="row">
           <div class="col-6 col-md-4">
             <strong>Subscription Discount:</strong>
@@ -452,7 +438,7 @@
       >
         <div class="row">
           <div class="col-6 col-md-4">
-            <span
+            <!-- <span
               class="d-inline mr-2"
               @click="removePromotions = true"
               v-if="
@@ -461,7 +447,7 @@
               "
             >
               <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
-            </span>
+            </span> -->
             <span class="text-success">Promotional Discount</span>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
@@ -1346,6 +1332,7 @@ export default {
         coupons: true,
         promotions: true
       },
+      applySubDiscountOnOrder: false,
       doubleCheckout: false,
       customGratuity: 0,
       lastUsedDiscountCode: null,
@@ -2452,7 +2439,8 @@ use next_delivery_dates
           this.inSub ||
           this.adjustMealPlan ||
           this.$route.query.sub === "true" ||
-          this.mealPlan) &&
+          this.mealPlan ||
+          this.applySubDiscountOnOrder) &&
         this.storeSettings.applyMealPlanDiscount
       ) {
         return this.subtotal * (this.storeSettings.mealPlanDiscount / 100);
@@ -2510,9 +2498,7 @@ use next_delivery_dates
         if (this.$route.params.adjustOrder) {
           return this.order.deliveryFee;
         }
-        if (this.adjustMealPlan) {
-          return this.$parent.subscription.deliveryFee;
-        }
+
         if (this.removeDeliveryFee) {
           return 0;
         }
@@ -3176,6 +3162,12 @@ use next_delivery_dates
       }
     },
     async applyDiscountCode() {
+      if (this.discountCode === "sub") {
+        this.applySubDiscountOnOrder = true;
+        this.discountCode = "";
+        this.$toastr.s("Subscription discount added.");
+        return;
+      }
       this.lastUsedDiscountCode = this.discountCode;
       let coupon = {};
       await axios

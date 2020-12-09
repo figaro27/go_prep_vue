@@ -350,6 +350,14 @@ foreach (
                                 'subscriptions/resume',
                                 'SubscriptionController@resume'
                             );
+                            Route::post(
+                                'subscriptions/renew',
+                                'SubscriptionController@renew'
+                            );
+                            Route::post(
+                                'subscriptions/updateRenewal',
+                                'SubscriptionController@updateRenewal'
+                            );
                             Route::resource('customers', 'CustomerController');
                             Route::post(
                                 'searchCustomer',

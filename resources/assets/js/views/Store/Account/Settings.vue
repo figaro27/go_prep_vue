@@ -1069,6 +1069,24 @@
                   min="0"
                 ></b-form-input>
               </b-form-group>
+              <p>
+                <span class="mr-1">Allow Bi-Weekly Subscriptions</span>
+                <img
+                  v-b-popover.hover="
+                    'Shows a section on your bag/checkout page that lets the customer opt in for a bi-weekly subscription for an optional discount. The customer will then be charged every 2 weeks. They can cancel, or change items in their subscriptions.'
+                  "
+                  title="Allow Bi-Weekly Subscriptions"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+              <c-switch
+                color="success"
+                variant="pill"
+                size="lg"
+                v-model="storeSettings.allowBiWeeklySubscriptions"
+                @change.native="updateStoreSettings()"
+              />
               <!-- <p v-if="storeSettings.allowWeeklySubscriptions || storeSettings.allowMonthlySubscriptions" class="mt-3">
                 <span class="mr-1">Weekly Subscriptions Paid Monthly</span>
                 <img

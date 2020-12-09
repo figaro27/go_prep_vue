@@ -21,6 +21,8 @@ Route::post(
     'TestController@deleteInactiveStoreImages'
 );
 
+Route::get('testRunHourlyJob', 'TestController@testRunHourlyJob');
+
 Route::get('testDeleteMealOrders', 'TestController@testDeleteMealOrders');
 
 Route::post('testRenewSubscription', 'TestController@testRenewSubscription');

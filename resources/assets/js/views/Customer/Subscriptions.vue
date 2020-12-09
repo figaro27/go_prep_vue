@@ -111,6 +111,7 @@ f<template>
                     props.row.paid_order_count > 0)
               "
               class="btn btn-danger btn-sm"
+              :disabled="props.row.cancelled_at !== null"
               @click="
                 {
                   (cancelSubscriptionModal = true), (subId = props.row.id);
@@ -762,7 +763,16 @@ export default {
     async cancelSubscription() {
       try {
         const resp = await axios.delete(`/api/me/subscriptions/${this.subId}`);
-        this.$toastr.s("Subscription cancelled.");
+        let sub = this.subscriptions.find(sub => {
+          return sub.id === this.subId;
+        });
+        if (sub.monthlyPrepay) {
+          this.$toastr.s(
+            "Subscription marked for cancellation after all prepaid orders are fulfilled"
+          );
+        } else {
+          this.$toastr.s("Subscription cancelled.");
+        }
       } catch (e) {
         this.$toastr.e(
           "Please get in touch with our support team.",

@@ -85,6 +85,7 @@ class StoreSetting extends Model
         'applyDeliveryFee' => 'boolean',
         'applyProcessingFee' => 'boolean',
         'allowWeeklySubscriptions' => 'boolean',
+        'allowBiWeeklySubscriptions' => 'boolean',
         'allowMonthlySubscriptions' => 'boolean',
         'monthlyPrepaySubscriptions' => 'boolean',
         'applyMealPlanDiscount' => 'boolean',
