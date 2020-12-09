@@ -50,7 +50,7 @@ class Subscription extends Model
         'interval_title',
         'paid_order_count',
         'transfer_type',
-        'renewalOffset'
+        'adjustedRenewal'
         // 'total_item_quantity'
     ];
 
@@ -123,22 +123,15 @@ class Subscription extends Model
         return $this->belongsTo('App\PickupLocation');
     }
 
-    public function getRenewalOffsetAttribute()
+    public function getAdjustedRenewalAttribute()
     {
-        $utcDate = (int) Carbon::parse(
+        $date = Carbon::createFromFormat(
+            'Y-m-d H:i:s',
             $this->next_renewal_at,
-            $this->store->settings->timezone
-        )
-            ->setTimezone('UTC')
-            ->format('H');
-        $date = (int) Carbon::parse(
-            $this->next_renewal_at,
-            $this->store->settings->timezone
-        )->format('H');
-        $offset = $utcDate - $date;
-        if ($this->next_renewal_at) {
-            return new Carbon($this->next_renewal_at->subHours($offset));
-        }
+            'UTC'
+        );
+        $date->setTimezone($this->store->settings->timezone);
+        return $date;
     }
 
     public function getPreCouponAttribute()
