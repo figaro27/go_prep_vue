@@ -3,6 +3,13 @@
     <div class="col-md-12">
       <div class="card">
         <div class="card-body">
+          <b-btn
+            variant="success"
+            v-if="store.id === 3"
+            @click="testRunHourlyJob"
+            >RUN HOURLY JOB</b-btn
+          >
+          <br /><br />
           <b-modal
             v-model="showCancelModal"
             title="Cancel Subscription"
@@ -13,8 +20,24 @@
             <p class="center-text mb-3 mt-3">
               Are you sure you want to cancel this subscription?
             </p>
-            <b-btn variant="danger" class="center" @click="destroyMealPlan"
+            <b-btn variant="danger" class="center" @click="cancelSubscription"
               >Cancel</b-btn
+            >
+          </b-modal>
+
+          <b-modal
+            v-model="showRenewModal"
+            title="Renew Subscription"
+            size="md"
+            :hide-footer="true"
+            no-fade
+          >
+            <p class="center-text mb-3 mt-3">
+              Are you sure you want to renew this subscription? The customer
+              will be charged and a new order will be created.
+            </p>
+            <b-btn variant="primary" class="center" @click="renew()"
+              >Renew</b-btn
             >
           </b-modal>
 
@@ -69,7 +92,7 @@
             <div slot="delivery_day" class="text-nowrap" slot-scope="props">
               {{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
             </div>
-            <div slot="actions" class="text-nowrap" slot-scope="props">
+            <!-- <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
                 class="btn view btn-primary btn-sm"
                 @click="viewSubscription(props.row.id)"
@@ -78,27 +101,79 @@
               </button>
               <b-btn
                 v-if="props.row.status === 'active'"
-                class="btn btn-warning btn-sm"
+                class="btn btn-secondary btn-sm"
                 @click.stop="() => pauseSubscription(props.row.id)"
                 >Pause</b-btn
               >
               <b-btn
                 v-if="props.row.status === 'paused'"
-                class="btn btn-warning btn-sm"
+                class="btn btn-secondary btn-sm"
                 @click.stop="() => resumeSubscription(props.row.id)"
                 >Resume</b-btn
               >
               <router-link :to="`/store/adjust-subscription/${props.row.id}`">
-                <b-btn class="btn btn-success btn-sm">Change Items</b-btn>
+                <b-btn class="btn btn-warning btn-sm">Adjust</b-btn>
               </router-link>
               <button
                 class="btn btn-danger btn-sm"
-                @click="deleteMealPlan(props.row.id)"
+                @click="showCancellationModal(props.row.id)"
               >
                 Cancel
               </button>
-            </div>
+            </div> -->
+            <div slot="actions" class="text-nowrap" slot-scope="props">
+              <!-- Keeping but hiding for purposes of double clicking the row to open the modal -->
+              <button
+                v-show="false"
+                class="btn view btn-primary btn-sm"
+                @click="viewSubscription(props.row.id)"
+              >
+                View Subscription
+              </button>
 
+              <button
+                type="button"
+                class="btn btn-primary dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Actions
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" @click="viewSubscription(props.row.id)"
+                  >View</a
+                >
+                <a
+                  class="dropdown-item"
+                  v-if="!mealMixItems.isRunningLazy"
+                  @click="adjust(props.row.id)"
+                >
+                  Adjust
+                </a>
+                <a class="dropdown-item" @click="renewModal(props.row.id)"
+                  >Renew</a
+                >
+                <a
+                  class="dropdown-item"
+                  v-if="props.row.status == 'active'"
+                  @click="() => pauseSubscription(props.row.id)"
+                  >Pause</a
+                >
+                <a
+                  class="dropdown-item"
+                  v-if="props.row.status == 'paused'"
+                  @click="() => resumeSubscription(props.row.id)"
+                  >Resume</a
+                >
+                <a
+                  class="dropdown-item"
+                  @click="showCancellationModal(props.row.id)"
+                  v-if="props.row.cancelled_at === null"
+                  >Cancel</a
+                >
+              </div>
+            </div>
             <div slot="amount" slot-scope="props">
               <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
             </div>
@@ -118,19 +193,112 @@
           <div class="col-md-4">
             <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
-            <router-link :to="`/store/adjust-subscription/${subscription.id}`">
-              <b-btn class="btn btn-success btn-sm">Change Items</b-btn>
-            </router-link>
-            <button
-              class="btn btn-danger btn-sm"
-              @click="deleteMealPlan(subscription.id)"
-            >
-              Cancel
-            </button>
+            <div>
+              <b-btn class="btn btn-md mt-1" variant="primary" @click="renew()"
+                >Renew
+              </b-btn>
+              <img
+                v-b-popover.hover="
+                  'This will override the scheduled time that the subscription renews automatically and renew it now. The customer will be charged and a new order will be created.'
+                "
+                title="Renew"
+                src="/images/store/popover.png"
+                class="popover-size"
+              />
+            </div>
+            <div class="mt-2" v-if="!mealMixItems.isRunningLazy">
+              <router-link
+                :to="`/store/adjust-subscription/${subscription.id}`"
+              >
+                <b-btn class="btn btn-warning btn-md">Adjust</b-btn>
+              </router-link>
+            </div>
+            <div>
+              <b-btn
+                v-if="subscription.status === 'active'"
+                class="btn btn-secondary btn-md mt-2"
+                @click.stop="() => pauseSubscription(subscription.id)"
+                >Pause</b-btn
+              >
+              <b-btn
+                v-if="subscription.status === 'paused'"
+                class="btn btn-secondary btn-md mt-2"
+                @click.stop="() => resumeSubscription(subscription.id)"
+                >Resume</b-btn
+              >
+            </div>
+            <div>
+              <button
+                :disabled="subscription.cancelled_at !== null"
+                class="btn btn-danger btn-md mt-2"
+                @click="showCancellationModal(subscription.id)"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
           <div class="col-md-4">
             <h4>Placed On</h4>
             <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
+
+            <span v-if="subscription.renewalOffset">
+              <h4 class="mt-2">Next Renewal</h4>
+              <p>
+                <i
+                  v-if="!adjustingRenewal"
+                  @click="adjustingRenewal = true"
+                  class="fa fa-edit text-warning font-15 pt-1"
+                ></i>
+                <i
+                  v-if="adjustingRenewal"
+                  class="fas fa-check-circle text-primary pt-1 font-15"
+                  @click="updateRenewalDate"
+                ></i>
+                <span v-if="!adjustingRenewal">
+                  {{
+                    moment(subscription.renewalOffset.date).format(
+                      "dddd, MMM Do, h:mm a"
+                    )
+                  }}
+                </span>
+                <span v-else>
+                  <b-select
+                    v-model="renewalDate"
+                    :options="renewalDateOptions"
+                    required
+                  >
+                    <option slot="top" disabled
+                      >-- Select Renewal Day --</option
+                    >
+                  </b-select>
+                  <b-select
+                    @input="val => formatRenewalTime(val)"
+                    :options="renewalTimeOptions"
+                    required
+                  >
+                    <option slot="top" disabled
+                      >-- Select Renewal Time --</option
+                    >
+                  </b-select>
+                </span>
+                will create order for
+                {{
+                  moment(subscription.latest_unpaid_order.delivery_date).format(
+                    "dddd, MMM Do"
+                  )
+                }}
+              </p>
+            </span>
+            <span v-if="subscription.next_delivery_date">
+              <h4 class="mt-2">Upcoming Delivery</h4>
+              <p>
+                {{
+                  moment(subscription.next_delivery_date.date).format(
+                    "dddd, MMM Do"
+                  )
+                }}
+              </p>
+            </span>
           </div>
           <div class="col-md-4">
             <p>
@@ -427,12 +595,16 @@ export default {
     return {
       email: "",
       showCancelModal: false,
+      showRenewModal: false,
+      renewalDate: null,
+      renewalTime: null,
       deliveryDate: "All",
       filter: false,
       filters: {
         delivery_days: ["All"],
         notes: false
       },
+      adjustingRenewal: false,
       viewSubscriptionModal: false,
       subscription: {},
       subscriptionId: "",
@@ -457,8 +629,8 @@ export default {
         // "user.user_detail.phone",
         "amount",
         "created_at",
-        "next_renewal",
         "delivery_day",
+        "next_renewal",
         // "interval",
         "status",
         "actions"
@@ -474,7 +646,7 @@ export default {
           // "user.user_detail.phone": "Phone",
           amount: "Total",
           created_at: "Subscription Placed",
-          delivery_day: "Next Delivery",
+          delivery_day: "Upcoming Delivery",
           next_renewal: "Next Renewal",
           // interval: "Interval",
           status: "Status",
@@ -550,7 +722,8 @@ export default {
       initialized: "initialized",
       getMeal: "storeMeal",
       storeModules: "storeModules",
-      getStoreMeal: "storeMeal"
+      getStoreMeal: "storeMeal",
+      mealMixItems: "mealMixItems"
     }),
     tableData() {
       let filters = {};
@@ -618,6 +791,32 @@ export default {
     },
     selected() {
       return this.deliveryDays;
+    },
+    renewalDateOptions() {
+      let options = [];
+      var today = new Date();
+
+      var year = today.getFullYear();
+      var month = today.getMonth();
+      var date = today.getDate();
+
+      for (var i = 0; i < 30; i++) {
+        var day = new Date(year, month, date + i);
+        options.push({
+          value: moment(day).format("YYYY-MM-DD"),
+          text: moment(day).format("dddd MMM Do")
+        });
+      }
+      return options;
+    },
+    renewalTimeOptions() {
+      let options = [];
+
+      for (let i = 0; i <= 23; i++) {
+        options.push(moment(i, "hh").format("h:mm A"));
+      }
+
+      return options;
     }
   },
   methods: {
@@ -724,21 +923,31 @@ export default {
         };
       });
     },
-    deleteMealPlan(id) {
+    showCancellationModal(id) {
       this.subscriptionId = id;
       this.showCancelModal = true;
     },
-    destroyMealPlan() {
+    cancelSubscription() {
       let id = this.subscriptionId;
       axios.delete(`/api/me/subscriptions/${id}`).then(resp => {
         this.refreshTable();
         this.showCancelModal = false;
-        this.$toastr.s("Subscription Cancelled");
+        let sub = this.subscriptions.find(sub => {
+          return sub.id === id;
+        });
+        if (sub.monthlyPrepay) {
+          this.$toastr.s(
+            "Subscription marked for cancellation after all prepaid orders are fulfilled"
+          );
+        } else {
+          this.$toastr.s("Subscription cancelled.");
+        }
       });
     },
     pauseSubscription(id) {
       try {
         axios.post("/api/me/subscriptions/pause", { id: id }).then(resp => {
+          this.subscription = resp.data;
           this.refreshSubscriptions();
           this.$toastr.s("Subscription paused.");
         });
@@ -752,6 +961,7 @@ export default {
     resumeSubscription(id) {
       try {
         axios.post("/api/me/subscriptions/resume", { id: id }).then(resp => {
+          this.subscription = resp.data;
           this.refreshSubscriptions();
           this.$toastr.s("Subscription resumed.");
         });
@@ -761,6 +971,44 @@ export default {
           "Failed to resume Subscription"
         );
       }
+    },
+    adjust(id) {
+      this.$router.push(`/store/adjust-subscription/${id}`);
+    },
+    renewModal(id) {
+      this.viewSubscriptionModal = false;
+      this.subscriptionId = id;
+      this.showRenewModal = true;
+    },
+    renew() {
+      axios
+        .post("/api/me/subscriptions/renew", { id: this.subscriptionId })
+        .then(resp => {
+          this.subscription = resp.data;
+          this.refreshSubscriptions();
+          this.showRenewModal = false;
+          this.$toastr.s("Subscription renewed.");
+        });
+    },
+    updateRenewalDate() {
+      axios
+        .post("/api/me/subscriptions/updateRenewal", {
+          id: this.subscriptionId,
+          date: this.renewalDate,
+          time: this.renewalTime ? this.renewalTime : null
+        })
+        .then(resp => {
+          this.subscription = resp.data;
+          this.refreshSubscriptions();
+          this.adjustingRenewal = false;
+          this.$toastr.s("Subscription renewal timing changed.");
+        });
+    },
+    formatRenewalTime(time) {
+      this.renewalTime = moment(time, "hh:mm a").format("HH:mm:ss");
+    },
+    testRunHourlyJob() {
+      axios.get("/testRunHourlyJob");
     },
     getMealTableData(subscription) {
       if (!this.initialized || !subscription.items) return [];
@@ -853,7 +1101,6 @@ export default {
           }
         });
       });
-
       subscription.items.forEach(item => {
         if (item.meal_package_subscription_id === null) {
           const meal = this.getStoreMeal(item.meal_id);

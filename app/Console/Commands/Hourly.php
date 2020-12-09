@@ -44,6 +44,9 @@ class Hourly extends Command
      */
     public function handle()
     {
+        // Renew subscriptions
+        $this->renewSubscriptions();
+
         // Store reports
         $currentDay = date('D');
         $currentHour = date('H');
@@ -153,9 +156,6 @@ class Hourly extends Command
         }
         $this->info($count . ' `Subscription Renewing` notifications sent');
         $count = 0;
-
-        // Renew cash subscriptions
-        $this->renewCashSubscriptions();
 
         // Delivery Today Emails
 
@@ -276,7 +276,7 @@ class Hourly extends Command
         $count = 0;
         foreach ($stores as $store) {
             $smsSettings = SmsSetting::where('store_id', $store->id)->first();
-            if ($smsSettings->autoSendOrderReminder) {
+            if ($smsSettings && $smsSettings->autoSendOrderReminder) {
                 $reminderHours = $smsSettings->autoSendOrderReminderHours;
 
                 $diff = Carbon::now()->diffInhours($smsSettings->nextCutoff);
@@ -290,7 +290,7 @@ class Hourly extends Command
         $this->info($count . ' `Order Reminder` SMS texts sent');
     }
 
-    public function renewCashSubscriptions()
+    public function renewSubscriptions()
     {
         $dateRange = [
             Carbon::now('utc')
@@ -300,16 +300,17 @@ class Hourly extends Command
                 ->addMinutes(30)
                 ->toDateTimeString()
         ];
-        $cashSubs = Subscription::whereBetween('next_renewal_at', $dateRange)
+
+        $subs = Subscription::whereBetween('next_renewal_at', $dateRange)
             ->where('status', 'active')
-            ->where('cashOrder', 1)
+            ->orWhere('status', 'paused')
             ->get();
 
         $count = 0;
-        foreach ($cashSubs as $cashSub) {
-            $cashSub->renew();
+        foreach ($subs as $sub) {
+            $sub->renew();
             $count++;
         }
-        $this->info($count . ' Cash subscriptions renewed');
+        $this->info($count . ' Subscriptions renewed');
     }
 }

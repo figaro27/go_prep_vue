@@ -223,6 +223,26 @@ class CheckoutController extends UserController
                 }
             }
 
+            if ($storeModules->multipleDeliveryDays) {
+                // Get the nearest upcoming delivery date
+                $lowestDiff = null;
+                $now = Carbon::now();
+                foreach ($bag->getItems() as $item) {
+                    $date = new Carbon($item['delivery_day']['day_friendly']);
+                    $diff = $date->diffInDays($now);
+                    if ($lowestDiff === null || $diff < $lowestDiff) {
+                        $lowestDiff = $diff;
+                        $customDD = $this->store
+                            ->deliveryDays()
+                            ->where([
+                                'day' => (int) $item['delivery_day']['day'],
+                                'type' => $pickup ? 'pickup' : 'delivery'
+                            ])
+                            ->first();
+                    }
+                }
+            }
+
             $application_fee = $storeSettings->application_fee;
 
             $total = $request->get('subtotal');
@@ -840,6 +860,8 @@ class CheckoutController extends UserController
 
                 if ($interval === 'week' || $monthlyPrepay) {
                     $intervalCount = 1;
+                } elseif ($interval === 'biweek') {
+                    $intervalCount = 2;
                 } elseif ($interval === 'month') {
                     $intervalCount = 4;
                 }
@@ -853,8 +875,7 @@ class CheckoutController extends UserController
                 // How long into the future is the delivery day? In days
                 $diff = (strtotime($deliveryDay) - time()) / 86400;
 
-                // Set billing anchor to now +2 mins
-                $billingAnchor = Carbon::now();
+                $billingAnchor = Carbon::now('utc');
 
                 // Selected start date is more than 1 week into the future.
                 // Wait until next week to start billing cycle
@@ -876,67 +897,6 @@ class CheckoutController extends UserController
                     $period = 'Monthly prepay';
                 }
 
-                $billingAnchor = $billingAnchor->addMinutes(2);
-
-                if (!$cashOrder) {
-                    if ($gateway === Constants::GATEWAY_STRIPE) {
-                        $plan = \Stripe\Plan::create(
-                            [
-                                "amount" => round($total * 100),
-                                "interval" => 'week',
-                                'interval_count' => $intervalCount,
-                                "product" => [
-                                    "name" =>
-                                        ucwords($period) .
-                                        " subscription (" .
-                                        $store->storeDetail->name .
-                                        ")"
-                                ],
-                                "currency" => $storeSettings->currency
-                            ],
-                            ['stripe_account' => $storeSettings->stripe_id]
-                        );
-
-                        $token = \Stripe\Token::create(
-                            [
-                                "customer" => $this->user->stripe_id,
-                                'card' => $card->stripe_id
-                            ],
-                            ['stripe_account' => $storeSettings->stripe_id]
-                        );
-
-                        $storeSource = $storeCustomer->sources->create(
-                            [
-                                'source' => $token
-                            ],
-                            ['stripe_account' => $storeSettings->stripe_id]
-                        );
-
-                        $subscription = $storeCustomer->subscriptions->create(
-                            [
-                                'default_source' => $storeSource,
-                                'items' => [['plan' => $plan]],
-                                'application_fee_percent' => $application_fee,
-                                'trial_end' => $billingAnchor->getTimestamp()
-                                //'prorate' => false
-                            ],
-                            ['stripe_account' => $storeSettings->stripe_id]
-                        );
-                    } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
-                        $billing = Billing::init($gateway, $store);
-
-                        $subscription = new \App\Billing\Subscription();
-                        $subscription->amount = round($total * 100);
-                        $subscription->customer = $customer;
-                        $subscription->card = $card;
-                        $subscription->startDate = $billingAnchor;
-                        $subscription->period = $period;
-
-                        $transactionId = $billing->subscribe($subscription);
-                        $subscription->id = $transactionId;
-                    }
-                }
-
                 $userSubscription = new Subscription();
                 $userSubscription->user_id = $user->id;
                 $userSubscription->customer_id = $customer->id;
@@ -950,15 +910,10 @@ class CheckoutController extends UserController
                     " subscription (" .
                     $store->storeDetail->name .
                     ")";
-                if (!$cashOrder) {
-                    $userSubscription->stripe_plan = $plan->id;
-                    $userSubscription->stripe_id = substr($subscription->id, 4);
-                } else {
-                    $userSubscription->stripe_id =
-                        'C-' .
-                        strtoupper(substr(uniqid(rand(10, 99), false), 0, 10));
-                    $userSubscription->stripe_plan = 'cash';
-                }
+                $userSubscription->stripe_id = strtoupper(
+                    substr(uniqid(rand(10, 99), false), 0, 10)
+                );
+                $userSubscription->stripe_plan = 'GOPREP';
                 $userSubscription->quantity = 1;
                 $userSubscription->preFeePreDiscount = $preFeePreDiscount;
                 $userSubscription->mealPlanDiscount = $mealPlanDiscount;
@@ -989,7 +944,10 @@ class CheckoutController extends UserController
                 $userSubscription->promotionReduction = $promotionReduction;
                 $userSubscription->pointsReduction = $pointsReduction;
                 // In this case the 'next renewal time' is actually the first charge time
-                $userSubscription->next_renewal_at = $billingAnchor->getTimestamp();
+                $userSubscription->next_renewal_at = $billingAnchor
+                    ->minute(0)
+                    ->second(0)
+                    ->getTimestamp();
                 $userSubscription->pickup_location_id = $pickupLocation;
                 $userSubscription->transferTime = $transferTime;
                 $userSubscription->cashOrder = $cashOrder;
@@ -1431,25 +1389,6 @@ class CheckoutController extends UserController
                     ]);
                 }
 
-                // if ($bagItems && count($bagItems) > 0) {
-                //     foreach ($bagItems as $bagItem) {
-                //         $orderBag = new OrderBag();
-                //         $orderBag->order_id = (int) $order->id;
-                //         $orderBag->bag = json_encode($bagItem);
-                //         $orderBag->save();
-                //     }
-                // }
-
-                // if ($bagItems && count($bagItems) > 0) {
-                //     foreach ($bagItems as $bagItem) {
-                //         $subscriptionBag = new SubscriptionBag();
-                //         $subscriptionBag->subscription_id =
-                //             (int) $userSubscription->id;
-                //         $subscriptionBag->bag = json_encode($bagItem);
-                //         $subscriptionBag->save();
-                //     }
-                // }
-
                 try {
                     $user->sendNotification('meal_plan', [
                         'order' => $order ?? null,
@@ -1461,11 +1400,10 @@ class CheckoutController extends UserController
                 } catch (\Exception $e) {
                 }
                 if (
-                    $userSubscription->cashOrder &&
                     $store->settings->subscriptionRenewalType !== 'cutoff' &&
                     $diff <= 7
                 ) {
-                    // Renew & create the first order right away since you aren't waiting for Stripe's 1 hour gap.
+                    // Renew & create the first order right away.
                     $userSubscription->renew();
                 }
             }

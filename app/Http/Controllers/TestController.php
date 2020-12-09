@@ -20,6 +20,8 @@ use App\Meal;
 use App\MealSubscription;
 use Spatie\MediaLibrary\Models\Media;
 use App\SmsList;
+use Illuminate\Support\Facades\Artisan;
+use App\SmsSetting;
 
 class TestController extends Controller
 {
@@ -223,13 +225,18 @@ class TestController extends Controller
         }
     }
 
+    public function testRunHourlyJob()
+    {
+        Artisan::call('goprep:hourly');
+    }
+
     public function testRenewSubscription(Request $request)
     {
         $sub = Subscription::where(
             'stripe_id',
             $request->get('stripe_id')
         )->first();
-        $sub->renewTest();
+        $sub->renew();
     }
 
     public function testChargeDescriptor()

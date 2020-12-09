@@ -40,7 +40,6 @@ class SubscriptionController extends UserController
         $subscriptions->makeHidden([
             'latest_order',
             'latest_paid_order',
-            'latest_unpaid_order',
             'next_order',
             'meal_ids',
             'meal_quantities',
@@ -215,23 +214,6 @@ class SubscriptionController extends UserController
             }
             $store = $sub->store;
 
-            if (!$sub->cashOrder) {
-                try {
-                    $subscription = \Stripe\Subscription::retrieve(
-                        'sub_' . $sub->stripe_id,
-                        ['stripe_account' => $store->settings->stripe_id]
-                    );
-                } catch (\Exception $e) {
-                    return response()->json(
-                        [
-                            'error' =>
-                                'Subscription not found at payment gateway'
-                        ],
-                        404
-                    );
-                }
-            }
-
             $user = auth('api')->user();
             $storeId = $request->get('store_id');
             $store = Store::with(['settings', 'storeDetail'])->findOrFail(
@@ -304,32 +286,6 @@ class SubscriptionController extends UserController
                 ? $request->get('purchasedGiftCardReduction')
                 : 0;
 
-            // if ($store->settings->applyMealPlanDiscount && $weeklyPlan) {
-            //     $discount = $store->settings->mealPlanDiscount / 100;
-            //     $mealPlanDiscount = $total * $discount;
-            //     $total -= $mealPlanDiscount;
-            //     $afterDiscountBeforeFees = $total;
-            // }
-
-            // if ($store->settings->applyDeliveryFee) {
-            //     $total += $deliveryFee;
-            // }
-
-            // if ($store->settings->applyProcessingFee) {
-            //     if ($store->settings->processingFeeType === 'flat') {
-            //         $processingFee += $store->settings->processingFee;
-            //     } elseif ($store->settings->processingFeeType === 'percent') {
-            //         $processingFee +=
-            //             ($store->settings->processingFee / 100) * $subtotal;
-            //     }
-
-            //     $total += $processingFee;
-            // }
-
-            // if ($couponId != null) {
-            //     $total -= $couponReduction;
-            // }
-
             $customerId = $request->get('customer');
             $customer = Customer::where('id', $customerId)->first();
 
@@ -340,83 +296,6 @@ class SubscriptionController extends UserController
             if ($cashOrder) {
                 $cardId = null;
                 $card = null;
-            }
-
-            // Delete existing stripe plan
-            if (!$sub->cashOrder) {
-                try {
-                    $plan = \Stripe\Plan::retrieve($sub->stripe_plan, [
-                        'stripe_account' => $sub->store->settings->stripe_id
-                    ]);
-                    $plan->delete();
-                } catch (\Exception $e) {
-                    return response()->json(
-                        [
-                            'error' =>
-                                'Failed to update subscription. Please get in touch'
-                        ],
-                        500
-                    );
-                }
-
-                // Create stripe plan with new pricing
-                $plan = \Stripe\Plan::create(
-                    [
-                        "amount" => round($total * 100),
-                        "interval" => 'week',
-                        "interval_count" => $sub->intervalCount,
-                        "product" => [
-                            "name" =>
-                                $sub->interval_title .
-                                " subscription (" .
-                                $store->storeDetail->name .
-                                ")"
-                        ],
-                        "currency" => $store->settings->currency
-                    ],
-                    ['stripe_account' => $store->settings->stripe_id]
-                );
-
-                // Assign plan to stripe subscription
-                \Stripe\Subscription::update(
-                    $subscription->id,
-                    [
-                        'cancel_at_period_end' => false,
-                        'items' => [
-                            [
-                                'id' => $subscription->items->data[0]->id,
-                                'plan' => $plan->id
-                            ]
-                        ],
-                        'prorate' => false,
-                        'billing_cycle_anchor' => 'unchanged'
-                    ],
-                    ['stripe_account' => $store->settings->stripe_id]
-                );
-
-                // Assign new plan ID to subscription
-                $sub->stripe_plan = $plan->id;
-
-                // If the current subscription is in draft state (within 1 hour before renewal, add line item to current invoice)
-                $invoice = \Stripe\Invoice::retrieve(
-                    $subscription->latest_invoice,
-                    [
-                        'stripe_account' => $store->settings->stripe_id
-                    ]
-                );
-                if ($invoice->status === 'draft') {
-                    $invoiceItem = \Stripe\InvoiceItem::create(
-                        [
-                            'invoice' => $invoice->id,
-                            'customer' => $subscription->customer,
-                            'amount' => round(($total - $sub->amount) * 100),
-                            'currency' => $this->store->settings->currency,
-                            'description' =>
-                                'Subscription updated in draft state.'
-                        ],
-                        ['stripe_account' => $store->settings->stripe_id]
-                    );
-                }
             }
 
             // Update meals in subscription
@@ -572,16 +451,6 @@ class SubscriptionController extends UserController
                 }
             }
 
-            // Update subscription pricing
-            // $sub->preFeePreDiscount = $preFeePreDiscount;
-            // $sub->mealPlanDiscount = $mealPlanDiscount;
-            // $sub->afterDiscountBeforeFees = $afterDiscountBeforeFees;
-            // $sub->processingFee = $processingFee;
-            // $sub->deliveryFee = $deliveryFee;
-            // $sub->salesTax = $salesTax;
-            // $sub->amount = $total;
-            // $sub->save();
-
             $sub->store_id = $store->id;
             $sub->preFeePreDiscount = $preFeePreDiscount;
             $sub->mealPlanDiscount = $mealPlanDiscount;
@@ -630,6 +499,7 @@ class SubscriptionController extends UserController
                 $order->deliveryFee = $deliveryFee;
                 $order->gratuity = $gratuity;
                 $order->coolerDeposit = $coolerDeposit;
+                $order->coupon_id = $couponId;
                 $order->couponReduction = $couponReduction;
                 $order->couponCode = $couponCode;
                 $order->salesTax = $salesTax;
@@ -639,6 +509,9 @@ class SubscriptionController extends UserController
                 $order->promotionReduction = $promotionReduction;
                 $order->pointsReduction = $pointsReduction;
                 $order->amount = $total;
+                $order->shipping = $shipping;
+                $order->pickup = $pickup;
+                $order->pickup_location_id = $pickupLocation;
                 $order->save();
 
                 // Replace order meals
@@ -757,20 +630,7 @@ class SubscriptionController extends UserController
                                 $item['meal_package_size_id'];
                             $mealPackageOrder->quantity =
                                 $item['package_quantity'];
-                            // $mealPackageOrder->price =
-                            //     $item['meal_package_size_id'] !== null
-                            //         ? MealPackageSize::where(
-                            //             'id',
-                            //             $item['meal_package_size_id']
-                            //         )
-                            //             ->pluck('price')
-                            //             ->first()
-                            //         : MealPackage::where(
-                            //             'id',
-                            //             $item['meal_package_id']
-                            //         )
-                            //             ->pluck('price')
-                            //             ->first();
+
                             $mealPackageOrder->price = $item['package_price'];
                             if (
                                 isset($item['delivery_day']) &&
