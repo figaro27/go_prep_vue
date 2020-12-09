@@ -1453,12 +1453,14 @@ class CheckoutController extends StoreController
 
             // Auto add new customer to SMS Contacts
             $smsSetting = SmsSetting::where('store_id', $storeId)->first();
-            if ($smsSetting && $smsSetting->autoAddCustomers) {
-                $smsSetting->addNewCustomerToContacts($customer);
-            }
-
-            if ($smsSetting && $smsSetting->autoSendOrderConfirmation) {
-                $smsSetting->sendOrderConfirmationSMS($customer, $order);
+            try {
+                if ($smsSetting && $smsSetting->autoAddCustomers) {
+                    $smsSetting->addNewCustomerToContacts($customer);
+                }
+                if ($smsSetting && $smsSetting->autoSendOrderConfirmation) {
+                    $smsSetting->sendOrderConfirmationSMS($customer, $order);
+                }
+            } catch (\Exception $e) {
             }
 
             return $orderId;

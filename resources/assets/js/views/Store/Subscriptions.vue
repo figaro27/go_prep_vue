@@ -138,9 +138,6 @@
                 >
                   Adjust
                 </a>
-                <a class="dropdown-item" @click="renewModal(props.row.id)"
-                  >Renew</a
-                >
                 <a
                   class="dropdown-item"
                   v-if="props.row.status == 'active'"
@@ -152,6 +149,9 @@
                   v-if="props.row.status == 'paused'"
                   @click="() => resumeSubscription(props.row.id)"
                   >Resume</a
+                >
+                <a class="dropdown-item" @click="renewModal(props.row.id)"
+                  >Renew</a
                 >
                 <a
                   class="dropdown-item"

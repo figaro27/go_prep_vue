@@ -1536,12 +1536,15 @@ class CheckoutController extends UserController
             }
 
             $smsSetting = SmsSetting::where('store_id', $storeId)->first();
-            if ($smsSetting && $smsSetting->autoAddCustomers) {
-                $smsSetting->addNewCustomerToContacts($customer);
-            }
+            try {
+                if ($smsSetting && $smsSetting->autoAddCustomers) {
+                    $smsSetting->addNewCustomerToContacts($customer);
+                }
 
-            if ($smsSetting && $smsSetting->autoSendOrderConfirmation) {
-                $smsSetting->sendOrderConfirmationSMS($customer, $order);
+                if ($smsSetting && $smsSetting->autoSendOrderConfirmation) {
+                    $smsSetting->sendOrderConfirmationSMS($customer, $order);
+                }
+            } catch (\Exception $e) {
             }
         } catch (\Exception $e) {
             $error = new Error();
