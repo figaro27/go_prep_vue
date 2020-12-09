@@ -50,7 +50,8 @@ class Subscription extends Model
         'interval_title',
         'paid_order_count',
         'transfer_type',
-        'adjustedRenewal'
+        'adjustedRenewal',
+        'adjustRenewalUTC'
         // 'total_item_quantity'
     ];
 
@@ -131,6 +132,17 @@ class Subscription extends Model
             'UTC'
         );
         $date->setTimezone($this->store->settings->timezone);
+        return $date;
+    }
+
+    public function getAdjustedRenewalUTCAttribute()
+    {
+        $date = Carbon::createFromFormat(
+            'Y-m-d H:i:s',
+            $this->next_renewal_at,
+            $this->store->settings->timezone
+        );
+        $date->setTimezone('UTC');
         return $date;
     }
 
