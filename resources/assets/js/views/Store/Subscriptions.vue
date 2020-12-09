@@ -103,7 +103,9 @@
                 }}
               </span>
               <span v-else>
-                {{ props.row.next_delivery_date }}
+                {{
+                  moment(props.row.next_delivery_date).format("dddd, MMM Do")
+                }}
               </span>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
