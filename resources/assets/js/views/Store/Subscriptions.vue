@@ -75,7 +75,7 @@
               slot-scope="props"
               v-if="storeSettings.timezone"
             >
-              <span v-if="props.row.renewalOffset">{{
+              <span v-if="props.row.created_at">{{
                 moment(props.row.created_at).format("dddd, MMM Do")
               }}</span>
             </div>
@@ -85,12 +85,14 @@
               slot-scope="props"
               v-if="storeSettings.timezone"
             >
-              <span v-if="props.row.renewalOffset">{{
-                moment(props.row.renewalOffset.date).format("dddd, MMM Do")
+              <span>{{
+                moment(props.row.adjustedRenewal.date).format("dddd, MMM Do")
               }}</span>
             </div>
             <div slot="delivery_day" class="text-nowrap" slot-scope="props">
-              {{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
+              {{
+                moment(props.row.next_delivery_date.date).format("dddd, MMM Do")
+              }}
             </div>
             <!-- <div slot="actions" class="text-nowrap" slot-scope="props">
               <button
@@ -241,7 +243,7 @@
             <h4>Placed On</h4>
             <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
 
-            <span v-if="subscription.renewalOffset">
+            <span v-if="subscription.adjustedRenewal">
               <h4 class="mt-2">Next Renewal</h4>
               <p>
                 <i
@@ -256,7 +258,7 @@
                 ></i>
                 <span v-if="!adjustingRenewal">
                   {{
-                    moment(subscription.renewalOffset.date).format(
+                    moment(subscription.adjustedRenewal.date).format(
                       "dddd, MMM Do, h:mm a"
                     )
                   }}

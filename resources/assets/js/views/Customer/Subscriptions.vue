@@ -1,4 +1,4 @@
-f<template>
+<template>
   <div class="main-customer-container box-shadow top-fill">
     <div class="row">
       <div class="col-md-12">
@@ -71,7 +71,7 @@ f<template>
             slot-scope="props"
             v-if="storeSettings.timezone"
           >
-            <span v-if="props.row.renewalOffset">{{
+            <span v-if="props.row.adjustedRenewal">{{
               moment(props.row.created_at).format("dddd, MMM Do")
             }}</span>
           </div>
@@ -81,8 +81,8 @@ f<template>
             slot-scope="props"
             v-if="storeSettings.timezone"
           >
-            <span v-if="props.row.renewalOffset">{{
-              moment(props.row.renewalOffset.date).format("dddd, MMM Do")
+            <span v-if="props.row.adjustedRenewal">{{
+              moment(props.row.adjustedRenewal.date).format("dddd, MMM Do")
             }}</span>
           </div>
           <div slot="delivery_day" class="text-nowrap" slot-scope="props">
