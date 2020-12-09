@@ -171,27 +171,17 @@ class SubscriptionController extends StoreController
     public function updateRenewal(Request $request)
     {
         $sub = Subscription::where('id', $request->get('id'))->first();
-        $currentDate = new Carbon($sub->next_renewal_at);
-        $currentDate = $currentDate->toDateString();
-        $currentTime = new Carbon($sub->next_renewal_at);
-        $currentTime = $currentTime->toTimeString();
-
-        $newDate = $request->get('date');
-
-        if ($request->get('time')) {
-            $newTime = new Carbon($request->get('time'));
-            $newTime = $newTime->setTimezone('utc')->toTimeString();
-        } else {
-            $newTime = null;
-        }
-
-        $updatedDate = $newDate ? $newDate : $currentDate;
-        $updatedTime = $newTime ? $newTime : $currentTime;
-        $updatedDateTime = $updatedDate . ' ' . $updatedTime;
-
-        $sub->next_renewal_at = $updatedDateTime;
+        $date = $request->get('date')
+            ? $request->get('date')
+            : Carbon($sub->next_renewal_at)->toDateString();
+        $time = $request->get('time')
+            ? $request->get('time')
+            : Carbon($sub->next_renewal_at)->toTimeString();
+        $dateTime = $date . ' ' . $time;
+        $dateTime = new Carbon($dateTime);
+        $dateTime = $dateTime->setTimezone('utc')->toDateTimeString();
+        $sub->next_renewal_at = $dateTime;
         $sub->update();
-
         return $sub;
     }
 
