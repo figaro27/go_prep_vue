@@ -93,6 +93,7 @@ class CategoryController extends StoreController
 
         $category = $store->categories()->findOrFail($id);
         $category->category = $request->get('category');
+        $category->subtitle = $request->get('subtitle');
 
         $dateRange = $request->get('date_range', false);
         $dateRangeFrom = $request->get('date_range_from', null);

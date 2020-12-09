@@ -65,6 +65,14 @@
                     ></b-input>
                   </div>
                   <div class="d-flex d-inline">
+                    <p class="mr-2">Subtitle</p>
+                    <b-input
+                      v-model="editing.subtitle"
+                      placeholder="Enter updated category subtitle."
+                      class="w-180"
+                    ></b-input>
+                  </div>
+                  <div class="d-flex d-inline">
                     <p class="mr-2">Minimum Type</p>
                     <b-form-select
                       v-model="editing.minimumType"
