@@ -327,7 +327,7 @@ class Hourly extends Command
         foreach ($subs as $sub) {
             if (
                 $sub->adjustedRenewalUTC >= $start &&
-                $sub->adjustedRenewalUTC <= $end
+                $sub->adjustedRenewalUTC < $end
             ) {
                 $sub->renew();
                 $count++;
