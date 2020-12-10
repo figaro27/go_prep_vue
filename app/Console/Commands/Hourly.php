@@ -46,6 +46,7 @@ class Hourly extends Command
     {
         // Renew subscriptions
         $this->renewSubscriptions();
+        return;
 
         // Store reports
         $currentDay = date('D');
@@ -325,12 +326,30 @@ class Hourly extends Command
 
         $count = 0;
         foreach ($subs as $sub) {
+            $this->info(
+                Carbon::now('utc')
+                    ->subMinutes(30)
+                    ->toDateTimeString()
+            );
+            $this->info(
+                Carbon::now('utc')
+                    ->addMinutes(30)
+                    ->toDateTimeString()
+            );
+            $this->info($sub->adjustedRenewalUTC);
+            // Manually renewing Detox & Get Real Meals for the first week. Will remove.
             if (
-                $sub->adjustedRenewalUTC >= $start &&
-                $sub->adjustedRenewalUTC < $end
+                $sub->store_id !== 3 &&
+                $sub->store_id !== 106 &&
+                $sub->store_id !== 156
             ) {
-                $sub->renew();
-                $count++;
+                if (
+                    $sub->adjustedRenewalUTC >= $start &&
+                    $sub->adjustedRenewalUTC < $end
+                ) {
+                    $sub->renew();
+                    $count++;
+                }
             }
         }
 
