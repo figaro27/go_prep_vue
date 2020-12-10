@@ -144,7 +144,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   </ul>
 
 
-                  <p>For any questions, you can call us at (347) 433-7990 or email us at <a href="mailto:help@goprep.com">help@goprep.com</a></p>
+                  <p>For any questions, or if you'd like us to assist with your onboarding and menu setup, you can call us at (347) 433-7990 or email us at <a href="mailto:help@goprep.com">help@goprep.com</a></p>
 
                   <p>View Documentation: <a style="color:#0645AD" href="https://www.goprep.com/documentation">https://www.goprep.com/documentation</a></p>
                   <p>Watch Overview Video: <a style="color:#0645AD" href="https://www.goprep.com/demo-video/"> https://www.goprep.com/demo/</a></p>
