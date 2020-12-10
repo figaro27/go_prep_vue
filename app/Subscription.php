@@ -399,7 +399,12 @@ class Subscription extends Model
         }
 
         $applyCharge =
-            !$this->cashOrder && $this->status != 'paused' ? true : false;
+            !$this->cashOrder &&
+            $this->status != 'paused' &&
+            $this->stripe_customer_id !== 'CASH' &&
+            $this->stripe_customer_id !== 'NO_CHARGE'
+                ? true
+                : false;
 
         $this->syncPrices();
 

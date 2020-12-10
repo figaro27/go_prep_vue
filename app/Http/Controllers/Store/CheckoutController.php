@@ -889,13 +889,19 @@ class CheckoutController extends StoreController
                     $period = 'Monthly prepay';
                 }
 
+                $stripeCustomerId = (($storeCustomer
+                            ? $storeCustomer->id
+                            : $cashOrder)
+                        ? 'CASH'
+                        : $total == 0)
+                    ? 'NO_CHARGE'
+                    : 'NULL';
+
                 $userSubscription = new Subscription();
                 $userSubscription->user_id = $customerUser->id;
                 $userSubscription->customer_id = $customer->id;
                 $userSubscription->card_id = $cardId;
-                $userSubscription->stripe_customer_id = !$cashOrder
-                    ? $storeCustomer->id
-                    : 'Cash';
+                $userSubscription->stripe_customer_id = $stripeCustomerId;
                 $userSubscription->store_id = $store->id;
                 $userSubscription->manual = 1;
                 $userSubscription->name =
