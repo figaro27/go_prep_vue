@@ -91,8 +91,7 @@ class StoreSettingController extends StoreController
             'date_format',
             'next_orderable_pickup_dates',
             'menuReopening',
-            'next_orderable_dates',
-            'transferType'
+            'next_orderable_dates'
         ]);
         $values['delivery_days'] = json_encode($values['delivery_days']);
         $values['notifications'] = json_encode($values['notifications']);

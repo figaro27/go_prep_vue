@@ -1001,11 +1001,7 @@
                   label="About (Shown at the top of your menu)"
                   :state="true"
                 >
-                  <wysiwyg
-                    class="w-600"
-                    v-model="description"
-                    @input="saveTextInput()"
-                  />
+                  <wysiwyg class="w-600" v-model="description" />
                 </b-form-group>
 
                 <router-link
@@ -1573,10 +1569,15 @@ export default {
     delivery_days() {
       this.storeSettings.delivery_days = this.delivery_days;
       this.updateStoreSettings();
-    }
+    },
+    description: _.debounce(function(val) {
+      this.storeDetail.description = val;
+      this.updateStoreDetails();
+    }, 1000)
   },
   data() {
     return {
+      description: null,
       delivery_days: null,
       deliveryFeeCity: {},
       deliveryFeeZipCode: {},
@@ -1756,6 +1757,7 @@ export default {
     this.checkAcceptedTOA();
 
     this.delivery_days = this.storeSettings.delivery_days;
+    this.description = this.storeDetails.description;
   },
   destroyed() {
     this.enableSpinner();
