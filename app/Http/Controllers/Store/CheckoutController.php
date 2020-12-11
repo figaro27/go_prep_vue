@@ -867,16 +867,16 @@ class CheckoutController extends StoreController
 
                 // Selected start date is more than 1 week into the future.
                 // Wait until next week to start billing cycle
-                // if ($diff >= 7) {
-                //     $billingAnchor->addWeeks(1);
-                // }
+                if ($diff >= 7) {
+                    $billingAnchor->addWeeks(1);
+                }
 
                 // Is billing anchor past the cutoff?
                 // Set to the cutoff date
 
-                // if ($billingAnchor->greaterThan($cutoff)) {
-                //     $billingAnchor = $cutoff->copy();
-                // }
+                if ($billingAnchor->greaterThan($cutoff)) {
+                    $billingAnchor = $cutoff->copy();
+                }
 
                 if ($store->settings->subscriptionRenewalType == 'cutoff') {
                     $billingAnchor = $cutoff->copy();
