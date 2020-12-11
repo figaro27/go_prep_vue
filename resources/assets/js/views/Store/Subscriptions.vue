@@ -919,6 +919,7 @@ export default {
       axios.delete(`/api/me/subscriptions/${id}`).then(resp => {
         this.refreshTable();
         this.showCancelModal = false;
+        this.viewSubscriptionModal = false;
         let sub = this.subscriptions.find(sub => {
           return sub.id === id;
         });

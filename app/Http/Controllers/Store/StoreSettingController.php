@@ -111,7 +111,23 @@ class StoreSettingController extends StoreController
             $values['transferType'] = $settings->first()->transferType;
         }
 
+        $subDiscount = $settings->first()->applyMealPlanDiscount;
+
         $settings->update($values);
+
+        // Removing subscription discount from all active subscriptions if turned off
+        if ($subDiscount && !$values['applyMealPlanDiscount']) {
+            $subs = Subscription::where('store_id', $this->store->id);
+            $subs = $subs
+                ->where('status', 'active')
+                ->orWhere('status', 'paused')
+                ->get();
+            foreach ($subs as $sub) {
+                $sub->mealPlanDiscount = 0.0;
+                $sub->update();
+                $sub->syncPrices();
+            }
+        }
 
         $store = Store::where('id', $this->store->id)->first();
         if ($values['open'] === true) {
