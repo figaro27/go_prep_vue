@@ -1188,7 +1188,7 @@
                   <span class="mr-1">Subscription Renewal Timing</span>
                   <img
                     v-b-popover.hover="
-                      'Choose \'Renew Now\' for your customer\'s subscription renewal/lock in day to be the day they created the subscription. Choose \'Renew At Cutoff\' for the subscription renewal date to be moved to the cutoff day for the delivery day the customer chooses. The first option renews & creates the order immediately and on the same day each week the subscription was created, but there will be a gap between the renewal time and your cutoff time in which your customer is able to update their subscription. The second option gives your customer all the way until your cutoff to update their subscription, but their card is not charged and order is not created and shown until your cutoff occurs.'
+                      'Choose \'Renew At Cutoff\' for the subscription renewal date to be moved to the cutoff day for the delivery day the customer chooses. Choose \'Renew Now\' for your customer\'s subscription renewal/lock in day to be the day they created the subscription. The first option gives your customer all the way until your cutoff to update their subscription, but their card is not charged and order is not created and shown until your cutoff occurs. The second option renews & creates the order immediately and on the same day each week the subscription was created, but there will be a gap between the renewal time and your cutoff time in which your customer is able to update their subscription.'
                     "
                     title="Subscription Renewal Timing"
                     src="/images/store/popover.png"
@@ -1595,8 +1595,8 @@ export default {
         { text: "Pickup", value: "pickup" }
       ],
       subscriptionRenewalTypeOptions: [
-        { text: "Renew Now", value: "now" },
-        { text: "Renew At Cutoff", value: "cutoff" }
+        { text: "Renew At Cutoff", value: "cutoff" },
+        { text: "Renew Now", value: "now" }
       ],
       minimumSelected: "price",
       minimumOptions: [

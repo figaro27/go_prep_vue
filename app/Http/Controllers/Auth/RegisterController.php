@@ -251,7 +251,7 @@ class RegisterController extends Controller
                 'notifications' => [],
                 'transferType' => 'delivery',
                 'view_delivery_days' => 1,
-                'delivery_days' => [],
+                'delivery_days' => ["sun"],
                 'delivery_distance_zipcodes' => [],
                 'meal_packages' => 1,
                 'notifications' => array(
@@ -262,7 +262,8 @@ class RegisterController extends Controller
                     'new_subscriptions' => true,
                     'cancelled_subscription' => true,
                     'cancelled_subscriptions' => true
-                )
+                ),
+                'subscriptionRenewalType' => 'cutoff'
             ]);
 
             $storeSettings = $store->categories()->create([
