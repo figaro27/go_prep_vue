@@ -190,7 +190,14 @@ class CustomerController extends StoreController
         }
 
         // Only return cards if the store manually added the user or if the user has ordered from the store.
-        if ($added_by_store_id === $store->id || $orders > 0 || $shared) {
+        // if ($added_by_store_id === $store->id || $orders > 0 || $shared) {
+
+        // ^ Removing the above. Now access is given to the card even if the customer didn't place an order
+        if (
+            $added_by_store_id === $store->id ||
+            $last_viewed_store_id === $store->id ||
+            $shared
+        ) {
             return $customer->user
                 ->cards()
                 ->where('payment_gateway', $gateway)
