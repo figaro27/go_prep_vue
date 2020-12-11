@@ -3082,7 +3082,7 @@ use next_delivery_dates
           return item.meal.gift_card === true;
         })
       ) {
-        return "Gift cards are not allowed on subscriptions. Please remove the gift card from your bag or toggle off subscription.";
+        return "Gift cards are not allowed on subscriptions. Please remove the gift card or toggle off subscription.";
       }
 
       if (this.hasMultipleSubscriptionItems) {

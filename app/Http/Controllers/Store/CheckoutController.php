@@ -1450,12 +1450,18 @@ class CheckoutController extends StoreController
                     $purchasedGiftCardId
                 )->first();
                 $purchasedGiftCard->balance -= $purchasedGiftCardReduction;
+                if ($purchasedGiftCard->balance < 0) {
+                    $purchasedGiftCard->balance = 0;
+                }
                 $purchasedGiftCard->update();
             }
 
             if ($referralReduction > 0) {
                 $referral = Referral::where('id', $appliedReferralId)->first();
                 $referral->balance -= $referralReduction;
+                if ($referral->balance < 0) {
+                    $referral->balance = 0;
+                }
                 $referral->update();
             }
 
