@@ -2018,6 +2018,7 @@ export default {
       this.logoUpdated = true;
       let b64 = await fs.getBase64(this.$refs.storeImageInput.file);
       this.storeDetail.logo = b64;
+      this.updateStoreDetails();
     },
     checkAcceptedTOA() {
       axios.get("/api/me/getAcceptedTOA").then(resp => {

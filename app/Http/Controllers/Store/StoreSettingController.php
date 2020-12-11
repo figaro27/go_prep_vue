@@ -102,6 +102,15 @@ class StoreSettingController extends StoreController
             $values['delivery_distance_zipcodes']
         );
 
+        // Preventing the bug which causes transferType to save as null
+        if (
+            !isset($values['transferType']) ||
+            $values['transferType'] === "" ||
+            $values['transferType'] === null
+        ) {
+            $values['transferType'] = $settings->first()->transferType;
+        }
+
         $settings->update($values);
 
         $store = Store::where('id', $this->store->id)->first();
