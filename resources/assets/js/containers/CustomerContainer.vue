@@ -1,7 +1,7 @@
 <template>
   <div class="app customer">
     <b-navbar toggleable="lg" class="app-header" fixed>
-      <b-navbar-brand :href="storeWebsite" class="">
+      <b-navbar-brand @click="visitStoreWebsite" class="">
         <img
           class="d-md-none d-flex"
           v-if="storeLogo"
@@ -43,7 +43,7 @@
         class="customer-nav"
         target="nav_collapse"
       >
-        <a :href="storeWebsite" class="adjust-nav">
+        <a @click="visitStoreWebsite" class="adjust-nav">
           <img
             v-if="storeLogo"
             :class="logoStyle"
@@ -258,17 +258,6 @@ export default {
     storeSettings() {
       return this.store.settings;
     },
-    storeWebsite() {
-      if (!this.storeSettings.website) {
-        return null;
-      } else {
-        let website = this.storeSettings.website;
-        if (!website.includes("http")) {
-          website = "http://" + website;
-        }
-        return website;
-      }
-    },
     name() {
       return this.$route.name;
     },
@@ -340,6 +329,17 @@ export default {
   },
   methods: {
     ...mapActions(["logout"]),
+    visitStoreWebsite() {
+      if (!this.storeSettings.website) {
+        this.$router.push({ name: "customer-menu" });
+      } else {
+        let website = this.storeSettings.website;
+        if (!website.includes("http")) {
+          website = "http://" + website;
+        }
+        window.location.href = website;
+      }
+    },
     showBagArea() {
       this.$eventBus.$emit("showRightBagArea");
     },
