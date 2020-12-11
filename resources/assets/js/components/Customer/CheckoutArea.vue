@@ -3076,6 +3076,15 @@ use next_delivery_dates
         return "Please enter a payment method.";
       }
 
+      if (
+        this.weeklySubscriptionValue &&
+        this.bag.some(item => {
+          return item.meal.gift_card === true;
+        })
+      ) {
+        return "Gift cards are not allowed on subscriptions. Please remove the gift card from your bag or toggle off subscription.";
+      }
+
       if (this.hasMultipleSubscriptionItems) {
         return "You have multiple subscription types in your bag (e.g weekly & monthly). Please checkout one subscription type at a time.";
       }
