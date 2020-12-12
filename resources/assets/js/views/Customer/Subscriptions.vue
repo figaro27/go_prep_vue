@@ -15,7 +15,7 @@
               >
               <span v-else>Your order will be delivered on</span>
               {{
-                moment(activeSubscriptions[0].next_delivery_date).format(
+                moment(activeSubscriptions[0].next_delivery_date.date).format(
                   "dddd, MMM Do, Y"
                 ) || ""
               }}
