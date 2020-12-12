@@ -86,7 +86,9 @@
             }}</span>
           </div>
           <div slot="delivery_day" class="text-nowrap" slot-scope="props">
-            {{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
+            {{
+              moment(props.row.next_delivery_date.date).format("dddd, MMM Do")
+            }}
           </div>
           <div slot="actions" class="text-nowrap" slot-scope="props">
             <button
