@@ -470,8 +470,8 @@ export default {
           interval: "Interval",
           amount: "Total",
           created_at: "Subscription Placed",
+          delivery_day: "Upcoming Delivery",
           next_renewal: "Next Renewal",
-          delivery_day: "Next Delivery",
           status: "Status",
           actions: "Actions"
         },
