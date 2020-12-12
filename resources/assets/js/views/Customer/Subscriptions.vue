@@ -450,8 +450,8 @@ export default {
         // "store_name",
         "amount",
         "created_at",
-        "next_renewal",
         "delivery_day",
+        "next_renewal",
         "status",
         "actions"
       ],
