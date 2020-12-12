@@ -294,12 +294,8 @@ class Hourly extends Command
     {
         // Adjusting to EST (Server Time)
         $dateRange = [
-            Carbon::now('utc')
-                ->subHours(5)
-                ->subMinutes(30),
-            Carbon::now('utc')
-                ->subHours(5)
-                ->addMinutes(30)
+            Carbon::now('utc')->subMinutes(30),
+            Carbon::now('utc')->addMinutes(30)
         ];
 
         $subs = Subscription::whereBetween('next_renewal_at', $dateRange);
