@@ -292,54 +292,56 @@ class Hourly extends Command
 
     public function renewSubscriptions()
     {
-        // $dateRange = [
-        //     Carbon::now('utc')
-        //         ->subMinutes(30)
-        //         ->toDateTimeString(),
-        //     Carbon::now('utc')
-        //         ->addMinutes(30)
-        //         ->toDateTimeString()
-        // ];
+        $dateRange = [
+            Carbon::now('utc')
+                ->subMinutes(30)
+                ->getTimestamp(),
+            Carbon::now('utc')
+                ->addMinutes(30)
+                ->getTimestamp()
+        ];
 
-        // $subs = Subscription::whereBetween('next_renewal_at', $dateRange)
-        //     ->where('status', 'active')
-        //     ->orWhere('status', 'paused')
-        //     ->get();
-
-        // $count = 0;
-        // foreach ($subs as $sub) {
-        //     $sub->renew();
-        //     $count++;
-        // }
-
-        $subs = Subscription::where('status', 'active')
+        $subs = Subscription::whereBetween('next_renewal_at', $dateRange)
+            ->where('status', 'active')
             ->orWhere('status', 'paused')
             ->get();
 
-        $start = Carbon::now('utc')
-            ->subMinutes(30)
-            ->toDateTimeString();
-        $end = Carbon::now('utc')
-            ->addMinutes(30)
-            ->toDateTimeString();
-
         $count = 0;
         foreach ($subs as $sub) {
-            // Manually renewing Detox & Get Real Meals for the first week. Will remove.
-            if (
-                $sub->store_id !== 3 &&
-                $sub->store_id !== 106 &&
-                $sub->store_id !== 156
-            ) {
-                if (
-                    $sub->adjustedRenewalUTC >= $start &&
-                    $sub->adjustedRenewalUTC < $end
-                ) {
-                    $sub->renew();
-                    $count++;
-                }
+            if ($sub->store_id !== 106 && $sub->store_id !== 156) {
+                $sub->renew();
+                $count++;
             }
         }
+
+        // $subs = Subscription::where('status', 'active')
+        //     ->orWhere('status', 'paused')
+        //     ->get();
+
+        // $start = Carbon::now('utc')
+        //     ->subMinutes(30)
+        //     ->toDateTimeString();
+        // $end = Carbon::now('utc')
+        //     ->addMinutes(30)
+        //     ->toDateTimeString();
+
+        // $count = 0;
+        // foreach ($subs as $sub) {
+        //     // Manually renewing Detox & Get Real Meals for the first week. Will remove.
+        //     if (
+        //         $sub->store_id !== 3 &&
+        //         $sub->store_id !== 106 &&
+        //         $sub->store_id !== 156
+        //     ) {
+        //         if (
+        //             $sub->adjustedRenewalUTC >= $start &&
+        //             $sub->adjustedRenewalUTC < $end
+        //         ) {
+        //             $sub->renew();
+        //             $count++;
+        //         }
+        //     }
+        // }
 
         $this->info($count . ' Subscriptions renewed');
     }
