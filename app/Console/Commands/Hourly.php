@@ -295,10 +295,10 @@ class Hourly extends Command
         // Adjusting to EST (Server Time)
         $dateRange = [
             Carbon::now('utc')
-                ->subHours(4)
+                ->subHours(5)
                 ->subMinutes(30),
             Carbon::now('utc')
-                ->subHours(4)
+                ->subHours(5)
                 ->addMinutes(30)
         ];
 
