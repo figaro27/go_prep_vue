@@ -46,7 +46,7 @@ class Hourly extends Command
     {
         // Renew subscriptions
         $this->renewSubscriptions();
-
+        return;
         // Store reports
         $currentDay = date('D');
         $currentHour = date('H');
@@ -292,19 +292,23 @@ class Hourly extends Command
 
     public function renewSubscriptions()
     {
+        // Adjusting to EST (Server Time)
         $dateRange = [
             Carbon::now('utc')
-                ->subMinutes(30)
-                ->getTimestamp(),
+                ->subHours(4)
+                ->subMinutes(30),
             Carbon::now('utc')
+                ->subHours(4)
                 ->addMinutes(30)
-                ->getTimestamp()
         ];
 
-        $subs = Subscription::whereBetween('next_renewal_at', $dateRange)
-            ->where('status', 'active')
-            ->orWhere('status', 'paused')
-            ->get();
+        $subs = Subscription::whereBetween('next_renewal_at', $dateRange);
+        $subs = $subs->where('status', '!=', 'cancelled')->get();
+
+        // $subs = Subscription::whereBetween('next_renewal_at', $dateRange)
+        //     ->where('status', 'active')
+        //     ->orWhere('status', 'paused')
+        //     ->get();
 
         $count = 0;
         foreach ($subs as $sub) {
