@@ -37,7 +37,8 @@ class StoreSetting extends Model
         'preventNextWeekOrders',
         'timezone',
         'minimumSubWeeks',
-        'subscriptionRenewalType'
+        'subscriptionRenewalType',
+        'salesTax'
     ];
 
     /**
