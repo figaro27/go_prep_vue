@@ -1784,7 +1784,6 @@ export default {
           settings.view_delivery_days = null;
         }
       }
-      settings.salesTax = this.salesTax;
       settings.transferType = this.transferTypes;
       settings.color = this.color;
 
