@@ -1732,8 +1732,10 @@ export default {
   mounted() {
     this.disableSpinner();
     if (this.storeSettings.salesTax !== null) {
+      console.log(1);
       this.salesTax = this.storeSettings.salesTax;
     } else {
+      console.log(2);
       this.salesTax = this.getSalesTax(this.storeDetail.state);
     }
 
