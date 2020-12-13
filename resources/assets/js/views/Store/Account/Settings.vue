@@ -717,7 +717,7 @@
                         class="mt-3 w-180"
                         type="number"
                         min="0"
-                        v-model="salesTax"
+                        v-model="storeSettings.salesTax"
                         required
                         @input="updateStoreSettings()"
                       ></b-form-input>
@@ -1610,8 +1610,7 @@ export default {
       payments_url: "",
       deselectedDeliveryDay: null,
       showCutoffModal: false,
-      stripeConnectUrl: null,
-      salesTax: 0
+      stripeConnectUrl: null
     };
   },
   computed: {
@@ -1731,12 +1730,8 @@ export default {
   },
   mounted() {
     this.disableSpinner();
-    if (this.storeSettings.salesTax !== null) {
-      console.log(1);
-      this.salesTax = this.storeSettings.salesTax;
-    } else {
-      console.log(2);
-      this.salesTax = this.getSalesTax(this.storeDetail.state);
+    if (this.storeSettings.salesTax === null) {
+      this.storeSettings.salesTax = this.getSalesTax(this.storeDetail.state);
     }
 
     this.view_delivery_days = this.storeSettings.view_delivery_days;
