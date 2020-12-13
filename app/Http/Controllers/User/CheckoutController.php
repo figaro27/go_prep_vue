@@ -872,6 +872,9 @@ class CheckoutController extends UserController
                     $customDD
                 );
 
+                // Adjusting from local server EST time to UTC
+                $cutoff = $cutoff->addHours(5);
+
                 // How long into the future is the delivery day? In days
                 $diff = (strtotime($deliveryDay) - time()) / 86400;
 

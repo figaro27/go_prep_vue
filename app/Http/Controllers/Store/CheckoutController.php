@@ -860,6 +860,9 @@ class CheckoutController extends StoreController
                 // Get cutoff date for selected delivery day
                 $cutoff = $store->getCutoffDate(new Carbon($deliveryDay));
 
+                // Adjusting from local server EST time to UTC
+                $cutoff = $cutoff->addHours(5);
+
                 // How long into the future is the delivery day? In days
                 $diff = (strtotime($deliveryDay) - time()) / 86400;
 
