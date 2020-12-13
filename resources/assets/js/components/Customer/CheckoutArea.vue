@@ -2933,7 +2933,7 @@ use next_delivery_dates
           }
         }
         if (item.meal.gift_card) {
-          removableItemAmount += item.price;
+          removableItemAmount += item.price * item.quantity;
         }
       });
 
