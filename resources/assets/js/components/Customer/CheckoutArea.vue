@@ -1210,7 +1210,7 @@
     </li>
 
     <li v-else>
-      <div class="row" v-if="!invalidCheckout && !adjusting">
+      <div class="row" v-if="!adjusting">
         <b-btn @click="showAuthModal()" class="menu-bag-btn mb-4"
           >CONTINUE CHECKOUT</b-btn
         >
@@ -1237,13 +1237,13 @@
       </b-alert>
     </li> -->
 
-    <li v-if="invalidCheckout && !adjusting">
+    <li v-if="loggedIn && invalidCheckout && !adjusting">
       <b-alert variant="warning" show class="pb-0 mb-0">
         <p class="strong center-text font-14">{{ invalidCheckout }}</p>
       </b-alert>
     </li>
 
-    <li v-if="invalidCheckout && !adjusting">
+    <li v-if="loggedIn && invalidCheckout && !adjusting">
       <b-btn
         @click="blockedCheckoutMessage()"
         class="menu-bag-btn"
