@@ -308,7 +308,7 @@ class Hourly extends Command
 
         $count = 0;
         foreach ($subs as $sub) {
-            if ($sub->store_id !== 106 && $sub->store_id !== 156) {
+            if ($sub->store_id !== 106) {
                 $sub->renew();
                 $count++;
             }
