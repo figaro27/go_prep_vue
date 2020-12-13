@@ -177,6 +177,30 @@
         title="Subscription Details"
         no-fade
       >
+        <div
+          class="row"
+          v-if="subscription.store_updated || subscription.customer_updated"
+        >
+          <div class="col-md-12">
+            <b-alert
+              show
+              variant="warning"
+              class="center-text mb-1 pb-1 mt-1 pt-1"
+            >
+              <div v-if="subscription.store_updated">
+                {{ subscription.store.details.name }} updated this subscription
+                on
+                {{ moment(subscription.store_updated).format("dddd, MMM Do") }}.
+              </div>
+              <div v-if="subscription.customer_updated">
+                You updated this subscription on
+                {{
+                  moment(subscription.customer_updated).format("dddd, MMM Do")
+                }}.
+              </div>
+            </b-alert>
+          </div>
+        </div>
         <div class="row mt-4">
           <div class="col-md-4">
             <h4>Subscription ID</h4>
