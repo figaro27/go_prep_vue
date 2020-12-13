@@ -38,7 +38,8 @@ class Subscription extends Model
         'store_name',
         // 'latest_order',
         // 'latest_paid_order',
-        'latest_unpaid_order',
+        // 'latest_unpaid_order',
+        'latest_unpaid_order_date',
         'next_delivery_date',
         // 'next_unpaid_delivery_date',
         'next_order',
@@ -205,11 +206,20 @@ class Subscription extends Model
             ->first();
     }
 
-    public function getLatestUnpaidOrderAttribute()
+    // public function getLatestUnpaidOrderAttribute()
+    // {
+    //     return $this->orders()
+    //         ->where('paid', 0)
+    //         ->latest()
+    //         ->first();
+    // }
+
+    public function getLatestUnpaidOrderDateAttribute()
     {
         return $this->orders()
             ->where('paid', 0)
             ->latest()
+            ->pluck('delivery_date')
             ->first();
     }
 

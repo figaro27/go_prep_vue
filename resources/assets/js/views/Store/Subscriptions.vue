@@ -270,7 +270,7 @@
                 </span>
                 will create order for
                 {{
-                  moment(subscription.latest_unpaid_order.delivery_date).format(
+                  moment(subscription.latest_unpaid_order_date.date).format(
                     "dddd, MMM Do"
                   )
                 }}
