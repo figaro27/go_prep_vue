@@ -196,6 +196,7 @@ class CustomerController extends StoreController
         if (
             $added_by_store_id === $store->id ||
             $last_viewed_store_id === $store->id ||
+            $orders > 0 ||
             $shared
         ) {
             return $customer->user
