@@ -78,7 +78,7 @@ class Bag
                 'meal_package_id' => $item['meal_package_id'] ?? null, // contained in package,
                 'meal_package_title' => $item['meal_package_title'] ?? null,
                 'meal_package_size_id' => $item['meal_package_size_id'] ?? null,
-                'price' => $item['price'],
+                'price' => $item['price'] ?? null,
                 'size' => $item['size'] ?? null,
                 'components' => $item['components'] ?? [],
                 'addons' => $item['addons'] ?? [],
