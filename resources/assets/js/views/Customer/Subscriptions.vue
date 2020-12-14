@@ -229,7 +229,7 @@
             <span v-if="!storeModules.hideTransferOptions" class="mt-2">
               <h4>{{ subscription.transfer_type }} Day</h4>
               {{
-                moment(subscription.next_order.delivery_date).format(
+                moment(subscription.next_delivery_date.date).format(
                   "dddd, MMM Do"
                 )
               }}
@@ -545,7 +545,8 @@ export default {
       initialized: "initialized",
       getStoreMeal: "viewedStoreMeal",
       storeModules: "viewedStoreModules",
-      user: "user"
+      user: "user",
+      store: "viewedStore"
     }),
     activeSubscriptions() {
       if (this.subscriptions)
