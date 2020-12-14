@@ -860,9 +860,6 @@ class CheckoutController extends StoreController
                 // Get cutoff date for selected delivery day
                 $cutoff = $store->getCutoffDate(new Carbon($deliveryDay));
 
-                // Adjusting from local server EST time to UTC
-                $cutoff = $cutoff->addHours(5);
-
                 // How long into the future is the delivery day? In days
                 $diff = (strtotime($deliveryDay) - time()) / 86400;
 
@@ -948,6 +945,7 @@ class CheckoutController extends StoreController
                 $userSubscription->pointsReduction = $pointsReduction;
                 // In this case the 'next renewal time' is actually the first charge time
                 $userSubscription->next_renewal_at = $billingAnchor
+                    ->addHours(5)
                     ->minute(0)
                     ->second(0)
                     ->getTimestamp();
