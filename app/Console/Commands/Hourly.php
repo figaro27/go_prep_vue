@@ -46,7 +46,7 @@ class Hourly extends Command
     {
         // Renew subscriptions
         $this->renewSubscriptions();
-        return;
+
         // Store reports
         $currentDay = date('D');
         $currentHour = date('H');
