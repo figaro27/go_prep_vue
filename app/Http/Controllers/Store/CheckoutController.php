@@ -237,6 +237,24 @@ class CheckoutController extends StoreController
 
             $promotionPointsAmount = $request->get('promotionPointsAmount');
 
+            if ($store->modules->multipleDeliveryDays) {
+                // Get the nearest upcoming delivery date
+                $lowestDiff = null;
+                $now = Carbon::now();
+                $closestFutureDate = null;
+                foreach ($bag->getItems() as $item) {
+                    $date = new Carbon($item['delivery_day']['day_friendly']);
+                    $diff = $date->diffInDays($now);
+                    if ($lowestDiff === null || $diff < $lowestDiff) {
+                        $lowestDiff = $diff;
+                        $closestFutureDate = $date;
+                    }
+                }
+                if (isset($closestFutureDate)) {
+                    $deliveryDay = $closestFutureDate;
+                }
+            }
+
             if (!$cashOrder) {
                 $storeCustomer = $customerUser->getStoreCustomer(
                     $store->id,
