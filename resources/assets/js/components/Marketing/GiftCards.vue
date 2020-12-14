@@ -24,7 +24,7 @@
               v-model="newGiftCard.code"
               v-if="!newGiftCard.customCode"
               placeholder="Custom Code"
-              style="width:300px"
+              style="width:250px"
             ></b-form-input
             ><b-form-checkbox class="ml-2 pt-3" v-model="newGiftCard.customCode"
               >Create Code For Me</b-form-checkbox
