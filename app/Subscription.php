@@ -42,7 +42,7 @@ class Subscription extends Model
         'latest_unpaid_order_date',
         'next_delivery_date',
         // 'next_unpaid_delivery_date',
-        'next_order',
+        // 'next_order',
         // 'meal_ids',
         // 'meal_quantities',
         // 'pre_coupon',
@@ -261,17 +261,17 @@ class Subscription extends Model
         }
     }
 
-    public function getNextOrderAttribute()
-    {
-        if (
-            $this->latest_paid_order &&
-            $this->latest_paid_order->delivery_date > Carbon::now()
-        ) {
-            return $this->latest_paid_order;
-        } else {
-            return $this->latest_unpaid_order;
-        }
-    }
+    // public function getNextOrderAttribute()
+    // {
+    //     if (
+    //         $this->latest_paid_order &&
+    //         $this->latest_paid_order->delivery_date > Carbon::now()
+    //     ) {
+    //         return $this->latest_paid_order;
+    //     } else {
+    //         return $this->latest_unpaid_order;
+    //     }
+    // }
 
     public function getIntervalTitleAttribute()
     {

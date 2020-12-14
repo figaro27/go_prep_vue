@@ -428,11 +428,9 @@
           <div class="col-md-4">
             <span v-if="!storeModules.hideTransferOptions">
               <h4>{{ subscription.transfer_type }} Day</h4>
-              <span v-if="subscription.next_order">
+              <span v-if="subscription.next_delivery_date">
                 {{
-                  moment(subscription.next_order.delivery_date).format(
-                    "dddd, MMM Do"
-                  )
+                  moment(subscription.next_delivery_date).format("dddd, MMM Do")
                 }}
               </span>
               <span v-if="subscription.transferTime">
