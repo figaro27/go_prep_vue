@@ -185,12 +185,26 @@
               show
               variant="warning"
               class="center-text mb-1 pb-1 mt-1 pt-1"
+              v-if="
+                updatedAfterRenewal(subscription.store_updated) ||
+                  updatedAfterRenewal(subscription.customer_updated)
+              "
             >
-              <div v-if="subscription.store_updated">
+              <div
+                v-if="
+                  subscription.store_updated &&
+                    updatedAfterRenewal(subscription.store_updated)
+                "
+              >
                 You updated this subscription on
                 {{ moment(subscription.store_updated).format("dddd, MMM Do") }}.
               </div>
-              <div v-if="subscription.customer_updated">
+              <div
+                v-if="
+                  subscription.customer_updated &&
+                    updatedAfterRenewal(subscription.customer_updated)
+                "
+              >
                 The customer updated this subscription on
                 {{
                   moment(subscription.customer_updated).format("dddd, MMM Do")
@@ -1020,6 +1034,19 @@ export default {
     },
     testRunHourlyJob() {
       axios.get("/testRunHourlyJob");
+    },
+    updatedAfterRenewal(updatedDate) {
+      let upcomingRenewal = moment(this.subscription.next_renewal_at);
+      let lastRenewal = moment(
+        upcomingRenewal
+          .subtract(this.subscription.intervalCount, "weeks")
+          .format("YYYY-MM-DD HH:MM:SS")
+      );
+      let updated = moment(updatedDate);
+
+      if (updated.isSameOrAfter(lastRenewal)) {
+        return true;
+      }
     },
     getMealTableData(subscription) {
       if (!this.initialized || !subscription.items) return [];
