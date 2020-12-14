@@ -32,9 +32,14 @@ class NewGiftCard extends Mailable
     {
         $giftCard = $this->data['purchasedGiftCard'];
         $order = $this->data['order'];
-        $emailBranding = $order->store->modules->emailBranding;
-        $storeEmail = $order->store->user->email;
-        $storeName = $order->store->details->name;
+        $store = isset($this->data['store']) ? $this->data['store'] : null;
+        $emailBranding = $store
+            ? $store->modules->emailBranding
+            : $order->store->modules->emailBranding;
+        $storeEmail = $store ? $store->user->email : $order->store->user->email;
+        $storeName = $store
+            ? $store->details->name
+            : $order->store->details->name;
 
         if ($emailBranding) {
             return $this->view('email.customer.new-gift-card')

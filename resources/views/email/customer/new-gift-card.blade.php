@@ -1,9 +1,11 @@
 @php
-$giftersName = $order->user->details->firstname . ' ' . $order->user->details->lastname;
-$storeUrl = $order->store->details->full_url;
+$store = isset($store) ? $store : null;
+$giftersName = isset($order) ? $order->user->details->firstname . ' ' . $order->user->details->lastname : $store->user->details->firstname. ' ' . $store->user->details->lastname;
+$storeUrl = isset($order) ? $order->store->details->full_url : $store->details->full_url;
+$storeName = isset($order) ? $order->store->details->name : $store->user->details->name;
 $purchasedGiftCardCode = $purchasedGiftCard->code;
 $purchasedGiftCardAmount = $purchasedGiftCard->amount;
-$currency = $order->store->settings->currency
+$currency = isset($order) ? $order->store->settings->currency : $store->settings->currency;
 @endphp
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -115,7 +117,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td height="15"></td>
                       </tr>
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $order->store_name }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $storeName }}</td>
                       </tr>
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $giftersName }} just purchased you a gift card for @money($purchasedGiftCardAmount, $currency, 2). You can visit the link below and use the code <span style="font-weight:bold">{{ $purchasedGiftCardCode }}</span>.</td>

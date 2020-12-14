@@ -48,7 +48,38 @@ class PurchasedGiftCardController extends StoreController
      */
     public function store(Request $request)
     {
-        //
+        $newGiftCard = $request->get('newGiftCard');
+
+        $purchasedGiftCard = new PurchasedGiftCard();
+        $purchasedGiftCard->store_id = $this->store->id;
+        $purchasedGiftCard->gift_card_id = 1;
+        $purchasedGiftCard->user_id = $this->store->user->id;
+        $purchasedGiftCard->order_id = 1;
+        $purchasedGiftCard->code = $newGiftCard['code']
+            ? $newGiftCard['code']
+            : strtoupper(
+                substr(uniqid(rand(10, 99), false), 0, 6) .
+                    chr(rand(65, 90)) .
+                    rand(10, 99)
+            );
+        $purchasedGiftCard->amount = $newGiftCard['amount'];
+        $purchasedGiftCard->balance = $newGiftCard['amount'];
+        $purchasedGiftCard->emailRecipient = isset(
+            $newGiftCard['emailRecipient']
+        )
+            ? $newGiftCard['emailRecipient']
+            : null;
+        $purchasedGiftCard->save();
+
+        if (isset($newGiftCard['emailRecipient'])) {
+            $this->store->sendNotification('new_gift_card', [
+                'order' => null,
+                'store' => $this->store,
+                'purchasedGiftCard' => $purchasedGiftCard,
+                'emailRecipient' => $newGiftCard['emailRecipient']
+            ]);
+        }
+        return $purchasedGiftCard;
     }
 
     /**
@@ -93,8 +124,8 @@ class PurchasedGiftCardController extends StoreController
      * @param  \App\GiftCard  $giftCard
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PurchasedGiftCard $purchasedGiftCards)
+    public function destroy($id)
     {
-        //
+        PurchasedGiftCard::where('id', $id)->delete();
     }
 }

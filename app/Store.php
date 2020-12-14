@@ -1496,11 +1496,8 @@ class Store extends Model
             } catch (\Exception $e) {
             }
         } elseif ($email && isset($recipient)) {
-            try {
-                Mail::to($recipient)->send($email);
-                return true;
-            } catch (\Exception $e) {
-            }
+            Mail::to($recipient)->send($email);
+            return true;
         }
 
         return false;
