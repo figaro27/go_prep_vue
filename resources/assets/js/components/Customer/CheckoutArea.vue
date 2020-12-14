@@ -494,17 +494,19 @@
             <strong>Tip</strong>
             <b-form-select
               :options="gratuityOptions"
-              v-model="gratuityType"
+              v-model="bagGratuityPercent"
               class="ml-2 w-100px"
+              @input="val => setBagGratuityPercent(val)"
             ></b-form-select>
           </div>
           <div class="col-6 col-md-3 offset-md-5 d-flex">
             <b-form-input
               type="number"
-              v-model="customGratuity"
+              v-model="bagCustomGratuity"
               placeholder="Gratuity"
               class="w-80px"
-              v-if="gratuityType == 'custom'"
+              v-if="bagGratuityPercent == 'custom'"
+              @input="val => setBagCustomGratuity(val)"
             ></b-form-input>
             <span v-else>{{ format.money(tip, storeSettings.currency) }}</span>
           </div>
@@ -1339,7 +1341,6 @@ export default {
       hourInterval: false,
       coolerDepositChanged: false,
       includeCooler: true,
-      gratuityType: 0,
       customerOptions: [],
       coupons: [],
       purchasedGiftCards: [],
@@ -1529,12 +1530,12 @@ export default {
     }
 
     if (this.$route.params.adjustOrder) {
-      this.gratuityType = "custom";
+      this.bagGratuityPercent = "custom";
       this.customGratuity = this.order.gratuity > 0 ? this.order.gratuity : 0;
     }
 
     if (this.$parent.$route.params.subscription) {
-      this.gratuityType = "custom";
+      this.bagGratuityPercent = "custom";
       this.customGratuity =
         this.$parent.$route.params.subscription.gratuity > 0
           ? this.$parent.$route.params.subscription.gratuity
@@ -1590,7 +1591,9 @@ export default {
       deliveryFee: "bagDeliveryFee",
       frequencyType: "bagFrequencyType",
       mealMixItems: "mealMixItems",
-      selectedPickupLocation: "bagPickupLocation"
+      selectedPickupLocation: "bagPickupLocation",
+      bagGratuityPercent: "bagGratuityPercent",
+      bagCustomGratuity: "bagCustomGratuity"
     }),
     adjusting() {
       if (this.$route.params.adjustOrder || this.subscriptionId) {
@@ -2691,11 +2694,11 @@ use next_delivery_dates
       return this.pointsReduction;
     },
     tip() {
-      if (this.gratuityType !== "custom") {
-        return this.afterDiscount * (this.gratuityType / 100);
-      } else {
-        return this.customGratuity ? parseFloat(this.customGratuity) : 0;
-      }
+      return this.bagGratuityPercent && this.bagGratuityPercent === "custom"
+        ? parseFloat(this.bagCustomGratuity)
+        : parseFloat(
+            (this.bagGratuityPercent / 100) * this.totalBagPricePreFees
+          );
     },
     coolerDeposit() {
       if (this.bagPickup == 1) {
@@ -3126,7 +3129,9 @@ use next_delivery_dates
       "setBagCustomerModel",
       "setBagDeliveryFee",
       "setBagFrequencyType",
-      "setBagPickupLocation"
+      "setBagPickupLocation",
+      "setBagGratuityPercent",
+      "setBagCustomGratuity"
     ]),
     preventNegative() {
       if (this.total < 0) {

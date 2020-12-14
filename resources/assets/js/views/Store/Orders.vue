@@ -1284,7 +1284,9 @@ export default {
       "setBagPickup",
       "setBagCoupon",
       "setBagZipCode",
-      "setMultDDZipCode"
+      "setMultDDZipCode",
+      "setBagGratuityPercent",
+      "setBagCustomGratuity"
     ]),
     refreshTable() {
       this.refreshResource("orders");
@@ -1845,6 +1847,8 @@ export default {
       this.setBagCoupon(null);
       this.setBagZipCode(null);
       this.setMultDDZipCode(0);
+      this.setBagGratuityPercent(0);
+      this.setBagCustomGratuity(0);
       this.store.distance = 1;
     },
     adjustOrder() {

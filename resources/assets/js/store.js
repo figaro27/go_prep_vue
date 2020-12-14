@@ -73,7 +73,9 @@ const state = {
     customerModel: null,
     deliveryFee: null,
     frequencyType: null,
-    pickupLocation: null
+    pickupLocation: null,
+    gratuityPercent: null,
+    customGratuity: null
   },
   delivery_date: null,
   zip_code: null,
@@ -836,6 +838,12 @@ const mutations = {
   },
   setBagPickupLocation({ state, dispatch }, pickupLocation) {
     this.state.bag.pickupLocation = pickupLocation;
+  },
+  setBagGratuityPercent({ state, dispatch }, gratuityPercent) {
+    this.state.bag.gratuityPercent = gratuityPercent;
+  },
+  setBagCustomGratuity({ state, dispatch }, customGratuity) {
+    this.state.bag.customGratuity = customGratuity;
   },
   setBagZipCode({ state, dispatch }, zipCode) {
     this.state.zip_code = zipCode;
@@ -3521,6 +3529,12 @@ const getters = {
   },
   bagPickup(state) {
     return state.bag.pickup;
+  },
+  bagGratuityPercent(state) {
+    return state.bag.gratuityPercent;
+  },
+  bagCustomGratuity(state) {
+    return state.bag.customGratuity;
   },
   bagMultDDZipCode(state) {
     return state.multDDZipCode;

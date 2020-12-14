@@ -80,7 +80,9 @@ export default {
     ...mapMutations([
       "setBagStaffMember",
       "setBagPickup",
-      "setBagPickupLocation"
+      "setBagPickupLocation",
+      "setBagGratuityPercent",
+      "setBagCustomGratuity"
     ]),
     async initBag() {
       // await this.refreshUpcomingOrders();
@@ -94,6 +96,8 @@ export default {
       this.setBagStaffMember(this.order.staff_id);
       this.setBagPickup(this.order.pickup);
       this.setBagPickupLocation(this.order.pickup_location_id);
+      this.setBagGratuityPercent("custom");
+      this.setBagCustomGratuity(this.order.gratuity);
       this.clearAll();
 
       // axios.get("/api/me/order_bag/" + this.order.id).then(resp => {
