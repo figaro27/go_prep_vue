@@ -308,10 +308,8 @@ class Hourly extends Command
 
         $count = 0;
         foreach ($subs as $sub) {
-            if ($sub->store_id !== 106) {
-                $sub->renew();
-                $count++;
-            }
+            $sub->renew();
+            $count++;
         }
 
         // $subs = Subscription::where('status', 'active')
