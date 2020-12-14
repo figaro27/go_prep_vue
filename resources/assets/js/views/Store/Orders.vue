@@ -1,21 +1,23 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
-        <h5>
-          Order Labels
-        </h5>
+      <b-alert style="background-color:#EBFAFF" show dismissible>
+        <!-- <h5>
+          Update
+        </h5> -->
         <p>
-          You can now print order summary labels to be put on the bags /
-          containers with your items. Just like meal labels, these labels are
-          completely customizable.<br />
-          <router-link to="/store/reports"
+          <span class="strong">Update</span><br />
+          You can now manually create your own purchased gift card codes instead
+          of having to create a new order. You can use these codes as a way to
+          give customers store credit.<br />
+          <router-link to="/store/marketing"
             ><strong
-              >You can print Order Labels on the Reports page.</strong
+              >Click the Purchased Gift Cards tab on the Marketing page and
+              you'll see a new button at the top.</strong
             ></router-link
           >
         </p>
-      </b-alert> -->
+      </b-alert>
 
       <div class="card">
         <div class="card-body">
