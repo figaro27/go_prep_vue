@@ -267,7 +267,7 @@ export default {
         ? { meal_size_id: sizeId }
         : { meal_package_size_id: sizeId };
 
-      if (!meal.adjustOrder) {
+      if (!meal.adjustOrder && !meal.adjustSubscription) {
         if (
           (meal.components &&
             meal.components.length &&
