@@ -660,8 +660,7 @@ export default {
       },
       selectedLineItem: {},
       orderLineItems: [],
-      showZipCodeModal: false,
-      isPickup: 0
+      showZipCodeModal: false
     };
   },
   props: {
@@ -669,7 +668,6 @@ export default {
     adjustOrder: false,
     adjustMealPlan: false,
     subscriptionId: null,
-    pickup: 0,
     storeView: false,
     selectedDeliveryDay: null
   },
@@ -1255,7 +1253,6 @@ export default {
     },
     changeTransferType(val) {
       this.$store.commit("emptyBag");
-      this.isPickup = val;
       this.setBagPickup(val);
       this.setBagZipCode(null);
       if (
@@ -1267,9 +1264,6 @@ export default {
         this.showZipCodeModal = true;
       }
       this.$parent.autoPickUpcomingMultDD(null);
-    },
-    changePickup(val) {
-      this.isPickup = val;
     },
     autoPickAdjustDD() {
       let firstDate = "";

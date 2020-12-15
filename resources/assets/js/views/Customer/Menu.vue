@@ -81,7 +81,7 @@
                   v-if="isMultipleDelivery && hasBothTranserTypes"
                   buttons
                   class="storeFilters mb-3"
-                  v-model="isPickup"
+                  v-model="bagPickup"
                   :options="[
                     { value: 1, text: 'Pickup' },
                     { value: 0, text: 'Delivery' }
@@ -454,7 +454,6 @@
               :deliveryDay="deliveryDay"
               :transferTime="transferTime"
               :staffMember="staffMember"
-              :pickup="pickup"
               :order="order"
               :inSub="inSub"
               :weeklySubscriptionValue="weeklySubscriptionValue"
@@ -619,7 +618,6 @@ export default {
     deliveryDay: null,
     transferTime: null,
     staffMember: null,
-    pickup: null,
     inSub: null,
     weeklySubscriptionValue: null,
     lineItemOrders: null
@@ -627,7 +625,6 @@ export default {
   data() {
     return {
       activeCatId: 0,
-      isPickup: 0,
       showVariationsModal: false,
       bagPageURL: "/customer/bag",
       adjustMealModal: false,
@@ -1244,8 +1241,6 @@ export default {
       }
     }
 
-    this.isPickup = this.bagPickup;
-
     if (this.$route.query.sub || this.$route.query.subscriptionId) {
       this.bagPageURL =
         "/customer/bag?sub=true&subscriptionId=" + this.$route.params.id;
@@ -1310,17 +1305,11 @@ export default {
         this.mealPackagePageView = false;
       }
     },
-    bagPickup(val) {
-      this.changePickup(val);
-    },
     mealMixItems(val) {
       if (this.$route.query.cat && !val.isRunningLazy) {
         this.backToMenu("categorySection_" + this.$route.query.cat, 0);
       }
     }
-  },
-  updated() {
-    this.$parent.pickup = this.bagPickup;
   },
   methods: {
     showGallery(images, index) {
@@ -1867,7 +1856,6 @@ export default {
     },
     changeTransferType(val) {
       this.$store.commit("emptyBag");
-      this.isPickup = val;
       this.setBagPickup(val);
       this.setBagZipCode(null);
       if (
@@ -1878,9 +1866,6 @@ export default {
         this.setMultDDZipCode(0);
       }
       this.autoPickUpcomingMultDD(null);
-    },
-    changePickup(val) {
-      this.isPickup = val;
     },
     async clearInactiveItems() {
       await axios.get("/api/refresh_inactive_meal_ids").then(resp => {
