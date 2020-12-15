@@ -1379,7 +1379,7 @@ export default {
       form: {
         billingState: null
       },
-      subscriptionInterval: "select",
+      subscriptionInterval: "weekly",
       dontAffectBalance: false,
       showBillingAddressModal: false,
       billingAddressVerified: false,
