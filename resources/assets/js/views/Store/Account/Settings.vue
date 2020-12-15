@@ -9,7 +9,7 @@
         <b-col>
           <b-tabs>
             <b-tab title="Orders" active>
-              <b-alert
+              <!-- <b-alert
                 show
                 dismissible
                 style="width:650px;background-color:#EBFAFF"
@@ -19,7 +19,7 @@
                   Update - There is no longer a Save button. Every setting will
                   now save automatically.
                 </p>
-              </b-alert>
+              </b-alert> -->
               <div v-if="!storeSettings.stripe_id">
                 <b-form-group :state="true">
                   <b-button variant="primary" :href="stripeConnectUrl"

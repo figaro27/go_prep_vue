@@ -1,7 +1,6 @@
 <template>
   <div class="row">
     <div class="col-md-8 offset-2">
-      <p>My Account</p>
       <div class="card">
         <div class="card-body">
           <!-- toastr -->
@@ -50,138 +49,141 @@
       <div class="card">
         <div class="card-body">
           <p>https://{{ storeDetails.domain }}.goprep.com</p>
-          <b-form @submit.prevent="updateStoreDetails">
-            <b-form-group label="Company Name" :state="true">
-              <b-form-input
-                type="text"
-                v-model="storeDetail.name"
-                placeholder="Company Name"
-                required
-              ></b-form-input>
-            </b-form-group>
+          <b-form-group label="Company Name" :state="true">
+            <b-form-input
+              type="text"
+              v-model="storeDetail.name"
+              placeholder="Company Name"
+              required
+              @input="updateStoreDetails()"
+            ></b-form-input>
+          </b-form-group>
 
-            <b-form-group label="Logo" :state="true">
-              <p class="small">
-                Please keep height & width dimensions the exact same.
-              </p>
-              <picture-input
-                :ref="`storeImageInput`"
-                :prefill="logoPrefill"
-                @prefill="$refs[`storeImageInput`].onResize()"
-                :alertOnError="false"
-                :autoToggleAspectRatio="true"
-                margin="0"
-                size="10"
-                button-class="btn"
-                style="width: 180px; height: auto; margin: 0;"
-                @change="val => updateLogo(val)"
-              ></picture-input>
-            </b-form-group>
+          <b-form-group label="Logo" :state="true">
+            <p class="small">
+              Please keep height & width dimensions the exact same.
+            </p>
+            <picture-input
+              :ref="`storeImageInput`"
+              :prefill="logoPrefill"
+              @prefill="$refs[`storeImageInput`].onResize()"
+              :alertOnError="false"
+              :autoToggleAspectRatio="true"
+              margin="0"
+              size="10"
+              button-class="btn"
+              style="width: 180px; height: auto; margin: 0;"
+              @change="val => updateLogo(val)"
+            ></picture-input>
+          </b-form-group>
 
-            <b-form-group label="Phone number" :state="true">
-              <b-form-input
-                type="text"
-                v-model="storeDetail.phone"
-                placeholder="Phone"
-                @input="asYouType"
-                required
-              ></b-form-input>
-            </b-form-group>
+          <b-form-group label="Phone number" :state="true">
+            <b-form-input
+              type="text"
+              v-model="storeDetail.phone"
+              placeholder="Phone"
+              @input="saveTextInput()"
+              required
+            ></b-form-input>
+          </b-form-group>
 
-            <b-form-group label="Address" :state="true">
-              <b-form-input
-                type="text"
-                v-model="storeDetail.address"
-                placeholder="Address"
-                required
-              ></b-form-input>
-            </b-form-group>
+          <b-form-group label="Address" :state="true">
+            <b-form-input
+              type="text"
+              v-model="storeDetail.address"
+              placeholder="Address"
+              required
+              @input="saveTextInput()"
+            ></b-form-input>
+          </b-form-group>
 
-            <b-form-group label="City" :state="true">
-              <b-form-input
-                type="text"
-                v-model="storeDetail.city"
-                placeholder="City"
-                required
-              ></b-form-input>
-            </b-form-group>
+          <b-form-group label="City" :state="true">
+            <b-form-input
+              type="text"
+              v-model="storeDetail.city"
+              placeholder="City"
+              required
+              @input="saveTextInput()"
+            ></b-form-input>
+          </b-form-group>
 
-            <b-form-group
-              label="State"
-              :state="true"
-              v-if="store.details.state"
+          <b-form-group
+            label="State"
+            :state="true"
+            v-if="store.details.state"
+            @input="saveTextInput()"
+          >
+            <b-form-input
+              type="text"
+              v-model="storeDetail.state"
+              placeholder="State"
+              required
+              @input="saveTextInput()"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group label="Zip Code" :state="true">
+            <b-form-input
+              type="text"
+              v-model="storeDetail.zip"
+              placeholder="Zip Code"
+              required
+              @input="saveTextInput()"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group label="Social Media Handle" :state="true">
+            <b-form-input
+              type="text"
+              v-model="storeDetail.social"
+              placeholder="@name"
+              @input="saveTextInput()"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-input
+            type="text"
+            v-model="stripeId"
+            placeholder="Stripe ID"
+            v-if="store.id === 3"
+          ></b-form-input>
+          <p>
+            <b-btn @click="testRenewSubscription" v-if="store.id === 3"
+              >TEST RENEW SUBSCRIPTION</b-btn
             >
-              <b-form-input
-                type="text"
-                v-model="storeDetail.state"
-                placeholder="State"
-                required
-              ></b-form-input>
-            </b-form-group>
-
-            <b-form-group label="Zip Code" :state="true">
-              <b-form-input
-                type="text"
-                v-model="storeDetail.zip"
-                placeholder="Zip Code"
-                required
-              ></b-form-input>
-            </b-form-group>
-
-            <b-form-group label="Social Media Handle" :state="true">
-              <b-form-input
-                type="text"
-                v-model="storeDetail.social"
-                placeholder="@name"
-              ></b-form-input>
-            </b-form-group>
-
-            <b-button type="submit" variant="primary">Save</b-button>
-
+          </p>
+          <p>
             <b-form-input
               type="text"
               v-model="stripeId"
               placeholder="Stripe ID"
-              v-if="store.id === 3"
+              v-if="store.id === 3 || store.id === 13 || store.id === 16"
             ></b-form-input>
-            <p>
-              <b-btn @click="testRenewSubscription" v-if="store.id === 3"
-                >TEST RENEW SUBSCRIPTION</b-btn
-              >
-            </p>
-            <p>
-              <b-form-input
-                type="text"
-                v-model="stripeId"
-                placeholder="Stripe ID"
-                v-if="store.id === 3 || store.id === 13 || store.id === 16"
-              ></b-form-input>
-              <b-form-input
-                type="text"
-                v-model="unixTimestamp"
-                placeholder="Unix Timestamp"
-                v-if="store.id === 3 || store.id === 13 || store.id === 16"
-              ></b-form-input>
-              <b-btn
-                @click="changeSubscriptionAnchor"
-                v-if="store.id === 3 || store.id === 13 || store.id === 16"
-                >Change Subscription Anchor</b-btn
-              >
-            </p>
-
             <b-form-input
-              v-model="storeId"
-              placeholder="Store ID"
-              v-if="store.id === 3 || store.id === 13"
+              type="text"
+              v-model="unixTimestamp"
+              placeholder="Unix Timestamp"
+              v-if="store.id === 3 || store.id === 13 || store.id === 16"
             ></b-form-input>
-            <b-btn @click="deleteInactiveStoreImages" v-if="store.id === 3"
-              >Delete Inactive Store Images</b-btn
+            <b-btn
+              @click="changeSubscriptionAnchor"
+              v-if="store.id === 3 || store.id === 13 || store.id === 16"
+              >Change Subscription Anchor</b-btn
             >
-            <br /><br /><br />
-            <b-btn @click="deleteStore" v-if="store.id === 3 || store.id === 13"
-              >Delete Store</b-btn
-            >
-          </b-form>
+          </p>
+
+          <b-form-input
+            v-model="storeId"
+            placeholder="Store ID"
+            v-if="store.id === 3 || store.id === 13"
+          ></b-form-input>
+          <b-btn @click="deleteInactiveStoreImages" v-if="store.id === 3"
+            >Delete Inactive Store Images</b-btn
+          >
+          <br /><br /><br />
+          <b-btn @click="deleteStore" v-if="store.id === 3 || store.id === 13"
+            >Delete Store</b-btn
+          >
 
           <!--
             <b-btn @click="testIncomingSMS">TEST INCOMING SMS</b-btn>
@@ -284,8 +286,14 @@ export default {
       return null;
     }
   },
-  mounted() {},
+  mounted() {
+    this.disableSpinner();
+  },
+  destroyed() {
+    this.enableSpinner();
+  },
   methods: {
+    ...mapActions(["disableSpinner", "enableSpinner"]),
     updateLogin() {
       let data = this.storeUser;
 
@@ -300,8 +308,30 @@ export default {
           this.$toastr.e(error, "Error");
         });
     },
+    invalidData() {
+      if (!this.storeDetail.phone) {
+        return "Please fill out your phone number.";
+      }
+      if (!this.storeDetail.address) {
+        return "Please fill out your address.";
+      }
+      if (!this.storeDetail.city) {
+        return "Please fill out your city.";
+      }
+      if (!this.storeDetail.state) {
+        return "Please fill out your state.";
+      }
+      if (!this.storeDetail.zip) {
+        return "Please fill out your zip code.";
+      }
+      return null;
+    },
     updateStoreDetails() {
       let data = { ...this.storeDetails };
+      if (this.invalidData()) {
+        this.$toastr.w(this.invalidData());
+        return;
+      }
       if (data.social && !data.social.includes("@")) {
         data.social = "@" + data.social;
       }
@@ -313,9 +343,7 @@ export default {
       this.spliceZip();
       axios
         .patch("/api/me/details", data)
-        .then(response => {
-          this.$toastr.s("Your company details have been updated.", "Success");
-        })
+        .then(response => {})
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors));
           error = error.join(" ");
@@ -423,7 +451,10 @@ export default {
       axios.post("/deleteStore", {
         store_id: this.storeId
       });
-    }
+    },
+    saveTextInput: _.debounce(function() {
+      this.updateStoreDetails();
+    }, 1000)
   }
 };
 </script>
