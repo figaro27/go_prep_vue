@@ -667,22 +667,23 @@ class Bag
 
         foreach ($this->getItems() as $item) {
             $price = $item['price'];
-            if (isset($item['components']) && $item['components']) {
-                foreach ($item['components'] as $componentId => $choices) {
-                    foreach ($choices as $option) {
-                        $option = MealComponentOption::find(
-                            $option['meal_component_option_id']
-                        );
-                        $price += $option ? $option->price : 0;
-                    }
-                }
-            }
-            if (isset($item['addons']) && $item['addons']) {
-                foreach ($item['addons'] as $addonId) {
-                    $addon = MealAddon::find($addonId);
-                    $price += $addon ? $addon->price : 0;
-                }
-            }
+
+            // Removing below. The added prices for any associated variations is already factored into the saved item price.
+
+            // if (isset($item['components']) && $item['components']) {
+            //     foreach ($item['components'] as $componentId => $option) {
+            //         $option = MealComponentOption::find(
+            //             $option['meal_component_option_id']
+            //         );
+            //         $price += $option ? $option->price : 0;
+            //     }
+            // }
+            // if (isset($item['addons']) && $item['addons']) {
+            //     foreach ($item['addons'] as $addon) {
+            //         $addon = MealAddon::find($addon['meal_addon_id']);
+            //         $price += $addon ? $addon->price : 0;
+            //     }
+            // }
             $total += $price;
         }
 
