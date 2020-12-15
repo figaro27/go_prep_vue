@@ -32,7 +32,6 @@ use App\MealPackageSubscription;
 use App\MealPackage;
 use App\MealPackageSize;
 use App\OrderBag;
-use App\SubscriptionBag;
 use App\PurchasedGiftCard;
 use App\Billing\Constants;
 use App\Billing\Charge;

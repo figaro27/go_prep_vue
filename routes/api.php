@@ -577,11 +577,6 @@ foreach (
                                 'OrderController@settleBalance'
                             );
 
-                            Route::get(
-                                'subscription_bag/{subscription_id}',
-                                'SubscriptionController@subscriptionBag'
-                            );
-
                             Route::resource(
                                 'deliveryFeeZipCodes',
                                 'DeliveryFeeZipCodeController'
@@ -769,11 +764,6 @@ foreach (
                             );
 
                             Route::resource('/me', 'UserController');
-
-                            Route::get(
-                                'me/subscription_bag/{subscription_id}',
-                                'SubscriptionController@subscriptionBag'
-                            );
 
                             Route::post(
                                 'me/getPromotionPoints',

@@ -40,7 +40,6 @@ use Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\OrderBag;
-use App\SubscriptionBag;
 use DB;
 use Exception;
 use App\Traits\DeliveryDates;

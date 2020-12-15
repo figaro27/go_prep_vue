@@ -24,7 +24,6 @@ export default {
     return {
       isLoading: false,
       pickup: null,
-      subscription_bags: [],
       subscription: {},
       itemsSet: false
     };
@@ -95,50 +94,6 @@ export default {
       this.setBagGratuityPercent("custom");
       this.setBagCustomGratuity(subscription.gratuity);
       let stop = false;
-
-      // axios.get("/api/me/subscription_bag/" + subscription.id).then(resp => {
-      //   if (resp.data && resp.data.subscription_bags) {
-      //     this.subscription_bags = resp.data.subscription_bags;
-
-      //     // Don't load from SubscriptionBag if meals have been replaced in the subscription - meals aren't replacing in the stored object currently
-      //     if (
-      //       !subscription.mealsReplaced &&
-      //       this.subscription_bags.length > 0
-      //     ) {
-      //       this.subscription_bags.forEach(item => {
-      //         this.addOneFromAdjust(item);
-      //       });
-      //     } else {
-      //       _.forEach(subscription.items, item => {
-      //         const meal = this.getMeal(item.meal_id);
-      //         if (!meal) {
-      //           return;
-      //         }
-
-      //         let components = _.mapValues(
-      //           _.groupBy(item.components, "meal_component_id"),
-      //           choices => {
-      //             return _.map(choices, "meal_component_option_id");
-      //           }
-      //         );
-
-      //         let addons = _.map(item.addons, "meal_addon_id");
-
-      //         let special_instructions = item.special_instructions;
-      //         for (let i = 0; i < item.quantity; i++) {
-      //           this.addOne(
-      //             meal,
-      //             false,
-      //             item.meal_size_id,
-      //             components,
-      //             addons,
-      //             special_instructions
-      //           );
-      //         }
-      //       });
-      //     }
-      //   }
-      // });
 
       let delivery_days = [];
 

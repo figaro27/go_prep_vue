@@ -14,7 +14,6 @@ use App\MealSubscriptionAddon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Store;
-use App\SubscriptionBag;
 use App\MealPackage;
 use App\MealPackageSize;
 use App\MealPackageSubscription;
@@ -422,23 +421,6 @@ class SubscriptionController extends StoreController
                 }
             }
 
-            $subscriptionBags = SubscriptionBag::where(
-                'subscription_id',
-                $sub->id
-            )->get();
-            foreach ($subscriptionBags as $subscriptionBag) {
-                $subscriptionBag->delete();
-            }
-
-            if ($bagItems && count($bagItems) > 0) {
-                foreach ($bagItems as $bagItem) {
-                    $subscriptionBag = new SubscriptionBag();
-                    $subscriptionBag->subscription_id = (int) $sub->id;
-                    $subscriptionBag->bag = json_encode($bagItem);
-                    $subscriptionBag->save();
-                }
-            }
-
             $sub->store_id = $store->id;
             $sub->preFeePreDiscount = $preFeePreDiscount;
             $sub->mealPlanDiscount = $mealPlanDiscount;
@@ -670,26 +652,5 @@ class SubscriptionController extends StoreController
                 400
             );
         }
-    }
-
-    public function subscriptionBag($subscription_id)
-    {
-        $subscription_bags = SubscriptionBag::where(
-            'subscription_id',
-            $subscription_id
-        )
-            ->orderBy('id', 'asc')
-            ->get();
-        $data = [];
-
-        if ($subscription_bags) {
-            foreach ($subscription_bags as $subscription_bag) {
-                $data[] = json_decode($subscription_bag->bag);
-            }
-        }
-
-        return [
-            'subscription_bags' => $data
-        ];
     }
 }
