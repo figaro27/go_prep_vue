@@ -100,7 +100,8 @@ class Meal extends Model implements HasMedia
         'categories',
         'orders',
         'subscriptions',
-        'store'
+        'store',
+        'componentOptions'
         //'ingredients',
     ];
 
@@ -562,6 +563,14 @@ class Meal extends Model implements HasMedia
     public function components()
     {
         return $this->hasMany('App\MealComponent', 'meal_id', 'id');
+    }
+
+    public function componentOptions()
+    {
+        return $this->hasManyThrough(
+            'App\MealComponentOption',
+            'App\MealComponent'
+        );
     }
 
     public function addons()
@@ -1871,5 +1880,10 @@ class Meal extends Model implements HasMedia
             }
             $mealSize->update();
         }
+    }
+
+    public function activate()
+    {
+        $this->update(['active' => 1]);
     }
 }

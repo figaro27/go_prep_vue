@@ -14,6 +14,8 @@ use App\MealMealPackageAddon;
 use App\MealSize;
 use App\MealPackageComponentOption;
 use App\MealPackageAddon;
+use App\Services\MealReplacement\MealReplacementParams;
+use App\Services\MealReplacement\MealReplacementService;
 use Illuminate\Http\Request;
 
 class MealController extends StoreController
@@ -184,6 +186,18 @@ class MealController extends StoreController
             );
         }
 
+        $params = new MealReplacementParams(
+            $mealId,
+            $subId,
+            $substituteMealSizes,
+            $substituteMealAddons,
+            $substituteMealComponentOptions
+        );
+
+        $mealReplacementService = new MealReplacementService();
+        $result = $mealReplacementService->replaceMeal($params);
+
+        /*
         $mealMealPackages = MealMealPackage::where('meal_id', $mealId)->get();
         $mealMealPackageSizes = MealMealPackageSize::where(
             'meal_id',
@@ -377,6 +391,7 @@ class MealController extends StoreController
                 }
             }
         }
+        */
 
         if ($this->store) {
             $this->store->setTimezone();
