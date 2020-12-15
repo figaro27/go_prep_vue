@@ -877,28 +877,21 @@ class CheckoutController extends UserController
                     $customDD
                 );
 
-                // Adjusting from local server EST time to UTC
-                $cutoff = $cutoff;
-
                 // How long into the future is the delivery day? In days
                 $diff = (strtotime($deliveryDay) - time()) / 86400;
 
                 $billingAnchor = Carbon::now('utc');
 
-                // Selected start date is more than 1 week into the future.
-                // Wait until next week to start billing cycle
-                if ($diff >= 7) {
-                    $billingAnchor->addWeeks(1);
-                }
-
-                // Is billing anchor past the cutoff?
-                // Set to the cutoff date
-                if ($billingAnchor->greaterThan($cutoff)) {
+                // Set to the cutoff date if the following conditions are met
+                if (
+                    $diff >= 7 ||
+                    $billingAnchor->greaterThan($cutoff) ||
+                    $store->settings->subscriptionRenewalType == 'cutoff'
+                ) {
                     $billingAnchor = $cutoff->copy();
-                }
-
-                if ($store->settings->subscriptionRenewalType == 'cutoff') {
-                    $billingAnchor = $cutoff->copy();
+                    if ($billingAnchor->isPast()) {
+                        $billingAnchor->addWeeks(1);
+                    }
                 }
 
                 if ($monthlyPrepay) {

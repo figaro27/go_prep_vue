@@ -883,20 +883,12 @@ class CheckoutController extends StoreController
 
                 $billingAnchor = Carbon::now('utc');
 
-                // Selected start date is more than 1 week into the future.
-                // Wait until next week to start billing cycle
-                if ($diff >= 7) {
-                    $billingAnchor->addWeeks(1);
-                }
-
-                // Is billing anchor past the cutoff?
-                // Set to the cutoff date
-
-                if ($billingAnchor->greaterThan($cutoff)) {
-                    $billingAnchor = $cutoff->copy();
-                }
-
-                if ($store->settings->subscriptionRenewalType == 'cutoff') {
+                // Set to the cutoff date if the following conditions are met
+                if (
+                    $diff >= 7 ||
+                    $billingAnchor->greaterThan($cutoff) ||
+                    $store->settings->subscriptionRenewalType == 'cutoff'
+                ) {
                     $billingAnchor = $cutoff->copy();
                     if ($billingAnchor->isPast()) {
                         $billingAnchor->addWeeks(1);
