@@ -175,7 +175,7 @@ export default {
             if (item.meal_package_subscription_id === pkgItem.id) {
               const meal = { ...this.getMeal(item.meal_id) };
               meal.meal_size_id = item.meal_size_id ? item.meal_size_id : null;
-              meal.quantity = item.quantity;
+              meal.quantity = item.quantity / pkgItem.quantity;
               meal.special_instructions = item.special_instructions;
               meal.item_id = item.item_id;
               meal.price = item.price / item.quantity;
