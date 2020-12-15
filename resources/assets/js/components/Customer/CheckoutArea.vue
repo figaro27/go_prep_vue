@@ -1489,6 +1489,8 @@ export default {
     }
   },
   mounted: function() {
+    this.setOrderFrequency();
+
     if (this.bagHasMultipleFrequencyItems || this.bagHasOnlySubItems) {
       this.setFrequencySubscription("sub");
     } else {
@@ -3166,6 +3168,21 @@ use next_delivery_dates
       "setBagGratuityPercent",
       "setBagCustomGratuity"
     ]),
+    setOrderFrequency() {
+      let count = 0;
+      if (this.storeSettings.allowWeeklySubscriptions) {
+        count++;
+      }
+      if (this.storeSettings.allowBiWeeklySubscriptions) {
+        count++;
+      }
+      if (this.storeSettings.allowMonthlySubscriptions) {
+        count++;
+      }
+      if (count > 1) {
+        this.subscriptionInterval = "select";
+      }
+    },
     preventNegative() {
       if (this.total < 0) {
         this.total += 1;
