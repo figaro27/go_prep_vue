@@ -64,7 +64,7 @@
           "
           buttons
           class="filters mb-3"
-          v-model="isPickup"
+          v-model="bagPickup"
           :options="[
             { value: 1, text: 'Pickup' },
             { value: 0, text: 'Delivery' }
@@ -673,11 +673,6 @@ export default {
     storeView: false,
     selectedDeliveryDay: null
   },
-  watch: {
-    bagPickup(val) {
-      // this.changePickup(val);
-    }
-  },
   mixins: [MenuBag],
   computed: {
     ...mapGetters({
@@ -843,7 +838,6 @@ export default {
     }
   },
   mounted() {
-    this.isPickup = this.bagPickup;
     if (this.bag) {
       this.bag.forEach(item => {
         this.$set(this.enablingEdit, item.guid, false);
