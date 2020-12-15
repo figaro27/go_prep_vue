@@ -1040,9 +1040,9 @@ class Subscription extends Model
             // Cutoff already passed. Missed your chance bud!
 
             // Removing to try to fix issue with longer than 7 day cutoff times. Will bring back if it causes issues.
-            if ($order->cutoff_passed) {
-                continue;
-            }
+            // if ($order->cutoff_passed) {
+            //     continue;
+            // }
 
             // Update order pricing
             $order->preFeePreDiscount = $this->preFeePreDiscount;
