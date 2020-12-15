@@ -1007,7 +1007,7 @@
           <b-btn
             variant="primary"
             v-if="storeModules.manualCustomers"
-            @click="addCustomerModal = true"
+            @click="showAddCustomerModal"
             >Add New Customer</b-btn
           >
         </div>
@@ -3917,6 +3917,18 @@ use next_delivery_dates
             this.setBagCoupon(resp.data);
           }
         });
+    },
+    showAddCustomerModal() {
+      if (
+        this.storeSettings.payment_gateway === "stripe" &&
+        !this.storeSettings.stripe_id
+      ) {
+        this.$toastr.w(
+          "You must connect to Stripe before being able to add customers & create orders. Visit the Settings page to connect to Stripe."
+        );
+        return;
+      }
+      this.addCustomerModal = true;
     },
     syncDiscounts() {
       this.$nextTick(() => {

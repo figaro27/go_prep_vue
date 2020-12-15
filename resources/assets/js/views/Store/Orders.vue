@@ -1,10 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <b-alert style="background-color:#EBFAFF" show dismissible>
-        <!-- <h5>
-          Update
-        </h5> -->
+      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
         <p>
           <span class="strong">Update</span><br />
           You can now manually create your own purchased gift card codes instead
@@ -17,7 +14,7 @@
             ></router-link
           >
         </p>
-      </b-alert>
+      </b-alert> -->
 
       <div class="card">
         <div class="card-body">
