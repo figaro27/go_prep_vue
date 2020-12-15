@@ -202,13 +202,38 @@
       >
         <div class="d-inline">
           <div class="d-inline">
-            <strong>Billing Period:</strong>
+            <img
+              v-if="!mobile"
+              v-b-popover.hover.bottom="
+                'Choose the frequency in which to be charged and receive your orders.'
+              "
+              title="Order Frequency"
+              src="/images/store/popover.png"
+              class="popover-size ml-1"
+            />
+            <img
+              v-if="mobile"
+              v-b-popover.click.top="
+                'Choose the frequency in which to be charged and receive your orders.'
+              "
+              title="Order Frequency"
+              src="/images/store/popover.png"
+              class="popover-size ml-1"
+            />
+            <strong>Order Frequency:</strong>
           </div>
           <div class="d-inline pl-3">
+            <span
+              v-if="subscriptionInterval === 'select'"
+              class="red mr-2"
+              style="font-size:25px;position:relative;top:8px"
+              >*</span
+            >
             <b-select
               v-model="subscriptionInterval"
               class="mb-1 delivery-select"
             >
+              <option value="select"><strong>Select Option</strong></option>
               <option value="week" v-if="storeSettings.allowWeeklySubscriptions"
                 ><strong>Weekly</strong></option
               >
@@ -1354,7 +1379,7 @@ export default {
       form: {
         billingState: null
       },
-      subscriptionInterval: "week",
+      subscriptionInterval: "select",
       dontAffectBalance: false,
       showBillingAddressModal: false,
       billingAddressVerified: false,
@@ -3077,6 +3102,14 @@ use next_delivery_dates
         this.grandTotal > 0
       ) {
         return "Please enter a payment method.";
+      }
+
+      if (
+        this.loggedIn &&
+        this.weeklySubscriptionValue &&
+        this.subscriptionInterval === "select"
+      ) {
+        return "Please select the order frequency of your subscription.";
       }
 
       if (
