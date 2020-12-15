@@ -43,15 +43,18 @@ export default {
     }
   },
   mounted() {
-    if (!this.mealMixItems.isRunningLazy) {
-      if (this.bag.items && this.bag.items.length === 0) {
-        this.getSub();
-      }
-    }
+    // if (!this.mealMixItems) {
+    //   if (this.bag.items && this.bag.items.length === 0) {
+    //     this.getSub();
+    //   }
+    // }
   },
   watch: {
     mealMixItems: function() {
-      if (!this.mealMixItems.isRunningLazy) {
+      if (
+        this.mealMixItems.hasOwnProperty("isRunningLazy") &&
+        !this.mealMixItems.isRunningLazy
+      ) {
         if (this.bag.items && this.bag.items.length === 0) this.getSub();
       }
     }
