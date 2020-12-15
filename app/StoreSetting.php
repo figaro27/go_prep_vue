@@ -38,7 +38,8 @@ class StoreSetting extends Model
         'timezone',
         'minimumSubWeeks',
         'subscriptionRenewalType',
-        'salesTax'
+        'salesTax',
+        'application_fee'
     ];
 
     /**

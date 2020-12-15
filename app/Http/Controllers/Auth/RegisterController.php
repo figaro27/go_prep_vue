@@ -263,7 +263,11 @@ class RegisterController extends Controller
                     'cancelled_subscription' => true,
                     'cancelled_subscriptions' => true
                 ),
-                'subscriptionRenewalType' => 'cutoff'
+                'subscriptionRenewalType' => 'cutoff',
+                'application_fee' =>
+                    collect($data['plan'])->get('plan') === 'pay-as-you-go'
+                        ? 5
+                        : 0
             ]);
 
             $storeSettings = $store->categories()->create([
