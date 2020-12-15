@@ -669,8 +669,10 @@ class Bag
             $price = $item['price'];
             if (isset($item['components']) && $item['components']) {
                 foreach ($item['components'] as $componentId => $choices) {
-                    foreach ($choices as $optionId) {
-                        $option = MealComponentOption::find($optionId);
+                    foreach ($choices as $option) {
+                        $option = MealComponentOption::find(
+                            $option['meal_component_option_id']
+                        );
                         $price += $option ? $option->price : 0;
                     }
                 }

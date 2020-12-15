@@ -881,7 +881,9 @@ class Subscription extends Model
                     'quantity' => $meal->quantity,
                     'meal' => $meal->meal,
                     'price' => $price,
-                    'delivery_date' => $meal->delivery_date
+                    'delivery_date' => $meal->delivery_date,
+                    'components' => $meal->components,
+                    'addons' => $meal->addons
                 ];
             }
         });
@@ -1129,9 +1131,10 @@ class Subscription extends Model
                         try {
                             MealOrderComponent::create([
                                 'meal_order_id' => $mealOrder->id,
-                                'meal_component_id' => $component->id,
+                                'meal_component_id' =>
+                                    $component['meal_component_id'],
                                 'meal_component_option_id' =>
-                                    $component->option->id
+                                    $component['meal_component_option_id']
                             ]);
                         } catch (\Exception $e) {
                         }
