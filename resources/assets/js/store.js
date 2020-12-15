@@ -75,7 +75,8 @@ const state = {
     frequencyType: null,
     pickupLocation: null,
     gratuityPercent: null,
-    customGratuity: null
+    customGratuity: null,
+    subscriptionInterval: null
   },
   delivery_date: null,
   zip_code: null,
@@ -844,6 +845,9 @@ const mutations = {
   },
   setBagCustomGratuity({ state, dispatch }, customGratuity) {
     this.state.bag.customGratuity = customGratuity;
+  },
+  setBagSubscriptionInterval({ state, dispatch }, subscriptionInterval) {
+    this.state.bag.subscriptionInterval = subscriptionInterval;
   },
   setBagZipCode({ state, dispatch }, zipCode) {
     this.state.zip_code = zipCode;
@@ -3535,6 +3539,9 @@ const getters = {
   },
   bagCustomGratuity(state) {
     return state.bag.customGratuity;
+  },
+  bagSubscriptionInterval(state) {
+    return state.bag.subscriptionInterval;
   },
   bagMultDDZipCode(state) {
     return state.multDDZipCode;

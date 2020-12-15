@@ -126,7 +126,9 @@
       <li
         class="bag-item"
         v-if="
-          storeSettings.allowWeeklySubscriptions &&
+          (storeSettings.allowWeeklySubscriptions ||
+            storeSettings.allowBiWeeklySubscriptions ||
+            storeSettings.allowMonthlySubscriptions) &&
             $route.params.subscriptionId === undefined &&
             $parent.orderId === undefined &&
             !subscriptionId &&
@@ -181,23 +183,31 @@
             </h3>
           </div>
         </div>
-        <div v-if="weeklySubscriptionValue && !manualOrder">
+        <div
+          v-if="
+            weeklySubscriptionValue &&
+              !manualOrder &&
+              bagSubscriptionInterval !== 'select'
+          "
+        >
           <p>
-            A subscription is a weekly recurring order. Your card will be
-            automatically charged every week. You can change the items in your
-            subscription and you can cancel the subscription after
-            {{ store.settings.minimumSubWeeks }}
-            orders.
+            A subscription is a {{ bagSubscriptionInterval }}ly recurring order.
+            Your card will be automatically charged and new orders will
+            continuously be created for you on a {{ bagSubscriptionInterval }}ly
+            basis. You can change the items in your subscription and you can
+            cancel the subscription
+            <span v-if="storeSettings.minimumSubWeeks > 1"
+              >after
+              {{ storeSettings.minimumSubWeeks }}
+              orders</span
+            >.
           </p>
         </div>
       </li>
       <li
         class="checkout-item"
         v-if="
-          weeklySubscription &&
-            (storeSettings.allowMonthlySubscriptions ||
-              storeSettings.allowBiWeeklySubscriptions) &&
-            !adjusting
+          weeklySubscription && hasMultipleSubscriptionIntervals && !adjusting
         "
       >
         <div class="d-inline">
@@ -224,14 +234,15 @@
           </div>
           <div class="d-inline pl-3">
             <span
-              v-if="subscriptionInterval === 'select'"
+              v-if="bagSubscriptionInterval === 'select'"
               class="red mr-2"
               style="font-size:25px;position:relative;top:8px"
               >*</span
             >
             <b-select
-              v-model="subscriptionInterval"
+              v-model="bagSubscriptionInterval"
               class="mb-1 delivery-select"
+              @input="val => setBagSubscriptionInterval(val)"
             >
               <option value="select"><strong>Select Option</strong></option>
               <option value="week" v-if="storeSettings.allowWeeklySubscriptions"
@@ -1379,7 +1390,6 @@ export default {
       form: {
         billingState: null
       },
-      subscriptionInterval: "weekly",
       dontAffectBalance: false,
       showBillingAddressModal: false,
       billingAddressVerified: false,
@@ -1620,8 +1630,22 @@ export default {
       mealMixItems: "mealMixItems",
       selectedPickupLocation: "bagPickupLocation",
       bagGratuityPercent: "bagGratuityPercent",
-      bagCustomGratuity: "bagCustomGratuity"
+      bagCustomGratuity: "bagCustomGratuity",
+      bagSubscriptionInterval: "bagSubscriptionInterval"
     }),
+    hasMultipleSubscriptionIntervals() {
+      let count = 0;
+      if (this.storeSettings.allowWeeklySubscriptions) {
+        count++;
+      }
+      if (this.storeSettings.allowBiWeeklySubscriptions) {
+        count++;
+      }
+      if (this.storeSettings.allowMonthlySubscriptions) {
+        count++;
+      }
+      return count > 1 ? true : false;
+    },
     adjusting() {
       if (this.$route.params.adjustOrder || this.subscriptionId) {
         return true;
@@ -3109,7 +3133,7 @@ use next_delivery_dates
       if (
         this.loggedIn &&
         this.weeklySubscriptionValue &&
-        this.subscriptionInterval === "select"
+        this.bagSubscriptionInterval === "select"
       ) {
         return "Please select the order frequency of your subscription.";
       }
@@ -3166,21 +3190,29 @@ use next_delivery_dates
       "setBagFrequencyType",
       "setBagPickupLocation",
       "setBagGratuityPercent",
-      "setBagCustomGratuity"
+      "setBagCustomGratuity",
+      "setBagSubscriptionInterval"
     ]),
     setOrderFrequency() {
-      let count = 0;
-      if (this.storeSettings.allowWeeklySubscriptions) {
-        count++;
+      // this.setBagSubscriptionInterval(null)
+      let week = this.storeSettings.allowWeeklySubscriptions;
+      let biweek = this.storeSettings.allowBiWeeklySubscriptions;
+      let month = this.storeSettings.allowMonthlySubscriptions;
+
+      if (week && !biweek && !month) {
+        this.setBagSubscriptionInterval("week");
+        return;
       }
-      if (this.storeSettings.allowBiWeeklySubscriptions) {
-        count++;
+      if (!week && biweek && !month) {
+        this.setBagSubscriptionInterval("biweek");
+        return;
       }
-      if (this.storeSettings.allowMonthlySubscriptions) {
-        count++;
+      if (!week && !biweek && month) {
+        this.setBagSubscriptionInterval("month");
+        return;
       }
-      if (count > 1) {
-        this.subscriptionInterval = "select";
+      if (this.bagSubscriptionInterval == null) {
+        this.setBagSubscriptionInterval("select");
       }
     },
     preventNegative() {
@@ -3610,7 +3642,7 @@ use next_delivery_dates
           afterDiscount: this.afterDiscount,
           bag: bag,
           plan: this.weeklySubscriptionValue ? this.weeklySubscriptionValue : 0,
-          plan_interval: this.subscriptionInterval,
+          plan_interval: this.bagSubscriptionInterval,
           monthlyPrepay:
             this.hasMonthlyPrepaySubscriptionItems ||
             this.storeSettings.monthlyPrepaySubscriptions,
