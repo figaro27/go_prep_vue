@@ -25,7 +25,8 @@ export default {
       isLoading: false,
       pickup: null,
       subscription_bags: [],
-      subscription: {}
+      subscription: {},
+      itemsSet: false
     };
   },
   computed: {
@@ -53,7 +54,8 @@ export default {
     mealMixItems: function() {
       if (
         this.mealMixItems.hasOwnProperty("isRunningLazy") &&
-        !this.mealMixItems.isRunningLazy
+        !this.mealMixItems.isRunningLazy &&
+        !this.itemsSet
       ) {
         if (this.bag.items && this.bag.items.length === 0) this.getSub();
       }
@@ -272,6 +274,7 @@ export default {
           }
         }
       });
+      this.itemsSet = true;
     }
   }
 };
