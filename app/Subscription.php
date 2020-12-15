@@ -899,7 +899,8 @@ class Subscription extends Model
             $this->fresh()->meal_package_subscriptions
             as $mealPackageSub
         ) {
-            $totalPackagePrice += $mealPackageSub->price;
+            $totalPackagePrice +=
+                $mealPackageSub->price * $mealPackageSub->quantity;
         }
 
         $total = $prePackagePrice + $totalPackagePrice;
