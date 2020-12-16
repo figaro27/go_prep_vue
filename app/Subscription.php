@@ -408,15 +408,15 @@ class Subscription extends Model
             );
         }
 
+        $this->syncPrices();
+
         $applyCharge =
             !$this->cashOrder &&
             $this->status != 'paused' &&
             $this->stripe_customer_id !== 'CASH' &&
-            $this->stripe_customer_id !== 'NO_CHARGE'
+            $this->amount > 0.5
                 ? true
                 : false;
-
-        $this->syncPrices();
 
         // Cancelling the subscription for next month if cancelled_at is marked
         if (
@@ -436,13 +436,17 @@ class Subscription extends Model
                 $markAsPaidOnly = true;
             }
         }
-        if ($this->cashOrder && $this->status !== 'paused') {
+        if (
+            ($this->cashOrder && $this->status !== 'paused') ||
+            (!$this->cashOrder &&
+                $this->status !== 'paused' &&
+                $this->amount < 0.5)
+        ) {
             $markAsPaidOnly = true;
         }
 
         // Charge
-        $charge =
-            $applyCharge && !$markAsPaidOnly ? $this->renewalCharge() : null;
+        $charge = $applyCharge ? $this->renewalCharge() : null;
 
         $latestOrder->paid = $applyCharge || $markAsPaidOnly ? 1 : 0;
         $latestOrder->paid_at =
@@ -667,7 +671,6 @@ class Subscription extends Model
             }
         }
 
-        $this->removeOneTimeCoupons();
         $this->renewalCount += 1;
         $this->next_renewal_at = $this->next_renewal_at
             ->addWeeks($this->intervalCount)
@@ -787,7 +790,7 @@ class Subscription extends Model
 
         // Update the purchased gift card amount
 
-        if ($this->purchased_gift_card_id) {
+        if ($this->purchased_gift_card_id && $this->status !== 'paused') {
             $purchasedGiftCard = PurchasedGiftCard::where(
                 'id',
                 $this->purchased_gift_card_id
@@ -912,6 +915,9 @@ class Subscription extends Model
         $preFeePreDiscount = $prePackagePrice + $totalPackagePrice;
 
         // Adjust the price of the subscription on renewal if a one time coupon code was used. (Remove coupon from subscription).
+        if ($this->renewalCount > 0) {
+            $this->removeOneTimeCoupons();
+        }
         $coupon = Coupon::where('id', $this->coupon_id)->first();
         if (isset($coupon)) {
             if (!$coupon->active) {

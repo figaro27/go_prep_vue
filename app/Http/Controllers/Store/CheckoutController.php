@@ -200,7 +200,7 @@ class CheckoutController extends StoreController
                 : 0;
 
             $cashOrder = $request->get('cashOrder');
-            if ($cashOrder || $request->get('grandTotal') === 0) {
+            if ($cashOrder) {
                 $cardId = null;
                 $card = null;
                 $gateway = Constants::GATEWAY_CASH;
@@ -903,9 +903,6 @@ class CheckoutController extends StoreController
                     : 'NULL';
                 if ($cashOrder) {
                     $stripeCustomerId = 'CASH';
-                }
-                if ($total === 0) {
-                    $stripeCustomerId = 'NO_CHARGE';
                 }
 
                 $userSubscription = new Subscription();
