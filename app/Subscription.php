@@ -436,13 +436,17 @@ class Subscription extends Model
                 $markAsPaidOnly = true;
             }
         }
+        if ($this->cashOrder && $this->status !== 'paused') {
+            $markAsPaidOnly = true;
+        }
 
         // Charge
         $charge =
             $applyCharge && !$markAsPaidOnly ? $this->renewalCharge() : null;
 
-        $latestOrder->paid = $applyCharge ? 1 : 0;
-        $latestOrder->paid_at = $applyCharge ? new Carbon() : null;
+        $latestOrder->paid = $applyCharge || $markAsPaidOnly ? 1 : 0;
+        $latestOrder->paid_at =
+            $applyCharge || $markAsPaidOnly ? new Carbon() : null;
         $latestOrder->stripe_id = $charge ? $charge->id : null;
         $latestOrder->save();
 
