@@ -24,6 +24,9 @@ class StripeController extends Controller
             $type === 'invoice.payment_succeeded' ||
             $type === 'invoice.voided'
         ) {
+            // Subscriptions are internal now
+            return;
+
             $subId = $obj->get('subscription', null);
 
             $subscription = null;
