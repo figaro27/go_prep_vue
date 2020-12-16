@@ -259,6 +259,7 @@ class SubscriptionController extends StoreController
             $processingFee = $request->get('processingFee');
             $mealPlanDiscount = $request->get('mealPlanDiscount');
             $salesTax = $request->get('salesTax');
+            $cardId = $request->get('card_id');
 
             $promotionReduction = $request->get('promotionReduction');
             $appliedReferralId = $request->get('applied_referral_id');
@@ -422,6 +423,7 @@ class SubscriptionController extends StoreController
             }
 
             $sub->store_id = $store->id;
+            $sub->card_id = $cardId;
             $sub->preFeePreDiscount = $preFeePreDiscount;
             $sub->mealPlanDiscount = $mealPlanDiscount;
             $sub->afterDiscountBeforeFees = $afterDiscountBeforeFees;

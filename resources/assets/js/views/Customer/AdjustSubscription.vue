@@ -43,11 +43,15 @@ export default {
     }
   },
   mounted() {
-    // if (!this.mealMixItems) {
-    //   if (this.bag.items && this.bag.items.length === 0) {
-    //     this.getSub();
-    //   }
-    // }
+    if (
+      this.mealMixItems.hasOwnProperty("isRunningLazy") &&
+      !this.mealMixItems.isRunningLazy &&
+      !this.itemsSet
+    ) {
+      if (this.bag.items && this.bag.items.length === 0) {
+        this.getSub();
+      }
+    }
   },
   watch: {
     mealMixItems: function() {

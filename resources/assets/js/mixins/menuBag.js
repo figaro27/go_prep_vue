@@ -549,7 +549,7 @@ export default {
             subtotal: this.subtotal,
             afterDiscount: this.afterDiscount,
             bag: this.bag,
-            card_id: !this.cashOrder ? this.creditCardId : 0,
+            card_id: !this.cashOrder ? this.card : 0,
             plan: this.weeklySubscription,
             pickup: this.pickup,
             shipping: this.deliveryShipping == "Shipping" ? 1 : 0,

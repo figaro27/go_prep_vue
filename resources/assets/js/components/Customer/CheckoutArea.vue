@@ -1011,14 +1011,7 @@
             >Add New Customer</b-btn
           >
         </div>
-        <div
-          v-if="
-            !hidePaymentArea &&
-              ((($route.params.storeView || storeOwner) &&
-                customerModel != null) ||
-                (!$route.params.storeView && !storeOwner))
-          "
-        >
+        <div v-if="!hidePaymentArea">
           <h4 class="mt-2 mb-3">
             Payment Method
           </h4>
@@ -1227,7 +1220,7 @@
           <b-btn
             class="menu-bag-btn update-meals-btn"
             @click="updateSubscriptionMeals"
-            >UPDATE ITEMS</b-btn
+            >UPDATE SUBSCRIPTION</b-btn
           >
         </div>
       </div>
@@ -1577,6 +1570,12 @@ export default {
         this.$parent.$route.params.subscription.gratuity > 0
           ? this.$parent.$route.params.subscription.gratuity
           : 0;
+    }
+
+    if (this.$route.params.subscription) {
+      let cardId = this.$route.params.subscription.card_id;
+      this.card = cardId;
+      this.creditCardId = cardId;
     }
   },
   mixins: [MenuBag],
@@ -3022,9 +3021,11 @@ use next_delivery_dates
     hidePaymentArea() {
       let params = this.$route.params;
       if (
-        params.subscriptionId != null ||
         params.preview != null ||
-        params.adjustOrder
+        params.adjustOrder ||
+        (this.context == "store" &&
+          !this.adjusting &&
+          this.customerModel == null)
       )
         return true;
       else return false;
