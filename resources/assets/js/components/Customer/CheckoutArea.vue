@@ -3123,11 +3123,11 @@ use next_delivery_dates
 
       if (
         (this.loggedIn &&
-          !this.creditCardId &&
+          !this.card &&
           !this.cashOrder &&
           this.grandTotal > 0) ||
         (this.loggedIn &&
-          !this.creditCardId &&
+          !this.card &&
           !this.cashOrder &&
           this.grandTotal == 0 &&
           this.weeklySubscriptionValue)
@@ -3657,7 +3657,7 @@ use next_delivery_dates
           delivery_day: this.deliveryDay
             ? this.deliveryDay
             : this.deliveryDateOptions[0].value,
-          card_id: !this.cashOrder ? this.creditCardId : 0,
+          card_id: !this.cashOrder ? this.card : 0,
           store_id: this.store.id,
           salesTax: this.tax,
           customSalesTax: this.customSalesTax !== null ? 1 : 0,
