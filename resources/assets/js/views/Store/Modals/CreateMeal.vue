@@ -577,7 +577,7 @@ export default {
         return;
       }
 
-      this.$toastr.s("Meal created!");
+      this.$toastr.s("Item created!");
       this.$emit("created");
       this.$refs.createMealModal.hide();
       this.$parent.createMealModal = false;
