@@ -267,7 +267,7 @@
 
             <span v-if="subscription.adjustedRenewal">
               <h4 class="mt-2">Next Renewal</h4>
-              <p>
+              <p v-if="subscription.status !== 'paused'">
                 <i
                   v-if="!adjustingRenewal"
                   @click="adjustingRenewal = true"
@@ -311,6 +311,10 @@
                     "dddd, MMM Do"
                   )
                 }}
+              </p>
+              <p v-else>
+                This subscription is currently paused and will not renew again
+                until resumed.
               </p>
             </span>
             <span v-if="subscription.next_delivery_date">
