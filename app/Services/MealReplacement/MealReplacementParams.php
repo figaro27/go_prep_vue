@@ -217,4 +217,26 @@ class MealReplacementParams
     {
         return $this->getComponentOptionMapping()->get($optionId);
     }
+
+    /**
+     * Has substitite for given addon ID
+     *
+     * @param string $addonId
+     * @return boolean
+     */
+    public function hasAddonSubstitute($addonId)
+    {
+        return $this->getAddonMapping()->has($addonId);
+    }
+
+    /**
+     * Get substitite for given addon ID
+     *
+     * @param string $addonId
+     * @return string
+     */
+    public function getAddonSubstitute($addonId)
+    {
+        return $this->getAddonMapping()->get($addonId);
+    }
 }

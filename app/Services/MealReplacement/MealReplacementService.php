@@ -3,12 +3,15 @@
 namespace App\Services\MealReplacement;
 
 use App\Meal;
+use App\MealAddon;
+use App\MealComponentOption;
 use App\MealMealPackage;
 use App\MealMealPackageAddon;
 use App\MealMealPackageComponentOption;
 use App\MealMealPackageSize;
 use App\MealSize;
 use App\MealSubscription;
+use App\MealSubscriptionAddon;
 use App\MealSubscriptionComponent;
 use App\Services\MealReplacement\Exception\InvalidMappingException;
 use App\Services\MealReplacement\Exception\MissingSubscriptionForMealException;
@@ -31,7 +34,7 @@ class MealReplacementService
     {
         // Handle replace
         try {
-            $this->handleReplaceMeal($params);
+            return $this->handleReplaceMeal($params);
         } catch (Exception $e) {
             Log::error('Failed to replace meal', [
                 'meal_id' => $params->getMealId(),
@@ -56,12 +59,15 @@ class MealReplacementService
 
             $result = new MealReplacementResult();
 
+            $this->activateSubstitute($substituteMeal);
             $this->replaceMealInPackages($params, $result);
             $this->replaceMealInSubscriptions($params, $result);
 
             $substituteMeal->activate();
 
-            //DB::commit();
+            DB::commit();
+
+            return $result;
         } catch (Exception $e) {
             // Catch, cancel transaction
             DB::rollBack();
@@ -89,8 +95,13 @@ class MealReplacementService
         Meal $meal,
         Meal $substituteMeal
     ) {
+        $mealSizes = $meal
+            ->sizes()
+            ->withTrashed()
+            ->get();
+
         foreach ($params->getSizeMapping() as $sizeId => $subSizeId) {
-            if (!$meal->sizes->contains($sizeId)) {
+            if (!$mealSizes->contains($sizeId)) {
                 throw new InvalidMappingException(
                     sprintf(
                         'Size $d doesn\'t exist in meal %d',
@@ -117,8 +128,13 @@ class MealReplacementService
         Meal $meal,
         Meal $substituteMeal
     ) {
+        $mealAddons = $meal
+            ->addons()
+            ->withTrashed()
+            ->get();
+
         foreach ($params->getAddonMapping() as $addonId => $subAddonId) {
-            if (!$meal->addons->contains($addonId)) {
+            if (!$mealAddons->contains($addonId)) {
                 throw new InvalidMappingException(
                     sprintf(
                         'Addon $d doesn\'t exist in meal %d',
@@ -145,11 +161,16 @@ class MealReplacementService
         Meal $meal,
         Meal $substituteMeal
     ) {
+        $mealComponentOptions = $meal
+            ->componentOptions()
+            ->withTrashed()
+            ->get();
+
         foreach (
             $params->getComponentOptionMapping()
             as $optionId => $subOptionId
         ) {
-            if (!$meal->componentOptions->contains($optionId)) {
+            if (!$mealComponentOptions->contains($optionId)) {
                 throw new InvalidMappingException(
                     sprintf(
                         'Component option $d doesn\'t exist in meal %d',
@@ -168,6 +189,14 @@ class MealReplacementService
                     )
                 );
             }
+        }
+    }
+
+    protected function activateSubstitute(Meal $substituteMeal)
+    {
+        if (!$substituteMeal->active) {
+            $substituteMeal->active = 1;
+            $substituteMeal->update();
         }
     }
 
@@ -209,6 +238,8 @@ class MealReplacementService
                 $existingMealMealPackage->quantity = $quantity;
                 $existingMealMealPackage->update();
                 $mealMealPackage->delete();
+
+                $result->packageMeals->push($existingMealMealPackage->id);
             } else {
                 $mealMealPackage->meal_id = $params->getSubstituteMealId();
 
@@ -216,6 +247,7 @@ class MealReplacementService
                     $mealMealPackage->meal_size_id = $substituteSizeId;
                 }
                 $mealMealPackage->update();
+                $result->packageMeals->push($mealMealPackage->id);
             }
         }
     }
@@ -249,6 +281,9 @@ class MealReplacementService
                 $existingMealMealPackageSize->quantity = $quantity;
                 $existingMealMealPackageSize->update();
                 $mealMealPackageSize->delete();
+                $result->packageMealSizes->push(
+                    $existingMealMealPackageSize->id
+                );
             } else {
                 $mealMealPackageSize->meal_id = $params->getSubstituteMealId();
 
@@ -256,6 +291,7 @@ class MealReplacementService
                     $mealMealPackageSize->meal_size_id = $substituteSizeId;
                 }
                 $mealMealPackageSize->update();
+                $result->packageMealSizes->push($mealMealPackageSize->id);
             }
         }
     }
@@ -293,6 +329,9 @@ class MealReplacementService
                 $existingMealMealPackageComponentOption->quantity = $quantity;
                 $existingMealMealPackageComponentOption->update();
                 $mealMealPackageComponentOption->delete();
+                $result->packageMealComponentOptions->push(
+                    $existingMealMealPackageComponentOption->id
+                );
             } else {
                 $mealMealPackageComponentOption->meal_id = $params->getSubstituteMealId();
 
@@ -300,6 +339,11 @@ class MealReplacementService
                     $mealMealPackageComponentOption->meal_size_id = $substituteSizeId;
                 }
                 $mealMealPackageComponentOption->update();
+
+                // Add to result
+                $result->packageMealComponentOptions->push(
+                    $mealMealPackageComponentOption->id
+                );
             }
         }
     }
@@ -333,6 +377,11 @@ class MealReplacementService
                 $existingMealMealPackageAddon->quantity = $quantity;
                 $existingMealMealPackageAddon->update();
                 $mealMealPackageAddon->delete();
+
+                // Add to result
+                $result->packageMealAddons->push(
+                    $existingMealMealPackageAddon->id
+                );
             } else {
                 $mealMealPackageAddon->meal_id = $params->getSubstituteMealId();
 
@@ -341,6 +390,9 @@ class MealReplacementService
                 }
 
                 $mealMealPackageAddon->update();
+
+                // Add to result
+                $result->packageMealAddons->push($mealMealPackageAddon->id);
             }
         }
     }
@@ -397,7 +449,7 @@ class MealReplacementService
             $subscriptionMeal->last_meal_size_id =
                 $subscriptionMeal->meal_size_id;
             $subscriptionMeal->meal_size_id = $subSizeId;
-            $newPrice = $subSize->price;
+            $newSubscriptionMealPrice = $subSize->price;
         }
 
         // Substitute components
@@ -415,56 +467,15 @@ class MealReplacementService
             $this->replaceMealInSubscriptionMealAddon(
                 $params,
                 $result,
-                $component,
+                $addon,
                 $newSubscriptionMealPrice
             );
-
-            if ($substituteMealAddons->has($addon->meal_addon_id)) {
-                $originalMealAddonId = $addon->meal_addon_id;
-                $subAddonId = $substituteMealAddons->get($originalMealAddonId);
-                $subAddon = MealAddon::find($subAddonId);
-
-                $addon->last_meal_addon_id = $addon->meal_addon_id;
-                $addon->meal_addon_id = $subAddonId;
-
-                $price += $subAddon->price;
-
-                try {
-                    $addon->save();
-                } catch (\Exception $e) {
-                    if ($e->getCode() === '23000') {
-                        // already has this component. Skip
-                        Log::debug('Meal subscription already has addon', [
-                            'subscription_id' =>
-                                $subscriptionMeal->subscription_id,
-                            'meal_id' => $subscriptionMeal->meal_id,
-                            'substitute_meal_id' => $substituteMealId,
-                            'meal_addon_id' => $originalMealAddonId,
-                            'sub_meal_addon_id' => $subAddonId,
-                            'meal_subscription_id' => $subscriptionMeal->id
-                        ]);
-                        $addon->delete();
-                    }
-                }
-            } else {
-                // We have no replacement for this addon.
-                // Was the addon removed from the meal after the subscription created?
-                // Delete it
-                $addon->delete();
-
-                Log::error('No addon substitute provided', [
-                    'subscription_id' => $subscriptionMeal->subscription_id,
-                    'meal_id' => $subscriptionMeal->meal_id,
-                    'substitute_meal_id' => $substituteMealId,
-                    'meal_addon_id' => $addon->meal_addon_id,
-                    'meal_subscription_id' => $subscriptionMeal->id
-                ]);
-            }
         }
 
         $subscriptionMeal->last_meal_id = $subscriptionMeal->meal_id;
         $subscriptionMeal->meal_id = $substituteMealId;
-        $subscriptionMeal->price = $newPrice * $subscriptionMeal->quantity;
+        $subscriptionMeal->price =
+            $newSubscriptionMealPrice * $subscriptionMeal->quantity;
 
         $existingSubscriptionMeal = MealSubscription::where([
             ['meal_id', $substituteMealId],
@@ -554,6 +565,56 @@ class MealReplacementService
                 ]);
                 $component->delete();
             }
+        }
+    }
+
+    protected function replaceMealInSubscriptionMealAddon(
+        MealReplacementParams $params,
+        MealReplacementResult &$result,
+        MealSubscriptionAddon $addon,
+        float &$newSubscriptionMealPrice
+    ) {
+        $subscriptionMeal = $addon->mealSubscription;
+        $originalMealAddonId = $addon->meal_addon_id;
+
+        if (!$params->hasAddonSubstitute($addon->meal_addon_id)) {
+            $subAddonId = $params->getAddonSubstitute($originalMealAddonId);
+            $subAddon = MealAddon::findOrFail($subAddonId);
+
+            $addon->last_meal_addon_id = $addon->meal_addon_id;
+            $addon->meal_addon_id = $subAddonId;
+
+            $newSubscriptionMealPrice += $subAddon->price;
+
+            try {
+                $addon->save();
+            } catch (\Exception $e) {
+                if ($e->getCode() === '23000') {
+                    // already has this component. Skip
+                    Log::debug('Meal subscription already has addon', [
+                        'subscription_id' => $subscriptionMeal->subscription_id,
+                        'meal_id' => $subscriptionMeal->meal_id,
+                        'substitute_meal_id' => $params->getSubstituteMealId(),
+                        'meal_addon_id' => $originalMealAddonId,
+                        'sub_meal_addon_id' => $subAddonId,
+                        'meal_subscription_id' => $subscriptionMeal->id
+                    ]);
+                    $addon->delete();
+                }
+            }
+        } else {
+            // We have no replacement for this addon.
+            // Was the addon removed from the meal after the subscription created?
+            // Delete it
+            $addon->delete();
+
+            Log::error('No addon substitute provided', [
+                'subscription_id' => $subscriptionMeal->subscription_id,
+                'meal_id' => $subscriptionMeal->meal_id,
+                'substitute_meal_id' => $params->getSubstituteMealId(),
+                'meal_addon_id' => $addon->meal_addon_id,
+                'meal_subscription_id' => $subscriptionMeal->id
+            ]);
         }
     }
 }
