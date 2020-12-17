@@ -14,7 +14,12 @@ use App\MealMealPackageAddon;
 use App\MealSize;
 use App\MealPackageComponentOption;
 use App\MealPackageAddon;
+use App\Services\MealReplacement\MealReplacementParams;
+use App\Services\MealReplacement\MealReplacementService;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Log\Logger;
+use Illuminate\Support\Facades\Log;
 
 class MealController extends StoreController
 {
@@ -184,6 +189,47 @@ class MealController extends StoreController
             );
         }
 
+        $params = new MealReplacementParams(
+            $mealId,
+            $subId,
+            $substituteMealSizes,
+            $substituteMealAddons,
+            $substituteMealComponentOptions
+        );
+
+        $mealReplacementService = new MealReplacementService();
+        try {
+            $result = $mealReplacementService->replaceMeal($params);
+
+            Log::info(
+                sprintf(
+                    'Replaced meal %d with %d successfully',
+                    $mealId,
+                    $subId
+                ),
+                [
+                    'result' => $result
+                ]
+            );
+        } catch (Exception $e) {
+            Log::info(
+                sprintf('Failed to subtitute meal %d with %d', $mealId, $subId),
+                [
+                    'error' => $e->getMessage(),
+                    'exception' => $e
+                ]
+            );
+
+            return response()->json(
+                [
+                    'error' => 'Failed to substitute meal',
+                    'detail' => $e->getMessage()
+                ],
+                500
+            );
+        }
+
+        /*
         $mealMealPackages = MealMealPackage::where('meal_id', $mealId)->get();
         $mealMealPackageSizes = MealMealPackageSize::where(
             'meal_id',
@@ -377,6 +423,7 @@ class MealController extends StoreController
                 }
             }
         }
+        */
 
         if ($this->store) {
             $this->store->setTimezone();
@@ -388,10 +435,7 @@ class MealController extends StoreController
             $mealId,
             $subId,
             $replaceOnly,
-            $transferVariations,
-            $substituteMealSizes,
-            $substituteMealAddons,
-            $substituteMealComponentOptions
+            $transferVariations
         );
     }
 
@@ -407,7 +451,7 @@ class MealController extends StoreController
         $mealId = $meal->id;
         $subId = intval($request->input('substitute_id'));
 
-        $mealMealPackages = MealMealPackage::where('meal_id', $mealId)->get();
+        /*$mealMealPackages = MealMealPackage::where('meal_id', $mealId)->get();
         $subCheck = false;
 
         foreach ($mealMealPackages as $mealMealPackage) {
@@ -434,6 +478,46 @@ class MealController extends StoreController
             foreach ($mealMealPackages as $mealMealPackage) {
                 $mealMealPackage->update(['meal_id' => $subId]);
             }
+        }*/
+
+        $params = new MealReplacementParams(
+            $mealId,
+            $subId,
+            collect(),
+            collect(),
+            collect()
+        );
+
+        $mealReplacementService = new MealReplacementService();
+        try {
+            $result = $mealReplacementService->replaceMeal($params);
+
+            Log::info(
+                sprintf(
+                    'Replaced meal %d with %d successfully',
+                    $mealId,
+                    $subId
+                ),
+                [
+                    'result' => $result
+                ]
+            );
+        } catch (Exception $e) {
+            Log::info(
+                sprintf('Failed to subtitute meal %d with %d', $mealId, $subId),
+                [
+                    'error' => $e->getMessage(),
+                    'exception' => $e
+                ]
+            );
+
+            return response()->json(
+                [
+                    'error' => 'Failed to substitute meal',
+                    'detail' => $e->getMessage()
+                ],
+                500
+            );
         }
 
         if ($this->store) {

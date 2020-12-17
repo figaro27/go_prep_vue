@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Meal;
 use App\MealComponent;
 use App\MealComponentOption;
 use App\MealOrder;
@@ -100,7 +99,8 @@ class Meal extends Model implements HasMedia
         'categories',
         'orders',
         'subscriptions',
-        'store'
+        'store',
+        'componentOptions'
         //'ingredients',
     ];
 
@@ -562,6 +562,14 @@ class Meal extends Model implements HasMedia
     public function components()
     {
         return $this->hasMany('App\MealComponent', 'meal_id', 'id');
+    }
+
+    public function componentOptions()
+    {
+        return $this->hasManyThrough(
+            'App\MealComponentOption',
+            'App\MealComponent'
+        );
     }
 
     public function addons()
@@ -1489,15 +1497,13 @@ class Meal extends Model implements HasMedia
         $id,
         $subId = null,
         $replaceOnly = false,
-        $transferVariations = false,
-        $substituteMealSizes = null,
-        $substituteMealAddons = null,
-        $substituteMealComponentOptions = null
+        $transferVariations = false
     ) {
         $meal = Meal::find($id);
         $sub = Meal::find($subId);
         $store = $meal->store;
 
+        /*
         if ($sub) {
             $sub->active = 1;
             $sub->update();
@@ -1804,7 +1810,7 @@ class Meal extends Model implements HasMedia
                 //     ]);
                 // }
             });
-        }
+        }*/
 
         if (!$replaceOnly) {
             $meal->delete();
@@ -1871,5 +1877,10 @@ class Meal extends Model implements HasMedia
             }
             $mealSize->update();
         }
+    }
+
+    public function activate()
+    {
+        $this->update(['active' => 1]);
     }
 }
