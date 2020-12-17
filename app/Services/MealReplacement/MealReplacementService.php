@@ -475,8 +475,9 @@ class MealReplacementService
 
         $subscriptionMeal->last_meal_id = $subscriptionMeal->meal_id;
         $subscriptionMeal->meal_id = $substituteMealId;
-        $subscriptionMeal->price =
-            $newSubscriptionMealPrice * $subscriptionMeal->quantity;
+        $subscriptionMeal->price = !$subscriptionMeal->meal_package_subscription_id
+            ? $newSubscriptionMealPrice * $subscriptionMeal->quantity
+            : 0;
 
         $existingSubscriptionMeal = MealSubscription::where([
             ['meal_id', $substituteMealId],
@@ -492,7 +493,9 @@ class MealReplacementService
                 $existingSubscriptionMeal->price /
                 $existingSubscriptionMeal->quantity;
             $existingSubscriptionMeal->quantity = $quantity;
-            $existingSubscriptionMeal->price = $unitPrice * $quantity;
+            $existingSubscriptionMeal->price = !$subscriptionMeal->meal_package_subscription_id
+                ? $unitPrice * $quantity
+                : 0;
             $existingSubscriptionMeal->delivery_date =
                 $subscriptionMeal->delivery_date;
             $existingSubscriptionMeal->update();
