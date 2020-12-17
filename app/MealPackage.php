@@ -404,8 +404,8 @@ class MealPackage extends Model implements HasMedia
                             ? $meal['quantity']
                             : 1,
                         'meal_size_id' => $meal['meal_size_id'] ?? null,
-                        'price' => $meal['price'] ?? 0,
-                        'delivery_day_id' => $meal['delivery_day_id'] ?? null
+                        'price' => $meal['price'] ?? 0
+                        // 'delivery_day_id' => $meal['delivery_day_id'] ?? null
                     ];
                 }
                 $mealPackageAddon->meals()->sync($meals);

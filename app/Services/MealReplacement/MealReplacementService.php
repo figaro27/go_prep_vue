@@ -323,15 +323,15 @@ class MealReplacementService
                 ]
             )->first();
             if ($existingMealMealPackageComponentOption) {
-                $quantity =
-                    $existingMealMealPackageComponentOption->quantity +
-                    $mealMealPackageComponentOption->quantity;
-                $existingMealMealPackageComponentOption->quantity = $quantity;
-                $existingMealMealPackageComponentOption->update();
-                $mealMealPackageComponentOption->delete();
-                $result->packageMealComponentOptions->push(
-                    $existingMealMealPackageComponentOption->id
-                );
+                // $quantity =
+                //     $existingMealMealPackageComponentOption->quantity +
+                //     $mealMealPackageComponentOption->quantity;
+                // $existingMealMealPackageComponentOption->quantity = $quantity;
+                // $existingMealMealPackageComponentOption->update();
+                // $mealMealPackageComponentOption->delete();
+                // $result->packageMealComponentOptions->push(
+                //     $existingMealMealPackageComponentOption->id
+                // );
             } else {
                 $mealMealPackageComponentOption->meal_id = $params->getSubstituteMealId();
 
