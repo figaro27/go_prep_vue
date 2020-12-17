@@ -1053,7 +1053,7 @@ export default {
             const guid = JSON.stringify({ mealId, sizeId });
 
             if (mealQuantities[guid]) {
-              mealQuantities[guid] += addonItem.quantity;
+              mealQuantities[guid].quantity += addonItem.quantity;
             } else if (addonItem.meal) {
               mealQuantities[guid] = {
                 quantity: addonItem.quantity,
