@@ -21,7 +21,7 @@ class MealAddon extends Model
         'created_at' => 'date:F d, Y'
     ];
 
-    protected $appends = ['activeSubscriptions'];
+    protected $appends = [];
 
     protected $hidden = [];
 
@@ -83,22 +83,5 @@ class MealAddon extends Model
         });
 
         $this->ingredients()->sync($syncIngredients);
-    }
-
-    public function getActiveSubscriptionsAttribute()
-    {
-        $mealSubs = MealSubscriptionAddon::where('meal_addon_id', $this->id)
-            ->whereHas('mealSubscription', function ($mealSub) {
-                $mealSub->whereHas('subscription', function ($sub) {
-                    $sub->where('status', '=', 'active');
-                });
-            })
-            ->count();
-
-        if ($mealSubs > 0) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }

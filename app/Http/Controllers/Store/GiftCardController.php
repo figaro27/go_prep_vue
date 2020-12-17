@@ -123,6 +123,7 @@ class GiftCardController extends StoreController
             $giftCard->active = $request->get('active');
             $giftCard->update();
         }
+        return $giftCard;
     }
 
     /**

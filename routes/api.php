@@ -231,6 +231,16 @@ foreach (
                                 'packages',
                                 'MealPackageController'
                             );
+
+                            Route::post(
+                                'checkForReplacements',
+                                'MealController@checkForReplacements'
+                            );
+                            Route::post(
+                                'checkForVariationReplacements',
+                                'MealController@checkForVariationReplacements'
+                            );
+
                             Route::post(
                                 'deactivateAndReplace',
                                 'MealController@deactivateAndReplace'

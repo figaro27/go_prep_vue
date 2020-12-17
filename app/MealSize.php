@@ -17,7 +17,7 @@ class MealSize extends Model
     use SoftDeletes;
 
     public $fillable = [];
-    public $appends = ['full_title', 'activeSubscriptionsOrPackage'];
+    public $appends = ['full_title'];
     public $hidden = ['meal'];
     protected $with = ['ingredients'];
 
@@ -74,46 +74,5 @@ class MealSize extends Model
         });
 
         $this->ingredients()->sync($syncIngredients);
-    }
-
-    public function getActiveSubscriptionsOrPackageAttribute()
-    {
-        $mealSubs = MealSubscription::where('meal_size_id', $this->id)
-            ->whereHas('subscription', function ($sub) {
-                $sub->where('status', '=', 'active');
-            })
-            ->count();
-
-        $mealMealPackages = MealMealPackage::where(
-            'meal_size_id',
-            $this->id
-        )->count();
-
-        $mealMealPackageSizes = MealMealPackageSize::where(
-            'meal_size_id',
-            $this->id
-        )->count();
-
-        $mealMealPackageComponentOptions = MealMealPackageComponentOption::where(
-            'meal_size_id',
-            $this->id
-        )->count();
-
-        $mealMealPackageAddons = MealMealPackageAddon::where(
-            'meal_size_id',
-            $this->id
-        )->count();
-
-        if (
-            $mealSubs > 0 ||
-            $mealMealPackages > 0 ||
-            $mealMealPackageSizes > 0 ||
-            $mealMealPackageComponentOptions ||
-            $mealMealPackageAddons
-        ) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }
