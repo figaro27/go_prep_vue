@@ -84,6 +84,7 @@ class CheckoutController extends UserController
             $bagItems = $request->get('bag');
             $bag = new Bag($bagItems, $store);
             $weeklyPlan = $request->get('plan');
+            $grandTotal = $request->get('grandTotal');
 
             if ($storeSettings->open === false) {
                 return response()->json(
@@ -191,7 +192,7 @@ class CheckoutController extends UserController
             $pointsReduction = $request->get('pointsReduction');
 
             $cashOrder = $request->get('cashOrder');
-            if ($cashOrder) {
+            if ($cashOrder || ($grandTotal == 0 && !$weeklyPlan)) {
                 $cardId = null;
                 $card = null;
                 $gateway = Constants::GATEWAY_CASH;

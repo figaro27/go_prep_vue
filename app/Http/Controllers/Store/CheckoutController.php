@@ -98,6 +98,7 @@ class CheckoutController extends StoreController
             $bagItems = $request->get('bag');
             $bag = new Bag($bagItems, $store);
             $weeklyPlan = $request->get('plan');
+            $grandTotal = $request->get('grandTotal');
 
             // Checking all meals are in stock before proceeding
             if ($this->store->modules->stockManagement) {
@@ -200,7 +201,7 @@ class CheckoutController extends StoreController
                 : 0;
 
             $cashOrder = $request->get('cashOrder');
-            if ($cashOrder) {
+            if ($cashOrder || ($grandTotal == 0 && !$weeklyPlan)) {
                 $cardId = null;
                 $card = null;
                 $gateway = Constants::GATEWAY_CASH;
