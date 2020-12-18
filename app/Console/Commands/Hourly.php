@@ -10,6 +10,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use App\SmsSetting;
 use App\DeliveryDay;
+use App\Mail\RenewalFailed;
+use Illuminate\Support\Facades\Mail;
+use App\User;
 
 class Hourly extends Command
 {
@@ -308,8 +311,15 @@ class Hourly extends Command
 
         $count = 0;
         foreach ($subs as $sub) {
-            $sub->renew();
-            $count++;
+            try {
+                $sub->renew();
+                $count++;
+            } catch (\Exception $e) {
+                $sub['error'] = $e->getMessage();
+                $sub['timestamp'] = Carbon::now('utc')->subHours('5');
+                $email = new RenewalFailed($sub->toArray());
+                Mail::to('mike@goprep.com')->send($email);
+            }
         }
 
         // $subs = Subscription::where('status', 'active')
