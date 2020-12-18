@@ -218,7 +218,10 @@
             <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
             <div>
-              <b-btn class="btn btn-md mt-1" variant="primary" @click="renew()"
+              <b-btn
+                class="btn btn-md mt-1"
+                variant="primary"
+                @click="showRenewModal = true"
                 >Renew
               </b-btn>
               <img
