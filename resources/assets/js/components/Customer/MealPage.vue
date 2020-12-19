@@ -580,11 +580,8 @@ export default {
           );
           return;
         } else {
-          meal.quantity =
-            meal.force_quantity > 1 &&
-            parseInt(this.quant) < meal.force_quantity
-              ? meal.force_quantity
-              : parseInt(this.quant);
+          meal.quantity = this.getMealQuantity(meal, this.quant);
+
           this.addOne(
             meal,
             false,
@@ -596,10 +593,7 @@ export default {
           meal.quantity = 1;
         }
       } else {
-        meal.quantity =
-          meal.force_quantity > 1 && parseInt(this.quant) < meal.force_quantity
-            ? meal.force_quantity
-            : parseInt(this.quant);
+        meal.quantity = this.getMealQuantity(meal, this.quant);
         this.addOne(
           meal,
           false,

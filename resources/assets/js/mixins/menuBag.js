@@ -305,6 +305,29 @@ export default {
   },
   methods: {
     ...mapMutations(["setBagPurchasedGiftCard", "setBagReferral"]),
+    getMealQuantity(meal, quantity) {
+      if (!quantity) {
+        quantity = 1;
+      } else {
+        quantity = parseInt(quantity);
+      }
+      let bagItem = this.groupBag[0]
+        ? this.groupBag[0].items.find(item => {
+            return item.meal ? item.meal.id === meal.id : null;
+          })
+        : null;
+      let currentBagQuantity = bagItem ? bagItem.quantity + 1 : 0;
+
+      if (!meal.force_quantity || currentBagQuantity > meal.force_quantity) {
+        return quantity;
+      }
+
+      if (currentBagQuantity < meal.force_quantity) {
+        return meal.force_quantity - currentBagQuantity > quantity
+          ? meal.force_quantity - currentBagQuantity
+          : quantity;
+      }
+    },
     async addOne(
       meal,
       mealPackage = false,
@@ -536,7 +559,6 @@ export default {
         addons,
         special_instructions
       );
-
       // size === true gets quantity for all sizes
       if (size === true) {
         meal.sizes.forEach(sizeObj => {

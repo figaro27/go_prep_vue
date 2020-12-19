@@ -1488,14 +1488,8 @@ export default {
       }
     },
     async addMeal(meal, mealPackage, size, group) {
-      if (!this.mealQuantities[meal.id]) {
-        this.mealQuantities[meal.id] = 1;
-      }
-      meal.quantity =
-        meal.force_quantity > 1 &&
-        this.mealQuantities[meal.id] < meal.force_quantity
-          ? meal.force_quantity
-          : this.mealQuantities[meal.id];
+      meal.quantity = this.getMealQuantity(meal, this.mealQuantities[meal.id]);
+
       meal.category_id = group.category_id;
       if (this.$parent.selectedDeliveryDay) {
         meal.delivery_day = this.$parent.selectedDeliveryDay;

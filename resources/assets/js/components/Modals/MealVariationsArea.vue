@@ -389,10 +389,7 @@ export default {
       this.$emit("closeVariationsModal");
     },
     addMeal(meal) {
-      meal.quantity =
-        meal.force_quantity > 1 && parseInt(this.quantity) < meal.force_quantity
-          ? meal.force_quantity
-          : parseInt(this.quantity);
+      meal.quantity = this.getMealQuantity(meal, this.quantity);
 
       if (this.$v.$invalid && this.hasVariations) {
         this.modalInvalid = true;
