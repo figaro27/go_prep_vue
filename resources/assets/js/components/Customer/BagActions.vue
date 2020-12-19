@@ -149,9 +149,7 @@ export default {
     weeklySubscriptionValue: null
   },
   data() {
-    return {
-      minimumDeliveryDayAmount: 0
-    };
+    return {};
   },
   mixins: [MenuBag],
   methods: {
@@ -203,9 +201,6 @@ export default {
     subscription() {
       return this.$parent.subscription;
     },
-    isMultipleDelivery() {
-      return this.storeModules.multipleDeliveryDays == 1 ? true : false;
-    },
     brandColor() {
       let style = "background-color:";
       style += this.store.settings.color;
@@ -213,18 +208,6 @@ export default {
     },
     storeSettings() {
       return this.store.settings;
-    },
-    remainingMeals() {
-      return this.minMeals - this.total;
-    },
-    remainingPrice() {
-      return this.minPrice - this.totalBagPricePreFeesBothTypes;
-    },
-    singOrPlural() {
-      if (this.remainingMeals > 1) {
-        return "items";
-      }
-      return "item";
     },
     bagView() {
       if (
@@ -283,11 +266,6 @@ export default {
       }
 
       return grouped;
-    }
-  },
-  mounted() {
-    if (this.isMultipleDelivery) {
-      this.minimumDeliveryDayAmount = this.store.delivery_days[0].minimum;
     }
   }
 };

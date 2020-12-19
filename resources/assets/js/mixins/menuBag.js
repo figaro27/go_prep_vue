@@ -4,12 +4,37 @@ import { mapGetters, mapMutations } from "vuex";
 import format from "../lib/format";
 
 export default {
+  data: {
+    minimumDeliveryDayAmount: 0
+  },
   computed: {
     ...mapGetters({
       storeSetting: "viewedStoreSetting",
+      storeModules: "viewedStoreModules,",
       bagDeliveryDate: "bagDeliveryDate",
-      store: "viewedStore"
+      store: "viewedStore",
+      minMeals: "minimumMeals",
+      minPrice: "minimumPrice",
+      totalBagPrice: "totalBagPrice",
+      totalBagPricePreFees: "totalBagPricePreFees",
+      totalBagPricePreFeesBothTypes: "totalBagPricePreFeesBothTypes",
+      mealMixItems: "mealMixItems"
     }),
+    isMultipleDelivery() {
+      return this.storeModules.multipleDeliveryDays == 1 ? true : false;
+    },
+    remainingMeals() {
+      return this.minMeals - this.total;
+    },
+    remainingPrice() {
+      return this.minPrice - this.totalBagPricePreFeesBothTypes;
+    },
+    singOrPlural() {
+      if (this.remainingMeals > 1) {
+        return "items";
+      }
+      return "item";
+    },
     addMore() {
       let message = "";
       if (this.isMultipleDelivery) {
@@ -134,6 +159,56 @@ export default {
         return false;
       }
     },
+    groupBag() {
+      let grouped = [];
+      let groupedDD = [];
+
+      if (this.bag) {
+        if (this.isMultipleDelivery) {
+          this.bag.forEach((bagItem, index) => {
+            if (bagItem.delivery_day) {
+              const key = "dd_" + bagItem.delivery_day.day_friendly;
+              if (!groupedDD[key]) {
+                groupedDD[key] = {
+                  items: [],
+                  delivery_day: bagItem.delivery_day
+                };
+              }
+
+              groupedDD[key].items.push(bagItem);
+            }
+          });
+
+          if (JSON.stringify(groupedDD) != "{}") {
+            for (let i in groupedDD) {
+              grouped.push(groupedDD[i]);
+            }
+          }
+
+          // Add all delivery days
+          if (this.selectedDeliveryDay) {
+            let included = false;
+            grouped.forEach(group => {
+              if (group.delivery_day.id === this.selectedDeliveryDay.id) {
+                included = true;
+              }
+            });
+            if (!included) {
+              grouped.push({
+                items: [],
+                delivery_day: this.selectedDeliveryDay
+              });
+            }
+          }
+        } else {
+          grouped.push({
+            items: this.bag
+          });
+        }
+      }
+
+      return grouped;
+    },
     deliveryDateOptions() {
       let deliveryDays = this.storeSetting(
         "next_orderable_delivery_dates",
@@ -219,6 +294,11 @@ export default {
           return true;
         }
       });
+    }
+  },
+  mounted() {
+    if (this.isMultipleDelivery) {
+      this.minimumDeliveryDayAmount = this.store.delivery_days[0].minimum;
     }
   },
   methods: {

@@ -687,12 +687,8 @@ export default {
       _categories: "viewedStoreCategories",
       storeLogo: "viewedStoreLogo",
       isLoading: "isLoading",
-      totalBagPricePreFees: "totalBagPricePreFees",
-      totalBagPrice: "totalBagPrice",
       loggedIn: "loggedIn",
       minOption: "minimumOption",
-      minMeals: "minimumMeals",
-      minPrice: "minimumPrice",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
       lineItems: "viewedStoreLineItems",
@@ -731,56 +727,6 @@ export default {
       style += this.store.settings.color;
       return style;
     },
-    groupBag() {
-      let grouped = [];
-      let groupedDD = [];
-
-      if (this.bag) {
-        if (this.isMultipleDelivery) {
-          this.bag.forEach((bagItem, index) => {
-            if (bagItem.delivery_day) {
-              const key = "dd_" + bagItem.delivery_day.day_friendly;
-              if (!groupedDD[key]) {
-                groupedDD[key] = {
-                  items: [],
-                  delivery_day: bagItem.delivery_day
-                };
-              }
-
-              groupedDD[key].items.push(bagItem);
-            }
-          });
-
-          if (JSON.stringify(groupedDD) != "{}") {
-            for (let i in groupedDD) {
-              grouped.push(groupedDD[i]);
-            }
-          }
-
-          // Add all delivery days
-          if (this.selectedDeliveryDay) {
-            let included = false;
-            grouped.forEach(group => {
-              if (group.delivery_day.id === this.selectedDeliveryDay.id) {
-                included = true;
-              }
-            });
-            if (!included) {
-              grouped.push({
-                items: [],
-                delivery_day: this.selectedDeliveryDay
-              });
-            }
-          }
-        } else {
-          grouped.push({
-            items: this.bag
-          });
-        }
-      }
-
-      return grouped;
-    },
     productionGroupOptions() {
       let prodGroups = this.storeProductionGroups;
       let prodGroupOptions = [];
@@ -789,12 +735,6 @@ export default {
         prodGroupOptions.push({ text: prodGroup.title, value: prodGroup.id });
       });
       return prodGroupOptions;
-    },
-    remainingPrice() {
-      return this.minPrice - this.totalBagPricePreFees;
-    },
-    remainingPrice() {
-      return this.minPrice - this.totalBagPricePreFees;
     },
     transferType() {
       return this.storeSettings.transferType.split(",");

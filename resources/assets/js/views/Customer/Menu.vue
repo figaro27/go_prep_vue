@@ -286,7 +286,7 @@
             </div>
           </floating-action-button>
 
-          <floating-action-area
+          <!-- <floating-action-area
             class="d-md-none"
             :style="remainingTextStyle"
             :to="bagPageURL"
@@ -316,7 +316,33 @@
                 {{ minMeals - total }} {{ items }} Remaining
               </p>
             </div>
-          </floating-action-area>
+          </floating-action-area> -->
+
+          <button
+            v-if="!mealPackagePageView && !mealPageView && mobile"
+            type="button"
+            :style="brandColor"
+            class="mobile-sticky-button btn btn-lg"
+            :disabled="!minimumMet"
+            @click="goToCheckout"
+          >
+            <div
+              class="d-flex flex-column pl-1 pr-1"
+              style="border-radius:10px"
+            >
+              <span v-if="! ">
+                <p class="pt-2 white-text">
+                  {{ addMore }}
+                </p>
+              </span>
+              <span v-else>
+                <p class="pt-2 white-text font-16" v-if="!adjustingScreen">
+                  Continue To Checkout
+                </p>
+                <p class="pt-2 white-text font-16" v-else>Continue</p>
+              </span>
+            </div>
+          </button>
 
           <floating-action-button
             class="d-md-none"
@@ -674,7 +700,6 @@ export default {
       mealPageView: false,
       mealPackagePageView: false,
       mealPackagePageComponents: null,
-      remainingMeals: null,
       mealPackageModal: false,
       nutritionalFacts: {},
       showMealsArea: true,
@@ -1881,6 +1906,25 @@ export default {
             );
           }
         });
+      });
+    },
+    goToCheckout() {
+      this.$router.push({
+        name: "customer-bag",
+        params: {
+          subscriptionId: this.subscriptionId,
+          transferTime: this.transferTime,
+          staffMember: this.staffMember,
+          pickup: this.pickup,
+          inSub: this.inSub,
+          weeklySubscriptionValue: this.weeklySubscriptionValue,
+          lineItemOrders: this.lineItemOrders,
+          subscription: this.subscription
+        },
+        query: {
+          r: this.$route.query.r,
+          sub: this.$route.query.sub
+        }
       });
     },
     hasItems(category = null, group = null) {
