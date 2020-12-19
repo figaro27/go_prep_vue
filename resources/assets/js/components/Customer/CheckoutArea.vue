@@ -233,12 +233,12 @@
             <strong>Order Frequency:</strong>
           </div>
           <div class="d-inline pl-3">
-            <span
+            <!-- <span
               v-if="bagSubscriptionInterval === 'select'"
               class="red mr-2"
               style="font-size:25px;position:relative;top:8px"
               >*</span
-            >
+            > -->
             <b-select
               v-model="bagSubscriptionInterval"
               class="mb-1 delivery-select"
