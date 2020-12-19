@@ -1910,7 +1910,6 @@ export default {
     },
     goToCheckout() {
       if (!this.minimumMet) {
-        this.$toastr.w(this.addMore);
         return;
       }
       this.$router.push({
