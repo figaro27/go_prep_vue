@@ -1185,7 +1185,7 @@
           </p>
         </b-alert>
 
-        <li v-if="loggedIn && invalidCheckout">
+        <li v-if="loggedIn && invalidCheckout && !adjustingOrder">
           <b-alert variant="warning" show class="pb-0 mb-0">
             <p class="strong center-text font-14">{{ invalidCheckout }}</p>
           </b-alert>
