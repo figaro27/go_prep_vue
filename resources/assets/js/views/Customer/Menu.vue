@@ -740,7 +740,8 @@ export default {
         this.$route.params.adjustOrder ||
         this.adjustMealPlan ||
         this.$route.params.adjustMealPlan ||
-        this.$route.query.sub === "true"
+        this.$route.query.sub === "true" ||
+        this.subscriptionId
       ) {
         return true;
       } else {
