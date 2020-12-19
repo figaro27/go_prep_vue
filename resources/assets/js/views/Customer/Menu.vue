@@ -274,7 +274,7 @@
             </floating-action-button>
           </div>
 
-          <floating-action-button
+          <!-- <floating-action-button
             class="d-md-none"
             :style="brandColor"
             :to="bagPageURL"
@@ -284,7 +284,7 @@
               <i class="fa fa-shopping-cart text-white"></i>
               <i v-if="total" class="text-white mt-1">{{ total }}</i>
             </div>
-          </floating-action-button>
+          </floating-action-button> -->
 
           <!-- <floating-action-area
             class="d-md-none"
