@@ -240,6 +240,7 @@
               >*</span
             > -->
             <b-select
+              style="font-size:16px"
               v-model="bagSubscriptionInterval"
               class="mb-1 delivery-select"
               @input="val => setBagSubscriptionInterval(val)"
@@ -754,6 +755,7 @@
       <div>
         <strong>Pickup Location</strong>
         <b-select
+          style="font-size:16px"
           v-model="selectedPickupLocation"
           :options="pickupLocationOptions"
           @input="val => setBagPickupLocation(val)"
@@ -788,6 +790,7 @@
           <strong v-if="pickup === 0">{{ selectedTransferType }} Day</strong>
           <strong v-if="pickup === 1">Pickup Day</strong>
           <b-select
+            style="font-size:16px"
             v-model="deliveryDay"
             :options="deliveryDateOptionsStoreView"
             :value="bagDeliveryDate"
@@ -838,6 +841,7 @@
             Pickup Day
           </strong>
           <b-select
+            style="font-size:16px"
             v-if="
               deliveryDateOptions.length > 1 &&
                 (pickup === 0 ||
