@@ -285,7 +285,7 @@
             >
               <i class="fas fa-times-circle clear-meal dark-gray pt-1"></i>
             </span>
-            <span class="text-success" v-if="couponApplied"
+            <span class="text-success" v-if="coupon && couponApplied"
               >Coupon ({{ coupon.code }})</span
             >
           </div>

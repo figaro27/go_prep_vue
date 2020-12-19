@@ -539,6 +539,9 @@ export default {
       let coupon = this.coupons.find(coupon => {
         return coupon.id === this.order.coupon_id;
       });
+      console.log(this.order.coupon_id);
+      console.log(this.coupons);
+      console.log(coupon);
       this.setBagCoupon(coupon);
     }
 
