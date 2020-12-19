@@ -854,14 +854,25 @@ export default {
           quantity: 1
         });
       } else {
-        this.minusOne(
-          item.meal,
-          item.meal_package,
-          item.size,
-          item.components,
-          item.addons,
-          item.special_instructions
-        );
+        if (
+          !item.meal.force_quantity ||
+          item.quantity > item.meal.force_quantity
+        ) {
+          this.minusOne(
+            item.meal,
+            item.meal_package,
+            item.size,
+            item.components,
+            item.addons,
+            item.special_instructions
+          );
+        } else {
+          this.$toastr.w(
+            "You must order at least " +
+              item.meal.force_quantity +
+              " of this item."
+          );
+        }
       }
     },
     adjustMinus(mealItem, item) {
