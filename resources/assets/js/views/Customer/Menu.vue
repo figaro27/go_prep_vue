@@ -323,7 +323,6 @@
             type="button"
             :style="brandColor"
             class="mobile-sticky-button btn btn-lg"
-            :disabled="!minimumMet"
             @click="goToCheckout"
           >
             <div
@@ -1910,6 +1909,10 @@ export default {
       });
     },
     goToCheckout() {
+      if (!this.minimumMet) {
+        this.$toastr.w(this.addMore);
+        return;
+      }
       this.$router.push({
         name: "customer-bag",
         params: {
