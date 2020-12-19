@@ -4,13 +4,15 @@ import { mapGetters, mapMutations } from "vuex";
 import format from "../lib/format";
 
 export default {
-  data: {
-    minimumDeliveryDayAmount: 0
+  data() {
+    return {
+      minimumDeliveryDayAmount: 0
+    };
   },
   computed: {
     ...mapGetters({
       storeSetting: "viewedStoreSetting",
-      storeModules: "viewedStoreModules,",
+      storeModules: "viewedStoreModules",
       bagDeliveryDate: "bagDeliveryDate",
       store: "viewedStore",
       minMeals: "minimumMeals",

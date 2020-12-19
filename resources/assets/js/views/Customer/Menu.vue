@@ -28,7 +28,8 @@
 
       <zip-code-modal
         v-if="
-          store.delivery_day_zip_codes.length > 0 &&
+          store.delivery_day_zip_codes &&
+            store.delivery_day_zip_codes.length > 0 &&
             transferTypes.delivery &&
             store.modules.multipleDeliveryDays &&
             ((!loggedIn && context !== 'store') || context == 'store') &&
