@@ -230,7 +230,7 @@
               src="/images/store/popover.png"
               class="popover-size ml-1"
             />
-            <strong>Order Frequency:</strong>
+            <strong>Frequency:</strong>
           </div>
           <div class="d-inline pl-3">
             <!-- <span
@@ -244,7 +244,7 @@
               class="mb-1 delivery-select"
               @input="val => setBagSubscriptionInterval(val)"
             >
-              <option value="select"><strong>Select Option</strong></option>
+              <option value="select"><strong>Select</strong></option>
               <option value="week" v-if="storeSettings.allowWeeklySubscriptions"
                 ><strong>Weekly</strong></option
               >
