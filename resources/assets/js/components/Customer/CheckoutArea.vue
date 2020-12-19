@@ -1191,16 +1191,16 @@
           </b-alert>
         </li>
 
-        <li v-if="adjustingOrder && invalidCheckout">
+        <!-- <li v-if="adjustingOrder && invalidCheckout">
           <b-btn
             @click="blockedCheckoutMessage()"
             class="menu-bag-btn"
             style="background:#a7a7a7 !important"
             >UPDATE ORDER</b-btn
           >
-        </li>
+        </li> -->
 
-        <li v-if="adjustingOrder && !invalidCheckout">
+        <li v-if="adjustingOrder">
           <b-btn @click="adjust" class="menu-bag-btn">UPDATE ORDER</b-btn>
         </li>
 
