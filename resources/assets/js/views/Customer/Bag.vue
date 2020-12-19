@@ -536,13 +536,16 @@ export default {
     }
     $([document.documentElement, document.body]).scrollTop(0);
     if (this.$route.params.adjustOrder && this.order.coupon_id !== null) {
-      let coupon = this.coupons.find(coupon => {
-        return coupon.id === this.order.coupon_id;
-      });
-      console.log(this.order.coupon_id);
-      console.log(this.coupons);
-      console.log(coupon);
-      this.setBagCoupon(coupon);
+      axios
+        .post(this.prefix + "findCouponById", {
+          store_id: this.store.id,
+          couponId: this.order.coupon_id
+        })
+        .then(resp => {
+          if (resp.data) {
+            this.setBagCoupon(resp.data);
+          }
+        });
     }
 
     if (

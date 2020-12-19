@@ -22,6 +22,13 @@ export default {
       totalBagPricePreFeesBothTypes: "totalBagPricePreFeesBothTypes",
       mealMixItems: "mealMixItems"
     }),
+    prefix() {
+      if (this.loggedIn) {
+        return "/api/me/";
+      } else {
+        return "/api/guest/";
+      }
+    },
     isMultipleDelivery() {
       return this.storeModules.multipleDeliveryDays == 1 ? true : false;
     },

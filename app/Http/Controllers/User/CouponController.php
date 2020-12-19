@@ -35,10 +35,7 @@ class CouponController extends UserController
     public function findCouponById(Request $request)
     {
         $storeId = $request->get('store_id');
-        $subId = $request->get('subId');
-        $couponId = Subscription::where('id', $subId)
-            ->pluck('coupon_id')
-            ->first();
+        $couponId = $request->get('couponId');
 
         $coupon = Coupon::where([
             'store_id' => $storeId,
