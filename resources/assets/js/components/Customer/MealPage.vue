@@ -23,6 +23,12 @@
       </div>
     </div>
     <div class="row">
+      <div
+        style="width:323px;margin:auto"
+        v-if="imageClass == 'hide' && showNutritionFacts"
+      >
+        <div id="nutritionFacts" ref="nutritionFacts" class="d-inline"></div>
+      </div>
       <div :class="imageClass">
         <div class="d-flex d-center">
           <div
@@ -43,6 +49,7 @@
               class="pt-2"
             />
           </div>
+
           <thumbnail
             v-if="meal.image != null && meal.image.url && !showcaseNutrition"
             :src="meal.image.url"
@@ -155,7 +162,7 @@
             Consume within {{ meal.expirationDays }} days.
           </p>
         </div>
-        <div v-if="!smallScreen && showNutritionFacts">
+        <div v-if="!smallScreen && showNutritionFacts && imageClass !== 'hide'">
           <p
             class="font-12 strong"
             :style="brandColorText"
