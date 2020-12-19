@@ -1181,63 +1181,65 @@
           </p>
         </b-alert>
 
-        <!-- <b-btn
+        <li v-if="loggedIn && invalidCheckout">
+          <b-alert variant="warning" show class="pb-0 mb-0">
+            <p class="strong center-text font-14">{{ invalidCheckout }}</p>
+          </b-alert>
+        </li>
+
+        <li v-if="adjustingOrder && invalidCheckout">
+          <b-btn
+            @click="blockedCheckoutMessage()"
+            class="menu-bag-btn"
+            style="background:#a7a7a7 !important"
+            >UPDATE ORDER</b-btn
+          >
+        </li>
+
+        <li v-if="adjustingOrder && !invalidCheckout">
+          <b-btn @click="adjust" class="menu-bag-btn">UPDATE ORDER</b-btn>
+        </li>
+
+        <li v-if="loggedIn && invalidCheckout && adjustingSubscription">
+          <b-btn
+            @click="blockedCheckoutMessage()"
+            class="menu-bag-btn"
+            style="background:#a7a7a7 !important"
+            >UPDATE SUBSCRIPTION</b-btn
+          >
+        </li>
+
+        <div
           v-if="
-            (card != null || cashOrder || grandTotal === 0) &&
-              (minimumMet || $route.params.storeView || storeOwner) &&
-              $route.params.adjustOrder != true &&
-              subscriptionId === undefined &&
-              (store.settings.open === true ||
-                $route.params.storeView ||
-                storeOwner) &&
-              (willDeliver ||
-                pickup === 1 ||
-                $route.params.storeView ||
-                storeOwner) &&
-              (customerModel != null || !$route.params.storeView || !storeOwner)
+            !invalidCheckout &&
+              subscriptionId &&
+              (minimumMet || context == 'store')
           "
-          @click="checkout"
-          :disabled="checkingOut"
-          class="menu-bag-btn mb-4"
-          >CHECKOUT</b-btn
-        > -->
-        <b-btn
-          v-if="!invalidCheckout && !adjusting"
-          @click="checkout"
-          :disabled="checkingOut"
-          class="menu-bag-btn mb-4"
-          >CHECKOUT</b-btn
         >
-
-        <b-btn
-          v-if="$route.params.adjustOrder"
-          @click="adjust"
-          class="menu-bag-btn"
-          >ADJUST ORDER</b-btn
-        >
-
-        <div v-if="subscriptionId && (minimumMet || context == 'store')">
           <b-btn
             class="menu-bag-btn update-meals-btn"
             @click="updateSubscriptionMeals"
             >UPDATE SUBSCRIPTION</b-btn
           >
         </div>
+        <li v-if="!invalidCheckout && !adjusting">
+          <b-btn
+            @click="checkout"
+            :disabled="checkingOut"
+            class="menu-bag-btn mb-4"
+            >CHECKOUT</b-btn
+          >
+        </li>
+
+        <li v-if="loggedIn && invalidCheckout && !adjusting">
+          <b-btn
+            @click="blockedCheckoutMessage()"
+            class="menu-bag-btn"
+            style="background:#a7a7a7 !important"
+            >CHECKOUT</b-btn
+          >
+        </li>
       </div>
-      <!-- <b-alert
-        show
-        variant="warning"
-        class="pb-0 mb-0"
-        v-if="
-          context === 'store' &&
-            customerModel === null &&
-            $route.params.manualOrder
-        "
-      >
-        <p class="strong center-text font-14">
-          Please choose a customer.
-        </p>
-      </b-alert> -->
     </li>
 
     <li v-else>
@@ -1246,41 +1248,6 @@
           >CONTINUE CHECKOUT</b-btn
         >
       </div>
-    </li>
-
-    <!-- <li v-if="context !== 'store' && !willDeliver && bagPickup === 0">
-      <b-alert v-if="!loading" variant="warning" show class="pb-0 mb-0">
-        <p class="strong center-text font-14">
-          You are outside of the {{ selectedTransferType.toLowerCase() }} area.
-        </p>
-      </b-alert>
-    </li>
-
-    <li v-if="!minimumMet && context !== 'store'">
-      <b-alert variant="warning" show class="pb-0 mb-0">
-        <p class="strong center-text font-14">{{ addMore }} to checkout.</p>
-      </b-alert>
-    </li>
-
-    <li v-if="loggedIn && !card && !cashOrder">
-      <b-alert variant="warning" show class="pb-0 mb-0">
-        <p class="strong center-text font-14">Please enter a payment method.</p>
-      </b-alert>
-    </li> -->
-
-    <li v-if="loggedIn && invalidCheckout && !adjusting">
-      <b-alert variant="warning" show class="pb-0 mb-0">
-        <p class="strong center-text font-14">{{ invalidCheckout }}</p>
-      </b-alert>
-    </li>
-
-    <li v-if="loggedIn && invalidCheckout && !adjusting">
-      <b-btn
-        @click="blockedCheckoutMessage()"
-        class="menu-bag-btn"
-        style="background:#a7a7a7 !important"
-        >CHECKOUT</b-btn
-      >
     </li>
 
     <add-customer-modal
@@ -1646,7 +1613,22 @@ export default {
       return count > 1 ? true : false;
     },
     adjusting() {
-      if (this.$route.params.adjustOrder || this.subscriptionId) {
+      if (this.adjustingOrder || this.adjustingSubscription) {
+        return true;
+      }
+    },
+    adjustingOrder() {
+      if (this.$route.params.adjustOrder) {
+        return true;
+      }
+    },
+    adjustingSubscription() {
+      if (
+        this.subscriptionId ||
+        this.$route.params.adjustMealPlan ||
+        this.adjustMealPlan ||
+        this.$route.query.sub === "true"
+      ) {
         return true;
       }
     },
@@ -3091,6 +3073,7 @@ use next_delivery_dates
         }
       }
       if (
+        !this.adjustingSubscription &&
         this.store.modules.pickupHours &&
         this.bagPickup === 1 &&
         this.transferTime === null
@@ -3099,6 +3082,7 @@ use next_delivery_dates
       }
 
       if (
+        !this.adjustingSubscription &&
         this.store.modules.deliveryHours &&
         this.bagPickup === 0 &&
         this.transferTime === null
@@ -3145,12 +3129,12 @@ use next_delivery_dates
       }
 
       if (
-        this.weeklySubscriptionValue &&
+        (this.weeklySubscriptionValue || this.adjustingSubscription) &&
         this.bag.some(item => {
           return item.meal.gift_card === true;
         })
       ) {
-        return "Gift cards are not allowed on subscriptions. Please remove the gift card or toggle off subscription.";
+        return "Gift cards are not allowed on subscriptions. Please remove the gift card.";
       }
 
       if (this.hasMultipleSubscriptionItems) {
