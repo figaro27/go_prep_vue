@@ -330,7 +330,7 @@
               class="d-flex flex-column pl-1 pr-1"
               style="border-radius:10px"
             >
-              <span v-if="! ">
+              <span v-if="!minimumMet">
                 <p class="pt-2 white-text">
                   {{ addMore }}
                 </p>
