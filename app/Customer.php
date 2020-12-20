@@ -27,9 +27,9 @@ class Customer extends Model
     protected $appends = [
         'joined',
         'added_by_store_id',
-        'last_order',
-        'total_payments',
-        'total_paid',
+        // 'last_order',
+        // 'total_payments',
+        // 'total_paid',
         'firstname',
         'lastname',
         'name',
@@ -69,39 +69,39 @@ class Customer extends Model
         return $this->user->email;
     }
 
-    public function getPaidOrdersAttribute()
-    {
-        return $this->user->orders->where('paid', 1);
-    }
+    // public function getPaidOrdersAttribute()
+    // {
+    //     return $this->user->orders->where('paid', 1);
+    // }
 
     public function getJoinedAttribute()
     {
         return $this->user->created_at->format('m/d/Y');
     }
 
-    public function getLastOrderAttribute()
-    {
-        $date = $this->user->order
-            ->where('store_id', $this->store_id)
-            ->max("created_at");
-        return $date ? $date->format('m/d/Y') : null;
-    }
+    // public function getLastOrderAttribute()
+    // {
+    //     $date = $this->user->order
+    //         ->where('store_id', $this->store_id)
+    //         ->max("created_at");
+    //     return $date ? $date->format('m/d/Y') : null;
+    // }
 
-    public function getTotalPaymentsAttribute()
-    {
-        return $this->user->order
-            ->where('store_id', $this->store_id)
-            ->where('paid', 1)
-            ->count();
-    }
+    // public function getTotalPaymentsAttribute()
+    // {
+    //     return $this->user->order
+    //         ->where('store_id', $this->store_id)
+    //         ->where('paid', 1)
+    //         ->count();
+    // }
 
-    public function getTotalPaidAttribute()
-    {
-        return $this->user->order
-            ->where('store_id', $this->store_id)
-            ->where('paid', 1)
-            ->sum("amount");
-    }
+    // public function getTotalPaidAttribute()
+    // {
+    //     return $this->user->order
+    //         ->where('store_id', $this->store_id)
+    //         ->where('paid', 1)
+    //         ->sum("amount");
+    // }
 
     public function getNameAttribute()
     {

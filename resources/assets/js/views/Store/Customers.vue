@@ -51,9 +51,9 @@
                 </div>
               </div>
 
-              <div slot="total_paid" slot-scope="props">
+              <!-- <div slot="total_paid" slot-scope="props">
                 <div>{{ format.money(props.row.total_paid) }}</div>
-              </div>
+              </div> -->
 
               <div slot="actions" class="text-nowrap" slot-scope="props">
                 <button
@@ -464,9 +464,9 @@ export default {
         "city",
         "zip",
         "created_at",
-        "total_payments",
-        "total_paid",
-        "last_order",
+        // "total_payments",
+        // "total_paid",
+        // "last_order",
         "actions"
       ],
       columnsMealMultipleDelivery: [
@@ -479,9 +479,9 @@ export default {
       ],
       options: {
         headings: {
-          last_order: "Last Order",
-          total_payments: "Total Orders",
-          total_paid: "Total Paid",
+          // last_order: "Last Order",
+          // total_payments: "Total Orders",
+          // total_paid: "Total Paid",
           Name: "Name",
           phone: "Phone",
           address: "Address",
