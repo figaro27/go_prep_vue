@@ -105,7 +105,7 @@ export default {
   mixins: [modal, MenuBag],
   data() {
     return {
-      quantity: 1,
+      quant: 1,
       mealPackage: false,
       size: null,
       choices: {},
@@ -389,7 +389,7 @@ export default {
       this.$emit("closeVariationsModal");
     },
     addMeal(meal) {
-      meal.quantity = this.getMealQuantity(meal, this.quantity);
+      meal.quantity = this.getMealQuantity(meal, this.quant);
 
       if (this.$v.$invalid && this.hasVariations) {
         this.modalInvalid = true;

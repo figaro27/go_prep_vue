@@ -20,7 +20,8 @@ export default {
       totalBagPrice: "totalBagPrice",
       totalBagPricePreFees: "totalBagPricePreFees",
       totalBagPricePreFeesBothTypes: "totalBagPricePreFeesBothTypes",
-      mealMixItems: "mealMixItems"
+      mealMixItems: "mealMixItems",
+      bag: "bagItems"
     }),
     prefix() {
       if (this.loggedIn) {
@@ -323,6 +324,7 @@ export default {
             return item.meal ? item.meal.id === meal.id : null;
           })
         : null;
+
       let currentBagQuantity = bagItem ? bagItem.quantity + 1 : 0;
 
       if (!meal.force_quantity || currentBagQuantity > meal.force_quantity) {
