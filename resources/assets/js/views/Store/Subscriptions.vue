@@ -290,6 +290,7 @@
                 </span>
                 <span v-else>
                   <b-select
+                    placeholder="Renewal Date"
                     v-model="renewalDate"
                     :options="renewalDateOptions"
                     required
@@ -299,6 +300,7 @@
                     >
                   </b-select>
                   <b-select
+                    placeholder="Renewal Time"
                     @input="val => formatRenewalTime(val)"
                     :options="renewalTimeOptions"
                     required
@@ -1023,6 +1025,14 @@ export default {
         });
     },
     updateRenewalDate() {
+      if (!this.renewalDate) {
+        this.$toastr.w("Please enter a renewal date.");
+        return;
+      }
+      if (!this.renewalTime) {
+        this.$toastr.w("Please enter a renewal time.");
+        return;
+      }
       axios
         .post("/api/me/subscriptions/updateRenewal", {
           id: this.subscriptionId,
