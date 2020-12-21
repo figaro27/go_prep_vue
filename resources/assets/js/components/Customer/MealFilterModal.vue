@@ -52,7 +52,7 @@
                 {{ allergy.title }}
               </span>
               <span
-                class="badge badge-pill badge-primary"
+                class="badge badge-pill brand-color white-text"
                 @click="$parent.filterByAllergy(allergy.id)"
                 v-if="$parent.active[allergy.id]"
               >
