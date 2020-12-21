@@ -6,6 +6,9 @@ use App\Http\Controllers\Store\StoreController;
 use App\Http\Requests\StoreMealRequest;
 use App\Http\Requests\UpdateMealRequest;
 use App\Meal;
+use App\MealSubscription;
+use App\MealSubscriptionComponent;
+use App\MealSubscriptionAddon;
 use App\MealPackage;
 use App\MealMealPackage;
 use App\MealMealPackageSize;
@@ -147,6 +150,194 @@ class MealController extends StoreController
         if ($request->has('active')) {
             return Meal::updateActive($id, $request->get('active'));
         }
+    }
+
+    public function checkForReplacements(Request $request)
+    {
+        $meal = Meal::where('id', $request->get('id'))
+            ->with(['components', 'addons'])
+            ->first();
+        $action = $request->get('action');
+
+        if ($action == 'activate') {
+            $meal->active = 1;
+            $meal->update();
+            return;
+        }
+
+        $subscriptions = $meal->subscriptions
+            ->where('status', '!=', 'cancelled')
+            ->count();
+
+        $mealMealPackages = MealMealPackage::whereHas('meal_package', function (
+            $mealPkg
+        ) {
+            $mealPkg->where('deleted_at', '=', null);
+        })
+            ->where('meal_id', $meal->id)
+            ->count();
+
+        $mealMealPackageSizes = MealMealPackageSize::whereHas(
+            'meal_package_size',
+            function ($mealPkg) {
+                $mealPkg->where('deleted_at', '=', null);
+            }
+        )
+            ->where('meal_id', $meal->id)
+            ->count();
+
+        $mealMealPackageComponentOptions = MealMealPackageComponentOption::where(
+            'meal_id',
+            $meal->id
+        )->count();
+        $mealMealPackageAddons = MealMealPackageAddon::where(
+            'meal_id',
+            $meal->id
+        )->count();
+
+        if (
+            $subscriptions > 0 ||
+            $mealMealPackages > 0 ||
+            $mealMealPackageSizes > 0 ||
+            $mealMealPackageComponentOptions > 0 ||
+            $mealMealPackageAddons > 0
+        ) {
+            return $meal;
+        } else {
+            if ($action == 'deactivate') {
+                $meal->active = 0;
+                $meal->update();
+            } else {
+                $meal->delete();
+            }
+        }
+    }
+
+    public function checkForVariationReplacements(Request $request)
+    {
+        $meal = Meal::where('id', $request->get('id'))
+            ->with(['sizes', 'components', 'addons'])
+            ->first();
+        $sizes = $meal->sizes;
+        $components = $meal->components;
+        $addons = $meal->addons;
+
+        $replacementSizeIds = [];
+        $replacementComponentIds = [];
+        $replacementAddonIds = [];
+
+        // Check if the meal's sizes exist in any active or paused subscription and meal packages
+        foreach ($sizes as $size) {
+            $mealSubs = MealSubscription::where('meal_size_id', $size->id)
+                ->whereHas('subscription', function ($sub) {
+                    $sub->where('status', '!=', 'cancelled');
+                })
+                ->count();
+
+            $mealMealPackages = MealMealPackage::where(
+                'meal_size_id',
+                $size->id
+            )->count();
+
+            $mealMealPackageSizes = MealMealPackageSize::where(
+                'meal_size_id',
+                $size->id
+            )->count();
+
+            $mealMealPackageComponentOptions = MealMealPackageComponentOption::where(
+                'meal_size_id',
+                $size->id
+            )->count();
+
+            $mealMealPackageAddons = MealMealPackageAddon::where(
+                'meal_size_id',
+                $size->id
+            )->count();
+
+            if (
+                $mealSubs > 0 ||
+                $mealMealPackages > 0 ||
+                $mealMealPackageSizes > 0 ||
+                $mealMealPackageComponentOptions ||
+                $mealMealPackageAddons
+            ) {
+                $replacementSizeIds[] = $size->id;
+            }
+        }
+
+        foreach ($sizes as $size) {
+            $mealSubs = MealSubscription::where('meal_size_id', $size->id)
+                ->whereHas('subscription', function ($sub) {
+                    $sub->where('status', '!=', 'cancelled');
+                })
+                ->count();
+
+            if (
+                ($mealSubs > 0 ||
+                    $mealMealPackages > 0 ||
+                    $mealMealPackageSizes > 0 ||
+                    $mealMealPackageComponentOptions ||
+                    $mealMealPackageAddons) &&
+                !in_array($size->id, $replacementSizeIds)
+            ) {
+                $replacementSizeIds[] = $size->id;
+            }
+        }
+
+        // Check if the meal's components exist in any active or paused subscription only (meal components are not found on packages)
+
+        foreach ($components as $component) {
+            $mealSubs = MealSubscriptionComponent::where(
+                'meal_component_id',
+                $component->id
+            )
+                ->whereHas('mealSubscription', function ($mealSub) {
+                    $mealSub->whereHas('subscription', function ($sub) {
+                        $sub->where('status', '!=', 'cancelled');
+                    });
+                })
+                ->count();
+
+            if (
+                $mealSubs > 0 &&
+                !in_array($component->id, $replacementComponentIds)
+            ) {
+                $replacementComponentIds[] = $component->id;
+            }
+        }
+
+        foreach ($addons as $addon) {
+            $mealSubs = MealSubscriptionAddon::where(
+                'meal_addon_id',
+                $addon->id
+            )
+                ->whereHas('mealSubscription', function ($mealSub) {
+                    $mealSub->whereHas('subscription', function ($sub) {
+                        $sub->where('status', '!=', 'cancelled');
+                    });
+                })
+                ->count();
+
+            if ($mealSubs > 0 && !in_array($addon->id, $replacementAddonIds)) {
+                $replacementAddonIds[] = $addon->id;
+            }
+        }
+
+        $replace = false;
+        if (
+            count($replacementSizeIds) > 0 ||
+            count($replacementComponentIds) > 0 ||
+            count($replacementAddonIds) > 0
+        ) {
+            $replace = true;
+        }
+
+        return [
+            'replace' => $replace,
+            'sizes' => $replacementSizeIds,
+            'components' => $replacementComponentIds,
+            'addons' => $replacementAddonIds
+        ];
     }
 
     public function deactivateAndReplace(Request $request)

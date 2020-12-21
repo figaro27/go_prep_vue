@@ -106,13 +106,14 @@
                   :unchecked-value="0"
                   @change="
                     val =>
-                      updateActive(
+                      updateItemStatus(
                         props.row.id,
-                        val,
-                        props.row.meal_package,
-                        props.row.gift_card,
-                        props.row.substitute,
-                        props.row.in_package
+                        val == 0 ? 'deactivate' : 'activate',
+                        props.row.meal_package
+                          ? 'package'
+                          : props.row.gift_card
+                          ? 'gift_card'
+                          : 'meal'
                       )
                   "
                 ></b-form-checkbox>
@@ -184,7 +185,7 @@
                       ? deleteGiftCard(props.row.id)
                       : props.row.meal_package
                       ? deleteMealPackage(props.row.id)
-                      : deleteMealfromMenu(props.row.id)
+                      : updateItemStatus(props.row.id, 'delete', 'meal')
                   "
                 >
                   Delete
@@ -692,7 +693,7 @@
       no-fade
       no-close-on-backdrop
     >
-      <p class="mt-3 featured strong">
+      <p class="mt-3">
         This item is in one or more active subscriptions or item packages.
         Please select a replacement item below. This will automatically replace
         the old item with the newly selected item in all subscriptions and item
@@ -711,7 +712,13 @@
           <button
             class="btn btn-warning btn-lg mt-3 d-inline"
             v-if="!deleteMeal"
-            @click="updateActive(mealID, 0)"
+            @click="
+              updateItemStatus(
+                deactivatingMeal.id,
+                'deactivate_and_keep',
+                'meal'
+              )
+            "
           >
             Deactivate & Keep
           </button>
@@ -726,9 +733,9 @@
           class="popover-size"
           style="position:relative;top:8px"
         />
-        <h5 class="mb-4 mt-4">
+        <p class="mb-4 mt-4">
           Choose a replacement item from the dropdown.
-        </h5>
+        </p>
 
         <v-select
           label="title"
@@ -743,26 +750,23 @@
           style="margin:0px 100px"
           class="mb-4"
         ></v-select>
-        <h5
+        <p
           class="center-text mb-4"
           v-if="substituteMeal && !substituteMeal.active"
         >
           This substitute item is currently inactive. Choosing this item will
           make it active on your menu.
-        </h5>
-        <div
-          v-if="
-            deactivatingMeal.hasVariations &&
-              substituteMeal &&
-              (inActiveSubscriptionsOrPackages(deactivatingMeal.sizes) ||
-                inActiveSubscriptions(deactivatingMeal.components) ||
-                inActiveSubscriptions(deactivatingMeal.addons))
-          "
-          :key="substitute_id"
-        >
-          <h5 class="center-text mb-3" v-if="substituteMeal">
-            This item has variations. Please choose replacement variations.
-          </h5>
+        </p>
+        <div :key="substitute_id" v-if="substituteMeal">
+          <p
+            class="center-text mb-3"
+            v-if="
+              substituteMeal && deactivatingMeal.replacementVariations.replace
+            "
+          >
+            This item has variations that are found in existing subscriptions or
+            packages. Please choose replacement variations.
+          </p>
 
           <!-- Hiding until Transfer Variations is fixed -->
 
@@ -803,14 +807,10 @@
             </b-form-checkbox>
           </b-form-group> -->
 
-          <b-row v-if="!transferVariations && replaceVariations">
+          <b-row v-if="!transferVariations">
             <b-col
               cols="4"
-              v-if="
-                deactivatingMeal.sizes &&
-                  deactivatingMeal.sizes.length &&
-                  inActiveSubscriptionsOrPackages(deactivatingMeal.sizes)
-              "
+              v-if="deactivatingMeal.replacementVariations.sizes.length > 0"
             >
               <h5>Sizes</h5>
               <b-row>
@@ -820,10 +820,7 @@
                   :key="size.id"
                   class="mb-2"
                 >
-                  <b-form-group
-                    :label="size.title"
-                    v-if="size.activeSubscriptionsOrPackage"
-                  >
+                  <b-form-group :label="size.title">
                     <v-select
                       label="title"
                       :options="substituteMeal.sizes"
@@ -839,11 +836,7 @@
 
             <b-col
               cols="4"
-              v-if="
-                deactivatingMeal.addons &&
-                  deactivatingMeal.addons.length &&
-                  inActiveSubscriptions(deactivatingMeal.addons)
-              "
+              v-if="deactivatingMeal.replacementVariations.addons.length > 0"
             >
               <h5>Addons</h5>
               <b-row>
@@ -854,8 +847,7 @@
                   class="mb-2"
                 >
                   <b-form-group
-                    :label="getSizedTitle(deactivatingMeal.sizes, addon, 1)"
-                    v-if="addon.activeSubscriptions"
+                    :label="getSizedTitle(deactivatingMeal.sizes, addon)"
                   >
                     <v-select
                       label="title"
@@ -873,9 +865,7 @@
             <b-col
               cols="4"
               v-if="
-                deactivatingMeal.components &&
-                  deactivatingMeal.components.length &&
-                  inActiveSubscriptions(deactivatingMeal.components)
+                deactivatingMeal.replacementVariations.components.length > 0
               "
             >
               <h5>Components</h5>
@@ -891,7 +881,6 @@
                       <b-form-group
                         :label="'Component: ' + component.title"
                         class="strong"
-                        v-if="component.activeSubscriptions"
                       >
                         <v-select
                           label="title"
@@ -913,9 +902,8 @@
                         >
                           <b-form-group
                             :label="
-                              getSizedTitle(deactivatingMeal.sizes, option, 1)
+                              getSizedTitle(deactivatingMeal.sizes, option)
                             "
-                            v-if="option.activeSubscriptions"
                           >
                             <v-select
                               label="title"
@@ -1096,8 +1084,6 @@ export default {
   },
   data() {
     return {
-      replaceVariations: true,
-      mealSubsHaveVariations: false,
       _,
       filter: {
         status: "active"
@@ -1366,13 +1352,11 @@ export default {
         return false;
       }
 
-      if (
-        !this.transferVariations &&
-        !this.replaceVariations &&
-        this.deactivatingMeal.hasVariations
-      ) {
-        return false;
-      }
+      // if (
+      //   !this.transferVariations
+      // ) {
+      //   return false;
+      // }
 
       // if (this.deactivatingMeal.hasVariations && !this.transferVariations) {
       //   for (const size of this.deactivatingMeal.sizes) {
@@ -1473,6 +1457,55 @@ export default {
         this.viewMealModal = false;
       } else {
         e.preventDefault();
+      }
+    },
+    async updateItemStatus(id, action, type = "meal") {
+      let active = null;
+      if (action === "deactivate") {
+        active = 0;
+      }
+      if (action === "activate") {
+        active = 1;
+      }
+      if (action === "deactivate_and_keep") {
+        active = 0;
+        await this._updateMeal({ id, data: { active } });
+        this.deactivateMealModal = false;
+        this.$toastr.s("Item deactivated.");
+        return;
+      }
+      if (type === "gift_card") {
+        await this._updateGiftCard({ id, data: { active } });
+        this.$toastr.s("Item " + action + "ed.");
+        return;
+      }
+      if (type === "package") {
+        await this._updateMealPackage({ id, data: { active } });
+        this.$toastr.s("Item " + action + "ed.");
+        return;
+      }
+      if (type === "meal") {
+        if (action == "activate") {
+          await this._updateMeal({ id, data: { active } });
+          this.$toastr.s("Item activated.");
+          return;
+        }
+        axios
+          .post("/api/me/checkForReplacements", { id: id, action: action })
+          .then(resp => {
+            if (resp.data) {
+              this.deactivatingMeal = resp.data;
+              this.checkForVariationReplacements();
+              this.deactivateMealModal = true;
+            } else {
+              this._updateMeal({ id, data: { active } });
+              if (active == 0) {
+                this.$toastr.s("Item deactivated.");
+              } else {
+                this.$toastr.s("Item deleted.");
+              }
+            }
+          });
       }
     },
     async updateMeal(id, changes, toast = false, updateLocal = true) {
@@ -1592,22 +1625,50 @@ export default {
 
       //this.refreshTable();
     },
-    getSizedTitle(sizes, option, deb = 0) {
-      let title = option.title;
+    getSizedTitle(sizes, sub, old = null) {
+      let title = sub.title;
       sizes = _.keyBy(sizes, "id");
 
-      // ??
-      // if (deb) {
-      //   console.log("aa");
-      // }
+      let sizeTitle = null;
 
-      if (option.meal_size_id) {
-        const size = sizes[option.meal_size_id];
+      if (old) {
+        let oldSizeTitle = "";
+        let oldSize = this.deactivatingMeal.sizes.find(size => {
+          return size.id === old.meal_size_id;
+        });
+        if (oldSize) {
+          oldSizeTitle = oldSize.title;
+        }
+        sizeTitle = this.substituteMeal.sizes.find(size => {
+          return size.title === oldSizeTitle;
+        })
+          ? this.substituteMeal.sizes.find(size => {
+              return size.title === oldSizeTitle;
+            }).title
+          : null;
+      }
+
+      if (sub.meal_size_id) {
+        const size = sizes[sub.meal_size_id];
+        if (!size) {
+          let subSize = this.substituteMeal.sizes.find(subSize => {
+            return subSize.id === sub.meal_size_id;
+          });
+          if (subSize) {
+            let size = {};
+            size.title = subSize.title;
+          }
+        }
 
         if (size) {
           title += ` - ${size.title}`;
         }
       }
+
+      if (sizeTitle) {
+        title += ` - ${sizeTitle}`;
+      }
+
       return title;
     },
     getSubstituteAddonOptions(addon) {
@@ -1693,7 +1754,6 @@ export default {
           this.refreshSubscriptions();
           this.transferVariations = false;
           this.substituteMeal = "";
-          this.mealSubsHaveVariations = false;
           this.substitute_id = null;
           this.substituteMealSizes = {};
           this.substituteMealComponents = {};
@@ -1712,7 +1772,6 @@ export default {
           this.substituteMealComponentOptions = {};
           this.substituteMealAddons = {};
           this.transferVariations = false;
-          this.replaceVariations = true;
         });
     },
     createMeal() {
@@ -1771,25 +1830,6 @@ export default {
         .finally(() => {
           this.removeJob(jobId);
         });
-    },
-
-    deleteMealfromMenu: function(id) {
-      axios.get(`/api/me/meals/${id}`).then(response => {
-        this.deactivatingMeal = response.data;
-      });
-
-      this.deleteMeal = true;
-      this.deletingMeal = this.getMeal(id);
-
-      if (!this.deletingMeal) {
-        return;
-      }
-
-      if (this.deletingMeal.substitute || this.deletingMeal.in_package) {
-        this.deactivateMealModal = true;
-      } else {
-        this.deleteMealModalNonSubstitute = true;
-      }
     },
     destroyMeal: function(id, subId) {
       axios.delete(`/api/me/meals/${id}?substitute_id=${subId}`).then(resp => {
@@ -1991,9 +2031,6 @@ export default {
     removeTransferVariations() {
       this.transferVariations = false;
     },
-    removeReplaceVariations() {
-      this.replaceVariations = false;
-    },
     setReplacementVariations() {
       // Auto selecting variations if they have the same name.
       let oldMeal = this.deactivatingMeal;
@@ -2005,7 +2042,6 @@ export default {
             subMeal.sizes.forEach(subSize => {
               if (oldSize.title.toUpperCase() === subSize.title.toUpperCase()) {
                 this.substituteMealSizes[oldSize.id] = subSize.id;
-                this.mealSubsHaveVariations = true;
               }
             });
           }
@@ -2019,8 +2055,14 @@ export default {
               if (
                 oldAddon.title.toUpperCase() === subAddon.title.toUpperCase()
               ) {
-                this.substituteMealAddons[oldAddon.id] = subAddon.id;
-                this.mealSubsHaveVariations = true;
+                this.substituteMealAddons[oldAddon.id] = {
+                  title: this.getSizedTitle(
+                    this.substituteMealSizes,
+                    subAddon,
+                    oldAddon
+                  ),
+                  value: subAddon.id
+                };
               }
             });
           }
@@ -2037,7 +2079,6 @@ export default {
               ) {
                 this.substituteMealComponents[oldComponent.id] =
                   subComponent.id;
-                this.mealSubsHaveVariations = true;
               }
               if (oldComponent.options) {
                 oldComponent.options.forEach(oldOption => {
@@ -2047,9 +2088,14 @@ export default {
                         oldOption.title.toUpperCase() ===
                         subOption.title.toUpperCase()
                       ) {
-                        this.substituteMealComponentOptions[oldOption.id] =
-                          subOption.id;
-                        this.mealSubsHaveVariations = true;
+                        this.substituteMealComponentOptions[oldOption.id] = {
+                          title: this.getSizedTitle(
+                            this.substituteMealComponentOptions,
+                            subOption,
+                            oldOption
+                          ),
+                          value: subOption.id
+                        };
                       }
                     });
                   }
@@ -2068,7 +2114,6 @@ export default {
       this.refreshSubscriptions();
       this.transferVariations = false;
       this.substituteMeal = "";
-      this.mealSubsHaveVariations = false;
       this.substitute_id = null;
       this.substituteMealSizes = {};
       this.substituteMealComponents = {};
@@ -2082,25 +2127,44 @@ export default {
       this.substituteMealComponentOptions = {};
       this.substituteMealAddons = {};
       this.transferVariations = false;
-      this.replaceVariations = true;
     },
-    inActiveSubscriptionsOrPackages(variations) {
-      let status = false;
-      variations.forEach(variation => {
-        if (variation.activeSubscriptionsOrPackage) {
-          status = true;
-        }
-      });
-      return status;
-    },
-    inActiveSubscriptions(variations) {
-      let status = false;
-      variations.forEach(variation => {
-        if (variation.activeSubscriptions) {
-          status = true;
-        }
-      });
-      return status;
+    checkForVariationReplacements() {
+      axios
+        .post("/api/me/checkForVariationReplacements", {
+          id: this.deactivatingMeal.id
+        })
+        .then(resp => {
+          let replacementVariations = resp.data;
+          this.deactivatingMeal.replacementVariations = replacementVariations;
+          // If the variation doesn't need to be replaced, remove it from the deactivating meal variations.
+          this.deactivatingMeal.sizes.forEach((size, index) => {
+            if (
+              !replacementVariations.sizes.some(replacementSizeId => {
+                return size.id === replacementSizeId;
+              })
+            ) {
+              this.deactivatingMeal.sizes.splice(index, 1);
+            }
+          });
+          this.deactivatingMeal.components.forEach((component, index) => {
+            if (
+              !replacementVariations.components.some(replacementComponentId => {
+                return component.id === replacementComponentId;
+              })
+            ) {
+              this.deactivatingMeal.components.splice(index, 1);
+            }
+          });
+          this.deactivatingMeal.addons.forEach((addon, index) => {
+            if (
+              !replacementVariations.addons.some(replacementAddonId => {
+                return addon.id === replacementAddonId;
+              })
+            ) {
+              this.deactivatingMeal.addons.splice(index, 1);
+            }
+          });
+        });
     }
   }
 };

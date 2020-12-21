@@ -18,7 +18,7 @@ class MealComponentOption extends Model
         'created_at' => 'date:F d, Y'
     ];
 
-    protected $appends = ['activeSubscriptions'];
+    protected $appends = [];
 
     protected $hidden = [];
 
@@ -80,25 +80,5 @@ class MealComponentOption extends Model
         });
 
         $this->ingredients()->sync($syncIngredients);
-    }
-
-    public function getActiveSubscriptionsAttribute()
-    {
-        $mealSubs = MealSubscriptionComponent::where(
-            'meal_component_option_id',
-            $this->id
-        )
-            ->whereHas('mealSubscription', function ($mealSub) {
-                $mealSub->whereHas('subscription', function ($sub) {
-                    $sub->where('status', '=', 'active');
-                });
-            })
-            ->count();
-
-        if ($mealSubs > 0) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }

@@ -88,7 +88,6 @@ class Meal extends Model implements HasMedia
         'item_title',
         'item_price',
         'item_quantity',
-        'in_package',
         'meal_size_id',
         'hasVariations',
         'subItem'
@@ -208,47 +207,6 @@ class Meal extends Model implements HasMedia
         }
 
         return $price;
-    }
-
-    public function getInPackageAttribute()
-    {
-        $mealMealPackages = MealMealPackage::whereHas('meal_package', function (
-            $mealPkg
-        ) {
-            $mealPkg->where('deleted_at', '=', null);
-        })
-            ->where('meal_id', $this->id)
-            ->count();
-
-        $mealMealPackageSizes = MealMealPackageSize::whereHas(
-            'meal_package_size',
-            function ($mealPkg) {
-                $mealPkg->where('deleted_at', '=', null);
-            }
-        )
-            ->where('meal_id', $this->id)
-            ->count();
-
-        // Add soft deletes and a check if the component option or addon was deleted
-        $mealMealPackageComponentOptions = MealMealPackageComponentOption::where(
-            'meal_id',
-            $this->id
-        )->count();
-        $mealMealPackageAddons = MealMealPackageAddon::where(
-            'meal_id',
-            $this->id
-        )->count();
-
-        if (
-            $mealMealPackages > 0 ||
-            $mealMealPackageSizes > 0 ||
-            $mealMealPackageComponentOptions > 0 ||
-            $mealMealPackageAddons > 0
-        ) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public function getItemQuantityAttribute()

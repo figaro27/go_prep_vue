@@ -104,7 +104,7 @@ class MealReplacementService
             if (!$mealSizes->contains($sizeId)) {
                 throw new InvalidMappingException(
                     sprintf(
-                        'Size $d doesn\'t exist in meal %d',
+                        'Size %d doesn\'t exist in meal %d',
                         $sizeId,
                         $meal->id
                     )
@@ -114,7 +114,7 @@ class MealReplacementService
             if (!$substituteMeal->sizes->contains($subSizeId)) {
                 throw new InvalidMappingException(
                     sprintf(
-                        'Substitute size $d doesn\'t exist in substitue meal %d',
+                        'Substitute size %d doesn\'t exist in substitue meal %d',
                         $sizeId,
                         $meal->id
                     )
@@ -137,7 +137,7 @@ class MealReplacementService
             if (!$mealAddons->contains($addonId)) {
                 throw new InvalidMappingException(
                     sprintf(
-                        'Addon $d doesn\'t exist in meal %d',
+                        'Addon %d doesn\'t exist in meal %d',
                         $addonId,
                         $meal->id
                     )
@@ -147,7 +147,7 @@ class MealReplacementService
             if (!$substituteMeal->addons->contains($subAddonId)) {
                 throw new InvalidMappingException(
                     sprintf(
-                        'Substitute addon $d doesn\'t exist in substitue meal %d',
+                        'Substitute addon %d doesn\'t exist in substitue meal %d',
                         $subAddonId,
                         $meal->id
                     )
@@ -173,7 +173,7 @@ class MealReplacementService
             if (!$mealComponentOptions->contains($optionId)) {
                 throw new InvalidMappingException(
                     sprintf(
-                        'Component option $d doesn\'t exist in meal %d',
+                        'Component option %d doesn\'t exist in meal %d',
                         $optionId,
                         $meal->id
                     )
@@ -183,7 +183,7 @@ class MealReplacementService
             if (!$substituteMeal->componentOptions->contains($subOptionId)) {
                 throw new InvalidMappingException(
                     sprintf(
-                        'Substitute component option $d doesn\'t exist in substitue meal %d',
+                        'Substitute component option %d doesn\'t exist in substitue meal %d',
                         $subOptionId,
                         $meal->id
                     )
@@ -428,6 +428,7 @@ class MealReplacementService
         $meal = Meal::findOrFail($mealId);
         $substituteMealId = $params->getSubstituteMealId();
         $substituteMeal = Meal::findOrFail($substituteMealId);
+        $subSizeId = null;
 
         if (!$subscriptionMeal->subscription) {
             throw new MissingSubscriptionForMealException(
@@ -481,6 +482,7 @@ class MealReplacementService
 
         $existingSubscriptionMeal = MealSubscription::where([
             ['meal_id', $substituteMealId],
+            ['meal_size_id', $subSizeId],
             ['delivery_date', $subscriptionMeal->delivery_date],
             ['subscription_id', $subscriptionMeal->subscription_id]
         ])->first();
