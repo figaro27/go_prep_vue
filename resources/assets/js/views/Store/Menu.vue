@@ -1736,6 +1736,15 @@ export default {
         return false;
       }
 
+      let subMealComponentOptions = {};
+      substituteMealComponentOptions = Object.entries(
+        substituteMealComponentOptions
+      ).forEach(option => {
+        let key = option[0];
+        let value = option[1].value ? option[1].value : option[1];
+        subMealComponentOptions[key] = value;
+      });
+
       axios
         .post("/api/me/deactivateAndReplace", {
           mealId: mealId,
@@ -1743,7 +1752,7 @@ export default {
           transferVariations: transferVariations,
           substituteMealSizes: substituteMealSizes,
           substituteMealAddons: substituteMealAddons,
-          substituteMealComponentOptions: substituteMealComponentOptions,
+          substituteMealComponentOptions: subMealComponentOptions,
           replaceOnly: !this.deleteMeal
         })
         .then(resp => {
@@ -2051,58 +2060,124 @@ export default {
       if (oldMeal.addons) {
         oldMeal.addons.forEach(oldAddon => {
           if (subMeal.addons) {
-            subMeal.addons.forEach(subAddon => {
-              if (
-                oldAddon.title.toUpperCase() === subAddon.title.toUpperCase()
-              ) {
-                this.substituteMealAddons[oldAddon.id] = {
-                  title: this.getSizedTitle(
-                    this.substituteMealSizes,
-                    subAddon,
-                    oldAddon
-                  ),
-                  value: subAddon.id
-                };
+            if (!oldAddon.meal_size_id) {
+              let subAddon = subMeal.addons.find(addon => {
+                return (
+                  addon.title.toUpperCase() === oldAddon.title.toUpperCase()
+                );
+              });
+              if (subAddon) {
+                this.substituteMealAddons[oldAddon.id] = subAddon.id;
               }
-            });
+            } else {
+              let oldAddonSizeTitle = oldMeal.sizes.find(size => {
+                return size.id === oldAddon.meal_size_id;
+              }).title;
+              subMeal.addons.forEach(subAddon => {
+                let size = subMeal.sizes.find(size => {
+                  return size.id === subAddon.meal_size_id;
+                });
+                if (
+                  size &&
+                  size.title.toUpperCase() === oldAddonSizeTitle.toUpperCase()
+                ) {
+                  this.substituteMealAddons[oldAddon.id] = subAddon.id;
+                }
+              });
+            }
           }
         });
       }
 
       if (oldMeal.components) {
-        oldMeal.components.forEach(oldComponent => {
-          if (subMeal.components) {
-            subMeal.components.forEach(subComponent => {
-              if (
-                oldComponent.title.toUpperCase() ===
-                subComponent.title.toUpperCase()
-              ) {
+        if (subMeal.components) {
+          oldMeal.components.forEach(oldComponent => {
+            if (!oldComponent.meal_size_id) {
+              let subComponent = subMeal.components.find(component => {
+                return (
+                  component.title.toUpperCase() ===
+                  oldComponent.title.toUpperCase()
+                );
+              });
+              if (subComponent) {
                 this.substituteMealComponents[oldComponent.id] =
                   subComponent.id;
               }
-              if (oldComponent.options) {
-                oldComponent.options.forEach(oldOption => {
-                  if (subComponent.options) {
-                    subComponent.options.forEach(subOption => {
-                      if (
-                        oldOption.title.toUpperCase() ===
-                        subOption.title.toUpperCase()
-                      ) {
-                        this.substituteMealComponentOptions[oldOption.id] = {
-                          title: this.getSizedTitle(
-                            this.substituteMealComponentOptions,
-                            subOption,
-                            oldOption
-                          ),
-                          value: subOption.id
-                        };
-                      }
-                    });
+            } else {
+              let oldComponentSizeTitle = oldMeal.sizes.find(size => {
+                return size.id === oldComponent.meal_size_id;
+              }).title;
+              subMeal.components.forEach(subComponent => {
+                let size = subMeal.sizes.find(size => {
+                  return size.id === subComponent.meal_size_id;
+                });
+                if (
+                  size &&
+                  size.title.toUpperCase() ===
+                    oldComponentSizeTitle.toUpperCase()
+                ) {
+                  this.substituteMealComponents[oldComponent.id] =
+                    subComponent.id;
+                }
+              });
+            }
+          });
+        }
+      }
+
+      if (oldMeal.components) {
+        oldMeal.components.forEach(component => {
+          component.options.forEach(oldComponentOption => {
+            if (!oldComponentOption.meal_size_id) {
+              let subComponentOption = null;
+              subMeal.components.forEach(component => {
+                component.options.forEach(option => {
+                  if (
+                    option.title.toUpperCase() ===
+                    oldComponentOption.title.toUpperCase()
+                  ) {
+                    subComponentOption = option;
                   }
                 });
+              });
+              if (subComponentOption) {
+                this.substituteMealComponentOptions[oldComponentOption.id] = {
+                  title: subComponentOption.title,
+                  value: subComponentOption.id
+                };
               }
-            });
-          }
+            } else {
+              let subComponentOption = null;
+              let oldComponentSizeTitle = oldMeal.sizes.find(size => {
+                return size.id === oldComponentOption.meal_size_id;
+              }).title;
+              subMeal.components.forEach(component => {
+                component.options.forEach(option => {
+                  let size = subMeal.sizes.find(size => {
+                    return size.id === option.meal_size_id;
+                  });
+                  if (
+                    size &&
+                    size.title.toUpperCase() ===
+                      oldComponentSizeTitle.toUpperCase()
+                  ) {
+                    if (
+                      oldComponentOption.title.toUpperCase() ===
+                      option.title.toUpperCase()
+                    ) {
+                      subComponentOption = option;
+                    }
+                  }
+                });
+              });
+              if (subComponentOption) {
+                this.substituteMealComponentOptions[oldComponentOption.id] = {
+                  title: subComponentOption.title,
+                  value: subComponentOption.id
+                };
+              }
+            }
+          });
         });
       }
     },

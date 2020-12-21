@@ -583,7 +583,7 @@ class MealReplacementService
         $subscriptionMeal = $addon->mealSubscription;
         $originalMealAddonId = $addon->meal_addon_id;
 
-        if (!$params->hasAddonSubstitute($addon->meal_addon_id)) {
+        if ($params->hasAddonSubstitute($addon->meal_addon_id)) {
             $subAddonId = $params->getAddonSubstitute($originalMealAddonId);
             $subAddon = MealAddon::findOrFail($subAddonId);
 
@@ -605,7 +605,7 @@ class MealReplacementService
                         'sub_meal_addon_id' => $subAddonId,
                         'meal_subscription_id' => $subscriptionMeal->id
                     ]);
-                    $addon->delete();
+                    // $addon->delete();
                 }
             }
         } else {
