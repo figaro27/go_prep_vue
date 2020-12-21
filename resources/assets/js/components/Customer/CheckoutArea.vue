@@ -907,6 +907,7 @@
         <div>
           <strong>{{ selectedTransferType }} Time</strong>
           <b-form-select
+            style="font-size:16px"
             :class="transferTimeClass"
             v-model="transferTime"
             :value="transferTime"

@@ -62,8 +62,8 @@
             v-model="props.row.title"
             :placeholder="
               props.row.id === -1
-                ? 'Default meal size title'
-                : 'Meal size title'
+                ? 'Default item size title'
+                : 'Item size title'
             "
             @change="
               val => {

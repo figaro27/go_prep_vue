@@ -889,6 +889,7 @@ class Subscription extends Model
                     'meal' => $meal->meal,
                     'price' => $price,
                     'delivery_date' => $meal->delivery_date,
+                    'size' => $meal->meal_size_id,
                     'components' => $meal->components,
                     'addons' => $meal->addons
                 ];

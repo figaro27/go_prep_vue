@@ -80,6 +80,7 @@ class Bag
                 'meal_package_size_id' => $item['meal_package_size_id'] ?? null,
                 'price' => $item['price'] ?? null,
                 'size' => $item['size'] ?? null,
+                'meal_size_id' => $item['meal_size_id'] ?? null,
                 'components' => $item['components'] ?? [],
                 'addons' => $item['addons'] ?? [],
                 'special_instructions' => $item['special_instructions'] ?? [],
