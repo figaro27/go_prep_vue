@@ -1315,6 +1315,7 @@ export default {
     });
     if (!this.adjustMealPlan && !this.adjustOrder) {
       this.clearInactiveItems();
+      this.removeOldDeliveryDates();
     }
   },
   beforeDestroy() {
@@ -1908,6 +1909,22 @@ export default {
             );
           }
         });
+      });
+    },
+    removeOldDeliveryDates() {
+      this.bag.forEach(item => {
+        if (item.delivery_day) {
+          if (moment(item.delivery_day.day_friendly).isBefore(moment())) {
+            this.clearMealFullQuantity(
+              item.meal,
+              item.meal_package,
+              item.size,
+              item.components,
+              item.addons,
+              item.special_instructions
+            );
+          }
+        }
       });
     },
     goToCheckout() {
