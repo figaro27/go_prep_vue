@@ -12,7 +12,7 @@
         <div class="d-flex" style="justify-content:space-around">
           <div class="mt-3">
             <h3>Tags</h3>
-            <p class="font-14">Show Only Meals That Are:</p>
+            <p class="font-14">Show Only Items That Are:</p>
             <div
               v-for="tag in tags"
               :key="`tag-${tag}`"
@@ -37,7 +37,7 @@
           </div>
           <div class="mt-3">
             <h3>Allergies</h3>
-            <p class="font-14">Hide Meals That Contain:</p>
+            <p class="font-14">Hide Items That Contain:</p>
             <div
               v-for="allergy in allergies"
               :key="`allergy-${allergy.id}`"
