@@ -12,7 +12,7 @@
         <div class="d-flex" style="justify-content:space-around">
           <div class="mt-3">
             <h3>Tags</h3>
-            <p class="font-14">Include Meals That Are:</p>
+            <p class="font-14">Show Only Meals That Are:</p>
             <div
               v-for="tag in tags"
               :key="`tag-${tag}`"
