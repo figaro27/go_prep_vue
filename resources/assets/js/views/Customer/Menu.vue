@@ -873,6 +873,11 @@ export default {
         return new Date(a.day_friendly) - new Date(b.day_friendly);
       });
 
+      // Removing past dates
+      sortedDays = sortedDays.filter(day => {
+        return !moment(day.day_friendly).isBefore(moment());
+      });
+
       return sortedDays;
     },
     isMultipleDelivery() {
