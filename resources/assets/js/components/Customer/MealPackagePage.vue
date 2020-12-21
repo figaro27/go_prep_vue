@@ -1510,6 +1510,7 @@ export default {
           totalRemainingMeals += this.getRemainingMeals(component.id);
         }
       });
+      this.$parent.totalRemainingMeals = totalRemainingMeals;
       return totalRemainingMeals;
     },
     getComponentChoices(id) {

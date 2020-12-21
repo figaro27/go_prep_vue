@@ -439,14 +439,9 @@
                   </button>
                 </div>
               </div>
-              <div
-                v-if="mealPackagePageView && mealPackagePageComponents === 1"
-              >
-                <h4
-                  class="center-text mt-2"
-                  v-if="remainingMeals && remainingMeals > 0"
-                >
-                  Remaining: {{ remainingMeals }}
+              <div v-if="mealPackagePageView">
+                <h4 class="center-text mt-2" v-if="totalRemainingMeals > 0">
+                  Remaining: {{ totalRemainingMeals }}
                 </h4>
               </div>
             </div>
@@ -650,6 +645,7 @@ export default {
   },
   data() {
     return {
+      totalRemainingMeals: 0,
       activeCatId: 0,
       showVariationsModal: false,
       bagPageURL: "/customer/bag",
