@@ -134,6 +134,7 @@ class OrdersByCustomer
                         $mealOrder->order->user->details->firstname .
                         ' ' .
                         $mealOrder->order->user->details->lastname,
+                    'email' => $mealOrder->order->user->email,
                     'phone' => $mealOrder->order->user->details->phone,
                     'address' => $mealOrder->order->user->details->address,
                     'city' => $mealOrder->order->user->details->city,
@@ -151,6 +152,7 @@ class OrdersByCustomer
                     'meal_addons' => $mealOrder->addons
                         ? $mealOrder->addonsFormat
                         : null,
+                    'special_instructions' => $mealOrder->special_instructions,
                     'quantity' => $mealOrder->quantity,
                     'price' =>
                         '$' .
@@ -165,6 +167,7 @@ class OrdersByCustomer
                 'Order Placed',
                 'Delivery Date',
                 'Customer',
+                'Email',
                 'Phone',
                 'Address',
                 'City',
@@ -175,6 +178,7 @@ class OrdersByCustomer
                 'Size',
                 'Components',
                 'Addons',
+                'special_instructions',
                 'Quantity',
                 'Price'
             ]);
