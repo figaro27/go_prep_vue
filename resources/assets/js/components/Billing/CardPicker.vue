@@ -8,12 +8,19 @@
       no-fade
       hide-footer
     >
-      <h6 class="center-text p-2">
-        This card is tied to a subscription. The subscription will be cancelled
-        if you delete this card. You can create a new subscription after.
-      </h6>
+      <p class="center-text pt-2">
+        This card is tied to an active subscription. If you delete this card,
+        the subscription will be cancelled.
+      </p>
+      <p class="center-text">
+        You can first update the credit card on your subscription on the
+        <router-link to="/customer/subscriptions"
+          ><strong>Subscriptions</strong></router-link
+        >
+        page, then come back and delete this card after.
+      </p>
 
-      <h5 class="center-text p-1">Proceed?</h5>
+      <h5 class="center-text mb-3">Proceed?</h5>
       <div class="d-flex" style="justify-content:center">
         <b-btn @click="showDeleteCardModal = false" class="d-inline mr-2"
           >Cancel</b-btn

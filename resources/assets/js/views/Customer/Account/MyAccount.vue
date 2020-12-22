@@ -298,9 +298,11 @@ export default {
       });
     }
   },
-  mounted() {},
+  mounted() {
+    this.refreshCards();
+  },
   methods: {
-    ...mapActions(["refreshUser", "refreshViewedStore"]),
+    ...mapActions(["refreshUser", "refreshViewedStore", "refreshCards"]),
     updateCustomer() {
       this.asYouType();
       if (this.store.details.country === "US") {
