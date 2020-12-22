@@ -178,7 +178,7 @@ class OrdersByCustomer
                 'Size',
                 'Components',
                 'Addons',
-                'special_instructions',
+                'Special Instructions',
                 'Quantity',
                 'Price'
             ]);
