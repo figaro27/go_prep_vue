@@ -1177,6 +1177,7 @@ class Subscription extends Model
                     // $mealOrder->price = $item->price;
                     $mealOrder->quantity = $item->quantity;
                     $mealOrder->meal_package = 1;
+                    $mealOrder->delivery_date = $item->delivery_date;
 
                     if ($item->meal_package_subscription_id !== null) {
                         $mealPackageSub = MealPackageSubscription::where(
