@@ -1602,7 +1602,8 @@ export default {
       selectedPickupLocation: "bagPickupLocation",
       bagGratuityPercent: "bagGratuityPercent",
       bagCustomGratuity: "bagCustomGratuity",
-      bagSubscriptionInterval: "bagSubscriptionInterval"
+      bagSubscriptionInterval: "bagSubscriptionInterval",
+      distance: "viewedStoreDistance"
     }),
     hasMultipleSubscriptionIntervals() {
       let count = 0;
@@ -2566,7 +2567,10 @@ use next_delivery_dates
                 fee = zip ? zip.delivery_fee : deliveryFee;
               }
             } else if (deliveryFeeType === "mileage") {
-              let distance = parseFloat(this.store.distance);
+              console.log(1);
+              let distance = this.store.distance
+                ? parseFloat(this.store.distance)
+                : 0;
               fee =
                 parseFloat(mileageBase) + parseFloat(mileagePerMile) * distance;
             }
@@ -2579,7 +2583,9 @@ use next_delivery_dates
                     mddFee += parseFloat(item.delivery_day.fee);
                   }
                   if (item.delivery_day.feeType == "mileage") {
-                    let distance = parseFloat(this.store.distance);
+                    let distance = this.store.distance
+                      ? parseFloat(this.store.distance)
+                      : 0;
                     mddFee +=
                       parseFloat(item.delivery_day.mileageBase) +
                       parseFloat(item.delivery_day.mileagePerMile) * distance;
@@ -3681,7 +3687,8 @@ use next_delivery_dates
           promotionPointsAmount: this.promotionPointsAmount,
           pointsReduction: this.promotionPointsReduction,
           staff: this.staffMember,
-          coolerDeposit: this.coolerDeposit
+          coolerDeposit: this.coolerDeposit,
+          distance: this.distance
         })
         .then(async resp => {
           // Check if the order contains subscription & order items in frequencyTypes stores and if so, checkout again (first order then subscription)

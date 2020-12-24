@@ -36,7 +36,7 @@ const state = {
     items: [],
     finalCategories: [],
     refreshed_package_ids: [],
-    distance: 0,
+    distance: null,
     will_deliver: true,
     settings: {
       applyDeliveryFee: 0,
@@ -3116,6 +3116,9 @@ const getters = {
   },
   viewedStoreSettings(state, getters) {
     return state.viewed_store.settings;
+  },
+  viewedStoreDistance(state, getters) {
+    return state.viewed_store.distance;
   },
   viewedStoreWillDeliver(state, getters) {
     return state.viewed_store.will_deliver;

@@ -95,6 +95,7 @@ class CheckoutController extends UserController
                 );
             }
 
+            // Preventing multiple subscriptions if setting is turned off
             if (
                 $user->has_active_subscription &&
                 !$store->settings->allowMultipleSubscriptions
@@ -106,6 +107,34 @@ class CheckoutController extends UserController
                     ],
                     400
                 );
+            }
+
+            // Preventing orders from outside of the delivery distance radius if not properly calculated by Google during checkout
+            if (
+                $store->settings->delivery_distance_type === 'radius' &&
+                !$request->get('distance')
+            ) {
+                $distance = $user->distanceFrom($store);
+                if (
+                    !$distance ||
+                    $distance > $store->settings->delivery_distance_radius
+                ) {
+                    $error = new Error();
+                    $error->store_id = $store->id;
+                    $error->user_id = $user->id;
+                    $error->type = 'Checkout';
+                    $error->error =
+                        'Error calculating distance on front end ' . $distance;
+                    $error->save();
+
+                    return response()->json(
+                        [
+                            'message' =>
+                                'You are outside of our delivery radius. Please contact us.'
+                        ],
+                        400
+                    );
+                }
             }
 
             // Checking all meals are in stock before proceeding
