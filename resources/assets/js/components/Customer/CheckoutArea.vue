@@ -3910,7 +3910,9 @@ use next_delivery_dates
       axios
         .post(this.prefix + "findCouponById", {
           store_id: this.store.id,
-          couponId: this.$parent.subscription.coupon_id
+          couponId: this.coupon
+            ? this.coupon.id
+            : this.$parent.subscription.coupon_id
         })
         .then(resp => {
           if (resp.data) {
