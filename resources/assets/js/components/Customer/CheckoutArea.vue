@@ -3907,12 +3907,32 @@ use next_delivery_dates
       this.updateParentData();
     },
     setSubscriptionCoupon() {
+      let coupon_id = null;
+      if (this.coupon) {
+        coupon_id = this.coupon.id;
+      }
+      if (this.$parent.subscription && this.$parent.subscription.coupon_id) {
+        coupon_id = this.$parent.subscription.coupon_id;
+      }
+      if (this.subscriptions.length > 0 && this.subscriptionId) {
+        let sub = this.subscriptions.find(sub => {
+          return sub.id === this.subscriptionId;
+        });
+        if (sub) {
+          coupon_id = sub.coupon_id;
+        }
+      }
+      if (!coupon_id) {
+        return;
+      }
       axios
         .post(this.prefix + "findCouponById", {
           store_id: this.store.id,
           couponId: this.coupon
             ? this.coupon.id
-            : this.$parent.subscription.coupon_id
+            : this.$parent.subscription && this.$parent.subscription.coupon_id
+            ? this.$parent.subscription.coupon_id
+            : this.subscriptions
         })
         .then(resp => {
           if (resp.data) {

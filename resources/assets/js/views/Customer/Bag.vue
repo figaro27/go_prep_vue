@@ -806,33 +806,33 @@ export default {
           this.checkingOut = false;
         });
     },
-    applyCoupon() {
-      this.coupons.forEach(coupon => {
-        if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
-          if (coupon.oneTime) {
-            let oneTimePass = this.oneTimeCouponCheck(coupon.id);
-            if (oneTimePass === "login") {
-              this.$toastr.e(
-                "This is a one-time coupon. Please log in or create an account to check if it has already been used."
-              );
-              return;
-            }
-            if (!oneTimePass) {
-              this.$toastr.e(
-                "This was a one-time coupon that has already been used.",
-                'Coupon Code: "' + this.couponCode + '"'
-              );
-              this.couponCode = "";
-              return;
-            }
-          }
-          this.coupon = coupon;
-          this.setBagCoupon(coupon);
-          this.couponCode = "";
-          this.$toastr.s("Coupon Applied.", "Success");
-        }
-      });
-    },
+    // applyCoupon() {
+    //   this.coupons.forEach(coupon => {
+    //     if (this.couponCode.toUpperCase() === coupon.code.toUpperCase()) {
+    //       if (coupon.oneTime) {
+    //         let oneTimePass = this.oneTimeCouponCheck(coupon.id);
+    //         if (oneTimePass === "login") {
+    //           this.$toastr.e(
+    //             "This is a one-time coupon. Please log in or create an account to check if it has already been used."
+    //           );
+    //           return;
+    //         }
+    //         if (!oneTimePass) {
+    //           this.$toastr.e(
+    //             "This was a one-time coupon that has already been used.",
+    //             'Coupon Code: "' + this.couponCode + '"'
+    //           );
+    //           this.couponCode = "";
+    //           return;
+    //         }
+    //       }
+    //       this.coupon = coupon;
+    //       this.setBagCoupon(coupon);
+    //       this.couponCode = "";
+    //       this.$toastr.s("Coupon Applied.", "Success");
+    //     }
+    //   });
+    // },
     oneTimeCouponCheck(couponId) {
       if (!this.loggedIn) {
         return "login";
