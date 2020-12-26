@@ -1491,7 +1491,9 @@ export default {
 
     this.form.billingState = state[0];
 
-    this.setSubscriptionCoupon();
+    if (this.adjustingSubscription) {
+      this.setSubscriptionCoupon();
+    }
 
     if (
       this.$route.params.adjustOrder &&
@@ -3914,7 +3916,11 @@ use next_delivery_dates
       if (this.$parent.subscription && this.$parent.subscription.coupon_id) {
         coupon_id = this.$parent.subscription.coupon_id;
       }
-      if (this.subscriptions.length > 0 && this.subscriptionId) {
+      if (
+        this.subscriptions &&
+        this.subscriptions.length > 0 &&
+        this.subscriptionId
+      ) {
         let sub = this.subscriptions.find(sub => {
           return sub.id === this.subscriptionId;
         });
