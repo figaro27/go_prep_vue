@@ -20,9 +20,9 @@
                 <button
                   v-if="storeModules.manualCustomers"
                   class="btn btn-success btn-md mb-2 mb-sm-0"
-                  @click="addCustomerModal = true"
+                  @click="showAddCustomerModal"
                 >
-                  Add Customer
+                  Add New Customer
                 </button>
               </div>
               <span slot="beforeLimit">
@@ -804,6 +804,18 @@ export default {
       }
       data = _.orderBy(data, "delivery_date");
       return _.filter(data);
+    },
+    showAddCustomerModal() {
+      if (
+        this.store.settings.payment_gateway === "stripe" &&
+        !this.store.settings.stripe_id
+      ) {
+        this.$toastr.w(
+          "You must connect to Stripe before being able to add customers & create orders. Visit the Settings page to connect to Stripe."
+        );
+        return;
+      }
+      this.addCustomerModal = true;
     },
     editCustomer() {
       this.editingCustomer = !this.editingCustomer;
