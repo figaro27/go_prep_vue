@@ -35,7 +35,11 @@
       <auth-modal :showAuthModal="showAuthModal"></auth-modal>
       <spinner v-if="loading" position="absolute"></spinner>
 
-      <b-alert show variant="success" v-if="$route.query.sub === 'true'">
+      <b-alert
+        show
+        variant="success"
+        v-if="$route.query.sub === 'true' && subscriptions"
+      >
         <h5 class="center-text">
           {{
             subscriptions[0].interval.charAt(0).toUpperCase() +
@@ -903,7 +907,10 @@ export default {
       this.publicOrderNotes = notes;
     },
     setPickup() {
-      if (this.$refs.checkoutArea.checkPickup() === true) {
+      if (
+        this.$refs.checkoutArea &&
+        this.$refs.checkoutArea.checkPickup() === true
+      ) {
         this.pickup = 1;
       }
     },

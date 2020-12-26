@@ -21,7 +21,11 @@
       </p>
     </b-alert>
 
-    <b-alert show variant="success" v-if="$route.query.sub === 'true'">
+    <b-alert
+      show
+      variant="success"
+      v-if="$route.query.sub === 'true' && subscriptions"
+    >
       <h5 class="center-text">
         {{
           subscriptions[0].interval.charAt(0).toUpperCase() +
