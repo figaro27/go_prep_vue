@@ -1491,9 +1491,9 @@ export default {
 
     this.form.billingState = state[0];
 
-    if (this.adjustingSubscription) {
-      this.setSubscriptionCoupon();
-    }
+    // if (this.adjustingSubscription) {
+    //   this.setSubscriptionCoupon();
+    // }
 
     if (
       this.$route.params.adjustOrder &&
@@ -2569,7 +2569,6 @@ use next_delivery_dates
                 fee = zip ? zip.delivery_fee : deliveryFee;
               }
             } else if (deliveryFeeType === "mileage") {
-              console.log(1);
               let distance = this.store.distance
                 ? parseFloat(this.store.distance)
                 : 0;
@@ -3908,44 +3907,44 @@ use next_delivery_dates
       this.setBagDeliveryDate(this.deliveryDateOptionsStoreView[3]);
       this.updateParentData();
     },
-    setSubscriptionCoupon() {
-      let coupon_id = null;
-      if (this.coupon) {
-        coupon_id = this.coupon.id;
-      }
-      if (this.$parent.subscription && this.$parent.subscription.coupon_id) {
-        coupon_id = this.$parent.subscription.coupon_id;
-      }
-      if (
-        this.subscriptions &&
-        this.subscriptions.length > 0 &&
-        this.subscriptionId
-      ) {
-        let sub = this.subscriptions.find(sub => {
-          return sub.id === this.subscriptionId;
-        });
-        if (sub) {
-          coupon_id = sub.coupon_id;
-        }
-      }
-      if (!coupon_id) {
-        return;
-      }
-      axios
-        .post(this.prefix + "findCouponById", {
-          store_id: this.store.id,
-          couponId: this.coupon
-            ? this.coupon.id
-            : this.$parent.subscription && this.$parent.subscription.coupon_id
-            ? this.$parent.subscription.coupon_id
-            : this.subscriptions
-        })
-        .then(resp => {
-          if (resp.data) {
-            this.setBagCoupon(resp.data);
-          }
-        });
-    },
+    // setSubscriptionCoupon() {
+    //   let coupon_id = null;
+    //   if (this.coupon) {
+    //     coupon_id = this.coupon.id;
+    //   }
+    //   if (this.$parent.subscription && this.$parent.subscription.coupon_id) {
+    //     coupon_id = this.$parent.subscription.coupon_id;
+    //   }
+    //   if (
+    //     this.subscriptions &&
+    //     this.subscriptions.length > 0 &&
+    //     this.subscriptionId
+    //   ) {
+    //     let sub = this.subscriptions.find(sub => {
+    //       return sub.id === this.subscriptionId;
+    //     });
+    //     if (sub) {
+    //       coupon_id = sub.coupon_id;
+    //     }
+    //   }
+    //   if (!coupon_id) {
+    //     return;
+    //   }
+    //   axios
+    //     .post(this.prefix + "findCouponById", {
+    //       store_id: this.store.id,
+    //       couponId: this.coupon
+    //         ? this.coupon.id
+    //         : this.$parent.subscription && this.$parent.subscription.coupon_id
+    //         ? this.$parent.subscription.coupon_id
+    //         : this.subscriptions
+    //     })
+    //     .then(resp => {
+    //       if (resp.data) {
+    //         this.setBagCoupon(resp.data);
+    //       }
+    //     });
+    // },
     showAddCustomerModal() {
       if (
         this.storeSettings.payment_gateway === "stripe" &&

@@ -524,15 +524,6 @@ export default {
       if (sub) {
         this.pickup = sub.pickup;
       }
-      if (sub && sub.coupon_id !== null) {
-        let coupon = {
-          amount: sub.couponReduction,
-          code: sub.couponCode,
-          id: sub.coupon_id,
-          fromSub: true
-        };
-        this.setBagCoupon(coupon);
-      }
     }
     $([document.documentElement, document.body]).scrollTop(0);
     if (this.$route.params.adjustOrder && this.order.coupon_id !== null) {

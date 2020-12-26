@@ -53,14 +53,30 @@ export default {
       "setBagPickup",
       "setBagPickupLocation",
       "setBagGratuityPercent",
-      "setBagCustomGratuity"
+      "setBagCustomGratuity",
+      "setBagCoupon"
     ]),
     getSub() {
       axios.get("/api/me/subscriptions/" + this.subscriptionId).then(resp => {
         this.subscription = resp.data;
         this.$route.params.subscription = this.subscription;
         this.initBag();
+        if (this.subscription.coupon_id) {
+          this.setSubscriptionCoupon();
+        }
       });
+    },
+    setSubscriptionCoupon() {
+      axios
+        .post("/api/me/findCouponById", {
+          store_id: this.subscription.store_id,
+          couponId: this.subscription.coupon_id
+        })
+        .then(resp => {
+          if (resp.data) {
+            this.setBagCoupon(resp.data);
+          }
+        });
     },
     async initBag() {
       // const subscription = _.find(this.subscriptions, {

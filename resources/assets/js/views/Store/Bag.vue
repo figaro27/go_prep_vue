@@ -81,20 +81,6 @@ export default {
     ) {
       this.$router.push({ path: "/store/orders" });
     }
-    if (this.$route.params.subscriptionId) {
-      let sub = _.find(this.subscriptions, subscription => {
-        return subscription.id === parseInt(this.$route.params.subscriptionId);
-      });
-      if (sub.coupon_id !== null) {
-        let coupon = {
-          amount: sub.couponReduction,
-          code: sub.couponCode,
-          id: sub.coupon_id,
-          fromSub: true
-        };
-        this.setBagCoupon(coupon);
-      }
-    }
   },
   methods: {
     ...mapActions({}),
