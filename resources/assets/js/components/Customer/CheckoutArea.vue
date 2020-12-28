@@ -3074,7 +3074,11 @@ use next_delivery_dates
       ) {
         return "Please select a pickup location from the dropdown.";
       }
-      if (!this.isMultipleDelivery && !this.store.modules.hideTransferOptions) {
+      if (
+        !this.isMultipleDelivery &&
+        !this.store.modules.hideTransferOptions &&
+        !this.adjustingSubscription
+      ) {
         if (!this.bagDeliveryDate) {
           if (this.bagPickup === 1) {
             return "Please select a pickup date from the dropdown.";
