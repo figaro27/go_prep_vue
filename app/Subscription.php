@@ -393,290 +393,308 @@ class Subscription extends Model
      */
     public function renew()
     {
-        $isMultipleDelivery = (int) $this->isMultipleDelivery;
+        try {
+            $isMultipleDelivery = (int) $this->isMultipleDelivery;
 
-        $latestOrder = null;
-        if ($isMultipleDelivery == 1) {
-            $latestOrder = $this->getLatestUnpaidMDOrder();
-        } else {
-            $latestOrder = $this->getLatestUnpaidOrder();
-        }
+            $latestOrder = null;
+            if ($isMultipleDelivery == 1) {
+                $latestOrder = $this->getLatestUnpaidMDOrder();
+            } else {
+                $latestOrder = $this->getLatestUnpaidOrder();
+            }
 
-        if ($this->status != 'cancelled' && !$latestOrder) {
-            throw new \Exception(
-                'No unpaid order for subscription #' . $this->id
-            );
-        }
+            if ($this->status != 'cancelled' && !$latestOrder) {
+                throw new \Exception(
+                    'No unpaid order for subscription #' . $this->id
+                );
+            }
 
-        $this->syncPrices();
+            $this->syncPrices();
 
-        $applyCharge =
-            !$this->cashOrder &&
-            $this->status != 'paused' &&
-            $this->stripe_customer_id !== 'CASH' &&
-            $this->amount > 0.5
-                ? true
-                : false;
+            $applyCharge =
+                !$this->cashOrder &&
+                $this->status != 'paused' &&
+                $this->stripe_customer_id !== 'CASH' &&
+                $this->amount > 0.5
+                    ? true
+                    : false;
 
-        // Cancelling the subscription for next month if cancelled_at is marked
-        if (
-            $this->monthlyPrepay &&
-            $this->cancelled_at !== null &&
-            $this->renewalCount % 4 === 0
-        ) {
-            $this->status = 'cancelled';
-            $this->save();
-            return;
-        }
+            // Cancelling the subscription for next month if cancelled_at is marked
+            if (
+                $this->monthlyPrepay &&
+                $this->cancelled_at !== null &&
+                $this->renewalCount % 4 === 0
+            ) {
+                $this->status = 'cancelled';
+                $this->save();
+                return;
+            }
 
-        // Only charge once per month on monthly prepay subscriptions
-        $markAsPaidOnly = false;
-        if ($this->monthlyPrepay) {
-            if ($this->renewalCount !== 0 && $this->renewalCount % 4 !== 0) {
+            // Only charge once per month on monthly prepay subscriptions
+            $markAsPaidOnly = false;
+            if ($this->monthlyPrepay) {
+                if (
+                    $this->renewalCount !== 0 &&
+                    $this->renewalCount % 4 !== 0
+                ) {
+                    $markAsPaidOnly = true;
+                }
+            }
+            if (
+                ($this->cashOrder && $this->status !== 'paused') ||
+                (!$this->cashOrder &&
+                    $this->status !== 'paused' &&
+                    $this->amount < 0.5)
+            ) {
                 $markAsPaidOnly = true;
             }
-        }
-        if (
-            ($this->cashOrder && $this->status !== 'paused') ||
-            (!$this->cashOrder &&
-                $this->status !== 'paused' &&
-                $this->amount < 0.5)
-        ) {
-            $markAsPaidOnly = true;
-        }
 
-        // Charge
-        $charge = $applyCharge ? $this->renewalCharge() : null;
+            // Charge
+            $charge = $applyCharge ? $this->renewalCharge() : null;
 
-        $latestOrder->paid = $applyCharge || $markAsPaidOnly ? 1 : 0;
-        $latestOrder->paid_at =
-            $applyCharge || $markAsPaidOnly ? new Carbon() : null;
-        $latestOrder->stripe_id = $charge ? $charge->id : null;
-        $latestOrder->save();
+            $latestOrder->paid = $applyCharge || $markAsPaidOnly ? 1 : 0;
+            $latestOrder->paid_at =
+                $applyCharge || $markAsPaidOnly ? new Carbon() : null;
+            $latestOrder->stripe_id = $charge ? $charge->id : null;
+            $latestOrder->save();
 
-        $latestOrder->events()->create([
-            'type' => 'payment_succeeded',
-            'stripe_event' => !$applyCharge ? json_encode($charge) : null
-        ]);
+            $latestOrder->events()->create([
+                'type' => 'payment_succeeded',
+                'stripe_event' => !$applyCharge ? json_encode($charge) : null
+            ]);
 
-        $order_transaction = new OrderTransaction();
-        $order_transaction->order_id = $latestOrder->id;
-        $order_transaction->store_id = $latestOrder->store_id;
-        $order_transaction->user_id = $latestOrder->user_id;
-        $order_transaction->customer_id = $latestOrder->customer_id;
-        $order_transaction->type = 'order';
-        $order_transaction->stripe_id = $latestOrder->stripe_id
-            ? $latestOrder->stripe_id
-            : null;
-        $order_transaction->card_id = $latestOrder->card_id
-            ? $latestOrder->card_id
-            : null;
-        $order_transaction->amount = $latestOrder->amount;
-        $order_transaction->save();
+            $order_transaction = new OrderTransaction();
+            $order_transaction->order_id = $latestOrder->id;
+            $order_transaction->store_id = $latestOrder->store_id;
+            $order_transaction->user_id = $latestOrder->user_id;
+            $order_transaction->customer_id = $latestOrder->customer_id;
+            $order_transaction->type = 'order';
+            $order_transaction->stripe_id = $latestOrder->stripe_id
+                ? $latestOrder->stripe_id
+                : null;
+            $order_transaction->card_id = $latestOrder->card_id
+                ? $latestOrder->card_id
+                : null;
+            $order_transaction->amount = $latestOrder->amount;
+            $order_transaction->save();
 
-        // Create new order for next delivery
-        $newOrder = new Order();
+            // Create new order for next delivery
+            $newOrder = new Order();
 
-        $newOrder->user_id = $this->user_id;
-        $newOrder->customer_id = $this->customer_id;
-        $newOrder->card_id = $this->card_id ? $this->card_id : null;
-        $newOrder->store_id = $this->store->id;
-        $newOrder->subscription_id = $this->id;
-        $newOrder->order_number =
-            strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
-            chr(rand(65, 90)) .
-            rand(10, 99);
-        $newOrder->preFeePreDiscount = $this->preFeePreDiscount;
-        $newOrder->mealPlanDiscount = $this->mealPlanDiscount;
-        $newOrder->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
-        $newOrder->deliveryFee = $this->deliveryFee;
-        $newOrder->gratuity = $this->gratuity;
-        $newOrder->coolerDeposit = $this->coolerDeposit;
-        $newOrder->processingFee = $this->processingFee;
-        $newOrder->salesTax = $this->salesTax;
-        $newOrder->coupon_id = $this->coupon_id;
-        $newOrder->couponReduction = $this->couponReduction;
-        $newOrder->couponCode = $this->couponCode;
-        $newOrder->referralReduction = $this->referralReduction;
-        $newOrder->purchased_gift_card_id = $this->purchased_gift_card_id;
-        $newOrder->purchasedGiftCardReduction =
-            $this->purchasedGiftCardReduction;
-        $newOrder->promotionReduction = $this->promotionReduction;
-        $newOrder->pointsReduction = $this->pointsReduction;
-        $newOrder->originalAmount = $this->amount;
-        $newOrder->amount = $this->amount;
-        $newOrder->currency = $this->currency;
-        $newOrder->fulfilled = false;
-        $newOrder->pickup = $this->pickup;
-        $newOrder->shipping = $this->shipping;
-        $newOrder->cashOrder = $this->cashOrder;
+            $newOrder->user_id = $this->user_id;
+            $newOrder->customer_id = $this->customer_id;
+            $newOrder->card_id = $this->card_id ? $this->card_id : null;
+            $newOrder->store_id = $this->store->id;
+            $newOrder->subscription_id = $this->id;
+            $newOrder->order_number =
+                strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
+                chr(rand(65, 90)) .
+                rand(10, 99);
+            $newOrder->preFeePreDiscount = $this->preFeePreDiscount;
+            $newOrder->mealPlanDiscount = $this->mealPlanDiscount;
+            $newOrder->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
+            $newOrder->deliveryFee = $this->deliveryFee;
+            $newOrder->gratuity = $this->gratuity;
+            $newOrder->coolerDeposit = $this->coolerDeposit;
+            $newOrder->processingFee = $this->processingFee;
+            $newOrder->salesTax = $this->salesTax;
+            $newOrder->coupon_id = $this->coupon_id;
+            $newOrder->couponReduction = $this->couponReduction;
+            $newOrder->couponCode = $this->couponCode;
+            $newOrder->referralReduction = $this->referralReduction;
+            $newOrder->purchased_gift_card_id = $this->purchased_gift_card_id;
+            $newOrder->purchasedGiftCardReduction =
+                $this->purchasedGiftCardReduction;
+            $newOrder->promotionReduction = $this->promotionReduction;
+            $newOrder->pointsReduction = $this->pointsReduction;
+            $newOrder->originalAmount = $this->amount;
+            $newOrder->amount = $this->amount;
+            $newOrder->currency = $this->currency;
+            $newOrder->fulfilled = false;
+            $newOrder->pickup = $this->pickup;
+            $newOrder->shipping = $this->shipping;
+            $newOrder->cashOrder = $this->cashOrder;
 
-        $newOrder->pickup_location_id = $this->pickup_location_id;
-        $newOrder->transferTime = $this->transferTime;
+            $newOrder->pickup_location_id = $this->pickup_location_id;
+            $newOrder->transferTime = $this->transferTime;
 
-        // Refine this
-        $newOrder->delivery_date = $latestOrder->delivery_date->addWeeks(
-            $this->intervalCount
-        );
-        $newOrder->isMultipleDelivery = $this->isMultipleDelivery;
-        $newOrder->save();
+            // Refine this
+            $newOrder->delivery_date = $latestOrder->delivery_date->addWeeks(
+                $this->intervalCount
+            );
+            $newOrder->isMultipleDelivery = $this->isMultipleDelivery;
+            $newOrder->save();
 
-        // Assign meal package orders from meal package subscriptions
-        foreach ($this->meal_package_subscriptions as $mealPackageSub) {
-            $mealPackageOrder = new MealPackageOrder();
-            $mealPackageOrder->store_id = $this->store->id;
-            $mealPackageOrder->order_id = $newOrder->id;
-            $mealPackageOrder->meal_package_id =
-                $mealPackageSub->meal_package_id;
-            $mealPackageOrder->meal_package_size_id =
-                $mealPackageSub->meal_package_size_id;
-            $mealPackageOrder->quantity = $mealPackageSub->quantity;
-            $mealPackageOrder->price = $mealPackageSub->price;
-            $mealPackageOrder->customTitle = $mealPackageSub->customTitle;
-            $mealPackageOrder->customSize = $mealPackageSub->customSize;
-            if ($isMultipleDelivery == 1 && $mealPackageSub->delivery_date) {
-                $mealPackageSub->delivery_date = $mealPackageSub->delivery_date->addWeeks(
-                    $this->intervalCount
-                );
-                $mealPackageSub->save();
-                $mealPackageOrder->delivery_date =
-                    $mealPackageSub->delivery_date;
-            }
-            $mealPackageOrder->mappingId = $mealPackageSub->mappingId;
-            $mealPackageOrder->category_id = $mealPackageSub->category_id;
-            $mealPackageOrder->save();
-        }
-
-        // Assign subscription meals to new order
-        foreach ($this->fresh()->meal_subscriptions as $mealSub) {
-            $mealOrder = new MealOrder();
-            $mealOrder->order_id = $newOrder->id;
-            $mealOrder->store_id = $this->store->id;
-            $mealOrder->meal_id = $mealSub->meal_id;
-            $mealOrder->meal_size_id = $mealSub->meal_size_id;
-            $mealOrder->quantity = $mealSub->quantity;
-            $mealOrder->price = $mealSub->price;
-            $mealOrder->special_instructions = $mealSub->special_instructions;
-            $mealOrder->meal_package = $mealSub->meal_package
-                ? $mealSub->meal_package
-                : 0;
-            $mealOrder->free = $mealSub->free ? $mealSub->free : 0;
-            $mealOrder->customTitle = $mealSub->customTitle;
-            $mealOrder->customSize = $mealSub->customSize;
-            $mealOrder->category_id = $mealSub->category_id;
-
-            // For purposes of showing added price on components & addons that cost extra. Eventually switch entirely to just having price and not be meal_package_variation
-            if ($mealSub->price > 0 && $mealSub->meal_package) {
-                $mealOrder->meal_package_variation = 1;
-            }
-
-            if ($mealSub->meal_package_subscription_id !== null) {
-                $mealPackageSub = MealPackageSubscription::where(
-                    'id',
-                    $mealSub->meal_package_subscription_id
-                )->first();
-                $mealOrder->meal_package_order_id = MealPackageOrder::where([
-                    'meal_package_id' => $mealPackageSub->meal_package_id,
-                    'meal_package_size_id' =>
-                        $mealPackageSub->meal_package_size_id,
-                    'order_id' => $newOrder->id,
-                    'mappingId' => $mealPackageSub->mappingId
-                ])
-                    ->pluck('id')
-                    ->first();
-            }
-
-            if ($isMultipleDelivery == 1 && $mealSub->delivery_date) {
-                $mealSub->delivery_date = $mealSub->delivery_date->addWeeks(
-                    $this->intervalCount
-                );
-
-                $mealSub->save();
-                $mealOrder->delivery_date = $mealSub->delivery_date;
-            }
-
-            $mealOrder->save();
-
-            if ($mealSub->has('components')) {
-                foreach ($mealSub->components as $component) {
-                    MealOrderComponent::create([
-                        'meal_order_id' => $mealOrder->id,
-                        'meal_component_id' => $component->meal_component_id,
-                        'meal_component_option_id' =>
-                            $component->meal_component_option_id
-                    ]);
+            // Assign meal package orders from meal package subscriptions
+            foreach ($this->meal_package_subscriptions as $mealPackageSub) {
+                $mealPackageOrder = new MealPackageOrder();
+                $mealPackageOrder->store_id = $this->store->id;
+                $mealPackageOrder->order_id = $newOrder->id;
+                $mealPackageOrder->meal_package_id =
+                    $mealPackageSub->meal_package_id;
+                $mealPackageOrder->meal_package_size_id =
+                    $mealPackageSub->meal_package_size_id;
+                $mealPackageOrder->quantity = $mealPackageSub->quantity;
+                $mealPackageOrder->price = $mealPackageSub->price;
+                $mealPackageOrder->customTitle = $mealPackageSub->customTitle;
+                $mealPackageOrder->customSize = $mealPackageSub->customSize;
+                if (
+                    $isMultipleDelivery == 1 &&
+                    $mealPackageSub->delivery_date
+                ) {
+                    $mealPackageSub->delivery_date = $mealPackageSub->delivery_date->addWeeks(
+                        $this->intervalCount
+                    );
+                    $mealPackageSub->save();
+                    $mealPackageOrder->delivery_date =
+                        $mealPackageSub->delivery_date;
                 }
+                $mealPackageOrder->mappingId = $mealPackageSub->mappingId;
+                $mealPackageOrder->category_id = $mealPackageSub->category_id;
+                $mealPackageOrder->save();
             }
 
-            if ($mealSub->has('addons')) {
-                foreach ($mealSub->addons as $addon) {
-                    MealOrderAddon::create([
-                        'meal_order_id' => $mealOrder->id,
-                        'meal_addon_id' => $addon->meal_addon_id
-                    ]);
+            // Assign subscription meals to new order
+            foreach ($this->fresh()->meal_subscriptions as $mealSub) {
+                $mealOrder = new MealOrder();
+                $mealOrder->order_id = $newOrder->id;
+                $mealOrder->store_id = $this->store->id;
+                $mealOrder->meal_id = $mealSub->meal_id;
+                $mealOrder->meal_size_id = $mealSub->meal_size_id;
+                $mealOrder->quantity = $mealSub->quantity;
+                $mealOrder->price = $mealSub->price;
+                $mealOrder->special_instructions =
+                    $mealSub->special_instructions;
+                $mealOrder->meal_package = $mealSub->meal_package
+                    ? $mealSub->meal_package
+                    : 0;
+                $mealOrder->free = $mealSub->free ? $mealSub->free : 0;
+                $mealOrder->customTitle = $mealSub->customTitle;
+                $mealOrder->customSize = $mealSub->customSize;
+                $mealOrder->category_id = $mealSub->category_id;
+
+                // For purposes of showing added price on components & addons that cost extra. Eventually switch entirely to just having price and not be meal_package_variation
+                if ($mealSub->price > 0 && $mealSub->meal_package) {
+                    $mealOrder->meal_package_variation = 1;
                 }
-            }
-        }
 
-        if ($this->status !== 'paused') {
-            // Send new order notification to store at the cutoff once the order is paid
-            if ($this->store->settings->notificationEnabled('new_order')) {
-                $this->store->sendNotification('new_order', [
-                    'order' => $latestOrder ?? null,
-                    'pickup' => $latestOrder->pickup ?? null,
-                    'card' => null,
-                    'customer' => $latestOrder->customer ?? null,
-                    'subscription' => $this ?? null
-                ]);
-            }
+                if ($mealSub->meal_package_subscription_id !== null) {
+                    $mealPackageSub = MealPackageSubscription::where(
+                        'id',
+                        $mealSub->meal_package_subscription_id
+                    )->first();
+                    $mealOrder->meal_package_order_id = MealPackageOrder::where(
+                        [
+                            'meal_package_id' =>
+                                $mealPackageSub->meal_package_id,
+                            'meal_package_size_id' =>
+                                $mealPackageSub->meal_package_size_id,
+                            'order_id' => $newOrder->id,
+                            'mappingId' => $mealPackageSub->mappingId
+                        ]
+                    )
+                        ->pluck('id')
+                        ->first();
+                }
 
-            // Send new order notification to customer at the cutoff once the order is paid
-            if ($this->user->details->notificationEnabled('new_order')) {
-                $this->user->sendNotification('new_order', [
-                    'order' => $latestOrder ?? null,
-                    'pickup' => $latestOrder->pickup ?? null,
-                    'card' => null,
-                    'customer' => $latestOrder->customer ?? null,
-                    'subscription' => $this ?? null
-                ]);
-            }
+                if ($isMultipleDelivery == 1 && $mealSub->delivery_date) {
+                    $mealSub->delivery_date = $mealSub->delivery_date->addWeeks(
+                        $this->intervalCount
+                    );
 
-            // Updating item stock
-            if ($this->store->modules->stockManagement) {
-                foreach ($this->meal_subscriptions as $mealSub) {
-                    $meal = Meal::where('id', $mealSub->meal_id)->first();
-                    if ($meal && $meal->stock !== null) {
-                        if ($meal->stock === 0) {
-                            $mealSub->delete();
-                            $this->syncPrices();
-                        } elseif ($meal->stock < $mealSub->quantity) {
-                            $unitPrice = $mealSub->price / $mealSub->quantity;
-                            $mealSub->quantity = $meal->stock;
-                            $mealSub->price = $unitPrice * $mealSub->quantity;
-                            $mealSub->update();
-                            $meal->stock = 0;
-                            $meal->lastOutOfStock = date('Y-m-d H:i:s');
-                            $meal->active = 0;
-                            $this->syncPrices();
-                        } else {
-                            $meal->stock -= $mealSub->quantity;
-                            if ($meal->stock === 0) {
-                                $meal->lastOutOfStock = date('Y-m-d H:i:s');
-                                $meal->active = 0;
-                            }
-                        }
-                        $meal->update();
+                    $mealSub->save();
+                    $mealOrder->delivery_date = $mealSub->delivery_date;
+                }
+
+                $mealOrder->save();
+
+                if ($mealSub->has('components')) {
+                    foreach ($mealSub->components as $component) {
+                        MealOrderComponent::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_component_id' =>
+                                $component->meal_component_id,
+                            'meal_component_option_id' =>
+                                $component->meal_component_option_id
+                        ]);
+                    }
+                }
+
+                if ($mealSub->has('addons')) {
+                    foreach ($mealSub->addons as $addon) {
+                        MealOrderAddon::create([
+                            'meal_order_id' => $mealOrder->id,
+                            'meal_addon_id' => $addon->meal_addon_id
+                        ]);
                     }
                 }
             }
-        }
 
-        $this->renewalCount += 1;
-        $this->next_renewal_at = $this->next_renewal_at
-            ->addWeeks($this->intervalCount)
-            ->minute(0)
-            ->second(0);
-        $this->save();
+            if ($this->status !== 'paused') {
+                // Send new order notification to store at the cutoff once the order is paid
+                if ($this->store->settings->notificationEnabled('new_order')) {
+                    $this->store->sendNotification('new_order', [
+                        'order' => $latestOrder ?? null,
+                        'pickup' => $latestOrder->pickup ?? null,
+                        'card' => null,
+                        'customer' => $latestOrder->customer ?? null,
+                        'subscription' => $this ?? null
+                    ]);
+                }
+
+                // Send new order notification to customer at the cutoff once the order is paid
+                if ($this->user->details->notificationEnabled('new_order')) {
+                    $this->user->sendNotification('new_order', [
+                        'order' => $latestOrder ?? null,
+                        'pickup' => $latestOrder->pickup ?? null,
+                        'card' => null,
+                        'customer' => $latestOrder->customer ?? null,
+                        'subscription' => $this ?? null
+                    ]);
+                }
+
+                // Updating item stock
+                if ($this->store->modules->stockManagement) {
+                    foreach ($this->meal_subscriptions as $mealSub) {
+                        $meal = Meal::where('id', $mealSub->meal_id)->first();
+                        if ($meal && $meal->stock !== null) {
+                            if ($meal->stock === 0) {
+                                $mealSub->delete();
+                                $this->syncPrices();
+                            } elseif ($meal->stock < $mealSub->quantity) {
+                                $unitPrice =
+                                    $mealSub->price / $mealSub->quantity;
+                                $mealSub->quantity = $meal->stock;
+                                $mealSub->price =
+                                    $unitPrice * $mealSub->quantity;
+                                $mealSub->update();
+                                $meal->stock = 0;
+                                $meal->lastOutOfStock = date('Y-m-d H:i:s');
+                                $meal->active = 0;
+                                $this->syncPrices();
+                            } else {
+                                $meal->stock -= $mealSub->quantity;
+                                if ($meal->stock === 0) {
+                                    $meal->lastOutOfStock = date('Y-m-d H:i:s');
+                                    $meal->active = 0;
+                                }
+                            }
+                            $meal->update();
+                        }
+                    }
+                }
+            }
+
+            $this->renewalCount += 1;
+            $this->next_renewal_at = $this->next_renewal_at
+                ->addWeeks($this->intervalCount)
+                ->minute(0)
+                ->second(0);
+            $this->save();
+        } catch (\Exception $e) {
+            $this->failed_renewal = Carbon::now('UTC');
+            $this->save();
+        }
     }
 
     public function removeOneTimeCoupons()
