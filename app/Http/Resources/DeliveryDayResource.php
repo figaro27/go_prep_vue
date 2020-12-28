@@ -36,7 +36,8 @@ class DeliveryDayResource extends JsonResource
             'store_id' => $this->store_id,
             'type' => $this->type,
             'updated_at' => $this->updated_at,
-            'has_items' => $this->has_items
+            'has_items' => $this->has_items,
+            'minimum' => $this->minimum
         ];
     }
 }

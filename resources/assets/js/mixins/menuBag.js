@@ -107,26 +107,22 @@ export default {
 
       // Check delivery day minimum passes
       if (this.isMultipleDelivery) {
-        if (this.minimumDeliveryDayAmount > 0) {
-          let groupTotal = [];
-          this.groupBag.forEach((group, index) => {
-            groupTotal[index] = 0;
-            group.items.forEach(item => {
-              groupTotal[index] += item.price * item.quantity;
-            });
+        let groupBag = _.groupBy(this.bag, function(item) {
+          return item.delivery_day.day_friendly;
+        });
+        Object.values(groupBag).forEach(groupBagItem => {
+          let groupBagItemTotal = 0;
+          groupBagItem.forEach(bagItem => {
+            groupBagItemTotal += bagItem.price * bagItem.quantity;
           });
-
           if (
-            groupTotal.every(item => {
-              return item > this.minimumDeliveryDayAmount;
-            }) ||
-            groupTotal.length == 0
+            groupBagItem[0].delivery_day.minimum &&
+            groupBagItemTotal < groupBagItem[0].delivery_day.minimum
           ) {
-            deliveryDayMinimumPassed = true;
-          } else {
             deliveryDayMinimumPassed = false;
           }
-        }
+          groupBagItemTotal = 0;
+        });
       }
 
       // Check if category minimum passes
