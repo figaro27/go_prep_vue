@@ -20,6 +20,8 @@ use App\MealComponentOption;
 use App\MealSubscriptionComponent;
 use App\MealSubscriptionAddon;
 use App\PurchasedGiftCard;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RenewalFailed;
 
 class Subscription extends Model
 {
@@ -692,8 +694,16 @@ class Subscription extends Model
                 ->second(0);
             $this->save();
         } catch (\Exception $e) {
+            $id = $this->id;
+            $sub = $this->replicate();
+            $sub->id = $id;
+            $sub->error = $e->getMessage();
+            $sub->timestamp = Carbon::now('utc')->subHours('5');
+            $email = new RenewalFailed($sub->toArray());
+            Mail::to('mike@goprep.com')->send($email);
             $this->failed_renewal = Carbon::now('UTC');
             $this->save();
+            throw $e;
         }
     }
 

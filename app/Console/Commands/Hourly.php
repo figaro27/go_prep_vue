@@ -315,10 +315,6 @@ class Hourly extends Command
                 $sub->renew();
                 $count++;
             } catch (\Exception $e) {
-                $sub['error'] = $e->getMessage();
-                $sub['timestamp'] = Carbon::now('utc')->subHours('5');
-                $email = new RenewalFailed($sub->toArray());
-                Mail::to('mike@goprep.com')->send($email);
             }
         }
 

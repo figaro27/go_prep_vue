@@ -1022,6 +1022,12 @@ export default {
           this.refreshSubscriptions();
           this.showRenewModal = false;
           this.$toastr.s("Subscription renewed.");
+        })
+        .catch(e => {
+          this.$toastr.w(
+            "Subscription failed to renew. Reason: " +
+              JSON.stringify(e.response.data.message)
+          );
         });
     },
     updateRenewalDate() {
