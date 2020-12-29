@@ -1440,10 +1440,7 @@ export default {
         } else {
           this.customerModel = null;
         }
-        // if (this.$route.params.manualOrder) {
-        //   this.getCards();
-        // }
-        if (this.context === "store") {
+        if (this.$route.params.manualOrder) {
           this.getCards();
         }
       }
@@ -1549,7 +1546,8 @@ export default {
           : 0;
     }
 
-    if (this.$route.params.subscription) {
+    if (this.adjustingSubscription) {
+      this.getCards();
       let cardId = this.$route.params.subscription.card_id;
       this.card = cardId;
       this.creditCardId = cardId;
