@@ -59,11 +59,7 @@
       :storeView="$parent.storeView"
     ></outside-delivery-area>
 
-    <div
-      class="col-md-12"
-      v-for="promotion in activePromotions"
-      :key="promotion.id"
-    >
+    <div v-for="promotion in activePromotions" :key="promotion.id">
       <b-alert
         variant="success"
         show
@@ -170,6 +166,15 @@
         <br />Your referral link is
         <a :href="referralUrl">{{ referralUrl }}</a>
       </p>
+    </div>
+
+    <div>
+      <b-alert show variant="primary" v-if="adjustingSubscription">
+        <p class="center-text mt-3 strong">
+          You can update the items in your subscription on this page. Simply add
+          or remove items from your bag and then click Continue when ready.
+        </p>
+      </b-alert>
     </div>
 
     <p v-html="store.details.description" v-if="store.details.description"></p>
@@ -995,6 +1000,16 @@ export default {
       minPrice: "minimumPrice",
       menuSettings: "viewedStoreMenuSettings"
     }),
+    adjustingSubscription() {
+      if (
+        this.$parent.subscriptionId ||
+        this.$route.params.adjustMealPlan ||
+        this.$parent.adjustMealPlan ||
+        this.$route.query.sub === "true"
+      ) {
+        return true;
+      }
+    },
     referralSettings() {
       return this.store.referral_settings;
     },

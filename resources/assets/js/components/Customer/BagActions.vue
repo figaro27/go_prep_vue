@@ -37,7 +37,7 @@
         @click="checkMinimum"
         v-if="!minimumMet && !storeView && !bagView"
         class="menu-bag-btn gray"
-        >NEXT</b-btn
+        >CONTINUE</b-btn
       >
 
       <b-btn
@@ -60,7 +60,7 @@
         }"
         v-if="minimumMet && !storeView && !bagView"
         class="menu-bag-btn"
-        >NEXT</b-btn
+        >CONTINUE</b-btn
       >
 
       <b-btn
