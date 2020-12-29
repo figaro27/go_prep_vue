@@ -1029,7 +1029,9 @@ export default {
         plan: this.form[3],
         planless: this.planless,
         freeTrial: this.freeTrial,
-        last_viewed_store_id: this.$route.query.store_id ?? null
+        last_viewed_store_id: this.$route.query.store_id
+          ? this.$route.query.store_id
+          : null
       };
 
       if (data.user.role === "store") {
