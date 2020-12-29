@@ -114,6 +114,20 @@ export default {
       this.setBagGratuityPercent("custom");
       this.setBagCustomGratuity(subscription.gratuity);
 
+      let interval = null;
+      switch (subscription.intervalCount) {
+        case 1:
+          interval = "week";
+          break;
+        case 2:
+          interval = "biweek";
+          break;
+        case 4:
+          interval = "month";
+          break;
+      }
+      this.setBagSubscriptionInterval(interval);
+
       let stop = false;
 
       let delivery_days = [];
