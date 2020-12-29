@@ -1550,6 +1550,7 @@ export default {
       let cardId = this.$route.params.subscription.card_id;
       this.card = cardId;
       this.creditCardId = cardId;
+      this.getCards(this.$route.params.subscription.customer_id);
     }
   },
   mixins: [MenuBag],
@@ -3449,7 +3450,7 @@ use next_delivery_dates
         lineItemOrders: this.orderLineItems
       });
     },
-    getCards() {
+    getCards(customerId = null) {
       if (this.store.modules.cashOrderAutoSelect) {
         return;
       }
@@ -3461,7 +3462,11 @@ use next_delivery_dates
       this.$nextTick(() => {
         axios
           .post("/api/me/getCards", {
-            id: this.customerModel ? this.customerModel.value : this.customer
+            id: customerId
+              ? customerId
+              : this.customerModel
+              ? this.customerModel.value
+              : this.customer
           })
           .then(response => {
             this.$parent.creditCardList = response.data;
