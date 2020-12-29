@@ -1016,7 +1016,7 @@
             >Add New Customer</b-btn
           >
         </div>
-        <div v-if="!hidePaymentArea && !hidePaymentMethod">
+        <div v-if="!hidePaymentArea && showPaymentMethod">
           <h4 class="mt-2 mb-3">
             Payment Method
           </h4>
@@ -3024,21 +3024,17 @@ use next_delivery_dates
         return true;
       else return false;
     },
-    hidePaymentMethod() {
+    showPaymentMethod() {
       if (
+        (this.loggedIn && !this.cashOrder && this.grandTotal > 0) ||
         (this.loggedIn &&
-          !this.card &&
-          !this.cashOrder &&
-          this.grandTotal > 0) ||
-        (this.loggedIn &&
-          !this.card &&
           !this.cashOrder &&
           this.grandTotal == 0 &&
           this.weeklySubscriptionValue)
       ) {
-        return false;
-      } else {
         return true;
+      } else {
+        return false;
       }
     },
     hasActiveSubscription() {
@@ -3139,7 +3135,7 @@ use next_delivery_dates
         return "Please choose a customer.";
       }
 
-      if (!this.hidePaymentMethod) {
+      if (this.showPaymentMethod && !this.card) {
         return "Please enter a payment method.";
       }
 
