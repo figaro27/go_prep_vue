@@ -169,7 +169,11 @@
     </div>
 
     <div>
-      <b-alert show variant="primary" v-if="adjustingSubscription">
+      <b-alert
+        show
+        variant="primary"
+        v-if="adjustingSubscription && context !== 'store'"
+      >
         <p class="center-text mt-3 strong">
           You can update the items in your subscription on this page. Simply add
           or remove items from your bag and then click Continue when ready.
