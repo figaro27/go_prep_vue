@@ -71,7 +71,8 @@ export default {
       "setBagPickupLocation",
       "setBagGratuityPercent",
       "setBagCustomGratuity",
-      "setBagCoupon"
+      "setBagCoupon",
+      "setBagSubscriptionInterval"
     ]),
     setSubscriptionCoupon() {
       axios

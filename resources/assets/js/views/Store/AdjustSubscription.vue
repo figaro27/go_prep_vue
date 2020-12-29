@@ -54,7 +54,8 @@ export default {
       "setBagPickupLocation",
       "setBagGratuityPercent",
       "setBagCustomGratuity",
-      "setBagCoupon"
+      "setBagCoupon",
+      "setBagSubscriptionInterval"
     ]),
     getSub() {
       axios.get("/api/me/subscriptions/" + this.subscriptionId).then(resp => {
