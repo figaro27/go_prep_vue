@@ -277,7 +277,9 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.refreshStoreCustomers();
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -319,7 +321,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["refreshStoreReferrals", "refreshStoreReferralSettings"]),
+    ...mapActions([
+      "refreshStoreReferrals",
+      "refreshStoreReferralSettings",
+      "refreshStoreCustomers"
+    ]),
     formatMoney: format.money,
     updateReferralSettings() {
       let referralSettings = { ...this.referralSettings };
