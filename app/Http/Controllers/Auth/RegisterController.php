@@ -462,7 +462,12 @@ class RegisterController extends Controller
                     ? '/store/account/settings'
                     : $user->store->getConnectUrl();
         } else {
-            $store = defined('STORE_ID') ? Store::find(STORE_ID) : null;
+            $store = isset($user->last_viewed_store_id)
+                ? $user->last_viewed_store_id
+                : null;
+            if (!$store) {
+                $store = defined('STORE_ID') ? Store::find(STORE_ID) : null;
+            }
             $redirect = $store ? '/customer/menu' : '/customer/home';
         }
 
