@@ -1440,7 +1440,10 @@ export default {
         } else {
           this.customerModel = null;
         }
-        if (this.$route.params.manualOrder) {
+        // if (this.$route.params.manualOrder) {
+        //   this.getCards();
+        // }
+        if (this.context === "store") {
           this.getCards();
         }
       }
