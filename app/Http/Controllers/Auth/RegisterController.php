@@ -165,7 +165,8 @@ class RegisterController extends Controller
                 chr(rand(65, 90)) .
                 rand(0, 9) .
                 rand(0, 9) .
-                chr(rand(65, 90))
+                chr(rand(65, 90)),
+            'last_viewed_store_id' => $data['last_viewed_store_id'] ?? null
         ]);
 
         $zip = $data['user_details']['zip']

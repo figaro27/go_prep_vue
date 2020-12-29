@@ -46,6 +46,7 @@ class User extends Authenticatable implements JWTSubject
         'accepted_tos',
         'stripe_id',
         'added_by_store_id',
+        'last_viewed_store_id',
         'referralUrlCode'
     ];
 
