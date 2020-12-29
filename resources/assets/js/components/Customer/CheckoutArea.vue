@@ -1547,7 +1547,6 @@ export default {
     }
 
     if (this.adjustingSubscription) {
-      this.getCards();
       let cardId = this.$route.params.subscription.card_id;
       this.card = cardId;
       this.creditCardId = cardId;
