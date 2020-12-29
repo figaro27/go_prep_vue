@@ -84,6 +84,16 @@
             placeholder="Enter email"
           ></b-form-input>
         </b-form-group>
+        <b-form-group horizontal label="Password">
+          <b-form-checkbox v-model="noPassword">Make Random</b-form-checkbox>
+          <b-form-input
+            v-if="!noPassword"
+            v-model="form.password"
+            type="text"
+            required
+            placeholder="Enter password"
+          ></b-form-input>
+        </b-form-group>
         <b-form-group horizontal label="Address">
           <b-form-checkbox v-model="noAddress">Don't Have</b-form-checkbox>
           <b-form-input
@@ -162,6 +172,7 @@ export default {
   data() {
     return {
       noEmail: false,
+      noPassword: false,
       noAddress: false,
       existingEmail: "",
       showExistingCustomerAlert: false,

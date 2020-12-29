@@ -47,12 +47,15 @@ class RegisterController extends StoreController
             : 'noemail-' .
                 substr(uniqid(rand(10, 99), false), 0, 12) .
                 '@goprep.com';
+        $password = $request->get('password');
 
         if (!$user) {
             $user = User::create([
                 'user_role_id' => 1,
                 'email' => $email,
-                'password' => Hash::make(str_random(10)),
+                'password' => $password
+                    ? bcrypt($password)
+                    : Hash::make(str_random(10)),
                 'timezone' => 'America/New_York',
                 'remember_token' => Hash::make(str_random(10)),
                 'accepted_tos' => 1,
