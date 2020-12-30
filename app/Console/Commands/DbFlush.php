@@ -5,14 +5,14 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class FlushDB extends Command
+class DbFlush extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'flush:db';
+    protected $signature = 'db:flush';
 
     /**
      * The console command description.

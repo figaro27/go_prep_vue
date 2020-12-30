@@ -40,6 +40,9 @@ class DatabaseSeeder extends Seeder
         $this->call(ReportRecordsSeeder::class);
         $this->call(MenuSettingsSeeder::class);
 
+        Artisan::call('db:dump', [
+            'path' => database_path() . '/backups/local-db.sql'
+        ]);
         Artisan::call('migrate:images');
     }
 }
