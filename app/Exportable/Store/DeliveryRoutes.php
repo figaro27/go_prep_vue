@@ -92,7 +92,7 @@ class DeliveryRoutes
         $client = new \GuzzleHttp\Client();
 
         try {
-            if (isset($stops)) {
+            if ($stops) {
                 $res = $client->request('POST', $url, [
                     'headers' => $this->headers,
                     'json' => [
