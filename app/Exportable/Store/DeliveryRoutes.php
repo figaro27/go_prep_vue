@@ -92,7 +92,7 @@ class DeliveryRoutes
         $client = new \GuzzleHttp\Client();
 
         try {
-            if ($stops) {
+            if (isset($stops)) {
                 $res = $client->request('POST', $url, [
                     'headers' => $this->headers,
                     'json' => [
@@ -144,6 +144,8 @@ class DeliveryRoutes
                 $reportRecord->update();
 
                 return $routes;
+            } else {
+                dd();
             }
         } catch (\Exception $e) {
             dd();
