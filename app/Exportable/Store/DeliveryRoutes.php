@@ -92,56 +92,59 @@ class DeliveryRoutes
         $client = new \GuzzleHttp\Client();
 
         try {
-            $res = $client->request('POST', $url, [
-                'headers' => $this->headers,
-                'json' => [
-                    'stops' => $stops,
-                    'depots' => $depots,
-                    'vehicles' => $vehicles,
-                    'generalSettings' => $generalSettings
-                ]
-            ]);
+            if (isset($stops)) {
+                $res = $client->request('POST', $url, [
+                    'headers' => $this->headers,
+                    'json' => [
+                        'stops' => $stops,
+                        'depots' => $depots,
+                        'vehicles' => $vehicles,
+                        'generalSettings' => $generalSettings
+                    ]
+                ]);
 
-            $status = $res->getStatusCode();
-            $body = $res->getBody();
+                $status = $res->getStatusCode();
+                $body = $res->getBody();
 
-            $data = json_decode($body->getContents());
-
-            $routes[] = [
-                "startingAddress" => $data->data->details->depots[0]->address,
-                "stops" => $data->data->stats->total_plan_stops,
-                "miles" => ceil(
-                    $data->data->stats->total_plan_distance * 0.621371
-                )
-            ];
-
-            foreach ($data->data->details->stops as $stop) {
-                // Get the delivery instructions
-                $address = explode(',', $stop->address);
-
-                $userDetail = UserDetail::where([
-                    'address' => $address[0],
-                    'city' => ltrim($address[1]),
-                    'state' => ltrim($address[2]),
-                    'zip' => ltrim($address[3])
-                ])->first();
+                $data = json_decode($body->getContents());
 
                 $routes[] = [
-                    "name" => $stop->name,
-                    "address" => $stop->address,
-                    "phone" => $userDetail ? $userDetail->phone : null,
-                    "delivery" => $userDetail ? $userDetail->delivery : null
+                    "startingAddress" =>
+                        $data->data->details->depots[0]->address,
+                    "stops" => $data->data->stats->total_plan_stops,
+                    "miles" => ceil(
+                        $data->data->stats->total_plan_distance * 0.621371
+                    )
                 ];
+
+                foreach ($data->data->details->stops as $stop) {
+                    // Get the delivery instructions
+                    $address = explode(',', $stop->address);
+
+                    $userDetail = UserDetail::where([
+                        'address' => $address[0],
+                        'city' => ltrim($address[1]),
+                        'state' => ltrim($address[2]),
+                        'zip' => ltrim($address[3])
+                    ])->first();
+
+                    $routes[] = [
+                        "name" => $stop->name,
+                        "address" => $stop->address,
+                        "phone" => $userDetail ? $userDetail->phone : null,
+                        "delivery" => $userDetail ? $userDetail->delivery : null
+                    ];
+                }
+
+                $reportRecord = ReportRecord::where(
+                    'store_id',
+                    $this->store->id
+                )->first();
+                $reportRecord->delivery_routes += 1;
+                $reportRecord->update();
+
+                return $routes;
             }
-
-            $reportRecord = ReportRecord::where(
-                'store_id',
-                $this->store->id
-            )->first();
-            $reportRecord->delivery_routes += 1;
-            $reportRecord->update();
-
-            return $routes;
         } catch (\Exception $e) {
             dd();
         }
