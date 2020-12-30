@@ -36,23 +36,7 @@ class AppServiceProvider extends ServiceProvider
             }
         }
 
-        /**
-         * Handle custom store domains
-         */
-        $fullHost = request()->getHttpHost();
-        $extract = new \LayerShifter\TLDExtract\Extract();
-        $hostParts = $extract->parse($fullHost);
-        $domain = $hostParts->getRegistrableDomain();
-        $domains = config('app.domains');
-
-        if (array_key_exists($domain, $domains)) {
-            $hostConfig = $domains[$domain];
-            config([
-                'app.domain' => $domain,
-                'app.url' => 'https://' . $domain,
-                'app.front_url' => $hostConfig['front_url']
-            ]);
-        }
+        $this->setupCustomDomain();
 
         Schema::defaultStringLength(191);
 
@@ -127,6 +111,33 @@ class AppServiceProvider extends ServiceProvider
 
             return $this;
         });
+    }
+
+    /**
+     * Handle custom store domain
+     */
+    protected function setupCustomDomain(): void
+    {
+        $fullHost = request()->getHttpHost();
+        $extract = new \LayerShifter\TLDExtract\Extract();
+        $hostParts = $extract->parse($fullHost);
+        $domain = $hostParts->getRegistrableDomain();
+        $domains = config('app.domains');
+
+        if (array_key_exists($domain, $domains)) {
+            $hostConfig = $domains[$domain];
+            $protocol = config('app.secure') ? 'https://' : 'http://';
+
+            // Replace core config
+            config([
+                'app.domain' => $domain,
+                'app.url' => $protocol . $domain,
+                'app.front_url' => $hostConfig['front_url'],
+                'app.urls.logout_redirect' =>
+                    $hostConfig['logout_redirect_url'] ??
+                    config('app.urls.logout_redirect')
+            ]);
+        }
     }
 
     /**

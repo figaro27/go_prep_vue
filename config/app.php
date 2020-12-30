@@ -52,15 +52,33 @@ return [
     */
 
     'url' => env('APP_URL', 'http://goprep.localhost'),
+    // Where users are redirected to after logging in
     'front_url' => env('FRONT_URL', 'http://www.goprep.localhost'),
+    'urls' => [
+        // Where users are redirected to after logging out
+        'logout_redirect' => env(
+            'LOGOUT_REDIRECT_URL',
+            'http://goprep.localhost/login'
+        )
+    ],
 
     'stripe_key' => env('STRIPE_KEY'),
 
     // Domain
     'domain' => env('APP_DOMAIN', 'goprep.localhost'),
 
-    // 3rd party domains
+    /*
+    |--------------------------------------------------------------------------
+    | 3rd party domains
+    |--------------------------------------------------------------------------
+    */
     'domains' => [
+        /* Example:
+        'exampledomain.com' => [
+            'front_url' => 'https://menu.exampledomain.com/customer/menu',
+            'logout_redirect_url' => 'https://goprep.com/login',
+        ],
+        */
         'fresh2gohealthymeals.com' => [
             'front_url' => 'https://menu.fresh2gohealthymeals.com/customer/menu'
         ],
