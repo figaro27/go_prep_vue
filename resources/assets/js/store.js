@@ -1910,9 +1910,10 @@ const actions = {
   },
 
   async logout({ commit, state }) {
-    await axios.post("/api/auth/logout");
+    const res = await axios.post("/api/auth/logout");
     auth.deleteToken();
-    window.location = window.app.urls.logout_redirect;
+    const { data } = await res;
+    window.location = window.app.url + "/login";
   },
 
   addJob({ state, dispatch }, args = {}) {
