@@ -9478,10 +9478,9 @@ vue-codemirror@^4.0.6:
     codemirror "^5.41.0"
     diff-match-patch "^1.0.0"
 
-vue-credit-card-field@^0.3.14:
+"vue-credit-card-field@git+https://github.com/concept-9/vue-credit-card-field.git":
   version "0.3.14"
-  resolved "https://registry.yarnpkg.com/vue-credit-card-field/-/vue-credit-card-field-0.3.14.tgz#6e72585ff2204810f6b9d1c15f999d73f9d84364"
-  integrity sha512-waDic8oKAfU73WEm9wEOJnVJUOF/+NYrtiNrgK9ltxsnoISDwT8ivt+LsFx2a4kW4Y6LWQnAPW5TX75qgIG+cQ==
+  resolved "git+https://github.com/concept-9/vue-credit-card-field.git#893511a6b0dac08dc8c7338ca28193a010a2338f"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.17"
     "@fortawesome/free-brands-svg-icons" "^5.8.1"
