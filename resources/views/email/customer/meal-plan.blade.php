@@ -540,7 +540,9 @@ Cooler Deposit<br>
                 <!-- content -->
                 @if ($subscription->store->settings->notesForCustomer != null)
 				        <tr>
-                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $subscription->store->settings->notesForCustomer }} </td>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                    {!! nl2br($subscription->store->settings->notesForCustomer) !!}
+                  </td>
                 </tr>
 				        @endif
                 @endif
