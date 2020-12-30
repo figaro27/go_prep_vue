@@ -684,7 +684,8 @@ export default {
             promotionReduction: this.promotionReduction,
             pointsReduction: this.promotionPointsReduction,
             gratuity: this.tip,
-            coolerDeposit: this.coolerDeposit
+            coolerDeposit: this.coolerDeposit,
+            publicNotes: this.publicOrderNotes
           }
         );
         await this.refreshSubscriptions();

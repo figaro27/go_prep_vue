@@ -217,6 +217,7 @@ class CheckoutController extends UserController
             );
             $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
             //$stripeToken = $request->get('token');
+            $publicNotes = $request->get('publicOrderNotes');
             $deposit = 1;
             $pointsReduction = $request->get('pointsReduction');
 
@@ -485,6 +486,7 @@ class CheckoutController extends UserController
                 } else {
                     $order->stripe_id = null;
                 }
+                $order->publicNotes = $publicNotes;
                 $order->paid_at = new Carbon();
                 $order->coupon_id = $couponId;
                 $order->couponReduction = $couponReduction;
@@ -948,6 +950,7 @@ class CheckoutController extends UserController
                 $userSubscription->stripe_id = strtoupper(
                     substr(uniqid(rand(10, 99), false), 0, 10)
                 );
+                $userSubscription->publicNotes = $publicNotes;
                 $userSubscription->stripe_plan = 'GOPREP';
                 $userSubscription->quantity = 1;
                 $userSubscription->preFeePreDiscount = $preFeePreDiscount;
@@ -1019,6 +1022,7 @@ class CheckoutController extends UserController
                 $order->delivery_date = (new Carbon(
                     $deliveryDay
                 ))->toDateString();
+                $order->publicNotes = $publicNotes;
                 $order->coupon_id = $couponId;
                 $order->couponReduction = $couponReduction;
                 $order->couponCode = $couponCode;

@@ -548,6 +548,28 @@
       </div>
     </div>
 
+    <div
+      v-if="
+        store.module_settings.orderNotesForCustomer &&
+          context !== 'store' &&
+          $route.path === '/customer/bag' &&
+          loggedIn
+      "
+    >
+      <div class="col-md-12 pt-2 pb-4">
+        <h4>Order Notes</h4>
+        <textarea
+          type="text"
+          id="form7"
+          class="md-textarea form-control"
+          rows="3"
+          v-model="publicOrderNotes"
+          @input="passPublicOrderNotes"
+          placeholder="Add any special notes about your order here such as if you want your order to be delivered to a different address."
+        ></textarea>
+      </div>
+    </div>
+
     <b-modal
       size="xl"
       title="Add New Extra"

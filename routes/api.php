@@ -344,6 +344,11 @@ foreach (
                                 'SubscriptionController'
                             );
 
+                            Route::post(
+                                'updateSubNotes',
+                                'SubscriptionController@updateNotes'
+                            );
+
                             // Route::post(
                             //     'subscriptions/{id}/meals',
                             //     'SubscriptionController@updateMeals'
@@ -743,6 +748,10 @@ foreach (
                             Route::resource(
                                 'me/subscriptions',
                                 'SubscriptionController'
+                            );
+                            Route::post(
+                                'updateSubNotes',
+                                'SubscriptionController@updateNotes'
                             );
                             Route::post(
                                 'me/subscriptions/{id}/pause',

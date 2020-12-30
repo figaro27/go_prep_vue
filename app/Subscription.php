@@ -525,6 +525,7 @@ class Subscription extends Model
                 $this->intervalCount
             );
             $newOrder->isMultipleDelivery = $this->isMultipleDelivery;
+            $newOrder->publicNotes = $this->publicNotes;
             $newOrder->save();
 
             // Assign meal package orders from meal package subscriptions
@@ -1102,6 +1103,7 @@ class Subscription extends Model
             $order->purchasedGiftCardReduction =
                 $this->purchasedGiftCardReduction;
             $order->amount = $this->amount;
+            $order->publicNotes = $this->publicNotes;
             $order->save();
 
             // Replace order meals

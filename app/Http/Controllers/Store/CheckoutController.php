@@ -155,7 +155,7 @@ class CheckoutController extends StoreController
             );
             $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
             $notes = $request->get('notes');
-            $publicOrderNotes = $request->get('publicOrderNotes');
+            $publicNotes = $request->get('publicOrderNotes');
             $hot = $request->get('hot');
             $staff = $request->get('staff');
             //$stripeToken = $request->get('token');
@@ -351,7 +351,7 @@ class CheckoutController extends StoreController
                     chr(rand(65, 90)) .
                     rand(10, 99);
                 $order->notes = $notes;
-                $order->publicNotes = $publicOrderNotes;
+                $order->publicNotes = $publicNotes;
                 $order->preFeePreDiscount = $preFeePreDiscount;
                 $order->mealPlanDiscount = $mealPlanDiscount;
                 $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
@@ -921,6 +921,7 @@ class CheckoutController extends StoreController
                 $userSubscription->stripe_id = strtoupper(
                     substr(uniqid(rand(10, 99), false), 0, 10)
                 );
+                $userSubscription->publicNotes = $publicNotes;
                 $userSubscription->stripe_plan = 'GOPREP';
                 $userSubscription->quantity = 1;
                 $userSubscription->preFeePreDiscount = $preFeePreDiscount;
@@ -975,7 +976,7 @@ class CheckoutController extends StoreController
                     chr(rand(65, 90)) .
                     rand(10, 99);
                 $order->notes = $notes;
-                $order->publicNotes = $publicOrderNotes;
+                $order->publicNotes = $publicNotes;
                 $order->preFeePreDiscount = $preFeePreDiscount;
                 $order->mealPlanDiscount = $mealPlanDiscount;
                 $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;

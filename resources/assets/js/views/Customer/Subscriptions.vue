@@ -363,6 +363,25 @@
           </div>
         </div>
         <div class="row">
+          <div class="col-md-12" v-if="subscription.publicNotes">
+            <h4>Notes</h4>
+            <textarea
+              type="text"
+              id="form7"
+              class="md-textarea form-control"
+              rows="3"
+              v-model="subscription.publicNotes"
+              placeholder="Public notes sent to the customer in their emails and shown on your packing slips."
+            ></textarea>
+            <button
+              class="btn btn-primary btn-md pull-right mt-2"
+              @click="updateNotes(subscription.id)"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-md-12">
             <h4>Items</h4>
             <hr />
@@ -843,6 +862,16 @@ export default {
       if (subscription.interval === "month") {
         return 30;
       }
+    },
+    async updateNotes(id) {
+      axios
+        .post("/api/me/updateSubNotes", {
+          id: id,
+          notes: this.subscription.publicNotes
+        })
+        .then(resp => {
+          this.$toastr.s("Notes updated.");
+        });
     },
     async viewSubscription(id) {
       const jobId = await this.addJob();

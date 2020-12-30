@@ -192,6 +192,20 @@ class SubscriptionController extends UserController
         return $sub->pickup;
     }
 
+    public function updateNotes(Request $request)
+    {
+        $sub = Subscription::where('id', $request->get('id'))->first();
+        $sub->publicNotes = $request->get('notes');
+        $sub->update();
+
+        $orders = $sub->orders->where('delivery_date', '>=', Carbon::now());
+
+        foreach ($orders as $order) {
+            $order->publicNotes = $request->get('notes');
+            $order->update();
+        }
+    }
+
     /**
      * Update meals
      *
@@ -291,6 +305,8 @@ class SubscriptionController extends UserController
 
             // $total += $salesTax;
             $total = $request->get('grandTotal');
+
+            $publicNotes = $request->get('publicOrderNotes');
 
             $cashOrder = $request->get('cashOrder');
             if ($cashOrder) {
@@ -460,6 +476,7 @@ class SubscriptionController extends UserController
             $sub->customer_updated = Carbon::now(
                 $this->store->settings->timezone
             )->toDateTimeString();
+            $sub->publicNotes = $publicNotes;
             $sub->save();
 
             // Update future orders IF cutoff hasn't passed yet
@@ -496,6 +513,7 @@ class SubscriptionController extends UserController
                 $order->shipping = $shipping;
                 $order->pickup = $pickup;
                 $order->pickup_location_id = $pickupLocation;
+                $order->publicNotes = $publicNotes;
                 $order->save();
 
                 // Replace order meals

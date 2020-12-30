@@ -14,7 +14,8 @@ class StoreModuleSettings extends Model
         'cashAllowedForCustomer' => 'boolean',
         'specialInstructionsStoreOnly' => 'boolean',
         'coolerOptional' => 'boolean',
-        'coolerDeposit' => 'float'
+        'coolerDeposit' => 'float',
+        'orderNotesForCustomer' => 'boolean'
     ];
 
     protected $guarded = [];

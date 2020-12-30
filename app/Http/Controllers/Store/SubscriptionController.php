@@ -160,9 +160,24 @@ class SubscriptionController extends StoreController
         }
     }
 
-    public function renew(Request $request)
+    public function updateNotes(Request $request)
     {
         $sub = Subscription::where('id', $request->get('id'))->first();
+        $sub->publicNotes = $request->get('notes');
+        $sub->update();
+
+        $orders = $sub->orders->where('delivery_date', '>=', Carbon::now());
+        foreach ($orders as $order) {
+            $order->publicNotes = $request->get('notes');
+            $order->update();
+        }
+    }
+
+    public function renew(Request $request)
+    {
+        $sub = Subscription::where('id', $request->get('id'))
+            ->with(['pickup_location', 'user'])
+            ->first();
         $sub->renew();
         return $sub;
     }
@@ -277,6 +292,8 @@ class SubscriptionController extends StoreController
 
             // $total += $salesTax;
             $total = $request->get('grandTotal');
+
+            $publicNotes = $request->get('publicOrderNotes');
 
             $cashOrder = $request->get('cashOrder');
             if ($cashOrder) {
@@ -448,6 +465,7 @@ class SubscriptionController extends StoreController
             $sub->store_updated = Carbon::now(
                 $this->store->settings->timezone
             )->toDateTimeString();
+            $sub->publicNotes = $publicNotes;
             $sub->save();
 
             // Update future orders IF cutoff hasn't passed yet
@@ -484,6 +502,7 @@ class SubscriptionController extends StoreController
                 $order->shipping = $shipping;
                 $order->pickup = $pickup;
                 $order->pickup_location_id = $pickupLocation;
+                $order->publicNotes = $publicNotes;
                 $order->save();
 
                 // Replace order meals && meal packages

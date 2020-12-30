@@ -452,6 +452,22 @@ Cooler Deposit<br>
                   <td height="20"></td>
                 </tr>
                 <!-- title -->
+                @if ($subscription->publicNotes !== null)
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Subscription Notes</td>
+                </tr>
+                <tr>
+                  <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                    {{ $subscription->publicNotes }}
+                  </td>
+                </tr>
+                <tr>
+                  <td height="15" style="border-bottom:3px solid #bcbcbc;"></td>
+                </tr>
+                <tr>
+                  <td height="20"></td>
+                </tr>
+                @endif
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px;  font-weight: bold; text-transform:uppercase">Delivery Instructions</td>
                 </tr>

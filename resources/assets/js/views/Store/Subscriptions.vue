@@ -492,25 +492,25 @@
             <p>{{ user_detail.delivery }}</p>
           </div>
         </div>
-        <!-- <div class="row" v-if="storeModules.orderNotes">
-          <div class="col-md-12">
-            <h4>Delivery Notes</h4>
+        <div class="row">
+          <div class="col-md-12" v-if="subscription.publicNotes">
+            <h4>Notes</h4>
             <textarea
               type="text"
               id="form7"
               class="md-textarea form-control"
               rows="3"
-              v-model="deliveryNote"
-              placeholder="E.G. Customer didn't answer phone or doorbell."
+              v-model="subscription.publicNotes"
+              placeholder="Public notes sent to the customer in their emails and shown on your packing slips."
             ></textarea>
             <button
               class="btn btn-primary btn-md pull-right mt-2"
-              @click="saveNotes(subscriptionId)"
+              @click="updateNotes(subscription.id)"
             >
-              Save
+              Update
             </button>
           </div>
-        </div> -->
+        </div>
         <div class="row">
           <div class="col-md-12">
             <h4>Items</h4>
@@ -1070,6 +1070,16 @@ export default {
       if (updated.isSameOrAfter(lastRenewal)) {
         return true;
       }
+    },
+    async updateNotes(id) {
+      axios
+        .post("/api/me/updateSubNotes", {
+          id: id,
+          notes: this.subscription.publicNotes
+        })
+        .then(resp => {
+          this.$toastr.s("Notes updated.");
+        });
     },
     getMealTableData(subscription) {
       if (!this.initialized || !subscription.items) return [];
