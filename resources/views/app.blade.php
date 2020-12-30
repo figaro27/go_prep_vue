@@ -27,6 +27,9 @@ $faviconUrl = $store->menuSettings->favicon;
       domain: "{{ config('app.domain') }}",
       url: "{{ config('app.url') }}",
       front_url: "{{ config('app.front_url') }}",
+      urls: {
+        logout_redirect: "{{ config('app.urls.logout_redirect') }}",
+      },
       stripe_key: "{{ config('app.stripe_key') }}",
       authorize: {
         login_id: "{{ config('services.authorize.login_id') }}",
