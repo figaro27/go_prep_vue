@@ -163,27 +163,22 @@ export default {
       return units.volume.selectOptions();
     }
   },
-  watch: {},
-  created() {},
-  mounted() {},
   methods: {
     onSearch(search, loading) {
-      loading(true);
       this.search(loading, search, this);
     },
-    search: _.debounce((loading, search, vm) => {
-      axios
-        .post("/api/searchInstant", {
+    search: _.debounce(async (loading, search, vm) => {
+      loading(true);
+
+      try {
+        const { data } = await axios.post("/api/searchInstant", {
           search: search
-        })
-        .then(response => {
-          vm.options = _.concat(
-            [],
-            response.data.common,
-            response.data.branded
-          );
-          loading(false);
         });
+
+        vm.options = [...data.common, ...data.branded];
+      } finally {
+        loading(false);
+      }
     }, 600),
     onClickAdd() {
       this.$emit("change", {
