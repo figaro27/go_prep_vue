@@ -30,7 +30,6 @@ class RenewalFailed extends Mailable
      */
     public function build()
     {
-        dd($this->data);
         return $this->view('email.store.renewal-failed')->with($this->data);
     }
 }
