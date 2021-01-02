@@ -507,7 +507,7 @@ export default {
 
           if (this.$v.$invalid) {
             this.$forceUpdate();
-            this.$toastr.e(
+            this.$toastr.w(
               "Please select the minimum number of items required."
             );
           } else {

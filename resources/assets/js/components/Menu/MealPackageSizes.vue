@@ -199,7 +199,6 @@ export default {
     },
     save() {
       this.$emit("save", this.sizes);
-      this.$toastr.s("Meal package variation saved.");
     },
     hideMealPicker() {
       this.meal_picker_id = null;

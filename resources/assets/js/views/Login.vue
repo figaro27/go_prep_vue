@@ -108,7 +108,7 @@ export default {
           }
         })
         .catch(error => {
-          this.$toastr.e("Please try again.", "Log in failed");
+          this.$toastr.w("Please try again.", "Log in failed");
         });
     }
   }

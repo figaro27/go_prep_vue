@@ -800,7 +800,7 @@ export default {
         );
         this.$toastr.s("Subscription paused.");
       } catch (e) {
-        this.$toastr.e(
+        this.$toastr.w(
           "Please get in touch with our support team.",
           "Failed to pause Subscription"
         );
@@ -815,7 +815,7 @@ export default {
         );
         this.$toastr.s("Subscription resumed.");
       } catch (e) {
-        this.$toastr.e(e.response.data.error);
+        this.$toastr.w(e.response.data.error);
       }
 
       this.refreshSubscriptions();
@@ -834,7 +834,7 @@ export default {
           this.$toastr.s("Subscription cancelled.");
         }
       } catch (e) {
-        this.$toastr.e(
+        this.$toastr.w(
           "Please get in touch with our support team.",
           "Failed to cancel Subscription"
         );

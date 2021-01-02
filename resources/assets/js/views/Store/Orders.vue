@@ -1347,7 +1347,7 @@ export default {
           }
         })
         .catch(err => {
-          this.$toastr.e("Failed to print report.");
+          this.$toastr.w("Failed to print report.");
         })
         .finally(() => {
           this.loading = false;
@@ -1401,7 +1401,7 @@ export default {
                 false
               );
             } else {
-              this.$toastr.e(
+              this.$toastr.w(
                 "Please add a popup exception to print this report.",
                 "Failed to display PDF."
               );
@@ -1409,7 +1409,7 @@ export default {
           }
         })
         .catch(err => {
-          this.$toastr.e(
+          this.$toastr.w(
             "Please disable any popup blocker in our browser.",
             "Failed to print report."
           );
@@ -1519,7 +1519,7 @@ export default {
                 false
               );
             } else {
-              this.$toastr.e(
+              this.$toastr.w(
                 "Please add a popup exception to print this report.",
                 "Failed to display PDF."
               );
@@ -1592,7 +1592,7 @@ export default {
         })
         .then(response => {
           if (response.data === 1) {
-            this.$toastr.e(
+            this.$toastr.w(
               "The refund amount is greater than the original amount plus additional charges which is $" +
                 (this.originalAmount + this.chargedAmount),
               "Error"
@@ -1615,7 +1615,7 @@ export default {
           }
         })
         .catch(err => {
-          this.$toastr.e("Error. Please contact GoPrep.");
+          this.$toastr.w("Error. Please contact GoPrep.");
         });
     },
     settle() {

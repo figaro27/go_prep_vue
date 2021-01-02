@@ -316,7 +316,7 @@ export default {
           this.refreshViewedStore();
         })
         .catch(e => {
-          this.$toastr.e("Failed to update profile.");
+          this.$toastr.w("Failed to update profile.");
         });
     },
     updatePassword() {

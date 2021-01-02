@@ -1284,7 +1284,7 @@ export default {
           (meal.components && meal.components.length > 0) ||
           (meal.addons && meal.addons.length > 0)
         ) {
-          this.$toastr.e("Please remove the meal from the bag.");
+          this.$toastr.w("Please remove the meal from the bag.");
         } else {
           this.minusOne(meal, false, null, null, [], null);
         }

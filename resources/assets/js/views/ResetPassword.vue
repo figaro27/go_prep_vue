@@ -61,7 +61,7 @@ export default {
           this.$router.replace("/login");
         })
         .catch(error => {
-          this.$toastr.e("Please try again.", "Failed to reset password");
+          this.$toastr.w("Please try again.", "Failed to reset password");
         });
     }
   }

@@ -716,7 +716,7 @@ export default {
         if (!_.isEmpty(e.response.data.message)) {
           this.$toastr.w(e.response.data.message);
         } else {
-          this.$toastr.e(
+          this.$toastr.w(
             "Please try again or contact our support team",
             "Failed to update items."
           );

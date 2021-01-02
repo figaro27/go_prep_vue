@@ -886,7 +886,7 @@ export default {
                 false
               );
             } else {
-              this.$toastr.e(
+              this.$toastr.w(
                 "Please add a popup exception to print this report.",
                 "Failed to display PDF."
               );
@@ -894,7 +894,7 @@ export default {
           }
         })
         .catch(err => {
-          this.$toastr.e(
+          this.$toastr.w(
             "Please confirm that orders exist for the selected date range and disable any popup blocker in our browser.",
             "Failed to print report."
           );
@@ -953,7 +953,7 @@ export default {
                 this.exportData(report, format, print, data.next_page);
               }
             } else {
-              this.$toastr.e(
+              this.$toastr.w(
                 "Please add a popup exception to print this report.",
                 "Failed to display PDF."
               );

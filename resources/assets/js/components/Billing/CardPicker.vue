@@ -204,7 +204,7 @@ export default {
               "Failed to add card. Please make sure all of the info is correct."
             );
           } else {
-            this.$toastr.e("Failed to save payment method");
+            this.$toastr.w("Failed to save payment method");
           }
           this.addingCard = false;
           throw new Error("Failed to save payment method", data);

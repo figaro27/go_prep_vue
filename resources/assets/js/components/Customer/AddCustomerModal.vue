@@ -247,7 +247,7 @@ export default {
       let form = this.form;
 
       if (!form.accepted_tos) {
-        this.$toastr.e(
+        this.$toastr.w(
           "Please accept the terms of service.",
           "Registration failed"
         );
@@ -271,7 +271,7 @@ export default {
         //if (this.$route.params.manualOrder) this.$parent.getCards();
       });
       // .catch(e => {
-      //   this.$toastr.e("Please try again.", "Registration failed");
+      //   this.$toastr.w("Please try again.", "Registration failed");
       // });
     },
     checkExistingCustomer() {

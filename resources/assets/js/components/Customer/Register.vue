@@ -728,11 +728,11 @@ export default {
             this.step += 2;
           }
         } else if (this.form[1].accepted_tos === 0) {
-          this.$toastr.e(
+          this.$toastr.w(
             "Please accept the terms of service.",
             "Registration failed"
           );
-        } else this.$toastr.e("Please try again.", "Registration failed");
+        } else this.$toastr.w("Please try again.", "Registration failed");
 
         this.$v.form.$touch();
 
@@ -792,7 +792,7 @@ export default {
           }
         })
         .catch(e => {
-          this.$toastr.e("Please try again.", "Registration failed");
+          this.$toastr.w("Please try again.", "Registration failed");
         });
     },
     changeState(state, formNumber) {

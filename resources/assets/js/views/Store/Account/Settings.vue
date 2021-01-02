@@ -1819,7 +1819,7 @@ export default {
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors));
           error = error.join(" ");
-          this.$toastr.e(error, "Error");
+          this.$toastr.w(error, "Error");
         });
 
       if (moduleSettings) {
@@ -1836,7 +1836,7 @@ export default {
           .catch(response => {
             let error = _.first(Object.values(response.response.data.errors));
             error = error.join(" ");
-            this.$toastr.e(error, "Error");
+            this.$toastr.w(error, "Error");
           });
       }
     },
@@ -1882,7 +1882,7 @@ export default {
     //     .catch(response => {
     //       let error = _.first(Object.values(response.response.data.errors));
     //       error = error.join(" ");
-    //       this.$toastr.e(error, "Error");
+    //       this.$toastr.w(error, "Error");
     //     });
     // },
     updateStoreLogo() {
@@ -1969,7 +1969,7 @@ export default {
           break;
 
         case "e":
-          this.$toastr.e("message", "Error");
+          this.$toastr.w("message", "Error");
           break;
       }
     },

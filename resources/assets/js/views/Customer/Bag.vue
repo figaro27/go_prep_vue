@@ -794,7 +794,7 @@ export default {
             "Please try again"
           ];
           error = error.join(" ");
-          this.$toastr.e(error, "Error");
+          this.$toastr.w(error, "Error");
         })
         .finally(() => {
           this.loading = false;
@@ -807,13 +807,13 @@ export default {
     //       if (coupon.oneTime) {
     //         let oneTimePass = this.oneTimeCouponCheck(coupon.id);
     //         if (oneTimePass === "login") {
-    //           this.$toastr.e(
+    //           this.$toastr.w(
     //             "This is a one-time coupon. Please log in or create an account to check if it has already been used."
     //           );
     //           return;
     //         }
     //         if (!oneTimePass) {
-    //           this.$toastr.e(
+    //           this.$toastr.w(
     //             "This was a one-time coupon that has already been used.",
     //             'Coupon Code: "' + this.couponCode + '"'
     //           );
@@ -869,7 +869,7 @@ export default {
       let form = this.form;
 
       if (!form.accepted_tos) {
-        this.$toastr.e(
+        this.$toastr.w(
           "Please accept the terms of service.",
           "Registration failed"
         );
@@ -884,7 +884,7 @@ export default {
           await this.refreshStoreCustomers();
         })
         .catch(e => {
-          this.$toastr.e("Please try again.", "Registration failed");
+          this.$toastr.w("Please try again.", "Registration failed");
         });
     },
     setCustomer(id) {

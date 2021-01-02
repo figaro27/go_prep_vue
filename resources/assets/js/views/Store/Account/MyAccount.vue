@@ -305,7 +305,7 @@ export default {
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors));
           error = error.join(" ");
-          this.$toastr.e(error, "Error");
+          this.$toastr.w(error, "Error");
         });
     },
     invalidData() {
@@ -347,7 +347,7 @@ export default {
         .catch(response => {
           let error = _.first(Object.values(response.response.data.errors));
           error = error.join(" ");
-          this.$toastr.e(error, "Error");
+          this.$toastr.w(error, "Error");
         });
     },
     updateStoreSettings() {
@@ -379,7 +379,7 @@ export default {
           break;
 
         case "e":
-          this.$toastr.e("message", "Error");
+          this.$toastr.w("message", "Error");
           break;
       }
     },

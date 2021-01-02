@@ -26,10 +26,10 @@ export default {
           .join(", ");
       }
 
-      this.$toastr.e(err, title);
+      this.$toastr.w(err, title);
     },
     toastSuccessResponse(resp, title = "Success!") {
-      this.$toastr.e(err, title);
+      this.$toastr.w(err, title);
     },
     toastResponse(resp) {
       if (resp.data) {

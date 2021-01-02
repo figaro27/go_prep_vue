@@ -773,7 +773,7 @@ export default {
           this.recipe = "";
         })
         .catch(e => {
-          this.$toastr.e("No ingredients found.", "Sorry!");
+          this.$toastr.w("No ingredients found.", "Sorry!");
         });
     },
     onSearch(search, loading) {

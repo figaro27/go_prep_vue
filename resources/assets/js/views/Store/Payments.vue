@@ -820,7 +820,7 @@ export default {
           if (resp.data == 1) {
             this.showMultiAuthModal = false;
           } else {
-            this.$toastr.e("Incorrect password. Please try again.");
+            this.$toastr.w("Incorrect password. Please try again.");
           }
         });
     },

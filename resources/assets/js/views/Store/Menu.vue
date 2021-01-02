@@ -1536,7 +1536,7 @@ export default {
             error = error.join(" ");
             this.$toastr.w(error);
           } else {
-            this.$toastr.e("Failed to update item.");
+            this.$toastr.w("Failed to update item.");
           }
         }
 
@@ -1566,9 +1566,9 @@ export default {
 
           if (error) {
             error = error.join(" ");
-            this.$toastr.e(error, "Error");
+            this.$toastr.w(error, "Error");
           } else {
-            this.$toastr.e("Failed to update meal!", "Error");
+            this.$toastr.w("Failed to update meal!", "Error");
           }
         }
 
@@ -1790,7 +1790,7 @@ export default {
       if (this.meals.length > 0) {
         this.createPackageModal = true;
       } else {
-        this.$toastr.e(
+        this.$toastr.w(
           "Please add at least one item before creating a package.",
           "Error"
         );
