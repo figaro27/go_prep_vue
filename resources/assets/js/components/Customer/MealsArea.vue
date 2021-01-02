@@ -245,7 +245,7 @@
                   : 'meal_' + meal.id + '_' + group.category_id + '_' + index
               "
             >
-              <div :class="card">
+              <div :class="card" @click="showMeal(meal, group)">
                 <div :class="cardBody">
                   <div class="item-wrap">
                     <div class="title d-md-none">
@@ -266,7 +266,6 @@
                         class="menu-item-img"
                         width="100%"
                         style="background-color:#ffffff"
-                        @click="showMeal(meal, group)"
                       ></thumbnail>
                       <!-- Hard coding price difference for now for Eat Fresh until new menu design table is required-->
                       <div class="price" v-if="!menuSettings.hidePrice">
@@ -409,6 +408,7 @@
                             placeholder="1"
                             v-model="mealQuantities[meal.id]"
                             @change="val => setItemQuantity('meal', meal, val)"
+                            @click.stop=""
                           ></b-form-input>
 
                           <b-btn
@@ -443,7 +443,7 @@
                               >Select</span
                             >
                             <b-dropdown-item
-                              @click="addMeal(meal, false, null, group)"
+                              @click.stop="addMeal(meal, false, null, group)"
                               class="variation-dropdown"
                             >
                               {{ meal.default_size_title || "Regular" }} -
@@ -499,7 +499,7 @@
                                 !meal.gift_card &&
                                 (!meal.sizes || meal.sizes.length === 0)
                             "
-                            @click="addMeal(meal, true, null, group)"
+                            @click.stop="addMeal(meal, true, null, group)"
                             >Select</b-btn
                           >
 
@@ -523,7 +523,7 @@
                             >
 
                             <b-dropdown-item
-                              @click="addMeal(meal, true, null, group)"
+                              @click.stop="addMeal(meal, true, null, group)"
                               class="variation-dropdown"
                             >
                               {{ meal.default_size_title || "Regular" }} -
@@ -535,7 +535,9 @@
                               class="variation-dropdown"
                               v-for="(size, index) in meal.sizes"
                               :key="'size_' + size.id + '_' + index"
-                              @click="addMealPackage(meal, true, size, group)"
+                              @click.stop="
+                                addMealPackage(meal, true, size, group)
+                              "
                             >
                               {{ size.title }} -
                               {{
