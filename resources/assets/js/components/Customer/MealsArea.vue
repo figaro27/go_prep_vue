@@ -266,7 +266,7 @@
                         class="menu-item-img"
                         width="100%"
                         style="background-color:#ffffff"
-                        @click.prevent="showMeal(meal, group)"
+                        @click="showMeal(meal, group)"
                       ></thumbnail>
                       <!-- Hard coding price difference for now for Eat Fresh until new menu design table is required-->
                       <div class="price" v-if="!menuSettings.hidePrice">

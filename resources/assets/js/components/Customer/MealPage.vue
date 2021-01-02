@@ -55,7 +55,7 @@
             :src="meal.image.url"
             :aspect="false"
             width="100%"
-            @click="$emit('show-gallery', getMealGallery(meal), 0)"
+            @click="showMealGallery()"
             class="mealPageImage d-inline"
           ></thumbnail>
           <div style="width:323px;margin:auto" v-if="showcaseNutrition">
@@ -801,6 +801,11 @@ export default {
             ? meal.macros.fat
             : this.nutritionalFacts.valueTotalFat;
           break;
+      }
+    },
+    showMealGallery() {
+      if (this.meal.gallery.length > 0) {
+        this.$emit("show-gallery", getMealGallery(meal), 0);
       }
     }
   }
