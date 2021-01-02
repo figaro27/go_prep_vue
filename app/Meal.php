@@ -1040,7 +1040,11 @@ class Meal extends Model implements HasMedia
 
     public static function updateMeal($id, $props, $source = '')
     {
-        $meal = Meal::findOrFail($id);
+        $meal = Meal::where('id', $id)->first();
+
+        if (!$meal) {
+            return;
+        }
 
         if ($source == 'menu') {
             $store = $meal->store;
