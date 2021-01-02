@@ -47,6 +47,14 @@
             :data="tableData"
             :options="options"
           >
+            <div slot="beforeTable" class="mb-2">
+              <b-form-checkbox
+                v-model="showingCancelledSubscriptions"
+                @change="val => showCancelledSubscriptions(val)"
+              >
+                <p>Show Cancelled</p>
+              </b-form-checkbox>
+            </div>
             <span slot="beforeLimit">
               <b-btn
                 variant="primary"
@@ -626,6 +634,8 @@ export default {
 
   data() {
     return {
+      cancelledSubscriptions: [],
+      showingCancelledSubscriptions: false,
       email: "",
       showCancelModal: false,
       showRenewModal: false,
@@ -770,7 +780,10 @@ export default {
       // }
       // if (!this.filter) return _.filter(this.subscriptions, { fulfilled: 0 });
       //   else return _.filter(this.subscriptions, { fulfilled: 0, has_notes: true });
-      const subs = _.filter(this.subscriptions, subscription => {
+      let subscriptions = !this.showingCancelledSubscriptions
+        ? this.subscriptions
+        : this.cancelledSubscriptions;
+      const subs = _.filter(subscriptions, subscription => {
         if ("delivery_days" in filters) {
           let dateMatch = _.reduce(
             filters.delivery_days,
@@ -796,13 +809,13 @@ export default {
         return true;
       });
 
-      const activeSubs = _.filter(subs, sub => {
-        if (sub.status != "cancelled") {
-          return true;
-        }
-      });
+      // const activeSubs = _.filter(subs, sub => {
+      //   if (sub.status != "cancelled") {
+      //     return true;
+      //   }
+      // });
 
-      return activeSubs;
+      return subs;
     },
     mealColumns() {
       if (!this.subscription.isMultipleDelivery) {
@@ -1080,6 +1093,14 @@ export default {
         .then(resp => {
           this.$toastr.s("Notes updated.");
         });
+    },
+    async showCancelledSubscriptions(val) {
+      if (val) {
+        axios.get("/api/me/cancelledSubscriptions").then(resp => {
+          this.cancelledSubscriptions = resp.data;
+          this.showingCancelledSubscriptions = true;
+        });
+      }
     },
     getMealTableData(subscription) {
       if (!this.initialized || !subscription.items) return [];

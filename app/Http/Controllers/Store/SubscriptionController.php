@@ -53,6 +53,30 @@ class SubscriptionController extends StoreController
         return $subscriptions;
     }
 
+    public function cancelledSubscriptions()
+    {
+        $subscriptions = $this->store
+            ->subscriptions()
+            ->where('status', 'cancelled')
+            ->with(['user:id', 'pickup_location'])
+            ->orderBy('created_at')
+            ->get();
+
+        $subscriptions->makeHidden([
+            'latest_order',
+            'latest_paid_order',
+            'next_order',
+            'meal_ids',
+            'meal_quantities',
+            'store',
+            'orders',
+            'items',
+            'meal_package_items'
+        ]);
+
+        return $subscriptions;
+    }
+
     /**
      * Display the specified resource.
      *

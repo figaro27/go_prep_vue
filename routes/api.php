@@ -344,6 +344,11 @@ foreach (
                                 'SubscriptionController'
                             );
 
+                            Route::get(
+                                'cancelledSubscriptions',
+                                'SubscriptionController@cancelledSubscriptions'
+                            );
+
                             Route::post(
                                 'updateSubNotes',
                                 'SubscriptionController@updateNotes'
