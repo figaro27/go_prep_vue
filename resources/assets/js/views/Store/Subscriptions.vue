@@ -139,34 +139,36 @@
                 <a class="dropdown-item" @click="viewSubscription(props.row.id)"
                   >View</a
                 >
-                <a
-                  class="dropdown-item"
-                  v-if="!mealMixItems.isRunningLazy"
-                  @click="adjust(props.row.id)"
-                >
-                  Adjust
-                </a>
-                <a
-                  class="dropdown-item"
-                  v-if="props.row.status == 'active'"
-                  @click="() => pauseSubscription(props.row.id)"
-                  >Pause</a
-                >
-                <a
-                  class="dropdown-item"
-                  v-if="props.row.status == 'paused'"
-                  @click="() => resumeSubscription(props.row.id)"
-                  >Resume</a
-                >
-                <a class="dropdown-item" @click="renewModal(props.row.id)"
-                  >Renew</a
-                >
-                <a
-                  class="dropdown-item"
-                  @click="showCancellationModal(props.row.id)"
-                  v-if="props.row.cancelled_at === null"
-                  >Cancel</a
-                >
+                <span v-if="!showingCancelledSubscriptions">
+                  <a
+                    class="dropdown-item"
+                    v-if="!mealMixItems.isRunningLazy"
+                    @click="adjust(props.row.id)"
+                  >
+                    Adjust
+                  </a>
+                  <a
+                    class="dropdown-item"
+                    v-if="props.row.status == 'active'"
+                    @click="() => pauseSubscription(props.row.id)"
+                    >Pause</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    v-if="props.row.status == 'paused'"
+                    @click="() => resumeSubscription(props.row.id)"
+                    >Resume</a
+                  >
+                  <a class="dropdown-item" @click="renewModal(props.row.id)"
+                    >Renew</a
+                  >
+                  <a
+                    class="dropdown-item"
+                    @click="showCancellationModal(props.row.id)"
+                    v-if="props.row.cancelled_at === null"
+                    >Cancel</a
+                  >
+                </span>
               </div>
             </div>
             <div slot="amount" slot-scope="props">
@@ -225,58 +227,64 @@
           <div class="col-md-4">
             <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
-            <div>
-              <b-btn
-                class="btn btn-md mt-1"
-                variant="primary"
-                @click="showRenewModal = true"
-                >Renew
-              </b-btn>
-              <img
-                v-b-popover.hover="
-                  'This will override the scheduled time that the subscription renews automatically and renew it now. The customer will be charged and a new order will be created.'
-                "
-                title="Renew"
-                src="/images/store/popover.png"
-                class="popover-size"
-              />
-            </div>
-            <div class="mt-2" v-if="!mealMixItems.isRunningLazy">
-              <router-link
-                :to="`/store/adjust-subscription/${subscription.id}`"
-              >
-                <b-btn class="btn btn-warning btn-md">Adjust</b-btn>
-              </router-link>
-            </div>
-            <div>
-              <b-btn
-                v-if="subscription.status === 'active'"
-                class="btn btn-secondary btn-md mt-2"
-                @click.stop="() => pauseSubscription(subscription.id)"
-                >Pause</b-btn
-              >
-              <b-btn
-                v-if="subscription.status === 'paused'"
-                class="btn btn-secondary btn-md mt-2"
-                @click.stop="() => resumeSubscription(subscription.id)"
-                >Resume</b-btn
-              >
-            </div>
-            <div>
-              <button
-                :disabled="subscription.cancelled_at !== null"
-                class="btn btn-danger btn-md mt-2"
-                @click="showCancellationModal(subscription.id)"
-              >
-                Cancel
-              </button>
-            </div>
+            <span v-if="!showingCancelledSubscriptions">
+              <div>
+                <b-btn
+                  class="btn btn-md mt-1"
+                  variant="primary"
+                  @click="showRenewModal = true"
+                  >Renew
+                </b-btn>
+                <img
+                  v-b-popover.hover="
+                    'This will override the scheduled time that the subscription renews automatically and renew it now. The customer will be charged and a new order will be created.'
+                  "
+                  title="Renew"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </div>
+              <div class="mt-2" v-if="!mealMixItems.isRunningLazy">
+                <router-link
+                  :to="`/store/adjust-subscription/${subscription.id}`"
+                >
+                  <b-btn class="btn btn-warning btn-md">Adjust</b-btn>
+                </router-link>
+              </div>
+              <div>
+                <b-btn
+                  v-if="subscription.status === 'active'"
+                  class="btn btn-secondary btn-md mt-2"
+                  @click.stop="() => pauseSubscription(subscription.id)"
+                  >Pause</b-btn
+                >
+                <b-btn
+                  v-if="subscription.status === 'paused'"
+                  class="btn btn-secondary btn-md mt-2"
+                  @click.stop="() => resumeSubscription(subscription.id)"
+                  >Resume</b-btn
+                >
+              </div>
+              <div>
+                <button
+                  :disabled="subscription.cancelled_at !== null"
+                  class="btn btn-danger btn-md mt-2"
+                  @click="showCancellationModal(subscription.id)"
+                >
+                  Cancel
+                </button>
+              </div>
+            </span>
           </div>
           <div class="col-md-4">
             <h4>Placed On</h4>
             <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
 
-            <span v-if="subscription.adjustedRenewal">
+            <span
+              v-if="
+                subscription.adjustedRenewal && !showingCancelledSubscriptions
+              "
+            >
               <h4 class="mt-2">Next Renewal</h4>
               <p v-if="subscription.status !== 'paused'">
                 <i
@@ -330,7 +338,12 @@
                 until resumed.
               </p>
             </span>
-            <span v-if="subscription.next_delivery_date">
+            <span
+              v-if="
+                subscription.next_delivery_date &&
+                  !showingCancelledSubscriptions
+              "
+            >
               <h4 class="mt-2">Upcoming Delivery</h4>
               <p>
                 {{
