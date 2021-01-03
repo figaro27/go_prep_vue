@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Customer;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -36,7 +36,7 @@ class RenewalFailed extends Mailable
             ->pluck('email')
             ->first();
 
-        return $this->view('email.store.renewal-failed')
+        return $this->view('email.customer.renewal-failed')
             ->with($this->data)
             ->from($storeEmail, $storeName);
     }

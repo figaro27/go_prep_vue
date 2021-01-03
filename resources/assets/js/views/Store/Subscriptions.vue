@@ -1063,21 +1063,22 @@ export default {
           this.subscription = resp.data;
           this.refreshSubscriptions();
           this.showRenewModal = false;
-          if (!resp.data.failed_renewal) {
-            this.$toastr.s("Subscription renewed.");
-          } else {
-            this.$toastr.w(
-              "Subscription failed to renew. Reason: " +
-                JSON.stringify(resp.data.failed_renewal_error)
-            );
-          }
+          this.$toastr.s("Subscription renewed.");
+          // if (!resp.data.failed_renewal) {
+          //   this.$toastr.s("Subscription renewed.");
+          // } else {
+          //   this.$toastr.w(
+          //     "Subscription failed to renew. Reason: " +
+          //       JSON.stringify(resp.data.failed_renewal_error)
+          //   );
+          // }
+        })
+        .catch(e => {
+          this.$toastr.w(
+            "Subscription failed to renew. Reason: " +
+              JSON.stringify(e.response.data.message)
+          );
         });
-      // .catch(e => {
-      //   this.$toastr.w(
-      //     "Subscription failed to renew. Reason: " +
-      //       JSON.stringify(e.response.data.message)
-      //   );
-      // });
     },
     updateRenewalDate() {
       if (!this.renewalDate) {

@@ -21,7 +21,7 @@ use App\MealSubscriptionComponent;
 use App\MealSubscriptionAddon;
 use App\PurchasedGiftCard;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\RenewalFailed;
+use App\Mail\Customer\RenewalFailed;
 
 class Subscription extends Model
 {
@@ -715,7 +715,7 @@ class Subscription extends Model
 
             $this->failed_renewal = Carbon::now('UTC');
             $this->save();
-            $this->failed_renewal_error = $e->getMessage();
+            throw $e;
         }
     }
 
