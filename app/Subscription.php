@@ -715,6 +715,7 @@ class Subscription extends Model
 
             $this->failed_renewal = Carbon::now('UTC');
             $this->save();
+            $this->failed_renewal_error = $e->getMessage();
         }
     }
 

@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\User;
 
 class RenewalFailed extends Mailable
 {
@@ -30,6 +31,13 @@ class RenewalFailed extends Mailable
      */
     public function build()
     {
-        return $this->view('email.store.renewal-failed')->with($this->data);
+        $storeName = $this->data['store']['store_detail']['name'];
+        $storeEmail = User::where('id', $this->data['store']['user_id'])
+            ->pluck('email')
+            ->first();
+
+        return $this->view('email.store.renewal-failed')
+            ->with($this->data)
+            ->from($storeEmail, $storeName);
     }
 }
