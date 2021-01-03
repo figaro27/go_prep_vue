@@ -51,7 +51,7 @@ class RenewalFailed extends Mailable
                 $logo_b64 = \App\Utils\Images::encodeB64($path);
 
                 if ($logo_b64) {
-                    $data['logo_b64'] = $logo_b64;
+                    $this->data['logo_b64'] = $logo_b64;
                 }
             }
         }
