@@ -74,6 +74,22 @@
                 >
               </b-dropdown>
             </span>
+            <div slot="status" class="text-nowrap" slot-scope="props">
+              {{
+                props.row.status.charAt(0).toUpperCase() +
+                  props.row.status.slice(1)
+              }}
+              <span v-if="props.row.failed_renewal">
+                <img
+                  v-b-popover.hover="
+                    'This subscription failed to renew. This is most likely due to a credit card issue. An email was sent to you and the customer at the time of failure. Once the issue has been sorted out you can manually renew this subscription.'
+                  "
+                  title="Failed Renewal"
+                  src="/images/store/caution.png"
+                  class="pb-1"
+                />
+              </span>
+            </div>
             <div slot="interval" class="text-nowrap" slot-scope="props">
               {{ props.row.interval_title }}
             </div>
