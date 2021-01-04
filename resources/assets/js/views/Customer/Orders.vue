@@ -20,14 +20,14 @@
               }}
 
               <span v-if="!$route.query.pickup">to {{ customerAddress }}.</span>
-              <p v-if="!$route.query.pickup">
+              <!-- <p v-if="!$route.query.pickup">
                 If you'd like your order delivered to a different address,
                 please change it
                 <router-link :to="'/customer/account/my-account'"
                   >here
                 </router-link>
                 and we will deliver to the updated address.
-              </p>
+              </p> -->
             </span>
           </p>
         </b-alert>
