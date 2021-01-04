@@ -18,13 +18,13 @@ class CustomerController extends StoreController
     public function index()
     {
         // Not returning customers for Livoti's until customer pagination is in place
-        if (
-            $this->store->id == 108 ||
-            $this->store->id == 109 ||
-            $this->store->id == 110
-        ) {
-            return [];
-        }
+        // if (
+        //     $this->store->id == 108 ||
+        //     $this->store->id == 109 ||
+        //     $this->store->id == 110
+        // ) {
+        //     return [];
+        // }
         $customers = $this->store->customers;
         $customers->makeHidden(['paid_orders']);
 
