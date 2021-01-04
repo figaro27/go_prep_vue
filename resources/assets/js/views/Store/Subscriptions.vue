@@ -109,12 +109,12 @@
               slot-scope="props"
               v-if="storeSettings.timezone"
             >
-              <span>{{
+              <span v-if="props.row.status !== 'cancelled'">{{
                 moment(props.row.adjustedRenewal.date).format("dddd, MMM Do")
               }}</span>
             </div>
             <div slot="delivery_day" class="text-nowrap" slot-scope="props">
-              <span v-if="props.row.next_delivery_date">
+              <span v-if="props.row.status !== 'cancelled'">
                 <span v-if="props.row.next_delivery_date.date">
                   {{
                     moment(props.row.next_delivery_date.date).format(
