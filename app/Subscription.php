@@ -666,6 +666,23 @@ class Subscription extends Model
                 }
             }
 
+            if ($applyCharge || $markAsPaidOnly) {
+                $this->paid_order_count += 1;
+            }
+
+            $nextOrder = $this->orders->firstWhere(
+                'delivery_date',
+                '>=',
+                Carbon::now()
+            );
+            $this->next_delivery_date = $nextOrder->delivery_date;
+
+            $this->latest_unpaid_order_date = $this->orders()
+                ->where('paid', 0)
+                ->latest()
+                ->pluck('delivery_date')
+                ->first();
+
             $this->renewalCount += 1;
             $this->next_renewal_at = $this->next_renewal_at
                 ->addWeeks($this->intervalCount)
