@@ -41,8 +41,6 @@ class Subscription extends Model
         // 'latest_order',
         // 'latest_paid_order',
         // 'latest_unpaid_order',
-        'latest_unpaid_order_date',
-        'next_delivery_date',
         // 'next_unpaid_delivery_date',
         // 'next_order',
         // 'meal_ids',
@@ -51,7 +49,6 @@ class Subscription extends Model
         'items',
         'meal_package_items',
         'interval_title',
-        'paid_order_count',
         'transfer_type',
         'adjustedRenewal',
         'adjustedRenewalUTC'
@@ -216,15 +213,6 @@ class Subscription extends Model
     //         ->first();
     // }
 
-    public function getLatestUnpaidOrderDateAttribute()
-    {
-        return $this->orders()
-            ->where('paid', 0)
-            ->latest()
-            ->pluck('delivery_date')
-            ->first();
-    }
-
     public function getLatestPaidOrderAttribute()
     {
         $latestOrder = $this->orders()
@@ -240,16 +228,6 @@ class Subscription extends Model
             return $this->orders()
                 ->orderBy('delivery_date', 'desc')
                 ->first();
-        }
-    }
-
-    public function getNextDeliveryDateAttribute()
-    {
-        foreach ($this->orders as $order) {
-            $deliveryDate = new Carbon($order->delivery_date);
-            if ($deliveryDate->isFuture()) {
-                return $deliveryDate;
-            }
         }
     }
 
@@ -1371,11 +1349,6 @@ class Subscription extends Model
         ]);
 
         $this->store->clearCaches();
-    }
-
-    public function getPaidOrderCountAttribute()
-    {
-        return $this->orders->where('paid', 1)->count();
     }
 
     public function getTotalItemQuantityAttribute()
