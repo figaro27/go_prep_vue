@@ -308,6 +308,8 @@ export default {
       if (this.store.details.country === "US") {
         this.spliceZip();
       }
+      this.userDetail.name =
+        this.userDetail.firstname + " " + this.userDetail.lastname;
       axios
         .patch("/api/me/detail", this.userDetail)
         .then(response => {

@@ -233,6 +233,11 @@ class CheckoutController extends StoreController
                 $gateway
             );
 
+            $customer->last_order = Carbon::now();
+            $customer->total_payments += 1;
+            $customer->total_paid += $grandTotal;
+            $customer->update();
+
             $storeCustomer = null;
 
             $promotionPointsAmount = $request->get('promotionPointsAmount');

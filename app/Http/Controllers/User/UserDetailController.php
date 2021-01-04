@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\UserDetail;
 use Illuminate\Http\Request;
 use Auth;
+use App\Customer;
 
 class UserDetailController extends UserController
 {
@@ -91,6 +92,11 @@ class UserDetailController extends UserController
         $details = auth('api')->user()->details;
         $details->update($values);
         $details->update($request->toArray());
+
+        $customer = Customer::where('id', $this->user->id)->first();
+        if ($customer) {
+            $customer->update($request->toArray());
+        }
 
         // return $user->details;
 

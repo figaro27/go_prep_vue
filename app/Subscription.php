@@ -22,6 +22,7 @@ use App\MealSubscriptionAddon;
 use App\PurchasedGiftCard;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Customer\RenewalFailed;
+use App\Customer;
 
 class Subscription extends Model
 {
@@ -668,6 +669,11 @@ class Subscription extends Model
 
             if ($applyCharge || $markAsPaidOnly) {
                 $this->paid_order_count += 1;
+                $customer = Customer::where('user_id', $this->user_id)->first();
+                $customer->last_order = Carbon::now();
+                $customer->total_payments += 1;
+                $customer->total_paid += $this->amount;
+                $customer->update();
             }
 
             $nextOrder = $this->orders->firstWhere(

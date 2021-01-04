@@ -382,6 +382,17 @@ class User extends Authenticatable implements JWTSubject
         $customer->store_id = $storeId;
         $customer->currency = $currency;
         $customer->payment_gateway = $gateway;
+        $customer->name =
+            $this->userDetail->firstname . ' ' . $this->userDetail->lastname;
+        $customer->firstname = $this->userDetail->firstname;
+        $customer->lastname = $this->userDetail->lastname;
+        $customer->phone = $this->userDetail->phone;
+        $customer->address = $this->userDetail->address;
+        $customer->city = $this->userDetail->city;
+        $customer->state = $this->userDetail->state;
+        $customer->zip = $this->userDetail->zip;
+        $customer->zip = $this->userDetail->zip;
+        $customer->delivery = $this->userDetail->delivery;
 
         if ($gateway === Constants::GATEWAY_STRIPE) {
             $acct = $store->settings->stripe_account;

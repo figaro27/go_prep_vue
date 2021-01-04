@@ -52,8 +52,6 @@ class CustomerController extends StoreController
             'store_id',
             'created_at',
             'updated_at',
-            'joined',
-            'added_by_store_id',
             'total_payments',
             'total_paid',
             'state',
@@ -132,6 +130,9 @@ class CustomerController extends StoreController
 
         if ($customers) {
             $customer = Customer::where('id', $customerId)->first();
+            $customer->update($details);
+            $customer->email = $details['email'];
+            $customer->update();
             $userDetail = UserDetail::where(
                 'user_id',
                 $customer->user_id
@@ -142,6 +143,9 @@ class CustomerController extends StoreController
             $user->save();
         } else {
             $userDetail = UserDetail::where('user_id', $userDetailId)->first();
+            $customer->update($details);
+            $customer->email = $request->get('email');
+            $customer->update();
             $userDetail->update($details);
             $user = User::where('id', $userDetail->user_id)->first();
             $user->email = $request->get('email');

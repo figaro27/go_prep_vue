@@ -46,14 +46,24 @@
               </span>
 
               <div slot="created_at" slot-scope="props">
-                <div>
-                  {{ moment(props.row.created_at).format("dddd, MMM Do") }}
-                </div>
+                <p>
+                  {{
+                    moment(props.row.created_at).format("dddd, MMM Do, YYYY")
+                  }}
+                </p>
               </div>
 
-              <!-- <div slot="total_paid" slot-scope="props">
-                <div>{{ format.money(props.row.total_paid) }}</div>
-              </div> -->
+              <div slot="total_paid" slot-scope="props">
+                <p>{{ format.money(props.row.total_paid) }}</p>
+              </div>
+
+              <div slot="last_order" slot-scope="props">
+                <p>
+                  {{
+                    moment(props.row.last_order).format("dddd, MMM Do, YYYY")
+                  }}
+                </p>
+              </div>
 
               <div slot="actions" class="text-nowrap" slot-scope="props">
                 <button
@@ -129,7 +139,9 @@
             <span v-else>
               <p>{{ customer.email }}</p>
             </span>
-            <div v-if="customer.added_by_store_id === store.id">
+            <!-- No longer requiring the customer to be created by the store for the store to edit the customer -->
+            <div>
+              <!-- <div v-if="customer.added_by_store_id === store.id"> -->
               <b-btn
                 variant="warning"
                 class="d-inline mb-2"
@@ -464,9 +476,9 @@ export default {
         "city",
         "zip",
         "created_at",
-        // "total_payments",
-        // "total_paid",
-        // "last_order",
+        "total_payments",
+        "total_paid",
+        "last_order",
         "actions"
       ],
       columnsMealMultipleDelivery: [
@@ -479,9 +491,9 @@ export default {
       ],
       options: {
         headings: {
-          // last_order: "Last Order",
-          // total_payments: "Total Orders",
-          // total_paid: "Total Paid",
+          last_order: "Last Order",
+          total_payments: "Total Orders",
+          total_paid: "Total Paid",
           Name: "Name",
           phone: "Phone",
           address: "Address",
@@ -490,7 +502,6 @@ export default {
           created_at: "Customer Since",
           actions: "Actions"
         },
-        dateColumns: ["Joined"],
         customSorting: {
           TotalPaid: function(ascending) {
             return function(a, b) {
@@ -498,14 +509,6 @@ export default {
               var numB = parseInt(b.TotalPaid);
               if (ascending) return numA >= numB ? 1 : -1;
               return numA <= numB ? 1 : -1;
-            };
-          },
-          Joined: function(ascending) {
-            return function(a, b) {
-              var numA = moment(a.Joined);
-              var numB = moment(b.Joined);
-              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
-              return numA.isAfter(numB, "day") ? 1 : -1;
             };
           },
           LastOrder: function(ascending) {
@@ -821,6 +824,8 @@ export default {
       this.editingCustomer = !this.editingCustomer;
     },
     updateCustomer(id) {
+      this.customer.name =
+        this.customer.firstname + " " + this.customer.lastname;
       axios
         .post(`/api/me/updateCustomerUserDetails`, {
           id: id,

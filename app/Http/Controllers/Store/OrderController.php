@@ -862,6 +862,11 @@ class OrderController extends StoreController
             $gratuity = $request->get('gratuity');
             $grandTotal = $request->get('grandTotal');
             $adjustedDifference = $request->get('grandTotal') - $order->amount;
+
+            $customer = Customer::where('id', $order->customer_id)->first();
+            $customer->total_paid += $adjustedDifference;
+            $customer->update();
+
             $balance = $request->get('dontAffectBalance')
                 ? 0
                 : $request->get('grandTotal') - $order->amount;

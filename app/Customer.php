@@ -13,7 +13,20 @@ class Customer extends Model
      *
      * @var array
      */
-    protected $fillable = ['store_id', 'user_id', 'currency'];
+    protected $fillable = [
+        'store_id',
+        'user_id',
+        'currency',
+        'firstname',
+        'lastname',
+        'name',
+        'phone',
+        'address',
+        'city',
+        'state',
+        'zip',
+        'delivery'
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -24,23 +37,7 @@ class Customer extends Model
 
     protected $casts = [];
 
-    protected $appends = [
-        'joined',
-        'added_by_store_id',
-        // 'last_order',
-        // 'total_payments',
-        // 'total_paid',
-        'firstname',
-        'lastname',
-        'name',
-        'phone',
-        'address',
-        'city',
-        'state',
-        'zip',
-        'delivery',
-        'email'
-    ];
+    protected $appends = [];
 
     public function user()
     {
@@ -62,90 +59,5 @@ class Customer extends Model
         return $this->hasMany('App\Order')
             ->where('paid', 1)
             ->orderBy('created_at', 'desc');
-    }
-
-    public function getEmailAttribute()
-    {
-        return $this->user->email;
-    }
-
-    // public function getPaidOrdersAttribute()
-    // {
-    //     return $this->user->orders->where('paid', 1);
-    // }
-
-    public function getJoinedAttribute()
-    {
-        return $this->user->created_at->format('m/d/Y');
-    }
-
-    // public function getLastOrderAttribute()
-    // {
-    //     $date = $this->user->order
-    //         ->where('store_id', $this->store_id)
-    //         ->max("created_at");
-    //     return $date ? $date->format('m/d/Y') : null;
-    // }
-
-    // public function getTotalPaymentsAttribute()
-    // {
-    //     return $this->user->order
-    //         ->where('store_id', $this->store_id)
-    //         ->where('paid', 1)
-    //         ->count();
-    // }
-
-    // public function getTotalPaidAttribute()
-    // {
-    //     return $this->user->order
-    //         ->where('store_id', $this->store_id)
-    //         ->where('paid', 1)
-    //         ->sum("amount");
-    // }
-
-    public function getNameAttribute()
-    {
-        return $this->user->name;
-    }
-
-    public function getFirstnameAttribute()
-    {
-        return $this->user->userDetail->firstname;
-    }
-
-    public function getLastnameAttribute()
-    {
-        return $this->user->userDetail->lastname;
-    }
-
-    public function getAddedByStoreIdAttribute()
-    {
-        return $this->user->added_by_store_id;
-    }
-
-    public function getPhoneAttribute()
-    {
-        return $this->user->userDetail->phone;
-    }
-    public function getAddressAttribute()
-    {
-        return $this->user->userDetail->address;
-    }
-    public function getCityAttribute()
-    {
-        return $this->user->userDetail->city;
-    }
-    public function getStateAttribute()
-    {
-        return $this->user->userDetail->state;
-    }
-    public function getZipAttribute()
-    {
-        return $this->user->userDetail->zip;
-    }
-
-    public function getDeliveryAttribute()
-    {
-        return $this->user->userDetail->delivery;
     }
 }

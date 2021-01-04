@@ -83,7 +83,6 @@ export default {
           "user_detail.zip": "Zip",
           created_at: "Menu Viewed"
         },
-        dateColumns: ["Joined"],
         customSorting: {
           TotalPaid: function(ascending) {
             return function(a, b) {
@@ -91,14 +90,6 @@ export default {
               var numB = parseInt(b.TotalPaid);
               if (ascending) return numA >= numB ? 1 : -1;
               return numA <= numB ? 1 : -1;
-            };
-          },
-          Joined: function(ascending) {
-            return function(a, b) {
-              var numA = moment(a.Joined);
-              var numB = moment(b.Joined);
-              if (ascending) return numA.isBefore(numB, "day") ? 1 : -1;
-              return numA.isAfter(numB, "day") ? 1 : -1;
             };
           },
           LastOrder: function(ascending) {

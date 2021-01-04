@@ -28,7 +28,7 @@ class Customers
                 $customer['address'],
                 $customer['city'],
                 $customer['zip'],
-                $customer['joined'],
+                $customer['created_at'],
                 $customer['total_payments'],
                 '$' . $customer['total_paid'],
                 $customer['last_order']
