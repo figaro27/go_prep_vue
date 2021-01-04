@@ -361,7 +361,7 @@
               "
             >
               <h4 class="mt-2">Upcoming Delivery</h4>
-              <p>
+              <p v-if="subscription.next_delivery_date">
                 {{
                   moment(subscription.next_delivery_date.date).format(
                     "dddd, MMM Do"
