@@ -114,22 +114,19 @@
               }}</span>
             </div>
             <div slot="delivery_day" class="text-nowrap" slot-scope="props">
-              <span
-                v-if="
-                  props.row.next_delivery_date &&
-                    props.row.next_delivery_date.date
-                "
-              >
-                {{
-                  moment(props.row.next_delivery_date.date).format(
-                    "dddd, MMM Do"
-                  )
-                }}
-              </span>
-              <span v-else>
-                {{
-                  moment(props.row.next_delivery_date).format("dddd, MMM Do")
-                }}
+              <span v-if="props.row.next_delivery_date">
+                <span v-if="props.row.next_delivery_date.date">
+                  {{
+                    moment(props.row.next_delivery_date.date).format(
+                      "dddd, MMM Do"
+                    )
+                  }}
+                </span>
+                <span v-else>
+                  {{
+                    moment(props.row.next_delivery_date).format("dddd, MMM Do")
+                  }}
+                </span>
               </span>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
