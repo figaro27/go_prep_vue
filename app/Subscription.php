@@ -57,6 +57,8 @@ class Subscription extends Model
     ];
 
     protected $casts = [
+        'latest_unpaid_order_date' => 'datetime',
+        'next_delivery_date' => 'datetime',
         'next_renewal_at' => 'datetime',
         'preFeePreDiscount' => 'float',
         'afterDiscountBeforeFees' => 'float',
