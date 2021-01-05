@@ -120,18 +120,9 @@
                     props.row.next_delivery_date
                 "
               >
-                <span v-if="props.row.next_delivery_date.date">
-                  {{
-                    moment(props.row.next_delivery_date.date).format(
-                      "dddd, MMM Do"
-                    )
-                  }}
-                </span>
-                <span v-else>
-                  {{
-                    moment(props.row.next_delivery_date).format("dddd, MMM Do")
-                  }}
-                </span>
+                {{
+                  moment(props.row.next_delivery_date).format("dddd, MMM Do")
+                }}
               </span>
             </div>
             <div slot="actions" class="text-nowrap" slot-scope="props">
@@ -346,7 +337,7 @@
                 </span>
                 will create order for
                 {{
-                  moment(subscription.latest_unpaid_order_date.date).format(
+                  moment(subscription.latest_unpaid_order_date).format(
                     "dddd, MMM Do"
                   )
                 }}
@@ -356,21 +347,17 @@
                 until resumed.
               </p>
             </span>
-            <span
+            <h4 class="mt-2">Upcoming Delivery</h4>
+            <p
               v-if="
-                subscription.next_delivery_date &&
-                  !showingCancelledSubscriptions
+                subscription.status !== 'cancelled' &&
+                  subscription.next_delivery_date
               "
             >
-              <h4 class="mt-2">Upcoming Delivery</h4>
-              <p v-if="subscription.next_delivery_date">
-                {{
-                  moment(subscription.next_delivery_date.date).format(
-                    "dddd, MMM Do"
-                  )
-                }}
-              </p>
-            </span>
+              {{
+                moment(subscription.next_delivery_date).format("dddd, MMM Do")
+              }}
+            </p>
           </div>
           <div class="col-md-4">
             <p>
@@ -490,11 +477,14 @@
           <div class="col-md-4">
             <span v-if="!storeModules.hideTransferOptions">
               <h4>{{ subscription.transfer_type }} Day</h4>
-              <span v-if="subscription.next_delivery_date">
+              <span
+                v-if="
+                  subscription.status !== 'cancelled' &&
+                    subscription.next_delivery_date
+                "
+              >
                 {{
-                  moment(subscription.next_delivery_date.date).format(
-                    "dddd, MMM Do"
-                  )
+                  moment(subscription.next_delivery_date).format("dddd, MMM Do")
                 }}
               </span>
               <span v-if="subscription.transferTime">
