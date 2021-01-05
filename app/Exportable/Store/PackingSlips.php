@@ -118,6 +118,11 @@ class PackingSlips
                     });
             });
 
+            $orders = $orders
+                ->whereHas('meal_orders')
+                ->orWhereHas('meal_package_orders')
+                ->orWhereHas('lineItemsOrders');
+
             // Disabled Workflow
             /*
             if ($dateRange === []) {

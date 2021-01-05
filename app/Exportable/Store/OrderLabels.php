@@ -103,6 +103,11 @@ class OrderLabels
             ];
         });
 
+        $orders = $orders
+            ->whereHas('meal_orders')
+            ->orWhereHas('meal_package_orders')
+            ->orWhereHas('lineItemsOrders');
+
         $orders = $orders->toArray();
 
         return $orders;
