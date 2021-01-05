@@ -759,7 +759,7 @@
                     <span class="mr-1">Statement Descriptor</span>
                     <img
                       v-b-popover.hover="
-                        'This is the name that shows up next to your customer\'s credit card charges on their statements. Usually just your business name.'
+                        'This is what shows up next to your customer\'s credit card charges on their statements. Usually your website or business name.'
                       "
                       title="Statement Descriptor"
                       src="/images/store/popover.png"
