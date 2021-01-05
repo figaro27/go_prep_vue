@@ -15,7 +15,7 @@
               >
               <span v-else>Your order will be delivered on</span>
               {{
-                moment(activeSubscriptions[0].next_delivery_date.date).format(
+                moment(activeSubscriptions[0].next_delivery_date).format(
                   "dddd, MMM Do, Y"
                 ) || ""
               }}
@@ -86,9 +86,9 @@
             }}</span>
           </div>
           <div slot="delivery_day" class="text-nowrap" slot-scope="props">
-            {{
-              moment(props.row.next_delivery_date.date).format("dddd, MMM Do")
-            }}
+            <span v-if="props.row.next_delivery_date"
+              >{{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
+            </span>
           </div>
           <div slot="actions" class="text-nowrap" slot-scope="props">
             <button
@@ -242,11 +242,11 @@
             <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
             <span v-if="!storeModules.hideTransferOptions" class="mt-2">
               <h4>{{ subscription.transfer_type }} Day</h4>
-              {{
-                moment(subscription.next_delivery_date.date).format(
-                  "dddd, MMM Do"
-                )
-              }}
+              <p v-if="subscription.next_delivery_date">
+                {{
+                  moment(subscription.next_delivery_date).format("dddd, MMM Do")
+                }}
+              </p>
               <span v-if="subscription.transferTime">
                 {{ subscription.transferTime }}</span
               >
