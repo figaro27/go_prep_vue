@@ -632,7 +632,7 @@
                   v-model="storeSettings.shippingInstructions"
                   placeholder="Please include shipping instructions to your customers. This will be shown on the checkout page as well as email notifications the customer receives."
                   class="mb-2 w-600"
-                  @input="saveTextInput()"
+                  @input="debounceText()"
                 ></b-form-textarea>
 
                 <p v-if="transferTypeCheckDelivery">Delivery Instructions:</p>
@@ -643,7 +643,7 @@
                   v-model="storeSettings.deliveryInstructions"
                   placeholder="Please include delivery instructions to your customers (time window, how long your driver will wait, etc.) This will be shown on the checkout page as well as email notifications the customer receives."
                   class="mb-2 w-600"
-                  @input="saveTextInput()"
+                  @input="debounceText()"
                 ></b-form-textarea>
                 <p v-if="transferTypeCheckPickup">Pickup Instructions:</p>
                 <b-form-textarea
@@ -653,7 +653,7 @@
                   v-model="storeSettings.pickupInstructions"
                   placeholder="Please include pickup instructions to your customers (pickup address, phone number, and time). This will be shown on the checkout page as well as email notifications the customer receives."
                   class="mb-2 w-600"
-                  @input="saveTextInput()"
+                  @input="debounceText()"
                 ></b-form-textarea>
 
                 <p class="mt-2">
@@ -673,7 +673,7 @@
                   v-model="storeSettings.notesForCustomer"
                   placeholder="Thank you for your order."
                   class="w-600"
-                  @input="saveTextInput()"
+                  @input="debounceText()"
                 ></b-form-textarea>
 
                 <!-- <b-button type="submit" variant="primary" class="mt-3"
@@ -755,6 +755,24 @@
                     @input="updateStoreSettings()"
                   >
                   </b-select>
+                  <p class="mt-4">
+                    <span class="mr-1">Statement Descriptor</span>
+                    <img
+                      v-b-popover.hover="
+                        'This is the name that shows up next to your customer\'s credit card charges on their statements. Usually just your business name.'
+                      "
+                      title="Statement Descriptor"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <b-form-input
+                    v-model="storeSettings.statementDescriptor"
+                    class="w-180 mb-3"
+                    @input="debounceText()"
+                    required
+                  >
+                  </b-form-input>
                 </b-form>
 
                 <p class="mt-3">
@@ -2147,7 +2165,7 @@ export default {
         .split(",");
       this.updateStoreSettings();
     }, 1000),
-    saveTextInput: _.debounce(function() {
+    debounceText: _.debounce(function() {
       this.updateStoreSettings();
     }, 1000)
   }

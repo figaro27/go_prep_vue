@@ -113,7 +113,21 @@ class StoreSettingController extends StoreController
 
         $subDiscount = $settings->first()->applyMealPlanDiscount;
 
+        $updateStatementDescriptor = false;
+        if (
+            isset($values['statementDescriptor']) &&
+            $values['statementDescriptor'] !==
+                $settings->first()->statementDescriptor
+        ) {
+            $updateStatementDescriptor = true;
+        }
+
         $settings->update($values);
+
+        // If the statement descriptor was updated, update it in Stripe
+        if ($updateStatementDescriptor) {
+            $this->updateStatementDescriptor();
+        }
 
         // Removing subscription discount from all active subscriptions if turned off
         if ($subDiscount && !$values['applyMealPlanDiscount']) {
@@ -252,5 +266,24 @@ class StoreSettingController extends StoreController
     {
         $store = $this->store;
         return $store->settings->application_fee;
+    }
+
+    public function updateStatementDescriptor()
+    {
+        $acct = $this->store->settings->stripe_account;
+        \Stripe\Stripe::setApiKey($acct['access_token']);
+
+        $statementDescriptor = \Stripe\Account::update(
+            $this->store->settings->stripe_id,
+            [
+                'settings' => [
+                    'payments' => [
+                        'statement_descriptor' => $this->store->fresh()
+                            ->settings->statementDescriptor
+                    ]
+                ]
+            ]
+        );
+        return $statementDescriptor;
     }
 }
