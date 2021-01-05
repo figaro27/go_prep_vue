@@ -113,7 +113,11 @@
                 moment(props.row.adjustedRenewal.date).format("dddd, MMM Do")
               }}</span>
             </div>
-            <div slot="delivery_day" class="text-nowrap" slot-scope="props">
+            <div
+              slot="next_delivery_date"
+              class="text-nowrap"
+              slot-scope="props"
+            >
               <span
                 v-if="
                   props.row.status !== 'cancelled' &&
@@ -693,7 +697,7 @@ export default {
         // "user.user_detail.phone",
         "amount",
         "created_at",
-        "delivery_day",
+        "next_delivery_date",
         "next_renewal",
         // "interval",
         "status",
@@ -710,7 +714,7 @@ export default {
           // "user.user_detail.phone": "Phone",
           amount: "Total",
           created_at: "Subscription Placed",
-          delivery_day: "Upcoming Delivery",
+          next_delivery_date: "Upcoming Delivery",
           next_renewal: "Next Renewal",
           // interval: "Interval",
           status: "Status",
