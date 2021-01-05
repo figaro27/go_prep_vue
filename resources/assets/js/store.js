@@ -2359,12 +2359,12 @@ const actions = {
       const subscriptions = _.map(data, subscription => {
         subscription.created_at = moment.utc(subscription.created_at).local(); //.format('ddd, MMMM Do')
         subscription.updated_at = moment.utc(subscription.updated_at).local();
-        subscription.next_delivery_date = subscription.next_delivery_date
-          ? moment.utc(subscription.next_delivery_date.date)
-          : null;
-        subscription.next_renewal_at = moment
-          .utc(subscription.next_renewal_at)
-          .local();
+        // subscription.next_delivery_date = subscription.next_delivery_date
+        //   ? moment.utc(subscription.next_delivery_date.date)
+        //   : null;
+        // subscription.next_renewal_at = moment
+        //   .utc(subscription.next_renewal_at)
+        //   .local();
         //.local(); //.format('ddd, MMMM Do')
         return subscription;
       });
