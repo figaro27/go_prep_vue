@@ -32,7 +32,7 @@ class OrdersByCustomer
         //     $fulfilled = 0;
         // }
         $orders = $this->store->orders()->where(['paid' => 1, 'voided' => 0]);
-
+        // ->where(['fulfilled' => $fulfilled, 'paid' => 1]);
         $orders = $orders->where(function ($query) use ($dateRange) {
             $query
                 ->where(function ($query1) use ($dateRange) {
@@ -86,11 +86,6 @@ class OrdersByCustomer
                         });
                 });
         });
-
-        $orders = $orders
-            ->whereHas('meal_orders')
-            ->orWhereHas('meal_package_orders')
-            ->orWhereHas('lineItemsOrders');
 
         if (isset($params['pickupLocationId'])) {
             $orders = $orders->where(
