@@ -125,7 +125,9 @@
                 "
               >
                 {{
-                  moment(props.row.next_delivery_date).format("dddd, MMM Do")
+                  moment(props.row.next_delivery_date.date).format(
+                    "dddd, MMM Do"
+                  )
                 }}
               </span>
             </div>
