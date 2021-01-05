@@ -272,34 +272,38 @@ class StoreSettingController extends StoreController
     public function updateStatementDescriptor()
     {
         $settings = $this->store->fresh()->settings;
-        \Stripe\Stripe::setApiKey($settings->stripe_account['access_token']);
-
-        if (!$settings->statementDescriptor) {
-            $payments = \Stripe\Account::retrieve(
-                $this->store->settings->stripe_id,
-                [
-                    'settings' => [
-                        'payments' => []
-                    ]
-                ]
+        if ($settings->stripe_account) {
+            \Stripe\Stripe::setApiKey(
+                $settings->stripe_account['access_token']
             );
-            $statementDescriptor = $payments['statement_descriptor'];
-            $settings->statementDescriptor = $statementDescriptor;
-            $settings->update();
-        } else {
-            $statementDescriptor = \Stripe\Account::update(
-                $settings->stripe_id,
-                [
-                    'settings' => [
-                        'payments' => [
-                            'statement_descriptor' =>
-                                $settings->statementDescriptor
+
+            if (!$settings->statementDescriptor) {
+                $payments = \Stripe\Account::retrieve(
+                    $this->store->settings->stripe_id,
+                    [
+                        'settings' => [
+                            'payments' => []
                         ]
                     ]
-                ]
-            );
-        }
+                );
+                $statementDescriptor = $payments['statement_descriptor'];
+                $settings->statementDescriptor = $statementDescriptor;
+                $settings->update();
+            } else {
+                $statementDescriptor = \Stripe\Account::update(
+                    $settings->stripe_id,
+                    [
+                        'settings' => [
+                            'payments' => [
+                                'statement_descriptor' =>
+                                    $settings->statementDescriptor
+                            ]
+                        ]
+                    ]
+                );
+            }
 
-        return $statementDescriptor;
+            return $statementDescriptor;
+        }
     }
 }
