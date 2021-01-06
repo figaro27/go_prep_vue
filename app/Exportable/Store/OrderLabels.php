@@ -71,17 +71,14 @@ class OrderLabels
                         return false;
                     }
 
-                    return true;
+                    if (
+                        count($order->meals) > 0 ||
+                        count($order->lineItemsOrders) > 0
+                    ) {
+                        return true;
+                    }
                 });
         }
-
-        // Removing orders from reports that just contain gift cards
-        $orders = $orders->where(function ($order) {
-            $order
-                ->whereHas('meal_orders')
-                ->orWhereHas('meal_package_orders')
-                ->orWhereHas('lineItemsOrders');
-        });
 
         $orders = $orders->map(function ($order) {
             return [
