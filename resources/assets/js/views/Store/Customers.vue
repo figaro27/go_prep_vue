@@ -139,6 +139,26 @@
             <span v-else>
               <p>{{ customer.email }}</p>
             </span>
+
+            <span v-if="editingCustomer">
+              <h4>
+                Password
+                <img
+                  v-b-popover.hover="
+                    'Here you can reset your customers password. Leave this field blank to not affect the customer\'s current password.'
+                  "
+                  title="Password Reset"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </h4>
+              <b-form-input
+                placeholder="Leave blank to not update password."
+                v-model="password"
+                class="d-inline mb-3"
+                style="width:80%"
+              ></b-form-input>
+            </span>
             <!-- No longer requiring the customer to be created by the store for the store to edit the customer -->
             <div>
               <!-- <div v-if="customer.added_by_store_id === store.id"> -->
@@ -459,6 +479,7 @@ export default {
   },
   data() {
     return {
+      password: null,
       editingCustomer: false,
       form: {},
       addCustomerModal: false,
@@ -826,6 +847,11 @@ export default {
     updateCustomer(id) {
       this.customer.name =
         this.customer.firstname + " " + this.customer.lastname;
+
+      if (this.password) {
+        this.customer.password = this.password;
+      }
+
       axios
         .post(`/api/me/updateCustomerUserDetails`, {
           id: id,
@@ -838,6 +864,7 @@ export default {
           this.refreshUpcomingOrdersWithoutItems();
           this.$toastr.s("Customer updated.");
           this.editingCustomer = false;
+          this.password = null;
         });
     }
   }

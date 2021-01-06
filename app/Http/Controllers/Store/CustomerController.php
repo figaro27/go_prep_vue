@@ -157,6 +157,11 @@ class CustomerController extends StoreController
             $user->save();
         }
 
+        if (isset($details['password'])) {
+            $user->password = bcrypt($details['password']);
+            $user->update();
+        }
+
         //Add Email
     }
 
