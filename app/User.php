@@ -393,6 +393,7 @@ class User extends Authenticatable implements JWTSubject
         $customer->zip = $this->userDetail->zip;
         $customer->zip = $this->userDetail->zip;
         $customer->delivery = $this->userDetail->delivery;
+        $customer->email = $this->email;
 
         if ($gateway === Constants::GATEWAY_STRIPE) {
             $acct = $store->settings->stripe_account;
