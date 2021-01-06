@@ -997,6 +997,12 @@ class CheckoutController extends UserController
                 $userSubscription->cashOrder = $cashOrder;
                 $userSubscription->isMultipleDelivery = $isMultipleDelivery;
                 $userSubscription->currency = $store->settings->currency;
+                $userSubscription->next_delivery_date = (new Carbon(
+                    $deliveryDay
+                ))->toDateString();
+                $userSubscription->latest_unpaid_order_date = (new Carbon(
+                    $deliveryDay
+                ))->toDateString();
                 $userSubscription->save();
 
                 // Create initial order
