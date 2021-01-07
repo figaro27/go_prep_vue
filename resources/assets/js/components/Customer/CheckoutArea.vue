@@ -1189,6 +1189,19 @@
         <li v-if="loggedIn && invalidCheckout && !adjustingOrder">
           <b-alert variant="warning" show class="pb-0 mb-0">
             <p class="strong center-text font-14">{{ invalidCheckout }}</p>
+            <div class="d-flex d-center">
+              <b-btn
+                class="mb-3"
+                variant="warning"
+                v-if="
+                  context !== 'store' &&
+                    !this.willDeliver &&
+                    this.bagPickup === 0
+                "
+                @click="showDeliveryAreaModal = true"
+                >View Delivery Area</b-btn
+              >
+            </div>
           </b-alert>
         </li>
 
@@ -1258,6 +1271,35 @@
     <add-customer-modal
       :addCustomerModal="addCustomerModal"
     ></add-customer-modal>
+
+    <b-modal
+      size="sm"
+      title="Delivery Area"
+      v-model="showDeliveryAreaModal"
+      v-if="showDeliveryAreaModal"
+      no-fade
+    >
+      <p
+        class="strong pt-2"
+        v-if="store.settings.delivery_distance_type === 'radius'"
+      >
+        Our delivery radius is
+        {{ store.settings.delivery_distance_radius }} miles from postal code:
+        {{ store.details.zip }}
+      </p>
+      <span v-if="store.settings.delivery_distance_type === 'zipcodes'">
+        <p class="strong pt-2">We deliver to the following postal codes:</p>
+        <span
+          v-for="(zipcode, index) in store.settings.delivery_distance_zipcodes"
+        >
+          {{ zipcode
+          }}<span
+            v-if="store.settings.delivery_distance_zipcodes.length - index > 1"
+            >,
+          </span>
+        </span>
+      </span>
+    </b-modal>
 
     <b-modal
       size="md"
@@ -1330,6 +1372,7 @@ export default {
   },
   data() {
     return {
+      showDeliveryAreaModal: false,
       showDiscounts: {
         subscriptionDiscount: true,
         coupons: true,
