@@ -202,7 +202,7 @@ class SubscriptionController extends StoreController
         $sub = Subscription::where('id', $request->get('id'))
             ->with(['pickup_location', 'user'])
             ->first();
-        $sub->renew();
+        $sub->renew(true);
         return $sub;
     }
 

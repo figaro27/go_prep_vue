@@ -374,7 +374,7 @@ class Subscription extends Model
      *
      * @return boolean
      */
-    public function renew()
+    public function renew($manualRenewal = false)
     {
         try {
             $isMultipleDelivery = (int) $this->isMultipleDelivery;
@@ -705,16 +705,18 @@ class Subscription extends Model
             $sub->error = $e->getMessage();
             $sub->timestamp = Carbon::now('utc')->subHours('5');
             $email = new RenewalFailed($sub->toArray());
-            // Mail::to('mike@goprep.com')->send($email);
+
             if (
                 strpos($sub->error, 'unpaid order') !== false ||
                 strpos($sub->error, 'stripe_id') !== false
             ) {
                 Mail::to('mike@goprep.com')->send($email);
             } else {
-                Mail::to($sub->user->email)
-                    ->bcc($sub->store->user->email)
-                    ->send($email);
+                if (!$manualRenewal) {
+                    Mail::to($sub->user->email)
+                        ->bcc($sub->store->user->email)
+                        ->send($email);
+                }
             }
 
             $this->failed_renewal = Carbon::now('UTC');
