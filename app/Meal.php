@@ -681,6 +681,7 @@ class Meal extends Model implements HasMedia
             'stock',
             'expirationDays',
             'servingsPerMeal',
+            'servingUnitQuantity',
             'servingSizeUnit',
             'frequencyType'
         ]);
@@ -876,6 +877,9 @@ class Meal extends Model implements HasMedia
                     if (isset($size['servingsPerMeal'])) {
                         $servingsPerMeal = $size['servingsPerMeal'];
                     }
+                    if (isset($size['servingUnitQuantity'])) {
+                        $servingUnitQuantity = $size['servingUnitQuantity'];
+                    }
                     if (isset($size['servingSizeUnit'])) {
                         $servingSizeUnit = $size['servingSizeUnit'];
                     }
@@ -885,6 +889,7 @@ class Meal extends Model implements HasMedia
                             null,
                             $meal,
                             $servingsPerMeal,
+                            $servingUnitQuantity,
                             $servingSizeUnit,
                             $mealSize
                         );
@@ -1012,12 +1017,14 @@ class Meal extends Model implements HasMedia
         }
 
         $servingsPerMeal = $request->get('servingsPerMeal');
+        $servingUnitQuantity = $request->get('servingUnitQuantity');
         $servingSizeUnit = $request->get('servingSizeUnit');
         if (isset($servingsPerMeal) && isset($servingSizeUnit)) {
             Meal::saveMealServings(
                 null,
                 $meal,
                 $servingsPerMeal,
+                $servingUnitQuantity,
                 $servingSizeUnit,
                 null
             );
@@ -1811,6 +1818,7 @@ class Meal extends Model implements HasMedia
         $request,
         $meal,
         $servingsPerMeal,
+        $servingUnitQuantity,
         $servingSizeUnit,
         $mealSize
     ) {
@@ -1828,6 +1836,7 @@ class Meal extends Model implements HasMedia
             } else {
                 $meal->servingSizeUnit = $servingSizeUnit;
             }
+            $meal->servingUnitQuantity = $servingUnitQuantity;
             $meal->save();
         } else {
             $mealSize->servingsPerMeal = $servingsPerMeal;
@@ -1837,6 +1846,7 @@ class Meal extends Model implements HasMedia
             } else {
                 $mealSize->servingSizeUnit = $servingSizeUnit;
             }
+            $mealSize->servingUnitQuantity = $servingUnitQuantity;
             $mealSize->update();
         }
     }

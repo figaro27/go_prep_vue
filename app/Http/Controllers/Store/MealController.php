@@ -747,6 +747,7 @@ class MealController extends StoreController
         } else {
             $meal->servingSizeUnit = $request->get('servingSizeUnit');
         }
+        $meal->servingUnitQuantity = $request->get('servingUnitQuantity');
         $meal->save();
     }
 

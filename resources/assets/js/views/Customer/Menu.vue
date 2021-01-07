@@ -1658,6 +1658,9 @@ export default {
       const ingredientList = this.nutrition.getIngredientList(ingredients);
       let servingsPerMeal = null;
       let servingSizeUnit = null;
+      const servingUnitQuantity = meal.servingUnitQuantity
+        ? meal.servingUnitQuantity
+        : 1;
       if (servingDetails) {
         servingsPerMeal = servingDetails.servingsPerMeal;
         servingSizeUnit = servingDetails.servingSizeUnit;
@@ -1670,7 +1673,7 @@ export default {
         showItemName: false,
         showServingUnitQuantity: true,
         valueServingPerContainer: servingsPerMeal,
-        valueServingUnitQuantity: 1,
+        valueServingUnitQuantity: servingUnitQuantity,
         valueServingSizeUnit: servingSizeUnit,
         showServingsPerContainer: true,
         showPolyFat: false,

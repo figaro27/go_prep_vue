@@ -17,6 +17,9 @@ try {
       const nutrition = Nutrition.getTotals(ingredients);
       const ingredientList = Nutrition.getIngredientList(ingredients);
       const servingsPerMeal = meal.servingsPerMeal ? meal.servingsPerMeal : 1;
+      const servingUnitQuantity = this.meal.servingUnitQuantity
+        ? this.meal.servingUnitQuantity
+        : 1;
       const servingSizeUnit = meal.servingSizeUnit
         ? meal.servingSizeUnit
         : "1 Meal";
@@ -33,7 +36,7 @@ try {
         showServingsPerContainer: true,
         showItemName: false,
         valueServingPerContainer: servingsPerMeal,
-
+        valueServingUnitQuantity: servingUnitQuantity,
         showPolyFat: false,
         showMonoFat: false,
         showTransFat: false,

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row mb-3 mt-2">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <strong>Servings Per Container</strong>
         <b-form-input
           v-model="meal.servingsPerMeal"
@@ -12,7 +12,7 @@
           >: {{ meal.servingsPerMeal }}</span
         >
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <strong>Serving Size Unit</strong>
         <b-form-input
           v-model="meal.servingSizeUnit"
@@ -23,7 +23,18 @@
           >: {{ meal.servingSizeUnit }}</span
         >
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
+        <strong>Serving Size Quantity</strong>
+        <b-form-input
+          v-model="meal.servingUnitQuantity"
+          placeholder="1"
+          v-if="!componentAddonPage"
+        ></b-form-input>
+        <span v-if="componentAddonPage" class="strong"
+          >: {{ meal.servingSizeUnit }}</span
+        >
+      </div>
+      <div class="col-md-3">
         <b-btn
           variant="primary"
           class="mt-4"
@@ -817,6 +828,9 @@ export default {
       const servingsPerMeal = this.meal.servingsPerMeal
         ? this.meal.servingsPerMeal
         : 1;
+      const servingUnitQuantity = this.meal.servingUnitQuantity
+        ? this.meal.servingUnitQuantity
+        : 1;
       const servingSizeUnit = this.meal.servingSizeUnit
         ? this.meal.servingSizeUnit
         : "";
@@ -827,7 +841,7 @@ export default {
         showItemName: false,
         showServingUnitQuantity: true,
         valueServingPerContainer: servingsPerMeal,
-        valueServingUnitQuantity: 1,
+        valueServingUnitQuantity: servingUnitQuantity,
         valueServingSizeUnit: servingSizeUnit,
         showServingsPerContainer: true,
         showPolyFat: false,
@@ -875,6 +889,7 @@ export default {
             id: this.$parent.meal ? this.$parent.meal.id : this.meal.id,
             meal_size_id: this.mealSizeId,
             servingsPerMeal: this.meal.servingsPerMeal,
+            servingUnitQuantity: this.meal.servingUnitQuantity,
             servingSizeUnit: this.meal.servingSizeUnit
           })
           .then(resp => {
