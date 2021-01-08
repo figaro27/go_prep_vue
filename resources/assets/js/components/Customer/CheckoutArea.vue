@@ -3070,7 +3070,10 @@ use next_delivery_dates
     showPaymentMethod() {
       if (
         (this.loggedIn && this.grandTotal > 0) ||
-        (this.loggedIn && this.grandTotal == 0 && this.weeklySubscriptionValue)
+        (this.loggedIn &&
+          !this.cashOrder &&
+          this.grandTotal == 0 &&
+          this.weeklySubscriptionValue)
       ) {
         return true;
       } else {
