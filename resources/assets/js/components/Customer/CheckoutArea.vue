@@ -3068,11 +3068,8 @@ use next_delivery_dates
     },
     showPaymentMethod() {
       if (
-        (this.loggedIn && !this.cashOrder && this.grandTotal > 0) ||
-        (this.loggedIn &&
-          !this.cashOrder &&
-          this.grandTotal == 0 &&
-          this.weeklySubscriptionValue)
+        (this.loggedIn && this.grandTotal > 0) ||
+        (this.loggedIn && this.grandTotal == 0 && this.weeklySubscriptionValue)
       ) {
         return true;
       } else {
@@ -3177,7 +3174,7 @@ use next_delivery_dates
         return "Please choose a customer.";
       }
 
-      if (this.showPaymentMethod && !this.card) {
+      if (this.showPaymentMethod && !this.card && !this.cashOrder) {
         return "Please enter a payment method.";
       }
 
