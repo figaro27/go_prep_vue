@@ -1025,8 +1025,7 @@
             v-if="
               storeModules.cashOrders &&
                 (storeModuleSettings.cashAllowedForCustomer ||
-                  $route.params.storeView ||
-                  storeOwner)
+                  context === 'store')
             "
           >
             <b-form-checkbox
@@ -1036,7 +1035,7 @@
               {{ storeModuleSettings.cashOrderWording }}
             </b-form-checkbox>
             <b-form-checkbox
-              v-if="$route.params.storeView || storeOwner"
+              v-if="context === 'store'"
               v-model="noBalance"
               class="pb-2 mediumCheckbox mt-1 mb-1"
             >
