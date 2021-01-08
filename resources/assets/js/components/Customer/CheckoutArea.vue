@@ -1025,7 +1025,8 @@
             v-if="
               storeModules.cashOrders &&
                 (storeModuleSettings.cashAllowedForCustomer ||
-                  context === 'store')
+                  $route.params.storeView ||
+                  storeOwner)
             "
           >
             <b-form-checkbox
@@ -1035,7 +1036,7 @@
               {{ storeModuleSettings.cashOrderWording }}
             </b-form-checkbox>
             <b-form-checkbox
-              v-if="context === 'store'"
+              v-if="$route.params.storeView || storeOwner"
               v-model="noBalance"
               class="pb-2 mediumCheckbox mt-1 mb-1"
             >
@@ -3068,7 +3069,7 @@ use next_delivery_dates
     },
     showPaymentMethod() {
       if (
-        (this.loggedIn && !this.cashOrder && this.grandTotal > 0) ||
+        (this.loggedIn && this.grandTotal > 0) ||
         (this.loggedIn &&
           !this.cashOrder &&
           this.grandTotal == 0 &&
