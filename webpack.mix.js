@@ -26,7 +26,22 @@ mix.extract();
 mix
   .js("resources/assets/js/app.js", "public/js")
   .js("resources/assets/js/print.js", "public/js")
-  // .sourceMaps(true)
+  .webpackConfig({
+    module: {
+      rules: [
+        {
+          test: /\.jsx?$/,
+          exclude: [],
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ["@babel/preset-env"]
+            }
+          }
+        }
+      ]
+    }
+  })
   .version();
 
 mix
