@@ -281,6 +281,7 @@ class Labels
                 'id',
                 $component['meal_component_option_id']
             )
+                ->withTrashed()
                 ->with('ingredients')
                 ->first()->ingredients;
             foreach ($ingredients as $ingredient) {
@@ -292,6 +293,7 @@ class Labels
 
         foreach ($relations['addons'] as $addon) {
             $ingredients = MealAddon::where('id', $addon['meal_addon_id'])
+                ->withTrashed()
                 ->with('ingredients')
                 ->first()->ingredients;
             foreach ($ingredients as $ingredient) {
