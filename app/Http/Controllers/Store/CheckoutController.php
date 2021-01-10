@@ -894,7 +894,9 @@ class CheckoutController extends StoreController
                     $billingAnchor->greaterThan($cutoff) ||
                     $store->settings->subscriptionRenewalType == 'cutoff'
                 ) {
-                    $billingAnchor = $cutoff->copy();
+                    $billingAnchor = $cutoff
+                        ->copy()
+                        ->subHours($store->settings->renewalOffsetHours);
                     if ($billingAnchor->isPast()) {
                         $billingAnchor->addWeeks(1);
                     }
