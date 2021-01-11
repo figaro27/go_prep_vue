@@ -250,7 +250,7 @@ export default {
 
       // Removing past dates
       orderableDates = orderableDates.filter(day => {
-        return !moment(day.day_friendly).isBefore(moment().startOf("day"));
+        return !moment(day.value).isBefore(moment().startOf("day"));
       });
 
       return orderableDates;
