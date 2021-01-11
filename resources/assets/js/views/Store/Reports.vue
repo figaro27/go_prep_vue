@@ -228,10 +228,12 @@
                 >Clear</b-btn
               >
             </div>
-            <p class="mt-4 center-text">
-              <b-form-checkbox v-model="orderByRoutes" class="pb-3"
+            <p class="center-text">
+              <b-form-checkbox v-model="orderByRoutes" class="pt-3 pb-1"
                 >Order By Routes</b-form-checkbox
               >
+            </p>
+            <p class="center-text">
               Summarizes all of the deliveries you have to make. Optionally
               orders them into the most optimal route you or your driver should
               take.
