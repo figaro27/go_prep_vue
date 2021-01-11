@@ -64,7 +64,7 @@ class Bag
                 'meal_package_id' => $meal_package_id, // contained in package
                 'meal_package_size_id' => $meal_package_size_id,
                 'meal_package_title' => $item['meal']['title'],
-                'guid' => $item['guid']
+                'guid' => $item['guid'] ?? null
             ])
         );
     }
