@@ -248,6 +248,11 @@ export default {
         })
         .sort((a, b) => (a.value > b.value ? 1 : -1));
 
+      // Removing past dates
+      orderableDates = orderableDates.filter(day => {
+        return !moment(day.day_friendly).isBefore(moment().startOf("day"));
+      });
+
       return orderableDates;
     },
     /**
