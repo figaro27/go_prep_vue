@@ -187,10 +187,10 @@ class DeliveryRoutes
     public function formatRecipients($recipients, $type)
     {
         $recipients = collect($recipients);
-
         // Customer report format for Eat Right Meal Prep
         if (
             $type !== 'pdf' &&
+            $this->params['orderByRoutes'] === "false" &&
             ($this->store->id === 196 || $this->store->id === 3)
         ) {
             $recipients = $recipients->map(function ($recipient) {
