@@ -162,8 +162,12 @@ class DeliveryRoutes
                 $reportRecord->update();
 
                 if ($orderByRoutes === "true") {
-                    array_shift($routes);
-                    return $this->formatRecipients($routes, $type);
+                    if ($type !== 'pdf') {
+                        array_shift($routes);
+                        return $this->formatRecipients($routes, $type);
+                    } else {
+                        return $routes;
+                    }
                 } else {
                     return $this->formatRecipients($recipients, $type);
                 }
@@ -211,12 +215,24 @@ class DeliveryRoutes
                 'Customer Message'
             ]);
         } else {
-            $recipients->prepend([
-                'Customer Name',
-                'Address',
-                'Phone',
-                'Delivery Instructions'
-            ]);
+            if ($this->params['orderByRoutes'] === "true") {
+                $recipients->prepend([
+                    'Customer Name',
+                    'Address',
+                    'Phone',
+                    'Delivery Instructions'
+                ]);
+            } else {
+                $recipients->prepend([
+                    'Customer Name',
+                    'Phone',
+                    'Address',
+                    'City',
+                    'State',
+                    'Zip',
+                    'Delivery Instructions'
+                ]);
+            }
         }
 
         return $recipients;
