@@ -91,6 +91,7 @@
                       type="number"
                       v-model="meal.macros.calories"
                       required
+                      min="0"
                     ></b-form-input>
                   </div>
                   <div class="col-md-3">
@@ -99,6 +100,7 @@
                       type="number"
                       v-model="meal.macros.carbs"
                       required
+                      min="0"
                     ></b-form-input>
                   </div>
                   <div class="col-md-3">
@@ -107,6 +109,7 @@
                       type="number"
                       v-model="meal.macros.protein"
                       required
+                      min="0"
                     ></b-form-input>
                   </div>
                   <div class="col-md-3">
@@ -115,6 +118,7 @@
                       type="number"
                       v-model="meal.macros.fat"
                       required
+                      min="0"
                     ></b-form-input>
                   </div>
                 </div>
