@@ -232,10 +232,6 @@
               Summarizes all of the deliveries you have to make.
             </p>
             <p class="center-text">
-              Optionally orders them into the most optimal route you or your
-              driver should take.
-            </p>
-            <p class="center-text">
               <b-form-checkbox v-model="orderByRoutes" class="pt-1 pb-2"
                 >Order By Routes</b-form-checkbox
               >
