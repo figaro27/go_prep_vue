@@ -132,7 +132,7 @@ class CustomerController extends StoreController
             $customer = Customer::where('id', $customerId)->first();
             if ($customer) {
                 $customer->update($details);
-                $customer->email = $details['email'];
+                $customer->email = $details['email'] ?? null;
                 $customer->update();
             }
             $userDetail = UserDetail::where(
@@ -148,7 +148,7 @@ class CustomerController extends StoreController
             $customer = Customer::where('id', $customerId)->first();
             if ($customer) {
                 $customer->update($details);
-                $customer->email = $details['email'];
+                $customer->email = $details['email'] ?? null;
                 $customer->update();
             }
             $userDetail->update($details);
