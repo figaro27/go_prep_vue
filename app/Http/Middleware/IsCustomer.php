@@ -16,18 +16,23 @@ class IsCustomer
     public function handle($request, Closure $next)
     {
         $user = auth('api')->user();
-        
-        if ($user && $user->user_role_id === 1) {
+
+        if ($user && ($user->user_role_id === 1 || $user->user_role_id === 4)) {
             return $next($request);
         }
 
         if (!$request->expectsJson()) {
-            return redirect('home')->with('error', 'You do not have store access');
+            return redirect('home')->with(
+                'error',
+                'You do not have store access'
+            );
         }
 
-        return response()->json([
-            'error' => 'Not authorized.',
-        ], 401);
+        return response()->json(
+            [
+                'error' => 'Not authorized.'
+            ],
+            401
+        );
     }
-
 }

@@ -544,7 +544,7 @@ class User extends Authenticatable implements JWTSubject
                 break;
         }
 
-        if ($email && strpos($this->email, 'noemail-') === false) {
+        if ($email && strpos($this->email, 'noemail') === false) {
             try {
                 if ($bcc === true && $receipt === false) {
                     Mail::to($this)

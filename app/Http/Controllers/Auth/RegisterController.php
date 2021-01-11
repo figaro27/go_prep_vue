@@ -60,7 +60,7 @@ class RegisterController extends Controller
     {
         $v = Validator::make($data, [
             //'name' => 'required|string|max:255',
-            'user.role' => 'required|in:customer,store',
+            'user.role' => 'required|in:customer,store,guest',
             'user.email' => 'required|string|email|max:255|unique:users,email',
             'user.password' => 'required|string|min:6|confirmed',
             'user.first_name' => 'required',
@@ -99,7 +99,7 @@ class RegisterController extends Controller
         switch ($step) {
             case '0':
                 $v = Validator::make($request->all(), [
-                    'role' => 'required|in:customer,store',
+                    'role' => 'required|in:customer,store,guest',
                     'email' =>
                         'required|string|email|max:255|unique:users,email',
                     'password' => 'required|string|min:6|confirmed',
@@ -152,9 +152,20 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        switch ($data['user']['role']) {
+            case 'store':
+                $role = 2;
+                break;
+            case 'customer':
+                $role = 1;
+                break;
+            case 'guest':
+                $role = 4;
+                break;
+        }
         $user = User::create([
             //'name' => $data['name'],
-            'user_role_id' => $data['user']['role'] === 'store' ? 2 : 1,
+            'user_role_id' => $role,
             'email' => $data['user']['email'],
             'password' => Hash::make($data['user']['password']),
             'remember_token' => Hash::make(str_random(10)),

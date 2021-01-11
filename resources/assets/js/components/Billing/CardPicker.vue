@@ -53,7 +53,10 @@
         class="mb-3 mr-2 d-inline"
         >Add Card</b-btn
       >
-      <b-form-checkbox v-model="saveCard" class="d-inline pt-1"
+      <b-form-checkbox
+        v-model="saveCard"
+        class="d-inline pt-1"
+        v-if="user && user.user_role_id !== 4"
         >Save card for future use</b-form-checkbox
       >
     </div>
@@ -180,10 +183,14 @@ export default {
       cards: "cards",
       storeSettings: "viewedStoreSettings",
       store: "viewedStore",
-      isLoading: "isLoading"
+      isLoading: "isLoading",
+      user: "user"
     })
   },
   mounted() {
+    if (this.user.user_role_id === 4) {
+      this.saveCard = false;
+    }
     if (this.store.details.country !== "US") {
       this.hidePostalCode = true;
     }
@@ -232,7 +239,9 @@ export default {
       }
     },
     createCard(token, card) {
-      let customer = this.$parent.getCustomer();
+      let customer = this.$parent.getCustomer()
+        ? this.$parent.getCustomer
+        : this.user;
       axios
         .post("/api/me/cards", {
           token,

@@ -23,12 +23,9 @@
             </b-form-radio-group>
           </b-form-group>
  -->
-          <b-form-group
-            horizontal
-            label="First Name"
-            :state="state(0, 'first_name')"
-          >
+          <b-form-group horizontal :state="state(0, 'first_name')">
             <b-input
+              placeholder="First Name"
               v-model="form[0].first_name"
               type="text"
               @input="
@@ -40,12 +37,9 @@
             ></b-input>
           </b-form-group>
 
-          <b-form-group
-            horizontal
-            label="Last Name"
-            :state="state(0, 'last_name')"
-          >
+          <b-form-group horizontal :state="state(0, 'last_name')">
             <b-input
+              placeholder="Last Name"
               v-model="form[0].last_name"
               type="text"
               @input="
@@ -59,12 +53,12 @@
 
           <b-form-group
             horizontal
-            label="E-Mail Address"
             :state="state(0, 'email')"
             :invalid-feedback="invalidFeedback(0, 'email')"
             :valid-feedback="validFeedback(0, 'email')"
           >
             <b-input
+              placeholder="Email Address"
               v-model="form[0].email"
               type="email"
               @input="
@@ -74,15 +68,11 @@
               :state="state(0, 'email')"
               autocomplete="new-password"
             ></b-input>
-            <p class="red font-11">{{ emailValidator }}</p>
           </b-form-group>
 
-          <b-form-group
-            horizontal
-            label="Password"
-            :state="state(0, 'password')"
-          >
+          <b-form-group horizontal :state="state(0, 'password')">
             <b-input
+              placeholder="Password"
               v-model="form[0].password"
               type="password"
               @input="
@@ -92,17 +82,16 @@
               :state="state(0, 'password')"
               autocomplete="new-password"
             ></b-input>
-            <p class="red font-11">{{ passwordValidator }}</p>
           </b-form-group>
 
           <b-form-group
             horizontal
-            label="Confirm Password"
             :state="state(0, 'password') && state(0, 'password_confirmation')"
             :invalid-feedback="invalidFeedback(0, 'password')"
             :valid-feedback="validFeedback(0, 'password')"
           >
             <b-input
+              placeholder="Confirm Password"
               v-model="form[0].password_confirmation"
               type="password"
               @input="
@@ -112,15 +101,11 @@
               :state="state(0, 'password') && state(0, 'password_confirmation')"
               autocomplete="new-password"
             ></b-input>
-            <p class="red font-11">{{ passwordConfirmationValidator }}</p>
           </b-form-group>
 
-          <b-form-group
-            horizontal
-            label="Phone Number"
-            :state="state(0, 'phone')"
-          >
+          <b-form-group horizontal :state="state(0, 'phone')">
             <b-input
+              placeholder="Phone Number"
               v-model="form[0].phone"
               type="tel"
               @input="asYouType()"
@@ -142,17 +127,18 @@
         <div v-if="step === 1">
           <h4>Account Details</h4>
 
-          <b-form-group horizontal label="Country" :state="state(1, 'country')">
+          <b-form-group horizontal :state="state(1, 'country')">
             <b-select
-              label="name"
+              placeholder="Country"
               :options="countryNames"
               v-model="form[1].country"
               class="w-100"
             ></b-select>
           </b-form-group>
 
-          <b-form-group horizontal label="Address" :state="state(1, 'address')">
+          <b-form-group horizontal :state="state(1, 'address')">
             <b-input
+              placeholder="Delivery Address"
               v-model="form[1].address"
               type="text"
               @input="
@@ -164,57 +150,58 @@
             ></b-input>
           </b-form-group>
 
-          <b-form-group horizontal :label="cityLabel" :state="state(1, 'city')">
-            <b-input
-              v-model="form[1].city"
-              type="text"
-              @input="
-                $v.form[1].city.$touch();
-                clearFeedback(1, 'city');
-              "
+          <div class="d-flex">
+            <b-form-group
+              horizontal
               :state="state(1, 'city')"
-              autocomplete="new-password"
-            ></b-input>
-          </b-form-group>
+              class="d-inline mr-3"
+            >
+              <b-input
+                :placeholder="cityLabel"
+                v-model="form[1].city"
+                type="text"
+                @input="
+                  $v.form[1].city.$touch();
+                  clearFeedback(1, 'city');
+                "
+                :state="state(1, 'city')"
+                autocomplete="new-password"
+              ></b-input>
+            </b-form-group>
 
-          <b-form-group
-            horizontal
-            :label="stateLabel"
-            :state="state(1, 'state')"
-            v-if="showStatesBox"
-          >
-            <b-select
-              label="name"
-              :options="getStateNames(form[1].country)"
-              v-model="form[1].state"
-              :on-change="val => changeState(val, 1)"
-              class="w-100"
-            ></b-select>
-          </b-form-group>
+            <b-form-group
+              horizontal
+              :state="state(1, 'state')"
+              v-if="showStatesBox"
+              class="d-inline mr-3"
+            >
+              <b-select
+                :placeholder="stateLabel"
+                :options="getStateNames(form[1].country)"
+                v-model="form[1].state"
+                :on-change="val => changeState(val, 1)"
+                class="w-100"
+              ></b-select>
+            </b-form-group>
 
-          <b-form-group
-            horizontal
-            :label="postalLabel"
-            :state="state(1, 'zip')"
-          >
+            <b-form-group horizontal :state="state(1, 'zip')" class="d-inline">
+              <b-input
+                :placeholder="postalLabel"
+                v-model="form[1].zip"
+                type="text"
+                @input="
+                  $v.form[1].zip.$touch();
+                  clearFeedback(1, 'zip');
+                "
+                :state="state(1, 'zip')"
+                autocomplete="new-password"
+              ></b-input>
+            </b-form-group>
+          </div>
+
+          <b-form-group horizontal :state="state(1, 'delivery')">
             <b-input
-              v-model="form[1].zip"
-              type="text"
-              @input="
-                $v.form[1].zip.$touch();
-                clearFeedback(1, 'zip');
-              "
-              :state="state(1, 'zip')"
-              autocomplete="new-password"
-            ></b-input>
-          </b-form-group>
-
-          <b-form-group
-            horizontal
-            label="Delivery Instructions"
-            :state="state(1, 'delivery')"
-          >
-            <b-input
+              placeholder="Delivery Instructions (Optional)"
               v-model="form[1].delivery"
               type="text"
               @input="
@@ -242,12 +229,12 @@
                 @touch.stop.prevent="$refs.tos.show()"
                 >terms of service</span
               > -->
-              <a
-                href="https://www.goprep.com/terms-of-service/"
-                target="_blank"
+              <span
+                class="strong"
+                @click.stop.prevent="$refs.tos.show()"
+                @touch.stop.prevent="$refs.tos.show()"
+                >terms of service</span
               >
-                terms of service.
-              </a>
             </b-form-checkbox>
           </b-form-group>
 
@@ -277,12 +264,12 @@
           </p>
           <b-form-group
             horizontal
-            label="Store Name"
             :state="state(2, 'store_name')"
             :invalid-feedback="invalidFeedback(2, 'store_name')"
             :valid-feedback="validFeedback(2, 'store_name')"
           >
             <b-input
+              placeholder="Store Name"
               v-model="form[2].store_name"
               type="text"
               @input="
@@ -296,7 +283,6 @@
 
           <b-form-group
             horizontal
-            label="Store Domain"
             :state="state(2, 'domain')"
             :invalid-feedback="invalidFeedback(2, 'domain')"
             :valid-feedback="validFeedback(2, 'domain')"
@@ -304,6 +290,7 @@
           >
             <div class="input-group">
               <b-input
+                placeholder="Store Domain"
                 v-model="form[2].domain"
                 type="text"
                 @input="
@@ -331,33 +318,23 @@
                 ></b-select>
               </b-form-group-->
 
-          <b-form-group horizontal label="Country" :state="state(2, 'country')">
+          <b-form-group horizontal :state="state(2, 'country')">
             <b-select
-              label="name"
+              placeholder="Country"
               :options="countryNames"
               v-model="form[2].country"
               class="w-100"
             ></b-select>
           </b-form-group>
 
-          <b-form-group horizontal label="State" :state="state(2, 'state')">
-            <b-select
-              label="name"
-              :options="getStateNames(form[2].country)"
-              v-model="form[2].state"
-              :on-change="val => changeState(val, 2)"
-              class="w-100"
-            ></b-select>
-          </b-form-group>
-
           <b-form-group
             horizontal
-            label="Address"
             :state="state(2, 'address')"
             :invalid-feedback="invalidFeedback(2, 'address')"
             :valid-feedback="validFeedback(2, 'address')"
           >
             <b-input
+              placeholder="Address"
               v-model="form[2].address"
               type="text"
               @input="
@@ -369,44 +346,62 @@
             ></b-input>
           </b-form-group>
 
-          <b-form-group
-            horizontal
-            label="City"
-            :state="state(2, 'city')"
-            :invalid-feedback="invalidFeedback(2, 'city')"
-            :valid-feedback="validFeedback(2, 'city')"
-          >
-            <b-input
-              v-model="form[2].city"
-              type="text"
-              @input="
-                $v.form[2].city.$touch();
-                clearFeedback(2, 'city');
-              "
+          <div class="d-flex">
+            <b-form-group
+              class="d-inline mr-3"
+              horizontal
               :state="state(2, 'city')"
-              autocomplete="new-password"
-            ></b-input>
-          </b-form-group>
+              :invalid-feedback="invalidFeedback(2, 'city')"
+              :valid-feedback="validFeedback(2, 'city')"
+            >
+              <b-input
+                placeholder="City"
+                v-model="form[2].city"
+                type="text"
+                @input="
+                  $v.form[2].city.$touch();
+                  clearFeedback(2, 'city');
+                "
+                :state="state(2, 'city')"
+                autocomplete="new-password"
+              ></b-input>
+            </b-form-group>
 
-          <b-form-group
-            horizontal
-            label="Postal Code"
-            :state="state(2, 'zip')"
-            :invalid-feedback="invalidFeedback(2, 'zip')"
-            :valid-feedback="validFeedback(2, 'zip')"
-          >
-            <b-input
-              v-model="form[2].zip"
-              type="text"
-              @input="
-                $v.form[2].zip.$touch();
-                clearFeedback(1, 'zip');
-              "
+            <b-form-group
+              horizontal
+              :state="state(2, 'state')"
+              class="d-inline mr-3"
+            >
+              <b-select
+                placeholder="State"
+                label="name"
+                :options="getStateNames(form[2].country)"
+                v-model="form[2].state"
+                :on-change="val => changeState(val, 2)"
+                class="w-100"
+              ></b-select>
+            </b-form-group>
+
+            <b-form-group
+              class="d-inline"
+              horizontal
               :state="state(2, 'zip')"
-              autocomplete="new-password"
-            ></b-input>
-          </b-form-group>
-
+              :invalid-feedback="invalidFeedback(2, 'zip')"
+              :valid-feedback="validFeedback(2, 'zip')"
+            >
+              <b-input
+                placeholder="Postal Code"
+                v-model="form[2].zip"
+                type="text"
+                @input="
+                  $v.form[2].zip.$touch();
+                  clearFeedback(1, 'zip');
+                "
+                :state="state(2, 'zip')"
+                autocomplete="new-password"
+              ></b-input>
+            </b-form-group>
+          </div>
           <b-form-group horizontal :state="state(2, 'accepted_tos')">
             <b-form-checkbox
               id="accepted-tos2"

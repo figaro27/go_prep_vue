@@ -75,32 +75,32 @@
             >Checkout</b-nav-item
           >
           <b-nav-item v-if="loggedIn" to="/customer/orders">Orders</b-nav-item>
-          <b-nav-item v-if="loggedIn" to="/customer/subscriptions"
+          <b-nav-item v-if="loggedInCheck" to="/customer/subscriptions"
             >Subscriptions</b-nav-item
           >
-          <b-nav-item v-if="loggedIn" to="/customer/account/my-account"
+          <b-nav-item v-if="loggedInCheck" to="/customer/account/my-account"
             >My Account</b-nav-item
           >
           <b-nav-item
-            v-if="loggedIn"
+            v-if="loggedInCheck"
             to="/customer/account/contact"
             class="white-text d-sm-block d-md-none"
             >Contact</b-nav-item
           >
           <b-nav-item
-            v-if="loggedIn"
+            v-if="loggedInCheck"
             @click="logout()"
             class="white-text d-sm-block d-md-none"
             >Log Out</b-nav-item
           >
           <b-nav-item
-            v-if="!loggedIn"
+            v-if="!loggedInCheck"
             to="/login"
             class="white-text d-sm-block d-md-none"
             >Log In</b-nav-item
           >
           <b-nav-item
-            v-if="!loggedIn"
+            v-if="!loggedInCheck"
             class="px-3 mr-4 white-text d-sm-block d-md-none"
             to="/register"
             >Register</b-nav-item
@@ -113,10 +113,10 @@
             v-if="showBagAndFilters"
             ><i class="fas fa-filter customer-nav-icon"></i
           ></b-nav-item>
-          <CustomerDropdown v-if="loggedIn" class="d-none d-md-block" />
+          <CustomerDropdown v-if="loggedInCheck" class="d-none d-md-block" />
           <b-nav-item
-            v-if="!loggedIn"
-            @click.prevent="showAuthModal()"
+            v-if="!loggedInCheck"
+            @click.prevent="showAuthScreen()"
             class="white-text d-none d-md-block"
             ><i class="fas fa-user customer-nav-icon"></i
           ></b-nav-item>
@@ -166,6 +166,7 @@ main.main {
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import auth from "../lib/auth";
 import {
   Header as AppHeader,
   SidebarToggler,
@@ -224,8 +225,15 @@ export default {
       storeLogo: "viewedStoreLogo",
       store: "viewedStore",
       total: "bagQuantity",
-      subscriptions: "subscriptions"
+      subscriptions: "subscriptions",
+      user: "user"
     }),
+    loggedInCheck() {
+      return this.loggedIn && this.user.user_role_id !== 4;
+    },
+    loggedInAsGuest() {
+      return this.user.user_role_id === 4;
+    },
     onBagPage() {
       if (this.$route.path === "/customer/bag") {
         return true;
@@ -329,6 +337,15 @@ export default {
   },
   methods: {
     ...mapActions(["logout"]),
+    async showAuthScreen() {
+      if (!this.loggedIn) {
+        this.showAuthModal();
+      } else {
+        await axios.post("/api/auth/logout");
+        auth.deleteToken();
+        window.location.href = window.location.origin + "/login";
+      }
+    },
     visitStoreWebsite() {
       if (!this.storeSettings.website) {
         this.$router.push({ name: "customer-menu" });
@@ -346,7 +363,7 @@ export default {
     showFilterArea() {
       this.$eventBus.$emit("showFilterArea");
     },
-    showAuthModal() {
+    async showAuthModal() {
       this.$eventBus.$emit("showAuthModal");
     },
     backToMenu() {

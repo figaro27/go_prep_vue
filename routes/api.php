@@ -683,7 +683,10 @@ foreach (
                             );
                         }
                     );
-                } elseif ($user && $user->user_role_id === 1) {
+                } elseif (
+                    $user &&
+                    ($user->user_role_id === 1 || $user->user_role_id === 4)
+                ) {
                     Route::post(
                         'contact',
                         'ContactFormController@submitCustomer'

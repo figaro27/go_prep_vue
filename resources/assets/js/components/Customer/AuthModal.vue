@@ -50,6 +50,9 @@
               <p class="d-inline pl-2" @click="switchScreens('register')">
                 <a href="#">No Account?</a>
               </p>
+              <p class="d-inline pl-2" @click="switchScreens('registerGuest')">
+                <a href="#">Checkout As Guest</a>
+              </p>
             </b-form-group>
 
             <b-form-group horizontal>
@@ -61,6 +64,7 @@
         </div>
       </div>
       <register v-if="register"></register>
+      <register-guest v-if="registerGuest"></register-guest>
       <forgot-password v-if="forgotPassword"></forgot-password>
     </b-modal>
   </div>
@@ -69,11 +73,13 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import auth from "../../lib/auth";
 import Register from "./Register";
+import RegisterGuest from "./RegisterGuest";
 import ForgotPassword from "./ForgotPassword";
 
 export default {
   components: {
     Register,
+    RegisterGuest,
     ForgotPassword
   },
   props: {
@@ -86,6 +92,7 @@ export default {
       password: "",
       login: true,
       register: false,
+      registerGuest: false,
       forgotPassword: false
     };
   },
@@ -95,13 +102,23 @@ export default {
     ...mapActions(["init"]),
     switchScreens(screen) {
       this.login = false;
-      if (screen === "register") this.register = true;
-      else if (screen === "forgotPassword") this.forgotPassword = true;
+      switch (screen) {
+        case "register":
+          this.register = true;
+          break;
+        case "registerGuest":
+          this.registerGuest = true;
+          break;
+        case "forgotPassword":
+          this.forgotPassword = true;
+          break;
+      }
     },
     resetScreens() {
       this.$parent.showAuthModal = false;
       this.login = true;
       this.register = false;
+      this.registerGuest = false;
       this.forgotPassword = false;
     },
     submit() {

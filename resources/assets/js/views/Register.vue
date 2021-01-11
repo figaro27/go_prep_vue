@@ -53,12 +53,9 @@
                   </h6>
                 </a>
               </div>
-              <b-form-group
-                horizontal
-                label="First Name"
-                :state="state(0, 'first_name')"
-              >
+              <b-form-group horizontal :state="state(0, 'first_name')">
                 <b-input
+                  placeholder="First Name"
                   v-model="form[0].first_name"
                   type="text"
                   @input="
@@ -70,12 +67,9 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group
-                horizontal
-                label="Last Name"
-                :state="state(0, 'last_name')"
-              >
+              <b-form-group horizontal :state="state(0, 'last_name')">
                 <b-input
+                  placeholder="Last Name"
                   v-model="form[0].last_name"
                   type="text"
                   @input="
@@ -89,12 +83,12 @@
 
               <b-form-group
                 horizontal
-                label="E-Mail Address"
                 :state="state(0, 'email')"
                 :invalid-feedback="invalidFeedback(0, 'email')"
                 :valid-feedback="validFeedback(0, 'email')"
               >
                 <b-input
+                  placeholder="Email Address"
                   v-model="form[0].email"
                   type="email"
                   @input="
@@ -104,15 +98,11 @@
                   :state="state(0, 'email')"
                   autocomplete="new-password"
                 ></b-input>
-                <p class="red font-11">{{ emailValidator }}</p>
               </b-form-group>
 
-              <b-form-group
-                horizontal
-                label="Password"
-                :state="state(0, 'password')"
-              >
+              <b-form-group horizontal :state="state(0, 'password')">
                 <b-input
+                  placeholder="Password"
                   v-model="form[0].password"
                   type="password"
                   @input="
@@ -122,12 +112,10 @@
                   :state="state(0, 'password')"
                   autocomplete="new-password"
                 ></b-input>
-                <p class="red font-11">{{ passwordValidator }}</p>
               </b-form-group>
 
               <b-form-group
                 horizontal
-                label="Confirm Password"
                 :state="
                   state(0, 'password') && state(0, 'password_confirmation')
                 "
@@ -135,6 +123,7 @@
                 :valid-feedback="validFeedback(0, 'password')"
               >
                 <b-input
+                  placeholder="Confirm Password"
                   v-model="form[0].password_confirmation"
                   type="password"
                   @input="
@@ -146,19 +135,15 @@
                   "
                   autocomplete="new-password"
                 ></b-input>
-                <p class="red font-11">{{ passwordConfirmationValidator }}</p>
               </b-form-group>
 
-              <b-form-group
-                horizontal
-                label="Phone Number"
-                :state="state(0, 'phone')"
-              >
+              <b-form-group horizontal :state="state(0, 'phone')">
                 <!-- @input="
                     $v.form[0].phone.$touch();
                     clearFeedback(0, 'phone');
                   " -->
                 <b-input
+                  placeholder="Phone Number"
                   v-model="form[0].phone"
                   type="tel"
                   @input="asYouType()"
@@ -209,25 +194,18 @@
             <div v-if="step === 1">
               <h4>Account Details</h4>
 
-              <b-form-group
-                horizontal
-                label="Country"
-                :state="state(1, 'country')"
-              >
+              <b-form-group horizontal :state="state(1, 'country')">
                 <b-select
-                  label="name"
+                  placeholder="Country"
                   :options="countryNames"
                   v-model="form[1].country"
                   class="w-100"
                 ></b-select>
               </b-form-group>
 
-              <b-form-group
-                horizontal
-                label="Delivery Address"
-                :state="state(1, 'address')"
-              >
+              <b-form-group horizontal :state="state(1, 'address')">
                 <b-input
+                  placeholder="Delivery Address"
                   v-model="form[1].address"
                   type="text"
                   @input="
@@ -239,21 +217,18 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal label="House / Unit #">
+              <b-form-group horizontal>
                 <b-input
                   v-model="form[1].unit"
                   type="text"
-                  placeholder="Optional"
+                  placeholder="House / Unit # Optional"
                   autocomplete="new-password"
                 ></b-input>
               </b-form-group>
 
-              <b-form-group
-                horizontal
-                :label="cityLabel"
-                :state="state(1, 'city')"
-              >
+              <b-form-group horizontal :state="state(1, 'city')">
                 <b-input
+                  :placeholder="cityLabel"
                   v-model="form[1].city"
                   type="text"
                   @input="
@@ -267,12 +242,11 @@
 
               <b-form-group
                 horizontal
-                :label="stateLabel"
                 :state="state(1, 'state')"
                 v-if="showStatesBox"
               >
                 <b-select
-                  label="name"
+                  :placeholder="stateLabel"
                   :options="getStateNames(form[1].country)"
                   v-model="form[1].state"
                   :on-change="val => changeState(val, 1)"
@@ -280,12 +254,9 @@
                 ></b-select>
               </b-form-group>
 
-              <b-form-group
-                horizontal
-                :label="postalLabel"
-                :state="state(1, 'zip')"
-              >
+              <b-form-group horizontal :state="state(1, 'zip')">
                 <b-input
+                  :placeholder="postalLabel"
                   v-model="form[1].zip"
                   type="text"
                   @input="
@@ -297,12 +268,9 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group
-                horizontal
-                label="Delivery Instructions"
-                :state="state(1, 'delivery')"
-              >
+              <b-form-group horizontal :state="state(1, 'delivery')">
                 <b-input
+                  placeholder="Delivery Instructions (Optional)"
                   v-if="!noDeliveryInstructions"
                   v-model="form[1].delivery"
                   type="text"
@@ -356,17 +324,16 @@
             <div v-if="step === 2">
               <h4>Store Details</h4>
               <p class="mb-3">
-                You can change these details later in My Account before you go
-                live.
+                You can change these details later before launching.
               </p>
               <b-form-group
                 horizontal
-                label="Store Name"
                 :state="state(2, 'store_name')"
                 :invalid-feedback="invalidFeedback(2, 'store_name')"
                 :valid-feedback="validFeedback(2, 'store_name')"
               >
                 <b-input
+                  placeholder="Store Name"
                   v-model="form[2].store_name"
                   type="text"
                   @input="
@@ -380,7 +347,6 @@
 
               <b-form-group
                 horizontal
-                label="Store Domain"
                 :state="state(2, 'domain')"
                 :invalid-feedback="invalidFeedback(2, 'domain')"
                 :valid-feedback="validFeedback(2, 'domain')"
@@ -388,6 +354,7 @@
               >
                 <div class="input-group">
                   <b-input
+                    placeholder="Store Domain"
                     v-model="form[2].domain"
                     type="text"
                     @input="
@@ -415,26 +382,18 @@
                 ></b-select>
               </b-form-group-->
 
-              <b-form-group
-                horizontal
-                label="Country"
-                :state="state(2, 'country')"
-              >
+              <b-form-group horizontal :state="state(2, 'country')">
                 <b-select
-                  label="name"
+                  placeholder="Country"
                   :options="countryNames"
                   v-model="form[2].country"
                   class="w-100"
                 ></b-select>
               </b-form-group>
 
-              <b-form-group
-                horizontal
-                :label="stateLabel"
-                :state="state(2, 'state')"
-              >
+              <b-form-group horizontal :state="state(2, 'state')">
                 <b-select
-                  label="name"
+                  :placeholder="stateLabel"
                   :options="getStateNames(form[2].country)"
                   v-model="form[2].state"
                   :on-change="val => changeState(val, 2)"
@@ -444,12 +403,12 @@
 
               <b-form-group
                 horizontal
-                label="Address"
                 :state="state(2, 'address')"
                 :invalid-feedback="invalidFeedback(2, 'address')"
                 :valid-feedback="validFeedback(2, 'address')"
               >
                 <b-input
+                  placeholder="Address"
                   v-model="form[2].address"
                   type="text"
                   @input="
@@ -463,12 +422,12 @@
 
               <b-form-group
                 horizontal
-                label="City"
                 :state="state(2, 'city')"
                 :invalid-feedback="invalidFeedback(2, 'city')"
                 :valid-feedback="validFeedback(2, 'city')"
               >
                 <b-input
+                  placeholder="City"
                   v-model="form[2].city"
                   type="text"
                   @input="
@@ -482,12 +441,12 @@
 
               <b-form-group
                 horizontal
-                label="Postal Code"
                 :state="state(2, 'zip')"
                 :invalid-feedback="invalidFeedback(2, 'zip')"
                 :valid-feedback="validFeedback(2, 'zip')"
               >
                 <b-input
+                  placeholder="Postal Code"
                   v-model="form[2].zip"
                   type="text"
                   @input="
