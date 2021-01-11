@@ -162,7 +162,8 @@ class DeliveryRoutes
                 $reportRecord->update();
 
                 if ($orderByRoutes === "true") {
-                    return $routes;
+                    array_shift($routes);
+                    return $this->formatRecipients($routes, $type);
                 } else {
                     return $this->formatRecipients($recipients, $type);
                 }
@@ -212,11 +213,8 @@ class DeliveryRoutes
         } else {
             $recipients->prepend([
                 'Customer Name',
-                'Phone',
                 'Address',
-                'City',
-                'State',
-                'Zip',
+                'Phone',
                 'Delivery Instructions'
             ]);
         }

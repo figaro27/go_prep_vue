@@ -229,14 +229,14 @@
               >
             </div>
             <p class="center-text">
-              <b-form-checkbox v-model="orderByRoutes" class="pt-3 pb-1"
-                >Order By Routes</b-form-checkbox
-              >
-            </p>
-            <p class="center-text">
               Summarizes all of the deliveries you have to make. Optionally
               orders them into the most optimal route you or your driver should
               take.
+            </p>
+            <p class="center-text">
+              <b-form-checkbox v-model="orderByRoutes" class="pt-1 pb-2"
+                >Order By Routes</b-form-checkbox
+              >
             </p>
             <div class="row">
               <div class="col-md-6">
