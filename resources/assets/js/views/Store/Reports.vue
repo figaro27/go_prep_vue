@@ -218,7 +218,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-body m-sm-4">
-            <h4 class="center-text mb-4">Delivery Routes</h4>
+            <h4 class="center-text mb-4">Delivery Summary</h4>
             <div class="report-date-picker">
               <delivery-date-picker
                 v-model="delivery_dates.delivery_routes"
@@ -229,17 +229,39 @@
               >
             </div>
             <p class="mt-4 center-text">
-              Shows you the quickest route to make your deliveries. This report
-              can take up to a minute or longer to generate.
+              <b-form-checkbox v-model="orderByRoutes" class="pb-3"
+                >Order By Routes</b-form-checkbox
+              >
+              Summarizes all of the deliveries you have to make. Optionally
+              orders them into the most optimal route you or your driver should
+              take.
             </p>
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <button
                   @click="print('delivery_routes', 'pdf')"
-                  class="btn btn-primary btn-md center mt-2 center"
+                  class="btn btn-primary btn-md center mt-2 pull-right"
                 >
                   Print
                 </button>
+              </div>
+              <div class="col-md-6">
+                <b-dropdown
+                  variant="warning"
+                  class="center mt-2"
+                  right
+                  text="Export as"
+                >
+                  <b-dropdown-item @click="exportData('delivery_routes', 'csv')"
+                    >CSV</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('delivery_routes', 'xls')"
+                    >XLS</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('delivery_routes', 'pdf')"
+                    >PDF</b-dropdown-item
+                  >
+                </b-dropdown>
               </div>
             </div>
           </div>
@@ -683,6 +705,7 @@ export default {
   },
   data() {
     return {
+      orderByRoutes: false,
       delivery_dates: {
         meal_quantities: [],
         meal_orders: [],
@@ -843,6 +866,8 @@ export default {
       params.width = this.reportSettings.lab_width;
       params.height = this.reportSettings.lab_height;
 
+      params.orderByRoutes = this.orderByRoutes;
+
       if (
         report == "delivery_routes" &&
         (this.store.id == 108 || this.store.id == 109 || this.store.id == 110)
@@ -905,6 +930,8 @@ export default {
     },
     async exportData(report, format = "pdf", print = false, page = 1) {
       let params = { page };
+
+      params.orderByRoutes = this.orderByRoutes;
 
       let dates = this.delivery_dates[report];
       if (dates.start && dates.end) {

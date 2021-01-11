@@ -33,6 +33,7 @@ class DeliveryRoutes
         $dates = $this->getDeliveryDates();
         $orders = $this->store->getOrders(null, $dates, true, true, true);
         $orders = $orders->where('voided', 0);
+        $orderByRoutes = $this->params['orderByRoutes'];
 
         $id = auth('api')->user()->id;
         $store = Store::where('user_id', $id)->first();
@@ -68,6 +69,19 @@ class DeliveryRoutes
                 ];
 
                 $names[] = $name;
+
+                $recipients[] = [
+                    "name" =>
+                        $customerDetails->firstname .
+                        ' ' .
+                        $customerDetails->lastname,
+                    "phone" => $customerDetails->phone,
+                    "address" => $customerDetails->address,
+                    "city" => $customerDetails->city,
+                    "state" => $customerDetails->state,
+                    "zip" => $customerDetails->zip,
+                    "delivery" => $customerDetails->delivery
+                ];
             }
         }
 
@@ -93,47 +107,51 @@ class DeliveryRoutes
 
         try {
             if (isset($stops)) {
-                $res = $client->request('POST', $url, [
-                    'headers' => $this->headers,
-                    'json' => [
-                        'stops' => $stops,
-                        'depots' => $depots,
-                        'vehicles' => $vehicles,
-                        'generalSettings' => $generalSettings
-                    ]
-                ]);
+                if ($orderByRoutes === "true") {
+                    $res = $client->request('POST', $url, [
+                        'headers' => $this->headers,
+                        'json' => [
+                            'stops' => $stops,
+                            'depots' => $depots,
+                            'vehicles' => $vehicles,
+                            'generalSettings' => $generalSettings
+                        ]
+                    ]);
 
-                $status = $res->getStatusCode();
-                $body = $res->getBody();
+                    $status = $res->getStatusCode();
+                    $body = $res->getBody();
 
-                $data = json_decode($body->getContents());
-
-                $routes[] = [
-                    "startingAddress" =>
-                        $data->data->details->depots[0]->address,
-                    "stops" => $data->data->stats->total_plan_stops,
-                    "miles" => ceil(
-                        $data->data->stats->total_plan_distance * 0.621371
-                    )
-                ];
-
-                foreach ($data->data->details->stops as $stop) {
-                    // Get the delivery instructions
-                    $address = explode(',', $stop->address);
-
-                    $userDetail = UserDetail::where([
-                        'address' => $address[0],
-                        'city' => ltrim($address[1]),
-                        'state' => ltrim($address[2]),
-                        'zip' => ltrim($address[3])
-                    ])->first();
+                    $data = json_decode($body->getContents());
 
                     $routes[] = [
-                        "name" => $stop->name,
-                        "address" => $stop->address,
-                        "phone" => $userDetail ? $userDetail->phone : null,
-                        "delivery" => $userDetail ? $userDetail->delivery : null
+                        "startingAddress" =>
+                            $data->data->details->depots[0]->address,
+                        "stops" => $data->data->stats->total_plan_stops,
+                        "miles" => ceil(
+                            $data->data->stats->total_plan_distance * 0.621371
+                        )
                     ];
+
+                    foreach ($data->data->details->stops as $stop) {
+                        // Get the delivery instructions
+                        $address = explode(',', $stop->address);
+
+                        $userDetail = UserDetail::where([
+                            'address' => $address[0],
+                            'city' => ltrim($address[1]),
+                            'state' => ltrim($address[2]),
+                            'zip' => ltrim($address[3])
+                        ])->first();
+
+                        $routes[] = [
+                            "name" => $stop->name,
+                            "address" => $stop->address,
+                            "phone" => $userDetail ? $userDetail->phone : null,
+                            "delivery" => $userDetail
+                                ? $userDetail->delivery
+                                : null
+                        ];
+                    }
                 }
 
                 $reportRecord = ReportRecord::where(
@@ -143,7 +161,11 @@ class DeliveryRoutes
                 $reportRecord->delivery_routes += 1;
                 $reportRecord->update();
 
-                return $routes;
+                if ($orderByRoutes === "true") {
+                    return $routes;
+                } else {
+                    return $this->formatRecipients($recipients, $type);
+                }
             } else {
                 dd();
             }
@@ -155,5 +177,50 @@ class DeliveryRoutes
     public function exportPdfView()
     {
         return 'reports.delivery_routes_pdf';
+    }
+
+    public function formatRecipients($recipients, $type)
+    {
+        $recipients = collect($recipients);
+
+        // Customer report format for Eat Right Meal Prep
+        if (
+            $type !== 'pdf' &&
+            ($this->store->id === 196 || $this->store->id === 3)
+        ) {
+            $recipients = $recipients->map(function ($recipient) {
+                return [
+                    $recipient['phone'],
+                    $recipient['name'],
+                    $recipient['address'],
+                    $recipient['city'] .
+                        ' ' .
+                        $recipient['state'] .
+                        ' ' .
+                        $recipient['zip'],
+                    $recipient['delivery']
+                ];
+            });
+
+            $recipients->prepend([
+                'Phone Number',
+                'Customer Name',
+                'Delivery Address',
+                'Delivery City, State, Zip',
+                'Customer Message'
+            ]);
+        } else {
+            $recipients->prepend([
+                'Customer Name',
+                'Phone',
+                'Address',
+                'City',
+                'State',
+                'Zip',
+                'Delivery Instructions'
+            ]);
+        }
+
+        return $recipients;
     }
 }

@@ -27,18 +27,22 @@
     </div>
 
     <div>
-    <p class="text-17"><strong>Starting Point:</strong> {{ $data[0]['startingAddress']}}</p>
-    <p class="text-17"><strong>Total Stops:</strong> {{ $data[0]['stops']}}</p>
-    <p class="text-17"><strong>Total Distance:</strong> {{ $data[0]['miles']}} Miles</p>
-    <br><br>
-    @foreach($data as $i => $row)
-    @if ($i > 0)
-    <p class="text-16"><strong>#{{$i}} {{ $row['name']}} - {{ $row['address']}}</strong></p>
-    <p class="text-16">{{ $row['delivery'] }}</p>
-    <p class="text-16">{{ $row['phone'] }}</p>
-    <br>
+    @if ($params['orderByRoutes'] === "true")
+      <p class="text-17"><strong>Starting Point:</strong> {{ $data[0]['startingAddress']}}</p>
+      <p class="text-17"><strong>Total Stops:</strong> {{ $data[0]['stops']}}</p>
+      <p class="text-17"><strong>Total Distance:</strong> {{ $data[0]['miles']}} Miles</p>
+      <br><br>
     @endif
-    @endforeach
+      @foreach($data as $i => $row)
+      @if ($i > 0)
+      <p class="text-16"><strong>#{{$i}} {{ $row['name']}} - {{ $row['address']}}</strong></p>
+      <p class="text-16">{{ $row['delivery'] }}</p>
+      <p class="text-16">{{ $row['phone'] }}</p>
+      <br>
+      @endif
+      @endforeach
+
+
     </div>
   </div>
 </body>
