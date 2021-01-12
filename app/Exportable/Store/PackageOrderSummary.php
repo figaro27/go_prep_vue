@@ -204,7 +204,9 @@ class PackageOrderSummary
                                                     $mealPackageOrder->customTitle ??
                                                     $mealPackageOrder
                                                         ->meal_package->title,
-                                                'items' => $mealPackageOrder->meal_orders->count()
+                                                'items' => $this->getItemCount(
+                                                    $mealPackageOrder
+                                                )
                                             ];
                                         })
                                         ->toArray()
@@ -247,7 +249,7 @@ class PackageOrderSummary
                     'name' =>
                         $mealPackageOrder->customTitle ??
                         $mealPackageOrder->meal_package->title,
-                    'items' => $mealPackageOrder->meal_orders->count(),
+                    'items' => $this->getItemCount($mealPackageOrder),
                     'size' => ($mealPackageOrder->customSize
                             ? $mealPackageOrder->customSize
                             : $mealPackageOrder->meal_package_size)
@@ -351,5 +353,16 @@ class PackageOrderSummary
         }
 
         return $mealPackageOrders;
+    }
+
+    public function getItemCount($mealPackageOrder)
+    {
+        $count = 0;
+
+        foreach ($mealPackageOrder->meal_orders as $mealOrder) {
+            $count += $mealOrder->quantity;
+        }
+
+        return $count;
     }
 }
