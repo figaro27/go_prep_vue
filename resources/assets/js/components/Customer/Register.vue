@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex">
+  <div>
     <b-modal id="tos" size="xl" ref="tos" no-fade>
       <termsOfService></termsOfService>
     </b-modal>
@@ -288,18 +288,6 @@
             </div>
           </div>
         </b-form-group>
-
-        <!--b-form-group
-                horizontal
-                label="Currency"
-                :state="state(2, 'currency')"
-              >
-                <b-select
-                  :options="currencyOptions"
-                  v-model="form[2].currency"
-                  class="w-100"
-                ></b-select>
-              </b-form-group-->
 
         <b-form-group horizontal :state="state(2, 'country')">
           <b-select
@@ -626,11 +614,13 @@ export default {
       this.form[1].state = this.store.details.state;
       this.form[1].country = this.store.details.country;
       let stateAbr = this.store.details.state;
-      let state = this.stateNames.filter(stateName => {
-        return stateName.value.toLowerCase() === stateAbr.toLowerCase();
-      });
+      let state = this.stateNames
+        ? this.stateNames.filter(stateName => {
+            return stateName.value.toLowerCase() === stateAbr.toLowerCase();
+          })
+        : [];
 
-      this.form[1].state = state[0].value;
+      this.form[1].state = state[0] ? state[0].value : null;
     }
   },
   methods: {

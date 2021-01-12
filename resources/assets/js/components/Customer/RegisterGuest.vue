@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex">
+  <div>
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
       <b-form-group horizontal :state="state(0, 'first_name')">
         <b-input
@@ -81,7 +81,7 @@
         ></b-select>
       </b-form-group>
 
-      <b-form-group :state="state(1, 'zip')" class="d-inline mr-3">
+      <b-form-group :state="state(1, 'zip')" class="d-inline">
         <b-input
           :placeholder="postalLabel"
           v-model="form[1].zip"
@@ -95,8 +95,9 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group :state="state(1, 'country')" class="d-inline">
+      <b-form-group :state="state(1, 'country')">
         <b-select
+          class="w-100"
           placeholder="Country"
           label="name"
           :options="countryNames"
@@ -288,9 +289,9 @@ export default {
         ? this.stateNames.filter(stateName => {
             return stateName.value.toLowerCase() === stateAbr.toLowerCase();
           })
-        : null;
+        : [];
 
-      this.form[1].state = state[0].value;
+      this.form[1].state = state[0] ? state[0].value : null;
     }
   },
   methods: {
