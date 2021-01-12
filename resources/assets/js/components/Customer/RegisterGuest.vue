@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
-      <b-form-group horizontal :state="state(0, 'first_name')" class="d-flex">
+      <b-form-group horizontal :state="state(0, 'first_name')">
         <b-input
           placeholder="First Name"
           v-model="form[0].first_name"
@@ -15,7 +15,7 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(0, 'last_name')" class="d-flex">
+      <b-form-group horizontal :state="state(0, 'last_name')">
         <b-input
           placeholder="Last Name"
           v-model="form[0].last_name"
@@ -29,7 +29,7 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(0, 'phone')" class="d-flex">
+      <b-form-group horizontal :state="state(0, 'phone')">
         <b-input
           placeholder="Phone Number"
           v-model="form[0].phone"
@@ -40,7 +40,7 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(1, 'address')" class="d-flex">
+      <b-form-group horizontal :state="state(1, 'address')">
         <b-input
           placeholder="Address"
           v-model="form[1].address"
@@ -104,7 +104,7 @@
         ></b-select>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(1, 'delivery')" class="d-flex">
+      <b-form-group horizontal :state="state(1, 'delivery')">
         <b-input
           placeholder="Delivery Instructions (Optional)"
           v-model="form[1].delivery"
