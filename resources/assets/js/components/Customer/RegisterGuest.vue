@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row auth-box">
     <b-modal id="tos" size="xl" ref="tos" no-fade>
       <termsOfService></termsOfService>
     </b-modal>
@@ -92,11 +92,14 @@
                 :options="getStateNames(form[1].country)"
                 v-model="form[1].state"
                 :on-change="val => changeState(val, 1)"
-                class="w-100"
               ></b-select>
             </b-form-group>
 
-            <b-form-group horizontal :state="state(1, 'zip')" class="d-inline">
+            <b-form-group
+              horizontal
+              :state="state(1, 'zip')"
+              class="d-inline mr-3"
+            >
               <b-input
                 :placeholder="postalLabel"
                 v-model="form[1].zip"
@@ -109,17 +112,21 @@
                 autocomplete="new-password"
               ></b-input>
             </b-form-group>
-          </div>
 
-          <b-form-group horizontal :state="state(1, 'country')">
-            <b-select
-              placeholder="Country"
-              label="name"
-              :options="countryNames"
-              v-model="form[1].country"
-              class="w-100"
-            ></b-select>
-          </b-form-group>
+            <b-form-group
+              horizontal
+              :state="state(1, 'country')"
+              class="d-inline"
+            >
+              <b-select
+                class="width-180"
+                placeholder="Country"
+                label="name"
+                :options="countryNames"
+                v-model="form[1].country"
+              ></b-select>
+            </b-form-group>
+          </div>
 
           <b-form-group horizontal :state="state(1, 'delivery')">
             <b-input
@@ -134,26 +141,24 @@
               autocomplete="new-password"
             ></b-input>
           </b-form-group>
+          <p class="font-italic">
+            By checking out you agree to our
+            <span
+              class="strong"
+              @click.stop.prevent="$refs.tos.show()"
+              @touch.stop.prevent="$refs.tos.show()"
+              >terms of service.</span
+            >
+          </p>
+          <b-form-group horizontal>
+            <b-button
+              type="submit"
+              :disabled="$v.form[1].$invalid"
+              variant="primary"
+              >Continue</b-button
+            >
+          </b-form-group>
         </div>
-        <p class="font-italic">
-          By checking out you agree to our
-          <span
-            class="strong"
-            @click.stop.prevent="$refs.tos.show()"
-            @touch.stop.prevent="$refs.tos.show()"
-            >terms of service.</span
-          >
-        </p>
-        <b-form-group horizontal>
-          <b-button
-            type="submit"
-            :disabled="$v.form[1].$invalid"
-            variant="primary"
-            >Continue</b-button
-          >
-        </b-form-group>
-
-        <div></div>
       </b-form>
     </div>
   </div>
