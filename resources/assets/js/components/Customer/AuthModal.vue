@@ -28,23 +28,21 @@
               ></b-input>
             </b-form-group>
 
-            <div class="form-group row">
-              <div class="col-md-6 offset-md-3">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    name="remember"
-                    id="remember"
-                  />
-                  <label class="form-check-label" for="remember"
-                    >Remember Me</label
-                  >
-                </div>
+            <div class="form-group">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  name="remember"
+                  id="remember"
+                />
+                <label class="form-check-label" for="remember"
+                  >Remember Me</label
+                >
               </div>
             </div>
 
-            <b-form-group horizontal>
+            <b-form-group>
               <button type="submit" class="btn btn-primary d-inline">
                 Login
               </button>
@@ -63,7 +61,7 @@
               </p>
             </b-form-group>
 
-            <b-form-group horizontal>
+            <b-form-group>
               <p @click="switchScreens('forgotPassword')">
                 <a href="#">Forgot password?</a>
               </p>
