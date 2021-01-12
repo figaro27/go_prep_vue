@@ -1,23 +1,21 @@
 <template>
-  <div class="row auth-box">
-    <div class="col-md-12">
-      <b-form v-if="!done" @submit.prevent="submit">
-        <b-form-group horizontal label="E-Mail Address">
-          <b-input v-model="email"></b-input>
-        </b-form-group>
+  <div class="mt-4">
+    <b-form v-if="!done" @submit.prevent="submit">
+      <b-form-group label="E-Mail Address">
+        <b-input v-model="email" placeholder="Email"></b-input>
+      </b-form-group>
 
-        <b-form-group horizontal>
-          <button type="submit" class="btn btn-primary">
-            Reset Password
-          </button>
-        </b-form-group>
-      </b-form>
-      <div v-else class="text-center">
-        <p>
-          An email has been sent with instructions on resetting your account
-          password.
-        </p>
-      </div>
+      <b-form-group>
+        <button type="submit" class="btn btn-primary">
+          Reset Password
+        </button>
+      </b-form-group>
+    </b-form>
+    <div v-else class="text-center">
+      <p>
+        An email has been sent with instructions on resetting your account
+        password.
+      </p>
     </div>
   </div>
 </template>

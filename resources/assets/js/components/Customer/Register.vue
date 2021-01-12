@@ -8,34 +8,39 @@
     </b-modal>
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
       <div v-if="step === 0">
-        <b-form-group :state="state(0, 'first_name')">
-          <b-input
-            placeholder="First Name"
-            v-model="form[0].first_name"
-            type="text"
-            @input="
-              $v.form[0].first_name.$touch();
-              clearFeedback(0, 'first_name');
-            "
+        <div class="d-flex" style="flex-wrap:wrap">
+          <b-form-group
             :state="state(0, 'first_name')"
-            autocomplete="new-password"
-          ></b-input>
-        </b-form-group>
+            style="flex-grow:1"
+            class="mr-2"
+          >
+            <b-input
+              placeholder="First Name"
+              v-model="form[0].first_name"
+              type="text"
+              @input="
+                $v.form[0].first_name.$touch();
+                clearFeedback(0, 'first_name');
+              "
+              :state="state(0, 'first_name')"
+              autocomplete="new-password"
+            ></b-input>
+          </b-form-group>
 
-        <b-form-group :state="state(0, 'last_name')">
-          <b-input
-            placeholder="Last Name"
-            v-model="form[0].last_name"
-            type="text"
-            @input="
-              $v.form[0].last_name.$touch();
-              clearFeedback(0, 'last_name');
-            "
-            :state="state(0, 'last_name')"
-            autocomplete="new-password"
-          ></b-input>
-        </b-form-group>
-
+          <b-form-group :state="state(0, 'last_name')" style="flex-grow:1">
+            <b-input
+              placeholder="Last Name"
+              v-model="form[0].last_name"
+              type="text"
+              @input="
+                $v.form[0].last_name.$touch();
+                clearFeedback(0, 'last_name');
+              "
+              :state="state(0, 'last_name')"
+              autocomplete="new-password"
+            ></b-input>
+          </b-form-group>
+        </div>
         <b-form-group
           :state="state(0, 'email')"
           :invalid-feedback="invalidFeedback(0, 'email')"
@@ -132,49 +137,54 @@
             autocomplete="new-password"
           ></b-input>
         </b-form-group>
-
-        <b-form-group :state="state(1, 'city')" class="d-inline mr-3">
-          <b-input
-            :placeholder="cityLabel"
-            v-model="form[1].city"
-            type="text"
-            @input="
-              $v.form[1].city.$touch();
-              clearFeedback(1, 'city');
-            "
+        <div class="d-flex" style="flex-wrap:wrap">
+          <b-form-group
             :state="state(1, 'city')"
-            autocomplete="new-password"
-          ></b-input>
-        </b-form-group>
+            style="flex-grow:1"
+            class="mr-2"
+          >
+            <b-input
+              :placeholder="cityLabel"
+              v-model="form[1].city"
+              type="text"
+              @input="
+                $v.form[1].city.$touch();
+                clearFeedback(1, 'city');
+              "
+              :state="state(1, 'city')"
+              autocomplete="new-password"
+            ></b-input>
+          </b-form-group>
 
-        <b-form-group
-          :state="state(1, 'state')"
-          v-if="showStatesBox"
-          class="d-inline mr-3"
-        >
-          <b-select
-            :placeholder="stateLabel"
-            :options="getStateNames(form[1].country)"
-            v-model="form[1].state"
-            :on-change="val => changeState(val, 1)"
-            class="w-100"
-          ></b-select>
-        </b-form-group>
+          <b-form-group
+            :state="state(1, 'state')"
+            v-if="showStatesBox"
+            style="flex-grow:1"
+            class="mr-2"
+          >
+            <b-select
+              :placeholder="stateLabel"
+              :options="getStateNames(form[1].country)"
+              v-model="form[1].state"
+              :on-change="val => changeState(val, 1)"
+              class="w-100"
+            ></b-select>
+          </b-form-group>
 
-        <b-form-group :state="state(1, 'zip')" class="d-inline">
-          <b-input
-            :placeholder="postalLabel"
-            v-model="form[1].zip"
-            type="text"
-            @input="
-              $v.form[1].zip.$touch();
-              clearFeedback(1, 'zip');
-            "
-            :state="state(1, 'zip')"
-            autocomplete="new-password"
-          ></b-input>
-        </b-form-group>
-
+          <b-form-group :state="state(1, 'zip')" style="flex-grow:1">
+            <b-input
+              :placeholder="postalLabel"
+              v-model="form[1].zip"
+              type="text"
+              @input="
+                $v.form[1].zip.$touch();
+                clearFeedback(1, 'zip');
+              "
+              :state="state(1, 'zip')"
+              autocomplete="new-password"
+            ></b-input>
+          </b-form-group>
+        </div>
         <b-form-group :state="state(1, 'delivery')">
           <b-input
             placeholder="Delivery Instructions (Optional)"
