@@ -284,9 +284,11 @@ export default {
       this.form[1].state = this.store.details.state;
       this.form[1].country = this.store.details.country;
       let stateAbr = this.store.details.state;
-      let state = this.stateNames.filter(stateName => {
-        return stateName.value.toLowerCase() === stateAbr.toLowerCase();
-      });
+      let state = this.stateNames
+        ? this.stateNames.filter(stateName => {
+            return stateName.value.toLowerCase() === stateAbr.toLowerCase();
+          })
+        : null;
 
       this.form[1].state = state[0].value;
     }
