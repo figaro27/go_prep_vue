@@ -1058,7 +1058,10 @@ class Subscription extends Model
 
         $this->preReductionTotal = $total;
 
+        $this->updateCurrentMealOrders();
+
         $this->syncDiscountPrices();
+
         $total -= $this->referralReduction;
         $total -= $this->promotionReduction;
         $total -= $this->pointsReduction;
@@ -1076,8 +1079,6 @@ class Subscription extends Model
             $this->mealsReplaced = 1;
         }
         $this->save();
-
-        $this->updateCurrentMealOrders();
     }
 
     public function updateCurrentMealOrders()
