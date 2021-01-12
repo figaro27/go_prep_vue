@@ -564,6 +564,9 @@ export default {
           return "Please include the ending of the email such as .com.";
         }
       }
+    },
+    stateNames() {
+      return this.getStateNames();
     }
   },
   validations: {
@@ -608,11 +611,9 @@ export default {
       this.form[1].state = this.store.details.state;
       this.form[1].country = this.store.details.country;
       let stateAbr = this.store.details.state;
-      let state = this.stateNames
-        ? this.stateNames.filter(stateName => {
-            return stateName.value.toLowerCase() === stateAbr.toLowerCase();
-          })
-        : [];
+      let state = this.stateNames.filter(stateName => {
+        return stateName.value.toLowerCase() === stateAbr.toLowerCase();
+      });
 
       this.form[1].state = state[0] ? state[0].value : null;
     }
