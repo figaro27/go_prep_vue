@@ -756,7 +756,9 @@
                   >
                   </b-select>
                   <p class="mt-4">
-                    <span class="mr-1">Statement Descriptor</span>
+                    <span class="mr-1"
+                      >Statement Descriptor (22 Characters Max)</span
+                    >
                     <img
                       v-b-popover.hover="
                         'This is what shows up next to your customer\'s credit card charges on their statements. Usually your website or business name.'
@@ -766,6 +768,7 @@
                       class="popover-size"
                     />
                   </p>
+
                   <b-form-input
                     v-model="storeSettings.statementDescriptor"
                     class="w-180 mb-3"
