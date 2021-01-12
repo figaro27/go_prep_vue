@@ -1,6 +1,14 @@
 <template>
   <div class="mt-4">
-    <b-modal id="tos" size="xl" ref="tos" no-fade>
+    <b-modal
+      id="tos"
+      size="xl"
+      ref="tos"
+      no-fade
+      v-model="showTOS"
+      v-if="showTOS"
+      @close="showTOS = false"
+    >
       <termsOfService></termsOfService>
     </b-modal>
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
@@ -136,8 +144,8 @@
         By checking out you agree to our
         <span
           class="strong"
-          @click.stop.prevent="$refs.tos.show()"
-          @touch.stop.prevent="$refs.tos.show()"
+          @click.stop.prevent="showTOS = true"
+          @touch.stop.prevent="showTOS = true"
           >terms of service.</span
         >
       </p>
@@ -145,12 +153,6 @@
         >Continue</b-button
       >
     </b-form>
-    <b-modal id="tos" size="xl" ref="tos" no-fade>
-      <termsOfService></termsOfService>
-    </b-modal>
-    <b-modal id="toa" size="xl" ref="toa">
-      <termsOfAgreement></termsOfAgreement>
-    </b-modal>
   </div>
 </template>
 
@@ -173,6 +175,7 @@ export default {
   },
   data() {
     return {
+      showTOS: false,
       showStatesBox: true,
       redirect: null,
       step: 0,
