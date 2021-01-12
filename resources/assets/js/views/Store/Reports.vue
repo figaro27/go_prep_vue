@@ -128,21 +128,29 @@
             </div>
             <div class="report-date-picker mt-2">
               <delivery-date-picker
-                v-model="delivery_dates.orders_by_customer"
+                v-model="delivery_dates.order_summary"
                 ref="ordersByCustomerDates"
               ></delivery-date-picker>
-              <b-btn @click="clearDates('orders_by_customer')" class="ml-1"
+              <b-btn @click="clearDates('order_summary')" class="ml-1"
                 >Clear</b-btn
               >
             </div>
             <p class="mt-4 center-text">
               Shows how to bag up your items for each customer.
             </p>
-
+            <p class="center-text">
+              <b-form-checkbox
+                v-model="orderPackageSummary"
+                unchecked-value="order_summary"
+                value="package_order_summary"
+                class="pt-1 pb-2"
+                >Package Summary</b-form-checkbox
+              >
+            </p>
             <div class="row">
               <div class="col-md-6">
                 <button
-                  @click="print('orders_by_customer', 'pdf')"
+                  @click="print(orderPackageSummary, 'pdf')"
                   class="btn btn-primary btn-md center mt-2 pull-right"
                 >
                   Print
@@ -156,15 +164,15 @@
                   text="Export as"
                 >
                   <b-dropdown-item
-                    @click="exportData('orders_by_customer', 'csv')"
+                    @click="exportData(orderPackageSummary, 'csv')"
                     >CSV</b-dropdown-item
                   >
                   <b-dropdown-item
-                    @click="exportData('orders_by_customer', 'xls')"
+                    @click="exportData(orderPackageSummary, 'xls')"
                     >XLS</b-dropdown-item
                   >
                   <b-dropdown-item
-                    @click="exportData('orders_by_customer', 'pdf')"
+                    @click="exportData(orderPackageSummary, 'pdf')"
                     >PDF</b-dropdown-item
                   >
                 </b-dropdown>
@@ -705,12 +713,14 @@ export default {
   },
   data() {
     return {
+      orderPackageSummary: "order_summary",
       orderByRoutes: false,
       delivery_dates: {
         meal_quantities: [],
         meal_orders: [],
         ingredient_quantities: [],
-        orders_by_customer: [],
+        order_summary: [],
+        package_order_summary: [],
         packing_slips: [],
         delivery_routes: [],
         payments: [],
@@ -933,6 +943,10 @@ export default {
 
       params.orderByRoutes = this.orderByRoutes;
 
+      this.delivery_dates["package_order_summary"] = this.delivery_dates[
+        "order_summary"
+      ];
+
       let dates = this.delivery_dates[report];
       if (dates.start && dates.end) {
         params.delivery_dates = {
@@ -1004,9 +1018,9 @@ export default {
           this.delivery_dates.ingredient_quantities.end = null;
           this.$refs.ingredientQuantitiesDates.clearDates();
           break;
-        case "orders_by_customer":
-          this.delivery_dates.orders_by_customer.start = null;
-          this.delivery_dates.orders_by_customer.end = null;
+        case "order_summary":
+          this.delivery_dates.order_summary.start = null;
+          this.delivery_dates.order_summary.end = null;
           this.$refs.ordersByCustomerDates.clearDates();
           break;
         case "packing_slips":

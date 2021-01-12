@@ -8,7 +8,7 @@ use App\MealOrder;
 use Illuminate\Support\Carbon;
 use App\ReportRecord;
 
-class OrdersByCustomer
+class OrderSummary
 {
     use Exportable;
     protected $store;
@@ -182,7 +182,7 @@ class OrdersByCustomer
                 'State',
                 'Zip',
                 'Delivery Instructions',
-                'Meal',
+                'Item',
                 'Size',
                 'Components',
                 'Addons',
@@ -235,7 +235,7 @@ class OrdersByCustomer
                                     $order->isMultipleDelivery,
                                 'multipleDates' => $order->multipleDates,
                                 'meal_quantities' => array_merge(
-                                    [['Quantity', 'Size', 'Meal']], // Heading
+                                    [['Quantity', 'Size', 'Item']], // Heading
                                     $order
                                         ->meal_orders()
                                         ->get()
@@ -283,6 +283,6 @@ class OrdersByCustomer
     }
     public function exportPdfView()
     {
-        return 'reports.orders_by_customer_pdf';
+        return 'reports.order_summary_pdf';
     }
 }

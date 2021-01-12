@@ -20,6 +20,11 @@ class MealPackageOrder extends Pivot
         return $this->belongsTo('App\Order');
     }
 
+    public function order()
+    {
+        return $this->belongsTo('App\Order');
+    }
+
     public function meal_package()
     {
         return $this->belongsTo('App\MealPackage')->withTrashed();
@@ -28,6 +33,11 @@ class MealPackageOrder extends Pivot
     public function meal_package_size()
     {
         return $this->belongsTo('App\MealPackageSize');
+    }
+
+    public function meal_orders()
+    {
+        return $this->hasMany('App\MealOrder', 'meal_package_order_id', 'id');
     }
 
     public function getHasCustomNameAttribute()

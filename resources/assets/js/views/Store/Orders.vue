@@ -114,7 +114,7 @@
               </b-btn>
               <b-btn
                 variant="success"
-                @click="exportData('orders_by_customer', 'pdf', true)"
+                @click="exportData('order_summary', 'pdf', true)"
               >
                 <i class="fa fa-print"></i>&nbsp; Print Orders Summary
               </b-btn>
