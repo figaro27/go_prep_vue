@@ -1,7 +1,7 @@
 <template>
   <div class="row auth-box">
-    <b-form @submit.prevent="submit" autocomplete="off" ref="form">
-      <div>
+    <div class="col-md-12">
+      <b-form @submit.prevent="submit" autocomplete="off" ref="form">
         <b-form-group horizontal :state="state(0, 'first_name')">
           <b-input
             placeholder="First Name"
@@ -142,14 +142,14 @@
             >Continue</b-button
           >
         </b-form-group>
-      </div>
-    </b-form>
-    <b-modal id="tos" size="xl" ref="tos" no-fade>
-      <termsOfService></termsOfService>
-    </b-modal>
-    <b-modal id="toa" size="xl" ref="toa">
-      <termsOfAgreement></termsOfAgreement>
-    </b-modal>
+      </b-form>
+      <b-modal id="tos" size="xl" ref="tos" no-fade>
+        <termsOfService></termsOfService>
+      </b-modal>
+      <b-modal id="toa" size="xl" ref="toa">
+        <termsOfAgreement></termsOfAgreement>
+      </b-modal>
+    </div>
   </div>
 </template>
 
