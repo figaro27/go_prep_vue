@@ -1,5 +1,5 @@
 <template>
-  <div class="row auth-box">
+  <div class="row">
     <b-modal id="tos" size="xl" ref="tos" no-fade>
       <termsOfService></termsOfService>
     </b-modal>

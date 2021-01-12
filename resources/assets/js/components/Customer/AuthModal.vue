@@ -10,7 +10,7 @@
       no-fade
     >
       <div class="row auth-box" v-if="login">
-        <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+        <div class="col-md-8 offset-md-2 col-lg-7 offset-lg-3">
           <b-form @submit.prevent="submit">
             <b-form-group horizontal label="E-Mail Address">
               <b-input v-model="email"></b-input>
