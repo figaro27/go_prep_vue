@@ -129,25 +129,18 @@
           autocomplete="new-password"
         ></b-input>
       </b-form-group>
-      <b-form-group>
-        <p class="font-italic">
-          By checking out you agree to our
-          <span
-            class="strong"
-            @click.stop.prevent="$refs.tos.show()"
-            @touch.stop.prevent="$refs.tos.show()"
-            >terms of service.</span
-          >
-        </p>
-      </b-form-group>
-      <b-form-group>
-        <b-button
-          type="submit"
-          :disabled="$v.form[1].$invalid"
-          variant="primary"
-          >Continue</b-button
+      <p class="font-italic">
+        By checking out you agree to our
+        <span
+          class="strong"
+          @click.stop.prevent="$refs.tos.show()"
+          @touch.stop.prevent="$refs.tos.show()"
+          >terms of service.</span
         >
-      </b-form-group>
+      </p>
+      <b-button type="submit" :disabled="$v.form[1].$invalid" variant="primary"
+        >Continue</b-button
+      >
     </b-form>
     <b-modal id="tos" size="xl" ref="tos" no-fade>
       <termsOfService></termsOfService>
