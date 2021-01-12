@@ -1,6 +1,8 @@
 <template>
   <div class="mt-4">
-    <termsOfService ref="tos"></termsOfService>
+    <b-modal id="tos" size="xl" ref="tos" no-fade>
+      <termsOfService></termsOfService>
+    </b-modal>
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
       <div class="d-flex" style="flex-wrap:wrap">
         <b-form-group
