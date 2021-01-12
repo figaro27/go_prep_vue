@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
-      <b-form-group horizontal :state="state(0, 'first_name')">
+      <b-form-group horizontal :state="state(0, 'first_name')" class="d-flex">
         <b-input
           placeholder="First Name"
           v-model="form[0].first_name"
@@ -15,7 +15,7 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(0, 'last_name')">
+      <b-form-group horizontal :state="state(0, 'last_name')" class="d-flex">
         <b-input
           placeholder="Last Name"
           v-model="form[0].last_name"
@@ -29,7 +29,7 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(0, 'phone')">
+      <b-form-group horizontal :state="state(0, 'phone')" class="d-flex">
         <b-input
           placeholder="Phone Number"
           v-model="form[0].phone"
@@ -40,7 +40,7 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(1, 'address')">
+      <b-form-group horizontal :state="state(1, 'address')" class="d-flex">
         <b-input
           placeholder="Address"
           v-model="form[1].address"
@@ -81,7 +81,7 @@
         ></b-select>
       </b-form-group>
 
-      <b-form-group :state="state(1, 'zip')" class="d-inline">
+      <b-form-group :state="state(1, 'zip')" class="d-inline mr-3">
         <b-input
           :placeholder="postalLabel"
           v-model="form[1].zip"
@@ -95,9 +95,8 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group :state="state(1, 'country')">
+      <b-form-group :state="state(1, 'country')" class="d-inline">
         <b-select
-          class="w-100"
           placeholder="Country"
           label="name"
           :options="countryNames"
@@ -105,7 +104,7 @@
         ></b-select>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(1, 'delivery')">
+      <b-form-group horizontal :state="state(1, 'delivery')" class="d-flex">
         <b-input
           placeholder="Delivery Instructions (Optional)"
           v-model="form[1].delivery"
