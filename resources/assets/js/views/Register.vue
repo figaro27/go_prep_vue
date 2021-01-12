@@ -704,9 +704,6 @@ export default {
           return "Postal Code";
       }
     },
-    stateNames() {
-      return states.selectOptions("US");
-    },
     countryNames() {
       return countries.selectOptions();
     },

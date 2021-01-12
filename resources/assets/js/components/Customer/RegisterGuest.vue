@@ -252,9 +252,6 @@ export default {
     },
     currencyOptions() {
       return currencies.selectOptions();
-    },
-    stateNames() {
-      return this.getStateNames();
     }
   },
   validations: {
