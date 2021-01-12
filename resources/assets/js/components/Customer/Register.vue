@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-4">
     <b-modal id="tos" size="xl" ref="tos" no-fade>
       <termsOfService></termsOfService>
     </b-modal>
@@ -8,7 +8,7 @@
     </b-modal>
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
       <div v-if="step === 0">
-        <b-form-group horizontal :state="state(0, 'first_name')">
+        <b-form-group :state="state(0, 'first_name')">
           <b-input
             placeholder="First Name"
             v-model="form[0].first_name"
@@ -22,7 +22,7 @@
           ></b-input>
         </b-form-group>
 
-        <b-form-group horizontal :state="state(0, 'last_name')">
+        <b-form-group :state="state(0, 'last_name')">
           <b-input
             placeholder="Last Name"
             v-model="form[0].last_name"
@@ -37,7 +37,6 @@
         </b-form-group>
 
         <b-form-group
-          horizontal
           :state="state(0, 'email')"
           :invalid-feedback="invalidFeedback(0, 'email')"
           :valid-feedback="validFeedback(0, 'email')"
@@ -55,7 +54,7 @@
           ></b-input>
         </b-form-group>
 
-        <b-form-group horizontal :state="state(0, 'password')">
+        <b-form-group :state="state(0, 'password')">
           <b-input
             placeholder="Password"
             v-model="form[0].password"
@@ -70,7 +69,6 @@
         </b-form-group>
 
         <b-form-group
-          horizontal
           :state="state(0, 'password') && state(0, 'password_confirmation')"
           :invalid-feedback="invalidFeedback(0, 'password')"
           :valid-feedback="validFeedback(0, 'password')"
@@ -88,7 +86,7 @@
           ></b-input>
         </b-form-group>
 
-        <b-form-group horizontal :state="state(0, 'phone')">
+        <b-form-group :state="state(0, 'phone')">
           <b-input
             placeholder="Phone Number"
             v-model="form[0].phone"
@@ -99,7 +97,7 @@
           ></b-input>
         </b-form-group>
 
-        <b-form-group horizontal>
+        <b-form-group>
           <b-button
             @click="next()"
             :disabled="$v.form[0].$invalid"
@@ -112,7 +110,7 @@
       <div v-if="step === 1">
         <h4>Account Details</h4>
 
-        <b-form-group horizontal :state="state(1, 'country')">
+        <b-form-group :state="state(1, 'country')">
           <b-select
             placeholder="Country"
             :options="countryNames"
@@ -121,7 +119,7 @@
           ></b-select>
         </b-form-group>
 
-        <b-form-group horizontal :state="state(1, 'address')">
+        <b-form-group :state="state(1, 'address')">
           <b-input
             placeholder="Delivery Address"
             v-model="form[1].address"
@@ -135,11 +133,7 @@
           ></b-input>
         </b-form-group>
 
-        <b-form-group
-          horizontal
-          :state="state(1, 'city')"
-          class="d-inline mr-3"
-        >
+        <b-form-group :state="state(1, 'city')" class="d-inline mr-3">
           <b-input
             :placeholder="cityLabel"
             v-model="form[1].city"
@@ -154,7 +148,6 @@
         </b-form-group>
 
         <b-form-group
-          horizontal
           :state="state(1, 'state')"
           v-if="showStatesBox"
           class="d-inline mr-3"
@@ -168,7 +161,7 @@
           ></b-select>
         </b-form-group>
 
-        <b-form-group horizontal :state="state(1, 'zip')" class="d-inline">
+        <b-form-group :state="state(1, 'zip')" class="d-inline">
           <b-input
             :placeholder="postalLabel"
             v-model="form[1].zip"
@@ -182,7 +175,7 @@
           ></b-input>
         </b-form-group>
 
-        <b-form-group horizontal :state="state(1, 'delivery')">
+        <b-form-group :state="state(1, 'delivery')">
           <b-input
             placeholder="Delivery Instructions (Optional)"
             v-model="form[1].delivery"
@@ -196,7 +189,7 @@
           ></b-input>
         </b-form-group>
 
-        <b-form-group horizontal>
+        <b-form-group>
           <b-form-checkbox
             id="accepted-tos"
             name="accepted-tos"
@@ -221,7 +214,7 @@
           </b-form-checkbox>
         </b-form-group>
 
-        <b-form-group horizontal v-if="form[0].role === 'store'">
+        <b-form-group v-if="form[0].role === 'store'">
           <b-button
             @click="next()"
             :disabled="$v.form[1].$invalid"
@@ -230,7 +223,7 @@
           >
         </b-form-group>
 
-        <b-form-group horizontal v-else>
+        <b-form-group v-else>
           <b-button
             type="submit"
             :disabled="$v.form[1].$invalid"
@@ -246,7 +239,6 @@
           You can change these details later in My Account before you go live.
         </p>
         <b-form-group
-          horizontal
           :state="state(2, 'store_name')"
           :invalid-feedback="invalidFeedback(2, 'store_name')"
           :valid-feedback="validFeedback(2, 'store_name')"
@@ -265,7 +257,6 @@
         </b-form-group>
 
         <b-form-group
-          horizontal
           :state="state(2, 'domain')"
           :invalid-feedback="invalidFeedback(2, 'domain')"
           :valid-feedback="validFeedback(2, 'domain')"
@@ -289,7 +280,7 @@
           </div>
         </b-form-group>
 
-        <b-form-group horizontal :state="state(2, 'country')">
+        <b-form-group :state="state(2, 'country')">
           <b-select
             placeholder="Country"
             :options="countryNames"
@@ -299,7 +290,6 @@
         </b-form-group>
 
         <b-form-group
-          horizontal
           :state="state(2, 'address')"
           :invalid-feedback="invalidFeedback(2, 'address')"
           :valid-feedback="validFeedback(2, 'address')"
@@ -320,7 +310,6 @@
         <div class="d-flex">
           <b-form-group
             class="d-inline mr-3"
-            horizontal
             :state="state(2, 'city')"
             :invalid-feedback="invalidFeedback(2, 'city')"
             :valid-feedback="validFeedback(2, 'city')"
@@ -338,11 +327,7 @@
             ></b-input>
           </b-form-group>
 
-          <b-form-group
-            horizontal
-            :state="state(2, 'state')"
-            class="d-inline mr-3"
-          >
+          <b-form-group :state="state(2, 'state')" class="d-inline mr-3">
             <b-select
               placeholder="State"
               label="name"
@@ -355,7 +340,6 @@
 
           <b-form-group
             class="d-inline"
-            horizontal
             :state="state(2, 'zip')"
             :invalid-feedback="invalidFeedback(2, 'zip')"
             :valid-feedback="validFeedback(2, 'zip')"
@@ -373,7 +357,7 @@
             ></b-input>
           </b-form-group>
         </div>
-        <b-form-group horizontal :state="state(2, 'accepted_tos')">
+        <b-form-group :state="state(2, 'accepted_tos')">
           <b-form-checkbox
             id="accepted-tos2"
             name="accepted-tos2"
@@ -392,7 +376,7 @@
           </b-form-checkbox>
         </b-form-group>
 
-        <!--<b-form-group horizontal :state="state(2, 'accepted_toa')">
+        <!--<b-form-group :state="state(2, 'accepted_toa')">
                 <b-form-checkbox
                   id="accepted-toa2"
                   name="accepted-toa2"
@@ -411,7 +395,7 @@
                 </b-form-checkbox>
               </b-form-group>-->
 
-        <b-form-group horizontal>
+        <b-form-group>
           <b-button
             type="submit"
             v-if="!manualOrder"
@@ -420,7 +404,7 @@
             >Submit</b-button
           >
         </b-form-group>
-        <b-form-group horizontal>
+        <b-form-group>
           <b-button
             type="submit"
             v-if="manualOrder"

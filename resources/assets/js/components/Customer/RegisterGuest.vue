@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="mt-4">
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
-      <b-form-group horizontal :state="state(0, 'first_name')">
+      <b-form-group :state="state(0, 'first_name')">
         <b-input
           placeholder="First Name"
           v-model="form[0].first_name"
@@ -15,7 +15,7 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(0, 'last_name')">
+      <b-form-group :state="state(0, 'last_name')">
         <b-input
           placeholder="Last Name"
           v-model="form[0].last_name"
@@ -29,7 +29,7 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(0, 'phone')">
+      <b-form-group :state="state(0, 'phone')">
         <b-input
           placeholder="Phone Number"
           v-model="form[0].phone"
@@ -40,7 +40,7 @@
         ></b-input>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(1, 'address')">
+      <b-form-group :state="state(1, 'address')">
         <b-input
           placeholder="Address"
           v-model="form[1].address"
@@ -104,7 +104,7 @@
         ></b-select>
       </b-form-group>
 
-      <b-form-group horizontal :state="state(1, 'delivery')">
+      <b-form-group :state="state(1, 'delivery')">
         <b-input
           placeholder="Delivery Instructions (Optional)"
           v-model="form[1].delivery"
@@ -117,7 +117,7 @@
           autocomplete="new-password"
         ></b-input>
       </b-form-group>
-      <b-form-group horizontal>
+      <b-form-group>
         <p class="font-italic">
           By checking out you agree to our
           <span
@@ -128,7 +128,7 @@
           >
         </p>
       </b-form-group>
-      <b-form-group horizontal>
+      <b-form-group>
         <b-button
           type="submit"
           :disabled="$v.form[1].$invalid"
