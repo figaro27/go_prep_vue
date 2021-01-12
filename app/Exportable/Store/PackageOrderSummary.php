@@ -204,7 +204,8 @@ class PackageOrderSummary
                                                     $mealPackageOrder->customTitle ??
                                                     $mealPackageOrder
                                                         ->meal_package->title,
-                                                'items' => $mealPackageOrder->meal_orders->count()
+                                                'items' =>
+                                                    $mealPackageOrder->itemsCount
                                             ];
                                         })
                                         ->toArray()
@@ -294,7 +295,7 @@ class PackageOrderSummary
                             : $mealPackageOrder->meal_package_size)
                         ? $mealPackageOrder->meal_package_size->title
                         : null,
-                    'items' => $mealPackageOrder->meal_orders->count(),
+                    'items' => $mealPackageOrder->itemsCount,
                     'special_instructions' =>
                         $mealPackageOrder->special_instructions,
                     'quantity' => $mealPackageOrder->quantity,
