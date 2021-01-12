@@ -9,15 +9,23 @@
       hide-footer
       no-fade
     >
-      <div class="row auth-box" v-if="login">
-        <div class="col-md-8 offset-md-2 col-lg-7 offset-lg-3">
+      <div
+        class="d-flex mt-4"
+        v-if="login"
+        style="justify-content:space-around"
+      >
+        <div style="width:50%">
           <b-form @submit.prevent="submit">
-            <b-form-group horizontal label="E-Mail Address">
-              <b-input v-model="email"></b-input>
+            <b-form-group>
+              <b-input v-model="email" placeholder="Email"></b-input>
             </b-form-group>
 
-            <b-form-group horizontal label="Password">
-              <b-input v-model="password" type="password"></b-input>
+            <b-form-group>
+              <b-input
+                v-model="password"
+                type="password"
+                placeholder="Password"
+              ></b-input>
             </b-form-group>
 
             <div class="form-group row">
