@@ -1,5 +1,5 @@
 <template>
-  <div class="col-md-12">
+  <div class="d-flex">
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
       <b-form-group horizontal :state="state(0, 'first_name')">
         <b-input

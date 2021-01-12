@@ -1,5 +1,5 @@
 <template>
-  <div class="col-md-12">
+  <div class="d-flex">
     <b-modal id="tos" size="xl" ref="tos" no-fade>
       <termsOfService></termsOfService>
     </b-modal>

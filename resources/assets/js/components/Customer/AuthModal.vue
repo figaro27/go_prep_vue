@@ -63,9 +63,11 @@
           </b-form>
         </div>
       </div>
-      <register v-if="register"></register>
-      <register-guest v-if="registerGuest"></register-guest>
-      <forgot-password v-if="forgotPassword"></forgot-password>
+      <div class="auth-box">
+        <register v-if="register"></register>
+        <register-guest v-if="registerGuest"></register-guest>
+        <forgot-password v-if="forgotPassword"></forgot-password>
+      </div>
     </b-modal>
   </div>
 </template>
