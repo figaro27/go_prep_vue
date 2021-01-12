@@ -8,7 +8,7 @@ class MealPackageOrder extends Pivot
 {
     protected $table = 'meal_package_orders';
 
-    protected $appends = ['hasCustomName', 'full_title', 'itemsCount'];
+    protected $appends = ['hasCustomName', 'full_title'];
 
     public function store()
     {
@@ -62,14 +62,5 @@ class MealPackageOrder extends Pivot
         }
 
         return $title . $size;
-    }
-
-    public function getItemsCountAttribute()
-    {
-        $count = 0;
-        foreach ($this->meal_orders as $mealOrder) {
-            $count += $mealOrder->quantity;
-        }
-        return $count;
     }
 }
