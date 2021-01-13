@@ -327,6 +327,9 @@ class Subscription extends Model
                     'price' => $mealSub->price
                         ? $mealSub->price
                         : $mealSub->unit_price * $mealSub->quantity,
+                    'added_price' => $mealSub->added_price
+                        ? $mealSub->added_price
+                        : 0,
                     'free' => $mealSub->free,
                     'special_instructions' => $mealSub->special_instructions,
                     'meal_package_subscription_id' =>
@@ -591,6 +594,10 @@ class Subscription extends Model
                     $mealSub->save();
                     $mealOrder->delivery_date = $mealSub->delivery_date;
                 }
+
+                $mealOrder->added_price = $mealSub->added_price
+                    ? $mealSub->added_price
+                    : 0;
 
                 $mealOrder->save();
 
@@ -1157,6 +1164,9 @@ class Subscription extends Model
                 $mealOrder->meal_id = $item['meal']['id'];
                 $mealOrder->meal_size_id = $item['meal_size']['id'];
                 $mealOrder->price = $item['price'];
+                $mealOrder->added_price = isset($item['added_price'])
+                    ? $item['added_price']
+                    : 0;
                 $mealOrder->quantity = $item['quantity'];
                 if (isset($item['delivery_date']) && $item['delivery_date']) {
                     $mealOrder->delivery_date = $item['delivery_date'];
@@ -1186,6 +1196,9 @@ class Subscription extends Model
                     $mealOrder->meal_package_title =
                         $item['meal_package_title'];
                 }
+                $mealOrder->added_price = isset($item['added_price'])
+                    ? $item['added_price']
+                    : 0;
                 $mealOrder->save();
 
                 if (isset($item['components']) && $item['components']) {
@@ -1225,6 +1238,9 @@ class Subscription extends Model
                     $mealOrder->meal_id = $item->meal_id;
                     $mealOrder->meal_size_id = $item->meal_size_id;
                     // $mealOrder->price = $item->price;
+                    $mealOrder->added_price = isset($item->added_price)
+                        ? $item->added_price
+                        : 0;
                     $mealOrder->quantity = $item->quantity;
                     $mealOrder->meal_package = 1;
                     $mealOrder->delivery_date = $item->delivery_date;
@@ -1307,6 +1323,9 @@ class Subscription extends Model
                                 $mealOrder->quantity;
                             $mealPackageOrder->update();
                         }
+                        $mealOrder->added_price = isset($item['added_price'])
+                            ? $item['added_price']
+                            : 0;
                         $mealOrder->save();
                     }
                 }

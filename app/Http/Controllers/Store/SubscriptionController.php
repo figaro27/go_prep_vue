@@ -338,6 +338,9 @@ class SubscriptionController extends StoreController
                 $mealSub->meal_id = $item['meal']['id'];
                 $mealSub->quantity = $item['quantity'];
                 $mealSub->price = $item['price'] * $item['quantity'];
+                $mealSub->added_price = isset($item['added_price'])
+                    ? $item['added_price']
+                    : 0;
                 if (isset($item['free'])) {
                     $mealSub->free = $item['free'];
                 }
@@ -569,11 +572,9 @@ class SubscriptionController extends StoreController
                     }
                     if ($item['meal_package']) {
                         $mealOrder->meal_package = $item['meal_package'];
-                        $mealOrder->meal_package_variation = isset(
-                            $item['meal_package_variation']
-                        )
-                            ? $item['meal_package_variation']
-                            : 0;
+                        $mealOrder->added_price = isset($item['added_price'])
+                            ? $item['added_price']
+                            : null;
                     }
 
                     if (isset($item['meal_package_title'])) {
@@ -613,11 +614,9 @@ class SubscriptionController extends StoreController
 
                     if ($item['meal_package']) {
                         $mealOrder->meal_package = $item['meal_package'];
-                        $mealOrder->meal_package_variation = isset(
-                            $item['meal_package_variation']
-                        )
-                            ? $item['meal_package_variation']
-                            : 0;
+                        $mealOrder->added_price = isset($item['added_price'])
+                            ? $item['added_price']
+                            : null;
                     }
 
                     if (isset($item['meal_package_title'])) {

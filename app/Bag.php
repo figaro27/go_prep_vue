@@ -192,7 +192,11 @@ class Bag
                                             )
                                                 ? $item['emailRecipient']
                                                 : null,
-                                            'meal_package_variation' => true
+                                            'added_price' => isset(
+                                                $item['added_price']
+                                            )
+                                                ? $item['added_price']
+                                                : 0
                                         ]);
                                     }
                                 } else {
@@ -233,8 +237,7 @@ class Bag
                                                     ? $optionItem[
                                                         'special_instructions'
                                                     ]
-                                                    : null,
-                                                'meal_package_variation' => true
+                                                    : null
                                             ]);
                                         }
                                     }
@@ -261,7 +264,7 @@ class Bag
                                         'package_price' => $item['price'],
                                         'package_quantity' => $item['quantity'],
                                         'quantity' => $meal['quantity'],
-                                        'price' => $meal['price'],
+                                        'price' => null,
                                         'size' => [
                                             'id' => $meal['meal_size_id']
                                         ],
@@ -281,8 +284,7 @@ class Bag
                                         )
                                             ? $item['emailRecipient']
                                             : null,
-                                        'meal_package_variation' =>
-                                            $meal['meal_package_variation'],
+                                        'added_price' => $meal['price'],
                                         'mappingId' => $mappingId,
                                         'customTitle' => $customTitle,
                                         'customSize' => $customSize,
@@ -338,7 +340,11 @@ class Bag
                                                 'special_instructions'
                                             ]
                                             : null,
-                                        'meal_package_variation' => true
+                                        'added_price' => isset(
+                                            $item['added_price']
+                                        )
+                                            ? $item['added_price']
+                                            : 0
                                     ]);
                                 }
                             } else {
@@ -377,8 +383,7 @@ class Bag
                                                 ? $addonItem[
                                                     'special_instructions'
                                                 ]
-                                                : null,
-                                            'meal_package_variation' => true
+                                                : null
                                         ]);
                                     }
                                 }
@@ -409,7 +414,7 @@ class Bag
                                     'package_price' => $item['price'],
                                     'package_quantity' => $item['quantity'],
                                     'quantity' => $meal['quantity'],
-                                    'price' => $meal['price'],
+                                    'price' => null,
                                     'size' => [
                                         'id' => $meal['meal_size_id']
                                     ],
@@ -424,8 +429,7 @@ class Bag
                                         $item['delivery_day']
                                             ? $item['delivery_day']
                                             : null,
-                                    'meal_package_variation' =>
-                                        $meal['meal_package_variation'],
+                                    'added_price' => $meal['price'],
                                     'mappingId' => $mappingId,
                                     'customTitle' => $customTitle,
                                     'customSize' => $customSize,
@@ -491,14 +495,11 @@ class Bag
                                 )
                                     ? $item['emailRecipient']
                                     : null,
-                                'meal_package_variation' => false,
                                 'mappingId' => $mappingId,
                                 'customTitle' => $customTitle,
                                 'customSize' => $customSize,
-                                'meal_package_variation' => isset(
-                                    $meal['meal_package_variation']
-                                )
-                                    ? $meal['meal_package_variation']
+                                'added_price' => isset($meal['added_price'])
+                                    ? $meal['added_price']
                                     : 0,
                                 'guid' => isset($item['guid'])
                                     ? $item['guid']
@@ -569,10 +570,8 @@ class Bag
                                     )
                                         ? $item['emailRecipient']
                                         : null,
-                                    'meal_package_variation' => isset(
-                                        $meal['meal_package_variation']
-                                    )
-                                        ? $meal['meal_package_variation']
+                                    'added_price' => isset($item['added_price'])
+                                        ? $item['added_price']
                                         : 0,
                                     'mappingId' => $mappingId,
                                     'customTitle' => $customTitle,
@@ -581,7 +580,10 @@ class Bag
                                         ? $item['guid']
                                         : null,
                                     'top_level' => true,
-                                    'category_id' => $categoryId
+                                    'category_id' => $categoryId,
+                                    'added_price' => isset($meal['added_price'])
+                                        ? $meal['added_price']
+                                        : 0
                                 ];
 
                                 $mealItemId = isset($meal['item_id'])

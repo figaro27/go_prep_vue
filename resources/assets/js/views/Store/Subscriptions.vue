@@ -1214,11 +1214,11 @@ export default {
               quantity: item.quantity,
               unit_price: "In Package",
               subtotal:
-                item.price > 0
+                item.added_price > 0
                   ? "In Package " +
                     "(" +
                     this.store.settings.currency_symbol +
-                    item.price +
+                    item.added_price +
                     ")"
                   : "In Package"
             });

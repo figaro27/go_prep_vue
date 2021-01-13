@@ -247,8 +247,8 @@ $deliveryInstructions = $order->user->userDetail->delivery;
           <!--<td>{!! $item->html_title !!}</td>!-->
           <td>{!! $item->base_title !!}</td>
           <td style="text-align:right;padding-right:12px">
-            @if ($item->meal_package_variation && $item->price > 0)
-              <span style="padding-right:8px">(@money($item->price, $currency, 2))</span> In Package
+            @if ($item->added_price > 0)
+              <span style="padding-right:8px">(@money($item->added_price, $currency, 2))</span> In Package
             @else
               In Package
             @endif
