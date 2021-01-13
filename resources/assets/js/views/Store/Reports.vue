@@ -821,6 +821,10 @@ export default {
     async print(report, format = "pdf", page = 1) {
       let params = { page };
 
+      this.delivery_dates["package_order_summary"] = this.delivery_dates[
+        "order_summary"
+      ];
+
       let dates = this.delivery_dates[report];
 
       if (dates.start && dates.end) {
