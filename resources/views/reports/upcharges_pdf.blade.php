@@ -7,11 +7,7 @@
 
 <body class="{{ $body_classes }}">
   <div id="print-area">
-    @if ($params->productionGroupTitle != null)
-    <h1>Production <span style="font-size:24px">({{ $params->productionGroupTitle }})</span></h1>
-    @else
-    <h1>Production</h1>
-    @endif
+    <h1>Upcharge Report</h1>
 
     <div class="delivery-part">
       <h2 style="font-size:22px">
@@ -24,19 +20,6 @@
         @else
           All Delivery Dates
         @endif
-        @if ($params->startTime || $params->endTime)
-        @if ($params->startTime)
-        {{ $params->startTime }}
-        @else
-        12:00 AM
-        @endif
-        -
-        @if ($params->endTime)
-        {{ $params->endTime }}
-        @else
-        11:59 PM
-        @endif
-        @endIf
       </h2>
 
 
@@ -48,25 +31,11 @@
       <table border="1" width="100" class="light-border">
         <thead>
           <tr>
-            @if(!$params['group_by_date'] || $params['group_by_date'] === 'false')
-            <th><h4>Qty</h4></th>
-            @else
-              @foreach($dates as $i => $date)
-                <th>
-                  <h4>{{ $date }}</h4>
-                </th>
-              @endforeach
-            @endif
-            @if(isset($params['show_time_breakdown']) && $params['show_time_breakdown'] === 'true')
-            <th><h4 style="width:125px">Times</h4></th>
-            @endif
+            <th><h4>QTY</h4></th>
             <th style="width:135px"><h4>Size</h4></th>
             <th><h4>Item</h4></th>
-
-            @if($params['show_daily_order_numbers'])
-            <th><h4>Daily Order #</h4></th>
-            @endif
-
+            <th><h4>Unit Upcharge</h4></th>
+            <th><h4>Total Upcharge</h4></th>
 
             <!-- <th>Total Price</th> -->
           </tr>

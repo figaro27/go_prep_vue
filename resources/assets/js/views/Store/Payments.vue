@@ -125,23 +125,34 @@
             </div>
 
             <span slot="beforeLimit">
-              <b-btn
-                variant="primary"
-                @click="exportData('payments', 'pdf', true)"
-              >
-                <i class="fa fa-print"></i>&nbsp; Print Report
-              </b-btn>
-              <b-dropdown class="mx-1 mt-2 mt-sm-0" right text="Export as">
-                <b-dropdown-item @click="exportData('payments', 'csv')"
-                  >CSV</b-dropdown-item
+              <div class="d-flex">
+                <b-form-checkbox
+                  v-if="store.id === 196 || store.id === 3"
+                  v-model="upcharges"
+                  :value="true"
+                  :unchecked-value="false"
+                  class="d-inline mr-2 pt-2"
                 >
-                <b-dropdown-item @click="exportData('payments', 'xls')"
-                  >XLS</b-dropdown-item
+                  Upcharge Report
+                </b-form-checkbox>
+                <b-btn
+                  variant="primary"
+                  @click="exportData('payments', 'pdf', true)"
                 >
-                <b-dropdown-item @click="exportData('payments', 'pdf')"
-                  >PDF</b-dropdown-item
-                >
-              </b-dropdown>
+                  <i class="fa fa-print"></i>&nbsp; Print Report
+                </b-btn>
+                <b-dropdown class="mx-1 mt-2 mt-sm-0" right text="Export as">
+                  <b-dropdown-item @click="exportData('payments', 'csv')"
+                    >CSV</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('payments', 'xls')"
+                    >XLS</b-dropdown-item
+                  >
+                  <b-dropdown-item @click="exportData('payments', 'pdf')"
+                    >PDF</b-dropdown-item
+                  >
+                </b-dropdown>
+              </div>
             </span>
             <div slot="created_at" slot-scope="props">
               <span v-if="props.row.created_at != 'TOTALS'">{{
@@ -356,6 +367,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      upcharges: false,
       showMultiAuthModal: false,
       multiAuthPassword: null,
       upcomingOrdersByOrderDate: [],
@@ -732,6 +744,8 @@ export default {
       params.byOrderDate = this.filters.byOrderDate;
       params.removeManualOrders = this.filters.removeManualOrders;
       params.removeCashOrders = this.filters.removeCashOrders;
+
+      report = this.upcharges ? "upcharges" : report;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
