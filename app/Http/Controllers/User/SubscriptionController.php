@@ -399,6 +399,8 @@ class SubscriptionController extends UserController
                         )
                             ? $item['category_id']
                             : null;
+                        $mealPackageSubscription->items_quantity =
+                            $mealSub->quantity;
                         $mealPackageSubscription->save();
 
                         $mealSub->meal_package_subscription_id =
@@ -417,6 +419,9 @@ class SubscriptionController extends UserController
                         )
                             ->pluck('id')
                             ->first();
+                        $mealPackageSubscription->items_quantity +=
+                            $mealSub->quantity;
+                        $mealPackageSubscription->update();
                     }
                 }
                 if (isset($item['delivery_day']) && $item['delivery_day']) {
@@ -653,7 +658,28 @@ class SubscriptionController extends UserController
                             )
                                 ? $item['category_id']
                                 : null;
+                            $mealPackageOrder->items_quantity =
+                                $mealOrder->quantity;
                             $mealPackageOrder->save();
+                        } else {
+                            $mealOrder->meal_package_order_id = MealPackageOrder::where(
+                                [
+                                    'meal_package_id' =>
+                                        $item['meal_package_id'],
+                                    'meal_package_size_id' =>
+                                        $item['meal_package_size_id'],
+                                    'order_id' => $order->id,
+                                    'mappingId' => isset($item['mappingId'])
+                                        ? $item['mappingId']
+                                        : null
+                                ]
+                            )
+                                ->pluck('id')
+                                ->first();
+
+                            $mealPackageOrder->items_quantity +=
+                                $mealOrder->quantity;
+                            $mealPackageOrder->update();
                         }
                     }
                     if ($item['meal_package'] === true && $mealPackageOrder) {

@@ -77,6 +77,15 @@ class MealOrder extends Pivot
         return $this->hasMany('App\MealOrderAddon', 'meal_order_id', 'id');
     }
 
+    public function meal_package_order()
+    {
+        return $this->belongsTo(
+            'App\MealPackageOrder',
+            'meal_package_order_id',
+            'id'
+        );
+    }
+
     public function getShortTitleAttribute()
     {
         return $this->customTitle ? $this->customTitle : $this->meal->title;

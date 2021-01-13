@@ -1067,6 +1067,8 @@ class OrderController extends StoreController
                         )
                             ? $item['category_id']
                             : null;
+                        $mealPackageOrder->items_quantity +=
+                            $mealOrder->quantity;
                         $mealPackageOrder->save();
 
                         $mealOrder->meal_package_order_id =
@@ -1088,6 +1090,10 @@ class OrderController extends StoreController
                         )
                             ->pluck('id')
                             ->first();
+
+                        $mealPackageOrder->items_quantity +=
+                            $mealOrder->quantity;
+                        $mealPackageOrder->update();
                     }
                     $mealOrder->price = $item['price'];
                 }

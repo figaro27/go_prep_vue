@@ -742,6 +742,8 @@ class CheckoutController extends UserController
                                 )
                                     ? $item['category_id']
                                     : null;
+                                $mealPackageOrder->items_quantity =
+                                    $mealOrder->quantity;
                                 $mealPackageOrder->save();
 
                                 $mealOrder->meal_package_order_id =
@@ -761,6 +763,10 @@ class CheckoutController extends UserController
                                 )
                                     ->pluck('id')
                                     ->first();
+
+                                $mealPackageOrder->items_quantity +=
+                                    $mealOrder->quantity;
+                                $mealPackageOrder->update();
                             }
                         }
 
@@ -1166,6 +1172,8 @@ class CheckoutController extends UserController
                             )
                                 ? $item['category_id']
                                 : null;
+                            $mealPackageOrder->items_quantity =
+                                $mealOrder->quantity;
                             $mealPackageOrder->save();
 
                             $mealOrder->meal_package_order_id =
@@ -1185,6 +1193,9 @@ class CheckoutController extends UserController
                             )
                                 ->pluck('id')
                                 ->first();
+                            $mealPackageOrder->items_quantity +=
+                                $mealOrder->quantity;
+                            $mealPackageOrder->update();
                         }
                     }
 
@@ -1342,6 +1353,8 @@ class CheckoutController extends UserController
                             )
                                 ? $item['category_id']
                                 : null;
+                            $mealPackageSubscription->items_quantity =
+                                $mealSub->quantity;
                             $mealPackageSubscription->save();
 
                             $mealSub->meal_package_subscription_id =
@@ -1361,6 +1374,9 @@ class CheckoutController extends UserController
                             )
                                 ->pluck('id')
                                 ->first();
+                            $mealPackageSubscription->items_quantity +=
+                                $mealSub->quantity;
+                            $mealPackageSubscription->update();
                         }
                     }
                     $mealSub->category_id = isset($item['meal']['category_id'])

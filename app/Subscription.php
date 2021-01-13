@@ -535,6 +535,8 @@ class Subscription extends Model
                 }
                 $mealPackageOrder->mappingId = $mealPackageSub->mappingId;
                 $mealPackageOrder->category_id = $mealPackageSub->category_id;
+                $mealPackageOrder->items_quantity =
+                    $mealPackageSub->items_quantity;
                 $mealPackageOrder->save();
             }
 
@@ -1276,6 +1278,8 @@ class Subscription extends Model
                             )
                                 ? $mealPackageSub->mappingId
                                 : null;
+                            $mealPackageOrder->items_quantity =
+                                $mealOrder->quantity;
                             $mealPackageOrder->save();
 
                             $mealOrder->meal_package_order_id =
@@ -1299,6 +1303,9 @@ class Subscription extends Model
                             )
                                 ->pluck('id')
                                 ->first();
+                            $mealPackageOrder->items_quantity +=
+                                $mealOrder->quantity;
+                            $mealPackageOrder->update();
                         }
                         $mealOrder->save();
                     }

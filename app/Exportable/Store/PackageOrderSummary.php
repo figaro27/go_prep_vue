@@ -204,9 +204,8 @@ class PackageOrderSummary
                                                     $mealPackageOrder->customTitle ??
                                                     $mealPackageOrder
                                                         ->meal_package->title,
-                                                'items' => $this->getItemCount(
-                                                    $mealPackageOrder
-                                                )
+                                                'items' =>
+                                                    $mealPackageOrder->items_quantity
                                             ];
                                         })
                                         ->toArray()
@@ -249,7 +248,7 @@ class PackageOrderSummary
                     'name' =>
                         $mealPackageOrder->customTitle ??
                         $mealPackageOrder->meal_package->title,
-                    'items' => $this->getItemCount($mealPackageOrder),
+                    'items' => $mealPackageOrder->items_quantity,
                     'size' => ($mealPackageOrder->customSize
                             ? $mealPackageOrder->customSize
                             : $mealPackageOrder->meal_package_size)
@@ -296,7 +295,7 @@ class PackageOrderSummary
                             : $mealPackageOrder->meal_package_size)
                         ? $mealPackageOrder->meal_package_size->title
                         : null,
-                    'items' => $mealPackageOrder->meal_orders->count(),
+                    'items' => $mealPackageOrder->items_quantity,
                     'special_instructions' =>
                         $mealPackageOrder->special_instructions,
                     'quantity' => $mealPackageOrder->quantity,
@@ -353,16 +352,5 @@ class PackageOrderSummary
         }
 
         return $mealPackageOrders;
-    }
-
-    public function getItemCount($mealPackageOrder)
-    {
-        $count = 0;
-
-        foreach ($mealPackageOrder->meal_orders as $mealOrder) {
-            $count += $mealOrder->quantity;
-        }
-
-        return $count;
     }
 }
