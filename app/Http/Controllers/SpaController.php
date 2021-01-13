@@ -19,6 +19,7 @@ use App\StoreSetting;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Resources\{DeliveryDayResource, DeliveryDayCollection};
+use Exception;
 
 class SpaController extends Controller
 {
@@ -243,6 +244,7 @@ class SpaController extends Controller
 
     public function optimized(Request $request)
     {
+        /** @var \App\User */
         $user = auth('api')->user();
 
         $store = null;
@@ -334,11 +336,15 @@ class SpaController extends Controller
             }
 
             if ($store && $user) {
-                $distance = $user->distanceFrom($store);
+                try {
+                    $distance = $user->distanceFrom($store);
+                } catch (Exception $e) {
+                    $distance = null;
+                }
 
                 if ($store->settings->delivery_distance_type === 'radius') {
-                    ///$distance = $user->distanceFrom($store);
                     $willDeliver =
+                        !is_null($distance) &&
                         $distance < $store->settings->delivery_distance_radius;
                 } else {
                     $willDeliver = $store->deliversToZip(
