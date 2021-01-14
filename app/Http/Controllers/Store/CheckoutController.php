@@ -529,7 +529,8 @@ class CheckoutController extends StoreController
                             isset($item['added_price']) &&
                             $item['added_price']
                         ) {
-                            $mealOrder->added_price = $item['added_price'];
+                            $mealOrder->added_price =
+                                $item['added_price'] * $item['quantity'];
                         }
 
                         if (!$item['meal_package']) {
@@ -565,8 +566,8 @@ class CheckoutController extends StoreController
                             $mealOrder->added_price = isset(
                                 $item['added_price']
                             )
-                                ? $item['added_price']
-                                : null;
+                                ? $item['added_price'] * $item['quantity']
+                                : 0;
                         }
 
                         if (isset($item['meal_package_title'])) {
@@ -1069,7 +1070,8 @@ class CheckoutController extends StoreController
                     }
 
                     if (isset($item['added_price']) && $item['added_price']) {
-                        $mealOrder->added_price = $item['added_price'];
+                        $mealOrder->added_price =
+                            $item['added_price'] * $item['quantity'];
                     }
 
                     if (isset($item['delivery_day']) && $item['delivery_day']) {
@@ -1268,7 +1270,7 @@ class CheckoutController extends StoreController
                             ? 0
                             : $item['price'] * $item['quantity'];
                     $mealSub->added_price = isset($item['added_price'])
-                        ? $item['added_price']
+                        ? $item['added_price'] * $item['quantity']
                         : 0;
                     if (isset($item['free'])) {
                         $mealSub->free = $item['free'];

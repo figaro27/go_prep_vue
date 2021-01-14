@@ -328,7 +328,7 @@ class SubscriptionController extends UserController
                 $mealSub->quantity = $item['quantity'];
                 $mealSub->price = $item['price'] * $item['quantity'];
                 $mealSub->added_price = isset($item['added_price'])
-                    ? $item['added_price']
+                    ? $item['added_price'] * $item['quantity']
                     : 0;
                 if (isset($item['free'])) {
                     $mealSub->free = $item['free'];
@@ -559,8 +559,8 @@ class SubscriptionController extends UserController
                     if ($item['meal_package']) {
                         $mealOrder->meal_package = $item['meal_package'];
                         $mealOrder->added_price = isset($item['added_price'])
-                            ? $item['added_price']
-                            : null;
+                            ? $item['added_price'] * $item['quantity']
+                            : 0;
                     }
 
                     if (isset($item['meal_package_title'])) {
@@ -601,8 +601,8 @@ class SubscriptionController extends UserController
                     if ($item['meal_package']) {
                         $mealOrder->meal_package = $item['meal_package'];
                         $mealOrder->added_price = isset($item['added_price'])
-                            ? $item['added_price']
-                            : null;
+                            ? $item['added_price'] * $item['quantity']
+                            : 0;
                     }
 
                     if (isset($item['meal_package_title'])) {

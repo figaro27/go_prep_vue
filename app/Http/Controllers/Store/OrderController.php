@@ -1005,8 +1005,8 @@ class OrderController extends StoreController
                 if ($item['meal_package']) {
                     $mealOrder->meal_package = $item['meal_package'];
                     $mealOrder->added_price = isset($item['added_price'])
-                        ? $item['added_price']
-                        : null;
+                        ? $item['added_price'] * $item['quantity']
+                        : 0;
                 }
 
                 if (isset($item['meal_package_title'])) {
