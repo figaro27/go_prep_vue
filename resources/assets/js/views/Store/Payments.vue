@@ -127,7 +127,7 @@
             <span slot="beforeLimit">
               <div class="d-flex">
                 <b-form-checkbox
-                  v-if="store.id === 196 || store.id === 3"
+                  v-if="store.id === 3"
                   v-model="upcharges"
                   :value="true"
                   :unchecked-value="false"
