@@ -747,6 +747,8 @@ export default {
 
       report = this.upcharges ? "upcharges" : report;
 
+      report = this.$route.query.upcharges === "true" ? "upcharges" : report;
+
       axios
         .get(`/api/me/print/${report}/${format}`, {
           params
