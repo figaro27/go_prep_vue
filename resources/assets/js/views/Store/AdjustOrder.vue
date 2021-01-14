@@ -168,7 +168,7 @@ export default {
               meal.price = item.price;
               meal.quantity = item.quantity / pkgItem.quantity;
               meal.special_instructions = item.special_instructions;
-              meal.added_price = item.added_price / item.quantity;
+              meal.added_price = item.added_price;
               meal.item_id = item.item_id;
 
               if (pkgItem.meal_package_size && index !== null) {

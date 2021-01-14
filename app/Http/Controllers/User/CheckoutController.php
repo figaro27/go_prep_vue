@@ -643,8 +643,7 @@ class CheckoutController extends UserController
                             isset($item['added_price']) &&
                             $item['added_price']
                         ) {
-                            $mealOrder->added_price =
-                                $item['added_price'] * $item['quantity'];
+                            $mealOrder->added_price = $item['added_price'];
                         }
                         if (
                             isset($item['delivery_day']) &&
@@ -669,8 +668,8 @@ class CheckoutController extends UserController
                             $mealOrder->added_price = isset(
                                 $item['added_price']
                             )
-                                ? $item['added_price'] * $item['quantity']
-                                : 0;
+                                ? $item['added_price']
+                                : null;
                         }
 
                         if (isset($item['meal_package_title'])) {
@@ -1089,8 +1088,7 @@ class CheckoutController extends UserController
                             : $item['price'] * $item['quantity'];
 
                     if (isset($item['added_price']) && $item['added_price']) {
-                        $mealOrder->added_price =
-                            $item['added_price'] * $item['quantity'];
+                        $mealOrder->added_price = null;
                     }
 
                     if (isset($item['delivery_day']) && $item['delivery_day']) {
@@ -1280,7 +1278,7 @@ class CheckoutController extends UserController
                             ? 0
                             : $item['price'] * $item['quantity'];
                     $mealSub->added_price = isset($item['added_price'])
-                        ? $item['added_price'] * $item['quantity']
+                        ? $item['added_price']
                         : 0;
                     if (isset($item['delivery_day']) && $item['delivery_day']) {
                         $mealSub->delivery_date =
