@@ -176,7 +176,8 @@ class Upcharges
 
                 $title = $mealOrder->base_title;
                 $size = $mealOrder->base_size;
-                $upcharge = $mealOrder->added_price;
+                $upcharge = $mealOrder->added_price / $mealOrder->quantity;
+
                 $title = $title . '<sep>' . $size . '<sep>' . $upcharge;
 
                 if (!isset($mealQuantities[$title])) {
@@ -186,6 +187,7 @@ class Upcharges
                 $mealQuantities[$title] += $mealOrder->quantity;
             }
         });
+
         sort($allDates);
         $this->allDates = array_map(function ($date) {
             return Carbon::parse($date)->format('D, m/d/y');
@@ -208,52 +210,51 @@ class Upcharges
             $production->push($row);
         }
 
-        // Removing the variations HTML from the title for CSV & XLS reports & putting it in a separate column in plain text.
-        // Possibly add on special instructions if needed.
         if ($type !== 'pdf') {
             $formattedProduction = [];
             foreach ($production as $item) {
                 $quantity = $item[0];
                 $size = $item[1];
-                $fullTitle = $item[2];
-                $shortTitle = explode('<ul', $fullTitle)[0];
-
-                preg_match_all('/14px">([^<]+)<\/li>/i', $fullTitle, $v);
-                $variations = '';
-                foreach ($v[1] as $v) {
-                    $variations .= $v . ', ';
-                }
-                $variations = substr($variations, 0, -2);
+                $title = $item[2];
+                $upcharge = $item[3];
 
                 $formattedItem = [];
                 array_push($formattedItem, $quantity);
                 array_push($formattedItem, $size);
-                array_push($formattedItem, $shortTitle);
-                array_push($formattedItem, $variations);
+                array_push($formattedItem, $title);
+                array_push(
+                    $formattedItem,
+                    '$' . number_format((float) $upcharge, 2)
+                );
+                array_push(
+                    $formattedItem,
+                    '$' .
+                        number_format((float) $upcharge * (float) $quantity, 2)
+                );
 
                 array_push($formattedProduction, $formattedItem);
             }
 
             array_unshift($formattedProduction, [
-                'Orders',
+                'QTY',
                 'Size',
                 'Title',
-                'Variations'
+                'Unit Upcharge',
+                'Total Upcharge'
             ]);
 
             return $formattedProduction;
         }
 
         $productionItems = $production->toArray();
-
         $upcharges = [];
 
         foreach ($productionItems as $productionItem) {
             $productionItem[] = $productionItem[0] * $productionItem[3];
             $productionItem[3] =
-                '$' . number_format((int) $productionItem[3], 2);
+                '$' . number_format((float) $productionItem[3], 2);
             $productionItem[4] =
-                '$' . number_format((int) $productionItem[4], 2);
+                '$' . number_format((float) $productionItem[4], 2);
             $upcharges[] = $productionItem;
         }
 
