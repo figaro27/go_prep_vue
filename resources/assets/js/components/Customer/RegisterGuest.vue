@@ -134,7 +134,9 @@
       </b-form-group>
       <p class="font-italic">
         By checking out you agree to our
-        <span class="strong">terms of service.</span>
+        <span class="strong" @click.stop.prevent="$refs.tos.show()"
+          >terms of service.</span
+        >
       </p>
       <b-button type="submit" :disabled="$v.form[1].$invalid" variant="primary"
         >Continue</b-button
