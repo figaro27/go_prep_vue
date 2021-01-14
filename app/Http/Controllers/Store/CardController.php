@@ -69,7 +69,7 @@ class CardController extends StoreController
 
         if ($gateway === Constants::GATEWAY_STRIPE) {
             try {
-                if (!$user->hasCustomer()) {
+                if ($user && !$user->hasCustomer()) {
                     $customer = $user->createCustomer($token);
                 } else {
                     $customer = \Stripe\Customer::retrieve($user->stripe_id);

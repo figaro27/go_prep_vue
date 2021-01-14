@@ -745,7 +745,7 @@ class Subscription extends Model
         }
     }
 
-    public function syncDiscountPrices()
+    public function syncDiscountPrices($mealsReplaced = false)
     {
         $promotions = $this->store->promotions;
         $pointsRate = 0;
@@ -822,43 +822,47 @@ class Subscription extends Model
             $this->update();
         }
 
-        // Maybe add option in the future on user checkout to continue applying accumulated points to subscription renewal or not
-        if ($pointsRate > 0) {
-            $customer = Customer::where('id', $this->customer_id)->first();
-            $customer->points -= $this->pointsReduction * 100;
-            $customer->points += $this->preFeePreDiscount * $pointsRate;
-            $customer->update();
-        }
+        // Only update the customer points and purchased gift card balance if this is a subscription renewal, not a meal replacement.
 
-        // Set points reduction on subscription to 0 after renewal since points were all used on first order
-        $this->pointsReduction = 0;
-        $this->update();
-
-        // Check referral type and set referral reduction to 0 if the frequency type is not all orders.
-        if (
-            $this->store->referralSettings &&
-            $this->store->referralSettings->frequency !== 'allOrders'
-        ) {
-            $this->referralReduction = 0;
-            $this->update();
-        }
-
-        // Update the purchased gift card amount
-
-        if ($this->purchased_gift_card_id && $this->status !== 'paused') {
-            $purchasedGiftCard = PurchasedGiftCard::where(
-                'id',
-                $this->purchased_gift_card_id
-            )->first();
-            $purchasedGiftCardBalance = $purchasedGiftCard->balance;
-            if ($purchasedGiftCardBalance >= $this->preReductionTotal) {
-                $purchasedGiftCardBalance = $this->preReductionTotal;
+        if (!$mealsReplaced) {
+            // Maybe add option in the future on user checkout to continue applying accumulated points to subscription renewal or not
+            if ($pointsRate > 0) {
+                $customer = Customer::where('id', $this->customer_id)->first();
+                $customer->points -= $this->pointsReduction * 100;
+                $customer->points += $this->preFeePreDiscount * $pointsRate;
+                $customer->update();
             }
 
-            $purchasedGiftCard->balance -= $purchasedGiftCardBalance;
-            $purchasedGiftCard->update();
-            $this->purchasedGiftCardReduction = $purchasedGiftCardBalance;
+            // Set points reduction on subscription to 0 after renewal since points were all used on first order
+            $this->pointsReduction = 0;
             $this->update();
+
+            // Update the purchased gift card amount
+
+            if ($this->purchased_gift_card_id && $this->status !== 'paused') {
+                $purchasedGiftCard = PurchasedGiftCard::where(
+                    'id',
+                    $this->purchased_gift_card_id
+                )->first();
+                $purchasedGiftCardBalance = $purchasedGiftCard->balance;
+                if ($purchasedGiftCardBalance >= $this->preReductionTotal) {
+                    $purchasedGiftCardBalance = $this->preReductionTotal;
+                }
+
+                $purchasedGiftCard->balance -= $purchasedGiftCardBalance;
+                $purchasedGiftCard->update();
+                $this->purchasedGiftCardReduction = $purchasedGiftCardBalance;
+                $this->update();
+            }
+        } else {
+            // Check referral type and set referral reduction to 0 if the frequency type is not all orders.
+            if (
+                $this->store->referralSettings &&
+                $this->store->referralSettings->frequency !== 'allOrders'
+            ) {
+                $this->referralReduction = 0;
+                $this->update();
+            }
         }
     }
 
@@ -1069,7 +1073,7 @@ class Subscription extends Model
 
         $this->updateCurrentMealOrders();
 
-        $this->syncDiscountPrices();
+        $this->syncDiscountPrices($mealsReplaced);
 
         $total -= $this->referralReduction;
         $total -= $this->promotionReduction;

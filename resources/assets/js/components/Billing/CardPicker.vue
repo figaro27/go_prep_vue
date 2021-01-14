@@ -240,8 +240,9 @@ export default {
     },
     createCard(token, card) {
       let customer = this.$parent.getCustomer()
-        ? this.$parent.getCustomer
+        ? this.$parent.getCustomer()
         : this.user;
+
       axios
         .post("/api/me/cards", {
           token,

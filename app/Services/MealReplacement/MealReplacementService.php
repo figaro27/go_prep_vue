@@ -415,7 +415,7 @@ class MealReplacementService
                 $result,
                 $subscriptionMeal
             );
-            $subscriptionMeal->subscription->syncPrices();
+            $subscriptionMeal->subscription->syncPrices(true);
         }
     }
 
