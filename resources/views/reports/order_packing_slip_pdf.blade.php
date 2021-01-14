@@ -248,7 +248,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
           <td>{!! $item->base_title !!}</td>
           <td style="text-align:right;padding-right:12px">
             @if ($item->added_price > 0)
-              <span style="padding-right:8px">(@money($item->added_price * $item->quantity, $currency, 2))</span> In Package
+              <span style="padding-right:8px">(@money($item->added_price, $currency, 2))</span> In Package
             @else
               In Package
             @endif
