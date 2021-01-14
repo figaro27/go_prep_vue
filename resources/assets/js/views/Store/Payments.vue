@@ -127,7 +127,7 @@
             <span slot="beforeLimit">
               <div class="d-flex">
                 <b-form-checkbox
-                  v-if="store.id === 3"
+                  v-if="store.id === 3 || store.id === 196"
                   v-model="upcharges"
                   :value="true"
                   :unchecked-value="false"
@@ -746,8 +746,6 @@ export default {
       params.removeCashOrders = this.filters.removeCashOrders;
 
       report = this.upcharges ? "upcharges" : report;
-
-      report = this.$route.query.upcharges === "true" ? "upcharges" : report;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
