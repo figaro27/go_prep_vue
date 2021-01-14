@@ -1717,8 +1717,10 @@ export default {
                 item.added_price > 0
                   ? "In Package " +
                     "(" +
-                    this.store.settings.currency_symbol +
-                    item.added_price +
+                    format.money(
+                      item.added_price * item.quantity,
+                      this.store.settings.currency
+                    ) +
                     ")"
                   : "In Package"
             });

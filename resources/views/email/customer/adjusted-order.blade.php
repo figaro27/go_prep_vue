@@ -253,7 +253,7 @@ $currency = $order->store->settings->currency
                   <td width="87" align="center" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px; ">{{ $item->quantity }}</td>
                   <td width="87" align="left" valign="top" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; line-height:26px;">
                     @if ($item->added_price > 0)
-                      In Package <span style="font-size:11px">(@money($item->added_price, $currency, 2))</span>
+                      In Package <span style="font-size:11px">(@money($item->added_price * $item->quantity, $currency, 2))</span>
                     @else
                       In Package
                     @endif
