@@ -134,7 +134,10 @@
       </b-form-group>
       <p class="font-italic">
         By checking out you agree to our
-        <span class="strong" @click.stop.prevent="$refs.tos.show()"
+        <span
+          class="strong"
+          @click.stop.prevent="$refs.tos.show()"
+          @touch.stop.prevent="$refs.tos.show()"
           >terms of service.</span
         >
       </p>
