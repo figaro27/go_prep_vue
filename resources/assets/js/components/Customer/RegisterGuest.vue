@@ -1,7 +1,7 @@
 <template>
   <div class="mt-4">
     <b-modal size="xl" no-fade v-if="showTOS" v-model="showTOS">
-      <termsOfService></termsOfService>
+      TEST
     </b-modal>
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
       <div class="d-flex" style="flex-wrap:wrap">
