@@ -1,7 +1,7 @@
 <template>
   <div class="mt-4">
-    <b-modal size="xl" no-fade v-if="showTOS" v-model="showTOS">
-      TEST
+    <b-modal id="tos" size="xl" ref="tos" no-fade>
+      <termsOfService></termsOfService>
     </b-modal>
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
       <div class="d-flex" style="flex-wrap:wrap">
@@ -136,8 +136,8 @@
         By checking out you agree to our
         <span
           class="strong"
-          @click.stop.prevent="showTOS = true"
-          @touch.stop.prevent="showTOS = true"
+          @click.stop.prevent="$refs.tos.show(), ($parent.registerGuest = true)"
+          @touch.stop.prevent="$refs.tos.show(), ($parent.registerGuest = true)"
           >terms of service.</span
         >
       </p>
@@ -167,7 +167,6 @@ export default {
   },
   data() {
     return {
-      showTOS: false,
       showStatesBox: true,
       redirect: null,
       step: 0,
