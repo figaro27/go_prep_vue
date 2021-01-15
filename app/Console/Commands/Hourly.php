@@ -358,11 +358,14 @@ class Hourly extends Command
         $subs = Subscription::where('status', '!=', 'cancelled')->get();
 
         foreach ($subs as $sub) {
-            $nextDeliveryDate = new Carbon($sub->next_delivery_date);
-            if ($nextDeliveryDate->isPast()) {
-                $nextDeliveryDate->addWeeks($sub->intervalCount);
-                $sub->next_delivery_date = $nextDeliveryDate;
-                $sub->update();
+            try {
+                $nextDeliveryDate = new Carbon($sub->next_delivery_date);
+                if ($nextDeliveryDate->isPast()) {
+                    $nextDeliveryDate->addWeeks($sub->intervalCount);
+                    $sub->next_delivery_date = $nextDeliveryDate;
+                    $sub->update();
+                }
+            } catch (\Exception $e) {
             }
         }
     }
