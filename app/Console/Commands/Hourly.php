@@ -50,6 +50,9 @@ class Hourly extends Command
         // Renew subscriptions
         $this->renewSubscriptions();
 
+        // Updates the next_delivery_date column
+        $this->updateSubscriptionNextDeliveryDates();
+
         // Store reports
         $currentDay = date('D');
         $currentHour = date('H');
@@ -348,5 +351,19 @@ class Hourly extends Command
         // }
 
         $this->info($count . ' Subscriptions renewed');
+    }
+
+    public function updateSubscriptionNextDeliveryDates()
+    {
+        $subs = Subscription::where('status', '!=', 'cancelled')->get();
+
+        foreach ($subs as $sub) {
+            $nextDeliveryDate = new Carbon($sub->next_delivery_date);
+            if ($nextDeliveryDate->isPast()) {
+                $nextDeliveryDate->addWeeks($sub->intervalCount);
+                $sub->next_delivery_date = $nextDeliveryDate;
+                $sub->update();
+            }
+        }
     }
 }
