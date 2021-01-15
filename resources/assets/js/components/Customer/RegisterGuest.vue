@@ -136,8 +136,8 @@
         By checking out you agree to our
         <span
           class="strong"
-          @click.stop.prevent="$refs.tos.show(), ($parent.registerGuest = true)"
-          @touch.stop.prevent="$refs.tos.show(), ($parent.registerGuest = true)"
+          @click.stop.prevent="$refs.tos.show()"
+          @touch.stop.prevent="$refs.tos.show()"
           >terms of service.</span
         >
       </p>
@@ -282,16 +282,16 @@ export default {
     this.form[0].password = this.uniqid();
     this.form[0].password_confirmation = this.form[0].password;
 
-    // if (this.store.details) {
-    //   this.form[1].state = this.store.details.state;
-    //   this.form[1].country = this.store.details.country;
-    //   let stateAbr = this.store.details.state;
-    //   let state = this.stateNames.filter(stateName => {
-    //     return stateName.value.toLowerCase() === stateAbr.toLowerCase();
-    //   });
+    if (this.store.details) {
+      this.form[1].state = this.store.details.state;
+      this.form[1].country = this.store.details.country;
+      let stateAbr = this.store.details.state;
+      let state = this.stateNames.filter(stateName => {
+        return stateName.value.toLowerCase() === stateAbr.toLowerCase();
+      });
 
-    //   this.form[1].state = state[0] ? state[0].value : null;
-    // }
+      this.form[1].state = state[0] ? state[0].value : null;
+    }
   },
   methods: {
     ...mapActions(["init", "setToken"]),
