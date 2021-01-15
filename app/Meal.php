@@ -68,12 +68,12 @@ class Meal extends Model implements HasMedia
         // 'active_orders',
         // 'active_orders_price',
         // 'lifetime_orders',
-        'subscription_count',
+        // 'subscription_count',
         'allergy_ids',
         'category_ids',
         'tag_ids',
         'delivery_day_ids',
-        'substitute',
+        // 'substitute',
         // 'substitute_ids',
         // 'ingredient_ids',
         // 'order_ids',
@@ -375,25 +375,25 @@ class Meal extends Model implements HasMedia
         return $ddays;
     }
 
-    public function getSubscriptionCountAttribute()
-    {
-        return $this->subscriptions
-            ->where('status', '!=', 'cancelled')
-            ->count();
-    }
+    // public function getSubscriptionCountAttribute()
+    // {
+    //     return $this->subscriptions
+    //         ->where('status', '!=', 'cancelled')
+    //         ->count();
+    // }
 
     /**
      * Whether meal must be substituted before deleting
      *
      * @return bool
      */
-    public function getSubstituteAttribute()
-    {
-        // return $this->orders()->where([
-        //     ['delivery_date', '>', Carbon::now('utc')],
-        // ])->count() > 0;
-        return $this->subscription_count > 0;
-    }
+    // public function getSubstituteAttribute()
+    // {
+    //     // return $this->orders()->where([
+    //     //     ['delivery_date', '>', Carbon::now('utc')],
+    //     // ])->count() > 0;
+    //     return $this->subscription_count > 0;
+    // }
 
     // public function getSubstituteIdsAttribute()
     // {

@@ -1176,7 +1176,7 @@ export default {
         "tags",
         "contains",
         "price",
-        "subscription_count",
+        // "subscription_count",
         "views",
         "created_at",
         "actions"
@@ -1190,7 +1190,7 @@ export default {
           tags: "Tags",
           contains: "Contains",
           price: "Price",
-          subscription_count: "Subscriptions",
+          // subscription_count: "Subscriptions",
           created_at: "Added",
           actions: "Actions"
         },
