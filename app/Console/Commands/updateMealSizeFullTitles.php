@@ -42,8 +42,9 @@ class updateMealSizeFullTitles extends Command
 
         foreach ($mealSizes as $mealSize) {
             try {
-                $mealSize->full_title =
-                    $mealSize->meal->title . ' - ' . $mealSize->title;
+                $mealSize->full_title = $mealSize->meal
+                    ? $mealSize->meal->title . ' - ' . $mealSize->title
+                    : 'Deleted - ' . $mealSize->title;
                 $mealSize->update();
             } catch (\Exception $e) {
             }
