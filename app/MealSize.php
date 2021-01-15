@@ -17,7 +17,6 @@ class MealSize extends Model
     use SoftDeletes;
 
     public $fillable = [];
-    public $appends = ['full_title'];
     public $hidden = ['meal'];
     protected $with = ['ingredients'];
 
@@ -31,15 +30,6 @@ class MealSize extends Model
         return $this->belongsToMany('App\Ingredient')
             ->withPivot('quantity', 'quantity_unit', 'quantity_unit_display')
             ->using('App\IngredientMealSize');
-    }
-
-    public function getFullTitleAttribute()
-    {
-        if (isset($this->meal) && $this->meal != null) {
-            return $this->meal->title . ' - ' . $this->title;
-        } else {
-            return "";
-        }
     }
 
     public function syncIngredients($rawIngredients)

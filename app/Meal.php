@@ -867,6 +867,8 @@ class Meal extends Model implements HasMedia
                     $mealSize = new MealSize();
                     $mealSize->meal_id = $meal->id;
                     $mealSize->title = $size['title'];
+                    $mealSize->full_title =
+                        $meal->title . ' - ' . $size['title'];
                     $mealSize->price = $size['price'];
                     $mealSize->multiplier = $size['multiplier'];
                     $mealSize->save();
@@ -1255,6 +1257,7 @@ class Meal extends Model implements HasMedia
                 }
 
                 $mealSize->title = $size['title'];
+                $mealSize->full_title = $meal->title . ' - ' . $size['title'];
                 $mealSize->price = $size['price'];
                 $mealSize->multiplier = $size['multiplier'];
                 $mealSize->save();
