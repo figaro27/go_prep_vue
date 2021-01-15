@@ -11,7 +11,7 @@ class MealPackageSize extends Model
 
     public $fillable = [];
     public $casts = [];
-    public $appends = ['meals'];
+    // public $appends = ['meals'];
     public $hidden = ['store'];
 
     public function store()
@@ -31,12 +31,12 @@ class MealPackageSize extends Model
             ->withPivot(['quantity', 'meal_size_id', 'delivery_day_id']);
     }
 
-    public function getMealsAttribute()
-    {
-        return $this->meals()
-            ->get()
-            ->map(function ($meal) {
-                return collect($meal)->only('id', 'meal_size_id', 'quantity');
-            });
-    }
+    // public function getMealsAttribute()
+    // {
+    //     return $this->meals()
+    //         ->get()
+    //         ->map(function ($meal) {
+    //             return collect($meal)->only('id', 'meal_size_id', 'quantity');
+    //         });
+    // }
 }
