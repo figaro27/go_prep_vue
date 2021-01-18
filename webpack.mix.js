@@ -18,15 +18,14 @@ mix.options({
     require("autoprefixer")({
       browsers: ["last 40 versions"]
     })
-  ]
+  ],
+  uglify: {}
 });
 
 mix.extract();
 
-mix
-  .js("resources/assets/js/app.js", "public/js")
-  .js("resources/assets/js/print.js", "public/js")
-  .webpackConfig({
+if (process.env.NODE_ENV === "production") {
+  mix.webpackConfig({
     module: {
       rules: [
         {
@@ -35,13 +34,19 @@ mix
           use: {
             loader: "babel-loader",
             options: {
-              presets: ["@babel/preset-env"]
+              presets: ["@babel/preset-env"],
+              compact: true
             }
           }
         }
       ]
     }
-  })
+  });
+}
+
+mix
+  .js("resources/assets/js/app.js", "public/js")
+  .js("resources/assets/js/print.js", "public/js")
   .version();
 
 mix
