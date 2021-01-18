@@ -103,7 +103,7 @@ $faviconUrl = $store->menuSettings->favicon;
         @endif
     @endif
     <script src="https://js.stripe.com/v3/" async></script>
-    <script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=default%2Ces2017%2CIntersectionObserver%2CIntersectionObserverEntry"></script>
+    <script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.min.js?features=default%2Ces2017%2CIntersectionObserver%2CIntersectionObserverEntry%2CArray.prototype.findIndex"></script>
 
     <script src="{{ mix('/js/manifest.js') }}"></script>
     <script src="{{ mix('/js/vendor.js') }}"></script>
