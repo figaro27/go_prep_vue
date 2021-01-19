@@ -1468,7 +1468,7 @@ export default {
     customer: function(val) {
       if (!this.existingCustomerAdded) {
         if (val) {
-          this.customerModel = this.getCustomerObject(val);
+          this.setBagCustomerModel(this.getCustomerObject(val));
           if (
             this.context == "store" &&
             this.store.settings.deliveryFeeType == "mileage"
@@ -1480,7 +1480,7 @@ export default {
               });
           }
         } else {
-          this.customerModel = null;
+          this.setBagCustomerModel(null);
         }
         if (this.$route.params.manualOrder) {
           this.getCards();
@@ -1515,9 +1515,9 @@ export default {
     }
 
     if (this.customer) {
-      this.customerModel = this.getCustomerObject(this.customer);
+      this.setBagCustomerModel(this.getCustomerObject(this.customer));
     } else {
-      this.customerModel = null;
+      this.setBagCustomerModel(null);
     }
 
     if (this.forceValue) {
@@ -1525,6 +1525,12 @@ export default {
         this.getCards();
       }
     }
+
+    // if (this.$route.params.subscription){
+    //   let customerModel = { text: this.$route.params.subscription.user.name, value: this.$route.params.subscription.customer_id };
+    //   this.$parent.customer = this.$route.params.subscription.customer_id;
+    //   this.setBagCustomerModel(customerModel);
+    // }
 
     let stateAbr = this.store.details.state;
     let state = this.stateNames.filter(stateName => {
@@ -1576,22 +1582,16 @@ export default {
     }
 
     if (this.$route.params.adjustOrder) {
-      this.bagGratuityPercent = "custom";
+      this.setBagGratuityPercent("custom");
       this.customGratuity = this.order.gratuity > 0 ? this.order.gratuity : 0;
     }
 
     if (this.$parent.$route.params.subscription) {
-      this.bagGratuityPercent = "custom";
+      this.setBagGratuityPercent("custom");
       this.customGratuity =
         this.$parent.$route.params.subscription.gratuity > 0
           ? this.$parent.$route.params.subscription.gratuity
           : 0;
-    }
-
-    if (this.$route.params.subscription) {
-      let cardId = this.$route.params.subscription.card_id;
-      this.card = cardId;
-      this.creditCardId = cardId;
     }
   },
   mixins: [MenuBag],
@@ -2166,12 +2166,19 @@ export default {
       else return this.creditCards;
     },
     card() {
-      if (this.creditCardId != null) {
+      if (this.creditCardId !== null) {
         return this.creditCardId;
       }
 
-      if (this.creditCards.length != 1) return null;
-      else return this.creditCards[0].id;
+      if (this.$route.params.subscription) {
+        return this.$route.params.subscription.card_id;
+      }
+
+      if (this.creditCards.length != 1) {
+        return null;
+      } else {
+        return this.creditCards[0].id;
+      }
     },
     transferTimeClass() {
       let day = this.holidayTransferTimes.find(day => {
@@ -3504,11 +3511,10 @@ use next_delivery_dates
       this.$nextTick(() => {
         axios
           .post("/api/me/getCards", {
-            id: this.customerModel ? this.customerModel.value : this.customer
+            id: this.getCustomer()
           })
           .then(response => {
             this.$parent.creditCardList = response.data;
-
             if (response.data.length) {
               this.creditCardId = response.data[0].id;
               this.creditCard = response.data[0];
@@ -3520,8 +3526,15 @@ use next_delivery_dates
       });
     },
     getCustomer() {
-      if (this.customerModel) return this.customerModel.value;
-      return this.customer;
+      if (this.customerModel) {
+        return this.customerModel.value;
+      }
+      if (this.customer) {
+        return this.customer;
+      }
+      if (this.$route.params.subscription) {
+        return this.$route.params.subscription.customer_id;
+      }
     },
     async adjust() {
       if (!this.isMultipleDelivery) {
@@ -3823,7 +3836,7 @@ use next_delivery_dates
       if (user.existing) {
         this.existingCustomerAdded = true;
         this.customer = user.id;
-        this.customerModel = { text: user.name, value: user.id };
+        this.setBagCustomerModel({ text: user.name, value: user.id });
       } else {
         this.$parent.setCustomer(user.id);
       }

@@ -610,6 +610,11 @@ export default {
     if (!this.$route.params.storeView && this.loggedIn) {
       this.getPromotionPoints(this.user.id);
     }
+
+    if (this.$route.params.subscription) {
+      this.customer = this.$route.params.subscription.customer_id;
+      this.getCards();
+    }
   },
   updated() {
     this.creditCardId = this.card;
@@ -841,8 +846,6 @@ export default {
       return couponCheck;
     },
     getCards() {
-      this.creditCardId = null;
-      this.creditCards = null;
       this.$nextTick(() => {
         axios
           .post("/api/me/getCards", {
@@ -854,7 +857,9 @@ export default {
             if (response.data.length) {
               this.creditCardId = response.data[0].id;
               this.creditCard = response.data[0];
-              this.$cardPicker.setCard(response.data[0].id);
+              if (this.$refs.cardPicker) {
+                this.$refs.cardPicker.setCard(response.data[0].id);
+              }
             }
           });
       });

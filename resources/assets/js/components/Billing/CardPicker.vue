@@ -87,10 +87,10 @@
         </b-list-group-item>
       </b-list-group>
     </div>
-    <div v-if="$route.params.manualOrder">
+    <div v-if="$route.params.manualOrder || $route.params.subscription">
       <b-list-group class="card-list">
         <b-list-group-item
-          v-if="$route.params.manualOrder"
+          v-if="$route.params.manualOrder || $route.params.subscription"
           v-for="card in creditCards"
           :key="card.id"
           :active="value === card.id"
@@ -252,7 +252,11 @@ export default {
           saveCard: this.saveCard
         })
         .then(async resp => {
-          if (this.manualOrder || this.$route.params.manualOrder) {
+          if (
+            this.manualOrder ||
+            this.$route.params.manualOrder ||
+            this.$route.params.subscription
+          ) {
             this.$parent.getCards();
           } else {
             await this.refreshCards();
