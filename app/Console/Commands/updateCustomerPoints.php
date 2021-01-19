@@ -51,6 +51,9 @@ class updateCustomerPoints extends Command
                             $customer->points +=
                                 $order->preFeePreDiscount *
                                 $promotion->promotionAmount;
+                            $customer->points -= $order->pointsReduction
+                                ? $order->pointsReduction * 100
+                                : 0;
                         }
                     }
                     $customer->update();
