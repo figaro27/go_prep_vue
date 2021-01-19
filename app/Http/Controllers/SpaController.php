@@ -1224,7 +1224,9 @@ class SpaController extends Controller
             ])
             ->first();
 
-        $package->sizesTitles = $sizesTitles;
+        if ($package) {
+            $package->sizesTitles = $sizesTitles;
+        }
 
         return [
             'package' => $package
