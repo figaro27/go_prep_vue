@@ -48,15 +48,19 @@
               </button>
 
               <!--
-		              <a
-		                class="btn btn-link"
-		                href="#"
-		              >Forgot Your Password?</a>
-		              -->
+                  <a
+                    class="btn btn-link"
+                    href="#"
+                  >Forgot Your Password?</a>
+                  -->
               <p class="d-inline pl-2" @click="switchScreens('register')">
                 <a href="#">No Account?</a>
               </p>
-              <p class="d-inline pl-1" @click="switchScreens('registerGuest')">
+              <p
+                class="d-inline pl-1"
+                @click="switchScreens('registerGuest')"
+                v-if="store.modules.guestCheckout"
+              >
                 <a href="#">Checkout As Guest</a>
               </p>
             </b-form-group>
@@ -102,6 +106,11 @@ export default {
       registerGuest: false,
       forgotPassword: false
     };
+  },
+  computed: {
+    ...mapGetters({
+      store: "viewedStore"
+    })
   },
   created() {},
   mounted() {},
