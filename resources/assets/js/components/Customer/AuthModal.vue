@@ -114,6 +114,11 @@ export default {
   },
   created() {},
   mounted() {},
+  computed: {
+    ...mapGetters({
+      store: "viewedStore"
+    })
+  },
   methods: {
     ...mapActions(["init"]),
     switchScreens(screen) {
