@@ -54,6 +54,9 @@ class updateCustomerPoints extends Command
                             $customer->points -= $order->pointsReduction
                                 ? $order->pointsReduction * 100
                                 : 0;
+                            if ($customer->points < 0) {
+                                $customer->points = 0;
+                            }
                         }
                     }
                     $customer->update();
