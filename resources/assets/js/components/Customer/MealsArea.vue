@@ -33,8 +33,8 @@
         }}ly Subscription
       </h5>
       <p class="center-text">
-        You have an active {{ subscriptions[0].interval }}ly subscription with
-        us. Update your items for your next renewal on
+        You have an active subscription with us. Update your items for your next
+        renewal on
         {{ moment(subscriptions[0].next_renewal).format("dddd, MMM Do") }}.
       </p>
     </b-alert>
