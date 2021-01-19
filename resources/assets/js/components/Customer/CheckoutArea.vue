@@ -3181,7 +3181,8 @@ use next_delivery_dates
       if (
         this.loggedIn &&
         this.weeklySubscriptionValue &&
-        this.bagSubscriptionInterval === "select"
+        this.bagSubscriptionInterval === "select" &&
+        !this.adjustingSubscription
       ) {
         return "Please select the order frequency of your subscription.";
       }
