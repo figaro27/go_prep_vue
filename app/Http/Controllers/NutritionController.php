@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Unit;
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use App\Unit;
 
 class NutritionController extends Controller
 {
@@ -118,21 +119,30 @@ class NutritionController extends Controller
     {
         $food = $request->get('search', '');
         $client = new Client();
-        $response = $client->post($this->search_url, [
-            'headers' => [
-                'x-app-id' => $this->app_id,
-                'x-app-key' => $this->app_key
-            ],
-            'form_params' => [
-                'query' => $food,
-                'detailed' => true,
-                'branded' => true,
-                'branded_type' => null,
-                'branded_region' => 1 // USA
-            ]
-        ]);
+        $headers = [
+            'x-app-id' => $this->app_id,
+            'x-app-key' => $this->app_key
+        ];
+        $params = [
+            'query' => $food,
+            'detailed' => true,
+            'branded' => true,
+            'branded_type' => null,
+            'branded_region' => 1 // USA
+        ];
 
-        $res = (string) $response->getBody();
-        return $res;
+        try {
+            $response = $client->post($this->search_url, [
+                'headers' => $headers,
+                'form_params' => $params
+            ]);
+
+            return (string) $response->getBody();
+        } catch (Exception $e) {
+            return [
+                'branded' => [],
+                'common' => []
+            ];
+        }
     }
 }
