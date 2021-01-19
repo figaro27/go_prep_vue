@@ -1342,7 +1342,7 @@ class Subscription extends Model
      *
      * @return boolean
      */
-    public function cancel()
+    public function cancel($failedRenewalExpired = false)
     {
         if (!$this->monthlyPrepay) {
             $this->status = 'cancelled';
@@ -1353,7 +1353,8 @@ class Subscription extends Model
         if ($this->store->notificationEnabled('cancelled_subscription')) {
             $this->store->sendNotification('cancelled_subscription', [
                 'subscription' => $this,
-                'customer' => $this->customer
+                'customer' => $this->customer,
+                'failedRenewalExpired' => $failedRenewalExpired
             ]);
         }
 

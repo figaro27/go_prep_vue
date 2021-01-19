@@ -162,7 +162,11 @@ $currency = $subscription->store->settings->currency
           </tr>
           <tr>
             <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">
-              Your customer cancelled their subscription. This applies to the next order renewal. If this subscription was cancelled before their order fulfillment, then the customer is still expecting their order for the week as they have already paid for it. Please check the Orders page which only shows orders that have been paid.
+              @if ($failedRenewalExpired)
+                This subscription has been automatically cancelled due to a failed renewal 48 hours ago. The issue is most likely related to an error with the credit card. Please recreate the subscription.
+              @else
+                This subscription has been cancelled.
+              @endif
             </td>
           </tr>
           <!-- header -->

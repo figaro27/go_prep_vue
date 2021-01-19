@@ -50,6 +50,9 @@ class Hourly extends Command
         // Renew subscriptions
         $this->renewSubscriptions();
 
+        // Auto cancel failed subscription renewals after 48 hours
+        $this->cancelFailedRenewedSubscriptions();
+
         // Updates the next_delivery_date column
         $this->updateSubscriptionNextDeliveryDates();
 
@@ -307,11 +310,6 @@ class Hourly extends Command
         $subs = Subscription::whereBetween('next_renewal_at', $dateRange);
         $subs = $subs->where('status', '!=', 'cancelled')->get();
 
-        // $subs = Subscription::whereBetween('next_renewal_at', $dateRange)
-        //     ->where('status', 'active')
-        //     ->orWhere('status', 'paused')
-        //     ->get();
-
         $count = 0;
         foreach ($subs as $sub) {
             try {
@@ -321,36 +319,54 @@ class Hourly extends Command
             }
         }
 
-        // $subs = Subscription::where('status', 'active')
-        //     ->orWhere('status', 'paused')
-        //     ->get();
-
-        // $start = Carbon::now('utc')
-        //     ->subMinutes(30)
-        //     ->toDateTimeString();
-        // $end = Carbon::now('utc')
-        //     ->addMinutes(30)
-        //     ->toDateTimeString();
-
-        // $count = 0;
-        // foreach ($subs as $sub) {
-        //     // Manually renewing Detox & Get Real Meals for the first week. Will remove.
-        //     if (
-        //         $sub->store_id !== 3 &&
-        //         $sub->store_id !== 106 &&
-        //         $sub->store_id !== 156
-        //     ) {
-        //         if (
-        //             $sub->adjustedRenewalUTC >= $start &&
-        //             $sub->adjustedRenewalUTC < $end
-        //         ) {
-        //             $sub->renew();
-        //             $count++;
-        //         }
-        //     }
-        // }
-
         $this->info($count . ' Subscriptions renewed');
+    }
+
+    // public function renewFailedSubscriptions()
+    // {
+    //     // Attempts to renew failed subscriptions once every 6 hours for 2 days.
+    //     // After 6 days of attempts it auto cancels the subscription.
+    //     $subs = Subscription::where('status', '!=', 'cancelled')->where('failed_renewal', '!=', null)->get();
+    //     foreach ($subs as $sub){
+    //         $failedRenewalTimestamp = new Carbon($sub->failed_renewal);
+
+    //         $this->info($sub->next_delivery_date);
+
+    //         // Loop 4 times
+    //         for ($i = 6; $i <= 24; $i += 6){
+    //             $timestamp = $failedRenewalTimestamp->copy()->addHours($i)->minute(0)->second(0)->toDateTimeString();
+    //             $now = Carbon::now('utc')->minute(0)->second(0)->toDateTimeString();
+    //             if ($timestamp === $now){
+    //                 $this->info('test');
+    //             }
+    //         }
+    //     }
+    // }
+
+    public function cancelFailedRenewedSubscriptions()
+    {
+        // Auto cancels failed renewed subscriptions after 48 hours
+        $subs = Subscription::where('status', '!=', 'cancelled')
+            ->where('failed_renewal', '!=', null)
+            ->get();
+        foreach ($subs as $sub) {
+            $failedRenewalTimestamp = new Carbon($sub->failed_renewal);
+            $timestamp = $failedRenewalTimestamp
+                ->copy()
+                ->addHours(48)
+                ->minute(0)
+                ->second(0)
+                ->toDateTimeString();
+            $now = Carbon::now('utc')
+                ->minute(0)
+                ->second(0)
+                ->toDateTimeString();
+            $this->info($timestamp);
+            $this->info($now);
+            if ($timestamp === $now) {
+                $sub->cancel(true);
+            }
+        }
     }
 
     public function updateSubscriptionNextDeliveryDates()
