@@ -926,6 +926,7 @@ class CheckoutController extends UserController
                 $billingAnchor = Carbon::now('utc');
 
                 // Set to the cutoff date if the following conditions are met
+                $renewNow = false;
                 if (
                     $diff >= 7 ||
                     $billingAnchor->greaterThan($cutoff) ||
@@ -935,7 +936,8 @@ class CheckoutController extends UserController
                         ->copy()
                         ->subHours($store->settings->renewalOffsetHours);
                     if ($billingAnchor->isPast()) {
-                        $billingAnchor->addWeeks(1);
+                        // $billingAnchor->addWeeks(1);
+                        $renewNow = true;
                     }
                 }
 
@@ -1471,8 +1473,9 @@ class CheckoutController extends UserController
                 } catch (\Exception $e) {
                 }
                 if (
-                    $store->settings->subscriptionRenewalType !== 'cutoff' &&
-                    $diff <= 7
+                    ($store->settings->subscriptionRenewalType !== 'cutoff' &&
+                        $diff <= 7) ||
+                    $renewNow
                 ) {
                     // Renew & create the first order right away.
                     $userSubscription->renew();
