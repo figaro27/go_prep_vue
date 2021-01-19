@@ -25,6 +25,9 @@ const validators = {
   city: {
     required
   },
+  state: {
+    required
+  },
   zip: {
     required
   },

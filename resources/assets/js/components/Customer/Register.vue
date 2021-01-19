@@ -583,6 +583,7 @@ export default {
       1: {
         address: validators.address,
         city: validators.city,
+        state: validators.state,
         zip: validators.zip,
         country: validators.required,
         delivery: validators.delivery,
@@ -593,6 +594,7 @@ export default {
         domain: validators.domain,
         address: validators.address,
         city: validators.city,
+        state: validators.state,
         zip: validators.zip,
         country: validators.required,
         accepted_tos: validators.required

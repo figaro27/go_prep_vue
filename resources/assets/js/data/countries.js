@@ -14,8 +14,8 @@ let countries = {
   values: {
     US: "United States of America",
     CA: "Canada",
-    GB: "Great Britain",
-    BH: "Bahrain"
+    GB: "Great Britain"
+    // BH: "Bahrain"
   }
 };
 
