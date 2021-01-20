@@ -1235,7 +1235,11 @@ export default {
         this.$forceUpdate();
         this.$toastr.w("Please select the minimum number of items required.");
       } else {
-        this.$router.push(this.$route.path);
+        if (this.context !== "store" && this.menuSettings.redirectToCheckout) {
+          this.$router.replace("/customer/bag");
+        } else {
+          this.$router.push(this.$route.path);
+        }
         let components = {};
         let addons = {};
 
@@ -1392,10 +1396,6 @@ export default {
             addons,
             null
           );
-        }
-
-        if (this.context !== "store" && this.menuSettings.redirectToCheckout) {
-          this.$router.replace("/customer/bag");
         }
 
         this.back();
