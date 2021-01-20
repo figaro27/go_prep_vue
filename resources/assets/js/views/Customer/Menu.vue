@@ -1977,9 +1977,6 @@ export default {
         }
       }
       return meals.length > 0 ? true : false;
-    },
-    redirectToCheckout() {
-      this.$router.replace("/customer/bag");
     }
   }
 };
