@@ -73,12 +73,8 @@ class SpaController extends Controller
                         'settings',
                         'modules',
                         'moduleSettings',
-                        'reportSettings',
-                        'smsSettings',
                         'details',
-                        'coupons',
                         'giftCards',
-                        'purchasedGiftCards',
                         'pickupLocations',
                         'lineItems',
                         'referrals',
@@ -151,17 +147,11 @@ class SpaController extends Controller
                         'settings',
                         'modules',
                         'moduleSettings',
-                        'reportSettings',
-                        'smsSettings',
                         'details',
-                        'coupons',
                         'giftCards',
-                        'purchasedGiftCards',
                         'pickupLocations',
-                        'referrals',
                         'referralSettings',
                         'promotions',
-                        'lineItems',
                         'meals.categories',
                         'meals.allergies',
                         'packages.meals',
@@ -204,9 +194,7 @@ class SpaController extends Controller
                         'user' => $user,
                         'store' => $store,
                         'store_distance' => $distance ?? null,
-                        'will_deliver' => $willDeliver,
-                        'allergies' => Allergy::all(),
-                        'tags' => MealTag::all()
+                        'will_deliver' => $willDeliver
                     ];
                 } else {
                     return [
@@ -307,14 +295,11 @@ class SpaController extends Controller
                     'settings',
                     'modules',
                     'moduleSettings',
-                    'reportSettings',
-                    'smsSettings',
                     'details',
                     'giftCards',
                     'referralSettings',
                     'promotions',
                     'pickupLocations',
-                    'lineItems',
                     'deliveryDays',
                     'deliveryFeeZipCodes',
                     'deliveryDayZipCodes',
@@ -322,10 +307,6 @@ class SpaController extends Controller
                     'menuSettings'
                 ])->find(STORE_ID)
                 : $last_viewed_store;
-
-            if ($store !== null) {
-                $store = $store->makeHidden(['coupons', 'purchasedGiftCards']);
-            }
 
             if ($store && $user) {
                 try {
