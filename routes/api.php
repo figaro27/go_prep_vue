@@ -137,6 +137,11 @@ foreach (
                 'uses' => 'SpaController@refreshMeal'
             ]);
 
+            Route::get('/refresh/mealIngredients/{meal_id}', [
+                'middleware' => ['view.api'],
+                'uses' => 'SpaController@refreshMealIngredients'
+            ]);
+
             Route::post('/refreshByTitle', [
                 'middleware' => ['view.api'],
                 'uses' => 'SpaController@refreshMealByTitle'

@@ -64,7 +64,7 @@ class Meal extends Model implements HasMedia
     protected $appends = [
         'allergy_titles',
         'tag_titles',
-        'nutrition',
+        // 'nutrition',
         // 'active_orders',
         // 'active_orders_price',
         // 'lifetime_orders',
@@ -326,11 +326,31 @@ class Meal extends Model implements HasMedia
     //     return $this->orders->where('fulfilled', 0)->count() * $this->price;
     // }
 
-    public function getNutritionAttribute()
+    // public function getNutritionAttribute()
+    // {
+    //     $nutrition = [];
+
+    //     foreach ($this->ingredients as $ingredient) {
+    //         foreach (Ingredient::NUTRITION_FIELDS as $field) {
+    //             if (!array_key_exists($field, $nutrition)) {
+    //                 $nutrition[$field] = 0;
+    //             }
+
+    //             $nutrition[$field] +=
+    //                 $ingredient[$field] * $ingredient->pivot->quantity_grams;
+    //         }
+    //     }
+
+    //     return $nutrition;
+    // }
+
+    public static function getNutrition($id)
     {
         $nutrition = [];
 
-        foreach ($this->ingredients as $ingredient) {
+        $meal = Meal::where('id', $id)->first();
+
+        foreach ($meal->ingredients as $ingredient) {
             foreach (Ingredient::NUTRITION_FIELDS as $field) {
                 if (!array_key_exists($field, $nutrition)) {
                     $nutrition[$field] = 0;
@@ -342,6 +362,12 @@ class Meal extends Model implements HasMedia
         }
 
         return $nutrition;
+    }
+
+    public static function getIngredients($id)
+    {
+        $meal = Meal::where('id', $id)->first();
+        return $meal->ingredients;
     }
 
     // public function getOrderIdsAttribute()

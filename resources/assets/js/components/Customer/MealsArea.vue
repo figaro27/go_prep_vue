@@ -1622,10 +1622,16 @@ export default {
         let mealPackage = await store.dispatch("refreshStoreMealPackage", meal);
         this.showMealPackage(mealPackage, size, group);
       } else {
-        $([document.documentElement, document.body]).scrollTop(0);
-        this.$parent.showMealPage(meal, size ? size.id : null);
-        this.$parent.showMealsArea = false;
-        this.$parent.showMealPackagesArea = false;
+        // Get meal's ingredients & nutrition
+        axios.get("/api/refresh/mealIngredients/" + meal.id).then(resp => {
+          meal.nutrition = resp.data.nutrition;
+          meal.ingredients = resp.data.ingredients;
+
+          $([document.documentElement, document.body]).scrollTop(0);
+          this.$parent.showMealPage(meal, size ? size.id : null);
+          this.$parent.showMealsArea = false;
+          this.$parent.showMealPackagesArea = false;
+        });
       }
       this.$parent.search = "";
     },
@@ -1703,34 +1709,34 @@ export default {
         case "calories":
           return meal.macros && meal.macros.calories
             ? meal.macros.calories
-            : meal.ingredients
-            ? this.$parent.getNutritionFacts(meal.ingredients, meal)
-                .valueCalories
-            : null;
+            : // : meal.ingredients
+              // ? this.$parent.getNutritionFacts(meal.ingredients, meal)
+              //     .valueCalories
+              null;
           break;
         case "carbs":
           return meal.macros && meal.macros.carbs
             ? meal.macros.carbs
-            : meal.ingredients
-            ? this.$parent.getNutritionFacts(meal.ingredients, meal)
-                .valueTotalCarb
-            : null;
+            : // : meal.ingredients
+              // ? this.$parent.getNutritionFacts(meal.ingredients, meal)
+              //     .valueTotalCarb
+              null;
           break;
         case "protein":
           return meal.macros && meal.macros.protein
             ? meal.macros.protein
-            : meal.ingredients
-            ? this.$parent.getNutritionFacts(meal.ingredients, meal)
-                .valueProteins
-            : null;
+            : // : meal.ingredients
+              // ? this.$parent.getNutritionFacts(meal.ingredients, meal)
+              //     .valueProteins
+              null;
           break;
         case "fat":
           return meal.macros && meal.macros.fat
             ? meal.macros.fat
-            : meal.ingredients
-            ? this.$parent.getNutritionFacts(meal.ingredients, meal)
-                .valueTotalFat
-            : null;
+            : // : meal.ingredients
+              // ? this.$parent.getNutritionFacts(meal.ingredients, meal)
+              //     .valueTotalFat
+              null;
           break;
       }
     },

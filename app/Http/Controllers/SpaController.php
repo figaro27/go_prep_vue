@@ -1098,8 +1098,22 @@ class SpaController extends Controller
             'macros'
         ])->find($meal_id);
 
+        $meal['nutrition'] = Meal::getNutrition($meal_id);
+        $meal['ingredients'] = Meal::getIngredients($meal_id);
+
         return [
             'meal' => $meal
+        ];
+    }
+
+    public function refreshMealIngredients($meal_id)
+    {
+        $nutrition = Meal::getNutrition($meal_id);
+        $ingredients = Meal::getIngredients($meal_id);
+
+        return [
+            'nutrition' => $nutrition,
+            'ingredients' => $ingredients
         ];
     }
 
