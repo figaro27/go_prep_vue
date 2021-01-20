@@ -1786,6 +1786,9 @@ export default {
       ) {
         return true;
       }
+    },
+    redirectToCheckout() {
+      this.$router.replace("/customer/bag");
     }
   }
 };
