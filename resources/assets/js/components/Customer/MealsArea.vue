@@ -184,6 +184,7 @@
       ref="packageComponentModal"
       :packageTitle="packageTitle"
     ></meal-package-components-modal>
+
     <div
       v-for="(group, catIndex) in meals"
       :key="'category_' + group.category + '_' + catIndex"
@@ -198,7 +199,7 @@
           (isVisible, entry) => $parent.onCategoryVisible(isVisible, group)
         "
       >
-        <div v-if="storeSettings.menuStyle === 'image' && !smallScreen">
+        <div v-if="storeSettings.menuStyle === 'image'">
           <h2 class="text-center mb-4 dbl-underline" v-if="hasItems(group)">
             {{ group.category }}
           </h2>
@@ -551,7 +552,7 @@
           </div>
         </div>
 
-        <div v-else>
+        <div v-if="storeSettings.menuStyle === 'text'">
           <h2 class="text-center mb-3 dbl-underline">
             {{ group.category }}
           </h2>
