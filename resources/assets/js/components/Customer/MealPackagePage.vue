@@ -1235,12 +1235,9 @@ export default {
         this.$forceUpdate();
         this.$toastr.w("Please select the minimum number of items required.");
       } else {
-        console.log(this.menuSettings.redirectToCheckout);
         if (this.context !== "store" && this.menuSettings.redirectToCheckout) {
-          console.log(1);
-          this.$router.replace("/customer/bag");
+          this.$router.push("/customer/bag");
         } else {
-          console.log(2);
           this.$router.push(this.$route.path);
         }
         let components = {};
