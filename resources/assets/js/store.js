@@ -9,6 +9,8 @@ import getSymbolFromCurrency from "currency-symbol-map";
 // Paginated resources
 import ResourceStore from "./store/resources";
 import PrinterStore from "./store/printer";
+import allergies from "./data/allergies";
+import tags from "./data/tags";
 
 const Cookies = require("js-cookie");
 
@@ -255,7 +257,7 @@ const mutations = {
       domain: window.app.domain
     });
   },
-  tags(state, { tags }) {
+  tags(state, tags) {
     state.tags = tags;
   },
   setSMSMessages(state, data) {
@@ -1523,10 +1525,8 @@ const actions = {
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.allergies) && _.isObject(data.allergies)) {
-        let allergies = data.allergies;
-        commit("allergies", allergies);
-      }
+      let allergyList = allergies;
+      commit("allergies", allergyList);
     } catch (e) {}
 
     try {
@@ -1787,13 +1787,8 @@ const actions = {
     } catch (e) {}
 
     try {
-      if (!_.isEmpty(data.tags)) {
-        let tags = data.tags;
-
-        if (_.isArray(tags)) {
-          commit("tags", { tags });
-        }
-      }
+      let tagList = tags;
+      commit("tags", tagList);
     } catch (e) {}
 
     state.isLoading = false;

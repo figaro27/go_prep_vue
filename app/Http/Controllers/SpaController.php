@@ -103,9 +103,7 @@ class SpaController extends Controller
                 return [
                     'context' => $context,
                     'user' => null,
-                    'store' => $store,
-                    'allergies' => Allergy::all(),
-                    'tags' => MealTag::all()
+                    'store' => $store
                 ];
             } elseif ($context === 'store') {
                 $store = $user
@@ -141,9 +139,7 @@ class SpaController extends Controller
                 return [
                     'context' => $context,
                     'user' => $user,
-                    'store' => $store,
-                    'allergies' => Allergy::all(),
-                    'tags' => MealTag::all()
+                    'store' => $store
                 ];
             } elseif ($context === 'customer') {
                 $store = defined('STORE_ID')
@@ -216,9 +212,7 @@ class SpaController extends Controller
                     return [
                         'context' => $context,
                         'user' => $user,
-                        'store' => null,
-                        'allergies' => Allergy::all(),
-                        'tags' => MealTag::all()
+                        'store' => null
                     ];
                 }
             }
@@ -303,9 +297,7 @@ class SpaController extends Controller
             return [
                 'context' => $context,
                 'user' => $user,
-                'store' => $store,
-                'allergies' => Allergy::all(),
-                'tags' => MealTag::all()
+                'store' => $store
             ];
         } else {
             $store = defined('STORE_ID')
@@ -360,17 +352,13 @@ class SpaController extends Controller
                     'user' => $user,
                     'store' => $store,
                     'store_distance' => $distance ?? null,
-                    'will_deliver' => $willDeliver,
-                    'allergies' => Allergy::all(),
-                    'tags' => MealTag::all()
+                    'will_deliver' => $willDeliver
                 ];
             } else {
                 return [
                     'context' => $context,
                     'user' => $user,
-                    'store' => $store,
-                    'allergies' => Allergy::all(),
-                    'tags' => MealTag::all()
+                    'store' => $store
                 ];
             }
         }
