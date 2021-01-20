@@ -199,7 +199,7 @@
           (isVisible, entry) => $parent.onCategoryVisible(isVisible, group)
         "
       >
-        <div v-if="storeSettings.menuStyle === 'image'">
+        <div v-if="storeSettings.menuStyle === 'image' && !smallScreen">
           <h2 class="text-center mb-4 dbl-underline" v-if="hasItems(group)">
             {{ group.category }}
           </h2>
@@ -552,7 +552,7 @@
           </div>
         </div>
 
-        <div v-if="storeSettings.menuStyle === 'text'">
+        <div v-if="storeSettings.menuStyle === 'text' || smallScreen">
           <h2 class="text-center mb-3 dbl-underline">
             {{ group.category }}
           </h2>
