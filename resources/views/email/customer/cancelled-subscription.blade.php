@@ -160,7 +160,7 @@ $currency = $subscription->store->settings->currency
           <br>
           <tr>
             <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">
-              @if ($failedRenewalExpired)
+              @if (isset($failedRenewalExpired) && $failedRenewalExpired)
                 This subscription has been automatically cancelled due to a failed renewal 48 hours ago. The issue is most likely related to an error with the credit card. Please recreate the subscription.
               @else
                 This subscription has been cancelled.
