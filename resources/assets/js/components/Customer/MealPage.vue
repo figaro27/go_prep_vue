@@ -702,17 +702,17 @@ export default {
                 option.ingredients &&
                 option.ingredients.length > 0
               ) {
-                if (
-                  !this.selectedComponentOptions.includes(option.ingredients[0])
-                ) {
-                  this.selectedComponentOptions.push(option.ingredients[0]);
-                } else {
-                  this.selectedComponentOptions = this.selectedComponentOptions.filter(
-                    (value, index, arr) => {
-                      return value != option.ingredients[0];
-                    }
-                  );
-                }
+                option.ingredients.forEach(ingredient => {
+                  if (!this.selectedComponentOptions.includes(ingredient)) {
+                    this.selectedComponentOptions.push(ingredient);
+                  } else {
+                    this.selectedComponentOptions = this.selectedComponentOptions.filter(
+                      (value, index, arr) => {
+                        return value != ingredient;
+                      }
+                    );
+                  }
+                });
               }
             }
           }
@@ -737,9 +737,11 @@ export default {
           addon.ingredients &&
           addon.ingredients.length > 0
         ) {
-          if (!this.selectedAddons.includes(addon.ingredients[0])) {
-            this.selectedAddons.push(addon.ingredients[0]);
-          }
+          addon.ingredients.forEach(ingredient => {
+            if (!this.selectedAddons.includes(ingredient)) {
+              this.selectedAddons.push(ingredient);
+            }
+          });
         }
       });
 
@@ -758,7 +760,6 @@ export default {
       let componentsIngredients = sizeIngredients.concat(
         this.selectedComponentOptions
       );
-
       let allIngredients = componentsIngredients.concat(this.selectedAddons);
 
       this.$parent.getNutritionFacts(
