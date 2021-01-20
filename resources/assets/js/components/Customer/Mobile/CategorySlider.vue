@@ -1,6 +1,6 @@
 <template>
   <div class="category-slider d-block d-md-none">
-    <div class="text-center" v-if="showCategorySlider">
+    <div class="text-center" v-if="showCategorySlider || mobile">
       <slick
         v-if="categories.length > 4 || categoriesCharacterCount > 30"
         :key="categories.length"
@@ -79,6 +79,10 @@ export default {
       isLazy: "isLazy",
       mealMixItems: "mealMixItems"
     }),
+    mobile() {
+      if (window.innerWidth < 500) return true;
+      else return false;
+    },
     categoriesCharacterCount() {
       return this.categories.reduce((acc, category) => {
         return acc + category.category.length;
