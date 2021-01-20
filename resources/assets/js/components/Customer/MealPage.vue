@@ -758,7 +758,7 @@ export default {
       let componentsIngredients = sizeIngredients.concat(
         this.selectedComponentOptions
       );
-      console.log(componentsIngredients);
+
       let allIngredients = componentsIngredients.concat(this.selectedAddons);
 
       this.$parent.getNutritionFacts(
