@@ -49,7 +49,6 @@ class Hourly extends Command
     {
         // Send email check-in on new store signups 24 hours after registration
         $this->sendSignupCheckins();
-        return;
 
         // Renew subscriptions
         $this->renewSubscriptions();
