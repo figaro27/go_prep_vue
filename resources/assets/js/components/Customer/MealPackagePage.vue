@@ -127,9 +127,7 @@
                   </b-checkbox>
 
                   <div v-else class="my-2">
-                    <b-row
-                      v-if="storeSettings.menuStyle === 'image' && !mobile"
-                    >
+                    <b-row v-if="storeSettings.menuStyle === 'image'">
                       <!--class="bag-item col-6 col-sm-4 col-lg-3 pb-4 mb-4"!-->
                       <div
                         class="item col-sm-6 col-md-6 col-lg-6 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
@@ -282,7 +280,7 @@
                       </div>
                     </b-row>
 
-                    <b-row v-if="storeSettings.menuStyle === 'text' || mobile">
+                    <b-row v-if="storeSettings.menuStyle === 'text'">
                       <!-- class="bag-item col-4 col-sm-4 col-md-4 col-lg-4 pb-3" !-->
                       <div
                         class="item item-text col-sm-6 col-md-6 col-lg-12 col-xl-6"
@@ -607,7 +605,7 @@
 
               <b-form-group :label="null">
                 <div class="my-2">
-                  <b-row v-if="storeSettings.menuStyle === 'image' && !mobile">
+                  <b-row v-if="storeSettings.menuStyle === 'image'">
                     <div
                       class="item col-sm-6 col-md-6 col-lg-6 col-xl-3 pl-1 pr-0 pl-sm-3 pr-sm-3 meal-border pb-2 mb-2"
                       v-for="mealOption in getTopLevel()"
@@ -745,7 +743,7 @@
                     </div>
                   </b-row>
 
-                  <b-row v-if="storeSettings.menuStyle === 'text' || mobile">
+                  <b-row v-if="storeSettings.menuStyle === 'text'">
                     <div
                       class="item item-text col-sm-6 col-md-6 col-lg-12 col-xl-6"
                       v-for="mealOption in getTopLevel()"
