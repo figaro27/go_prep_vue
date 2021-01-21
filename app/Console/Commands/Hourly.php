@@ -47,6 +47,10 @@ class Hourly extends Command
      */
     public function handle()
     {
+        // Send email check-in on new store signups 24 hours after registration
+        $this->sendSignupCheckins();
+        return;
+
         // Renew subscriptions
         $this->renewSubscriptions();
 
@@ -383,6 +387,23 @@ class Hourly extends Command
                 }
             } catch (\Exception $e) {
             }
+        }
+    }
+
+    public function sendSignupCheckins()
+    {
+        // Send the email 24 hours after sign up
+        $hourRange = [
+            Carbon::now('utc')->subHours(24),
+            Carbon::now('utc')->subHours(23)
+        ];
+
+        $stores = Store::whereBetween('created_at', $hourRange)->get();
+
+        foreach ($stores as $store) {
+            $store->sendNotification('signup_checkin', [
+                'store' => $store
+            ]);
         }
     }
 }

@@ -8,6 +8,7 @@ use App\Mail\Store\NewSubscription;
 use App\Mail\Store\ReadyToPrint;
 use App\Mail\Store\AdjustedOrder;
 use App\Mail\Customer\NewGiftCard;
+use App\Mail\Store\SignupCheckin;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -1458,6 +1459,9 @@ class Store extends Model
         }
 
         switch ($notif) {
+            case 'signup_checkin':
+                $email = new SignupCheckin($data);
+                break;
             case 'new_order':
                 $email = new NewOrder($data);
                 $bcc = true;
