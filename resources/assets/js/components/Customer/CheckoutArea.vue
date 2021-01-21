@@ -1468,7 +1468,7 @@ export default {
     customer: function(val) {
       if (!this.existingCustomerAdded) {
         if (val) {
-          this.setBagCustomerModel(this.getCustomerObject(val));
+          // this.setBagCustomerModel(this.getCustomerObject(val));
           if (
             this.context == "store" &&
             this.store.settings.deliveryFeeType == "mileage"
@@ -3838,6 +3838,7 @@ use next_delivery_dates
         this.customer = user.id;
         this.setBagCustomerModel({ text: user.name, value: user.id });
       } else {
+        this.setBagCustomerModel({ text: user.name, value: user.id });
         this.$parent.setCustomer(user.id);
       }
     },

@@ -259,15 +259,15 @@ export default {
       }
 
       axios.post("/api/me/register", form).then(async response => {
-        this.setBagCustomerModel(response.data);
+        let resp = JSON.parse(JSON.stringify(response));
+        this.setBagCustomerModel(resp.data);
         this.$parent.addCustomerModal = false;
         this.form = {};
-
         await this.refreshStoreCustomersNoOrders();
         // await this.refreshStoreCustomers();
 
         this.$toastr.s("Customer Added");
-        this.$parent.setCustomer(response.data);
+        // this.$parent.setCustomer(resp.data);
         //if (this.$route.params.manualOrder) this.$parent.getCards();
       });
       // .catch(e => {
