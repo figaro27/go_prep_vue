@@ -262,7 +262,7 @@
             ref="mealPackagePage"
           ></meal-package-page>
 
-          <div @click="backFromPackagePage" style="margin-bottom:20px">
+          <div @click="backFromPackagePage" style="margin-bottom:50px">
             <floating-action-button
               class="d-md-none"
               style="background-color:#808080"
@@ -344,7 +344,7 @@
             </div>
           </button>
 
-          <div style="margin-right:65px;margin-bottom:20px">
+          <div style="margin-right:65px;margin-bottom:50px">
             <floating-action-button
               class="d-md-none"
               :style="brandColor"
