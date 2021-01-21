@@ -12,7 +12,7 @@
     <b-modal id="toa" size="md" ref="toa" no-fade>
       <termsOfAgreement></termsOfAgreement>
     </b-modal>
-    <div class="col-md-12">
+    <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
       <div class="card">
         <div class="card-body p-lg-5">
           <b-alert variant="success" v-if="freeTrial && step === 0" show>
