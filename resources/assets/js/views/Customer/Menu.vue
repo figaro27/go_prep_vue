@@ -262,10 +262,10 @@
             ref="mealPackagePage"
           ></meal-package-page>
 
-          <div @click="backFromPackagePage" style="margin-bottom:50px">
+          <div @click="backFromPackagePage">
             <floating-action-button
               class="d-md-none"
-              style="background-color:#808080"
+              style="background-color:#808080;margin-bottom:50px"
               v-if="mealPackagePageView"
             >
               <div class="d-flex flex-column h-100">
@@ -344,8 +344,9 @@
             </div>
           </button>
 
-          <div style="margin-right:65px;margin-bottom:50px">
+          <div>
             <floating-action-button
+              style="margin-right:65px;margin-bottom:50px"
               class="d-md-none"
               :style="brandColor"
               v-if="
