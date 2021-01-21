@@ -269,15 +269,15 @@ class CheckoutController extends StoreController
                 );
             }
 
+            $balance = null;
+
+            $noBalance = $request->get('noBalance');
+
+            if ($cashOrder && !$noBalance) {
+                $balance = $total;
+            }
+
             if (!$weeklyPlan) {
-                $balance = null;
-
-                $noBalance = $request->get('noBalance');
-
-                if ($cashOrder && !$noBalance) {
-                    $balance = $total;
-                }
-
                 if ($deposit > 0 && !$noBalance) {
                     $balance = $total - $deposit;
                 }
@@ -1008,6 +1008,7 @@ class CheckoutController extends StoreController
                 $order->salesTax = $salesTax;
                 $order->customSalesTax = $customSalesTax;
                 $order->amount = $total;
+                $order->balance = $balance;
                 $order->currency = $store->settings->currency;
                 $order->fulfilled = false;
                 $order->pickup = $request->get('pickup', 0);

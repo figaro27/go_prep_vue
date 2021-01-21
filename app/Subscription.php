@@ -23,6 +23,7 @@ use App\PurchasedGiftCard;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Customer\RenewalFailed;
 use App\Customer;
+use App\StoreModule;
 
 class Subscription extends Model
 {
@@ -495,6 +496,13 @@ class Subscription extends Model
             $newOrder->pointsReduction = $this->pointsReduction;
             $newOrder->originalAmount = $this->amount;
             $newOrder->amount = $this->amount;
+
+            $modules = StoreModule::where('store_id', $this->store_id)->first();
+            $newOrder->balance =
+                $this->cashOrder && !$modules->cashOrderNoBalance
+                    ? $this->amount
+                    : 0;
+
             $newOrder->currency = $this->currency;
             $newOrder->fulfilled = false;
             $newOrder->pickup = $this->pickup;
@@ -1134,6 +1142,12 @@ class Subscription extends Model
             $order->purchasedGiftCardReduction =
                 $this->purchasedGiftCardReduction;
             $order->amount = $this->amount;
+            $modules = StoreModule::where('store_id', $this->store_id)->first();
+            $order->balance =
+                $this->cashOrder && !$modules->cashOrderNoBalance
+                    ? $this->amount
+                    : 0;
+            $order->balance = $this->cashOrder ? $this->amount : null;
             $order->publicNotes = $this->publicNotes;
             $order->save();
 

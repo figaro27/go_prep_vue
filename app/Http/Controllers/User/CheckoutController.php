@@ -382,6 +382,14 @@ class CheckoutController extends UserController
                 : 0;
             // $total += $salesTax;
 
+            $balance = null;
+
+            $noBalance = $request->get('noBalance');
+
+            if ($cashOrder && !$noBalance) {
+                $balance = $total;
+            }
+
             if (!$weeklyPlan) {
                 if ($gateway === Constants::GATEWAY_STRIPE) {
                     if ($total > 0.5) {
@@ -450,14 +458,6 @@ class CheckoutController extends UserController
                         );
                     }
                     $charge->id = $transactionId;
-                }
-
-                $balance = null;
-
-                $noBalance = $request->get('noBalance');
-
-                if ($cashOrder && !$noBalance) {
-                    $balance = $total;
                 }
 
                 $order = new Order();
@@ -1037,6 +1037,7 @@ class CheckoutController extends UserController
                 $order->salesTax = $salesTax;
                 $order->customSalesTax = $customSalesTax;
                 $order->amount = $total;
+                $order->balance = $balance;
                 $order->currency = $storeSettings->currency;
                 $order->fulfilled = false;
                 $order->pickup = $request->get('pickup', 0);
