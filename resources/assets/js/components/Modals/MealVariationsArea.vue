@@ -65,7 +65,7 @@
     </div>
     <div v-if="fromMealsArea">
       <b-form-input
-        v-model="quantity"
+        v-model="quant"
         type="number"
         class="mb-2 width-115"
       ></b-form-input>
@@ -399,38 +399,14 @@ export default {
 
       let size = this.sizeId;
 
-      if (this.isAdjustOrder() || this.isManualOrder()) {
-        const items = this.getPackageBagItems();
-        if (items && items.length > 0) {
-          this.$parent.showAdjustModal(
-            meal,
-            size,
-            this.choices,
-            this.addons,
-            this.special_instructions,
-            items
-          );
-          return;
-        } else {
-          this.addOne(
-            meal,
-            false,
-            size,
-            this.choices,
-            this.addons,
-            this.special_instructions
-          );
-        }
-      } else {
-        this.addOne(
-          meal,
-          false,
-          size,
-          this.choices,
-          this.addons,
-          this.special_instructions
-        );
-      }
+      this.addOne(
+        meal,
+        false,
+        size,
+        this.choices,
+        this.addons,
+        this.special_instructions
+      );
 
       this.choices = null;
       this.addons = [];
