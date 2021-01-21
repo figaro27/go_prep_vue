@@ -316,7 +316,10 @@
                         class="description d-md-none"
                         @click="showMeal(meal)"
                       >
-                        <p v-html="getHTMLItemDescription(meal.description)">
+                        <p
+                          v-html="getHTMLItemDescription(meal.description)"
+                          v-if="!smallScreen"
+                        >
                           Show more
                         </p>
                       </div>
@@ -761,7 +764,7 @@
                         style="word-break: break-all;"
                         v-html="getMealTitle(meal.title)"
                       ></p>
-                      <div class="mt-1 content-text">
+                      <div class="mt-1 content-text" v-if="!smallScreen">
                         <p v-html="meal.description"></p>
                       </div>
                       <div
@@ -808,7 +811,7 @@
                       <div style="flex-basis:75%">
                         <p v-html="getMealTitle(meal.title)"></p>
                         <span class="content-text">
-                          <p v-html="meal.description"></p>
+                          <p v-html="meal.description" v-if="!smallScreen"></p>
                           <div class="title" v-if="storeSettings.showMacros">
                             <div
                               class="title macrosArea d-flex pt-2"
