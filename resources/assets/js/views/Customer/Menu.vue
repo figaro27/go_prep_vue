@@ -262,9 +262,9 @@
             ref="mealPackagePage"
           ></meal-package-page>
 
-          <div @click="backFromPackagePage">
+          <div @click="backFromPackagePage" class="pb-3">
             <floating-action-button
-              class="d-md-none mb-5 pb-3"
+              class="d-md-none mb-5"
               style="background-color:#808080"
               v-if="mealPackagePageView"
             >
@@ -347,7 +347,7 @@
           <floating-action-button
             class="d-md-none"
             :style="brandColor"
-            style="margin-right:65px;padding-bottom:20px"
+            style="margin-right:65px;position:relative;bottom:20px"
             v-if="
               store.modules.multipleDeliveryDays &&
                 finalDeliveryDay &&
