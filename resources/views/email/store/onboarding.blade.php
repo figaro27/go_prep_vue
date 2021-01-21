@@ -143,6 +143,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <li>Toggle on 'Open' at the bottom of the Settings page</li>
                   </ul>
 
+                  <p>There are many hidden features and capabilities of GoPrep that enable us to accommodate most business models. Do you have certain rules that apply to only certain delivery days? Do you want to allow customers to choose multiple delivery days within one order? Have pickup locations? Want your customers to be able to choose a delivery or pickup time? Just ask us, and we'll set it up for you.</p>
 
                   <p>For any questions, or if you'd like us to assist with your onboarding and menu setup, you can call us at (347) 433-7990 or email us at <a href="mailto:help@goprep.com">help@goprep.com</a></p>
 
