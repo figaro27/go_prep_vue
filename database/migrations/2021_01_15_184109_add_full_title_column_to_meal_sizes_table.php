@@ -14,7 +14,10 @@ class AddFullTitleColumnToMealSizesTable extends Migration
     public function up()
     {
         Schema::table('meal_sizes', function (Blueprint $table) {
-            $table->string('full_title')->after('title');
+            $table
+                ->string('full_title')
+                ->after('title')
+                ->nullable();
         });
     }
 
