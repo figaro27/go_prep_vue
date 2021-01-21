@@ -262,7 +262,7 @@
             ref="mealPackagePage"
           ></meal-package-page>
 
-          <div @click="backFromPackagePage" class="pb-3">
+          <div @click="backFromPackagePage" class="pb-5">
             <floating-action-button
               class="d-md-none mb-5"
               style="background-color:#808080"
@@ -344,26 +344,28 @@
             </div>
           </button>
 
-          <floating-action-button
-            class="d-md-none"
-            :style="brandColor"
-            style="margin-right:65px;position:relative;bottom:20px"
-            v-if="
-              store.modules.multipleDeliveryDays &&
-                finalDeliveryDay &&
-                !mealPackagePageView
-            "
-          >
-            <div
-              class="d-flex flex-column h-100"
-              @click="showDeliveryDayModal = true"
+          <div class="pb-5">
+            <floating-action-button
+              class="d-md-none"
+              :style="brandColor"
+              style="margin-right:65px;position:relative;"
+              v-if="
+                store.modules.multipleDeliveryDays &&
+                  finalDeliveryDay &&
+                  !mealPackagePageView
+              "
             >
-              <i class="fas fa-truck text-white"></i>
-              <!-- <span class="text-white mt-1" v-if="finalDeliveryDay">{{
+              <div
+                class="d-flex flex-column h-100"
+                @click="showDeliveryDayModal = true"
+              >
+                <i class="fas fa-truck text-white"></i>
+                <!-- <span class="text-white mt-1" v-if="finalDeliveryDay">{{
                 moment(finalDeliveryDay.day_friendly).format("ddd")
               }}</span> -->
-            </div>
-          </floating-action-button>
+              </div>
+            </floating-action-button>
+          </div>
 
           <!--<meal-packages-area :mealPackages="mealPackages"></meal-packages-area>!-->
         </div>
