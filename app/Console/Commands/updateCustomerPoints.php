@@ -47,7 +47,10 @@ class updateCustomerPoints extends Command
                 foreach ($store->customers as $customer) {
                     $customer->points = 0;
                     foreach ($customer->orders as $order) {
-                        if ($order->paid === 1) {
+                        if (
+                            $order->paid === 1 &&
+                            $order->created_at >= $promotion->created_at
+                        ) {
                             $customer->points +=
                                 $order->preFeePreDiscount *
                                 $promotion->promotionAmount;
