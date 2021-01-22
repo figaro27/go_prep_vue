@@ -456,7 +456,7 @@ export default {
 
       if (this.mobile) {
         let quantity = meal.quantity ? meal.quantity : 1;
-        this.$toastr.s(quantity + " x " + meal.item_title + " added to bag.");
+        this.$toastr.s(quantity + " x " + meal.title + " added to bag.");
       }
       this.mealModal = false;
       this.mealPackageModal = false;
