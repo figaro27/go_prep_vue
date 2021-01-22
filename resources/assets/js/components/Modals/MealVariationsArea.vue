@@ -412,11 +412,6 @@ export default {
         this.special_instructions
       );
 
-      if (this.mobile) {
-        let quantity = meal.quantity ? meal.quantity : 1;
-        this.$toastr.s(quantity + " x " + meal.full_title + " added to bag.");
-      }
-
       this.choices = null;
       this.addons = [];
       this.defaultMealSize = null;

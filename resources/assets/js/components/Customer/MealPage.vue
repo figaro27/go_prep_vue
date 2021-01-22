@@ -610,11 +610,6 @@ export default {
         meal.quantity = 1;
       }
 
-      if (this.mobile) {
-        let quantity = meal.quantity ? meal.quantity : 1;
-        this.$toastr.s(quantity + " x " + meal.full_title + " added to bag.");
-      }
-
       this.mealSize = null;
       this.back();
       if (this.context !== "store" && this.menuSettings.redirectToCheckout) {
