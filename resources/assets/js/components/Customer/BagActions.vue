@@ -85,8 +85,7 @@
             inSub: inSub,
             weeklySubscriptionValue: weeklySubscriptionValue,
             lineItemOrders: lineItemOrders,
-            subscription: subscription,
-            staffMember: staffMember
+            subscription: subscription
           }
         }"
         class="menu-bag-btn bottom-margin"

@@ -1331,6 +1331,7 @@ const triggerLazyDD = (
     })
     .catch(error => {
       // Finished
+      console.error(error);
     });
 };
 
