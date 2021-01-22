@@ -332,6 +332,7 @@
                 type="number"
                 v-model="customSalesTax"
                 class="d-inline width-70"
+                style="font-size:16px"
               ></b-form-input>
               <i
                 class="fas fa-check-circle text-primary pt-2 pl-1"
@@ -378,6 +379,7 @@
                   type="number"
                   v-model="customDeliveryFee"
                   class="d-inline width-70"
+                  style="font-size:16px"
                 ></b-form-input>
                 <i
                   style="flex-basis:30%"
@@ -544,6 +546,7 @@
               class="w-80px"
               v-if="bagGratuityPercent == 'custom'"
               @input="val => setBagCustomGratuity(val)"
+              style="font-size:16px"
             ></b-form-input>
             <span v-else>{{ format.money(tip, storeSettings.currency) }}</span>
           </div>
@@ -604,6 +607,7 @@
                 type="number"
                 v-model="customSalesTax"
                 class="d-inline width-70"
+                style="font-size:16px"
               ></b-form-input>
               <i
                 class="fas fa-check-circle text-primary pt-2 pl-1"
@@ -655,6 +659,7 @@
           <div class="col-xs-6 pl-3">
             <b-form-group id="coupon">
               <b-form-input
+                style="font-size:16px"
                 id="coupon-code"
                 v-model="discountCode"
                 required
@@ -1120,6 +1125,7 @@
               type="number"
               required
               placeholder="$0.00"
+              style="font-size:16px"
             ></b-form-input>
           </b-form-group>
         </div>
@@ -1315,6 +1321,7 @@
             type="text"
             required
             placeholder="Billing Address"
+            style="font-size:16px"
           ></b-form-input>
         </b-form-group>
         <b-form-group horizontal label="Billing City">
@@ -1323,6 +1330,7 @@
             type="text"
             required
             placeholder="Billing City"
+            style="font-size:16px"
           ></b-form-input>
         </b-form-group>
         <b-form-group horizontal label="Billing State">
@@ -1331,6 +1339,7 @@
             label="name"
             :options="stateNames"
             @keypress.enter.native.prevent=""
+            style="font-size:16px"
           ></v-select>
         </b-form-group>
         <b-form-group horizontal label="Billing Zip">
@@ -1339,6 +1348,7 @@
             type="text"
             required
             placeholder="Billing Zip"
+            style="font-size:16px"
           ></b-form-input>
         </b-form-group>
         <b-button type="submit" variant="primary" class="float-right"
