@@ -133,9 +133,7 @@ export default {
       if (subscription.meal_package_items) {
         _.forEach(subscription.meal_package_items, pkgItem => {
           let meal_package_id = pkgItem.meal_package_id;
-          console.log(pkgItem.meal_package_id);
           let meal_package = this.getMealPackage(meal_package_id);
-          console.log(meal_package);
           meal_package.price = pkgItem.price;
           meal_package.mappingId = pkgItem.mappingId;
 
