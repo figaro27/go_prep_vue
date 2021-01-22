@@ -17,7 +17,11 @@
         <div style="width:50%">
           <b-form @submit.prevent="submit">
             <b-form-group>
-              <b-input v-model="email" placeholder="Email"></b-input>
+              <b-input
+                v-model="email"
+                placeholder="Email"
+                style="font-size:16px"
+              ></b-input>
             </b-form-group>
 
             <b-form-group>
@@ -25,6 +29,7 @@
                 v-model="password"
                 type="password"
                 placeholder="Password"
+                style="font-size:16px"
               ></b-input>
             </b-form-group>
 

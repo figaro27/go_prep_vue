@@ -5,11 +5,15 @@
         <div class="card-body p-lg-5">
           <b-form @submit.prevent="submit">
             <b-form-group horizontal label="E-Mail Address">
-              <b-input v-model="email"></b-input>
+              <b-input v-model="email" style="font-size:16px"></b-input>
             </b-form-group>
 
             <b-form-group horizontal label="Password">
-              <b-input v-model="password" type="password"></b-input>
+              <b-input
+                v-model="password"
+                type="password"
+                style="font-size:16px"
+              ></b-input>
             </b-form-group>
 
             <div class="form-group row">

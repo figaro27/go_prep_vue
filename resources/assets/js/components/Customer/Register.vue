@@ -24,6 +24,7 @@
               "
               :state="state(0, 'first_name')"
               autocomplete="new-password"
+              style="font-size:16px"
             ></b-input>
           </b-form-group>
 
@@ -38,6 +39,7 @@
               "
               :state="state(0, 'last_name')"
               autocomplete="new-password"
+              style="font-size:16px"
             ></b-input>
           </b-form-group>
         </div>
@@ -56,6 +58,7 @@
             "
             :state="state(0, 'email')"
             autocomplete="new-password"
+            style="font-size:16px"
           ></b-input>
         </b-form-group>
 
@@ -70,6 +73,7 @@
             "
             :state="state(0, 'password')"
             autocomplete="new-password"
+            style="font-size:16px"
           ></b-input>
         </b-form-group>
 
@@ -88,6 +92,7 @@
             "
             :state="state(0, 'password') && state(0, 'password_confirmation')"
             autocomplete="new-password"
+            style="font-size:16px"
           ></b-input>
         </b-form-group>
 
@@ -99,6 +104,7 @@
             @input="asYouType()"
             :state="state(0, 'phone')"
             autocomplete="new-password"
+            style="font-size:16px"
           ></b-input>
         </b-form-group>
 
@@ -121,6 +127,7 @@
             :options="countryNames"
             v-model="form[1].country"
             class="w-100"
+            style="font-size:16px"
           ></b-select>
         </b-form-group>
 
@@ -135,6 +142,7 @@
             "
             :state="state(1, 'address')"
             autocomplete="new-password"
+            style="font-size:16px"
           ></b-input>
         </b-form-group>
         <div class="d-flex" style="flex-wrap:wrap">
@@ -153,6 +161,7 @@
               "
               :state="state(1, 'city')"
               autocomplete="new-password"
+              style="font-size:16px"
             ></b-input>
           </b-form-group>
 
@@ -168,6 +177,7 @@
               v-model="form[1].state"
               :on-change="val => changeState(val, 1)"
               class="w-100"
+              style="font-size:16px"
             ></b-select>
           </b-form-group>
 
@@ -182,6 +192,7 @@
               "
               :state="state(1, 'zip')"
               autocomplete="new-password"
+              style="font-size:16px"
             ></b-input>
           </b-form-group>
         </div>
@@ -196,6 +207,7 @@
             "
             :state="state(1, 'delivery')"
             autocomplete="new-password"
+            style="font-size:16px"
           ></b-input>
         </b-form-group>
 
@@ -263,6 +275,7 @@
             "
             :state="state(2, 'store_name')"
             autocomplete="new-password"
+            style="font-size:16px"
           ></b-input>
         </b-form-group>
 
@@ -283,6 +296,7 @@
               "
               :state="state(2, 'domain')"
               autocomplete="new-password"
+              style="font-size:16px"
             ></b-input>
             <div class="input-group-append">
               <span class="input-group-text">.goprep.com</span>
@@ -314,6 +328,7 @@
             "
             :state="state(2, 'address')"
             autocomplete="new-password"
+            style="font-size:16px"
           ></b-input>
         </b-form-group>
 
@@ -334,6 +349,7 @@
               "
               :state="state(2, 'city')"
               autocomplete="new-password"
+              style="font-size:16px"
             ></b-input>
           </b-form-group>
 
@@ -364,6 +380,7 @@
               "
               :state="state(2, 'zip')"
               autocomplete="new-password"
+              style="font-size:16px"
             ></b-input>
           </b-form-group>
         </div>

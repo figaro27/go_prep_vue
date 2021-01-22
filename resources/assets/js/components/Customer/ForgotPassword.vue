@@ -2,7 +2,11 @@
   <div class="mt-4">
     <b-form v-if="!done" @submit.prevent="submit">
       <b-form-group label="E-Mail Address">
-        <b-input v-model="email" placeholder="Email"></b-input>
+        <b-input
+          v-model="email"
+          placeholder="Email"
+          style="font-size:16px"
+        ></b-input>
       </b-form-group>
 
       <b-form-group>

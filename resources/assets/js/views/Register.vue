@@ -64,6 +64,7 @@
                   "
                   :state="state(0, 'first_name')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -78,6 +79,7 @@
                   "
                   :state="state(0, 'last_name')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -97,6 +99,7 @@
                   "
                   :state="state(0, 'email')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -111,6 +114,7 @@
                   "
                   :state="state(0, 'password')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -134,6 +138,7 @@
                     state(0, 'password') && state(0, 'password_confirmation')
                   "
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -149,6 +154,7 @@
                   @input="asYouType()"
                   :state="state(0, 'phone')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -200,6 +206,7 @@
                   :options="countryNames"
                   v-model="form[1].country"
                   class="w-100"
+                  style="font-size:16px"
                 ></b-select>
               </b-form-group>
 
@@ -214,6 +221,7 @@
                   "
                   :state="state(1, 'address')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -223,6 +231,7 @@
                   type="text"
                   placeholder="House / Unit # Optional"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -237,6 +246,7 @@
                   "
                   :state="state(1, 'city')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -251,6 +261,7 @@
                   v-model="form[1].state"
                   :on-change="val => changeState(val, 1)"
                   class="w-100"
+                  style="font-size:16px"
                 ></b-select>
               </b-form-group>
 
@@ -265,6 +276,7 @@
                   "
                   :state="state(1, 'zip')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -280,6 +292,7 @@
                   "
                   :state="state(1, 'delivery')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -291,6 +304,7 @@
                   :value="1"
                   :unchecked-value="0"
                   :state="state(1, 'accepted_tos')"
+                  style="font-size:16px"
                 >
                   I accept the
                   <span
@@ -342,6 +356,7 @@
                   "
                   :state="state(2, 'store_name')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -363,6 +378,7 @@
                     "
                     :state="state(2, 'domain')"
                     autocomplete="new-password"
+                    style="font-size:16px"
                   ></b-input>
                   <div class="input-group-append">
                     <span class="input-group-text">.goprep.com</span>
@@ -388,6 +404,7 @@
                   :options="countryNames"
                   v-model="form[2].country"
                   class="w-100"
+                  style="font-size:16px"
                 ></b-select>
               </b-form-group>
 
@@ -398,6 +415,7 @@
                   v-model="form[2].state"
                   :on-change="val => changeState(val, 2)"
                   class="w-100"
+                  style="font-size:16px"
                 ></b-select>
               </b-form-group>
 
@@ -417,6 +435,7 @@
                   "
                   :state="state(2, 'address')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -436,6 +455,7 @@
                   "
                   :state="state(2, 'city')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
@@ -455,6 +475,7 @@
                   "
                   :state="state(2, 'zip')"
                   autocomplete="new-password"
+                  style="font-size:16px"
                 ></b-input>
               </b-form-group>
 
