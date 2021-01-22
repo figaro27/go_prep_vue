@@ -138,6 +138,10 @@ export default {
       getMeal: "viewedStoreMeal",
       menuSettings: "viewedStoreMenuSettings"
     }),
+    mobile() {
+      if (window.innerWidth < 500) return true;
+      else return false;
+    },
     headingClass() {
       if (this.fromMealsArea) {
         return "center-text";
@@ -407,6 +411,11 @@ export default {
         this.addons,
         this.special_instructions
       );
+
+      if (this.mobile) {
+        let quantity = meal.quantity ? meal.quantity : 1;
+        this.$toastr.s(quantity + " x " + meal.full_title + " added to bag.");
+      }
 
       this.choices = null;
       this.addons = [];

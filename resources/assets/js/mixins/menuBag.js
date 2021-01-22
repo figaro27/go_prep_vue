@@ -453,8 +453,10 @@ export default {
         free,
         custom
       });
+
       if (this.mobile) {
-        this.$toastr.s("Item added to bag.");
+        let quantity = meal.quantity ? meal.quantity : 1;
+        this.$toastr.s(quantity + " x " + meal.full_title + " added to bag.");
       }
       this.mealModal = false;
       this.mealPackageModal = false;

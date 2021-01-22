@@ -346,6 +346,10 @@ export default {
       context: "context",
       menuSettings: "viewedStoreMenuSettings"
     }),
+    mobile() {
+      if (window.innerWidth < 500) return true;
+      else return false;
+    },
     galleryStyle() {
       if (this.showNutritionFacts) {
         return "margin-left:70px;";
@@ -604,6 +608,11 @@ export default {
           this.special_instructions
         );
         meal.quantity = 1;
+      }
+
+      if (this.mobile) {
+        let quantity = meal.quantity ? meal.quantity : 1;
+        this.$toastr.s(quantity + " x " + meal.full_title + " added to bag.");
       }
 
       this.mealSize = null;
