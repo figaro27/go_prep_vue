@@ -20,6 +20,7 @@ use App\MealPackageOrder;
 use App\Subscription;
 use App\PurchasedGiftCard;
 use App\Error;
+use App\StoreSetting;
 
 class SubscriptionController extends UserController
 {
@@ -204,6 +205,34 @@ class SubscriptionController extends UserController
             $order->publicNotes = $request->get('notes');
             $order->update();
         }
+    }
+
+    public function expediteRenewal(Request $request)
+    {
+        $subId = $request->get('subId');
+        $subscription = Subscription::where('id', $subId)->first();
+        $storeId = $subscription->store_id;
+        $store = Store::where('id', $storeId)->first();
+        $storeSettings = StoreSetting::where('store_id', $storeId)->first();
+
+        $nextCutoff = $store->getNextCutoffDate()->toDateTimeString();
+        $nextDelivery = $store->getNextDeliveryDate()->toDateTimeString();
+
+        if ($storeSettings->subscriptionRenewalType === 'now') {
+            $latest_unpaid_order = $subscription->orders->last();
+            $latest_unpaid_order->delivery_date = $nextDelivery;
+            $latest_unpaid_order->update();
+            $subscription->renew();
+        } else {
+            $subscription->next_renewal_at = $nextCutoff;
+            $subscription->next_delivery_date = $nextDelivery;
+            $subscription->latest_unpaid_order_date = $nextDelivery;
+            $latest_unpaid_order = $subscription->orders->last();
+            $latest_unpaid_order->delivery_date = $nextDelivery;
+            $latest_unpaid_order->update();
+        }
+
+        $subscription->update();
     }
 
     /**

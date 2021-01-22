@@ -349,6 +349,11 @@ foreach (
                                 'SubscriptionController'
                             );
 
+                            Route::post(
+                                'expediteRenewal',
+                                'SubscriptionController@expediteRenewal'
+                            );
+
                             Route::get(
                                 'cancelledSubscriptions',
                                 'SubscriptionController@cancelledSubscriptions'
@@ -777,6 +782,10 @@ foreach (
                             Route::post(
                                 'me/subscriptions/{id}/meals',
                                 'SubscriptionController@updateMeals'
+                            );
+                            Route::post(
+                                'me/expediteRenewal',
+                                'SubscriptionController@expediteRenewal'
                             );
                             Route::get(
                                 'me/getSubscriptionPickup/{id}',

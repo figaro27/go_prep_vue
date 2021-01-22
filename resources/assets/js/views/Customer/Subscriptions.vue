@@ -104,7 +104,7 @@
                   props.row.id
               "
             >
-              <b-btn class="btn btn-success btn-sm">Change Items</b-btn>
+              <b-btn class="btn btn-success btn-sm">Adjust</b-btn>
             </router-link>
             <button
               v-if="
@@ -134,6 +134,16 @@
               @click.stop="() => resumeSubscription(props.row.id)"
               >Resume</b-btn
             >
+            <b-btn
+              variant="dark"
+              class="btn btn-sm"
+              v-if="
+                (store.id === 3 || store.id === 106) &&
+                  props.row.renewalCount > 0
+              "
+              @click="(showRenewModal = true), (subscription = props.row)"
+              >Renew</b-btn
+            >
           </div>
 
           <div slot="amount" slot-scope="props">
@@ -145,6 +155,36 @@
 
     <b-modal
       size="md"
+      title="Renew Subscription"
+      v-model="showRenewModal"
+      v-if="showRenewModal"
+      hide-footer
+    >
+      <div class="center-text">
+        <p v-if="store.settings.subscriptionRenewalType === 'now'" class="pt-3">
+          This will renew the subscription now instead of the next scheduled
+          renewal on
+          {{ moment(subscription.next_renewal_at).format("dddd, MMM Do") }}. You
+          will be charged right away and a new order will be created.
+        </p>
+        <p v-else class="pt-3">
+          This will change the subscription renewal day from the next scheduled
+          renewal on
+          {{ moment(subscription.next_renewal_at).format("dddd, MMM Do") }} to
+          the most upcoming store renewal on
+          {{ moment(store.next_cutoff_date).format("dddd, MMM Do") }}.
+        </p>
+
+        <p class="strong">Proceed?</p>
+
+        <b-btn class="btn btn-md" variant="primary" @click="expediteRenewal()"
+          >Renew</b-btn
+        >
+      </div>
+    </b-modal>
+
+    <b-modal
+      size="md"
       title="Cancel Subscription"
       v-model="cancelSubscriptionModal"
       v-if="cancelSubscriptionModal"
@@ -152,8 +192,7 @@
     >
       <p class="center-text mt-3 mb-3">
         Are you sure you want to cancel your subscription? If you want to change
-        your items you can click "Change Items" instead to edit this
-        subscription.
+        your items you can click "Adjust" instead to edit this subscription.
       </p>
       <center>
         <b-btn variant="danger" @click="cancelSubscription">Cancel</b-btn>
@@ -164,7 +203,7 @@
               subId
           "
         >
-          <b-btn class="btn btn-success btn-md">Change Items</b-btn>
+          <b-btn class="btn btn-success btn-md">Adjust</b-btn>
         </router-link>
       </center>
     </b-modal>
@@ -222,8 +261,20 @@
             <router-link
               :to="`/customer/adjust-subscription/${subscription.id}`"
             >
-              <b-btn class="btn btn-success btn-sm">Change Items</b-btn>
+              <b-btn class="btn btn-success btn-sm">Adjust</b-btn>
             </router-link>
+            <b-btn
+              v-if="subscription.status === 'active'"
+              class="btn btn-warning btn-sm"
+              @click.stop="() => pauseSubscription(subscription.id)"
+              >Pause</b-btn
+            >
+            <b-btn
+              v-if="subscription.status === 'paused'"
+              class="btn btn-warning btn-sm"
+              @click.stop="() => resumeSubscription(subscription.id)"
+              >Resume</b-btn
+            >
             <button
               v-if="
                 subscription.paid_order_count >=
@@ -236,6 +287,16 @@
             >
               Cancel
             </button>
+            <b-btn
+              variant="dark"
+              class="btn btn-sm"
+              v-if="
+                (store.id === 3 || store.id === 106) &&
+                  subscription.renewalCount > 0
+              "
+              @click="showRenewModal = true"
+              >Renew</b-btn
+            >
           </div>
           <div class="col-md-4">
             <h4>Placed On</h4>
@@ -493,6 +554,7 @@ export default {
   },
   data() {
     return {
+      showRenewModal: false,
       subscription: null,
       viewSubscriptionModal: false,
       isLoading: false,
@@ -883,6 +945,19 @@ export default {
         })
         .finally(() => {
           this.removeJob(jobId);
+        });
+    },
+    expediteRenewal() {
+      axios
+        .post("/api/me/expediteRenewal", { subId: this.subscription.id })
+        .then(resp => {
+          this.refreshSubscriptions();
+          this.showRenewModal = false;
+          if (this.store.settings.subscriptionRenewalType === "now") {
+            this.$toastr.s("Subscription renewed successfully");
+          } else {
+            this.$toastr.s("Subscription renewal day successfully moved.");
+          }
         });
     },
     formatMoney: format.money
