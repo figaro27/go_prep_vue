@@ -725,7 +725,8 @@ class Subscription extends Model
 
             if (
                 strpos($sub->error, 'unpaid order') !== false ||
-                strpos($sub->error, 'stripe_id') !== false
+                strpos($sub->error, 'stripe_id') !== false ||
+                strpos($sub->error, 'specify a customer') !== false
             ) {
                 Mail::to('mike@goprep.com')->send($email);
             } else {
