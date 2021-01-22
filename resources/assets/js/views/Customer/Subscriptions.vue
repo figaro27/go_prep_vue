@@ -139,7 +139,8 @@
               class="btn btn-sm"
               v-if="
                 (store.id === 3 || store.id === 106) &&
-                  props.row.renewalCount > 0
+                  props.row.next_renewal_at.toString() !==
+                    store.next_cutoff_date.toString()
               "
               @click="(showRenewModal = true), (subscription = props.row)"
               >Renew</b-btn
@@ -292,7 +293,8 @@
               class="btn btn-sm"
               v-if="
                 (store.id === 3 || store.id === 106) &&
-                  subscription.renewalCount > 0
+                  subscription.next_renewal_at.toString() !==
+                    store.next_cutoff_date.toString()
               "
               @click="showRenewModal = true"
               >Renew</b-btn
