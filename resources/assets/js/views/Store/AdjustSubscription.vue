@@ -221,9 +221,7 @@ export default {
           let special_instructions = item.special_instructions;
 
           let free = item.free;
-          console.log(meal);
-          console.log(item.price);
-          console.log(item.quantity);
+
           meal.price = item.price / item.quantity;
 
           if (this.store.modules.multipleDeliveryDays) {
