@@ -3266,6 +3266,8 @@ const getters = {
     }
   },
   viewedStoreMealPackage: state => (id, defaultMeal = null) => {
+    console.log(defaultMeal);
+    console.log(state.viewed_store.packages);
     try {
       let meal = null;
       if (defaultMeal != null) {
