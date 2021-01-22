@@ -211,7 +211,7 @@ class MealPackage extends Model implements HasMedia
                 $dday = new DeliveryDayMealPackage();
                 $dday->delivery_day_id = $day;
                 $dday->meal_package_id = $package->id;
-                $dday->store_id = $this->store_id;
+                $dday->store_id = $package->store_id;
                 $dday->save();
             }
         }
