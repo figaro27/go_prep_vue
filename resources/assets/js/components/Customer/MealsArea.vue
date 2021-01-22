@@ -1041,6 +1041,10 @@ export default {
         return false;
       }
     },
+    mobile() {
+      if (window.innerWidth < 500) return true;
+      else return false;
+    },
     totalBagQuantity() {
       let quantity = 0;
       this.bag.forEach(item => {

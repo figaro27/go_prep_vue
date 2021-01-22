@@ -453,6 +453,9 @@ export default {
         free,
         custom
       });
+      if (this.mobile) {
+        this.$toastr.s("Item added to bag.");
+      }
       this.mealModal = false;
       this.mealPackageModal = false;
     },
