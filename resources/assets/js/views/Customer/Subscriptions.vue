@@ -172,7 +172,7 @@
           This will change the subscription renewal day from the next scheduled
           renewal on
           {{ moment(subscription.next_renewal_at).format("dddd, MMM Do") }} to
-          the most upcoming store renewal on
+          the most upcoming renewal date on
           {{ moment(store.next_cutoff_date).format("dddd, MMM Do") }}.
         </p>
 
