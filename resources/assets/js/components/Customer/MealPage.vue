@@ -247,6 +247,7 @@
                   type="number"
                   class="mb-2 width-115"
                   :min="1"
+                  style="font-size:16px"
                 ></b-form-input>
                 <button
                   type="button"

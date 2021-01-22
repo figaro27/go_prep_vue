@@ -456,7 +456,9 @@ export default {
 
       if (this.mobile) {
         let quantity = meal.quantity ? meal.quantity : 1;
+        this.$toastr.defaultPosition = "toast-top-left";
         this.$toastr.s(quantity + " x " + meal.title + " added to bag.");
+        this.$toastr.defaultPosition = "toast-top-right";
       }
       this.mealModal = false;
       this.mealPackageModal = false;
