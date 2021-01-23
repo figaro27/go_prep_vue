@@ -63,12 +63,12 @@ export default {
             groupTotal.length == 0
           ) {
             message =
-              "Please add at least " +
+              "Must meet " +
               format.money(
                 this.minimumDeliveryDayAmount,
                 this.storeSettings.currency
               ) +
-              " for each day.";
+              " minimum for each day.";
 
             return message;
           }
