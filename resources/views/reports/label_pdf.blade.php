@@ -44,7 +44,7 @@ font-size:10px !important;
         @endif
   <center>
           @if ($reportSettings->lab_logo)
-      <img src="{{$logo}}"/ style="width:25vh;height:25vh;margin-top:8px;margin-bottom:4px">
+      <img src="{{$logo}}"/ style="width:25vh;margin-top:8px;margin-bottom:4px">
       @else
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="/ style="width:25vh;height:15vh;margin-top:8px;margin-bottom:4px">
       @endif
