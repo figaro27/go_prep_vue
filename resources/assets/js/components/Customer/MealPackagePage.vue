@@ -22,7 +22,7 @@
         @click="mealPackageMealModal = false"
       ></i>
       <h4 class="center-text pt-3">{{ mealTitle }}</h4>
-      <p class="pt-2" v-html="mealDescription" v-if="!mobile"></p>
+      <p class="pt-2" v-html="mealDescription"></p>
       <i
         v-if="mealDescription.length > 150"
         class="fas fa-times-circle pt-2 mb-3"
@@ -401,7 +401,7 @@
                                     </p>
                                   </div>
                                 </div>
-                                <div class="mt-1 content-text" v-if="!mobile">
+                                <div class="mt-1 content-text">
                                   <p v-html="mealOption.meal.description"></p>
                                 </div>
 
@@ -463,7 +463,7 @@
                                     </p>
                                   </div>
                                 </div>
-                                <div class="mt-1 content-text" v-if="!mobile">
+                                <div class="mt-1 content-text">
                                   <p v-html="mealOption.meal.description"></p>
                                 </div>
                                 <div
@@ -817,7 +817,7 @@
                                   </p>
                                 </div>
                               </div>
-                              <div class="mt-1 content-text" v-if="!mobile">
+                              <div class="mt-1 content-text">
                                 <p v-html="mealOption.meal.description"></p>
                               </div>
 
@@ -875,7 +875,7 @@
                                   </p>
                                 </div>
                               </div>
-                              <div class="mt-1 content-text" v-if="!mobile">
+                              <div class="mt-1 content-text">
                                 <p v-html="mealOption.meal.description"></p>
                               </div>
                               <div
