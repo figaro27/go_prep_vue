@@ -8,24 +8,22 @@
     .text-green {
       color:#006400 !important;
     }
-  table tbody tr:first-child {
-    font-weight: bold;
-  }
   table tr td:nth-child(3) {
     width: 100px;
     word-break: break-all;
     }
-
-
   </style>
+@php
+$currency = $params->currency
+@endphp
 </head>
 
 <body class="{{ $body_classes }}">
   <div id="print-area">
-    <h1>Payments</h1>
+    <h1>Payments @if ($params['dailySummary'] == 'true') (Daily Summary) @endif</h1>
     <div class="delivery-part">
       <h2 style="font-size:22px">
-        @if (isset($params['byOrderDate']) && $params['byOrderDate'])
+        @if (isset($params['byOrderDate']) && $params['byOrderDate'] == 'true')
           Order Dates:
           @else
           Delivery Dates:
@@ -48,50 +46,54 @@
       <table border="1" width="100" class="light-border payments-report">
         <thead>
           <tr>
+            @if ($params['created_at'])
             <th style="width:100px">Order Date</th>
+            @endif
+            @if ($params['delivery_date'])
             <th style="width:100px">Delivery Date</th>
+            @endif
             @if ($params['dailySummary'])
             <th>Orders</th>
             @endif
             <th>Subtotal</th>
-            @if (!$params['removeCoupon'])
+            @if ($params['couponReduction'])
             <th class="text-green">(Coupon)</th>
             @endif
-            @if (!$params['removeSubscription'])
+            @if ($params['mealPlanDiscount'])
             <th class="text-green">(Subscription)</th>
             @endif
-            @if (!$params['removeSalesTax'])
+            @if ($params['salesTax'])
             <th>Sales Tax</th>
             @endif
-            @if (!$params['removeProcessingFee'])
+            @if ($params['processingFee'])
             <th>Processing Fee</th>
             @endif
-            @if (!$params['removeDeliveryFee'])
+            @if ($params['deliveryFee'])
             <th>Delivery Fee</th>
             @endif
-            @if (!$params['removeGratuity'])
+            @if ($params['gratuity'])
             <th>Gratuity</th>
             @endif
-            @if (!$params['removeCoolerDeposit'])
+            @if ($params['coolerDeposit'])
             <th>Cooler Deposit</th>
             @endif
-            @if (!$params['removeGiftCard'])
+            @if ($params['purchasedGiftCardReduction'])
             <th class="text-green">(Gift Card)</th>
             @endif
-            @if (!$params['removeReferral'])
+            @if ($params['referralReduction'])
             <th class="text-green">(Referral)</th> 
             @endif
-            @if (!$params['removePromotion'])
+            @if ($params['promotionReduction'])
             <th class="text-green">(Promotion)</th> 
             @endif
-            @if (!$params['removePoints'])
+            @if ($params['pointsReduction'])
             <th class="text-green">(Points)</th> 
             @endif
             <th>Total</th>  
-            @if (!$params['removeRefund'])
+            @if ($params['refundedAmount'])
             <th class="text-green">(Refunded)</th> 
             @endif
-            @if (!$params['removeBalance']) 
+            @if ($params['balance']) 
             <th>Balance</th>
             @endif
             <!-- <th>Refunded</th> -->
@@ -100,8 +102,12 @@
         <tbody>
           @foreach ($data as $i => $row)
           <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
-            @foreach($row as $value)
+            @foreach($row as $column => $value)
+            @if (is_numeric($value) && $column !== 'orders')
+              <td>@money($value, $currency, 2)</td>
+            @else
               <td>{{ $value }}</td>
+            @endif
             @endforeach
           </tr>
           @endforeach

@@ -349,6 +349,13 @@ foreach (
                                 'SubscriptionController'
                             );
 
+                            Route::resource('errors', 'ErrorController');
+
+                            Route::post(
+                                'getErrorsWithDates',
+                                'ErrorController@getErrorsWithDates'
+                            );
+
                             Route::post(
                                 'expediteRenewal',
                                 'SubscriptionController@expediteRenewal'
@@ -362,6 +369,20 @@ foreach (
                             Route::post(
                                 'updateSubNotes',
                                 'SubscriptionController@updateNotes'
+                            );
+
+                            Route::resource('payouts', 'PayoutController');
+                            Route::get(
+                                'payouts/{page?}/{pageSize?}',
+                                'PayoutController@index'
+                            );
+                            Route::post(
+                                'getBalanceHistory',
+                                'PayoutController@getBalanceHistory'
+                            );
+                            Route::post(
+                                'getPayoutsWithDates',
+                                'PayoutController@getPayoutsWithDates'
                             );
 
                             // Route::post(

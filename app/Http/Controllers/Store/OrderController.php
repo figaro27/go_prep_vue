@@ -459,11 +459,11 @@ class OrderController extends StoreController
                 ->where($date, '<=', $endDate)
             : [];
 
-        if (isset($removeManualOrders) && $removeManualOrders === 1) {
+        if (isset($removeManualOrders) && $removeManualOrders) {
             $orders = $orders->where('manual', 0);
         }
 
-        if (isset($removeCashOrders) && $removeCashOrders === 1) {
+        if (isset($removeCashOrders) && $removeCashOrders) {
             $orders = $orders->where('cashOrder', 0);
         }
 

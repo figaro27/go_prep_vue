@@ -25,7 +25,6 @@ import StoreReports from "./views/Store/Reports.vue";
 import StoreMenu from "./views/Store/Menu.vue";
 import StoreProduction from "./views/Store/Production.vue";
 import StoreOrders from "./views/Store/Orders.vue";
-import StorePayments from "./views/Store/Payments.vue";
 import StoreSubscriptions from "./views/Store/Subscriptions.vue";
 import StoreMyAccount from "./views/Store/Account/MyAccount.vue";
 import StoreStripeConnect from "./views/Store/Account/Stripe.vue";
@@ -39,6 +38,7 @@ import StoreBag from "./views/Store/Bag.vue";
 import StoreUpdates from "./views/Store/Updates.vue";
 import StoreMarketing from "./views/Store/Marketing.vue";
 import StoreSMS from "./views/Store/SMS.vue";
+import StoreFinances from "./views/Store/Finances.vue";
 
 import Spinner from "./components/Spinner.vue";
 
@@ -175,11 +175,6 @@ let routes = [
     name: "store-orders"
   },
   {
-    path: "/store/payments",
-    component: StorePayments,
-    name: "store-payments"
-  },
-  {
     path: "/store/subscriptions",
     component: StoreSubscriptions,
     name: "store-subscriptions"
@@ -243,6 +238,11 @@ let routes = [
     path: "/store/SMS",
     component: StoreSMS,
     name: "store-sms"
+  },
+  {
+    path: "/store/Finances",
+    component: StoreFinances,
+    name: "store-finances"
   },
   {
     path: "/spinner",

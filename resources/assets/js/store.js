@@ -8,6 +8,7 @@ import CryptoJS from "crypto-js";
 import getSymbolFromCurrency from "currency-symbol-map";
 // Paginated resources
 import ResourceStore from "./store/resources";
+import PayoutResourceStore from "./store/payoutsResources";
 import PrinterStore from "./store/printer";
 import allergies from "./data/allergies";
 import tags from "./data/tags";
@@ -4192,6 +4193,7 @@ export default new Vuex.Store({
   plugins,
   modules: {
     resources: ResourceStore,
+    payoutsResources: PayoutResourceStore,
     printer: PrinterStore
   }
 });

@@ -69,6 +69,7 @@ class Order extends Model
         'cutoff_passed',
         'pre_coupon',
         'order_day',
+        'delivery_day',
         'goprep_fee',
         'stripe_fee',
         'grandTotal',
@@ -272,6 +273,11 @@ class Order extends Model
     public function getOrderDayAttribute()
     {
         return $this->created_at->format('m d');
+    }
+
+    public function getDeliveryDayAttribute()
+    {
+        return $this->delivery_date->format('m d');
     }
 
     public function getGoprepFeeAttribute()

@@ -236,6 +236,11 @@ class Store extends Model
         return $this->hasMany('App\Referral')->with('user');
     }
 
+    public function errors()
+    {
+        return $this->hasMany('App\Error')->with('user');
+    }
+
     public function referralSettings()
     {
         return $this->hasOne('App\ReferralSetting');

@@ -1,20 +1,25 @@
 <template>
   <div class="delivery-date-picker mb-0 flex-grow-0">
     <div class="d-flex flex-wrap align-items-center">
-      <div
-        class="mr-sm-2 flex-grow-0"
-        v-if="!storeSettings.allowPickup && !orderDate"
-      >
-        Delivery Dates:
-      </div>
-      <div
-        class="mr-sm-2 flex-grow-0"
-        v-if="storeSettings.allowPickup && !orderDate"
-      >
-        Delivery / Pickup Dates:
-      </div>
-      <div class="mr-sm-2 flex-grow-0" v-if="orderDate">
-        Order Dates:
+      <div v-if="!hideDateLabel">
+        <div
+          class="mr-sm-2 flex-grow-0"
+          v-if="!storeSettings.allowPickup && !orderDate && !regularDate"
+        >
+          Delivery Dates:
+        </div>
+        <div
+          class="mr-sm-2 flex-grow-0"
+          v-if="storeSettings.allowPickup && !orderDate"
+        >
+          Delivery / Pickup Dates:
+        </div>
+        <div class="mr-sm-2 flex-grow-0" v-if="orderDate">
+          Order Dates:
+        </div>
+        <div class="mr-sm-2 flex-grow-0" v-if="regularDate">
+          Dates:
+        </div>
       </div>
       <div class="flex-grow-0">
         <date-range-picker
@@ -48,6 +53,12 @@ import format from "../lib/format";
 
 export default {
   props: {
+    hideDateLabel: {
+      default: false
+    },
+    regularDate: {
+      default: false
+    },
     orderDate: {
       default: false
     },

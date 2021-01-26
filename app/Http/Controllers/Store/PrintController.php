@@ -26,6 +26,7 @@ use App\Exportable\Store\Labels;
 use App\Exportable\Store\OrderLabels;
 use App\Exportable\Store\Leads;
 use App\Exportable\Store\Referrals;
+use App\Exportable\Store\Payouts;
 use Illuminate\Support\Facades\Storage;
 
 class PrintController extends StoreController
@@ -125,6 +126,9 @@ class PrintController extends StoreController
                 break;
             case 'referrals':
                 $exportable = new Referrals($this->store, $params);
+                break;
+            case 'payouts':
+                $exportable = new Payouts($this->store, $params);
                 break;
         }
 

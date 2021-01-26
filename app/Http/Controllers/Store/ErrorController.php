@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Store;
 
 use App\Error;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class ErrorController extends StoreController
 {
@@ -14,7 +15,59 @@ class ErrorController extends StoreController
      */
     public function index()
     {
-        //
+        $twoWeeksAgo = Carbon::now()
+            ->subDays('14')
+            ->toDateTimeString();
+
+        $errors = Error::where('store_id', $this->store->id)
+            ->where('created_at', '>=', $twoWeeksAgo)
+            ->with('user')
+            ->get();
+        $errors = $errors
+            ->filter(function ($error) {
+                if (
+                    strpos($error->error, ' card ') !== false ||
+                    strpos($error->error, ' card\'s ') !== false
+                ) {
+                    return $error;
+                }
+            })
+            ->values();
+
+        return $errors;
+    }
+
+    public function getErrorsWithDates(Request $request)
+    {
+        $startDate = isset($request['start_date'])
+            ? Carbon::parse($request['start_date'])
+            : null;
+        $endDate = isset($request['end_date'])
+            ? Carbon::parse($request['end_date'])
+            : null;
+
+        if (!$endDate) {
+            $endDate = $startDate;
+        }
+
+        $errors = Error::where('store_id', $this->store->id)
+            ->where('created_at', '>=', $startDate)
+            ->where('created_at', '<=', $endDate)
+            ->with('user')
+            ->get();
+
+        $errors = $errors
+            ->filter(function ($error) {
+                if (
+                    strpos($error->error, ' card ') !== false ||
+                    strpos($error->error, ' card\'s ') !== false
+                ) {
+                    return $error;
+                }
+            })
+            ->values();
+
+        return $errors;
     }
 
     /**
