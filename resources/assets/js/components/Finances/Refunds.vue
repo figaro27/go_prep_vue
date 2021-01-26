@@ -21,6 +21,9 @@
       <div slot="created_at" slot-scope="props">
         {{ moment(props.row.created_at).format("dddd, MMM Do") }}
       </div>
+      <div slot="amount" slot-scope="props">
+        {{ format.money(props.row.amount, store.settings.currency) }}
+      </div>
     </v-client-table>
   </div>
 </template>
@@ -41,7 +44,7 @@ export default {
   },
   watch: {
     tabs(val) {
-      if (val == 2) {
+      if (val == 1) {
         this.refreshTableData();
       }
     }
@@ -53,10 +56,11 @@ export default {
   data() {
     return {
       tableData: [],
-      columns: ["created_at"],
+      columns: ["created_at", "order", "customer", "card", "amount"],
       options: {
         headings: {
-          created_at: "Refund Date"
+          created_at: "Refund Date",
+          order: "Order ID"
         }
       },
       filters: {
@@ -79,40 +83,41 @@ export default {
   methods: {
     ...mapActions(),
     refreshTableData() {
-      axios.get("/api/me/errors").then(resp => {
+      axios.get("/api/me/refunds").then(resp => {
         this.tableData = resp.data.map(record => {
           return {
             created_at: record.created_at,
-            reason: this.getErrorCode(record.error),
             customer:
               record.user.user_detail.firstname +
               " " +
               record.user.user_detail.lastname,
-            phone: record.user.user_detail.phone,
-            email: record.user.email
+            order: record.order_number,
+            card: record.card.brand + " " + record.card.last4,
+            amount: record.amount
           };
         });
       });
     },
     onChangeDateFilter() {
       axios
-        .post("/api/me/getErrorsWithDates", {
+        .post("/api/me/getRefundsWithDates", {
           start_date: this.filters.dates.start
             ? this.filters.dates.start
             : null,
           end_date: this.filters.dates.end ? this.filters.dates.end : null
         })
         .then(resp => {
-          this.tableData = resp.data.map(record => {
-            return {
-              created_at: record.created_at,
-              reason: this.getErrorCode(record.error),
-              customer:
-                record.user.user_detail.firstname +
-                " " +
-                record.user.user_detail.lastname
-            };
-          });
+          this.tableData = resp.data;
+          // this.tableData = resp.data.map(record => {
+          //   return {
+          //     created_at: record.created_at,
+          //     reason: this.getErrorCode(record.error),
+          //     customer:
+          //       record.user.user_detail.firstname +
+          //       " " +
+          //       record.user.user_detail.lastname
+          //   };
+          // });
         });
     },
     clearDeliveryDates() {

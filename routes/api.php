@@ -356,6 +356,13 @@ foreach (
                                 'ErrorController@getErrorsWithDates'
                             );
 
+                            Route::resource('refunds', 'RefundController');
+
+                            Route::post(
+                                'getRefundsWithDates',
+                                'RefundController@getRefundsWithDates'
+                            );
+
                             Route::post(
                                 'expediteRenewal',
                                 'SubscriptionController@expediteRenewal'

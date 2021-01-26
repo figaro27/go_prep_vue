@@ -34,6 +34,7 @@ use App\MealSize;
 use App\Subscription;
 use App\MealSubscription;
 use App\Mail\Customer\NewGiftCard;
+use App\Refund;
 
 class OrderController extends StoreController
 {
@@ -1432,6 +1433,17 @@ class OrderController extends StoreController
         $order->refundedAmount += $request->get('refundAmount');
         $order->coolerReturned = isset($cooler) && $cooler == 1 ? 1 : 0;
         $order->save();
+
+        $newRefund = new Refund();
+        $newRefund->store_id = $this->store->id;
+        $newRefund->stripe_id = $refund['id'];
+        $newRefund->charge_id = $refund['charge'];
+        $newRefund->user_id = $order_transaction->user_id;
+        $newRefund->order_id = $order_transaction->order_id;
+        $newRefund->order_number = $order->order_number;
+        $newRefund->card_id = $order_transaction->card_id;
+        $newRefund->amount = $refundAmount;
+        $newRefund->save();
 
         return 'Refunded $' . $request->get('refundAmount');
     }

@@ -8,7 +8,7 @@
           <payments></payments>
         </b-tab>
         <b-tab title="Refunds">
-          <refunds></refunds>
+          <refunds :tabs="tabs"></refunds>
         </b-tab>
         <b-tab title="Payouts">
           <payouts :tabs="tabs"></payouts>
