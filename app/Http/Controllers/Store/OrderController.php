@@ -227,10 +227,86 @@ class OrderController extends StoreController
             : [];*/
     }
 
+    public function getRecentOrders(Request $request)
+    {
+        $fromDate = Carbon::today($this->store->settings->timezone)
+            ->startOfDay()
+            ->subDays(7);
+
+        if ($this->store->has('orders')) {
+            $orders = $this->store->orders()->where(['paid' => 1]);
+            $orders = $orders->where(function ($query) use ($fromDate) {
+                $query
+                    ->where(function ($query1) use ($fromDate) {
+                        $query1->where('isMultipleDelivery', 0);
+                        $query1->where(
+                            'created_at',
+                            '>=',
+                            $fromDate->format('Y-m-d')
+                        );
+                    })
+                    ->orWhere(function ($query2) use ($fromDate) {
+                        $query2
+                            ->where('isMultipleDelivery', 1)
+                            ->whereHas('meal_orders', function ($subquery) use (
+                                $fromDate
+                            ) {
+                                $subquery->whereNotNull(
+                                    'meal_orders.created_at'
+                                );
+                                $subquery->where(
+                                    'meal_orders.created_at',
+                                    '>=',
+                                    $fromDate->format('Y-m-d')
+                                );
+                            });
+                    });
+            });
+            $orders = $orders->get();
+
+            $orders->makeHidden([
+                'has_notes',
+                'meal_ids',
+                'items',
+                'meal_orders',
+                'meal_package_items',
+                'store_name',
+                'cutoff_date',
+                'cutoff_passed',
+                'pre_coupon',
+                'order_day',
+                'delivery_day',
+                'goprep_fee',
+                'stripe_fee',
+                'grandTotal',
+                'line_items_order',
+                'added_by_store_id',
+                'multiple_dates',
+                'delivery_dates_array',
+                'purchased_gift_card_code',
+                'customer_name',
+                'customer_address',
+                'customer_zip',
+                'visible_items',
+                'pickup_location_name',
+                'staff_member',
+                'transfer_type'
+            ]);
+
+            if (!$this->store->modules->multipleDeliveryDays) {
+                $orders->makeHidden([
+                    'delivery_dates_array',
+                    'isMultipleDelivery'
+                ]);
+            }
+            return $orders;
+        }
+
+        return [];
+    }
+
     public function getUpcomingOrdersWithoutItems()
     {
-        return [];
-
         // Optimized orders for Store/Orders & Store/Payments pages
         $fromDate = Carbon::today(
             $this->store->settings->timezone

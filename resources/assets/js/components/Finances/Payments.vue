@@ -42,7 +42,7 @@
         <div style="margin-left:155px">
           <div class="mb-4 mt-4" style="position:relative;right:18px">
             <b-form-radio-group
-              v-model="filters.byOrderDate"
+              v-model="filters.byPaymentDate"
               :options="[
                 { text: 'Order Dates', value: true },
                 { text: 'Delivery Dates', value: false }
@@ -63,7 +63,6 @@
               class="mediumCheckbox"
               type="checkbox"
               v-model="filters.removeManualOrders"
-              @input="toggleManualCashOrders"
               ><span class="paragraph"
                 >Ignore Manual Orders</span
               ></b-form-checkbox
@@ -74,7 +73,6 @@
               class="mediumCheckbox"
               type="checkbox"
               v-model="filters.removeCashOrders"
-              @input="toggleManualCashOrders"
               ><span class="paragraph"
                 >Ignore Cash Orders</span
               ></b-form-checkbox
@@ -82,7 +80,7 @@
           </div>
           <div class="mb-4">
             <b-form-select
-              v-model="filters.couponCode"
+              v-model="filters.couponId"
               :options="coupons"
               class="w-180"
               style="position:relative;right:20px"
@@ -112,12 +110,11 @@
 
             <delivery-date-picker
               v-model="filters.delivery_dates"
-              @change="onChangeDateFilter"
               class="mt-3 mt-sm-0"
               ref="deliveryDates"
-              :orderDate="filters.byOrderDate"
+              :orderDate="filters.byPaymentDate"
             ></delivery-date-picker>
-            <b-btn @click="clearDeliveryDates" class="ml-2">Clear</b-btn>
+            <b-btn @click="clearDeliveryDates()" class="ml-2">Clear</b-btn>
 
             <b-btn
               variant="primary"
@@ -191,7 +188,7 @@
               <div>{{ props.row.couponCode }}</div>
             </div> -->
         <div slot="couponReduction" slot-scope="props">
-          <div class="text-success">
+          <div>
             {{
               props.row.couponReduction !== null &&
               props.row.couponReduction > 0
@@ -203,7 +200,7 @@
           </div>
         </div>
         <div slot="mealPlanDiscount" slot-scope="props">
-          <div class="text-success">
+          <div>
             {{
               props.row.mealPlanDiscount !== null &&
               props.row.mealPlanDiscount > 0
@@ -254,21 +251,24 @@
           </div>
         </div>
 
-        <!-- <div slot="total" slot-scope="props">
-              <div>{{ formatMoney(props.row.amount, props.row.currency) }}</div>
-            </div> -->
-        <div slot="goprep_fee" slot-scope="props">
+        <div slot="chargedAmount" slot-scope="props">
           <div>
-            {{ formatMoney(props.row.goprep_fee, props.row.currency) }}
+            {{
+              props.row.chargedAmount !== null && props.row.chargedAmount > 0
+                ? formatMoney(props.row.chargedAmount, props.row.currency)
+                : " - "
+            }}
           </div>
         </div>
-        <div slot="stripe_fee" slot-scope="props">
+        <div slot="preTransactionFeeAmount" slot-scope="props">
           <div>
-            {{ formatMoney(props.row.stripe_fee, props.row.currency) }}
+            {{
+              formatMoney(props.row.preTransactionFeeAmount, props.row.currency)
+            }}
           </div>
         </div>
         <div slot="referralReduction" slot-scope="props">
-          <div class="text-success">
+          <div>
             {{
               props.row.referralReduction !== null &&
               props.row.referralReduction > 0
@@ -280,7 +280,7 @@
           </div>
         </div>
         <div slot="purchasedGiftCardReduction" slot-scope="props">
-          <div class="text-success">
+          <div>
             {{
               props.row.purchasedGiftCardReduction !== null &&
               props.row.purchasedGiftCardReduction > 0
@@ -295,7 +295,7 @@
           </div>
         </div>
         <div slot="promotionReduction" slot-scope="props">
-          <div class="text-success">
+          <div>
             {{
               props.row.promotionReduction !== null &&
               props.row.promotionReduction > 0
@@ -310,12 +310,23 @@
           </div>
         </div>
         <div slot="pointsReduction" slot-scope="props">
-          <div class="text-success">
+          <div>
             {{
               props.row.pointsReduction !== null &&
               props.row.pointsReduction > 0
                 ? "(" +
                   formatMoney(props.row.pointsReduction, props.row.currency) +
+                  ")"
+                : " - "
+            }}
+          </div>
+        </div>
+        <div slot="transactionFee" slot-scope="props">
+          <div>
+            {{
+              props.row.transactionFee !== null && props.row.transactionFee > 0
+                ? "(" +
+                  formatMoney(props.row.transactionFee, props.row.currency) +
                   ")"
                 : " - "
             }}
@@ -338,7 +349,13 @@
         </div>
         <div slot="refundedAmount" slot-scope="props">
           <div>
-            {{ formatMoney(props.row.refundedAmount, props.row.currency) }}
+            {{
+              props.row.refundedAmount !== null && props.row.refundedAmount > 0
+                ? "(" +
+                  formatMoney(props.row.refundedAmount, props.row.currency) +
+                  ")"
+                : " - "
+            }}
           </div>
         </div>
       </v-client-table>
@@ -362,13 +379,12 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      payments: [],
       upcharges: false,
       showFiltersModal: false,
       showMultiAuthModal: false,
       multiAuthPassword: null,
       upcomingOrdersByOrderDate: [],
-      goPrepFee: 0.05,
-      stripeFee: 0.029,
       stripeUrl: "",
       ordersByDate: [],
       filter: false,
@@ -378,9 +394,9 @@ export default {
           start: null,
           end: null
         },
-        couponCode: null,
+        couponId: null,
         dailySummary: false,
-        byOrderDate: false,
+        byPaymentDate: true,
         removeManualOrders: false,
         removeCashOrders: false
       },
@@ -407,6 +423,9 @@ export default {
           pointsReduction: "Points",
           gratuity: "Gratuity",
           coolerDeposit: "Cooler Deposit",
+          chargedAmount: "Additional Charges",
+          preTransactionFeeAmount: "Pre-Fee Total",
+          transactionFee: "Transaction Fee",
           amount: "Total",
           balance: "Balance",
           refundedAmount: "Refunded"
@@ -430,6 +449,22 @@ export default {
       }
     };
   },
+  props: {
+    tabs: null
+  },
+  watch: {
+    tabs(val) {
+      if (val == 0) {
+        this.refreshPayments();
+      }
+    },
+    filters: {
+      handler() {
+        this.refreshPayments();
+      },
+      deep: true
+    }
+  },
   created() {
     axios.get("/api/me/stripe/login").then(resp => {
       if (resp.data.url) {
@@ -438,12 +473,6 @@ export default {
     });
   },
   mounted() {
-    // Defaulting to payments by order date & hiding the checkbox for mult delivery stores
-    if (this.store.modules.multipleDeliveryDays) {
-      this.filters.byOrderDate = true;
-      this.toggleByOrderDate();
-    }
-    this.getApplicationFee();
     if (this.store.modules.multiAuth) {
       this.showMultiAuthModal = true;
     }
@@ -452,52 +481,34 @@ export default {
     ...mapGetters({
       store: "viewedStore",
       storeCoupons: "storeCoupons",
-      ordersToday: "storeOrdersToday",
-      upcomingOrdersWithoutItems: "storeUpcomingOrdersWithoutItems",
       isLoading: "isLoading",
       initialized: "initialized",
       customers: "storeCustomers",
-      nextDeliveryDates: "storeNextDeliveryDates",
-      getMeal: "storeMeal"
+      nextDeliveryDates: "storeNextDeliveryDates"
     }),
     tableData() {
       let filters = { ...this.filters };
 
-      let orders = [];
-      if (this.filters.delivery_dates.start === null) {
-        if (!this.filters.byOrderDate) {
-          orders = [...this.upcomingOrdersWithoutItems];
-        } else {
-          orders = this.upcomingOrdersByOrderDate;
-        }
-      } else {
-        orders = this.ordersByDate;
-      }
+      let payments = [];
 
-      orders = orders.filter(order => order.voided === 0);
+      payments = this.payments;
 
-      // if (this.filters.byDeliveryDate) {
-      //   orders = this.upcomingOrders;
-      // }
+      payments = payments.filter(payment => payment.voided === 0);
 
-      if (this.filters.couponCode != null) {
-        orders = orders.filter(
-          order => order.couponCode === this.filters.couponCode
-        );
-      }
-
-      let grandTotalOrders = orders.length - 1;
+      let grandTotalPayments = payments.length - 1;
 
       if (this.filters.dailySummary) {
-        let dayType = this.filters.byOrderDate ? "order_day" : "delivery_date";
-        let ordersByDay = Object.values(_.groupBy(orders, dayType));
+        let dayType = this.filters.byPaymentDate
+          ? "order_day"
+          : "delivery_date";
+        let paymentsByDay = Object.values(_.groupBy(payments, dayType));
 
-        orders = [];
+        payments = [];
 
-        ordersByDay.forEach(orderByDay => {
+        paymentsByDay.forEach(paymentByDay => {
           let created_at = "";
           let delivery_date = "";
-          let totalOrders = 0;
+          let totalPayments = 0;
           let sums = {
             preFeePreDiscount: 0,
             couponReduction: 0,
@@ -512,36 +523,43 @@ export default {
             pointsReduction: 0,
             // goprep_fee: 0,
             // stripe_fee: 0,
+            chargedAmount: 0,
+            preTransactionFeeAmount: 0,
             amount: 0,
             balance: 0,
             gratuity: 0,
-            coolerDeposit: 0
+            coolerDeposit: 0,
+            transactionFee: 0
           };
 
-          orderByDay.forEach(order => {
-            created_at = order.paid_at;
-            delivery_date = order.delivery_date;
-            totalOrders += 1;
-            sums.preFeePreDiscount += order.preFeePreDiscount;
-            sums.couponReduction += order.couponReduction;
-            sums.mealPlanDiscount += order.mealPlanDiscount;
-            sums.afterDiscountBeforeFees += order.afterDiscountBeforeFees;
-            sums.salesTax += order.salesTax;
-            sums.processingFee += order.processingFee;
-            sums.deliveryFee += order.deliveryFee;
-            sums.referralReduction += order.referralReduction;
-            sums.purchasedGiftCardReduction += order.purchasedGiftCardReduction;
-            sums.promotionReduction += order.promotionReduction;
-            sums.pointsReduction += order.pointsReduction;
-            sums.amount += order.amount;
-            sums.balance += order.balance;
-            sums.gratuity += order.gratuity;
-            sums.coolerDeposit += order.coolerDeposit;
+          paymentByDay.forEach(payment => {
+            created_at = payment.paid_at;
+            delivery_date = payment.delivery_date;
+            totalPayments += 1;
+            sums.preFeePreDiscount += payment.preFeePreDiscount;
+            sums.couponReduction += payment.couponReduction;
+            sums.mealPlanDiscount += payment.mealPlanDiscount;
+            sums.afterDiscountBeforeFees += payment.afterDiscountBeforeFees;
+            sums.salesTax += payment.salesTax;
+            sums.processingFee += payment.processingFee;
+            sums.deliveryFee += payment.deliveryFee;
+            sums.referralReduction += payment.referralReduction;
+            sums.purchasedGiftCardReduction +=
+              payment.purchasedGiftCardReduction;
+            sums.promotionReduction += payment.promotionReduction;
+            sums.pointsReduction += payment.pointsReduction;
+            sums.chargedAmount += payment.chargedAmount;
+            sums.preTransactionFeeAmount += payment.preTransactionFeeAmount;
+            sums.transactionFee += payment.transactionFee;
+            sums.amount += payment.amount;
+            sums.balance += payment.balance;
+            sums.gratuity += payment.gratuity;
+            sums.coolerDeposit += payment.coolerDeposit;
           });
-          orders.push({
+          payments.push({
             created_at: dayType == "order_day" ? created_at : null,
             delivery_date: dayType == "delivery_date" ? delivery_date : null,
-            totalOrders: totalOrders,
+            totalPayments: totalPayments,
             preFeePreDiscount: sums.preFeePreDiscount,
             couponReduction: sums.couponReduction,
             mealPlanDiscount: sums.mealPlanDiscount,
@@ -553,25 +571,26 @@ export default {
             purchasedGiftCardReduction: sums.purchasedGiftCardReduction,
             promotionReduction: sums.promotionReduction,
             pointsReduction: sums.pointsReduction,
+            chargedAmount: sums.chargedAmount,
+            preTransactionFeeAmount: sums.preTransactionFeeAmount,
+            transactionFee: sums.transactionFee,
             amount: sums.amount,
             gratuity: sums.gratuity,
             coolerDeposit: sums.coolerDeposit,
             balance: sums.balance
           });
         });
-
-        // orders.shift();
       }
 
       let totalsRowCheck = 0;
-      orders.forEach(order => {
-        if (order.created_at === "TOTALS") {
+      payments.forEach(payment => {
+        if (payment.created_at === "TOTALS") {
           totalsRowCheck = 1;
         }
       });
 
       if (!totalsRowCheck) {
-        let totalOrders = 0;
+        let totalPayments = 0;
         let sums = {
           preFeePreDiscount: 0,
           couponReduction: 0,
@@ -586,36 +605,42 @@ export default {
           purchasedGiftCardReduction: 0,
           promotionReduction: 0,
           pointsReduction: 0,
+          gratuity: 0,
+          coolerDeposit: 0,
+          chargedAmount: 0,
+          preTransactionFeeAmount: 0,
+          transactionFee: 0,
           amount: 0,
           refundedAmount: 0,
-          balance: 0,
-          gratuity: 0,
-          coolerDeposit: 0
+          balance: 0
         };
 
-        orders.forEach(order => {
-          sums.preFeePreDiscount += order.preFeePreDiscount;
-          sums.couponReduction += order.couponReduction;
-          sums.mealPlanDiscount += order.mealPlanDiscount;
-          sums.afterDiscountBeforeFees += order.afterDiscountBeforeFees;
-          sums.salesTax += order.salesTax;
-          sums.processingFee += order.processingFee;
-          sums.deliveryFee += order.deliveryFee;
-          sums.referralReduction += order.referralReduction;
-          sums.purchasedGiftCardReduction += order.purchasedGiftCardReduction;
-          sums.promotionReduction += order.promotionReduction;
-          sums.pointsReduction += order.pointsReduction;
-          sums.amount += order.amount;
-          sums.refundedAmount += order.refundedAmount;
-          sums.balance += order.balance;
-          sums.gratuity += order.gratuity;
-          sums.coolerDeposit += order.coolerDeposit;
+        payments.forEach(payment => {
+          sums.preFeePreDiscount += payment.preFeePreDiscount;
+          sums.couponReduction += payment.couponReduction;
+          sums.mealPlanDiscount += payment.mealPlanDiscount;
+          sums.afterDiscountBeforeFees += payment.afterDiscountBeforeFees;
+          sums.salesTax += payment.salesTax;
+          sums.processingFee += payment.processingFee;
+          sums.deliveryFee += payment.deliveryFee;
+          sums.referralReduction += payment.referralReduction;
+          sums.purchasedGiftCardReduction += payment.purchasedGiftCardReduction;
+          sums.promotionReduction += payment.promotionReduction;
+          sums.pointsReduction += payment.pointsReduction;
+          sums.gratuity += payment.gratuity;
+          sums.coolerDeposit += payment.coolerDeposit;
+          sums.chargedAmount += payment.chargedAmount;
+          sums.preTransactionFeeAmount += payment.preTransactionFeeAmount;
+          sums.transactionFee += payment.transactionFee;
+          sums.amount += payment.amount;
+          sums.refundedAmount += payment.refundedAmount;
+          sums.balance += payment.balance;
         });
 
-        orders.unshift({
-          created_at: this.filters.byOrderDate ? "TOTALS" : null,
-          delivery_date: !this.filters.byOrderDate ? "TOTALS" : null,
-          totalOrders: grandTotalOrders,
+        payments.unshift({
+          created_at: this.filters.byPaymentDate ? "TOTALS" : null,
+          delivery_date: !this.filters.byPaymentDate ? "TOTALS" : null,
+          totalPayments: grandTotalPayments,
           preFeePreDiscount: sums.preFeePreDiscount,
           couponReduction: sums.couponReduction,
           mealPlanDiscount: sums.mealPlanDiscount,
@@ -627,6 +652,9 @@ export default {
           purchasedGiftCardReduction: sums.purchasedGiftCardReduction,
           promotionReduction: sums.promotionReduction,
           pointsReduction: sums.pointsReduction,
+          preTransactionFeeAmount: sums.preTransactionFeeAmount,
+          transactionFee: sums.transactionFee,
+          chargedAmount: sums.chargedAmount,
           amount: sums.amount,
           refundedAmount: sums.refundedAmount,
           balance: sums.balance,
@@ -636,29 +664,34 @@ export default {
         });
       }
 
-      return orders;
+      return payments;
     },
     columns() {
       let columns = ["created_at", "delivery_date", "subtotal"];
 
       let addedColumns = {};
 
-      this.ordersByDate.forEach(order => {
-        if (order.couponReduction > 0) addedColumns.couponReduction = true;
-        if (order.mealPlanDiscount > 0) addedColumns.mealPlanDiscount = true;
-        if (order.salesTax > 0) addedColumns.salesTax = true;
-        if (order.processingFee > 0) addedColumns.processingFee = true;
-        if (order.deliveryFee > 0) addedColumns.deliveryFee = true;
-        if (order.gratuity > 0) addedColumns.gratuity = true;
-        if (order.coolerDeposit > 0) addedColumns.coolerDeposit = true;
-        if (order.purchasedGiftCardReduction > 0)
+      this.payments.forEach(payment => {
+        if (payment.couponReduction > 0) addedColumns.couponReduction = true;
+        if (payment.mealPlanDiscount > 0) addedColumns.mealPlanDiscount = true;
+        if (payment.salesTax > 0) addedColumns.salesTax = true;
+        if (payment.processingFee > 0) addedColumns.processingFee = true;
+        if (payment.deliveryFee > 0) addedColumns.deliveryFee = true;
+        if (payment.gratuity > 0) addedColumns.gratuity = true;
+        if (payment.coolerDeposit > 0) addedColumns.coolerDeposit = true;
+        if (payment.purchasedGiftCardReduction > 0)
           addedColumns.purchasedGiftCardReduction = true;
-        if (order.referralReduction > 0) addedColumns.referralReduction = true;
-        if (order.promotionReduction > 0)
+        if (payment.referralReduction > 0)
+          addedColumns.referralReduction = true;
+        if (payment.promotionReduction > 0)
           addedColumns.promotionReduction = true;
-        if (order.pointsReduction > 0) addedColumns.pointsReduction = true;
-        if (order.refundedAmount > 0) addedColumns.refundedAmount = true;
-        if (order.balance > 0) addedColumns.balance = true;
+        if (payment.pointsReduction > 0) addedColumns.pointsReduction = true;
+        if (payment.chargedAmount > 0) addedColumns.chargedAmount = true;
+        if (payment.preTransactionFeeAmount > 0)
+          addedColumns.preTransactionFeeAmount = true;
+        if (payment.transactionFee > 0) addedColumns.transactionFee = true;
+        if (payment.refundedAmount > 0) addedColumns.refundedAmount = true;
+        if (payment.balance > 0) addedColumns.balance = true;
       });
 
       if (addedColumns.couponReduction)
@@ -681,7 +714,12 @@ export default {
         columns.splice(columns.length, 0, "promotionReduction");
       if (addedColumns.pointsReduction)
         columns.splice(columns.length, 0, "pointsReduction");
-
+      if (addedColumns.chargedAmount)
+        columns.splice(columns.length, 0, "chargedAmount");
+      if (addedColumns.preTransactionFeeAmount)
+        columns.splice(columns.length, 0, "preTransactionFeeAmount");
+      if (addedColumns.transactionFee)
+        columns.splice(columns.length, 0, "transactionFee");
       columns.splice(columns.length, 0, "amount");
 
       if (addedColumns.refundedAmount)
@@ -689,32 +727,19 @@ export default {
 
       if (addedColumns.balance) columns.splice(columns.length, 0, "balance");
 
-      // if (this.filters.dailySummary) {
-      //   columns.splice(1, 0, "totalOrders");
-      // }
-
       return columns;
     },
     coupons() {
       let coupons = [];
       if (this.storeCoupons.length > 0) {
         this.storeCoupons.forEach(coupon => {
-          coupons.push(coupon.code);
+          coupons.push({ text: coupon.code, value: coupon.id });
         });
       }
       return coupons;
     }
   },
   methods: {
-    ...mapActions({
-      refreshOrders: "refreshOrders",
-      refreshUpcomingOrdersWithoutItems: "refreshUpcomingOrdersWithoutItems",
-      refreshOrdersToday: "refreshOrdersToday",
-      updateOrder: "updateOrder"
-    }),
-    refreshTable() {
-      this.refreshOrders();
-    },
     formatMoney: format.money,
     syncEditables() {
       this.editing = _.keyBy({ ...this.tableData }, "id");
@@ -740,9 +765,9 @@ export default {
         };
       }
 
-      params.couponCode = this.filters.couponCode;
+      params.couponId = this.filters.couponId;
       params.dailySummary = this.filters.dailySummary;
-      params.byOrderDate = this.filters.byOrderDate;
+      params.byPaymentDate = this.filters.byPaymentDate;
       params.removeManualOrders = this.filters.removeManualOrders;
       params.removeCashOrders = this.filters.removeCashOrders;
 
@@ -771,61 +796,6 @@ export default {
           this.loading = false;
         });
     },
-    onChangeDateFilter() {
-      axios
-        .post("/api/me/getOrdersWithDatesWithoutItems", {
-          start: this.filters.delivery_dates.start,
-          end: this.filters.delivery_dates.end,
-          payments: this.filters.byOrderDate
-        })
-        .then(response => {
-          this.ordersByDate = response.data;
-        });
-    },
-    updateViewedOrders() {
-      axios.get(`/api/me/ordersUpdateViewed`);
-    },
-    clearDeliveryDates() {
-      this.filters.delivery_dates.start = null;
-      this.filters.delivery_dates.end = null;
-      this.$refs.deliveryDates.clearDates();
-      this.toggleByOrderDate();
-    },
-    getApplicationFee() {
-      axios.get("/api/me/getApplicationFee").then(resp => {
-        this.goPrepFee = resp.data / 100;
-      });
-    },
-    toggleByOrderDate() {
-      if (this.filters.delivery_dates.start !== null) {
-        this.onChangeDateFilter();
-      } else {
-        axios
-          .post("/api/me/getOrdersToday", {
-            payments: this.filters.byOrderDate
-          })
-          .then(response => {
-            this.upcomingOrdersByOrderDate = response.data;
-          });
-      }
-    },
-    toggleManualCashOrders() {
-      axios
-        .post("/api/me/getOrdersWithDatesWithoutItems", {
-          start: this.filters.delivery_dates.start,
-          end: this.filters.delivery_dates.end,
-          payments: this.filters.byOrderDate,
-          removeManualOrders: this.filters.removeManualOrders,
-          removeCashOrders: this.filters.removeCashOrders
-        })
-        .then(response => {
-          this.ordersByDate = [];
-          this.upcomingOrdersWithoutItems = [];
-          this.upcomingOrdersByOrderDate = [];
-          this.ordersByDate = response.data;
-          this.upcomingOrdersByOrderDate = response.data;
-        });
-    },
     submitMultiAuthPassword() {
       axios
         .post("/api/me/submitMultiAuthPassword", {
@@ -843,6 +813,18 @@ export default {
       this.$router.push({
         path: "/store/orders"
       });
+    },
+    clearDeliveryDates() {
+      this.filters.delivery_dates.start = null;
+      this.filters.delivery_dates.end = null;
+      this.$refs.deliveryDates.clearDates();
+    },
+    refreshPayments() {
+      axios
+        .post("/api/me/getPayments", { filters: this.filters })
+        .then(resp => {
+          this.payments = resp.data;
+        });
     }
   }
 };

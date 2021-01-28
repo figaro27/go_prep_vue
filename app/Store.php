@@ -73,6 +73,11 @@ class Store extends Model
         return $this->hasMany('App\Order')->orderBy('created_at', 'desc');
     }
 
+    public function payments()
+    {
+        return $this->hasMany('App\Payment')->orderBy('created_at', 'desc');
+    }
+
     public function mealOrders()
     {
         return $this->hasMany('App\MealOrder');

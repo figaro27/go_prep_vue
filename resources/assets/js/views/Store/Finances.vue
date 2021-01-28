@@ -5,13 +5,13 @@
 
       <b-tabs v-model="tabs">
         <b-tab title="Payments">
-          <payments></payments>
-        </b-tab>
-        <b-tab title="Refunds">
-          <refunds :tabs="tabs"></refunds>
+          <payments :tabs="tabs"></payments>
         </b-tab>
         <b-tab title="Payouts">
           <payouts :tabs="tabs"></payouts>
+        </b-tab>
+        <b-tab title="Refunds">
+          <refunds :tabs="tabs"></refunds>
         </b-tab>
         <b-tab title="Card Declines">
           <declines :tabs="tabs"></declines>

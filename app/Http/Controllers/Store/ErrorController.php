@@ -15,12 +15,12 @@ class ErrorController extends StoreController
      */
     public function index()
     {
-        $twoWeeksAgo = Carbon::now()
-            ->subDays('14')
+        $lastWeek = Carbon::now()
+            ->subDays('7')
             ->toDateTimeString();
 
         $errors = Error::where('store_id', $this->store->id)
-            ->where('created_at', '>=', $twoWeeksAgo)
+            ->where('created_at', '>=', $lastWeek)
             ->with('user')
             ->get();
         $errors = $errors

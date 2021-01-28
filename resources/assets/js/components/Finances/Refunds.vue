@@ -44,7 +44,7 @@ export default {
   },
   watch: {
     tabs(val) {
-      if (val == 1) {
+      if (val == 2) {
         this.refreshTableData();
       }
     }

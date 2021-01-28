@@ -222,6 +222,9 @@ const state = {
   ordersToday: {
     data: []
   },
+  payments: {
+    data: []
+  },
   subscriptions: {
     data: {}
   },
@@ -1031,6 +1034,10 @@ const mutations = {
 
   storeOrders(state, { orders }) {
     state.orders.data = orders;
+  },
+
+  storePayments(state, { payments }) {
+    state.payments.data = payments;
   },
 
   storeUpcomingOrders(state, { orders }) {
@@ -2953,6 +2960,24 @@ const actions = {
     }
   },
 
+  async refreshRecentOrders({ commit, state }, args = {}) {
+    const res = await axios.post("/api/me/getRecentOrders");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      const orders = _.map(data, order => {
+        order.created_at = moment.utc(order.created_at).local(); //.format('ddd, MMMM Do')
+        order.updated_at = moment.utc(order.updated_at).local(); //.format('ddd, MMMM Do')
+        order.delivery_date = moment.utc(order.delivery_date);
+        //.local(); //.format('ddd, MMMM Do')
+        return order;
+      });
+      commit("storeUpcomingOrdersWithoutItems", { orders });
+    } else {
+      throw new Error("Failed to retrieve orders");
+    }
+  },
+
   async refreshOrdersToday({ commit, state }, args = {}) {
     const res = await axios.post("/api/me/getOrdersToday");
     const { data } = await res;
@@ -2986,6 +3011,23 @@ const actions = {
       commit("storeOrders", { orders });
     } else {
       throw new Error("Failed to retrieve orders");
+    }
+  },
+
+  async refreshPayments({ commit, state }, args = {}) {
+    const res = await axios.post("/api/me/getPayments");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      const payments = _.map(data, payment => {
+        payment.created_at = moment.utc(payment.created_at).local();
+        payment.updated_at = moment.utc(payment.updated_at).local();
+        payment.delivery_date = moment.utc(payment.delivery_date);
+        return payment;
+      });
+      commit("storePayments", { payments });
+    } else {
+      throw new Error("Failed to retrieve payments");
     }
   },
 
@@ -4099,6 +4141,13 @@ const getters = {
   storeOrders: state => {
     try {
       return state.orders.data || [];
+    } catch (e) {
+      return {};
+    }
+  },
+  storePayments: state => {
+    try {
+      return state.payments.data || [];
     } catch (e) {
       return {};
     }

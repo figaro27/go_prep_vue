@@ -281,6 +281,10 @@ foreach (
                                 'OrderController@getUpcomingOrders'
                             );
                             Route::post(
+                                'getRecentOrders',
+                                'OrderController@getRecentOrders'
+                            );
+                            Route::post(
                                 'getUpcomingOrdersWithoutItems',
                                 'OrderController@getUpcomingOrdersWithoutItems'
                             );
@@ -310,6 +314,11 @@ foreach (
                             Route::post(
                                 'getMealOrdersWithDatesMD',
                                 'OrderController@getMealOrdersWithDatesMD'
+                            );
+
+                            Route::post(
+                                'getPayments',
+                                'PaymentController@getPayments'
                             );
 
                             Route::get(

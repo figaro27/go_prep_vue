@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Subscription;
 use App\Http\Controllers\Controller;
+use App\Payout;
+use App\StoreSetting;
+use App\Store;
+use Illuminate\Support\Carbon;
 
 class StripeController extends Controller
 {
@@ -16,6 +20,10 @@ class StripeController extends Controller
         $obj = collect($data->get('object', []));
 
         $type = $event->get('type', null);
+
+        $storeId = StoreSetting::where('stripe_id', $event->get('account'))
+            ->pluck('store_id')
+            ->first();
 
         //$subscriptions = Subscription::all();
 
@@ -83,6 +91,34 @@ class StripeController extends Controller
             }
 
             $subscription->cancel();
+        } elseif ($type === 'payout.paid') {
+            $payout = Payout::where('stripe_id', $object['id'])->first();
+            if ($payout) {
+                $payout->status = 'Paid';
+                $payout->update();
+            }
+        } elseif ($type === 'payout.created') {
+            $bank_name = \Stripe\Account::allExternalAccounts(
+                $event->get('account'),
+                [
+                    'object' => 'bank_account'
+                ]
+            )->data[0]->bank_name;
+
+            $payout = new Payout();
+            $payout->store_id = $storeId;
+            $payout->status = $object['status'];
+            $payout->stripe_id = $object['id'];
+            $payout->bank_id = $object['destination'];
+            $payout->bank = $bank_name;
+            $payout->created = Carbon::createFromTimestamp(
+                $object['created']
+            )->toDateTimeString();
+            $payout->arrival_date = Carbon::createFromTimestamp(
+                $object['arrival_date']
+            )->toDateTimeString();
+            $payout->amount = $object['amount'] / 100;
+            $payout->save();
         }
     }
 }
