@@ -44,7 +44,7 @@ class getRefundsFromStripe extends Command
     public function handle()
     {
         $stores = Store::with('settings')->get();
-
+        $count = 0;
         foreach ($stores as $store) {
             try {
                 $acct = $store->settings->stripe_account;
@@ -52,6 +52,13 @@ class getRefundsFromStripe extends Command
                 $refunds = \Stripe\Refund::all([]);
                 foreach ($refunds as $refund) {
                     try {
+                        $individualRefund = \Stripe\Refund::retrieve(
+                            $refund['id']
+                        );
+                        $created = Carbon::createFromTimestamp(
+                            $individualRefund['created']
+                        );
+
                         $orderTransaction = OrderTransaction::where(
                             'stripe_id',
                             $refund['charge']
@@ -64,9 +71,7 @@ class getRefundsFromStripe extends Command
                                 ->pluck('order_number')
                                 ->first();
                             $newRefund = new Refund();
-                            $newRefund->created_at = Carbon::createFromTimestamp(
-                                $refund['created']
-                            );
+                            $newRefund->created_at = $created;
                             $newRefund->store_id = $store['id'];
                             $newRefund->stripe_id = $refund['id'];
                             $newRefund->charge_id = $refund['charge'];
