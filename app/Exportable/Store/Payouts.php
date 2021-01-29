@@ -53,8 +53,7 @@ class Payouts
                     $payout->arrival_date
                 )->format('D, m/d/y'),
                 'Total' => Money::$currency($payout->amount)->format(),
-                'Status' => $payout->status,
-                'ID' => $payout->id
+                'Status' => $payout->status
             ];
         });
 

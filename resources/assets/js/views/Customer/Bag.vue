@@ -586,7 +586,7 @@ export default {
     }
 
     if (this.$route.params.lineItemOrders != undefined) {
-      this.lineItemOrders = this.$route.params.lineItemOrders;
+      this.$parent.lineItemOrders = this.$route.params.lineItemOrders;
     }
 
     this.creditCardId = this.card;
@@ -668,7 +668,7 @@ export default {
         }
 
         if (newData.hasOwnProperty("lineItemOrders")) {
-          this.lineItemOrders = newData.lineItemOrders;
+          this.$parent.lineItemOrders = newData.lineItemOrders;
         }
       }
     },

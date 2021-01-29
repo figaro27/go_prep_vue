@@ -6,6 +6,24 @@
       :data="tableData"
       v-show="initialized"
     >
+      <span slot="beforeLimit">
+        <div class="d-flex">
+          <b-btn variant="primary" @click="exportData('payouts', 'pdf', true)">
+            <i class="fa fa-print"></i>&nbsp; Print Report
+          </b-btn>
+          <b-dropdown class="mx-1 mt-2 mt-sm-0" right text="Export as">
+            <b-dropdown-item @click="exportData('payouts', 'csv')"
+              >CSV</b-dropdown-item
+            >
+            <b-dropdown-item @click="exportData('payouts', 'xls')"
+              >XLS</b-dropdown-item
+            >
+            <b-dropdown-item @click="exportData('payouts', 'pdf')"
+              >PDF</b-dropdown-item
+            >
+          </b-dropdown>
+        </div>
+      </span>
       <div slot="beforeTable" class="mb-2">
         <div class="table-before d-flex flex-wrap align-items-center">
           <delivery-date-picker
@@ -211,6 +229,32 @@ export default {
         this.transactions = resp.data;
         this.transactionsModal = true;
       });
+    },
+    async exportData(report, format = "pdf", print = false) {
+      let params = this.filters;
+
+      axios
+        .get(`/api/me/print/${report}/${format}`, {
+          params
+        })
+        .then(response => {
+          if (!_.isEmpty(response.data.url)) {
+            let win = window.open(response.data.url);
+            if (print) {
+              win.addEventListener(
+                "load",
+                () => {
+                  win.print();
+                },
+                false
+              );
+            }
+          }
+        })
+        .catch(err => {})
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 };

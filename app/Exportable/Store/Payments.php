@@ -8,6 +8,8 @@ use App\User;
 use Carbon\Carbon;
 use App\ReportRecord;
 use Illuminate\Support\Arr;
+use App\Services\FilterPayments;
+use Illuminate\Http\Request;
 
 class Payments
 {
@@ -24,18 +26,27 @@ class Payments
     public function exportData($type = null)
     {
         $params = $this->params;
-        $couponCode = $this->params->get('couponCode');
+
         $dailySummary =
-            $this->params->get('dailySummary') === "true" ? true : false;
-        $byOrderDate =
-            $this->params->get('byOrderDate') === "true" ? true : false;
+            $this->params->get('dailySummary') == "true" ? true : false;
+        $byPaymentDate =
+            $this->params->get('byPaymentDate') == "true" ? true : false;
         $removeManualOrders =
-            $this->params->get('removeManualOrders') === "true" ? true : false;
+            $this->params->get('removeManualOrders') == "true" ? true : false;
         $removeCashOrders =
-            $this->params->get('removeCashOrders') === "true" ? true : false;
+            $this->params->get('removeCashOrders') == "true" ? true : false;
+
+        $this->params->put('dailySummary', $dailySummary);
+        $this->params->put('byPaymentDate', $byPaymentDate);
+        $this->params->put('removeManualOrders', $removeManualOrders);
+        $this->params->put('removeCashOrders', $removeCashOrders);
+
+        $couponCode = $this->params->get('couponCode');
+
         $params->date_format = $this->store->settings->date_format;
         $currency = $this->store->settings->currency;
         $params->currency = $currency;
+        $this->params->put('storeId', $this->store->id);
 
         $columns = [
             'created_at' => null,
@@ -46,12 +57,15 @@ class Payments
             'salesTax' => 0,
             'processingFee' => 0,
             'deliveryFee' => 0,
+            'purchasedGiftCardReduction' => 0,
             'gratuity' => 0,
             'coolerDeposit' => 0,
-            'purchasedGiftCardReduction' => 0,
             'referralReduction' => 0,
             'promotionReduction' => 0,
             'pointsReduction' => 0,
+            'chargedAmount' => 0,
+            'preTransactionFeeAmount' => 0,
+            'transactionFee' => 0,
             'amount' => 0,
             'refundedAmount' => 0,
             'balance' => 0
@@ -59,20 +73,11 @@ class Payments
 
         $columnSums = $columns;
 
-        // Get regular payment rows
-        $orders = $this->store
-            ->getOrders(
-                null,
-                $this->getDeliveryDates(),
-                null,
-                true,
-                null,
-                $byOrderDate ? true : false,
-                $couponCode,
-                $removeManualOrders ? true : false,
-                $removeCashOrders ? true : false
-            )
-            ->where('voided', 0);
+        $filterPayments = new FilterPayments();
+
+        $request = new Request($params->toArray());
+
+        $orders = $filterPayments->getPayments($request);
 
         $payments = $orders
             ->map(function ($order) use ($columns) {
@@ -88,13 +93,22 @@ class Payments
                 $columns['salesTax'] = $order->salesTax;
                 $columns['processingFee'] = $order->processingFee;
                 $columns['deliveryFee'] = $order->deliveryFee;
-                $columns['gratuity'] = $order->gratuity;
-                $columns['coolerDeposit'] = $order->coolerDeposit;
                 $columns['purchasedGiftCardReduction'] =
                     $order->purchasedGiftCardReduction;
+                $columns['gratuity'] = $order->gratuity;
+                $columns['coolerDeposit'] = $order->coolerDeposit;
                 $columns['referralReduction'] = $order->referralReduction;
                 $columns['promotionReduction'] = $order->promotionReduction;
                 $columns['pointsReduction'] = $order->pointsReduction;
+                $columns['chargedAmount'] = $order->chargedAmount;
+                $columns['preTransactionFeeAmount'] = isset(
+                    $order->preTransactionFeeAmount
+                )
+                    ? $order->preTransactionFeeAmount
+                    : 0;
+                $columns['transactionFee'] = isset($order->transactionFee)
+                    ? $order->transactionFee
+                    : 0;
                 $columns['amount'] = $order->amount;
                 $columns['refundedAmount'] = $order->refundedAmount
                     ? $order->refundedAmount
@@ -113,10 +127,11 @@ class Payments
                 }
             }
         }
-
         // If the column sum totals 0, remove the column sum entirely and set the param for the blade report
         foreach ($columnSums as $i => $columnSum) {
-            if ($byOrderDate) {
+            $columnSums['created_at'] = 'TOTALS';
+            $columnSums['delivery_date'] = 'TOTALS';
+            if ($byPaymentDate) {
                 $params['delivery_date'] = false;
                 unset($columnSums['delivery_date']);
             } else {
@@ -148,7 +163,7 @@ class Payments
 
         // Daily summary
 
-        $dayType = $byOrderDate ? 'order_day' : 'delivery_day';
+        $dayType = $byPaymentDate ? 'order_day' : 'delivery_day';
         $groupedPayments = $orders->groupBy($dayType)->toArray();
 
         $dsRows = [];
@@ -163,16 +178,19 @@ class Payments
         foreach ($groupedPayments as $i => $groupedPayment) {
             $sums = [$i => $columns];
             foreach ($groupedPayment as $payment) {
-                $sums[$i]['created_at'] = $byOrderDate
+                $sums[$i]['created_at'] = $byPaymentDate
                     ? Carbon::parse($payment['created_at'])->format('D, M d, Y')
                     : null;
-                $sums[$i]['delivery_date'] = !$byOrderDate
+                $sums[$i]['delivery_date'] = !$byPaymentDate
                     ? Carbon::parse($payment['delivery_date'])->format(
                         'D, M d, Y'
                     )
                     : null;
                 $sums[$i]['orders'] = count($groupedPayment);
                 foreach ($payment as $x => $p) {
+                    if ($x === 'created_at' || $x === 'delivery_date') {
+                        $payment[$x] = 'TOTALS';
+                    }
                     if (array_key_exists($x, $columnSums)) {
                         if (is_numeric($sums[$i][$x])) {
                             $sums[$i][$x] += $payment[$x];
@@ -199,19 +217,22 @@ class Payments
         $headers = [
             'created_at' => 'Order Date',
             'delivery_date' => 'Delivery Date',
-            'orders' => 'Orders',
+            // 'orders' => 'Orders',
             'preFeePreDiscount' => 'Subtotal',
             'couponReduction' => '(Coupon)',
             'mealPlanDiscount' => '(Subscription)',
             'salesTax' => 'Sales Tax',
             'processingFee' => 'Processing Fee',
             'deliveryFee' => 'Delivery Fee',
+            'purchasedGiftCardReduction' => '(Gift Card)',
             'gratuity' => 'Gratuity',
             'coolerDeposit' => 'Cooler Deposit',
-            'purchasedGiftCardReduction' => '(Gift Card)',
             'referralReduction' => '(Referral)',
             'promotionReduction' => '(Promotion)',
             'pointsReduction' => '(Points)',
+            'chargedAmount' => 'Additional Charges',
+            'preTransactionFeeAmount' => 'Pre-Fee Total',
+            'transactionFee' => '(Transaction Fee)',
             'amount' => 'Total',
             'refundedAmount' => '(Refunded)',
             'balance' => 'Balance'
@@ -219,6 +240,7 @@ class Payments
 
         // Append column headers to Excel report
         $columnHeaders = [];
+
         if ($type !== 'pdf') {
             foreach ($headers as $i => $header) {
                 if (array_key_exists($i, $columnSums) || $i == 'orders') {

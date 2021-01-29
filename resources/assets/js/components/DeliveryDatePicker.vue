@@ -146,6 +146,8 @@ export default {
       getStoreSetting: "storeSetting"
     }),
     clearDates() {
+      this.$refs.picker.dateRange.from = null;
+      this.$refs.picker.dateRange.to = null;
       this.$refs.picker.dateRange.start = null;
       this.$refs.picker.dateRange.end = null;
     },
@@ -173,7 +175,6 @@ export default {
     },
     onChange(val) {
       this.changed = true;
-
       val = { ...val };
       if (val.start)
         val.start = moment

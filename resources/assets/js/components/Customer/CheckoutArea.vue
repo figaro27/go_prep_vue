@@ -533,7 +533,7 @@
             <strong>Tip</strong>
             <b-form-select
               :options="gratuityOptions"
-              v-model="bagGratuityPercent"
+              :value="bagGratuityPercent"
               class="ml-2 w-100px"
               @input="val => setBagGratuityPercent(val)"
             ></b-form-select>

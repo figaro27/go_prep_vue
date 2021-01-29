@@ -272,7 +272,8 @@ class Order extends Model
 
     public function getOrderDayAttribute()
     {
-        return $this->created_at->format('m d');
+        $paid_at = new Carbon($this->paid_at);
+        return $paid_at->format('m d');
     }
 
     public function getDeliveryDayAttribute()

@@ -23,19 +23,13 @@ $currency = $params->currency
     <h1>Payments @if ($params['dailySummary'] == 'true') (Daily Summary) @endif</h1>
     <div class="delivery-part">
       <h2 style="font-size:22px">
-        @if (isset($params['byOrderDate']) && $params['byOrderDate'] == 'true')
+        @if ($delivery_dates['from']->format($params->date_format) !== $delivery_dates['to']->format($params->date_format))
+        @if (isset($params['byPaymentDate']) && $params['byPaymentDate'] == 'true')
           Order Dates:
           @else
           Delivery Dates:
           @endif
-        @if ($delivery_dates)
-          @if ($delivery_dates['from']->format($params->date_format) === $delivery_dates['to']->format($params->date_format))
-            {{ $delivery_dates['from']->format($params->date_format) }}
-          @else
-            {{ $delivery_dates['from']->format($params->date_format) }} -{{ $delivery_dates['to']->format($params->date_format) }}
-          @endif
-        @else
-          All Delivery Dates
+          {{ $delivery_dates['from']->format($params->date_format) }} - {{ $delivery_dates['to']->format($params->date_format) }}
         @endif
       </h2>
 
@@ -57,10 +51,10 @@ $currency = $params->currency
             @endif
             <th>Subtotal</th>
             @if ($params['couponReduction'])
-            <th class="text-green">(Coupon)</th>
+            <th>(Coupon)</th>
             @endif
             @if ($params['mealPlanDiscount'])
-            <th class="text-green">(Subscription)</th>
+            <th>(Subscription)</th>
             @endif
             @if ($params['salesTax'])
             <th>Sales Tax</th>
@@ -71,27 +65,36 @@ $currency = $params->currency
             @if ($params['deliveryFee'])
             <th>Delivery Fee</th>
             @endif
+            @if ($params['purchasedGiftCardReduction'])
+            <th>(Gift Card)</th>
+            @endif
             @if ($params['gratuity'])
             <th>Gratuity</th>
             @endif
             @if ($params['coolerDeposit'])
             <th>Cooler Deposit</th>
             @endif
-            @if ($params['purchasedGiftCardReduction'])
-            <th class="text-green">(Gift Card)</th>
-            @endif
             @if ($params['referralReduction'])
-            <th class="text-green">(Referral)</th> 
+            <th>(Referral)</th> 
             @endif
             @if ($params['promotionReduction'])
-            <th class="text-green">(Promotion)</th> 
+            <th>(Promotion)</th> 
             @endif
             @if ($params['pointsReduction'])
-            <th class="text-green">(Points)</th> 
+            <th>(Points)</th> 
+            @endif
+            @if ($params['chargedAmount'])
+            <th>Additional Charges</th> 
+            @endif
+            @if ($params['preTransactionFeeAmount'])
+            <th>Pre-Fee Total</th> 
+            @endif
+            @if ($params['transactionFee'])
+            <th>(Transaction Fee)</th> 
             @endif
             <th>Total</th>  
             @if ($params['refundedAmount'])
-            <th class="text-green">(Refunded)</th> 
+            <th>(Refunded)</th> 
             @endif
             @if ($params['balance']) 
             <th>Balance</th>
