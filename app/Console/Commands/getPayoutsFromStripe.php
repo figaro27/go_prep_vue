@@ -51,7 +51,8 @@ class getPayoutsFromStripe extends Command
                     ['object' => 'bank_account']
                 )->data[0]->bank_name;
 
-                $payouts = \Stripe\Payout::all([]);
+                // Stripe doesn't let you get more than 100...
+                $payouts = \Stripe\Payout::all(['limit' => 100]);
                 foreach ($payouts as $payout) {
                     try {
                         $newPayout = new Payout();
