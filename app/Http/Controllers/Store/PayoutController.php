@@ -166,36 +166,24 @@ class PayoutController extends StoreController
             'payout' => $payoutId
         ])->data;
 
-        // Get the date the payout was initiated and the date a week before it was initiated in order to get relevant transactions
-        $initiatedDate = Carbon::createFromTimestamp(
-            $balanceTransactions[0]->created
-        );
-        $lastWeek = Carbon::createFromTimestamp(
-            $balanceTransactions[0]->created
-        )->subWeeks('1');
-        $initiatedDate = $initiatedDate->toDateTimeString();
-        $lastWeek = $lastWeek->toDateTimeString();
-
         // Removing the first item which Stripe returns as the payout itself.
         array_shift($balanceTransactions);
 
-        // Get all transactions a week before the initiated date
-        $recentOrderTransactions = OrderTransaction::where(
+        // Get all order transactions
+        $orderTransactions = OrderTransaction::where(
             'store_id',
             $this->store->id
-        )
-            ->where('created_at', '<=', $initiatedDate)
-            ->where('created_at', '>=', $lastWeek)
-            ->get();
+        )->get();
 
         $payoutOrders = [];
         $payoutCharges = [];
+        $payoutTransfers = [];
         // Getting the associated orders & charges from viewing the Stripe charge ID
 
         foreach ($balanceTransactions as $balanceTransaction) {
             $charge = $balanceTransaction->source;
 
-            $orderTransaction = $recentOrderTransactions
+            $orderTransaction = $orderTransactions
                 ->filter(function ($transaction) use ($charge) {
                     return $transaction->stripe_id === $charge;
                 })
@@ -241,11 +229,10 @@ class PayoutController extends StoreController
                     $orderTransaction->created_at;
                 $payoutCharges[] = $orderTransaction->order;
             }
+            if ($balanceTransaction->type === 'transfer') {
+                $payoutTransfers[] = $balanceTransaction;
+            }
         }
-
-        $balanceTransactions = \Stripe\BalanceTransaction::all([
-            'payout' => $payoutId
-        ])->data;
 
         // Mapping both orders & charges then merging them together.
 
@@ -275,7 +262,26 @@ class PayoutController extends StoreController
             })
             ->toArray();
 
+        $payoutTransfers = collect($payoutTransfers)
+            ->map(function ($transfer) {
+                return [
+                    'created_at' => Carbon::createFromTimestamp(
+                        $transfer['created']
+                    ),
+                    'order_number' => '',
+                    'customer' => '',
+                    'amount' => $transfer['amount'] / 100,
+                    'type' => "Transfer"
+                ];
+            })
+            ->toArray();
+
         $payoutTransactions = array_merge($payoutOrders, $payoutCharges);
+
+        $payoutTransactions = array_merge(
+            $payoutTransactions,
+            $payoutTransfers
+        );
 
         return $payoutTransactions;
     }
