@@ -158,6 +158,8 @@ class PayoutController extends StoreController
         $payout = $request->get('payout');
         $payoutId = $payout['stripe_id'];
 
+        $application_fee = $this->store->settings->application_fee;
+
         $acct = $this->store->settings->stripe_account;
         \Stripe\Stripe::setApiKey($acct['access_token']);
         $balanceTransactions = \Stripe\BalanceTransaction::all([
@@ -200,10 +202,34 @@ class PayoutController extends StoreController
                 ->first();
 
             if ($orderTransaction && $orderTransaction->type === 'order') {
+                $orderTransaction->order->preTransactionFeeAmount =
+                    $orderTransaction->order->amount;
+                $orderTransaction->order->transactionFee =
+                    ($orderTransaction->order->afterDiscountBeforeFees +
+                        $orderTransaction->order->chargedAmount) *
+                    ($application_fee / 100);
+                if (
+                    !$orderTransaction->order->cashOrder &&
+                    $this->store->settings->payment_gateway === 'stripe'
+                ) {
+                    $orderTransaction->order->transactionFee +=
+                        $orderTransaction->order->amount * 0.029 + 0.3;
+                }
+                $orderTransaction->order->amount -=
+                    $orderTransaction->order->transactionFee;
                 $payoutOrders[] = $orderTransaction->order;
             }
             if ($orderTransaction && $orderTransaction->type === 'charge') {
-                $orderTransaction->order->amount = $orderTransaction->amount;
+                $orderTransaction->preTransactionFeeAmount =
+                    $orderTransaction->amount;
+                $orderTransaction->transactionFee =
+                    $orderTransaction->amount * ($application_fee / 100);
+                $orderTransaction->transactionFee +=
+                    $orderTransaction->amount * 0.029 + 0.3;
+                $orderTransaction->order->amount =
+                    $orderTransaction->amount -
+                    $orderTransaction->transactionFee;
+
                 $orderTransaction->order->created_at =
                     $orderTransaction->created_at;
                 $payoutCharges[] = $orderTransaction->order;
