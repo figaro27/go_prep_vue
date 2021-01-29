@@ -80,6 +80,7 @@ export default {
     refreshTableData() {
       axios.get("/api/me/errors").then(resp => {
         this.tableData = resp.data.map(record => {
+          console.log(record);
           return {
             created_at: record.created_at,
             reason: this.getErrorCode(record.error),
@@ -92,6 +93,7 @@ export default {
           };
         });
       });
+      console.log(this.tableData);
     },
     onChangeDateFilter() {
       axios
