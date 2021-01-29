@@ -77,7 +77,6 @@ export default {
     })
   },
   methods: {
-    ...mapActions(),
     refreshTableData() {
       axios.get("/api/me/errors").then(resp => {
         this.tableData = resp.data.map(record => {

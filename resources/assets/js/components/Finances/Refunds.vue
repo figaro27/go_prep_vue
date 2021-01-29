@@ -81,7 +81,6 @@ export default {
     })
   },
   methods: {
-    ...mapActions(),
     refreshTableData() {
       axios.get("/api/me/refunds").then(resp => {
         this.tableData = resp.data.map(record => {

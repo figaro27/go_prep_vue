@@ -199,7 +199,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(),
     refreshTableData() {
       axios.get("/api/me/payouts").then(resp => {
         this.tableData = resp.data;

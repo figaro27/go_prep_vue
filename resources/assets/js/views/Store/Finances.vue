@@ -62,7 +62,6 @@ export default {
     })
   },
   methods: {
-    ...mapActions({}),
     formatMoney: format.money
   }
 };
