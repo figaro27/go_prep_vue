@@ -107,16 +107,18 @@ export default {
         })
         .then(resp => {
           this.tableData = resp.data;
-          // this.tableData = resp.data.map(record => {
-          //   return {
-          //     created_at: record.created_at,
-          //     reason: this.getErrorCode(record.error),
-          //     customer:
-          //       record.user.user_detail.firstname +
-          //       " " +
-          //       record.user.user_detail.lastname
-          //   };
-          // });
+          this.tableData = resp.data.map(record => {
+            return {
+              created_at: record.created_at,
+              customer:
+                record.user.user_detail.firstname +
+                " " +
+                record.user.user_detail.lastname,
+              order: record.order_number,
+              card: record.card.brand + " " + record.card.last4,
+              amount: record.amount
+            };
+          });
         });
     },
     clearDeliveryDates() {
