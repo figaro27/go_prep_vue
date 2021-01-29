@@ -79,15 +79,15 @@ class PayoutController extends StoreController
 
     public function index()
     {
-        $twoWeeksAgo = Carbon::now()
+        $weekAgo = Carbon::now()
             ->subDays('7')
             ->toDateTimeString();
 
-        $refunds = Payout::where('store_id', $this->store->id)
-            ->where('created_at', '>=', $twoWeeksAgo)
+        $payouts = Payout::where('store_id', $this->store->id)
+            ->where('created', '>=', $weekAgo)
             ->get();
 
-        return $refunds;
+        return $payouts;
     }
 
     public function getPayoutsWithDates(Request $request)
@@ -104,8 +104,8 @@ class PayoutController extends StoreController
         }
 
         $payouts = Payout::where('store_id', $this->store->id)
-            ->where('created_at', '>=', $startDate)
-            ->where('created_at', '<=', $endDate)
+            ->where('created', '>=', $startDate)
+            ->where('created', '<=', $endDate)
             ->get();
 
         return $payouts;
