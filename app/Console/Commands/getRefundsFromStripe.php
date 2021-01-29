@@ -8,6 +8,7 @@ use App\Refund;
 use App\OrderTransaction;
 use App\Order;
 use App\UserDetail;
+use Illuminate\Support\Carbon;
 
 class getRefundsFromStripe extends Command
 {
@@ -55,22 +56,27 @@ class getRefundsFromStripe extends Command
                             'stripe_id',
                             $refund['charge']
                         )->first();
-                        $order_number = Order::where(
-                            'id',
-                            $orderTransaction->order_id
-                        )
-                            ->pluck('order_number')
-                            ->first();
-                        $newRefund = new Refund();
-                        $newRefund->store_id = $store['id'];
-                        $newRefund->stripe_id = $refund['id'];
-                        $newRefund->charge_id = $refund['charge'];
-                        $newRefund->user_id = $orderTransaction->user_id;
-                        $newRefund->order_id = $orderTransaction->order_id;
-                        $newRefund->order_number = $order_number;
-                        $newRefund->card_id = $orderTransaction->card_id;
-                        $newRefund->amount = $refund['amount'] / 100;
-                        $newRefund->save();
+                        if ($orderTransaction) {
+                            $order_number = Order::where(
+                                'id',
+                                $orderTransaction->order_id
+                            )
+                                ->pluck('order_number')
+                                ->first();
+                            $newRefund = new Refund();
+                            $newRefund->created_at = Carbon::createFromTimestamp(
+                                $refund['created']
+                            );
+                            $newRefund->store_id = $store['id'];
+                            $newRefund->stripe_id = $refund['id'];
+                            $newRefund->charge_id = $refund['charge'];
+                            $newRefund->user_id = $orderTransaction->user_id;
+                            $newRefund->order_id = $orderTransaction->order_id;
+                            $newRefund->order_number = $order_number;
+                            $newRefund->card_id = $orderTransaction->card_id;
+                            $newRefund->amount = $refund['amount'] / 100;
+                            $newRefund->save();
+                        }
                     } catch (\Exception $e) {
                     }
                 }
