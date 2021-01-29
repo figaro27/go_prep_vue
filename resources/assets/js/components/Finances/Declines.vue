@@ -80,7 +80,6 @@ export default {
     refreshTableData() {
       axios.get("/api/me/errors").then(resp => {
         this.tableData = resp.data.map(record => {
-          console.log(record);
           return {
             created_at: record.created_at,
             reason: this.getErrorCode(record.error),
@@ -93,7 +92,6 @@ export default {
           };
         });
       });
-      console.log(this.tableData);
     },
     onChangeDateFilter() {
       axios
@@ -111,7 +109,9 @@ export default {
               customer:
                 record.user.user_detail.firstname +
                 " " +
-                record.user.user_detail.lastname
+                record.user.user_detail.lastname,
+              phone: record.user.user_detail.phone,
+              email: record.user.email
             };
           });
         });
