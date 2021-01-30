@@ -328,10 +328,20 @@
                 : " - "
             }}
             <img
+              v-if="store.settings.application_fee > 0.0"
               v-b-popover.hover="
-                `If your plan involves an application fee to GoPrep, that fee is applied to the subtotal minus reductions which is: $` +
+                `Your application fee gets applied to the subtotal minus reductions which is: $` +
                   props.row.afterDiscountBeforeFees +
                   '. Then there is a credit card transaction fee of 2.9% on the full amount of the transaction plus 30 cents.'
+              "
+              title="Transaction Fee"
+              src="/images/store/popover.png"
+              class="popover-size ml-1"
+            />
+            <img
+              v-if="store.settings.application_fee == 0.0"
+              v-b-popover.hover="
+                'A credit card transaction fee of 2.9% is applied to the total amount of the order plus an additional 30 cents.'
               "
               title="Transaction Fee"
               src="/images/store/popover.png"

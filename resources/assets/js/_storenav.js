@@ -51,8 +51,8 @@ export default {
       // class: 'nav-child'
     },
     {
-      name: "Payments",
-      url: "/store/finances",
+      name: "Financials",
+      url: "/store/financials",
       icon: "fa fa-money"
       // class: 'nav-child',
     },

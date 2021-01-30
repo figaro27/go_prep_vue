@@ -1,20 +1,25 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
+      <b-alert style="background-color:#EBFAFF" show dismissible>
         <p>
-          <span class="strong">Update</span><br />
-          You can now manually create your own purchased gift card codes instead
-          of having to create a new order. You can use these codes as a way to
-          give customers store credit.<br />
-          <router-link to="/store/marketing"
-            ><strong
-              >Click the Purchased Gift Cards tab on the Marketing page and
-              you'll see a new button at the top.</strong
-            ></router-link
+          <span class="strong">Update - New & Improved Financials Page</span
+          ><br />
+          1) Advanced Payments Report - Includes additional filters and a daily
+          summary report (how much was made each order date or delivery
+          date).<br />
+          2) Payouts Report - See a summary and breakdown of the batched
+          transfers to your bank account.<br />
+          3) Refunds Area - Keep track of any refunds issued to your
+          customers.<br />
+          4) Card Declines - View a record of any credit card related issues
+          with your customers.
+          <br />
+          <router-link to="/store/financials"
+            ><strong>Visit it here.</strong></router-link
           >
         </p>
-      </b-alert> -->
+      </b-alert>
 
       <div class="card">
         <div class="card-body">

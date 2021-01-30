@@ -38,7 +38,7 @@ import StoreBag from "./views/Store/Bag.vue";
 import StoreUpdates from "./views/Store/Updates.vue";
 import StoreMarketing from "./views/Store/Marketing.vue";
 import StoreSMS from "./views/Store/SMS.vue";
-import StoreFinances from "./views/Store/Finances.vue";
+import StoreFinancials from "./views/Store/Financials.vue";
 
 import Spinner from "./components/Spinner.vue";
 
@@ -240,9 +240,9 @@ let routes = [
     name: "store-sms"
   },
   {
-    path: "/store/Finances",
-    component: StoreFinances,
-    name: "store-finances"
+    path: "/store/Financials",
+    component: StoreFinancials,
+    name: "store-financials"
   },
   {
     path: "/spinner",
