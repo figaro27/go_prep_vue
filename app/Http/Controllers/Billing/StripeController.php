@@ -110,7 +110,7 @@ class StripeController extends Controller
             $payout->status = $obj['status'];
             $payout->stripe_id = $obj['id'];
             $payout->bank_id = $obj['destination'];
-            $payout->bank = $bank_name;
+            $payout->bank_name = $bank_name;
             $payout->created = Carbon::createFromTimestamp(
                 $obj['created']
             )->toDateTimeString();
