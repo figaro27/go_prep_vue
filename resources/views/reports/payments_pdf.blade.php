@@ -40,10 +40,10 @@ $currency = $params->currency
       <table border="1" width="100" class="light-border payments-report">
         <thead>
           <tr>
-            @if ($params['created_at'])
+            @if ($params['byPaymentDate'])
             <th style="width:100px">Payment Date</th>
             @endif
-            @if ($params['delivery_date'])
+            @if (!$params['byPaymentDate'])
             <th style="width:100px">Delivery Date</th>
             @endif
             @if ($params['dailySummary'])

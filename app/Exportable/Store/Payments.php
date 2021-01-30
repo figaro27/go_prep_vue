@@ -82,7 +82,7 @@ class Payments
         $payments = $orders
             ->map(function ($order) use ($columns) {
                 $columns['paid_at'] = !$order->isMultipleDelivery
-                    ? $order->paid_at->format('D, m/d/Y')
+                    ? $order->paid_at
                     : 'Multiple';
                 $columns['delivery_date'] = !$order->isMultipleDelivery
                     ? $order->delivery_date->format('D, m/d/Y')
