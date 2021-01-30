@@ -185,10 +185,10 @@ class Payments
                     ''
                 );
                 $columns['refundedAmount'] = $order->refundedAmount
-                    ? number_format((float) $$order->refundedAmount, 2, '.', '')
+                    ? number_format((float) $order->refundedAmount, 2, '.', '')
                     : 0;
                 $columns['balance'] = $order->balance
-                    ? number_format((float) $$order->balance, 2, '.', '')
+                    ? number_format((float) $order->balance, 2, '.', '')
                     : 0;
 
                 return $columns;
