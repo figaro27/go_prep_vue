@@ -82,7 +82,9 @@ class Payments
         $payments = $orders
             ->map(function ($order) use ($columns) {
                 $columns['paid_at'] = !$order->isMultipleDelivery
-                    ? $order->paid_at
+                    ? Carbon::parse($order->paid_at)
+                        ->toDateTimeString()
+                        ->format('D, m/d/Y')
                     : 'Multiple';
                 $columns['delivery_date'] = !$order->isMultipleDelivery
                     ? $order->delivery_date->format('D, m/d/Y')
