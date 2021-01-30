@@ -92,7 +92,7 @@ class StripeController extends Controller
 
             $subscription->cancel();
         } elseif ($type === 'payout.paid') {
-            $payout = Payout::where('stripe_id', $object['id'])->first();
+            $payout = Payout::where('stripe_id', $obj['id'])->first();
             if ($payout) {
                 $payout->status = 'Paid';
                 $payout->update();
@@ -107,17 +107,17 @@ class StripeController extends Controller
 
             $payout = new Payout();
             $payout->store_id = $storeId;
-            $payout->status = $object['status'];
-            $payout->stripe_id = $object['id'];
-            $payout->bank_id = $object['destination'];
+            $payout->status = $obj['status'];
+            $payout->stripe_id = $obj['id'];
+            $payout->bank_id = $obj['destination'];
             $payout->bank = $bank_name;
             $payout->created = Carbon::createFromTimestamp(
-                $object['created']
+                $obj['created']
             )->toDateTimeString();
             $payout->arrival_date = Carbon::createFromTimestamp(
-                $object['arrival_date']
+                $obj['arrival_date']
             )->toDateTimeString();
-            $payout->amount = $object['amount'] / 100;
+            $payout->amount = $obj['amount'] / 100;
             $payout->save();
         }
     }
