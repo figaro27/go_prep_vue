@@ -84,23 +84,23 @@ class FilterPayments
                             $query1->where(
                                 'paid_at',
                                 '>=',
-                                $startDate->format('Y-m-d')
+                                $startDate->format('Y-m-d 00:00:00')
                             );
                             $query1->where(
                                 'paid_at',
                                 '<=',
-                                $endDate->format('Y-m-d')
+                                $endDate->format('Y-m-d 23:59:59')
                             );
                         } else {
                             $query1->where(
                                 'delivery_date',
                                 '>=',
-                                $startDate->format('Y-m-d')
+                                $startDate->format('Y-m-d 00:00:00')
                             );
                             $query1->where(
                                 'delivery_date',
                                 '<=',
-                                $endDate->format('Y-m-d')
+                                $endDate->format('Y-m-d 23:59:59')
                             );
                         }
                     })
@@ -123,23 +123,23 @@ class FilterPayments
                                     $subquery->where(
                                         'meal_orders.created_at',
                                         '>=',
-                                        $startDate->format('Y-m-d')
+                                        $startDate->format('Y-m-d 00:00:00')
                                     );
                                     $subquery->where(
                                         'meal_orders.created_at',
                                         '<=',
-                                        $endDate->format('Y-m-d')
+                                        $endDate->format('Y-m-d 23:59:59')
                                     );
                                 } else {
                                     $subquery->where(
                                         'meal_orders.delivery_date',
                                         '>=',
-                                        $startDate->format('Y-m-d')
+                                        $startDate->format('Y-m-d 00:00:00')
                                     );
                                     $subquery->where(
                                         'meal_orders.delivery_date',
                                         '<=',
-                                        $endDate->format('Y-m-d')
+                                        $endDate->format('Y-m-d 23:59:59')
                                     );
                                 }
                             });
