@@ -165,8 +165,11 @@ class FilterPayments
                 $order->preTransactionFeeAmount =
                     $order->amount + $order->chargedAmount;
                 $order->transactionFee =
-                    ($order->afterDiscountBeforeFees + $order->chargedAmount) *
-                    ($application_fee / 100);
+                    $this->store->settings->payment_gateway === 'stripe'
+                        ? ($order->afterDiscountBeforeFees +
+                                $order->chargedAmount) *
+                            ($application_fee / 100)
+                        : 0;
                 if (
                     !$order->cashOrder &&
                     $this->store->settings->payment_gateway === 'stripe'

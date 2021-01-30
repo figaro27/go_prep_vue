@@ -26,7 +26,6 @@ class Order extends Model
         'cutoff_date',
         'cutoff_passed',
         'adjustedDifference',
-        'afterDiscountBeforeFees',
         'card_id',
         'fulfilled'
     ];

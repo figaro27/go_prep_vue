@@ -184,9 +184,6 @@
             {{ formatMoney(props.row.preFeePreDiscount, props.row.currency) }}
           </div>
         </div>
-        <!-- <div slot="couponCode" slot-scope="props">
-              <div>{{ props.row.couponCode }}</div>
-            </div> -->
         <div slot="couponReduction" slot-scope="props">
           <div>
             {{
@@ -330,6 +327,16 @@
                   ")"
                 : " - "
             }}
+            <img
+              v-b-popover.hover="
+                `If your plan involves an application fee to GoPrep, that fee is applied to the subtotal minus reductions which is: $` +
+                  props.row.afterDiscountBeforeFees +
+                  '. Then there is a credit card transaction fee of 2.9% on the full amount of the transaction plus 30 cents.'
+              "
+              title="Transaction Fee"
+              src="/images/store/popover.png"
+              class="popover-size ml-1"
+            />
           </div>
         </div>
         <div slot="amount" slot-scope="props">
@@ -502,6 +509,7 @@ export default {
             preFeePreDiscount: 0,
             couponReduction: 0,
             mealPlanDiscount: 0,
+            afterDiscountBeforeFees: 0,
             salesTax: 0,
             processingFee: 0,
             deliveryFee: 0,
@@ -526,6 +534,7 @@ export default {
             sums.preFeePreDiscount += payment.preFeePreDiscount;
             sums.couponReduction += payment.couponReduction;
             sums.mealPlanDiscount += payment.mealPlanDiscount;
+            sums.afterDiscountBeforeFees += payment.afterDiscountBeforeFees;
             sums.salesTax += payment.salesTax;
             sums.processingFee += payment.processingFee;
             sums.deliveryFee += payment.deliveryFee;
@@ -550,6 +559,7 @@ export default {
             preFeePreDiscount: sums.preFeePreDiscount,
             couponReduction: sums.couponReduction,
             mealPlanDiscount: sums.mealPlanDiscount,
+            afterDiscountBeforeFees: sums.afterDiscountBeforeFees,
             salesTax: sums.salesTax,
             processingFee: sums.processingFee,
             deliveryFee: sums.deliveryFee,
@@ -582,6 +592,7 @@ export default {
           preFeePreDiscount: 0,
           couponReduction: 0,
           mealPlanDiscount: 0,
+          afterDiscountBeforeFees: 0,
           salesTax: 0,
           processingFee: 0,
           deliveryFee: 0,
@@ -604,6 +615,7 @@ export default {
           sums.preFeePreDiscount += payment.preFeePreDiscount;
           sums.couponReduction += payment.couponReduction;
           sums.mealPlanDiscount += payment.mealPlanDiscount;
+          sums.afterDiscountBeforeFees += payment.afterDiscountBeforeFees;
           sums.salesTax += payment.salesTax;
           sums.processingFee += payment.processingFee;
           sums.deliveryFee += payment.deliveryFee;
@@ -628,6 +640,7 @@ export default {
           preFeePreDiscount: sums.preFeePreDiscount,
           couponReduction: sums.couponReduction,
           mealPlanDiscount: sums.mealPlanDiscount,
+          afterDiscountBeforeFees: sums.afterDiscountBeforeFees,
           salesTax: sums.salesTax,
           processingFee: sums.processingFee,
           deliveryFee: sums.deliveryFee,

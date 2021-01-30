@@ -1,5 +1,15 @@
 <template>
   <div>
+    <b-alert
+      style="background-color:#EBFAFF"
+      show
+      dismissible
+      v-if="store.settings.payment_gateway !== 'stripe'"
+    >
+      <p class="strong">
+        This area is available to Stripe stores only
+      </p>
+    </b-alert>
     <v-client-table
       :columns="columns"
       :options="options"
