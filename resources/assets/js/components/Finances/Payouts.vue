@@ -57,7 +57,7 @@
         {{ moment(props.row.arrival_date).format("dddd, MMM Do") }}
       </div>
       <div slot="status" slot-scope="props">
-        <p v-if="props.row.status === 'in_transit'">In Transit</p>
+        <p v-if="props.row.status === 'In_transit'">In Transit</p>
         <p v-else>{{ props.row.status }}</p>
       </div>
       <div slot="amount" slot-scope="props">

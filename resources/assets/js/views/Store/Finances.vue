@@ -7,22 +7,13 @@
         <b-tab title="Payments">
           <payments :tabs="tabs"></payments>
         </b-tab>
-        <b-tab
-          title="Payouts"
-          v-if="store.id === 3 || store.id === 40 || store.id === 178"
-        >
+        <b-tab title="Payouts">
           <payouts :tabs="tabs"></payouts>
         </b-tab>
-        <b-tab
-          title="Refunds"
-          v-if="store.id === 3 || store.id === 40 || store.id === 178"
-        >
+        <b-tab title="Refunds">
           <refunds :tabs="tabs"></refunds>
         </b-tab>
-        <b-tab
-          title="Card Declines"
-          v-if="store.id === 3 || store.id === 40 || store.id === 178"
-        >
+        <b-tab title="Card Declines">
           <declines :tabs="tabs"></declines>
         </b-tab>
         <!-- <b-tab title="Errors">
