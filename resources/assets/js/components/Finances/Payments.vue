@@ -44,7 +44,7 @@
             <b-form-radio-group
               v-model="filters.byPaymentDate"
               :options="[
-                { text: 'Order Dates', value: true },
+                { text: 'Payment Dates', value: true },
                 { text: 'Delivery Dates', value: false }
               ]"
               required
@@ -155,15 +155,13 @@
             </b-dropdown>
           </div>
         </span>
-        <div slot="created_at" slot-scope="props">
-          <span
-            v-if="props.row.created_at && props.row.created_at != 'TOTALS'"
-            >{{ moment(props.row.created_at).format("dddd, MMM Do") }}</span
-          >
-          <span
-            v-if="props.row.created_at && props.row.created_at === 'TOTALS'"
-            >{{ props.row.created_at }}</span
-          >
+        <div slot="paid_at" slot-scope="props">
+          <span v-if="props.row.paid_at && props.row.paid_at != 'TOTALS'">{{
+            moment(props.row.paid_at).format("dddd, MMM Do")
+          }}</span>
+          <span v-if="props.row.paid_at && props.row.paid_at === 'TOTALS'">{{
+            props.row.paid_at
+          }}</span>
         </div>
         <div slot="delivery_date" slot-scope="props">
           <span
@@ -424,7 +422,7 @@ export default {
       user_detail: {},
       options: {
         headings: {
-          created_at: "Order Date",
+          paid_at: "Payment Date",
           delivery_date: "Delivery Date",
           totalPayments: "# Payments",
           subtotal: "Subtotal",
@@ -673,7 +671,7 @@ export default {
       return payments;
     },
     columns() {
-      let columns = ["created_at", "delivery_date"];
+      let columns = ["paid_at", "delivery_date"];
       if (this.filters.dailySummary) {
         columns.push("totalPayments");
       }

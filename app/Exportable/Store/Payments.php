@@ -49,7 +49,7 @@ class Payments
         $this->params->put('storeId', $this->store->id);
 
         $columns = [
-            'created_at' => null,
+            'paid_at' => null,
             'delivery_date' => null,
             'preFeePreDiscount' => 0,
             'couponReduction' => 0,
@@ -81,8 +81,8 @@ class Payments
 
         $payments = $orders
             ->map(function ($order) use ($columns) {
-                $columns['created_at'] = !$order->isMultipleDelivery
-                    ? $order->created_at->format('D, m/d/Y')
+                $columns['paid_at'] = !$order->isMultipleDelivery
+                    ? $order->paid_at->format('D, m/d/Y')
                     : 'Multiple';
                 $columns['delivery_date'] = !$order->isMultipleDelivery
                     ? $order->delivery_date->format('D, m/d/Y')
@@ -129,14 +129,14 @@ class Payments
         }
         // If the column sum totals 0, remove the column sum entirely and set the param for the blade report
         foreach ($columnSums as $i => $columnSum) {
-            $columnSums['created_at'] = 'TOTALS';
+            $columnSums['paid_at'] = 'TOTALS';
             $columnSums['delivery_date'] = 'TOTALS';
             if ($byPaymentDate) {
                 $params['delivery_date'] = false;
                 unset($columnSums['delivery_date']);
             } else {
-                $params['created_at'] = false;
-                unset($columnSums['created_at']);
+                $params['paid_at'] = false;
+                unset($columnSums['paid_at']);
             }
             if ($columnSum === 0.0 || $columnSum === 0) {
                 $params[$i] = false;
@@ -178,8 +178,8 @@ class Payments
         foreach ($groupedPayments as $i => $groupedPayment) {
             $sums = [$i => $columns];
             foreach ($groupedPayment as $payment) {
-                $sums[$i]['created_at'] = $byPaymentDate
-                    ? Carbon::parse($payment['created_at'])->format('D, M d, Y')
+                $sums[$i]['paid_at'] = $byPaymentDate
+                    ? Carbon::parse($payment['paid_at'])->format('D, M d, Y')
                     : null;
                 $sums[$i]['delivery_date'] = !$byPaymentDate
                     ? Carbon::parse($payment['delivery_date'])->format(
@@ -188,7 +188,7 @@ class Payments
                     : null;
                 $sums[$i]['orders'] = count($groupedPayment);
                 foreach ($payment as $x => $p) {
-                    if ($x === 'created_at' || $x === 'delivery_date') {
+                    if ($x === 'paid_at' || $x === 'delivery_date') {
                         $payment[$x] = 'TOTALS';
                     }
                     if (array_key_exists($x, $columnSums)) {
@@ -215,7 +215,7 @@ class Payments
         }
 
         $headers = [
-            'created_at' => 'Order Date',
+            'paid_at' => 'Payment Date',
             'delivery_date' => 'Delivery Date',
             // 'orders' => 'Orders',
             'preFeePreDiscount' => 'Subtotal',

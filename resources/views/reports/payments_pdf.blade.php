@@ -25,7 +25,7 @@ $currency = $params->currency
       <h2 style="font-size:22px">
         @if ($delivery_dates['from']->format($params->date_format) !== $delivery_dates['to']->format($params->date_format))
         @if (isset($params['byPaymentDate']) && $params['byPaymentDate'] == 'true')
-          Order Dates:
+          Payment Dates:
           @else
           Delivery Dates:
           @endif
@@ -41,7 +41,7 @@ $currency = $params->currency
         <thead>
           <tr>
             @if ($params['created_at'])
-            <th style="width:100px">Order Date</th>
+            <th style="width:100px">Payment Date</th>
             @endif
             @if ($params['delivery_date'])
             <th style="width:100px">Delivery Date</th>
