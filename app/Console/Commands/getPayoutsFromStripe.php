@@ -51,26 +51,45 @@ class getPayoutsFromStripe extends Command
                     ['object' => 'bank_account']
                 )->data[0]->bank_name;
 
-                // Stripe doesn't let you get more than 100...
-                $payouts = \Stripe\Payout::all(['limit' => 100]);
-                foreach ($payouts as $payout) {
-                    try {
-                        $newPayout = new Payout();
-                        $newPayout->store_id = $store->id;
-                        $newPayout->status = ucfirst($payout['status']);
-                        $newPayout->stripe_id = $payout['id'];
-                        $newPayout->bank_id = $payout['destination'];
-                        $newPayout->bank_name = $bank_name;
-                        $newPayout->created = Carbon::createFromTimestamp(
-                            $payout['created']
-                        )->toDateTimeString();
-                        $newPayout->arrival_date = Carbon::createFromTimestamp(
-                            $payout['arrival_date']
-                        )->toDateTimeString();
-                        $newPayout->amount = $payout['amount'] / 100;
-                        $newPayout->save();
-                    } catch (\Exception $e) {
+                // Looping every 3 months since launch since Stripe limits you to getting only 100 at a time.
+
+                $timestamp = Carbon::parse('2019-01-01')->timestamp;
+                $stop = false;
+
+                while (!$stop) {
+                    $payouts = \Stripe\Payout::all([
+                        'limit' => 100,
+                        'arrival_date' => [
+                            'lte' => $timestamp
+                        ]
+                    ]);
+                    foreach ($payouts as $payout) {
+                        try {
+                            $newPayout = new Payout();
+                            $newPayout->store_id = $store->id;
+                            $newPayout->status = ucfirst($payout['status']);
+                            $newPayout->stripe_id = $payout['id'];
+                            $newPayout->bank_id = $payout['destination'];
+                            $newPayout->bank_name = $bank_name;
+                            $newPayout->created = Carbon::createFromTimestamp(
+                                $payout['created']
+                            )->toDateTimeString();
+                            $newPayout->arrival_date = Carbon::createFromTimestamp(
+                                $payout['arrival_date']
+                            )->toDateTimeString();
+                            $newPayout->amount = $payout['amount'] / 100;
+                            $newPayout->save();
+                        } catch (\Exception $e) {
+                        }
                     }
+
+                    $timestamp = Carbon::createFromTimestamp($timestamp);
+
+                    if (!$timestamp->isPast()) {
+                        $stop = true;
+                    }
+                    $timestamp->addDays(90);
+                    $timestamp = Carbon::parse($timestamp)->timestamp;
                 }
             } catch (\Exception $e) {
             }

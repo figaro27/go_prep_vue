@@ -106,6 +106,17 @@ class StoreDetailController extends StoreController
             }
         }*/
 
+        $request['description'] = str_replace(
+            "&lt;",
+            "<",
+            $request->get("description")
+        );
+        $request['description'] = str_replace(
+            "&gt;",
+            ">",
+            $request->get("description")
+        );
+
         $store->update($request->except('logo'));
 
         if (isset($newLogo)) {

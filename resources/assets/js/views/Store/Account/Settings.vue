@@ -1827,6 +1827,14 @@ export default {
         });
     },
     updateStoreDetails() {
+      this.storeDetails.description = this.storeDetails.description.replace(
+        "&lt;",
+        "<"
+      );
+      this.storeDetails.description = this.storeDetails.description.replace(
+        "&gt;",
+        ">"
+      );
       axios.patch("/api/me/details", { ...this.storeDetails });
     },
     updateStoreModules(toast = false, moduleSettings = false) {
