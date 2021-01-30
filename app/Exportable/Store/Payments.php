@@ -267,7 +267,7 @@ class Payments
         foreach ($rows as $row) {
             $formattedRow = [];
             foreach ($row as $i => $cell) {
-                if (is_numeric($cell)) {
+                if (is_numeric($cell) && $i !== 'orders') {
                     $formattedRow[$i] = number_format(
                         (float) $cell,
                         2,
@@ -285,7 +285,7 @@ class Payments
         foreach ($dailySummaryRows as $row) {
             $formattedRow = [];
             foreach ($row as $i => $cell) {
-                if (is_numeric($cell)) {
+                if (is_numeric($cell) && $i !== 'orders') {
                     $formattedRow[$i] = number_format(
                         (float) $cell,
                         2,
