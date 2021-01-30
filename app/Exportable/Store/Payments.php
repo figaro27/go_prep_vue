@@ -262,11 +262,48 @@ class Payments
         $reportRecord->payments += 1;
         $reportRecord->update();
 
+        // Format cells
+        $formattedRows = [];
+        foreach ($rows as $row) {
+            $formattedRow = [];
+            foreach ($row as $i => $cell) {
+                if (is_numeric($cell)) {
+                    $formattedRow[$i] = number_format(
+                        (float) $cell,
+                        2,
+                        '.',
+                        ''
+                    );
+                } else {
+                    $formattedRow[$i] = $cell;
+                }
+            }
+            $formattedRows[] = $formattedRow;
+        }
+
+        $formattedDailySummaryRows = [];
+        foreach ($dailySummaryRows as $row) {
+            $formattedRow = [];
+            foreach ($row as $i => $cell) {
+                if (is_numeric($cell)) {
+                    $formattedRow[$i] = number_format(
+                        (float) $cell,
+                        2,
+                        '.',
+                        ''
+                    );
+                } else {
+                    $formattedRow[$i] = $cell;
+                }
+            }
+            $formattedDailySummaryRows[] = $formattedRow;
+        }
+
         if (!$dailySummary) {
             $params['dailySummary'] = false;
-            return $rows;
+            return $formattedRows;
         } else {
-            return $dailySummaryRows;
+            return $formattedDailySummaryRows;
         }
     }
 
