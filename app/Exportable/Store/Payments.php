@@ -87,33 +87,109 @@ class Payments
                 $columns['delivery_date'] = !$order->isMultipleDelivery
                     ? $order->delivery_date->format('D, m/d/Y')
                     : 'Multiple';
-                $columns['preFeePreDiscount'] = $order->preFeePreDiscount;
-                $columns['couponReduction'] = $order->couponReduction;
-                $columns['mealPlanDiscount'] = $order->mealPlanDiscount;
-                $columns['salesTax'] = $order->salesTax;
-                $columns['processingFee'] = $order->processingFee;
-                $columns['deliveryFee'] = $order->deliveryFee;
-                $columns['purchasedGiftCardReduction'] =
-                    $order->purchasedGiftCardReduction;
-                $columns['gratuity'] = $order->gratuity;
-                $columns['coolerDeposit'] = $order->coolerDeposit;
-                $columns['referralReduction'] = $order->referralReduction;
-                $columns['promotionReduction'] = $order->promotionReduction;
-                $columns['pointsReduction'] = $order->pointsReduction;
-                $columns['chargedAmount'] = $order->chargedAmount;
+                $columns['preFeePreDiscount'] = number_format(
+                    (float) $order->preFeePreDiscount,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['couponReduction'] = number_format(
+                    (float) $order->couponReduction,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['mealPlanDiscount'] = number_format(
+                    (float) $order->mealPlanDiscount,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['salesTax'] = number_format(
+                    (float) $order->salesTax,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['processingFee'] = number_format(
+                    (float) $order->processingFee,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['deliveryFee'] = number_format(
+                    (float) $order->deliveryFee,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['purchasedGiftCardReduction'] = number_format(
+                    (float) $order->purchasedGiftCardReduction,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['gratuity'] = number_format(
+                    (float) $order->gratuity,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['coolerDeposit'] = number_format(
+                    (float) $order->coolerDeposit,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['referralReduction'] = number_format(
+                    (float) $order->referralReduction,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['promotionReduction'] = number_format(
+                    (float) $order->promotionReduction,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['pointsReduction'] = number_format(
+                    (float) $order->pointsReduction,
+                    2,
+                    '.',
+                    ''
+                );
+                $columns['chargedAmount'] = number_format(
+                    (float) $order->chargedAmount,
+                    2,
+                    '.',
+                    ''
+                );
                 $columns['preTransactionFeeAmount'] = isset(
                     $order->preTransactionFeeAmount
                 )
-                    ? $order->preTransactionFeeAmount
+                    ? number_format(
+                        (float) $order->preTransactionFeeAmount,
+                        2,
+                        '.',
+                        ''
+                    )
                     : 0;
                 $columns['transactionFee'] = isset($order->transactionFee)
-                    ? $order->transactionFee
+                    ? number_format((float) $order->transactionFee, 2, '.', '')
                     : 0;
-                $columns['amount'] = $order->amount;
+                $columns['amount'] = number_format(
+                    (float) $order->amount,
+                    2,
+                    '.',
+                    ''
+                );
                 $columns['refundedAmount'] = $order->refundedAmount
-                    ? $order->refundedAmount
+                    ? number_format((float) $$order->refundedAmount, 2, '.', '')
                     : 0;
-                $columns['balance'] = $order->balance ? $order->balance : 0;
+                $columns['balance'] = $order->balance
+                    ? number_format((float) $$order->balance, 2, '.', '')
+                    : 0;
 
                 return $columns;
             })
