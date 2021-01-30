@@ -91,7 +91,9 @@ export default {
               " " +
               record.user.user_detail.lastname,
             order: record.order_number,
-            card: record.card.brand + " " + record.card.last4,
+            card: record.card
+              ? record.card.brand + " " + record.card.last4
+              : null,
             amount: record.amount
           };
         });
@@ -115,7 +117,9 @@ export default {
                 " " +
                 record.user.user_detail.lastname,
               order: record.order_number,
-              card: record.card.brand + " " + record.card.last4,
+              card: record.card
+                ? record.card.brand + " " + record.card.last4
+                : null,
               amount: record.amount
             };
           });
