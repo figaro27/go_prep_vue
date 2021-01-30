@@ -82,12 +82,12 @@ class FilterPayments
 
                         if ($byPaymentDate) {
                             $query1->where(
-                                'created_at',
+                                'paid_at',
                                 '>=',
                                 $startDate->format('Y-m-d')
                             );
                             $query1->where(
-                                'created_at',
+                                'paid_at',
                                 '<=',
                                 $endDate->format('Y-m-d')
                             );
