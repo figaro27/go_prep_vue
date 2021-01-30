@@ -246,6 +246,10 @@ class Payments
                 if (array_key_exists($i, $columnSums) || $i == 'orders') {
                     $columnHeaders[] = $headers[$i];
                 }
+
+                if ($dailySummary && $i === 'delivery_date') {
+                    $columnHeaders[1] = 'Orders';
+                }
             }
             array_unshift($rows, $columnHeaders);
             array_unshift($dailySummaryRows, $columnHeaders);
