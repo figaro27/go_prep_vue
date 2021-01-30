@@ -272,9 +272,8 @@ class Labels
             $meal = MealSize::where('id', $item->meal_size_id)->first();
         }
 
-        $mainIngredients = $meal->ingredients
-            ? $meal->ingredients->toArray()
-            : [];
+        $mainIngredients =
+            $meal && $meal->ingredients ? $meal->ingredients->toArray() : [];
 
         $relations = $item->relationsToArray();
 
