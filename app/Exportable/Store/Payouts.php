@@ -86,8 +86,12 @@ class Payouts
             ->where('created', '<=', $endDate)
             ->map(function ($payout) use ($currency) {
                 return [
-                    'Initiated' => $payout->created,
-                    'Arrival Date' => $payout->arrival_date,
+                    'Initiated' => Carbon::parse($payout->created)->format(
+                        'D, m/d/Y'
+                    ),
+                    'Arrival Date' => Carbon::parse(
+                        $payout->arrival_date
+                    )->format('D, m/d/Y'),
                     'Bank Name' => $payout->bank_name,
                     'Total' => Money::$currency($payout->amount)->format(),
                     'Status' => $payout->status
