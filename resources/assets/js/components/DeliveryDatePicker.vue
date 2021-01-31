@@ -15,7 +15,7 @@
           Delivery / Pickup Dates:
         </div>
         <div class="mr-sm-2 flex-grow-0" v-if="orderDate">
-          Order Dates:
+          Payment Dates:
         </div>
         <div class="mr-sm-2 flex-grow-0" v-if="regularDate">
           Dates:
