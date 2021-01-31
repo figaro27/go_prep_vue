@@ -279,7 +279,8 @@ router.beforeEach(async (to, from, next) => {
     "register",
     "forgot",
     "forgot/reset/:token",
-    "customer/menu"
+    "customer/menu",
+    "customer/adjust-subscription/:id"
   ];
 
   // Handle body classes
