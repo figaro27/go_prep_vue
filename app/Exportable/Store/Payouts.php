@@ -32,10 +32,10 @@ class Payouts
             ->toDateTimeString();
 
         $startDate = isset($params['startDate'])
-            ? Carbon::parse($params['startDate'])->timestamp
+            ? Carbon::parse($params['startDate'])->toDateTimeString()
             : $weekAgo;
         $endDate = isset($params['endDate'])
-            ? Carbon::parse($params['endDate'])->timestamp
+            ? Carbon::parse($params['endDate'])->toDateTimeString()
             : Carbon::now();
 
         $currency = $this->store->settings->currency;
