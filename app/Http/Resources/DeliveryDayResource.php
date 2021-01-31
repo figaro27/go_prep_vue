@@ -18,6 +18,7 @@ class DeliveryDayResource extends JsonResource
     {
         // $day_friendly = $this->getDeliveryDateMultipleDelivery($this->day);
         return [
+            'active' => $this->active,
             'applyFee' => $this->applyFee,
             'created_at' => $this->created_at,
             'cutoff_days' => $this->cutoff_days,

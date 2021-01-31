@@ -880,6 +880,11 @@ export default {
         return !moment(day.day_friendly).isBefore(moment().startOf("day"));
       });
 
+      // Removing inactive days
+      sortedDays = sortedDays.filter(day => {
+        return day.active;
+      });
+
       return sortedDays;
     },
     isMultipleDelivery() {
