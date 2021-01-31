@@ -310,7 +310,7 @@ class Labels
                     'ingredients' => $mainIngredients
                 ])
             )
-            : [];
+            : '';
 
         // Remove ingredients added on or duplication occurs
         // foreach ($relations['components'] as $component) {
