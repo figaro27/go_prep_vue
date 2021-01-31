@@ -252,10 +252,10 @@ export default {
       let params = this.filters;
 
       this.filters.startDate = this.filters.dates.start
-        ? moment(this.filters.dates.start)
+        ? moment(this.filters.dates.start).format("YYYY-MM-DD")
         : null;
       this.filters.endDate = this.filters.dates.end
-        ? moment(this.filters.dates.end)
+        ? moment(this.filters.dates.end).format("YYYY-MM-DD")
         : null;
 
       axios
