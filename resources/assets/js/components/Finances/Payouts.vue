@@ -173,6 +173,8 @@ export default {
         }
       },
       filters: {
+        startDate: null,
+        endDate: null,
         dates: {
           start: null,
           end: null
@@ -248,6 +250,13 @@ export default {
     },
     async exportData(report, format = "pdf", print = false) {
       let params = this.filters;
+
+      this.filters.startDate = this.filters.delivery_dates.start
+        ? this.filters.delivery_dates.start
+        : null;
+      this.filters.endDate = this.filters.delivery_dates.end
+        ? this.filters.delivery_dates.end
+        : null;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {

@@ -42,6 +42,7 @@
           <tr>
             <th>Initiated</th>
             <th>Arrival Date</th>
+            <th>Bank Name</th>
             <th>Total</th>
             <th>Status</th>
           </tr>

@@ -8,6 +8,7 @@ use App\User;
 use Carbon\Carbon;
 use App\ReportRecord;
 use Akaunting\Money\Money;
+use Payout;
 
 class Payouts
 {
@@ -25,37 +26,37 @@ class Payouts
     {
         $params = $this->params;
 
-        $startDate = isset($params['start_date'])
-            ? Carbon::parse($params['start_date'])->timestamp
+        $startDate = isset($params['startDate'])
+            ? Carbon::parse($params['startDate'])->timestamp
             : null;
-        $endDate = isset($params['end_date'])
-            ? Carbon::parse($params['end_date'])->timestamp
+        $endDate = isset($params['endDate'])
+            ? Carbon::parse($params['endDate'])->timestamp
             : null;
-
-        $acct = $this->store->settings->stripe_account;
-        \Stripe\Stripe::setApiKey($acct['access_token']);
-
-        $payouts = \Stripe\Payout::all([
-            'created[gte]' => $startDate,
-            'created[lte]' => $endDate
-        ]);
 
         $currency = $this->store->settings->currency;
 
-        $payouts = collect($payouts->data)->map(function ($payout) use (
-            $currency
-        ) {
-            return [
-                'Initiated' => Carbon::createFromTimestamp(
-                    $payout->created
-                )->format('D, m/d/y'),
-                'Arrival Date' => Carbon::createFromTimestamp(
-                    $payout->arrival_date
-                )->format('D, m/d/y'),
-                'Total' => Money::$currency($payout->amount)->format(),
-                'Status' => $payout->status
-            ];
-        });
+        // $acct = $this->store->settings->stripe_account;
+        // \Stripe\Stripe::setApiKey($acct['access_token']);
+
+        // $payouts = \Stripe\Payout::all([
+        //     'created[gte]' => $startDate,
+        //     'created[lte]' => $endDate
+        // ]);
+
+        // $payouts = collect($payouts->data)->map(function ($payout) use (
+        //     $currency
+        // ) {
+        //     return [
+        //         'Initiated' => Carbon::createFromTimestamp(
+        //             $payout->created
+        //         )->format('D, m/d/y'),
+        //         'Arrival Date' => Carbon::createFromTimestamp(
+        //             $payout->arrival_date
+        //         )->format('D, m/d/y'),
+        //         'Total' => Money::$currency($payout->amount)->format(),
+        //         'Status' => $payout->status
+        //     ];
+        // });
 
         // $includeTransactions = $params['includeTransactions'];
 
@@ -75,8 +76,26 @@ class Payouts
         //     }
         // }
 
+        $payouts = $this->store->payouts->map(function ($payout) use (
+            $currency
+        ) {
+            return [
+                'Initiated' => $payout->created,
+                'Arrival Date' => $payout->arrival_date,
+                'Bank Name' => $payout->bank_name,
+                'Total' => Money::$currency($payout->amount)->format(),
+                'Status' => $payout->status
+            ];
+        });
+
         if ($type !== 'pdf') {
-            $payouts->prepend(['Initiated', 'Arrival Date', 'Total', 'Status']);
+            $payouts->prepend([
+                'Initiated',
+                'Arrival Date',
+                'Bank Name',
+                'Total',
+                'Status'
+            ]);
         }
 
         $reportRecord = ReportRecord::where(
