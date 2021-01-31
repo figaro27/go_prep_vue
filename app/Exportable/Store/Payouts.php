@@ -26,12 +26,17 @@ class Payouts
     {
         $params = $this->params;
 
+        $weekAgo = Carbon::now()
+            ->subDays('7')
+            ->startOfDay()
+            ->toDateTimeString();
+
         $startDate = isset($params['startDate'])
             ? Carbon::parse($params['startDate'])->timestamp
-            : null;
+            : $weekAgo;
         $endDate = isset($params['endDate'])
             ? Carbon::parse($params['endDate'])->timestamp
-            : null;
+            : Carbon::now();
 
         $currency = $this->store->settings->currency;
 
@@ -76,17 +81,18 @@ class Payouts
         //     }
         // }
 
-        $payouts = $this->store->payouts->map(function ($payout) use (
-            $currency
-        ) {
-            return [
-                'Initiated' => $payout->created,
-                'Arrival Date' => $payout->arrival_date,
-                'Bank Name' => $payout->bank_name,
-                'Total' => Money::$currency($payout->amount)->format(),
-                'Status' => $payout->status
-            ];
-        });
+        $payouts = $this->store->payouts
+            ->where('created', '>=', $startDate)
+            ->where('created', '<=', $endDate)
+            ->map(function ($payout) use ($currency) {
+                return [
+                    'Initiated' => $payout->created,
+                    'Arrival Date' => $payout->arrival_date,
+                    'Bank Name' => $payout->bank_name,
+                    'Total' => Money::$currency($payout->amount)->format(),
+                    'Status' => $payout->status
+                ];
+            });
 
         if ($type !== 'pdf') {
             $payouts->prepend([

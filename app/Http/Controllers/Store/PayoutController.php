@@ -81,6 +81,7 @@ class PayoutController extends StoreController
     {
         $weekAgo = Carbon::now()
             ->subDays('7')
+            ->startOfDay()
             ->toDateTimeString();
 
         $payouts = Payout::where('store_id', $this->store->id)

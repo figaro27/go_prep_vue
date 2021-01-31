@@ -56,7 +56,7 @@ class FilterPayments
             $endDate = $byPaymentDate
                 ? Carbon::today($this->store->settings->timezone)->addDays(1)
                 : Carbon::today($this->store->settings->timezone)
-                    ->startOfDay()
+                    ->endOfDay()
                     ->addDays(7);
         }
 
