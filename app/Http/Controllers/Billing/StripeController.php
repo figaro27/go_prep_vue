@@ -103,7 +103,11 @@ class StripeController extends Controller
                 [
                     'object' => 'bank_account'
                 ]
-            )->data[0]->bank_name;
+            );
+
+            $bank_name = $bank_name->data
+                ? $bank_name->data[0]->bank_name
+                : null;
 
             $payout = new Payout();
             $payout->store_id = $storeId;
