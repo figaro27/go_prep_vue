@@ -251,11 +251,11 @@ export default {
     async exportData(report, format = "pdf", print = false) {
       let params = this.filters;
 
-      this.filters.startDate = this.filters.delivery_dates.start
-        ? this.filters.delivery_dates.start
+      this.filters.startDate = this.filters.dates.start
+        ? this.filters.dates.start
         : null;
-      this.filters.endDate = this.filters.delivery_dates.end
-        ? this.filters.delivery_dates.end
+      this.filters.endDate = this.filters.dates.end
+        ? this.filters.dates.end
         : null;
 
       axios
