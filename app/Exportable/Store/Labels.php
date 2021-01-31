@@ -304,11 +304,13 @@ class Labels
             }
         }
 
-        $allIngredients = json_encode(
-            array_merge($meal->attributesToArray(), [
-                'ingredients' => $mainIngredients
-            ])
-        );
+        $allIngredients = $meal
+            ? json_encode(
+                array_merge($meal->attributesToArray(), [
+                    'ingredients' => $mainIngredients
+                ])
+            )
+            : [];
 
         // Remove ingredients added on or duplication occurs
         // foreach ($relations['components'] as $component) {
