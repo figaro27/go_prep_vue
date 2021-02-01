@@ -78,14 +78,14 @@ class AuthController extends Controller
     {
         $user = auth('api')->user();
         $secure = Request::secure();
-        $storeDomain = StoreDetail::where(
-            'store_id',
-            $user->last_viewed_store_id
-        )
+        $redirectStoreId = $user->last_viewed_store_id
+            ? $user->last_viewed_store_id
+            : $user->added_by_store_id;
+        $storeDomain = StoreDetail::where('store_id', $redirectStoreId)
             ->pluck('domain')
             ->first();
 
-        $storeHost = StoreDetail::where('store_id', $user->last_viewed_store_id)
+        $storeHost = StoreDetail::where('store_id', $redirectStoreId)
             ->pluck('host')
             ->first();
 
