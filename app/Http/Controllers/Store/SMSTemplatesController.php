@@ -66,21 +66,23 @@ class SMSTemplatesController extends StoreController
         }
         $content = $request->get('content');
 
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request('POST', $this->baseURL, [
-            'headers' => $this->headers,
-            'form_params' => [
-                'name' => $name,
-                'content' => $content
-            ]
-        ]);
-        $status = $res->getStatusCode();
-        $body = $res->getBody();
+        if ($content) {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('POST', $this->baseURL, [
+                'headers' => $this->headers,
+                'form_params' => [
+                    'name' => $name,
+                    'content' => $content
+                ]
+            ]);
+            $status = $res->getStatusCode();
+            $body = $res->getBody();
 
-        $smsTemplate = new SmsTemplate();
-        $smsTemplate->store_id = $this->store->id;
-        $smsTemplate->template_id = json_decode($body)->id;
-        $smsTemplate->save();
+            $smsTemplate = new SmsTemplate();
+            $smsTemplate->store_id = $this->store->id;
+            $smsTemplate->template_id = json_decode($body)->id;
+            $smsTemplate->save();
+        }
 
         return $body;
     }
