@@ -101,6 +101,10 @@ class StoreSettingController extends StoreController
         $values['delivery_distance_zipcodes'] = json_encode(
             $values['delivery_distance_zipcodes']
         );
+        $values['minimumSubWeeks'] =
+            isset($values['minimumSubWeeks']) && $values['minimumSubWeeks']
+                ? $values['minimumSubWeeks']
+                : 0;
 
         // Preventing the bug which causes transferType to save as null
         if (
