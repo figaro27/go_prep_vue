@@ -164,7 +164,8 @@ class PayoutController extends StoreController
         $acct = $this->store->settings->stripe_account;
         \Stripe\Stripe::setApiKey($acct['access_token']);
         $balanceTransactions = \Stripe\BalanceTransaction::all([
-            'payout' => $payoutId
+            'payout' => $payoutId,
+            'limit' => 100
         ])->data;
 
         // Removing the first item which Stripe returns as the payout itself.
