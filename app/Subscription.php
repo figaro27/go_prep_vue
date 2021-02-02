@@ -661,7 +661,7 @@ class Subscription extends Model
                         if ($meal && $meal->stock !== null) {
                             if ($meal->stock === 0) {
                                 $mealSub->delete();
-                                $this->syncPrices();
+                                $this->syncPrices(false, true);
                             } elseif ($meal->stock < $mealSub->quantity) {
                                 $unitPrice =
                                     $mealSub->price / $mealSub->quantity;
@@ -672,7 +672,7 @@ class Subscription extends Model
                                 $meal->stock = 0;
                                 $meal->lastOutOfStock = date('Y-m-d H:i:s');
                                 $meal->active = 0;
-                                $this->syncPrices();
+                                $this->syncPrices(false, true);
                             } else {
                                 $meal->stock -= $mealSub->quantity;
                                 if ($meal->stock === 0) {
@@ -709,6 +709,8 @@ class Subscription extends Model
                 ->first();
 
             $this->renewalCount += 1;
+            $this->removeOneTimeCoupons();
+            $this->syncPrices(false, true);
             $this->next_renewal_at = $this->next_renewal_at
                 ->addWeeks($this->intervalCount)
                 ->minute(0)
@@ -947,7 +949,7 @@ class Subscription extends Model
      *
      * @return void
      */
-    public function syncPrices($mealsReplaced = false)
+    public function syncPrices($mealsReplaced = false, $syncPricesOnly = false)
     {
         $items = $this->fresh()->meal_subscriptions->map(function ($meal) {
             if (!$meal->meal_package) {
@@ -983,10 +985,6 @@ class Subscription extends Model
         $afterDiscountBeforeFees = $prePackagePrice + $totalPackagePrice;
         $preFeePreDiscount = $prePackagePrice + $totalPackagePrice;
 
-        // Adjust the price of the subscription on renewal if a one time coupon code was used. (Remove coupon from subscription).
-        if ($this->renewalCount > 0) {
-            $this->removeOneTimeCoupons();
-        }
         $coupon = Coupon::where('id', $this->coupon_id)->first();
         if (isset($coupon)) {
             if (!$coupon->active) {
@@ -1080,9 +1078,10 @@ class Subscription extends Model
 
         $this->preReductionTotal = $total;
 
-        $this->updateCurrentMealOrders();
-
-        $this->syncDiscountPrices($mealsReplaced);
+        if (!$syncPricesOnly) {
+            $this->updateCurrentMealOrders();
+            $this->syncDiscountPrices($mealsReplaced);
+        }
 
         $total -= $this->referralReduction;
         $total -= $this->promotionReduction;
