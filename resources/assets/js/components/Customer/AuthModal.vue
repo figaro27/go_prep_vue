@@ -82,7 +82,7 @@
         </div>
       </div>
 
-      <register v-if="register" @show-tos="showTos()"></register>
+      <register v-if="register"></register>
       <register-guest
         v-if="registerGuest"
         @show-tos="showTos()"
