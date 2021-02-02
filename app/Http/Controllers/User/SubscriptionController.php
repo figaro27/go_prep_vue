@@ -218,6 +218,16 @@ class SubscriptionController extends UserController
         $nextCutoff = $store->getNextCutoffDate()->toDateTimeString();
         $nextDelivery = $store->getNextDeliveryDate()->toDateTimeString();
 
+        // Accounting for $nextCutoff possibly being today.
+        if (
+            Carbon::parse($nextCutoff)
+                ->startOfDay()
+                ->isPast()
+        ) {
+            $nextCutoff = Carbon::parse($nextCutoff)->addWeeks(1);
+            $nextDelivery = Carbon::parse($nextDelivery)->addWeeks(1);
+        }
+
         if ($storeSettings->subscriptionRenewalType === 'now') {
             $latest_unpaid_order = $subscription->orders->last();
             $latest_unpaid_order->delivery_date = $nextDelivery;

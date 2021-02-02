@@ -140,7 +140,8 @@
               v-if="
                 (store.id === 3 || store.id === 106) &&
                   props.row.next_renewal_at.toString() !==
-                    store.next_cutoff_date.toString()
+                    store.next_cutoff_date.toString() &&
+                  !todayCutoff
               "
               @click="(showRenewModal = true), (subscription = props.row)"
               >Renew</b-btn
@@ -645,6 +646,16 @@ export default {
       user: "user",
       store: "viewedStore"
     }),
+    todayCutoff() {
+      if (
+        moment(this.store.next_cutoff_date).format("dddd, MMM Do") ===
+        moment().format("dddd, MMM Do")
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     activeSubscriptions() {
       if (this.subscriptions)
         return this.subscriptions.filter(
