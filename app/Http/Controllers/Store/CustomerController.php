@@ -124,7 +124,6 @@ class CustomerController extends StoreController
     public function updateCustomerUserDetails(Request $request)
     {
         $customerId = $request->get('id');
-        $userDetailId = $request->get('id');
         $details = $request->get('details');
         $customers = $request->get('customers');
 
@@ -144,15 +143,18 @@ class CustomerController extends StoreController
             $user->email = $details['email'];
             $user->save();
         } else {
-            $userDetail = UserDetail::where('user_id', $userDetailId)->first();
-            $customer = Customer::where('id', $customerId)->first();
+            $userDetail = UserDetail::where('id', $details['id'])->first();
+            $customer = Customer::where(
+                'id',
+                $request->get('customerId')
+            )->first();
             if ($customer) {
                 $customer->update($details);
                 $customer->email = $details['email'] ?? null;
                 $customer->update();
             }
             $userDetail->update($details);
-            $user = User::where('id', $userDetail->user_id)->first();
+            $user = User::where('id', $details['user_id'])->first();
             $user->email = $request->get('email');
             $user->save();
         }

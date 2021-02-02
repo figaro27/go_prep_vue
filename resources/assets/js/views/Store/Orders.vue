@@ -1821,7 +1821,8 @@ export default {
         .post(`/api/me/updateCustomerUserDetails`, {
           id: id,
           details: this.user_detail,
-          email: this.email
+          email: this.email,
+          customerId: this.order.customer_id
         })
         .then(resp => {
           this.viewOrder(this.orderId);
