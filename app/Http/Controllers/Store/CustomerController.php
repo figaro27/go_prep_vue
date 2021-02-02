@@ -179,6 +179,9 @@ class CustomerController extends StoreController
     {
         $customerId = $request->get('id');
         $customer = Customer::where('id', $customerId)->first();
+        if (!$customer) {
+            return [];
+        }
         $user = User::where('id', $customer->user_id)->first();
 
         $store = $this->store;
