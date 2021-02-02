@@ -163,6 +163,18 @@ class CheckoutController extends UserController
                 }
             }
 
+            $deliveryDay = $request->get('delivery_day');
+
+            if (Carbon::parse($deliveryDay)->isPast()) {
+                return response()->json(
+                    [
+                        'message' =>
+                            'Please refresh the page and try again. Please make sure the selected delivery date is a date in the future.'
+                    ],
+                    400
+                );
+            }
+
             // Preventing checkout if the meal has been made inactive or deleted since the time it was added to the bag.
 
             // foreach ($bag->getItems() as $item) {
@@ -186,7 +198,6 @@ class CheckoutController extends UserController
 
             $pickup = $request->get('pickup');
             $shipping = $request->get('shipping');
-            $deliveryDay = $request->get('delivery_day');
             $weekIndex = (int) date('N', strtotime($deliveryDay));
             $isMultipleDelivery = (int) $request->get('isMultipleDelivery');
             $couponId = $request->get('coupon_id');
