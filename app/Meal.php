@@ -350,14 +350,17 @@ class Meal extends Model implements HasMedia
 
         $meal = Meal::where('id', $id)->first();
 
-        foreach ($meal->ingredients as $ingredient) {
-            foreach (Ingredient::NUTRITION_FIELDS as $field) {
-                if (!array_key_exists($field, $nutrition)) {
-                    $nutrition[$field] = 0;
-                }
+        if ($meal) {
+            foreach ($meal->ingredients as $ingredient) {
+                foreach (Ingredient::NUTRITION_FIELDS as $field) {
+                    if (!array_key_exists($field, $nutrition)) {
+                        $nutrition[$field] = 0;
+                    }
 
-                $nutrition[$field] +=
-                    $ingredient[$field] * $ingredient->pivot->quantity_grams;
+                    $nutrition[$field] +=
+                        $ingredient[$field] *
+                        $ingredient->pivot->quantity_grams;
+                }
             }
         }
 
