@@ -1,8 +1,5 @@
 <template>
   <div class="mt-4">
-    <b-modal id="tos" size="xl" ref="tos" no-fade>
-      <termsOfService></termsOfService>
-    </b-modal>
     <b-modal id="toa" size="xl" ref="toa">
       <termsOfAgreement></termsOfAgreement>
     </b-modal>
@@ -229,8 +226,8 @@
               > -->
             <span
               class="strong"
-              @click.stop.prevent="$refs.tos.show()"
-              @touch.stop.prevent="$refs.tos.show()"
+              @click.stop.prevent="$emit('show-tos')"
+              @touch.stop.prevent="$emit('show-tos')"
               >terms of service</span
             >
           </b-form-checkbox>
@@ -450,18 +447,13 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
 import validators from "../../validators";
 import auth from "../../lib/auth";
-import TermsOfService from "../../views/TermsOfService";
-import TermsOfAgreement from "../../views/TermsOfAgreement";
 import countries from "../../data/countries.js";
 import currencies from "../../data/currencies.js";
 import states from "../../data/states.js";
 import { AsYouType } from "libphonenumber-js";
 
 export default {
-  components: {
-    TermsOfService,
-    TermsOfAgreement
-  },
+  components: {},
   props: {
     manualOrder: {
       default: false
