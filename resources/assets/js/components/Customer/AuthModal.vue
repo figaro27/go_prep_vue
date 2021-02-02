@@ -1,8 +1,5 @@
 <template>
   <div>
-    <b-modal id="tos" size="xl" ref="tos" @hide="onHideTos" no-fade>
-      <termsOfService></termsOfService>
-    </b-modal>
     <b-modal
       size="lg"
       hide-header
@@ -83,10 +80,7 @@
       </div>
 
       <register v-if="register"></register>
-      <register-guest
-        v-if="registerGuest"
-        @show-tos="showTos()"
-      ></register-guest>
+      <register-guest v-if="registerGuest"></register-guest>
       <forgot-password v-if="forgotPassword"></forgot-password>
     </b-modal>
   </div>
@@ -97,14 +91,12 @@ import auth from "../../lib/auth";
 import Register from "./Register";
 import RegisterGuest from "./RegisterGuest";
 import ForgotPassword from "./ForgotPassword";
-import TermsOfService from "../../views/TermsOfService";
 
 export default {
   components: {
     Register,
     RegisterGuest,
-    ForgotPassword,
-    TermsOfService
+    ForgotPassword
   },
   props: {
     redirect: null,
@@ -147,16 +139,6 @@ export default {
           this.forgotPassword = true;
           break;
       }
-    },
-    showTos() {
-      this.$parent.showAuthModal = false;
-
-      this.$nextTick(() => {
-        this.$refs.tos.show();
-      });
-    },
-    onHideTos() {
-      this.$parent.showAuthModal = true;
     },
     resetScreens() {
       this.$parent.showAuthModal = false;

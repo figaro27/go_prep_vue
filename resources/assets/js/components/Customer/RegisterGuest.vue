@@ -1,5 +1,8 @@
 <template>
   <div class="mt-4">
+    <b-modal id="tos" size="xl" ref="tos" no-fade>
+      <termsOfService></termsOfService>
+    </b-modal>
     <b-form @submit.prevent="submit" autocomplete="off" ref="form">
       <div class="d-flex" style="flex-wrap:wrap">
         <b-form-group
@@ -142,8 +145,8 @@
         By checking out you agree to our
         <span
           class="strong"
-          @click.stop.prevent="$emit('show-tos')"
-          @touch.stop.prevent="$emit('show-tos')"
+          @click.stop.prevent="$refs.tos.show()"
+          @touch.stop.prevent="$refs.tos.show()"
           >terms of service.</span
         >
       </p>
@@ -159,13 +162,18 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import { required, minLength, email, sameAs } from "vuelidate/lib/validators";
 import validators from "../../validators";
 import auth from "../../lib/auth";
+import TermsOfService from "../../views/TermsOfService";
+import TermsOfAgreement from "../../views/TermsOfAgreement";
 import countries from "../../data/countries.js";
 import currencies from "../../data/currencies.js";
 import states from "../../data/states.js";
 import { AsYouType } from "libphonenumber-js";
 
 export default {
-  components: {},
+  components: {
+    TermsOfService,
+    TermsOfAgreement
+  },
   data() {
     return {
       showStatesBox: true,
