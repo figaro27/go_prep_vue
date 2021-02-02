@@ -345,9 +345,11 @@
             <td>
               <b-form-group>
                 <b-form-input
+                  style="width:75px"
                   v-if="!ingredient.hidden"
                   placeholder="Weight"
                   v-model="ingredient.quantity"
+                  type="number"
                   :formatter="
                     (val, e) =>
                       typeof val === 'string'
