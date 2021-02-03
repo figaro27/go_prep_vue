@@ -2431,14 +2431,7 @@ use next_delivery_dates
       )
         dates = this.storeSettings.next_delivery_dates;
 
-      console.log(dates);
-      console.log(this.deliveryDays);
-
-      if (
-        this.storeModules.customDeliveryDays &&
-        this.pickup &&
-        this.store.id !== 180
-      ) {
+      if (this.storeModules.customDeliveryDays && this.pickup) {
         dates = _.filter(dates, date => {
           const deliveryDay = _.find(this.deliveryDays, {
             day: date.week_index.toString(),
