@@ -2431,18 +2431,23 @@ use next_delivery_dates
       )
         dates = this.storeSettings.next_delivery_dates;
 
-      if (this.storeModules.customDeliveryDays && this.pickup) {
+      console.log(this.dates);
+      console.log(this.deliveryDays);
+
+      if (
+        this.storeModules.customDeliveryDays &&
+        this.pickup &&
+        this.store.id !== 180
+      ) {
         dates = _.filter(dates, date => {
           const deliveryDay = _.find(this.deliveryDays, {
             day: date.week_index.toString(),
             type: "pickup"
           });
-          console.log(this.deliveryDays);
+
           if (!deliveryDay) {
-            console.log(1);
             return false;
           }
-          console.log(2);
 
           // Change to check if store has delivery_day_pickup_locations instead of just checking for pickup locations
           if (this.pickupLocations.length > 0) {
