@@ -2431,7 +2431,7 @@ use next_delivery_dates
       )
         dates = this.storeSettings.next_delivery_dates;
 
-      console.log(this.dates);
+      console.log(dates);
       console.log(this.deliveryDays);
 
       if (
