@@ -850,7 +850,7 @@ const mutations = {
     this.state.bag.gratuityPercent = gratuityPercent;
   },
   setBagCustomGratuity({ state, dispatch }, customGratuity) {
-    this.state.bag.customGratuity = customGratuity;
+    this.state.bag.customGratuity = customGratuity ? customGratuity : 0;
   },
   setBagSubscriptionInterval({ state, dispatch }, subscriptionInterval) {
     this.state.bag.subscriptionInterval = subscriptionInterval;

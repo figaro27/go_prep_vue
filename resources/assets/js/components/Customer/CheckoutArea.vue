@@ -541,8 +541,9 @@
           </div>
           <div class="col-6 col-md-3 offset-md-5 d-flex">
             <b-form-input
+              min="0"
               type="number"
-              v-model="bagCustomGratuity"
+              value="bagCustomGratuity"
               placeholder="Gratuity"
               class="w-80px"
               v-if="bagGratuityPercent == 'custom'"
