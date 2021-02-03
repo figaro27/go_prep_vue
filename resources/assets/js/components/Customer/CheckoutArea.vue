@@ -2437,7 +2437,7 @@ use next_delivery_dates
             day: date.week_index.toString(),
             type: "pickup"
           });
-          console.log(dates);
+          console.log(this.deliveryDays);
           if (!deliveryDay) {
             console.log(1);
             return false;
