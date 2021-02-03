@@ -108,6 +108,24 @@ class SubscriptionController extends StoreController
             );
         }
 
+        if ($sub->prepaid) {
+            if ($sub->renewalCount % $sub->prepaidWeeks === 0) {
+                $sub->cancel();
+            } else {
+                try {
+                    $sub->cancel();
+                } catch (\Exception $e) {
+                    return response()->json(
+                        [
+                            'error' => 'Failed to cancel Subscription'
+                        ],
+                        500
+                    );
+                }
+            }
+            return;
+        }
+
         try {
             $sub->cancel();
         } catch (\Exception $e) {

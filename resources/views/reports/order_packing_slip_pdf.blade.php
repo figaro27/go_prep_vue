@@ -319,6 +319,11 @@ $deliveryInstructions = $order->user->userDetail->delivery;
         </td>
         <td style="width:30%;margin-left:0px;padding-left:0px">
           <table border="0" style="border:0px;border-style:none;">
+            @if ($order->prepaid)
+            <tr>
+              <td style="border:none"><b>(Prepaid Subscription Order)</b></td>
+            </tr>
+            @endif
             <tr>
               <td style="border:none"><b>Subtotal</b></td>
               <td style="border:none;text-align:right;position:relative;right:8px">{{ $subtotal }}</td>
@@ -375,7 +380,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
               <td style="border:none;text-align:right;position:relative;right:8px">@money($order->amount - $order->balance, $currency, 2)</td>
             </tr>
             
-            @if ($order->subscription && $order->subscription->monthlyPrepay)
+            @if ($order->subscription && $order->subscription->prepaid)
               <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b;">Prepaid</span>
             @endif
           </table>

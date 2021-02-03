@@ -148,7 +148,7 @@ class CheckoutController extends StoreController
             $coolerDeposit = $request->get('coolerDeposit');
             $pickupLocation = $request->get('pickupLocation');
             $transferTime = $request->get('transferTime');
-            $monthlyPrepay = $request->get('monthlyPrepay');
+            $prepaid = $request->get('prepaid');
             $interval = $request->get(
                 'plan_interval',
                 Constants::INTERVAL_WEEK
@@ -355,6 +355,7 @@ class CheckoutController extends StoreController
                     strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                     chr(rand(65, 90)) .
                     rand(10, 99);
+                $order->prepaid = $prepaid;
                 $order->notes = $notes;
                 $order->publicNotes = $publicNotes;
                 $order->preFeePreDiscount = $preFeePreDiscount;
@@ -878,7 +879,7 @@ class CheckoutController extends StoreController
                     );
                 }
 
-                if ($interval === 'week' || $monthlyPrepay) {
+                if ($interval === 'week' || $prepaid) {
                     $intervalCount = 1;
                 } elseif ($interval === 'biweek') {
                     $intervalCount = 2;
@@ -910,8 +911,11 @@ class CheckoutController extends StoreController
                     }
                 }
 
-                if ($monthlyPrepay) {
-                    $period = 'Monthly prepay';
+                if ($prepaid) {
+                    $period =
+                        'Prepaid every ' .
+                        $storeSettings->prepaidWeeks .
+                        ' weeks';
                 }
 
                 $stripeCustomerId = $storeCustomer
@@ -952,7 +956,8 @@ class CheckoutController extends StoreController
                 $userSubscription->shipping = $shipping;
                 $userSubscription->interval = 'week';
                 $userSubscription->intervalCount = $intervalCount;
-                $userSubscription->monthlyPrepay = $monthlyPrepay;
+                $userSubscription->prepaid = $prepaid;
+                $userSubscription->prepaidWeeks = $storeSettings->prepaidWeeks;
                 $userSubscription->delivery_day = date(
                     'N',
                     strtotime($deliveryDay)
@@ -996,6 +1001,7 @@ class CheckoutController extends StoreController
                     strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                     chr(rand(65, 90)) .
                     rand(10, 99);
+                $order->prepaid = $prepaid;
                 $order->notes = $notes;
                 $order->publicNotes = $publicNotes;
                 $order->preFeePreDiscount = $preFeePreDiscount;

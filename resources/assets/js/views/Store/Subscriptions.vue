@@ -155,20 +155,24 @@
                 <span v-if="!showingCancelledSubscriptions">
                   <a
                     class="dropdown-item"
-                    v-if="!mealMixItems.isRunningLazy"
+                    v-if="!mealMixItems.isRunningLazy && !props.row.prepaid"
                     @click="adjust(props.row.id)"
                   >
                     Adjust
                   </a>
                   <a
                     class="dropdown-item"
-                    v-if="props.row.status == 'active'"
+                    v-if="
+                      props.row.status == 'active' && !subscription.cancelled_at
+                    "
                     @click="() => pauseSubscription(props.row.id)"
                     >Pause</a
                   >
                   <a
                     class="dropdown-item"
-                    v-if="props.row.status == 'paused'"
+                    v-if="
+                      props.row.status == 'paused' && !subscription.cancelled_at
+                    "
                     @click="() => resumeSubscription(props.row.id)"
                     >Resume</a
                   >
@@ -257,7 +261,10 @@
                   class="popover-size"
                 />
               </div>
-              <div class="mt-2" v-if="!mealMixItems.isRunningLazy">
+              <div
+                class="mt-2"
+                v-if="!mealMixItems.isRunningLazy && !subscription.prepaid"
+              >
                 <router-link
                   :to="`/store/adjust-subscription/${subscription.id}`"
                 >
@@ -266,13 +273,19 @@
               </div>
               <div>
                 <b-btn
-                  v-if="subscription.status === 'active'"
+                  v-if="
+                    subscription.status === 'active' &&
+                      !subscription.cancelled_at
+                  "
                   class="btn btn-secondary btn-md mt-2"
                   @click.stop="() => pauseSubscription(subscription.id)"
                   >Pause</b-btn
                 >
                 <b-btn
-                  v-if="subscription.status === 'paused'"
+                  v-if="
+                    subscription.status === 'paused' &&
+                      !subscription.cancelled_at
+                  "
                   class="btn btn-secondary btn-md mt-2"
                   @click.stop="() => resumeSubscription(subscription.id)"
                   >Resume</b-btn
@@ -344,7 +357,34 @@
                   moment(subscription.latest_unpaid_order_date).format(
                     "dddd, MMM Do"
                   )
-                }}
+                }}.
+                <span
+                  v-if="
+                    subscription.prepaid &&
+                      subscription.renewalCount !== 0 &&
+                      subscription.renewalCount % subscription.prepaidWeeks !==
+                        0
+                  "
+                >
+                  This is a prepaid subscription. The customer will not be
+                  charged this upcoming renewal.
+                </span>
+                <span
+                  v-if="
+                    subscription.prepaid &&
+                      (subscription.renewalCount === 0 ||
+                        subscription.renewalCount %
+                          subscription.prepaidWeeks ===
+                          0)
+                  "
+                >
+                  This is a prepaid subscription. The customer will be charged
+                  this upcoming renewal.
+                </span>
+                <span v-if="subscription.cancelled_at">
+                  This subscription is marked for cancellation and will
+                  automatically cancel after all prepaid orders are fulfilled.
+                </span>
               </p>
               <p v-else>
                 This subscription is currently paused and will not renew again
@@ -1007,7 +1047,7 @@ export default {
         let sub = this.subscriptions.find(sub => {
           return sub.id === id;
         });
-        if (sub.monthlyPrepay) {
+        if (sub.prepaid) {
           this.$toastr.s(
             "Subscription marked for cancellation after all prepaid orders are fulfilled"
           );

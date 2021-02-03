@@ -1120,7 +1120,7 @@
                   color="success"
                   variant="pill"
                   size="lg"
-                  v-model="storeSettings.monthlyPrepaySubscriptions"
+                  v-model="storeSettings.prepaidSubscriptions"
                   @change.native="updateStoreSettings()"
                 /> -->
               <p class="mt-3">

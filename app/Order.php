@@ -53,7 +53,8 @@ class Order extends Model
         'pointsReduction' => 'float',
         'gratuity' => 'float',
         'coolerDeposit' => 'float',
-        'shipping' => 'boolean'
+        'shipping' => 'boolean',
+        'prepaid' => 'boolean'
         //'created_at' => 'date:F d, Y'
     ];
 

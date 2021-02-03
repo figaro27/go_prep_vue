@@ -643,6 +643,10 @@
         <div class="row">
           <div class="col-6 col-md-4">
             <strong>Total</strong>
+            <span v-if="prepaid">
+              <br />{{ format.money(grandTotal / 4, storeSettings.currency) }} x
+              {{ storeSettings.prepaidWeeks }} weekly orders.
+            </span>
           </div>
           <div class="col-6 col-md-3 offset-md-5">
             <strong>{{
@@ -1403,7 +1407,7 @@ export default {
       removePromotions: false,
       hasWeeklySubscriptionItems: false,
       hasMonthlySubscriptionItems: false,
-      hasMonthlyPrepaySubscriptionItems: false,
+      hasPrepaidSubscriptionItems: false,
       form: {
         billingState: null
       },
@@ -1659,6 +1663,17 @@ export default {
       bagSubscriptionInterval: "bagSubscriptionInterval",
       distance: "viewedStoreDistance"
     }),
+    prepaid() {
+      if (
+        this.weeklySubscriptionValue &&
+        this.storeSettings.prepaidSubscriptions &&
+        this.bagSubscriptionInterval === "month"
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     hasMultipleSubscriptionIntervals() {
       let count = 0;
       if (this.storeSettings.allowWeeklySubscriptions) {
@@ -1939,7 +1954,7 @@ export default {
       let subscriptionItemTypes = 0;
       if (this.hasWeeklySubscriptionItems) subscriptionItemTypes += 1;
       if (this.hasMonthlySubscriptionItems) subscriptionItemTypes += 1;
-      if (this.hasMonthlyPrepaySubscriptionItems) subscriptionItemTypes += 1;
+      if (this.hasPrepaidSubscriptionItems) subscriptionItemTypes += 1;
       if (subscriptionItemTypes > 1) return true;
     },
     deliveryValue() {
@@ -2509,6 +2524,7 @@ use next_delivery_dates
         });
       }
       let subtotal = this.totalBagPricePreFees + totalLineItemsPrice;
+
       return subtotal;
     },
     couponReduction() {
@@ -2840,6 +2856,10 @@ use next_delivery_dates
         this.tip;
       if (total < 0) {
         total = 0;
+      }
+      // Update this in the future. Separate bag subscription interval from prepaid subscriptions
+      if (this.prepaid) {
+        return total * this.store.settings.prepaidWeeks;
       }
       return total;
     },
@@ -3715,9 +3735,7 @@ use next_delivery_dates
           bag: bag,
           plan: this.weeklySubscriptionValue ? this.weeklySubscriptionValue : 0,
           plan_interval: this.bagSubscriptionInterval,
-          monthlyPrepay:
-            this.hasMonthlyPrepaySubscriptionItems ||
-            this.storeSettings.monthlyPrepaySubscriptions,
+          prepaid: this.prepaid,
           pickup: this.pickup,
           shipping: this.selectedTransferType == "Shipping" ? 1 : 0,
           isMultipleDelivery: this.isMultipleDelivery,
@@ -3890,7 +3908,7 @@ use next_delivery_dates
     subscriptionItemsCheck() {
       this.hasWeeklySubscriptionItems = false;
       this.hasMonthlySubscriptionItems = false;
-      this.hasMonthlyPrepaySubscriptionItems = false;
+      this.hasPrepaidSubscriptionItems = false;
       let subscriptionItemTypeCount = 0;
       this.bag.forEach(item => {
         if (item.meal.subscriptionInterval) {
@@ -3904,7 +3922,7 @@ use next_delivery_dates
               subscriptionItemTypeCount += 1;
               break;
             case "monthly-prepay":
-              this.hasMonthlyPrepaySubscriptionItems = true;
+              this.hasPrepaidSubscriptionItems = true;
               subscriptionItemTypeCount += 1;
               break;
           }

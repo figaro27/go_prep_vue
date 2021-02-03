@@ -148,6 +148,9 @@
             <h4 v-if="order.cashOrder">
               {{ store.module_settings.cashOrderWording }}
             </h4>
+            <p v-if="order.prepaid">
+              (Prepaid Subscription Order)
+            </p>
             <p>
               Subtotal:
               {{ format.money(order.preFeePreDiscount, order.currency) }}
@@ -220,9 +223,6 @@
               <p class="d-inline">
                 Balance: {{ format.money(order.balance, order.currency) }}
               </p>
-            </div>
-            <div v-if="order.subscription && order.subscription.monthlyPrepay">
-              Prepaid
             </div>
             <br />
             <br />

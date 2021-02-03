@@ -200,16 +200,15 @@ $currency = $subscription->store->settings->currency
                     @if ($subscription->mealsReplaced)
                     Your subscription was updated. Please check the meals below.
                     @endif
-                    @if (!$subscription->monthlyPrepay)
+                    @if (!$subscription->prepaid)
                     You have 24 hours left to update, or cancel your subscription before orders are locked in and your card is charged.
-                    @else
-                    You have 24 hours left to update, or cancel your subscription before orders are locked in.
                     @endif
                   </td>
                 </tr>
                 <tr>
                   <td height="15"></td>
                 </tr>
+                @if (!$subscription->prepaid)
                 <tr>
                 	<td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">Click the button below if you would like to update your subscription.</td>
                 </tr>
@@ -220,7 +219,7 @@ $currency = $subscription->store->settings->currency
                 <tr>
                 <td><a href="http://goprep.com/customer/subscriptions"><button bgcolor="#E04F00" align="center" style="font-family:'Open Sans'; font-size:16px; color:#ffffff;padding-left:25px;padding-right:25px;border-radius:5px;background-color:#F25727;width:100%;height:55px;border:none">Update</button></a></td>
                 </tr>
-
+                @endif
                 <tr>
                   <td height="30"></td>
                 </tr>

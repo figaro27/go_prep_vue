@@ -255,6 +255,9 @@
                   </p>
                 </div>
                 <div class="col-md-4">
+                  <p v-if="order.prepaid">
+                    (Prepaid Subscription Order)
+                  </p>
                   <p>
                     Subtotal:
                     {{ format.money(order.preFeePreDiscount, order.currency) }}

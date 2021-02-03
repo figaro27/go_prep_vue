@@ -352,7 +352,6 @@ $currency = $order->store->settings->currency
                         $purchasedGiftCard = $order->purchased_gift_card_code;
                         $purchasedGiftCardReduction = $order->purchasedGiftCardReduction;
                         @endphp
-
                         Subtotal: <br>
                         @if ($coupon > 0)
                         Coupon ({{ $couponCode }})<br>
@@ -385,6 +384,9 @@ Cooler Deposit<br>
 
                         <br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:24px; color:#3b3b3b; font-weight: bold;">Total</span><br>
+                        @if ($order->prepaid)
+                        <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">(Prepaid Subscription Order)</span><br>
+                        @endif
                         @if ($balance > 0)
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Paid</span><br>
                         <span style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#3b3b3b; ">Balance</span>

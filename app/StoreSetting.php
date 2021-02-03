@@ -89,7 +89,7 @@ class StoreSetting extends Model
         'allowWeeklySubscriptions' => 'boolean',
         'allowBiWeeklySubscriptions' => 'boolean',
         'allowMonthlySubscriptions' => 'boolean',
-        'monthlyPrepaySubscriptions' => 'boolean',
+        'prepaidSubscriptions' => 'boolean',
         'applyMealPlanDiscount' => 'boolean',
         'allowPickup' => 'boolean',
         'meal_packages' => 'boolean',

@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <b-alert style="background-color:#EBFAFF" show dismissible>
+      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
         <p>
           <span class="strong">Update - New & Improved Financials Page</span
           ><br />
@@ -19,7 +19,7 @@
             ><strong>Visit it here.</strong></router-link
           >
         </p>
-      </b-alert>
+      </b-alert> -->
 
       <div class="card">
         <div class="card-body">
@@ -664,6 +664,9 @@
             <h4 v-if="order.cashOrder">
               {{ store.module_settings.cashOrderWording }}
             </h4>
+            <p v-if="order.prepaid">
+              (Prepaid Subscription Order)
+            </p>
             <p>
               Subtotal:
               {{ format.money(order.preFeePreDiscount, order.currency) }}
@@ -775,9 +778,6 @@
                 src="/images/store/popover.png"
                 class="popover-size d-inline"
               />
-            </div>
-            <div v-if="order.subscription && order.subscription.monthlyPrepay">
-              Prepaid
             </div>
           </div>
         </div>

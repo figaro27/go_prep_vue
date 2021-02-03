@@ -35,7 +35,9 @@ class Subscription extends Model
         'status',
         'cancelled_at',
         'renewalCount',
-        'next_renewal_at'
+        'next_renewal_at',
+        'prepaid',
+        'prepaidWeeks'
     ];
 
     protected $appends = [
@@ -53,8 +55,9 @@ class Subscription extends Model
         'interval_title',
         'transfer_type',
         'adjustedRenewal',
-        'adjustedRenewalUTC'
-        // 'total_item_quantity'
+        'adjustedRenewalUTC',
+        // 'total_item_quantity',
+        'prepaidChargeWeek'
     ];
 
     protected $casts = [
@@ -68,7 +71,7 @@ class Subscription extends Model
         'amount' => 'float',
         'salesTax' => 'float',
         'mealPlanDiscount' => 'float',
-        'monthlyPrepay' => 'boolean',
+        'prepaid' => 'boolean',
         'mealsReplaced' => 'boolean',
         'gratuity' => 'float',
         'shipping' => 'boolean',
@@ -259,11 +262,13 @@ class Subscription extends Model
 
     public function getIntervalTitleAttribute()
     {
-        if ($this->intervalCount == 1 && !$this->monthlyPrepay) {
+        if ($this->intervalCount == 1 && !$this->prepaid) {
             return 'Weekly';
         }
-        if ($this->intervalCount == 1 && $this->monthlyPrepay) {
-            return 'Weekly (Charged Monthly)';
+        if ($this->prepaid) {
+            return 'Weekly Prepaid - (Charged every ' .
+                $this->prepaidWeeks .
+                ' weeks)';
         }
         if ($this->intervalCount == 2) {
             return 'Bi-Weekly';
@@ -378,6 +383,7 @@ class Subscription extends Model
      *
      * @return boolean
      */
+
     public function renew($manualRenewal = false)
     {
         try {
@@ -406,26 +412,12 @@ class Subscription extends Model
                     ? true
                     : false;
 
-            // Cancelling the subscription for next month if cancelled_at is marked
-            if (
-                $this->monthlyPrepay &&
-                $this->cancelled_at !== null &&
-                $this->renewalCount % 4 === 0
-            ) {
-                $this->status = 'cancelled';
-                $this->save();
-                return;
-            }
-
-            // Only charge once per month on monthly prepay subscriptions
             $markAsPaidOnly = false;
-            if ($this->monthlyPrepay) {
-                if (
-                    $this->renewalCount !== 0 &&
-                    $this->renewalCount % 4 !== 0
-                ) {
-                    $markAsPaidOnly = true;
-                }
+            $showPrepaidOrderAmounts = false;
+            if (!$this->prepaidChargeWeek) {
+                $markAsPaidOnly = true;
+                $applyCharge = false;
+                $showPrepaidOrderAmounts = true;
             }
             if (
                 ($this->cashOrder && $this->status !== 'paused') ||
@@ -443,6 +435,7 @@ class Subscription extends Model
             $latestOrder->paid_at =
                 $applyCharge || $markAsPaidOnly ? new Carbon() : null;
             $latestOrder->stripe_id = $charge ? $charge->id : null;
+            $latestOrder->prepaid = $this->prepaid;
             $latestOrder->save();
 
             $latestOrder->events()->create([
@@ -477,25 +470,59 @@ class Subscription extends Model
                 strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                 chr(rand(65, 90)) .
                 rand(10, 99);
-            $newOrder->preFeePreDiscount = $this->preFeePreDiscount;
-            $newOrder->mealPlanDiscount = $this->mealPlanDiscount;
-            $newOrder->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
-            $newOrder->deliveryFee = $this->deliveryFee;
-            $newOrder->gratuity = $this->gratuity;
-            $newOrder->coolerDeposit = $this->coolerDeposit;
-            $newOrder->processingFee = $this->processingFee;
-            $newOrder->salesTax = $this->salesTax;
-            $newOrder->coupon_id = $this->coupon_id;
-            $newOrder->couponReduction = $this->couponReduction;
-            $newOrder->couponCode = $this->couponCode;
-            $newOrder->referralReduction = $this->referralReduction;
-            $newOrder->purchased_gift_card_id = $this->purchased_gift_card_id;
-            $newOrder->purchasedGiftCardReduction =
-                $this->purchasedGiftCardReduction;
-            $newOrder->promotionReduction = $this->promotionReduction;
-            $newOrder->pointsReduction = $this->pointsReduction;
-            $newOrder->originalAmount = $this->amount;
-            $newOrder->amount = $this->amount;
+            $newOrder->prepaid = $this->prepaid;
+            $newOrder->preFeePreDiscount = $this->prepaidChargeWeek
+                ? $this->preFeePreDiscount
+                : 0;
+            $newOrder->mealPlanDiscount = $this->prepaidChargeWeek
+                ? $this->mealPlanDiscount
+                : 0;
+            $newOrder->afterDiscountBeforeFees = $this->prepaidChargeWeek
+                ? $this->afterDiscountBeforeFees
+                : 0;
+            $newOrder->deliveryFee = $this->prepaidChargeWeek
+                ? $this->deliveryFee
+                : 0;
+            $newOrder->gratuity = $this->prepaidChargeWeek
+                ? $this->gratuity
+                : 0;
+            $newOrder->coolerDeposit = $this->prepaidChargeWeek
+                ? $this->coolerDeposit
+                : 0;
+            $newOrder->processingFee = $this->prepaidChargeWeek
+                ? $this->processingFee
+                : 0;
+            $newOrder->salesTax = $this->prepaidChargeWeek
+                ? $this->salesTax
+                : 0;
+            $newOrder->coupon_id = $this->prepaidChargeWeek
+                ? $this->coupon_id
+                : 0;
+            $newOrder->couponReduction = $this->prepaidChargeWeek
+                ? $this->couponReduction
+                : 0;
+            $newOrder->couponCode = $this->prepaidChargeWeek
+                ? $this->couponCode
+                : 0;
+            $newOrder->referralReduction = $this->prepaidChargeWeek
+                ? $this->referralReduction
+                : 0;
+            $newOrder->purchased_gift_card_id = $this->prepaidChargeWeek
+                ? $this->purchased_gift_card_id
+                : 0;
+            $newOrder->purchasedGiftCardReduction = $this->prepaidChargeWeek
+                ? $this->purchasedGiftCardReduction
+                : 0;
+            $newOrder->promotionReduction = $this->prepaidChargeWeek
+                ? $this->promotionReduction
+                : 0;
+            $newOrder->pointsReduction = $this->prepaidChargeWeek
+                ? $this->pointsReduction
+                : 0;
+            $newOrder->originalAmount = $this->prepaidChargeWeek
+                ? $this->amount
+                : 0;
+            $newOrder->amount = $this->prepaidChargeWeek ? $this->amount : 0;
 
             $modules = StoreModule::where('store_id', $this->store_id)->first();
             $newOrder->balance =
@@ -631,6 +658,15 @@ class Subscription extends Model
                 }
             }
 
+            // Update? Not the best way of doing this. Fixes the latest order on prepaid subscriptions always being 1 behind in terms of showing the amount VS 0.
+            if ($this->prepaid) {
+                if ($isMultipleDelivery == 1) {
+                    $latestOrder = $this->getLatestUnpaidMDOrder();
+                } else {
+                    $latestOrder = $this->getLatestUnpaidOrder();
+                }
+            }
+
             if ($this->status !== 'paused') {
                 // Send new order notification to store at the cutoff once the order is paid
                 if ($this->store->settings->notificationEnabled('new_order')) {
@@ -709,6 +745,16 @@ class Subscription extends Model
                 ->first();
 
             $this->renewalCount += 1;
+            // Cancelling the subscription for next month if cancelled_at is marked
+            if (
+                $this->prepaid &&
+                $this->cancelled_at !== null &&
+                $this->paid_order_count % $this->prepaidWeeks === 0
+            ) {
+                $this->status = 'cancelled';
+                $this->save();
+                return;
+            }
             $this->removeOneTimeCoupons();
             $this->syncPrices(false, true);
             $this->next_renewal_at = $this->next_renewal_at
@@ -1093,6 +1139,11 @@ class Subscription extends Model
             $total = 0;
         }
         // $this->amount = floor($total * 100) / 100;
+
+        if ($this->prepaid) {
+            $total = $total * $this->prepaidWeeks;
+        }
+
         $this->amount = $total;
         $this->save();
 
@@ -1124,24 +1175,49 @@ class Subscription extends Model
             // }
 
             // Update order pricing
-            $order->preFeePreDiscount = $this->preFeePreDiscount;
-            $order->mealPlanDiscount = $this->mealPlanDiscount;
-            $order->afterDiscountBeforeFees = $this->afterDiscountBeforeFees;
-            $order->processingFee = $this->processingFee;
-            $order->deliveryFee = $this->deliveryFee;
-            $order->salesTax = $this->salesTax;
-            $order->referralReduction = $this->referralReduction;
-            $order->promotionReduction = $this->promotionReduction;
-            $order->pointsReduction = $this->pointsReduction;
-            $order->gratuity = $this->gratuity;
-            $order->coolerDeposit = $this->coolerDeposit;
-            $order->coupon_id = $this->coupon_id;
-            $order->couponReduction = $this->couponReduction;
-            $order->couponCode = $this->couponCode;
-            $order->purchased_gift_card_id = $this->purchased_gift_card_id;
-            $order->purchasedGiftCardReduction =
-                $this->purchasedGiftCardReduction;
-            $order->amount = $this->amount;
+            $order->preFeePreDiscount = $this->prepaidChargeWeek
+                ? $this->preFeePreDiscount
+                : 0;
+            $order->mealPlanDiscount = $this->prepaidChargeWeek
+                ? $this->mealPlanDiscount
+                : 0;
+            $order->afterDiscountBeforeFees = $this->prepaidChargeWeek
+                ? $this->afterDiscountBeforeFees
+                : 0;
+            $order->processingFee = $this->prepaidChargeWeek
+                ? $this->processingFee
+                : 0;
+            $order->deliveryFee = $this->prepaidChargeWeek
+                ? $this->deliveryFee
+                : 0;
+            $order->salesTax = $this->prepaidChargeWeek ? $this->salesTax : 0;
+            $order->referralReduction = $this->prepaidChargeWeek
+                ? $this->referralReduction
+                : 0;
+            $order->promotionReduction = $this->prepaidChargeWeek
+                ? $this->promotionReduction
+                : 0;
+            $order->pointsReduction = $this->prepaidChargeWeek
+                ? $this->pointsReduction
+                : 0;
+            $order->gratuity = $this->prepaidChargeWeek ? $this->gratuity : 0;
+            $order->coolerDeposit = $this->prepaidChargeWeek
+                ? $this->coolerDeposit
+                : 0;
+            $order->coupon_id = $this->prepaidChargeWeek ? $this->coupon_id : 0;
+            $order->couponReduction = $this->prepaidChargeWeek
+                ? $this->couponReduction
+                : 0;
+            $order->couponCode = $this->prepaidChargeWeek
+                ? $this->couponCode
+                : 0;
+            $order->purchased_gift_card_id = $this->prepaidChargeWeek
+                ? $this->purchased_gift_card_id
+                : 0;
+            $order->purchasedGiftCardReduction = $this->prepaidChargeWeek
+                ? $this->purchasedGiftCardReduction
+                : 0;
+            $order->amount = $this->prepaidChargeWeek ? $this->amount : 0;
             $modules = StoreModule::where('store_id', $this->store_id)->first();
             $order->balance =
                 $this->cashOrder && !$modules->cashOrderNoBalance
@@ -1149,6 +1225,7 @@ class Subscription extends Model
                     : 0;
             $order->balance = $this->cashOrder ? $this->amount : null;
             $order->publicNotes = $this->publicNotes;
+            $order->prepaid = $this->prepaid;
             $order->save();
 
             // Replace order meals
@@ -1358,7 +1435,7 @@ class Subscription extends Model
      */
     public function cancel($failedRenewalExpired = false)
     {
-        if (!$this->monthlyPrepay) {
+        if (!$this->prepaid) {
             $this->status = 'cancelled';
         }
         $this->cancelled_at = Carbon::now('utc');
@@ -1434,6 +1511,21 @@ class Subscription extends Model
         }
 
         return $total;
+    }
+
+    public function getPrepaidChargeWeekAttribute()
+    {
+        if (!$this->prepaid) {
+            return true;
+        }
+        if (
+            $this->paid_order_count === 0 ||
+            $this->paid_order_count % $this->prepaidWeeks === 0
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Removes deleted variations from existing subscriptions and updates the pricing

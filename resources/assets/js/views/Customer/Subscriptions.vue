@@ -98,6 +98,7 @@
               View
             </button>
             <router-link
+              v-if="!props.row.prepaid"
               :to="
                 `/customer/adjust-subscription/${props.row.id}` +
                   '?subscriptionId=' +
@@ -116,20 +117,22 @@
               :disabled="props.row.cancelled_at !== null"
               @click="
                 {
-                  (cancelSubscriptionModal = true), (subId = props.row.id);
+                  (cancelSubscriptionModal = true),
+                    (subId = props.row.id),
+                    (subscription = props.row);
                 }
               "
             >
               Cancel
             </button>
             <b-btn
-              v-if="props.row.status === 'active'"
+              v-if="props.row.status === 'active' && !subscription.cancelled_at"
               class="btn btn-warning btn-sm"
               @click.stop="() => pauseSubscription(props.row.id)"
               >Pause</b-btn
             >
             <b-btn
-              v-if="props.row.status === 'paused'"
+              v-if="props.row.status === 'paused' && !subscription.cancelled_at"
               class="btn btn-warning btn-sm"
               @click.stop="() => resumeSubscription(props.row.id)"
               >Resume</b-btn
@@ -193,12 +196,16 @@
       hide-footer
     >
       <p class="center-text mt-3 mb-3">
-        Are you sure you want to cancel your subscription? If you want to change
-        your items you can click "Adjust" instead to edit this subscription.
+        Are you sure you want to cancel your subscription?
+        <span v-if="!subscription.prepaid"
+          >If you want to change your items you can click "Adjust" instead to
+          edit this subscription.</span
+        >
       </p>
       <center>
         <b-btn variant="danger" @click="cancelSubscription">Cancel</b-btn>
         <router-link
+          v-if="!subscription.prepaid"
           :to="
             `/customer/adjust-subscription/${subId}` +
               '?subscriptionId=' +
@@ -261,18 +268,23 @@
             <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
             <router-link
+              v-if="!subscription.prepaid"
               :to="`/customer/adjust-subscription/${subscription.id}`"
             >
               <b-btn class="btn btn-success btn-sm">Adjust</b-btn>
             </router-link>
             <b-btn
-              v-if="subscription.status === 'active'"
+              v-if="
+                subscription.status === 'active' && !subscription.cancelled_at
+              "
               class="btn btn-warning btn-sm"
               @click.stop="() => pauseSubscription(subscription.id)"
               >Pause</b-btn
             >
             <b-btn
-              v-if="subscription.status === 'paused'"
+              v-if="
+                subscription.status === 'paused' && !subscription.cancelled_at
+              "
               class="btn btn-warning btn-sm"
               @click.stop="() => resumeSubscription(subscription.id)"
               >Resume</b-btn
@@ -304,8 +316,55 @@
           <div class="col-md-4">
             <h4>Placed On</h4>
             <p>{{ moment(subscription.created_at).format("dddd, MMM Do") }}</p>
+            <span>
+              <h4 class="mt-2">Next Renewal</h4>
+              <p v-if="subscription.status !== 'paused'">
+                {{
+                  moment(subscription.adjustedRenewal.date).format(
+                    "dddd, MMM Do, h:mm a"
+                  )
+                }}
+                will create order for
+                {{
+                  moment(subscription.latest_unpaid_order_date).format(
+                    "dddd, MMM Do"
+                  )
+                }}.
+                <span
+                  v-if="
+                    subscription.prepaid &&
+                      subscription.renewalCount !== 0 &&
+                      subscription.renewalCount % subscription.prepaidWeeks !==
+                        0
+                  "
+                >
+                  This is a prepaid subscription. You will not be charged this
+                  upcoming renewal.
+                </span>
+                <span
+                  v-if="
+                    subscription.prepaid &&
+                      (subscription.renewalCount === 0 ||
+                        subscription.renewalCount %
+                          subscription.prepaidWeeks ===
+                          0)
+                  "
+                >
+                  This is a prepaid subscription. You will be charged this
+                  upcoming renewal.
+                </span>
+                <span v-if="subscription.cancelled_at">
+                  This subscription is marked for cancellation and will
+                  automatically cancel after all prepaid orders are fulfilled.
+                </span>
+              </p>
+              <p v-else>
+                This subscription is currently paused and will not renew again
+                until resumed.
+              </p>
+            </span>
             <span v-if="!storeModules.hideTransferOptions" class="mt-2">
-              <h4>{{ subscription.transfer_type }} Day</h4>
+              <h4>Upcoming {{ subscription.transfer_type }}</h4>
               <p v-if="subscription.next_delivery_date">
                 {{
                   moment(subscription.next_delivery_date).format("dddd, MMM Do")
@@ -901,7 +960,7 @@ export default {
         let sub = this.subscriptions.find(sub => {
           return sub.id === this.subId;
         });
-        if (sub.monthlyPrepay) {
+        if (sub.prepaid) {
           this.$toastr.s(
             "Subscription marked for cancellation after all prepaid orders are fulfilled"
           );

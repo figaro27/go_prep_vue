@@ -221,7 +221,7 @@ class CheckoutController extends UserController
             $coolerDeposit = $request->get('coolerDeposit');
             $pickupLocation = $request->get('pickupLocation');
             $transferTime = $request->get('transferTime');
-            $monthlyPrepay = $request->get('monthlyPrepay');
+            $prepaid = $request->get('prepaid');
             $interval = $request->get(
                 'plan_interval',
                 Constants::INTERVAL_WEEK
@@ -480,6 +480,7 @@ class CheckoutController extends UserController
                     strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                     chr(rand(65, 90)) .
                     rand(10, 99);
+                $order->prepaid = $prepaid;
                 $order->preFeePreDiscount = $preFeePreDiscount;
                 $order->mealPlanDiscount = $mealPlanDiscount;
                 $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;
@@ -917,7 +918,7 @@ class CheckoutController extends UserController
                     );
                 }
 
-                if ($interval === 'week' || $monthlyPrepay) {
+                if ($interval === 'week' || $prepaid) {
                     $intervalCount = 1;
                 } elseif ($interval === 'biweek') {
                     $intervalCount = 2;
@@ -952,8 +953,11 @@ class CheckoutController extends UserController
                     }
                 }
 
-                if ($monthlyPrepay) {
-                    $period = 'Monthly prepay';
+                if ($prepaid) {
+                    $period =
+                        'Prepaid every ' .
+                        $storeSettings->prepaidWeeks .
+                        ' weeks';
                 }
 
                 $stripeCustomerId = $storeCustomer
@@ -994,7 +998,8 @@ class CheckoutController extends UserController
                 $userSubscription->shipping = $shipping;
                 $userSubscription->interval = 'week';
                 $userSubscription->intervalCount = $intervalCount;
-                $userSubscription->monthlyPrepay = $monthlyPrepay;
+                $userSubscription->prepaid = $prepaid;
+                $userSubscription->prepaidWeeks = $storeSettings->prepaidWeeks;
                 $userSubscription->delivery_day = date(
                     'N',
                     strtotime($deliveryDay)
@@ -1038,6 +1043,7 @@ class CheckoutController extends UserController
                     strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                     chr(rand(65, 90)) .
                     rand(10, 99);
+                $order->prepaid = $prepaid;
                 $order->preFeePreDiscount = $preFeePreDiscount;
                 $order->mealPlanDiscount = $mealPlanDiscount;
                 $order->afterDiscountBeforeFees = $afterDiscountBeforeFees;

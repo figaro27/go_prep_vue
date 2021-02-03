@@ -225,8 +225,8 @@ class CardController extends UserController
             );
         }
 
-        if ($sub->monthlyPrepay) {
-            if ($sub->renewalCount % 4 === 0) {
+        if ($sub->prepaid) {
+            if ($sub->paid_order_count % $sub->prepaidWeeks === 0) {
                 $sub->cancel();
             } else {
                 try {
