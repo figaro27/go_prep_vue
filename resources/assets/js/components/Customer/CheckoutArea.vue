@@ -177,6 +177,7 @@
                     updateParentData();
                     setBagMealPlan(val);
                     syncDiscounts();
+                    removePromos();
                   }
                 "
               />
@@ -657,7 +658,15 @@
       </li>
 
       <!-- Coupon Area -->
-      <li v-if="store.hasPromoCodes && showDiscounts.coupons">
+      <li
+        v-if="
+          store.hasPromoCodes &&
+            showDiscounts.coupons &&
+            (!store.modules.noPromosOnSubscriptions ||
+              (store.modules.noPromosOnSubscriptions &&
+                !weeklySubscriptionValue))
+        "
+      >
         <h5 v-if="!loggedIn">Promo codes entered during checkout.</h5>
         <div class="row">
           <div class="col-xs-6 pl-3">
@@ -678,6 +687,17 @@
             >
           </div>
         </div>
+      </li>
+      <li
+        v-if="store.modules.noPromosOnSubscriptions && weeklySubscriptionValue"
+      >
+        <b-alert variant="warning" show class="pb-4">
+          <center>
+            <span class="strong"
+              >Promo codes aren't available on subscriptions.</span
+            >
+          </center>
+        </b-alert>
       </li>
 
       <li
@@ -4059,6 +4079,15 @@ use next_delivery_dates
             break;
         }
       });
+    },
+    removePromos() {
+      if (
+        this.storeModules.noPromosOnSubscriptions &&
+        this.weeklySubscriptionValue
+      ) {
+        this.removePromotions = true;
+        this.removeDiscounts();
+      }
     },
     removeDiscounts() {
       this.removeCoupon();

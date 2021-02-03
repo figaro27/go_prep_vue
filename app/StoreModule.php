@@ -28,7 +28,8 @@ class StoreModule extends Model
         'cooler' => 'boolean',
         'frequencyItems' => 'boolean',
         'manualOrderEmails' => 'boolean',
-        'guestCheckout' => 'boolean'
+        'guestCheckout' => 'boolean',
+        'noPromosOnSubscriptions' => 'boolean'
     ];
 
     protected $guarded = [];
