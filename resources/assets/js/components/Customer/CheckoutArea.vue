@@ -2399,6 +2399,8 @@ export default {
       let dates = this.pickup
         ? this.storeSettings.next_orderable_pickup_dates
         : this.storeSettings.next_orderable_delivery_dates;
+
+      console.log(dates);
       let deliveryDays = this.store.delivery_days;
 
       // If no cutoff, add today's date
@@ -2409,6 +2411,8 @@ export default {
       ) {
         dates = this.storeSettings.next_delivery_dates;
       }
+
+      console.log(dates);
 
       /*
 use next_delivery_dates
@@ -2453,6 +2457,8 @@ use next_delivery_dates
         });
       }
 
+      console.log(dates);
+
       dates.forEach(date => {
         options.push({
           value: date.date,
@@ -2460,12 +2466,16 @@ use next_delivery_dates
         });
       });
 
+      console.log(dates);
+
       // only one option. Set as bag date
       if (options.length === 1 && this.bagDeliveryDate !== options[0].value) {
         this.$nextTick(() => {
           this.setBagDeliveryDate(options[0].value);
         });
       }
+
+      console.log(options);
 
       return options;
     },
