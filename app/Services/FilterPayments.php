@@ -172,7 +172,8 @@ class FilterPayments
                         : 0;
                 if (
                     !$order->cashOrder &&
-                    $this->store->settings->payment_gateway === 'stripe'
+                    $this->store->settings->payment_gateway === 'stripe' &&
+                    $order->amount > 0.5
                 ) {
                     $order->transactionFee +=
                         ($order->amount + $order->chargedAmount) * 0.029 + 0.3;

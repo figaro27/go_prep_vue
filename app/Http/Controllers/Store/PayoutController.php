@@ -200,7 +200,8 @@ class PayoutController extends StoreController
                     ($application_fee / 100);
                 if (
                     !$orderTransaction->order->cashOrder &&
-                    $this->store->settings->payment_gateway === 'stripe'
+                    $this->store->settings->payment_gateway === 'stripe' &&
+                    $orderTransaction->order->amount > 0.5
                 ) {
                     $orderTransaction->order->transactionFee +=
                         $orderTransaction->order->amount * 0.029 + 0.3;

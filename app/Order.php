@@ -293,7 +293,7 @@ class Order extends Model
 
     public function getStripeFeeAttribute()
     {
-        if (!$this->cashOrder) {
+        if (!$this->cashOrder && $this->amount > 0.5) {
             return $this->amount * 0.029 + 0.3;
         } else {
             return 0;
