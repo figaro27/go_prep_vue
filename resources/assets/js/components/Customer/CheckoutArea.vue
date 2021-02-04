@@ -1924,7 +1924,7 @@ export default {
     gratuityOptions() {
       return [
         { value: 0, text: "None" },
-        { value: "custom", text: "Custom" },
+        // { value: "custom", text: "Custom" },
         { value: 2, text: "2%" },
         { value: 4, text: "4%" },
         { value: 6, text: "6%" },
