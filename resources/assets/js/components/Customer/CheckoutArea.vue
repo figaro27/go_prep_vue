@@ -2840,9 +2840,8 @@ use next_delivery_dates
         this.bagCustomGratuity && this.bagCustomGratuity !== ""
           ? this.bagCustomGratuity
           : 0;
-      if (gratuity && isNan(gratuity)) {
-        gratuity = 0;
-      }
+      console.log(1);
+      console.log(gratuity);
 
       return this.bagGratuityPercent && this.bagGratuityPercent === "custom"
         ? parseFloat(gratuity)
