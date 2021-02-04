@@ -228,6 +228,8 @@ class SubscriptionController extends UserController
             $nextDelivery = Carbon::parse($nextDelivery)->addWeeks(1);
         }
 
+        $subscription->renewal_updated = Carbon::now();
+
         if ($storeSettings->subscriptionRenewalType === 'now') {
             $latest_unpaid_order = $subscription->orders->last();
             $latest_unpaid_order->delivery_date = $nextDelivery;

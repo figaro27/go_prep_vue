@@ -237,6 +237,7 @@ class SubscriptionController extends StoreController
         $dateTime = new Carbon($dateTime);
         $dateTime = $dateTime->setTimezone('utc')->toDateTimeString();
         $sub->next_renewal_at = $dateTime;
+        $sub->renewal_updated = Carbon::now();
         $sub->update();
         return $sub;
     }
