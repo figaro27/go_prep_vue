@@ -543,7 +543,7 @@
             <b-form-input
               min="0"
               type="number"
-              value="bagCustomGratuity"
+              :value="bagCustomGratuity"
               placeholder="0"
               class="w-80px"
               v-if="bagGratuityPercent == 'custom'"
