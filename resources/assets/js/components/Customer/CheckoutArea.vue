@@ -2834,10 +2834,7 @@ use next_delivery_dates
       return this.pointsReduction;
     },
     tip() {
-      let gratuity =
-        this.bagCustomGratuity && !isNan(this.bagCustomGratuity)
-          ? this.bagCustomGratuity
-          : 0;
+      let gratuity = this.bagCustomGratuity ? this.bagCustomGratuity : 0;
       return this.bagGratuityPercent && this.bagGratuityPercent === "custom"
         ? parseFloat(gratuity)
         : parseFloat(
