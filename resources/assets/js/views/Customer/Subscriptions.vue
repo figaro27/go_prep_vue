@@ -126,13 +126,13 @@
               Cancel
             </button>
             <b-btn
-              v-if="props.row.status === 'active' && !subscription.cancelled_at"
+              v-if="props.row.status === 'active' && !props.row.cancelled_at"
               class="btn btn-warning btn-sm"
               @click.stop="() => pauseSubscription(props.row.id)"
               >Pause</b-btn
             >
             <b-btn
-              v-if="props.row.status === 'paused' && !subscription.cancelled_at"
+              v-if="props.row.status === 'paused' && !props.row.cancelled_at"
               class="btn btn-warning btn-sm"
               @click.stop="() => resumeSubscription(props.row.id)"
               >Resume</b-btn
