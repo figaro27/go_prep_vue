@@ -1471,8 +1471,6 @@ export default {
         this.removeCoupon();
       }
     }
-    console.log(this.tip);
-    console.log(this.bagCustomGratuity);
   },
   props: {
     order: null,
@@ -2837,11 +2835,11 @@ use next_delivery_dates
     },
     tip() {
       let gratuity =
-        this.bagCustomGratuity && this.bagCustomGratuity !== ""
+        this.bagCustomGratuity &&
+        this.bagCustomGratuity !== "" &&
+        this.bagCustomGratuity !== undefined
           ? this.bagCustomGratuity
           : 0;
-      console.log(1);
-      console.log(gratuity);
 
       return this.bagGratuityPercent && this.bagGratuityPercent === "custom"
         ? parseFloat(gratuity)
