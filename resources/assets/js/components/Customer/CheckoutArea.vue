@@ -1538,6 +1538,11 @@ export default {
       if (val === true) {
         this.setFrequencySubscription(null);
       }
+    },
+    bagCustomGratuity: function(val) {
+      if (!val || val === "" || val === undefined) {
+        this.setBagCustomGratuity(0);
+      }
     }
   },
   mounted: function() {
