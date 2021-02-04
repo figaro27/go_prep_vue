@@ -1539,8 +1539,8 @@ export default {
         this.setFrequencySubscription(null);
       }
     },
-    bagCustomGratuity: function(val) {
-      if (!val || val === "" || val === undefined) {
+    bagGratuityPercent: function(val) {
+      if (val === "custom") {
         this.setBagCustomGratuity(0);
       }
     }
