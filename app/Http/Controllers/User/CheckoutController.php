@@ -222,6 +222,9 @@ class CheckoutController extends UserController
             $pickupLocation = $request->get('pickupLocation');
             $transferTime = $request->get('transferTime');
             $prepaid = $request->get('prepaid');
+            if (!$prepaid) {
+                $prepaid = 0;
+            }
             $interval = $request->get(
                 'plan_interval',
                 Constants::INTERVAL_WEEK
