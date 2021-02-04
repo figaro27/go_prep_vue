@@ -1471,6 +1471,8 @@ export default {
         this.removeCoupon();
       }
     }
+    console.log(this.tip);
+    console.log(this.bagCustomGratuity);
   },
   props: {
     order: null,
