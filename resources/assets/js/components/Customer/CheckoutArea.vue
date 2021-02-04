@@ -2846,7 +2846,11 @@ use next_delivery_dates
           ? this.bagCustomGratuity
           : 0;
 
-      return parseFloat(gratuity);
+      return this.bagGratuityPercent && this.bagGratuityPercent === "custom"
+        ? parseFloat(gratuity)
+        : parseFloat(
+            (this.bagGratuityPercent / 100) * this.totalBagPricePreFees
+          );
     },
     coolerDeposit() {
       if (this.bagPickup == 1) {
