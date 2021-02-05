@@ -1669,6 +1669,7 @@ export default {
       });
     },
     componentVisible(component) {
+      console.log(component);
       const { options } = component;
       const restrictedTo = this.getComponent(
         options[0].restrict_meals_component_id
@@ -1680,9 +1681,10 @@ export default {
         restrictedTo.minimum === 1 &&
         restrictedTo.maximum === 1
       ) {
+        console.log(1);
         return false;
       }
-
+      console.log(2);
       return true;
     },
     getOptionMeals(componentId, optionId) {
