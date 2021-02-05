@@ -1042,7 +1042,7 @@ export default {
       } else {
         sortedDays = storeDeliveryDays;
       }
-
+      console.log(sortedDays);
       // If the store only serves certain zip codes on certain delivery days
       if (this.store.delivery_day_zip_codes.length > 0) {
         let deliveryDayIds = [];
@@ -1063,20 +1063,21 @@ export default {
           }
         });
       }
-
+      console.log(sortedDays);
       if (this.bagPickup) {
         sortedDays = sortedDays.filter(day => {
           return day.type === "pickup";
         });
       }
-
+      console.log(sortedDays);
       sortedDays.sort(function(a, b) {
         return new Date(a.day_friendly) - new Date(b.day_friendly);
       });
-
+      console.log(sortedDays);
       return sortedDays.map(day => {
         return day.id;
       });
+      console.log(sortedDays);
     },
     addButtonText() {
       if (this.getTotalRemainingMeals() > 0) {
@@ -1166,14 +1167,11 @@ export default {
       return { meal_package_size_id: this.sizeId };
     },
     components() {
-      console.log(this.mealPackage.components);
       return _.filter(this.mealPackage.components, component => {
-        console.log(component);
         if (
           this.store.modules.multipleDeliveryDays &&
           this.mealPackage.divideByComponents
         ) {
-          console.log(this.availableDeliveryDayIds);
           if (
             this.availableDeliveryDayIds.includes(component.delivery_day_id)
           ) {
