@@ -818,8 +818,7 @@
         "
       >
         <div>
-          <strong v-if="pickup === 0">{{ selectedTransferType }} Day</strong>
-          <strong v-if="pickup === 1">Pickup Day</strong>
+          <strong>{{ selectedTransferType }} Day</strong>
           <b-select
             style="font-size:16px"
             v-model="deliveryDay"
@@ -4018,8 +4017,18 @@ use next_delivery_dates
       }
     },
     setSample() {
-      this.setBagCustomerModel(this.customers[16]);
-      this.setBagDeliveryDate(this.deliveryDateOptionsStoreView[3]);
+      let customer = {
+        text: "Sample Customer",
+        value: 42,
+        zip: "11209"
+      };
+      this.changeCustomer(customer);
+      this.setBagDeliveryDate(this.deliveryDateOptionsStoreView[3].value);
+      if (this.bagDeliveryDate && !this.deliveryDay) {
+        this.deliveryDay = this.bagDeliveryDate.value
+          ? this.bagDeliveryDate.value
+          : this.bagDeliveryDate;
+      }
       this.updateParentData();
     },
     // setSubscriptionCoupon() {
