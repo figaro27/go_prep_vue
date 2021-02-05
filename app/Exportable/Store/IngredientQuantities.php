@@ -8,6 +8,7 @@ use App\Utils\Data\Format;
 use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
 use App\ReportRecord;
+use Illuminate\Support\Carbon;
 
 class IngredientQuantities
 {
@@ -24,6 +25,10 @@ class IngredientQuantities
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Ingredients');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $dates = $this->getDeliveryDates();
 
         $ingredients = collect($this->store->getOrderIngredients($dates));

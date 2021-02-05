@@ -8,6 +8,7 @@ use App\Store;
 use App\Order;
 use App\UserDetail;
 use App\ReportRecord;
+use Illuminate\Support\Carbon;
 
 class DeliveryRoutes
 {
@@ -25,11 +26,18 @@ class DeliveryRoutes
     {
         $this->store = $store;
         $this->params = $params;
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Orders');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
         $this->orientation = 'portrait';
     }
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Delivery');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $dates = $this->getDeliveryDates();
         $orders = $this->store->getOrders(null, $dates, true, true, true);
         $orders = $orders->where('voided', 0);

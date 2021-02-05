@@ -7,6 +7,7 @@ use App\Store;
 use App\User;
 use App\Meal;
 use App\ReportRecord;
+use Illuminate\Support\Carbon;
 
 class MealsIngredients
 {
@@ -16,12 +17,17 @@ class MealsIngredients
 
     public function __construct(Store $store, $params = [])
     {
+        $this->params = $params;
         $this->store = $store;
         $this->orientation = 'portrait';
     }
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Meals Ingredients');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $meals = Meal::with('ingredients')
             ->where('store_id', $this->store->id)
             ->get();

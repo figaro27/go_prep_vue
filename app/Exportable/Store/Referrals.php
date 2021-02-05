@@ -7,6 +7,7 @@ use App\Store;
 use App\User;
 use App\Referral;
 use App\ReportRecord;
+use Illuminate\Support\Carbon;
 
 class Referrals
 {
@@ -14,13 +15,18 @@ class Referrals
 
     protected $store;
 
-    public function __construct(Store $store)
+    public function __construct(Store $store, $params = [])
     {
+        $this->params = $params;
         $this->store = $store;
     }
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Referrals');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $referrals = Referral::where('store_id', $this->store->id)
             ->with('user')
             ->get()

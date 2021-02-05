@@ -67,8 +67,14 @@ trait Exportable
 
     public function handleCsv($data)
     {
-        $filename = 'public/' . md5(time()) . '.csv';
-
+        $filename =
+            'public/' .
+            $this->params['store'] .
+            ' - ' .
+            $this->params['report'] .
+            ' - ' .
+            $this->params['date'] .
+            '.csv';
         /*
         $rows = array_merge([
         [
@@ -108,7 +114,14 @@ trait Exportable
 
     public function handleXls($data)
     {
-        $filename = 'public/' . md5(time()) . '.xlsx';
+        $filename =
+            'public/' .
+            $this->params['store'] .
+            ' - ' .
+            $this->params['report'] .
+            ' - ' .
+            $this->params['date'] .
+            '.xlsx';
 
         $writer = new XLSXWriter();
 
@@ -123,7 +136,14 @@ trait Exportable
 
     public function handlePdf($data)
     {
-        $filename = 'public/' . md5(time()) . '.pdf';
+        $filename =
+            'public/' .
+            $this->params['store'] .
+            ' - ' .
+            $this->params['report'] .
+            ' - ' .
+            $this->params['date'] .
+            '.pdf';
 
         $vars = $this->filterVars([
             'data' => $data,
@@ -182,7 +202,14 @@ trait Exportable
      */
     public function handleB64($data)
     {
-        $filename = 'public/' . md5(time()) . '.pdf';
+        $filename =
+            'public/' .
+            $this->params['store'] .
+            ' - ' .
+            $this->params['report'] .
+            ' - ' .
+            $this->params['date'] .
+            '.pdf';
 
         $vars = $this->filterVars([
             'data' => $data,

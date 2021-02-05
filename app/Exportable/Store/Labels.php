@@ -49,6 +49,10 @@ class Labels
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Labels');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $production = collect();
         $dates = $this->getDeliveryDates();
         $store = $this->store;

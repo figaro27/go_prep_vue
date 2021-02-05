@@ -24,6 +24,10 @@ class Payouts
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Payouts');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $params = $this->params;
 
         $weekAgo = Carbon::now()

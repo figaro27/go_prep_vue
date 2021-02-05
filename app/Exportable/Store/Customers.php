@@ -6,6 +6,7 @@ use App\Exportable\Exportable;
 use App\Store;
 use App\User;
 use App\ReportRecord;
+use Illuminate\Support\Carbon;
 
 class Customers
 {
@@ -13,9 +14,13 @@ class Customers
 
     protected $store;
 
-    public function __construct(Store $store)
+    public function __construct(Store $store, $params = [])
     {
         $this->store = $store;
+        $this->params = $params;
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Customers');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
     }
 
     public function exportData($type = null)

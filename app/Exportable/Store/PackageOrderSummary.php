@@ -23,6 +23,10 @@ class PackageOrderSummary
     }
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Package Order Summaries');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $dateRange = $this->getDeliveryDates();
         $params = $this->params;
         $params['dailyOrderNumbers'] = $this->store->modules->dailyOrderNumbers;

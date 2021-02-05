@@ -5,11 +5,11 @@ namespace App\Exportable\Store;
 use App\Exportable\Exportable;
 use App\Store;
 use App\User;
-use Carbon\Carbon;
 use App\ReportRecord;
 use Illuminate\Support\Arr;
 use App\Services\FilterPayments;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class Payments
 {
@@ -25,6 +25,10 @@ class Payments
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Payments');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $params = $this->params;
 
         $dailySummary =

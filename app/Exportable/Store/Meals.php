@@ -6,6 +6,7 @@ use App\Exportable\Exportable;
 use App\Store;
 use App\User;
 use App\ReportRecord;
+use Illuminate\Support\Carbon;
 
 class Meals
 {
@@ -13,13 +14,18 @@ class Meals
 
     protected $store;
 
-    public function __construct(Store $store)
+    public function __construct(Store $store, $params = [])
     {
+        $this->params = $params;
         $this->store = $store;
     }
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Meals');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $menu = $this->store->meals->map(function ($meal) {
             return [
                 $meal->active ? 'Active' : 'Inactive',

@@ -29,6 +29,10 @@ class PackingSlips
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Packing Slips');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $params = $this->params;
         $params['dailyOrderNumbers'] = $this->store->modules->dailyOrderNumbers;
 

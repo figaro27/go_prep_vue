@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use App\Store;
 use App\Order;
 use App\ReportRecord;
+use Illuminate\Support\Carbon;
 
 class DeliveryRoutesLivotis
 {
@@ -23,6 +24,10 @@ class DeliveryRoutesLivotis
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Delivery');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $dates = $this->getDeliveryDates();
         $orders = $this->store->getOrders(null, $dates, true, true, true);
         $orders = $orders->where('voided', 0);

@@ -6,6 +6,7 @@ use App\Exportable\Exportable;
 use App\Store;
 use App\User;
 use App\ReportRecord;
+use Illuminate\Support\Carbon;
 
 class Orders
 {
@@ -21,6 +22,10 @@ class Orders
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Orders');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $params = $this->params;
 
         if (

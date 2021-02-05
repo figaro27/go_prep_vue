@@ -23,7 +23,13 @@ class MealOrders
     public function __construct(Store $store, $params = [])
     {
         $this->store = $store;
+
         $this->params = collect($params);
+
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Production');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         if (!$this->params->has('group_by_date')) {
             $this->params->put('group_by_date', false);
         }

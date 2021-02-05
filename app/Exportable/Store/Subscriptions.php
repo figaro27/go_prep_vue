@@ -17,10 +17,15 @@ class Subscriptions
     public function __construct(Store $store, $params = [])
     {
         $this->store = $store;
+        $this->params = $params;
     }
 
     public function exportData($type = null)
     {
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Subscriptions');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
+
         $params = $this->params;
         $subscriptions = $this->store
             ->subscriptions()

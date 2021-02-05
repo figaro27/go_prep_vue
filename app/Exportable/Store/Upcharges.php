@@ -19,6 +19,9 @@ class Upcharges
     {
         $this->store = $store;
         $this->params = collect($params);
+        $this->params->put('store', $this->store->details->name);
+        $this->params->put('report', 'Upcharges');
+        $this->params->put('date', Carbon::now()->format('m-d-Y'));
         $this->orientation = 'portrait';
     }
 
