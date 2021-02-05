@@ -771,6 +771,7 @@
 
                   <b-form-input
                     v-model="storeSettings.statementDescriptor"
+                    maxlength="22"
                     class="w-180 mb-3"
                     @input="debounceText()"
                     required
