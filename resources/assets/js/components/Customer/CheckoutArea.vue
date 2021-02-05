@@ -331,6 +331,7 @@
             <span v-if="editingSalesTax">
               <b-form-input
                 type="number"
+                min="0"
                 v-model="customSalesTax"
                 class="d-inline width-70"
                 style="font-size:16px"
@@ -2995,11 +2996,11 @@ use next_delivery_dates
       else return "Prepared Once";
     },
     tax() {
-      if (this.customSalesTax !== null) {
+      if (this.customSalesTax !== null && this.customSalesTax !== "") {
         return parseFloat(this.customSalesTax);
       }
       if (this.$route.params.adjustOrder && this.order.customSalesTax) {
-        return this.order.salesTax;
+        return parseFloat(this.order.salesTax);
       }
       // Custom Sales Tax Per Meal
       let removableItemAmount = 0;
@@ -3102,9 +3103,13 @@ use next_delivery_dates
       ) {
         return 0;
       }
-      if (this.storeSettings.salesTax > 0)
-        return (this.storeSettings.salesTax / 100) * taxableAmount;
-      else return this.salesTax * taxableAmount;
+      if (this.storeSettings.salesTax > 0) {
+        return parseFloat(
+          ((this.storeSettings.salesTax / 100) * taxableAmount).toFixed(2)
+        );
+      } else {
+        return parseFloat((this.salesTax * taxableAmount).toFixed(2));
+      }
     },
     subscriptionId() {
       if (this.$route.query.subscriptionId) {
