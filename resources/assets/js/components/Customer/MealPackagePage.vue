@@ -972,8 +972,6 @@ export default {
     if (this.components) {
       this.$parent.mealPackagePageComponents = this.components.length;
     }
-
-    console.log(this.components);
   },
   components: {},
   props: {
@@ -1168,11 +1166,14 @@ export default {
       return { meal_package_size_id: this.sizeId };
     },
     components() {
+      console.log(this.mealPackage.components);
       return _.filter(this.mealPackage.components, component => {
+        console.log(component);
         if (
           this.store.modules.multipleDeliveryDays &&
           this.mealPackage.divideByComponents
         ) {
+          console.log(this.availableDeliveryDayIds);
           if (
             this.availableDeliveryDayIds.includes(component.delivery_day_id)
           ) {
