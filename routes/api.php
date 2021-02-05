@@ -127,6 +127,11 @@ foreach (
                 'uses' => 'SpaController@refresh_inactive_meals'
             ]);
 
+            Route::get('/refresh_inactive_meal_package_ids', [
+                'middleware' => ['view.api'],
+                'uses' => 'SpaController@refresh_inactive_meal_package_ids'
+            ]);
+
             Route::get('/refresh_inactive_meal_ids', [
                 'middleware' => ['view.api'],
                 'uses' => 'SpaController@refresh_inactive_meal_ids'

@@ -949,6 +949,31 @@ class SpaController extends Controller
         return $meals->toArray();
     }
 
+    public function refresh_inactive_meal_package_ids(Request $request)
+    {
+        $user = auth('api')->user();
+        if ($user && $user->hasRole('store') && $user->has('store')) {
+            $store_id = $user->store->id;
+        } else {
+            if (defined('STORE_ID')) {
+                $store_id = (int) STORE_ID;
+            } else {
+                if ($user && isset($user->last_viewed_store)) {
+                    $store_id = (int) $user->last_viewed_store->id;
+                }
+            }
+        }
+        $mealPackages = MealPackage::where([
+            'store_id' => $store_id,
+            'active' => 0
+        ])
+            ->get()
+            ->map(function ($mealPackage) {
+                return $mealPackage->id;
+            });
+        return $mealPackages->toArray();
+    }
+
     public function delivery_days(Request $request)
     {
         $store_id = 0;
