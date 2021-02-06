@@ -1045,6 +1045,7 @@ export default {
       // } else {
       //   sortedDays = storeDeliveryDays;
       // }
+      sortedDays = storeDeliveryDays;
 
       // If the store only serves certain zip codes on certain delivery days
       if (this.store.delivery_day_zip_codes.length > 0) {
