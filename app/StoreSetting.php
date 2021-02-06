@@ -335,9 +335,17 @@ class StoreSetting extends Model
     {
         // Hard coding for Beyond Vegan. Will modulize in future if requested. Ignores cutoff on same day before 3 PM PST.
         $factorCutoff = true;
-        if ($this->store_id === 118 && (int) date('H') <= 23) {
-            $factorCutoff = false;
+
+        if ($this->store_id === 118) {
+            $now = Carbon::now();
+            $start = Carbon::createFromTimeString('08:00');
+            $end = Carbon::createFromTimeString('23:00');
+
+            if ($now->between($start, $end)) {
+                $factorCutoff = false;
+            }
         }
+
         return $this->getNextDeliveryDates($factorCutoff)->map(function (
             Carbon $date
         ) {
