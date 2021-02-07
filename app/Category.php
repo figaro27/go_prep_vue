@@ -4,10 +4,13 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
     protected $fillable = ['store_id', 'category', 'subtitle'];
+
+    use SoftDeletes;
 
     /**
      * The attributes that should be hidden for arrays.
