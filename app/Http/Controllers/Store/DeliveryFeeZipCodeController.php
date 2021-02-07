@@ -131,7 +131,7 @@ class DeliveryFeeZipCodeController extends StoreController
         $zipCodes = json_decode((string) $res->getBody());
 
         $settings = StoreSetting::where('store_id', $this->store->id)->first();
-        $existingZipCodes = $settings->delivery_distance_zipcodes;
+        $existingZipCodes = $settings->delivery_distance_zipcodes ?? [];
 
         foreach ($zipCodes->zip_codes as $zipCode) {
             $dfzc = DeliveryFeeZipCode::where([
