@@ -994,10 +994,19 @@
                       class="popover-size"
                     />
                   </p>
-                  <swatches
-                    v-model="color"
-                    @input="updateStoreSettings()"
-                  ></swatches>
+                  <div class="d-flex">
+                    <swatches
+                      class="d-inline"
+                      v-model="color"
+                      @input="updateStoreSettings()"
+                    ></swatches>
+                    <b-form-input
+                      v-model="color"
+                      class="d-inline w-180 ml-2 mt-1"
+                      maxlength="7"
+                      @input="updateStoreSettings()"
+                    ></b-form-input>
+                  </div>
                 </b-form-group>
                 <b-form-group :state="true" v-if="!storeModules.hideBranding">
                   <p>
@@ -1807,6 +1816,9 @@ export default {
         }
       }
       settings.transferType = this.transferTypes;
+      if (!this.color.includes("#")) {
+        this.color = "#" + this.color;
+      }
       settings.color = this.color;
 
       if (this.logoUpdated) {
