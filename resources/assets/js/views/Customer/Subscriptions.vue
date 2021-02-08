@@ -147,8 +147,16 @@
                   !todayCutoff
               "
               @click="(showRenewModal = true), (subscription = props.row)"
-              >Renew</b-btn
+              >Renew Early</b-btn
             >
+            <img
+              v-b-popover.hover="
+                'This expedites your renewal to receive your order on the next possible delivery day.'
+              "
+              title="Renew Early"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
           </div>
 
           <div slot="amount" slot-scope="props">
@@ -183,7 +191,7 @@
         <p class="strong">Proceed?</p>
 
         <b-btn class="btn btn-md" variant="primary" @click="expediteRenewal()"
-          >Renew</b-btn
+          >Renew Early</b-btn
         >
       </div>
     </b-modal>
@@ -301,6 +309,7 @@
             >
               Cancel
             </button>
+
             <b-btn
               variant="dark"
               class="btn btn-sm"
@@ -310,8 +319,16 @@
                     store.next_cutoff_date.toString()
               "
               @click="showRenewModal = true"
-              >Renew</b-btn
+              >Renew Early</b-btn
             >
+            <img
+              v-b-popover.hover="
+                'This expedites your renewal to receive your order on the next possible delivery day.'
+              "
+              title="Renew Early"
+              src="/images/store/popover.png"
+              class="popover-size"
+            />
           </div>
           <div class="col-md-4">
             <h4>Placed On</h4>
