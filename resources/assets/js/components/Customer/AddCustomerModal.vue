@@ -54,6 +54,7 @@
             v-model="form.first_name"
             type="text"
             required
+            pattern=".*\S+.*"
             placeholder="First name"
           ></b-form-input>
         </b-form-group>
@@ -62,6 +63,7 @@
             v-model="form.last_name"
             type="text"
             required
+            pattern=".*\S+.*"
             placeholder="Last name"
           ></b-form-input>
         </b-form-group>
@@ -70,6 +72,7 @@
             v-model="form.phone"
             type="text"
             required
+            pattern=".*\S+.*"
             placeholder="Phone"
             @input="asYouType()"
           ></b-form-input>
@@ -81,6 +84,7 @@
             v-model="form.email"
             type="email"
             required
+            pattern="\S+"
             placeholder="Enter email"
           ></b-form-input>
         </b-form-group>
@@ -91,6 +95,7 @@
             v-model="form.password"
             type="text"
             required
+            pattern=".*\S+.*"
             placeholder="Enter password"
           ></b-form-input>
         </b-form-group>
@@ -101,6 +106,7 @@
             v-model="form.address"
             type="text"
             required
+            pattern=".*\S+.*"
             placeholder="Address"
           ></b-form-input>
         </b-form-group>
@@ -109,6 +115,7 @@
             v-model="form.city"
             type="text"
             required
+            pattern=".*\S+.*"
             :placeholder="cityLabel"
           ></b-form-input>
         </b-form-group>
@@ -129,6 +136,7 @@
             v-model="form.zip"
             type="text"
             required
+            pattern=".*\S+.*"
             :placeholder="postalLabel"
           ></b-form-input>
         </b-form-group>
