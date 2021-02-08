@@ -164,18 +164,31 @@ class Labels
 
             $mealOrders = $mealOrders->with('meal', 'meal.ingredients')->get();
 
-            $totalCount = 0;
+            $totalCount[] = 0;
+
             foreach ($mealOrders as $mealOrder) {
-                $totalCount += $mealOrder->quantity;
+                $order_id = $mealOrder->order_id;
+
+                if (!isset($totalCount[$order_id])) {
+                    $totalCount[$order_id] = 0;
+                }
+                $totalCount[$order_id] += $mealOrder->quantity;
             }
 
-            $number = 0;
+            $index[] = 0;
 
             foreach ($mealOrders as $mealOrder) {
                 for ($i = 1; $i <= $mealOrder->quantity; $i++) {
+                    $order_id = $mealOrder->order_id;
+                    if (!isset($index[$order_id])) {
+                        $index[$order_id] = 0;
+                    }
+                    $index[$order_id] += 1;
+                    $mealOrder->index = $index[$order_id];
+
                     $mealOrderCopy = $mealOrder->replicate();
-                    $mealOrderCopy->index = $number + $i;
-                    $mealOrderCopy->totalCount = $totalCount;
+                    $mealOrderCopy->totalCount =
+                        $totalCount[$mealOrderCopy->order_id];
                     $production->push($mealOrderCopy);
                 }
             }
