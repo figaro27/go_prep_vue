@@ -424,6 +424,8 @@ export default {
         headings: {
           paid_at: "Payment Date",
           delivery_date: "Delivery Date",
+          order_number: "Order",
+          customer_name: "Customer",
           totalPayments: "# Payments",
           subtotal: "Subtotal",
           couponReduction: "Coupon",
@@ -671,7 +673,12 @@ export default {
       return payments;
     },
     columns() {
-      let columns = ["paid_at", "delivery_date"];
+      let columns = [
+        "paid_at",
+        "delivery_date",
+        "order_number",
+        "customer_name"
+      ];
       if (this.filters.dailySummary) {
         columns.push("totalPayments");
       }

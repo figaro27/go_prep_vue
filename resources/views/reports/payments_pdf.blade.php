@@ -40,11 +40,15 @@ $currency = $params->currency
       <table border="1" width="100" class="light-border payments-report">
         <thead>
           <tr>
-            @if ($params['byPaymentDate'])
+
             <th style="width:100px">Payment Date</th>
-            @endif
-            @if (!$params['byPaymentDate'])
+
+
             <th style="width:100px">Delivery Date</th>
+
+            @if (!$params['dailySummary'])
+            <th style="width:100px">Order</th>
+            <th style="width:100px">Customer</th>
             @endif
             @if ($params['dailySummary'])
             <th>Orders</th>
@@ -106,7 +110,7 @@ $currency = $params->currency
           @foreach ($data as $i => $row)
           <tr class="{{ $i % 2 === 0 ? 'evenrow' : 'oddrow' }}">
             @foreach($row as $column => $value)
-            @if (is_numeric($value) && $column !== 'orders')
+            @if (is_numeric($value) && $column !== 'orders' && $column !== 'order_number')
               <td>@money($value, $currency, 2)</td>
             @else
               <td>{{ $value }}</td>

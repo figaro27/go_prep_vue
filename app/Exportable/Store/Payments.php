@@ -55,6 +55,9 @@ class Payments
         $columns = [
             'paid_at' => null,
             'delivery_date' => null,
+            'order_number' => null,
+            'orders' => 0,
+            'customer_name' => null,
             'preFeePreDiscount' => 0,
             'couponReduction' => 0,
             'mealPlanDiscount' => 0,
@@ -75,6 +78,10 @@ class Payments
             'balance' => 0
         ];
 
+        if (!$dailySummary) {
+            unset($columns['orders']);
+        }
+
         $columnSums = $columns;
 
         $filterPayments = new FilterPayments();
@@ -91,6 +98,8 @@ class Payments
                 $columns['delivery_date'] = !$order->isMultipleDelivery
                     ? $order->delivery_date->format('D, m/d/Y')
                     : 'Multiple';
+                $columns['order_number'] = $order->order_number ?? null;
+                $columns['customer_name'] = $order->customer_name ?? null;
                 $columns['preFeePreDiscount'] = $order->preFeePreDiscount;
                 $columns['couponReduction'] = $order->couponReduction;
                 $columns['mealPlanDiscount'] = $order->mealPlanDiscount;
@@ -132,17 +141,13 @@ class Payments
             }
         }
         // If the column sum totals 0, remove the column sum entirely and set the param for the blade report
+
         foreach ($columnSums as $i => $columnSum) {
             $columnSums['paid_at'] = 'TOTALS';
-            $columnSums['delivery_date'] = 'TOTALS';
-            if ($byPaymentDate) {
-                $params['delivery_date'] = false;
-                unset($columnSums['delivery_date']);
-            } else {
-                $params['paid_at'] = false;
-                unset($columnSums['paid_at']);
-            }
-            if ($columnSum === 0.0 || $columnSum === 0) {
+            $columnSums['delivery_date'] = '';
+            $columnSums['order_number'] = '';
+
+            if (($columnSum === 0.0 || $columnSum === 0) && $i !== 'orders') {
                 $params[$i] = false;
                 unset($columnSums[$i]);
             } else {
@@ -182,17 +187,15 @@ class Payments
         foreach ($groupedPayments as $i => $groupedPayment) {
             $sums = [$i => $columns];
             foreach ($groupedPayment as $payment) {
-                $sums[$i]['paid_at'] = $byPaymentDate
-                    ? Carbon::parse($payment['paid_at'])->format('D, M d, Y')
-                    : null;
-                $sums[$i]['delivery_date'] = !$byPaymentDate
-                    ? Carbon::parse($payment['delivery_date'])->format(
-                        'D, M d, Y'
-                    )
-                    : null;
+                $sums[$i]['paid_at'] = Carbon::parse(
+                    $payment['paid_at']
+                )->format('D, M d, Y');
+                $sums[$i]['delivery_date'] = Carbon::parse(
+                    $payment['delivery_date']
+                )->format('D, M d, Y');
                 $sums[$i]['orders'] = count($groupedPayment);
                 foreach ($payment as $x => $p) {
-                    if ($x === 'paid_at' || $x === 'delivery_date') {
+                    if ($x === 'paid_at') {
                         $payment[$x] = 'TOTALS';
                     }
                     if (array_key_exists($x, $columnSums)) {
@@ -211,7 +214,7 @@ class Payments
 
         foreach ($dsRows as $payment) {
             foreach ($payment as $i => $p) {
-                if (!array_key_exists($i, $columnSums) && $i !== 'orders') {
+                if (!array_key_exists($i, $columnSums)) {
                     unset($payment[$i]);
                 }
             }
@@ -221,7 +224,9 @@ class Payments
         $headers = [
             'paid_at' => 'Payment Date',
             'delivery_date' => 'Delivery Date',
-            // 'orders' => 'Orders',
+            'order_number' => 'Order',
+            'customer_name' => 'Customer',
+            'orders' => 'Orders',
             'preFeePreDiscount' => 'Subtotal',
             'couponReduction' => '(Coupon)',
             'mealPlanDiscount' => '(Subscription)',
@@ -247,16 +252,24 @@ class Payments
 
         if ($type !== 'pdf') {
             foreach ($headers as $i => $header) {
-                if (array_key_exists($i, $columnSums) || $i == 'orders') {
-                    $columnHeaders[] = $headers[$i];
-                }
-
-                if ($dailySummary && $i === 'delivery_date') {
-                    $columnHeaders[1] = 'Orders';
+                if (array_key_exists($i, $columnSums)) {
+                    if (
+                        $dailySummary &&
+                        $i !== 'order_number' &&
+                        $i !== 'customer_name'
+                    ) {
+                        $columnHeaders[] = $headers[$i];
+                    } elseif (!$dailySummary && $i !== 'orders') {
+                        $columnHeaders[] = $headers[$i];
+                    }
                 }
             }
             array_unshift($rows, $columnHeaders);
             array_unshift($dailySummaryRows, $columnHeaders);
+        } else {
+            if (!$dailySummary) {
+                unset($columnSums['orders']);
+            }
         }
 
         $reportRecord = ReportRecord::where(
@@ -271,7 +284,11 @@ class Payments
         foreach ($rows as $row) {
             $formattedRow = [];
             foreach ($row as $i => $cell) {
-                if (is_numeric($cell) && $i !== 'orders') {
+                if (
+                    is_numeric($cell) &&
+                    $i !== 'orders' &&
+                    $i !== 'order_number'
+                ) {
                     $formattedRow[$i] = number_format(
                         (float) $cell,
                         2,
@@ -289,15 +306,17 @@ class Payments
         foreach ($dailySummaryRows as $row) {
             $formattedRow = [];
             foreach ($row as $i => $cell) {
-                if (is_numeric($cell) && $i !== 'orders') {
-                    $formattedRow[$i] = number_format(
-                        (float) $cell,
-                        2,
-                        '.',
-                        ''
-                    );
-                } else {
-                    $formattedRow[$i] = $cell;
+                if ($i !== 'order_number' && $i !== 'customer_name') {
+                    if (is_numeric($cell) && $i !== 'orders') {
+                        $formattedRow[$i] = number_format(
+                            (float) $cell,
+                            2,
+                            '.',
+                            ''
+                        );
+                    } else {
+                        $formattedRow[$i] = $cell;
+                    }
                 }
             }
             $formattedDailySummaryRows[] = $formattedRow;

@@ -204,7 +204,6 @@ class FilterPayments
                 'multiple_dates',
                 'delivery_dates_array',
                 'purchased_gift_card_code',
-                'customer_name',
                 'customer_address',
                 'customer_zip',
                 'visible_items',
