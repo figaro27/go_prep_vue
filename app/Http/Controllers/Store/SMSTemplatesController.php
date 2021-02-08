@@ -29,12 +29,14 @@ class SMSTemplatesController extends StoreController
             $res = $client->request('GET', $this->baseURL . '/' . $templateId, [
                 'headers' => $this->headers
             ]);
-            $body = $res->getBody();
-            $template = new stdClass();
-            $template->id = json_decode($body)->id;
-            $template->name = json_decode($body)->name;
-            $template->content = json_decode($body)->content;
-            array_push($templates, $template);
+            if ($res) {
+                $body = $res->getBody();
+                $template = new stdClass();
+                $template->id = json_decode($body)->id;
+                $template->name = json_decode($body)->name;
+                $template->content = json_decode($body)->content;
+                array_push($templates, $template);
+            }
         }
 
         return $templates;
@@ -150,14 +152,16 @@ class SMSTemplatesController extends StoreController
     public function destroy($id)
     {
         $template = SmsTemplate::where('template_id', $id)->first();
-        $template->delete();
+        if ($template) {
+            $template->delete();
 
-        $client = new \GuzzleHttp\Client();
-        $res = $client->request('DELETE', $this->baseURL . '/' . $id, [
-            'headers' => $this->headers
-        ]);
-        $body = $res->getBody();
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('DELETE', $this->baseURL . '/' . $id, [
+                'headers' => $this->headers
+            ]);
+            $body = $res->getBody();
 
-        return $body;
+            return $body;
+        }
     }
 }
