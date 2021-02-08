@@ -37,11 +37,11 @@ class ReferralSetting extends Model
     {
         $host = $this->store->details->host
             ? $this->store->details->host
-            : 'goprep';
+            : 'goprep.com';
         return 'https://' .
             $this->store->details->domain .
             '.' .
             $host .
-            '.com/customer/menu?r=';
+            '/customer/menu?r=';
     }
 }

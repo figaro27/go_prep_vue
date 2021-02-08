@@ -703,8 +703,7 @@ Cooler Deposit<br>
 
 @php
 $referralSettings = $order->store->referralSettings;
-$host = $order->store->details->host ? $order->store->details->host : '.goprep.';
-$referralURL = 'https://' . $order->store->details->domain . $host . 'com/customer/menu?r=' . $order->user->referralUrlCode;
+$referralURL = $order->store->details->full_url . '/customer/menu?r=' . $order->user->referralUrlCode;
 @endphp
 @if ($referralSettings->enabled && $referralSettings->showInNotifications)
 
