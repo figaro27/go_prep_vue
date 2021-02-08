@@ -110,7 +110,13 @@
             >{{ allergy }}</span
           >
         </div>
-        <div v-if="storeSettings.showMacros" class="macros mt-2 meal-page-text">
+        <div
+          v-if="
+            storeSettings.showMacros &&
+              (meal.macros.calories > 0 || nutritionalFacts.valueCalories > 0)
+          "
+          class="macros mt-2 meal-page-text"
+        >
           <li>
             <span>
               Calories:
