@@ -197,6 +197,29 @@ class CheckoutController extends UserController
             //     }
             // }
 
+            // Checking if all meal package meals are still set in the meal package
+
+            // foreach ($bag->getItems() as $item){
+            //     // If you're going to use this, need to do the same with checking MealMealPackageComponents & MealMealPackageAddons
+            //     if (isset($item['meal_package_id'])){
+            //         $mealPackage = MealPackage::where('id', $item['meal_package_id'])->first();
+            //         $mealIds = [];
+            //         foreach ($mealPackage->meals as $meal){
+            //             $mealIds[] = $meal->id;
+            //         }
+            //         if (!in_array($item['meal']['id'], $mealIds)){
+            //             $meal = Meal::where('id', $item['meal']['id'])->withTrashed()->first();
+            //             return response()->json(
+            //             [
+            //                 'message' =>
+            //                     $meal->title . ' in ' . $item['meal_package_title'] . ' has been made inactive on our menu. Please remove from your bag and try again.'
+            //             ],
+            //             400
+            //         );
+            //         }
+            //     }
+            // }
+
             $pickup = $request->get('pickup');
             $shipping = $request->get('shipping');
             $weekIndex = (int) date('N', strtotime($deliveryDay));

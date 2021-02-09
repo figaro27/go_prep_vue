@@ -1921,18 +1921,24 @@ export default {
               );
             }
           } else {
-            item.meal.meals.forEach(meal => {
-              if (resp.data.includes(meal.id)) {
-                this.clearMealFullQuantity(
-                  item.meal,
-                  item.meal_package,
-                  item.size,
-                  item.components,
-                  item.addons,
-                  item.special_instructions
-                );
-              }
-            });
+            if (
+              this.store.id !== 108 &&
+              this.store.id !== 109 &&
+              this.store.id !== 110
+            ) {
+              item.meal.meals.forEach(meal => {
+                if (resp.data.includes(meal.id)) {
+                  this.clearMealFullQuantity(
+                    item.meal,
+                    item.meal_package,
+                    item.size,
+                    item.components,
+                    item.addons,
+                    item.special_instructions
+                  );
+                }
+              });
+            }
           }
         });
       });
