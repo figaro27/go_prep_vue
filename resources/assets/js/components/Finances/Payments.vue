@@ -511,7 +511,7 @@ export default {
         payments = [];
 
         paymentsByDay.forEach(paymentByDay => {
-          let created_at = "";
+          let paid_at = "";
           let delivery_date = "";
           let totalPayments = 0;
           let sums = {
@@ -538,7 +538,7 @@ export default {
           };
 
           paymentByDay.forEach(payment => {
-            created_at = payment.paid_at;
+            paid_at = payment.paid_at;
             delivery_date = payment.delivery_date;
             totalPayments += 1;
             sums.preFeePreDiscount += payment.preFeePreDiscount;
@@ -563,7 +563,7 @@ export default {
             sums.balance += payment.balance;
           });
           payments.push({
-            created_at: dayType == "order_day" ? created_at : null,
+            paid_at: dayType == "order_day" ? paid_at : null,
             delivery_date: dayType == "delivery_date" ? delivery_date : null,
             totalPayments: totalPayments,
             preFeePreDiscount: sums.preFeePreDiscount,
