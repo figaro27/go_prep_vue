@@ -911,7 +911,7 @@ export default {
       var month = today.getMonth();
       var date = today.getDate();
 
-      for (var i = 0; i < 30; i++) {
+      for (var i = 1; i < 31; i++) {
         var day = new Date(year, month, date + i);
         options.push({
           value: moment(day).format("YYYY-MM-DD"),
