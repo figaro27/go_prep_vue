@@ -111,6 +111,7 @@ class CheckoutController extends UserController
 
             // Preventing orders from outside of the delivery distance radius if not properly calculated by Google during checkout
             if (
+                $request->get('pickup') === 0 &&
                 $store->settings->delivery_distance_type === 'radius' &&
                 !$request->get('distance')
             ) {
