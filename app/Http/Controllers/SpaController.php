@@ -308,6 +308,22 @@ class SpaController extends Controller
                 ])->find(STORE_ID)
                 : $last_viewed_store;
 
+            $store->details->makeHidden([
+                'phone',
+                'address',
+                'city',
+                'state',
+                'zip',
+                'created_at'
+            ]);
+            $store->settings->makeHidden([
+                'authorize_login_id',
+                'authorize_public_key',
+                'authorize_transaction_key',
+                'fbPixel',
+                'gaCode'
+            ]);
+
             if ($store && $user) {
                 try {
                     $distance = $user->distanceFrom($store);
