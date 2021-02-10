@@ -64,6 +64,9 @@ export default {
       this.message = resp.data;
     });
   },
+  updated() {
+    console.log(this.message);
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
