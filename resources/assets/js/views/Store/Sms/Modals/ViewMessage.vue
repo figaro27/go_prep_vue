@@ -50,7 +50,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      message: null,
+      message: [],
       columns: ["recipient", "phone", "status"]
     };
   },
@@ -63,9 +63,6 @@ export default {
     axios.get("/api/me/SMSMessages/" + this.messageId).then(resp => {
       this.message = resp.data;
     });
-  },
-  updated() {
-    console.log(this.message);
   },
   computed: {
     ...mapGetters({
