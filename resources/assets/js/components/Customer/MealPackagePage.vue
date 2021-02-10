@@ -1037,11 +1037,7 @@ export default {
 
       let sortedDays = [];
 
-      if (
-        this.store.id !== 251 &&
-        this.store.id !== 3 &&
-        this.store.delivery_day_zip_codes.length === 0
-      ) {
+      if (this.store.delivery_day_zip_codes.length === 0) {
         sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
       } else {
         sortedDays = storeDeliveryDays;

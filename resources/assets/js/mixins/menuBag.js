@@ -4,9 +4,15 @@ import { mapGetters, mapMutations } from "vuex";
 import format from "../lib/format";
 
 export default {
+  watch: {
+    bagPickup: function(val) {
+      this.transferDayType = val;
+    }
+  },
   data() {
     return {
-      minimumDeliveryDayAmount: 0
+      minimumDeliveryDayAmount: 0,
+      transferDayType: 0
     };
   },
   computed: {

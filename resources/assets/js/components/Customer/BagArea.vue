@@ -64,7 +64,7 @@
           "
           buttons
           class="filters mb-3"
-          v-model="bagPickup"
+          v-model="transferDayType"
           :options="[
             { value: 1, text: 'Pickup' },
             { value: 0, text: 'Delivery' }
