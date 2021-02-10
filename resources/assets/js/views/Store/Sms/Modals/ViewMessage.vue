@@ -4,13 +4,18 @@
       <Spinner v-if="isLoading" />
       <div v-if="text !== ''">
         <p class="mb-2">
-          <strong>Sent - </strong> {{ moment(sent).format("ddd, MMM Do YYYY") }}
+          <strong>Sent - </strong>
+          {{ moment(viewedMessage.messageTime).format("ddd, MMM Do YYYY") }}
+        </p>
+        <p class="mb-2">
+          <strong>Recipients - </strong>
+          {{ moment(viewedMessage.numbersCount).format("ddd, MMM Do YYYY") }}
         </p>
         <p class="mb-2">
           <strong>Cost - </strong>
-          {{ format.money(price, store.settings.currency) }}
+          {{ format.money(viewedMessage.price, store.settings.currency) }}
         </p>
-        <p class="mb-2"><strong>Message - </strong> {{ text }}</p>
+        <p class="mb-2"><strong>Message - </strong> {{ viewedMessage.text }}</p>
       </div>
       <v-client-table
         :columns="columns"
@@ -55,13 +60,11 @@ export default {
     };
   },
   props: {
-    messageId: null,
-    text: null,
-    price: 0
+    viewedMessage: null
   },
   created() {},
   mounted() {
-    axios.get("/api/me/SMSMessages/" + this.messageId).then(resp => {
+    axios.get("/api/me/SMSMessages/" + this.viewedMessage.id).then(resp => {
       this.message = resp.data;
     });
   },
