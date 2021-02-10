@@ -36,16 +36,16 @@
           <h5 class="d-inline-block">#{{ i + 1 }}. {{ addon.title }}</h5>
         </div> -->
         <b-row>
-          <b-col cols="6">
-            <b-form-group label="Title">
+          <b-col cols="4">
+            <b-form-group label="Title" class="font-weight-bold">
               <b-input
                 v-model="addon.title"
                 placeholder="i.e. Extra Entree"
               ></b-input>
             </b-form-group>
           </b-col>
-          <b-col>
-            <b-form-group label="Price">
+          <b-col cols="2">
+            <b-form-group label="Price" class="font-weight-bold">
               <money
                 :disabled="addon.id === -1"
                 required
@@ -57,15 +57,15 @@
               ></money>
             </b-form-group>
           </b-col>
-          <b-col>
-            <b-form-group label="Meal Package Size">
+          <b-col cols="2">
+            <b-form-group label="Meal Package Size" class="font-weight-bold">
               <b-select
                 v-model="addon.meal_package_size_id"
                 :options="sizeOptions"
               ></b-select>
             </b-form-group>
           </b-col>
-          <b-col v-if="store.modules.multipleDeliveryDays">
+          <b-col v-if="store.modules.multipleDeliveryDays" cols="2">
             <b-form-group label="Delivery Day" class="font-weight-bold">
               <b-form-select
                 v-model="addon.delivery_day_id"
@@ -73,7 +73,7 @@
               ></b-form-select>
             </b-form-group>
           </b-col>
-          <b-col>
+          <b-col cols="1">
             <b-btn
               variant="primary"
               @click="changeAddonMeals(i)"
@@ -81,12 +81,11 @@
               >Adjust</b-btn
             >
           </b-col>
-          <b-col>
+          <b-col cols="1">
             <b-btn
               variant="danger"
               @click="deleteAddon(addon.id)"
               style="margin-top: 28px;"
-              class="pull-right"
               >Delete</b-btn
             >
           </b-col>
@@ -153,7 +152,14 @@ export default {
     deliveryDayOptions() {
       let options = [];
       this.store.delivery_days.forEach(day => {
-        options.push({ value: day.id, text: day.day_long });
+        options.push({
+          value: day.id,
+          text:
+            day.day_long +
+            " - " +
+            day.type.charAt(0).toUpperCase() +
+            day.type.slice(1)
+        });
       });
       return options;
     },

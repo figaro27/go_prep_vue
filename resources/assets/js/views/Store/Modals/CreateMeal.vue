@@ -491,7 +491,11 @@ export default {
     deliveryDayOptions() {
       return Object.values(this.store.delivery_days).map(day => {
         return {
-          text: day.day_long,
+          text:
+            day.day_long +
+            " - " +
+            day.type.charAt(0).toUpperCase() +
+            day.type.slice(1),
           value: day.id
         };
       });

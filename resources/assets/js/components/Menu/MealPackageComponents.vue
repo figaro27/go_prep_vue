@@ -42,7 +42,7 @@
           >
         </div> -->
         <b-row>
-          <b-col cols="6">
+          <b-col cols="4">
             <b-form-group label="Component Title" class="font-weight-bold">
               <b-input
                 v-model="component.title"
@@ -50,22 +50,22 @@
               ></b-input>
             </b-form-group>
           </b-col>
-          <b-col>
+          <b-col cols="1">
             <b-form-group label="Minimum" class="font-weight-bold">
               <b-input v-model="component.minimum"></b-input>
             </b-form-group>
           </b-col>
-          <b-col>
+          <b-col cols="1">
             <b-form-group label="Maximum" class="font-weight-bold">
               <b-input v-model="component.maximum"></b-input>
             </b-form-group>
           </b-col>
-          <b-col>
+          <b-col cols="2">
             <b-form-group label="Price" class="font-weight-bold">
               <b-input type="number" v-model="component.price"></b-input>
             </b-form-group>
           </b-col>
-          <b-col v-if="storeModules.multipleDeliveryDays">
+          <b-col cols="2" v-if="storeModules.multipleDeliveryDays">
             <b-form-group label="Delivery Day" class="font-weight-bold">
               <b-form-select
                 v-model="component.delivery_day_id"
@@ -73,13 +73,15 @@
               ></b-form-select>
             </b-form-group>
           </b-col>
-          <b-col class="d-flex align-items-center">
-            <b-btn
-              variant="danger"
-              class="pull-right mt-2"
-              @click="deleteComponent(component.id)"
-              >Delete</b-btn
-            >
+          <b-col cols="2">
+            <b-form-group>
+              <b-btn
+                class="mt-4 ml-4"
+                variant="danger"
+                @click="deleteComponent(component.id)"
+                >Delete</b-btn
+              >
+            </b-form-group>
           </b-col>
         </b-row>
         <table class="table">
@@ -201,6 +203,9 @@
   justify-content: space-between;
   align-items: center;
 }
+#__BVID__242 {
+  width: 150px !important;
+}
 </style>
 
 <script>
@@ -234,7 +239,14 @@ export default {
     deliveryDayOptions() {
       let options = [];
       this.store.delivery_days.forEach(day => {
-        options.push({ value: day.id, text: day.day_long });
+        options.push({
+          value: day.id,
+          text:
+            day.day_long +
+            " - " +
+            day.type.charAt(0).toUpperCase() +
+            day.type.slice(1)
+        });
       });
       return options;
     },
