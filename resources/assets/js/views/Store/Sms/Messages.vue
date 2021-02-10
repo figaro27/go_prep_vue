@@ -483,10 +483,8 @@ export default {
     },
     async showViewedMessage(message) {
       this.viewedMessage = message;
-      axios.get("/api/me/SMSMessages/" + message.id).then(resp => {
+      await axios.get("/api/me/SMSMessages/" + message.id).then(resp => {
         this.recipients = resp.data;
-      });
-      then(resp => {
         this.showMessageModal = true;
       });
     }
