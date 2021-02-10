@@ -19,7 +19,7 @@
       </div>
       <v-client-table
         :columns="columns"
-        :data="recipients"
+        :data="message"
         :options="{
           orderBy: {},
           headings: {
@@ -55,18 +55,19 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      columns: ["recipient", "phone", "status"],
-      recipients: []
+      message: [],
+      columns: ["recipient", "phone", "status"]
     };
   },
   props: {
-    viewedMessage: null
+    viewedMessage: null,
+    messageId: null
   },
   created() {},
   mounted() {
-    if (this.viewedMessage) {
-      this.getRecipients();
-    }
+    axios.get("/api/me/SMSMessages/" + this.messageId).then(resp => {
+      this.message = resp.data;
+    });
   },
   computed: {
     ...mapGetters({
@@ -78,11 +79,6 @@ export default {
   },
   methods: {
     ...mapActions({}),
-    getRecipients() {
-      axios.get("/api/me/SMSMessages/" + this.viewedMessage.id).then(resp => {
-        this.recipients = resp.data;
-      });
-    },
     formatMoney: format.money,
     status(code) {
       switch (code) {
