@@ -8,7 +8,7 @@
         </p>
         <p class="mb-2">
           <strong>Cost - </strong>
-          {{ format.money(cost, store.settings.currency) }}
+          {{ format.money(price, store.settings.currency) }}
         </p>
         <p class="mb-2"><strong>Message - </strong> {{ text }}</p>
       </div>
@@ -56,7 +56,8 @@ export default {
   },
   props: {
     messageId: null,
-    text: null
+    text: null,
+    price: 0
   },
   created() {},
   mounted() {
@@ -70,21 +71,7 @@ export default {
       isLoading: "isLoading",
       initialized: "initialized",
       customers: "storeCustomers"
-    }),
-    cost() {
-      let total =
-        this.message !== null
-          ? _.reduce(
-              this.message,
-              (sum, m) => {
-                return sum + m.price;
-              },
-              0
-            )
-          : 0;
-
-      return total;
-    }
+    })
   },
   methods: {
     ...mapActions({}),

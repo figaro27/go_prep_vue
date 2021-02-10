@@ -67,7 +67,11 @@
         no-fade
         hide-footer
       >
-        <view-message :messageId="messageId" :text="text"></view-message>
+        <view-message
+          :messageId="messageId"
+          :text="text"
+          :price="price"
+        ></view-message>
       </b-modal>
 
       <b-btn variant="success" @click="composeSMS">Compose New SMS</b-btn>
@@ -247,6 +251,7 @@
             @click="
               (messageId = props.row.id),
                 (text = props.row.text),
+                (price = props.row.price),
                 (showMessageModal = true)
             "
           >
@@ -313,7 +318,8 @@ export default {
       phonesList: "",
       phones: [],
       selectedContact: null,
-      text: ""
+      text: "",
+      price: 0
     };
   },
   created() {},
