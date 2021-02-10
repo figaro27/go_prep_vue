@@ -1729,8 +1729,8 @@ class Store extends Model
     public function getHasDeliveryDayItemsAttribute()
     {
         if (
-            count($this->deliveryDayMeals) > 0 ||
-            count($this->deliveryDayMealPackages) > 0
+            $this->deliveryDayMeals()->count() > 0 ||
+            $this->deliveryDayMealPackages()->count() > 0
         ) {
             return true;
         }

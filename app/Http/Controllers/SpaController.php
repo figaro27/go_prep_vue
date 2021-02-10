@@ -308,6 +308,27 @@ class SpaController extends Controller
                 ])->find(STORE_ID)
                 : $last_viewed_store;
 
+            // Load only delivery day meals & delivery day meal packages in which the associated meal or meal package isn't inactive or deleted
+            $store->deliveryDayMeals = DeliveryDayMeal::where(
+                'store_id',
+                $store->id
+            )
+                ->whereHas('meal', function ($meal) {
+                    $meal->where('active', 1)->where('deleted_at', null);
+                })
+                ->get();
+
+            $store->deliveryDayMealPackages = DeliveryDayMealPackage::where(
+                'store_id',
+                $store->id
+            )
+                ->whereHas('meal_package', function ($meal_package) {
+                    $meal_package
+                        ->where('active', 1)
+                        ->where('deleted_at', null);
+                })
+                ->get();
+
             if ($store) {
                 $store->details->makeHidden([
                     'phone',
