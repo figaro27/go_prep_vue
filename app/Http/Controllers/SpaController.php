@@ -334,8 +334,6 @@ class SpaController extends Controller
                     'phone',
                     'address',
                     'city',
-                    'state',
-                    'zip',
                     'created_at'
                 ]);
                 $store->settings->makeHidden([
