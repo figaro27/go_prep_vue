@@ -55,15 +55,19 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      columns: ["recipient", "phone", "status"]
+      columns: ["recipient", "phone", "status"],
+      recipients: []
     };
   },
   props: {
-    viewedMessage: null,
-    recipients: []
+    viewedMessage: null
   },
   created() {},
-  mounted() {},
+  mounted() {
+    if (this.viewedMessage) {
+      this.getRecipients();
+    }
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -74,6 +78,11 @@ export default {
   },
   methods: {
     ...mapActions({}),
+    getRecipients() {
+      axios.get("/api/me/SMSMessages/" + this.viewedMessage.id).then(resp => {
+        this.recipients = resp.data;
+      });
+    },
     formatMoney: format.money,
     status(code) {
       switch (code) {
