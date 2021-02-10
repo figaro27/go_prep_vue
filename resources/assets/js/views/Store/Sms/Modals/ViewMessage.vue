@@ -2,14 +2,14 @@
   <div class="row mt-3">
     <div class="col-md-12 pb-3">
       <Spinner v-if="isLoading" />
-      <div v-if="text !== ''">
+      <div v-if="viewedMessage">
         <p class="mb-2">
           <strong>Sent - </strong>
           {{ moment(viewedMessage.messageTime).format("ddd, MMM Do YYYY") }}
         </p>
         <p class="mb-2">
           <strong>Recipients - </strong>
-          {{ moment(viewedMessage.numbersCount).format("ddd, MMM Do YYYY") }}
+          {{ viewedMessage.numbersCount }}
         </p>
         <p class="mb-2">
           <strong>Cost - </strong>
