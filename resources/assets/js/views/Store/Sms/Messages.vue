@@ -67,10 +67,7 @@
         no-fade
         hide-footer
       >
-        <view-message
-          :message="viewedMessage"
-          :messageId="messageId"
-        ></view-message>
+        <view-message :viewedMessage="viewedMessage"></view-message>
       </b-modal>
 
       <b-btn variant="success" @click="composeSMS">Compose New SMS</b-btn>
@@ -247,11 +244,7 @@
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button
             class="btn view btn-warning btn-sm"
-            @click="
-              (viewedMessage = props.row),
-                (messageId = props.row.id),
-                (showMessageModal = true)
-            "
+            @click="(viewedMessage = props.row), (showMessageModal = true)"
           >
             View
           </button>
@@ -306,7 +299,6 @@ export default {
       showContactsModal: false,
       showMessageModal: false,
       viewedMessage: null,
-      messageId: null,
       message: {
         content: ""
       },

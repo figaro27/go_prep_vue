@@ -60,12 +60,11 @@ export default {
     };
   },
   props: {
-    viewedMessage: null,
-    messageId: null
+    viewedMessage: null
   },
   created() {},
   mounted() {
-    axios.get("/api/me/SMSMessages/" + this.messageId).then(resp => {
+    axios.get("/api/me/SMSMessages/" + this.viewedMessage.id).then(resp => {
       this.message = resp.data;
     });
   },
