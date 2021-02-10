@@ -19,7 +19,7 @@
       </div>
       <v-client-table
         :columns="columns"
-        :data="message"
+        :data="recipients"
         :options="{
           orderBy: {},
           headings: {
@@ -55,19 +55,15 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      message: [],
       columns: ["recipient", "phone", "status"]
     };
   },
   props: {
-    viewedMessage: null
+    viewedMessage: null,
+    recipients: []
   },
   created() {},
-  mounted() {
-    axios.get("/api/me/SMSMessages/" + this.viewedMessage.id).then(resp => {
-      this.message = resp.data;
-    });
-  },
+  mounted() {},
   computed: {
     ...mapGetters({
       store: "viewedStore",

@@ -67,7 +67,10 @@
         no-fade
         hide-footer
       >
-        <view-message :message="selectedMessage"></view-message>
+        <view-message
+          :message="selectedMessage"
+          :recipients="recipients"
+        ></view-message>
       </b-modal>
 
       <b-btn variant="success" @click="composeSMS">Compose New SMS</b-btn>
@@ -244,7 +247,7 @@
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <button
             class="btn view btn-warning btn-sm"
-            @click="(viewedMessage = props.row), (showMessageModal = true)"
+            @click="showViewedMessage(props.row)"
           >
             View
           </button>
@@ -290,6 +293,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      recipients: [],
       loaded: false,
       showActivateModal: false,
       showNewSMSArea: false,
@@ -476,6 +480,15 @@ export default {
       this.showNewSMSArea = !this.showNewSMSArea;
       this.refreshSMSContacts();
       this.refreshSMSLists();
+    },
+    async showViewedMessage(message) {
+      this.viewedMessage = message;
+      axios.get("/api/me/SMSMessages/" + message.id).then(resp => {
+        this.recipients = resp.data;
+      });
+      then(resp => {
+        this.showMessageModal = true;
+      });
     }
   }
 };
