@@ -230,6 +230,7 @@ export default {
       });
     },
     endEditAmount(row) {
+      row.amount = row.amount === "0" ? "0.00" : row.amount;
       axios
         .patch(`/api/me/purchasedGiftCards/${row.id}`, {
           id: row.id,
@@ -248,6 +249,7 @@ export default {
       });
     },
     endEditBalance(row) {
+      row.balance = row.balance === "0" ? "0.00" : row.balance;
       axios
         .patch(`/api/me/purchasedGiftCards/${row.id}`, {
           id: row.id,
