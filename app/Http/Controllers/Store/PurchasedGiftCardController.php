@@ -69,6 +69,7 @@ class PurchasedGiftCardController extends StoreController
         )
             ? $newGiftCard['emailRecipient']
             : null;
+        $purchasedGiftCard->purchased_by = $this->store->details->name;
         $purchasedGiftCard->save();
 
         if (isset($newGiftCard['emailRecipient'])) {

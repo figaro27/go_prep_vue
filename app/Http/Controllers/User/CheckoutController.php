@@ -640,6 +640,10 @@ class CheckoutController extends UserController
                             )
                                 ? $item['emailRecipient']
                                 : null;
+                            $purchasedGiftCard->purchased_by =
+                                $user->details->firstname .
+                                ' ' .
+                                $user->details->lastname;
                             $purchasedGiftCard->save();
 
                             if (isset($item['emailRecipient'])) {

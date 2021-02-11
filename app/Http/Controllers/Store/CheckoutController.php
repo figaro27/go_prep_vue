@@ -487,6 +487,8 @@ class CheckoutController extends StoreController
                             )
                                 ? $item['emailRecipient']
                                 : null;
+                            $purchasedGiftCard->purchased_by =
+                                $store->details->name;
                             $purchasedGiftCard->save();
 
                             if (isset($item['emailRecipient'])) {

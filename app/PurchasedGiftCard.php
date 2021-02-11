@@ -8,20 +8,25 @@ use App\GiftCard;
 class PurchasedGiftCard extends Model
 {
     // protected $appends = ['purchased_by', 'title', 'image'];
-    protected $appends = ['purchased_by'];
+    // protected $appends = ['purchased_by'];
 
     public function order()
     {
         return $this->belongsTo('App\Order');
     }
 
-    public function getPurchasedByAttribute()
+    public function store()
     {
-        $user = User::where('id', $this->user_id)->first();
-        return $user && $user->details
-            ? $user->details->firstname . ' ' . $user->details->lastname
-            : null;
+        return $this->belongsTo('App\Store');
     }
+
+    // public function getPurchasedByAttribute()
+    // {
+    //     $user = User::where('id', $this->user_id)->first();
+    //     return $user && $user->details
+    //         ? $user->details->firstname . ' ' . $user->details->lastname
+    //         : null;
+    // }
 
     // public function getTitleAttribute()
     // {
