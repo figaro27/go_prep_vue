@@ -76,6 +76,68 @@
             {{ moment(props.row.created_at).format("dddd MMM Do") }}
           </p>
         </div>
+        <div slot="amount" slot-scope="props">
+          <p class="d-flex">
+            <span v-if="!enablingEditAmount[props.row.id]" class="d-inline">{{
+              props.row.amount
+            }}</span>
+            <span v-else class="d-inline"
+              ><b-form-input
+                v-model="props.row.amount"
+                style="width:80px"
+                type="number"
+                min="0"
+              ></b-form-input
+            ></span>
+            <i
+              v-if="
+                enablingEditAmount[props.row.id]
+                  ? enablingEditAmount[props.row.id] === false
+                  : true
+              "
+              @click="enableEditAmount(props.row)"
+              class="fa fa-edit text-warning font-15 pl-1 d-inline"
+              style="padding-top:10px"
+            ></i>
+            <i
+              v-if="enablingEditAmount[props.row.id] === true"
+              class="fas fa-check-circle text-primary pl-1 font-15 d-inline"
+              @click="endEditAmount(props.row)"
+              style="padding-top:10px"
+            ></i>
+          </p>
+        </div>
+        <div slot="balance" slot-scope="props">
+          <p class="d-flex">
+            <span v-if="!enablingEditBalance[props.row.id]" class="d-inline">{{
+              props.row.balance
+            }}</span>
+            <span v-else class="d-inline"
+              ><b-form-input
+                v-model="props.row.balance"
+                style="width:80px"
+                type="number"
+                min="0"
+              ></b-form-input
+            ></span>
+            <i
+              v-if="
+                enablingEditBalance[props.row.id]
+                  ? enablingEditBalance[props.row.id] === false
+                  : true
+              "
+              @click="enableEditBalance(props.row)"
+              class="fa fa-edit text-warning font-15 pl-1 d-inline"
+              style="padding-top:10px"
+            ></i>
+            <i
+              v-if="enablingEditBalance[props.row.id] === true"
+              class="fas fa-check-circle text-primary pl-1 font-15 d-inline"
+              @click="endEditBalance(props.row)"
+              style="padding-top:10px"
+            ></i>
+          </p>
+        </div>
         <div slot="actions" class="text-nowrap" slot-scope="props">
           <b-btn variant="danger" @click="deleteGiftCard(props.row.id)"
             >Delete</b-btn
@@ -102,6 +164,8 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      enablingEditAmount: {},
+      enablingEditBalance: {},
       newGiftCard: {
         amount: null,
         code: null,
@@ -159,6 +223,42 @@ export default {
         this.refreshStorePurchasedGiftCards();
         this.$toastr.s("Gift card deleted!");
       });
+    },
+    enableEditAmount(row) {
+      this.$nextTick(() => {
+        this.$set(this.enablingEditAmount, row.id, true);
+      });
+    },
+    endEditAmount(row) {
+      axios
+        .patch(`/api/me/purchasedGiftCards/${row.id}`, {
+          id: row.id,
+          amount: row.amount
+        })
+        .then(resp => {
+          this.refreshStorePurchasedGiftCards();
+          this.$nextTick(() => {
+            this.$set(this.enablingEditAmount, row.id, false);
+          });
+        });
+    },
+    enableEditBalance(row) {
+      this.$nextTick(() => {
+        this.$set(this.enablingEditBalance, row.id, true);
+      });
+    },
+    endEditBalance(row) {
+      axios
+        .patch(`/api/me/purchasedGiftCards/${row.id}`, {
+          id: row.id,
+          balance: row.balance
+        })
+        .then(resp => {
+          this.refreshStorePurchasedGiftCards();
+          this.$nextTick(() => {
+            this.$set(this.enablingEditBalance, row.id, false);
+          });
+        });
     }
     // getPurchasedByUser(userId) {
     //   let user =

@@ -111,11 +111,16 @@ class PurchasedGiftCardController extends StoreController
      * @param  \App\GiftCard  $giftCard
      * @return \Illuminate\Http\Response
      */
-    public function update(
-        Request $request,
-        PurchasedGiftCard $purchasedGiftCards
-    ) {
-        //
+    public function update(Request $request, $id)
+    {
+        $purchasedGiftCard = PurchasedGiftCard::where('id', $id)->first();
+        $purchasedGiftCard->balance = $request->get('balance')
+            ? $request->get('balance')
+            : $purchasedGiftCard->balance;
+        $purchasedGiftCard->amount = $request->get('amount')
+            ? $request->get('amount')
+            : $purchasedGiftCard->amount;
+        $purchasedGiftCard->update();
     }
 
     /**
