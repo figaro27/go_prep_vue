@@ -29,11 +29,149 @@ export default {
       mealMixItems: "mealMixItems",
       bag: "bagItems"
     }),
+    noAvailableDays() {
+      if (
+        this.sortedDeliveryDays &&
+        this.sortedDeliveryDays.length === 0 &&
+        !this.bagPickup &&
+        this.bagZipCode
+      ) {
+        return true;
+      }
+      return false;
+    },
+    deliveryDayZipCodeMatch() {
+      let match = this.store.delivery_day_zip_codes.some(ddZipCode => {
+        return ddZipCode.zip_code === this.bagZipCode;
+      });
+      return this.hasDeliveryDayZipCodes ? match : true;
+    },
+    sortedDeliveryDays() {
+      // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
+      let baseDeliveryDays = this.store.delivery_days;
+      let deliveryWeeks = this.store.settings.deliveryWeeks;
+      let storeDeliveryDays = [];
+
+      for (let i = 0; i <= deliveryWeeks; i++) {
+        baseDeliveryDays.forEach(day => {
+          let m = moment(day.day_friendly);
+          let newDate = moment(m).subtract(i, "week");
+          let newDay = { ...day };
+          newDay.day_friendly = newDate.format("YYYY-MM-DD");
+          storeDeliveryDays.push(newDay);
+        });
+      }
+
+      storeDeliveryDays = storeDeliveryDays.reverse();
+
+      // Add all future dates with no cutoff for manual orders
+      if (this.context == "store") {
+        storeDeliveryDays = [];
+        let today = new Date();
+        let year = today.getFullYear();
+        let month = today.getMonth();
+        let date = today.getDate();
+
+        for (let i = 0; i < 30; i++) {
+          let day = new Date(year, month, date + i);
+          let multDD = { ...this.store.delivery_days[0] };
+          multDD.day_friendly = moment(day).format("YYYY-MM-DD");
+          storeDeliveryDays.push(multDD);
+        }
+      }
+
+      let sortedDays = storeDeliveryDays;
+      // let sortedDays = [];
+
+      // if (this.store.delivery_day_zip_codes.length === 0) {
+      //   sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
+      // } else {
+      //   sortedDays = storeDeliveryDays;
+      // }
+
+      // If the store only serves certain zip codes on certain delivery days
+      if (this.store.delivery_day_zip_codes.length > 0) {
+        let deliveryDayIds = [];
+        this.store.delivery_day_zip_codes.forEach(ddZipCode => {
+          if (ddZipCode.zip_code === parseInt(this.bagZipCode)) {
+            deliveryDayIds.push(ddZipCode.delivery_day_id);
+          }
+        });
+        sortedDays = sortedDays.filter(day => {
+          if (this.bagPickup) {
+            return true;
+          } else {
+            if (deliveryDayIds.includes(day.id) && day.type == "delivery") {
+              return true;
+            }
+          }
+
+          // return deliveryDayIds.includes(day.id);
+        });
+      }
+
+      if (this.context !== "store") {
+        if (this.bagPickup) {
+          sortedDays = sortedDays.filter(day => {
+            return day.type === "pickup";
+          });
+        } else {
+          sortedDays = sortedDays.filter(day => {
+            return day.type === "delivery";
+          });
+        }
+      }
+
+      sortedDays.sort(function(a, b) {
+        return new Date(a.day_friendly) - new Date(b.day_friendly);
+      });
+
+      // Removing past dates
+      sortedDays = sortedDays.filter(day => {
+        return !moment(day.day_friendly).isBefore(moment().startOf("day"));
+      });
+
+      // Removing inactive days
+      sortedDays = sortedDays.filter(day => {
+        return day.active;
+      });
+
+      return sortedDays;
+    },
+    hasDeliveryDayZipCodes() {
+      return this.store.delivery_day_zip_codes &&
+        this.store.delivery_day_zip_codes.length > 0
+        ? true
+        : false;
+    },
     prefix() {
       if (this.loggedIn) {
         return "/api/me/";
       } else {
         return "/api/guest/";
+      }
+    },
+    isLoadingDeliveryDays() {
+      if (!this.store.delivery_days || this.store.delivery_days.length == 0) {
+        return true;
+      }
+      return false;
+    },
+    hasBothTranserTypes() {
+      let hasPickup = false;
+      let hasDelivery = false;
+      this.store.delivery_days.forEach(day => {
+        if (day.type === "delivery") {
+          hasDelivery = true;
+        }
+        if (day.type === "pickup") {
+          hasPickup = true;
+        }
+      });
+      if (hasPickup && hasDelivery) {
+        return true;
+      } else {
+        return false;
       }
     },
     isMultipleDelivery() {
@@ -314,6 +452,7 @@ export default {
     }
   },
   mounted() {
+    this.transferDayType = this.bagPickup;
     if (this.isMultipleDelivery) {
       this.minimumDeliveryDayAmount = this.store.delivery_days[0].minimum;
     }
@@ -1007,6 +1146,19 @@ export default {
     checkMinimum() {
       if (!this.minimumMet && !this.storeView) {
         this.$toastr.w(this.addMore);
+      }
+    },
+    getBrandColor(delivery_day) {
+      if (this.selectedDeliveryDay) {
+        if (
+          this.selectedDeliveryDay.day_friendly == delivery_day.day_friendly
+        ) {
+          if (this.store.settings) {
+            let style = "background-color:";
+            style += this.store.settings.color;
+            return style;
+          }
+        }
       }
     }
   }

@@ -1,12 +1,5 @@
 <template>
   <div>
-    <zip-code-modal
-      v-if="showZipCodeModal"
-      :deliverySelected="true"
-      @setAutoPickUpcomingMultDD="
-        (showZipCodeModal = false), $parent.autoPickUpcomingMultDD(null)
-      "
-    ></zip-code-modal>
     <div
       class="bag-header center-text pt-3"
       v-if="
@@ -60,7 +53,8 @@
             isMultipleDelivery &&
               $route.name != 'store-bag' &&
               $route.name != 'customer-bag' &&
-              hasBothTranserTypes
+              hasBothTransferTypes &&
+              deliveryDayZipCodeMatch
           "
           buttons
           class="filters mb-3"
@@ -106,6 +100,10 @@
             :style="activeDD(groupItem.delivery_day)"
           >
             <h5 @click="loadDeliveryDayMenu(groupItem.delivery_day)">
+              ({{
+                groupItem.delivery_day.type.charAt(0).toUpperCase() +
+                  groupItem.delivery_day.type.slice(1)
+              }})
               {{
                 moment(groupItem.delivery_day.day_friendly).format(
                   "ddd, MMM Do YYYY"
@@ -657,12 +655,12 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../mixins/menuBag";
 import store from "../../store";
-import ZipCodeModal from "../../views/Customer/Modals/ZipCodeModal";
 import format from "../../lib/format";
+import DeliveryDayModal from "../../views/Customer/Modals/DeliveryDayModal";
 
 export default {
   components: {
-    ZipCodeModal
+    DeliveryDayModal
   },
   data() {
     return {
@@ -719,7 +717,7 @@ export default {
       bagZipCode: "bagZipCode",
       multDDZipCode: "bagMultDDZipCode"
     }),
-    hasBothTranserTypes() {
+    hasBothTransferTypes() {
       let hasPickup = false;
       let hasDelivery = false;
       this.store.delivery_days.forEach(day => {
@@ -1227,16 +1225,14 @@ export default {
     changeTransferType(val) {
       this.$store.commit("emptyBag");
       this.setBagPickup(val);
-      this.setBagZipCode(null);
-      if (
-        !this.bagZipCode &&
-        val == 0 &&
-        this.store.delivery_day_zip_codes.length > 0
-      ) {
-        this.setMultDDZipCode(0);
-        this.showZipCodeModal = true;
-      }
       this.$parent.autoPickUpcomingMultDD(null);
+      if (
+        this.bagPickup == 0 &&
+        !this.bagZipCode &&
+        this.hasDeliveryDayZipCodes
+      ) {
+        this.$parent.showDeliveryDayModal = true;
+      }
     },
     autoPickAdjustDD() {
       let firstDate = "";
