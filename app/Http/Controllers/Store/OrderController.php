@@ -1042,7 +1042,7 @@ class OrderController extends StoreController
                         $purchasedGiftCard->purchased_by =
                             $order->user->user_role_id == 1
                                 ? $order->user->details->firstname .
-                                    ' - ' .
+                                    ' ' .
                                     $order->user->details->lastname
                                 : $this->store->details->name;
                         $purchasedGiftCard->save();

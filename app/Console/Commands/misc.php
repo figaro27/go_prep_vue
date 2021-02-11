@@ -46,13 +46,17 @@ class misc extends Command
         $purchasedGiftCards = PurchasedGiftCard::all();
         foreach ($purchasedGiftCards as $purchasedGiftCard) {
             try {
-                $purchasedGiftCard->purchased_by =
-                    $purchasedGiftCard->order->user->user_role_id === 1
-                        ? $purchasedGiftCard->order->user->details->firstname .
-                            ' - ' .
-                            $purchasedGiftCard->order->user->details->lastname
-                        : $purchasedGiftCard->store->details->name;
-                $purchasedGiftCard->update();
+                if ($purchasedGiftCard->order->user) {
+                    $purchasedGiftCard->purchased_by =
+                        $purchasedGiftCard->order->user->user_role_id === 1
+                            ? $purchasedGiftCard->order->user->details
+                                    ->firstname .
+                                ' ' .
+                                $purchasedGiftCard->order->user->details
+                                    ->lastname
+                            : $purchasedGiftCard->store->details->name;
+                    $purchasedGiftCard->update();
+                }
             } catch (\Exception $e) {
             }
         }
