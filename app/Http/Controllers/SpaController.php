@@ -261,7 +261,6 @@ class SpaController extends Controller
                     'storeDetail',
                     'coupons',
                     'giftCards',
-                    'purchasedGiftCards',
                     'referrals',
                     'referralSettings',
                     'promotions',

@@ -52,7 +52,9 @@ export default {
     return {};
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.refreshStorePurchasedGiftCards();
+  },
   computed: {
     ...mapGetters({
       store: "viewedStore",
@@ -62,7 +64,9 @@ export default {
     })
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      refreshStorePurchasedGiftCards: "refreshStorePurchasedGiftCards"
+    }),
     formatMoney: format.money
   }
 };
