@@ -370,7 +370,7 @@ class Meal extends Model implements HasMedia
     public static function getIngredients($id)
     {
         $meal = Meal::where('id', $id)->first();
-        return $meal->ingredients;
+        return $meal ? $meal->ingredients : [];
     }
 
     // public function getOrderIdsAttribute()
