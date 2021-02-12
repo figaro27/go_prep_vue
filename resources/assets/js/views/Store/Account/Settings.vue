@@ -1000,12 +1000,12 @@
                       v-model="color"
                       @input="updateStoreSettings()"
                     ></swatches>
-                    <b-form-input
+                    <!-- <b-form-input
                       v-model="color"
                       class="d-inline w-180 ml-2 mt-1"
                       maxlength="7"
                       @input="updateStoreSettings()"
-                    ></b-form-input>
+                    ></b-form-input> -->
                   </div>
                 </b-form-group>
                 <b-form-group :state="true" v-if="!storeModules.hideBranding">
