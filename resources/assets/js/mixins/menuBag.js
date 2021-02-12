@@ -106,7 +106,6 @@ export default {
       return message;
     },
     minimumMet() {
-      return true;
       let settingsPassed = true;
       let deliveryDayMinimumPassed = true;
       let categoryMinimumPassed = true;
@@ -115,10 +114,7 @@ export default {
       // Check delivery day minimum passes
       if (this.isMultipleDelivery) {
         let groupBag = _.groupBy(this.bag, function(item) {
-          // console.log(item);
-          if (item.delivery_day) {
-            return item.delivery_day.day_friendly;
-          }
+          return item.delivery_day.day_friendly;
         });
         Object.values(groupBag).forEach(groupBagItem => {
           let groupBagItemTotal = 0;
