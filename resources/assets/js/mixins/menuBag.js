@@ -86,6 +86,14 @@ export default {
           let day = new Date(year, month, date + i);
           let multDD = { ...this.store.delivery_days[0] };
           multDD.day_friendly = moment(day).format("YYYY-MM-DD");
+          multDD.type = "pickup";
+          storeDeliveryDays.push(multDD);
+        }
+        for (let i = 0; i < 30; i++) {
+          let day = new Date(year, month, date + i);
+          let multDD = { ...this.store.delivery_days[0] };
+          multDD.day_friendly = moment(day).format("YYYY-MM-DD");
+          multDD.type = "delivery";
           storeDeliveryDays.push(multDD);
         }
       }
@@ -93,37 +101,38 @@ export default {
       let sortedDays = storeDeliveryDays;
       // let sortedDays = [];
 
-      // If the store only serves certain zip codes on certain delivery days
-      if (this.store.delivery_day_zip_codes.length > 0) {
-        let deliveryDayIds = [];
-        this.store.delivery_day_zip_codes.forEach(ddZipCode => {
-          if (ddZipCode.zip_code === parseInt(this.bagZipCode)) {
-            deliveryDayIds.push(ddZipCode.delivery_day_id);
-          }
-        });
-        sortedDays = sortedDays.filter(day => {
-          if (this.bagPickup) {
-            return true;
-          } else {
-            if (deliveryDayIds.includes(day.id) && day.type == "delivery") {
-              return true;
-            }
-          }
-
-          // return deliveryDayIds.includes(day.id);
-        });
-      }
-
+      // Not restricting this on stores for now, however stores may want to be restricted since they don't memorize which days for which postal codes
       if (this.context !== "store") {
-        if (this.bagPickup) {
-          sortedDays = sortedDays.filter(day => {
-            return day.type === "pickup";
+        // If the store only serves certain zip codes on certain delivery days
+        if (this.store.delivery_day_zip_codes.length > 0) {
+          let deliveryDayIds = [];
+          this.store.delivery_day_zip_codes.forEach(ddZipCode => {
+            if (ddZipCode.zip_code === parseInt(this.bagZipCode)) {
+              deliveryDayIds.push(ddZipCode.delivery_day_id);
+            }
           });
-        } else {
           sortedDays = sortedDays.filter(day => {
-            return day.type === "delivery";
+            if (this.bagPickup) {
+              return true;
+            } else {
+              if (deliveryDayIds.includes(day.id) && day.type == "delivery") {
+                return true;
+              }
+            }
+
+            // return deliveryDayIds.includes(day.id);
           });
         }
+      }
+
+      if (this.bagPickup) {
+        sortedDays = sortedDays.filter(day => {
+          return day.type === "pickup";
+        });
+      } else {
+        sortedDays = sortedDays.filter(day => {
+          return day.type === "delivery";
+        });
       }
 
       sortedDays.sort(function(a, b) {

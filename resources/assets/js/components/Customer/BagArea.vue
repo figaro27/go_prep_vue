@@ -1229,7 +1229,8 @@ export default {
       if (
         this.bagPickup == 0 &&
         !this.bagZipCode &&
-        this.hasDeliveryDayZipCodes
+        this.hasDeliveryDayZipCodes &&
+        this.context !== "store"
       ) {
         this.$parent.showDeliveryDayModal = true;
       }
