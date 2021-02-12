@@ -43,12 +43,15 @@ export default {
     }
   },
   mounted() {
+    console.log(1);
     if (
       this.mealMixItems.hasOwnProperty("isRunningLazy") &&
       !this.mealMixItems.isRunningLazy &&
       !this.itemsSet
     ) {
+      console.log(2);
       if (this.bag.items && this.bag.items.length === 0) {
+        console.log(3);
         this.getSub();
       }
     }
@@ -87,6 +90,7 @@ export default {
         });
     },
     getSub() {
+      console.log(4);
       axios.get("/api/me/subscriptions/" + this.subscriptionId).then(resp => {
         this.subscription = resp.data;
         this.$route.params.subscription = this.subscription;
@@ -97,6 +101,7 @@ export default {
       });
     },
     async initBag() {
+      console.log(5);
       this.clearAll();
       // await this.refreshSubscriptions();
       // const subscription = _.find(this.subscriptions, {

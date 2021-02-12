@@ -54,6 +54,7 @@ export default {
     addMore() {
       let message = "";
       if (this.isMultipleDelivery) {
+        return true;
         if (this.minimumDeliveryDayAmount > 0) {
           let groupTotal = [];
           this.groupBag.forEach((group, index) => {
