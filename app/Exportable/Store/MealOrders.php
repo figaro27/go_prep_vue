@@ -545,7 +545,9 @@ class MealOrders
 
             if ($groupByDate) {
                 $headings = array_merge(['Title'], $this->allDates);
+                $formattedProduction = collect($formattedProduction);
                 $formattedProduction->prepend($headings);
+                $formattedProduction = $formattedProduction->toArray();
             }
 
             return $formattedProduction;
