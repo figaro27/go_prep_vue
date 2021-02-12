@@ -106,6 +106,7 @@ export default {
       return message;
     },
     minimumMet() {
+      return true;
       let settingsPassed = true;
       let deliveryDayMinimumPassed = true;
       let categoryMinimumPassed = true;
