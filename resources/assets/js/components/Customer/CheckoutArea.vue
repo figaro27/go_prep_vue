@@ -1463,7 +1463,7 @@ export default {
     //   this.chooseCustomer();
     // });
     if (this.bagPickupSet) {
-      this.pickup = this.bagPickup;
+      this.$parent.pickup = this.bagPickup;
     }
 
     if (this.coupon && this.coupon.minimum > 0) {

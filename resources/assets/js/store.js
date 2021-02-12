@@ -79,7 +79,8 @@ const state = {
     pickupLocation: null,
     gratuityPercent: null,
     customGratuity: null,
-    subscriptionInterval: null
+    subscriptionInterval: null,
+    subscription: null
   },
   delivery_date: null,
   zip_code: null,
@@ -842,6 +843,9 @@ const mutations = {
     }
 
     Vue.delete(state.bag.items, guid);
+  },
+  setBagSubscription({ state, dispatch }, subscription) {
+    this.state.bag.subscription = subscription;
   },
   setBagPickupLocation({ state, dispatch }, pickupLocation) {
     this.state.bag.pickupLocation = pickupLocation;
@@ -3566,6 +3570,9 @@ const getters = {
       //   );
       // }
     });
+  },
+  bagSubscription(state) {
+    return state.bag.subscription;
   },
   bagCoupon(state) {
     return state.bag.coupon;

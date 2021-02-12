@@ -353,14 +353,32 @@ class SpaController extends Controller
                     $distance = null;
                 }
 
-                if ($store->settings->delivery_distance_type === 'radius') {
-                    $willDeliver =
-                        !is_null($distance) &&
-                        $distance < $store->settings->delivery_distance_radius;
+                if (
+                    $store->modules->multipleDeliveryDays &&
+                    count($store->deliveryDayZipCodes) > 0
+                ) {
+                    foreach (
+                        $store->deliveryDayZipCodes->toArray()
+                        as $deliveryDayZipCode
+                    ) {
+                        if (
+                            (string) $deliveryDayZipCode['zip_code'] ===
+                            (string) $user->userDetail->zip
+                        ) {
+                            $willDeliver = true;
+                        }
+                    }
                 } else {
-                    $willDeliver = $store->deliversToZip(
-                        $user->userDetail->zip
-                    );
+                    if ($store->settings->delivery_distance_type === 'radius') {
+                        $willDeliver =
+                            !is_null($distance) &&
+                            $distance <
+                                $store->settings->delivery_distance_radius;
+                    } else {
+                        $willDeliver = $store->deliversToZip(
+                            $user->userDetail->zip
+                        );
+                    }
                 }
 
                 $user->last_viewed_store_id = $store->id;

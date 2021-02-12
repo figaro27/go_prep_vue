@@ -27,8 +27,14 @@ export default {
       totalBagPricePreFees: "totalBagPricePreFees",
       totalBagPricePreFeesBothTypes: "totalBagPricePreFeesBothTypes",
       mealMixItems: "mealMixItems",
-      bag: "bagItems"
+      bag: "bagItems",
+      bagSubscription: "bagSubscription"
     }),
+    adjustingSubscription() {
+      if (this.bagSubscription) {
+        return true;
+      }
+    },
     noAvailableDays() {
       if (
         this.sortedDeliveryDays &&
@@ -44,7 +50,11 @@ export default {
       let match = this.store.delivery_day_zip_codes.some(ddZipCode => {
         return ddZipCode.zip_code === this.bagZipCode;
       });
-      return this.hasDeliveryDayZipCodes ? match : true;
+      return !this.bagZipCode
+        ? true
+        : this.hasDeliveryDayZipCodes
+        ? match
+        : true;
     },
     sortedDeliveryDays() {
       // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
@@ -82,12 +92,6 @@ export default {
 
       let sortedDays = storeDeliveryDays;
       // let sortedDays = [];
-
-      // if (this.store.delivery_day_zip_codes.length === 0) {
-      //   sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
-      // } else {
-      //   sortedDays = storeDeliveryDays;
-      // }
 
       // If the store only serves certain zip codes on certain delivery days
       if (this.store.delivery_day_zip_codes.length > 0) {
@@ -136,7 +140,111 @@ export default {
         return day.active;
       });
 
+      if (this.adjustingSubscription) {
+        let next_renewal_at = moment(this.bagSubscription.next_renewal_at);
+        let now = moment();
+        sortedDays.map(day => {
+          if (moment(day.day_friendly).isBetween(now, next_renewal_at)) {
+            day.day_friendly = moment(day.day_friendly)
+              .add(1, "week")
+              .format("YYYY-MM-DD");
+            return day;
+          } else {
+            return day;
+          }
+        });
+      }
+
       return sortedDays;
+    },
+    allDeliveryDays() {
+      // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
+      let baseDeliveryDays = this.store.delivery_days;
+      let deliveryWeeks = this.store.settings.deliveryWeeks;
+      let storeDeliveryDays = [];
+
+      for (let i = 0; i <= deliveryWeeks; i++) {
+        baseDeliveryDays.forEach(day => {
+          let m = moment(day.day_friendly);
+          let newDate = moment(m).subtract(i, "week");
+          let newDay = { ...day };
+          newDay.day_friendly = newDate.format("YYYY-MM-DD");
+          storeDeliveryDays.push(newDay);
+        });
+      }
+
+      storeDeliveryDays = storeDeliveryDays.reverse();
+
+      // Add all future dates with no cutoff for manual orders
+      if (this.context == "store") {
+        storeDeliveryDays = [];
+        let today = new Date();
+        let year = today.getFullYear();
+        let month = today.getMonth();
+        let date = today.getDate();
+
+        for (let i = 0; i < 30; i++) {
+          let day = new Date(year, month, date + i);
+          let multDD = { ...this.store.delivery_days[0] };
+          multDD.day_friendly = moment(day).format("YYYY-MM-DD");
+          storeDeliveryDays.push(multDD);
+        }
+      }
+
+      let allDays = storeDeliveryDays;
+      // let allDays = [];
+
+      // If the store only serves certain zip codes on certain delivery days
+      if (this.store.delivery_day_zip_codes.length > 0) {
+        let deliveryDayIds = [];
+        this.store.delivery_day_zip_codes.forEach(ddZipCode => {
+          if (ddZipCode.zip_code === parseInt(this.bagZipCode)) {
+            deliveryDayIds.push(ddZipCode.delivery_day_id);
+          }
+        });
+        allDays = allDays.filter(day => {
+          if (this.bagPickup) {
+            return true;
+          } else {
+            if (deliveryDayIds.includes(day.id) && day.type == "delivery") {
+              return true;
+            }
+          }
+
+          // return deliveryDayIds.includes(day.id);
+        });
+      }
+
+      allDays.sort(function(a, b) {
+        return new Date(a.day_friendly) - new Date(b.day_friendly);
+      });
+
+      // Removing past dates
+      allDays = allDays.filter(day => {
+        return !moment(day.day_friendly).isBefore(moment().startOf("day"));
+      });
+
+      // Removing inactive days
+      allDays = allDays.filter(day => {
+        return day.active;
+      });
+
+      if (this.adjustingSubscription) {
+        let next_renewal_at = moment(this.bagSubscription.next_renewal_at);
+        let now = moment();
+        allDays.map(day => {
+          if (moment(day.day_friendly).isBetween(now, next_renewal_at)) {
+            day.day_friendly = moment(day.day_friendly)
+              .add(1, "week")
+              .format("YYYY-MM-DD");
+            return day;
+          } else {
+            return day;
+          }
+        });
+      }
+
+      return allDays;
     },
     hasDeliveryDayZipCodes() {
       return this.store.delivery_day_zip_codes &&

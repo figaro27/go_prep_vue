@@ -132,7 +132,9 @@
               "
               @changeDeliveryDay="changeDeliveryDay($event)"
               @closeDeliveryDayModal="closeDeliveryDayModal()"
+              @continueToCheckout="continueToCheckout($event)"
               :selectedDeliveryDay="selectedDeliveryDay"
+              :showOtherDaysMessage="showOtherDaysMessage"
             >
             </delivery-day-modal>
           </b-modal>
@@ -512,6 +514,7 @@ export default {
   },
   data() {
     return {
+      showOtherDaysMessage: false,
       totalRemainingMeals: 0,
       activeCatId: 0,
       showVariationsModal: false,
@@ -597,6 +600,15 @@ export default {
       minOption: "minimumOption",
       totalBagPricePreFees: "totalBagPricePreFees"
     }),
+    otherDayCheck() {
+      if (this.store.modules.multipleDeliveryDays) {
+        // If there are other days available other than the ones already added to the bag with items
+        return this.groupBag.length < this.sortedDeliveryDays.length
+          ? true
+          : false;
+      }
+      return false;
+    },
     adjustingScreen() {
       if (
         this.adjustOrder ||
@@ -1085,6 +1097,10 @@ export default {
       this.clearInactiveMealPackages();
       this.removeOldDeliveryDates();
     }
+
+    if (!this.loggedIn) {
+      this.setBagSubscription(null);
+    }
   },
   beforeDestroy() {
     this.showActiveFilters();
@@ -1124,7 +1140,8 @@ export default {
       "setBagCoupon",
       "setBagZipCode",
       "setBagPickup",
-      "setMultDDZipCode"
+      "setMultDDZipCode",
+      "setBagSubscription"
     ]),
     updateScrollbar() {
       return; // disabling for now
@@ -1141,6 +1158,7 @@ export default {
       }
     },
     changeDeliveryDay(e) {
+      this.showOtherDaysMessage = false;
       this.selectedDeliveryDay = e;
       this.finalDeliveryDay = e;
       this.showDeliveryDayModal = false;
@@ -1750,6 +1768,30 @@ export default {
     },
     closeDeliveryDayModal() {
       this.showDeliveryDayModal = false;
+    },
+    continueToCheckout(overRide = false) {
+      if (this.otherDayCheck && !overRide) {
+        this.showOtherDaysMessage = true;
+        this.showDeliveryDayModal = true;
+        return;
+      }
+      this.$router.push({
+        name: "customer-bag",
+        params: {
+          subscriptionId: this.subscriptionId,
+          transferTime: this.transferTime,
+          staffMember: this.staffMember,
+          pickup: this.pickup,
+          inSub: this.inSub,
+          weeklySubscriptionValue: this.weeklySubscriptionValue,
+          lineItemOrders: this.lineItemOrders,
+          subscription: this.subscription
+        },
+        query: {
+          r: this.$route.query.r,
+          sub: this.$route.query.sub
+        }
+      });
     }
   }
 };
