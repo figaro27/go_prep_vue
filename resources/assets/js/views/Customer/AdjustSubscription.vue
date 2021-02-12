@@ -145,6 +145,7 @@ export default {
           multDD.day_friendly = moment(day).format("YYYY-MM-DD");
           delivery_days.push(multDD);
         }
+        console.log(delivery_days);
       }
 
       if (subscription.meal_package_items) {
@@ -247,6 +248,7 @@ export default {
                 moment(item.delivery_date.date).format("YYYY-MM-DD")
               );
             });
+            console.log(deliveryDay);
             meal.delivery_day = deliveryDay;
           }
 
