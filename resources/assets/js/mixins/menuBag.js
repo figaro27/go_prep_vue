@@ -114,6 +114,7 @@ export default {
       // Check delivery day minimum passes
       if (this.isMultipleDelivery) {
         let groupBag = _.groupBy(this.bag, function(item) {
+          console.log(item);
           return item.delivery_day.day_friendly;
         });
         Object.values(groupBag).forEach(groupBagItem => {
