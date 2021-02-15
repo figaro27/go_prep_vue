@@ -817,19 +817,22 @@
             !subscriptionId
         "
       >
-        <div>
-          <strong>{{ selectedTransferType }} Day</strong>
+        <div class="d-flex">
+          <strong class="d-inline pt-1">{{ selectedTransferType }} Day</strong>
           <b-select
             style="font-size:16px"
             v-model="deliveryDay"
             :options="deliveryDateOptionsStoreView"
             :value="bagDeliveryDate"
             @input="changeDeliveryDay"
-            class="delivery-select ml-2"
+            class="delivery-select ml-2 d-inilne"
             required
           >
             <option slot="top" disabled>-- Select delivery day --</option>
           </b-select>
+          <b-form-checkbox v-model="backdate" class="d-inline pt-1 ml-2"
+            >Backdate</b-form-checkbox
+          >
         </div>
       </li>
       <li
@@ -1406,6 +1409,7 @@ export default {
   },
   data() {
     return {
+      backdate: false,
       showDeliveryAreaModal: false,
       showDiscounts: {
         subscriptionDiscount: true,
@@ -2507,14 +2511,16 @@ use next_delivery_dates
     },
     deliveryDateOptionsStoreView() {
       let options = [];
-      var today = new Date();
+      let today = new Date();
 
-      var year = today.getFullYear();
-      var month = today.getMonth();
-      var date = today.getDate();
+      let year = today.getFullYear();
+      let month = today.getMonth();
+      let date = today.getDate();
 
-      for (var i = 0; i < 180; i++) {
-        var day = new Date(year, month, date + i);
+      let start = this.backdate ? -60 : 0;
+
+      for (start; start < 180; start++) {
+        let day = new Date(year, month, date + start);
         options.push({
           value: moment(day).format("YYYY-MM-DD 00:00:00"),
           text: moment(day).format("dddd MMM Do")
