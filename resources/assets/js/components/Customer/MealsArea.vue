@@ -1757,11 +1757,16 @@ export default {
       if (this.store.modules.frequencyItems) {
         if (
           (this.$parent.adjustMealPlan || this.$route.query.sub == "true") &&
-          meal.frequencyType === "order"
+          meal.frequencyType === "order" &&
+          this.context !== "store"
         ) {
           return false;
         }
-        if (this.$parent.adjustOrder && meal.frequencyType === "sub") {
+        if (
+          this.$parent.adjustOrder &&
+          meal.frequencyType === "sub" &&
+          this.context !== "store"
+        ) {
           return false;
         }
       }
