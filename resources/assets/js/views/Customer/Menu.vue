@@ -26,19 +26,6 @@
         "
       ></delivery-date-modal>
 
-      <zip-code-modal
-        v-if="
-          store.delivery_day_zip_codes &&
-            store.delivery_day_zip_codes.length > 0 &&
-            transferTypes.delivery &&
-            store.modules.multipleDeliveryDays &&
-            ((!loggedIn && context !== 'store') || context == 'store') &&
-            !$route.params.orderId &&
-            !adjustMealPlan
-        "
-        @setAutoPickUpcomingMultDD="autoPickUpcomingMultDD(null)"
-      ></zip-code-modal>
-
       <store-description-modal
         :showDescriptionModal="showDescriptionModal"
       ></store-description-modal>
@@ -66,96 +53,6 @@
       <!--<meal-package-components-modal
         ref="packageComponentModal"
       ></meal-package-components-modal>!-->
-      <b-modal
-        size="md"
-        cancel-disabled
-        v-model="showDeliveryDayModal"
-        hide-footer
-        hide-header
-        no-fade
-      >
-        <div class="row mt-3">
-          <div class="col-md-12">
-            <div style="position: relative">
-              <center>
-                <b-form-radio-group
-                  v-if="isMultipleDelivery && hasBothTranserTypes"
-                  buttons
-                  class="storeFilters mb-3"
-                  v-model="transferDayType"
-                  :options="[
-                    { value: 1, text: 'Pickup' },
-                    { value: 0, text: 'Delivery' }
-                  ]"
-                  @change="val => changeTransferType(val)"
-                ></b-form-radio-group>
-              </center>
-
-              <h4 class="center-text">Select Day</h4>
-
-              <Spinner
-                v-if="isLoadingDeliveryDays"
-                position="relative"
-                style="left: 0;"
-              />
-              <div class="delivery_day_wrap mt-3">
-                <div
-                  @click="changeDeliveryDay(day)"
-                  v-for="day in sortedDeliveryDays"
-                  v-bind:class="
-                    selectedDeliveryDay &&
-                    selectedDeliveryDay.day_friendly == day.day_friendly
-                      ? 'delivery_day_item active'
-                      : 'delivery_day_item'
-                  "
-                  :style="getBrandColor(day)"
-                >
-                  {{ moment(day.day_friendly).format("dddd, MMM Do YYYY") }}
-                </div>
-                <div
-                  v-if="
-                    sortedDeliveryDays.length === 0 &&
-                      store.delivery_day_zip_codes.length > 0
-                  "
-                >
-                  <center>
-                    <!-- <b-alert style="background-color:#EBFAFF" show>
-                      <p>
-                        Sorry, there are no delivery days available for your zip
-                        code.
-                      </p>
-                    </b-alert> -->
-                    <zip-code-modal :deliverySelected="true"></zip-code-modal>
-                  </center>
-                </div>
-              </div>
-
-              <!-- <div class="delivery_day_wrap mt-3">
-                <div
-                  @click="changeDeliveryDay(delivery_day)"
-                  v-bind:class="
-                    selectedDeliveryDay &&
-                    selectedDeliveryDay.id == delivery_day.id
-                      ? 'delivery_day_item active'
-                      : 'delivery_day_item'
-                  "
-                  :style="getBrandColor(delivery_day)"
-                  v-for="(delivery_day, index) in store.delivery_days"
-                  v-bind:key="index"
-                >
-                  {{
-                    moment(delivery_day.day_friendly).format(
-                      "dddd, MMM Do YYYY"
-                    )
-                  }}
-                </div>
-              </div> -->
-            </div>
-            <!-- Relative End !-->
-          </div>
-        </div>
-        <!-- Row End !-->
-      </b-modal>
 
       <meal-filter-modal
         :viewFilterModal="viewFilterModalParent"
@@ -220,13 +117,27 @@
         <div :class="`col-md-12 main-menu-area menu-page`">
           <Spinner v-if="showSpinner || forceShow" position="fixed" />
 
-          <!--<meals-area
-            :meals="mealsMix"
-            :card="card"
-            :cardBody="cardBody"
-            @onCategoryVisible="onCategoryVisible($event)"
-            @showMealModal="showMealModal"
-          ></meals-area>!-->
+          <b-modal
+            size="lg"
+            v-model="showDeliveryDayModal"
+            v-if="showDeliveryDayModal"
+            hide-header
+            hide-footer
+            no-fade
+            no-close-on-backdrop
+          >
+            <delivery-day-modal
+              @autoPickUpcomingMultDD="
+                autoPickUpcomingMultDD(sortedDeliveryDays)
+              "
+              @changeDeliveryDay="changeDeliveryDay($event)"
+              @closeDeliveryDayModal="closeDeliveryDayModal()"
+              @continueToCheckout="continueToCheckout($event)"
+              :selectedDeliveryDay="selectedDeliveryDay"
+              :showOtherDaysMessage="showOtherDaysMessage"
+            >
+            </delivery-day-modal>
+          </b-modal>
 
           <meals-area
             :meals="mealsMix"
@@ -274,50 +185,6 @@
               </div>
             </floating-action-button>
           </div>
-
-          <!-- <floating-action-button
-            class="d-md-none"
-            :style="brandColor"
-            :to="bagPageURL"
-            v-if="(!subscriptionId || !adjustOrder) && !mealPackagePageView"
-          >
-            <div class="d-flex flex-column h-100">
-              <i class="fa fa-shopping-cart text-white"></i>
-              <i v-if="total" class="text-white mt-1">{{ total }}</i>
-            </div>
-          </floating-action-button> -->
-
-          <!-- <floating-action-area
-            class="d-md-none"
-            :style="remainingTextStyle"
-            :to="bagPageURL"
-            v-if="
-              (!subscriptionId || !adjustOrder) &&
-                !mealPackagePageView &&
-                !mealPageView
-            "
-          >
-            <div
-              class="d-flex flex-column pl-1 pr-1"
-              style="border-radius:10px"
-            >
-              <p
-                class="pt-2"
-                v-if="minOption === 'price' && minPrice > totalBagPricePreFees"
-              >
-                {{
-                  format.money(
-                    minPrice - totalBagPricePreFees,
-                    storeSettings.currency
-                  )
-                }}
-                Remaining
-              </p>
-              <p class="pt-2" v-if="minOption === 'meals' && minMeals > total">
-                {{ minMeals - total }} {{ items }} Remaining
-              </p>
-            </div>
-          </floating-action-area> -->
 
           <button
             v-if="!mealPackagePageView && !mealPageView && mobile"
@@ -501,7 +368,7 @@ import MealVariationsArea from "../../components/Modals/MealVariationsArea";
 import MealComponentsModal from "../../components/Modals/MealComponentsModal";
 import MealPackageComponentsModal from "../../components/Modals/MealPackageComponentsModal";
 import DeliveryDateModal from "./Modals/DeliveryDateModal";
-import ZipCodeModal from "./Modals/ZipCodeModal";
+import DeliveryDayModal from "./Modals/DeliveryDayModal";
 import MenuBag from "../../mixins/menuBag";
 import units from "../../data/units";
 import nutrition from "../../data/nutrition";
@@ -621,7 +488,7 @@ export default {
     MealPackagePage,
     MealComponentsModal,
     DeliveryDateModal,
-    ZipCodeModal,
+    DeliveryDayModal,
     MealVariationsArea
   },
   mixins: [MenuBag],
@@ -647,6 +514,7 @@ export default {
   },
   data() {
     return {
+      showOtherDaysMessage: false,
       totalRemainingMeals: 0,
       activeCatId: 0,
       showVariationsModal: false,
@@ -732,6 +600,15 @@ export default {
       minOption: "minimumOption",
       totalBagPricePreFees: "totalBagPricePreFees"
     }),
+    otherDayCheck() {
+      if (this.store.modules.multipleDeliveryDays) {
+        // If there are other days available other than the ones already added to the bag with items
+        return this.groupBag.length < this.sortedDeliveryDays.length
+          ? true
+          : false;
+      }
+      return false;
+    },
     adjustingScreen() {
       if (
         this.adjustOrder ||
@@ -741,23 +618,6 @@ export default {
         this.$route.query.sub === "true" ||
         this.subscriptionId
       ) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    hasBothTranserTypes() {
-      let hasPickup = false;
-      let hasDelivery = false;
-      this.store.delivery_days.forEach(day => {
-        if (day.type === "delivery") {
-          hasDelivery = true;
-        }
-        if (day.type === "pickup") {
-          hasPickup = true;
-        }
-      });
-      if (hasPickup && hasDelivery) {
         return true;
       } else {
         return false;
@@ -795,106 +655,8 @@ export default {
       }
       return "item";
     },
-    sortedDeliveryDays() {
-      // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
-      let baseDeliveryDays = this.store.delivery_days;
-      let deliveryWeeks = this.store.settings.deliveryWeeks;
-      let storeDeliveryDays = [];
-
-      for (let i = 0; i <= deliveryWeeks; i++) {
-        baseDeliveryDays.forEach(day => {
-          let m = moment(day.day_friendly);
-          let newDate = moment(m).subtract(i, "week");
-          let newDay = { ...day };
-          newDay.day_friendly = newDate.format("YYYY-MM-DD");
-          storeDeliveryDays.push(newDay);
-        });
-      }
-
-      storeDeliveryDays = storeDeliveryDays.reverse();
-
-      // Add all future dates with no cutoff for manual orders
-      if (this.context == "store") {
-        storeDeliveryDays = [];
-        let today = new Date();
-        let year = today.getFullYear();
-        let month = today.getMonth();
-        let date = today.getDate();
-
-        for (let i = 0; i < 30; i++) {
-          let day = new Date(year, month, date + i);
-          let multDD = { ...this.store.delivery_days[0] };
-          multDD.day_friendly = moment(day).format("YYYY-MM-DD");
-          storeDeliveryDays.push(multDD);
-        }
-      }
-
-      let sortedDays = storeDeliveryDays;
-      // let sortedDays = [];
-
-      // if (this.store.delivery_day_zip_codes.length === 0) {
-      //   sortedDays = _.uniqBy(storeDeliveryDays, "day_friendly");
-      // } else {
-      //   sortedDays = storeDeliveryDays;
-      // }
-
-      // If the store only serves certain zip codes on certain delivery days
-      if (this.store.delivery_day_zip_codes.length > 0) {
-        let deliveryDayIds = [];
-        this.store.delivery_day_zip_codes.forEach(ddZipCode => {
-          if (ddZipCode.zip_code === parseInt(this.bagZipCode)) {
-            deliveryDayIds.push(ddZipCode.delivery_day_id);
-          }
-        });
-        sortedDays = sortedDays.filter(day => {
-          if (this.bagPickup) {
-            return true;
-          } else {
-            if (deliveryDayIds.includes(day.id) && day.type == "delivery") {
-              return true;
-            }
-          }
-
-          // return deliveryDayIds.includes(day.id);
-        });
-      }
-
-      if (this.context !== "store") {
-        if (this.bagPickup) {
-          sortedDays = sortedDays.filter(day => {
-            return day.type === "pickup";
-          });
-        } else {
-          sortedDays = sortedDays.filter(day => {
-            return day.type === "delivery";
-          });
-        }
-      }
-
-      sortedDays.sort(function(a, b) {
-        return new Date(a.day_friendly) - new Date(b.day_friendly);
-      });
-
-      // Removing past dates
-      sortedDays = sortedDays.filter(day => {
-        return !moment(day.day_friendly).isBefore(moment().startOf("day"));
-      });
-
-      // Removing inactive days
-      sortedDays = sortedDays.filter(day => {
-        return day.active;
-      });
-
-      return sortedDays;
-    },
     isMultipleDelivery() {
       return this.store.modules.multipleDeliveryDays == 1 ? true : false;
-    },
-    isLoadingDeliveryDays() {
-      if (!this.store.delivery_days || this.store.delivery_days.length == 0) {
-        return true;
-      }
-      return false;
     },
     deliveryDateRequired() {
       return this.hasDeliveryDateRestriction;
@@ -1273,6 +1035,16 @@ export default {
       if (this.sortedDeliveryDays.length > 0) {
         this.changeDeliveryDay(this.sortedDeliveryDays[0]);
       }
+      if (
+        this.bagPickup == 0 &&
+        !this.bagZipCode &&
+        this.hasDeliveryDayZipCodes &&
+        !this.noAvailableDays
+      ) {
+        this.showDeliveryDayModal = true;
+      } else {
+        this.setBagPickup(1);
+      }
     }
 
     if (this.$route.query.sub || this.$route.query.subscriptionId) {
@@ -1325,6 +1097,10 @@ export default {
       this.clearInactiveMealPackages();
       this.removeOldDeliveryDates();
     }
+
+    if (!this.loggedIn) {
+      this.setBagSubscription(null);
+    }
   },
   beforeDestroy() {
     this.showActiveFilters();
@@ -1364,7 +1140,8 @@ export default {
       "setBagCoupon",
       "setBagZipCode",
       "setBagPickup",
-      "setMultDDZipCode"
+      "setMultDDZipCode",
+      "setBagSubscription"
     ]),
     updateScrollbar() {
       return; // disabling for now
@@ -1381,6 +1158,7 @@ export default {
       }
     },
     changeDeliveryDay(e) {
+      this.showOtherDaysMessage = false;
       this.selectedDeliveryDay = e;
       this.finalDeliveryDay = e;
       this.showDeliveryDayModal = false;
@@ -1838,9 +1616,6 @@ export default {
     addFromPackagePage() {
       this.$refs.mealPackagePage.done();
     },
-    showDeliveryDateModal() {
-      this.showDeliveryDayModal = true;
-    },
     showVariations(data) {
       this.meal = data.meal;
       this.sizeId = data.sizeId;
@@ -1849,12 +1624,6 @@ export default {
     autoPickUpcomingMultDD(availableDates) {
       if (!availableDates) {
         if (this.isMultipleDelivery) {
-          // let week_index = this.storeSettings.next_orderable_delivery_dates[0]
-          //   .week_index;
-          // let nextDeliveryDay = this.store.delivery_days.find(day => {
-          //   return day.day == week_index;
-          // });
-
           let nextDeliveryDay = this.sortedDeliveryDays[0];
 
           this.selectedDeliveryDay = nextDeliveryDay;
@@ -1875,36 +1644,10 @@ export default {
         }
       }
     },
-    getBrandColor(delivery_day) {
-      if (this.selectedDeliveryDay) {
-        if (
-          this.selectedDeliveryDay.day_friendly == delivery_day.day_friendly
-        ) {
-          if (this.store.settings) {
-            let style = "background-color:";
-            style += this.store.settings.color;
-            return style;
-          }
-        }
-      }
-    },
     slugifyItem(item) {
       let title = item.title;
       title = title.replace(/\s+/g, "-").toLowerCase();
       return title;
-    },
-    changeTransferType(val) {
-      this.$store.commit("emptyBag");
-      this.setBagPickup(val);
-      this.setBagZipCode(null);
-      if (
-        !this.bagZipCode &&
-        val == 0 &&
-        this.store.delivery_day_zip_codes.length > 0
-      ) {
-        this.setMultDDZipCode(0);
-      }
-      this.autoPickUpcomingMultDD(null);
     },
     async clearInactiveMeals() {
       await axios.get("/api/refresh_inactive_meal_ids").then(resp => {
@@ -2022,6 +1765,33 @@ export default {
         }
       }
       return meals.length > 0 ? true : false;
+    },
+    closeDeliveryDayModal() {
+      this.showDeliveryDayModal = false;
+    },
+    continueToCheckout(overRide = false) {
+      if (this.otherDayCheck && !overRide) {
+        this.showOtherDaysMessage = true;
+        this.showDeliveryDayModal = true;
+        return;
+      }
+      this.$router.push({
+        name: "customer-bag",
+        params: {
+          subscriptionId: this.subscriptionId,
+          transferTime: this.transferTime,
+          staffMember: this.staffMember,
+          pickup: this.pickup,
+          inSub: this.inSub,
+          weeklySubscriptionValue: this.weeklySubscriptionValue,
+          lineItemOrders: this.lineItemOrders,
+          subscription: this.subscription
+        },
+        query: {
+          r: this.$route.query.r,
+          sub: this.$route.query.sub
+        }
+      });
     }
   }
 };

@@ -1,13 +1,7 @@
 <template>
   <div>
     <div
-      v-if="
-        !willDeliver &&
-          loggedIn &&
-          !storeView &&
-          hasDeliveryOption &&
-          !hasPickupOption
-      "
+      v-if="!willDeliver && loggedIn && !storeView && hasDeliveryOption"
       v-bind:class="
         store.settings.menuStyle === 'image'
           ? 'main-customer-container customer-menu-container'
@@ -46,17 +40,17 @@ export default {
             return day.type == "delivery";
           }))
       );
-    },
-    hasPickupOption() {
-      return (
-        this.store.settings.transferType.includes("pickup") ||
-        ((this.store.modules.customDeliveryDays ||
-          this.store.modules.multipleDeliveryDays) &&
-          this.store.delivery_days.some(day => {
-            return day.type == "pickup";
-          }))
-      );
     }
+    // hasPickupOption() {
+    //   return (
+    //     this.store.settings.transferType.includes("pickup") ||
+    //     ((this.store.modules.customDeliveryDays ||
+    //       this.store.modules.multipleDeliveryDays) &&
+    //       this.store.delivery_days.some(day => {
+    //         return day.type == "pickup";
+    //       }))
+    //   );
+    // }
   }
 };
 </script>

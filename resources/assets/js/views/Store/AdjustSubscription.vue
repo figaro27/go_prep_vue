@@ -36,7 +36,8 @@ export default {
       bag: "bag",
       getMeal: "viewedStoreMeal",
       getMealPackage: "viewedStoreMealPackage",
-      context: "context"
+      context: "context",
+      bagPickup: "bagPickup"
     }),
     subscriptionId() {
       return this.$route.params.id;
@@ -55,12 +56,14 @@ export default {
       "setBagGratuityPercent",
       "setBagCustomGratuity",
       "setBagCoupon",
-      "setBagSubscriptionInterval"
+      "setBagSubscriptionInterval",
+      "setBagSubscription"
     ]),
     getSub() {
       axios.get("/api/me/subscriptions/" + this.subscriptionId).then(resp => {
         this.subscription = resp.data;
         this.$route.params.subscription = this.subscription;
+        this.setBagSubscription(resp.data);
         this.initBag();
         if (this.subscription.coupon_id) {
           this.setSubscriptionCoupon();
@@ -96,6 +99,7 @@ export default {
       this.setBagPickupLocation(subscription.pickup_location_id);
       this.setBagGratuityPercent("custom");
       this.setBagCustomGratuity(subscription.gratuity);
+      let transferType = this.bagPickup ? "pickup" : "delivery";
 
       let interval = null;
       switch (subscription.intervalCount) {
@@ -114,21 +118,7 @@ export default {
       this.clearAll();
       let stop = false;
 
-      let delivery_days = [];
-
-      if (this.store.modules.multipleDeliveryDays && this.context == "store") {
-        let today = new Date();
-        let year = today.getFullYear();
-        let month = today.getMonth();
-        let date = today.getDate();
-
-        for (let i = 0; i < 30; i++) {
-          let day = new Date(year, month, date + i);
-          let multDD = { ...this.store.delivery_days[0] };
-          multDD.day_friendly = moment(day).format("YYYY-MM-DD");
-          delivery_days.push(multDD);
-        }
-      }
+      let delivery_days = this.allDeliveryDays;
 
       if (subscription.meal_package_items) {
         _.forEach(subscription.meal_package_items, pkgItem => {
@@ -178,7 +168,10 @@ export default {
 
           if (this.store.modules.multipleDeliveryDays) {
             let deliveryDay = delivery_days.find(day => {
-              return day.day_friendly == pkgItem.delivery_date;
+              return (
+                day.day_friendly == pkgItem.delivery_date &&
+                day.type == transferType
+              );
             });
             meal_package.dday = deliveryDay;
           }
@@ -228,7 +221,8 @@ export default {
             let deliveryDay = delivery_days.find(day => {
               return (
                 day.day_friendly ==
-                moment(item.delivery_date.date).format("YYYY-MM-DD")
+                  moment(item.delivery_date.date).format("YYYY-MM-DD") &&
+                day.type == transferType
               );
             });
             meal.delivery_day = deliveryDay;

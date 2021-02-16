@@ -41,23 +41,7 @@
       >
 
       <b-btn
-        :to="{
-          name: 'customer-bag',
-          params: {
-            subscriptionId: subscriptionId,
-            transferTime: transferTime,
-            staffMember: staffMember,
-            pickup: pickup,
-            inSub: inSub,
-            weeklySubscriptionValue: weeklySubscriptionValue,
-            lineItemOrders: lineItemOrders,
-            subscription: subscription
-          },
-          query: {
-            r: $route.query.r,
-            sub: $route.query.sub
-          }
-        }"
+        @click="$parent.continueToCheckout()"
         v-if="minimumMet && !storeView && !bagView"
         class="menu-bag-btn"
         >CONTINUE</b-btn
@@ -127,8 +111,12 @@ import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../mixins/menuBag";
 import format from "../../lib/format";
 import store from "../../store";
+import DeliveryDayModal from "../../views/Customer/Modals/DeliveryDayModal";
 
 export default {
+  components: {
+    DeliveryDayModal
+  },
   props: {
     preview: false,
     storeView: false,
