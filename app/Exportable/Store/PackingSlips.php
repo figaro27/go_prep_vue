@@ -285,6 +285,29 @@ class PackingSlips
             $pdf->addPage($html);
         }
 
+        if (isset($this->params['order_id'])) {
+            $filename =
+                'public/' .
+                $this->params['store'] .
+                ' - ' .
+                $orders->toArray()[0]['customer_name'] .
+                ' - ' .
+                '#' .
+                $orders->toArray()[0]['order_number'] .
+                ' - ' .
+                $this->params['date'] .
+                '.pdf';
+        } else {
+            $filename =
+                'public/' .
+                $this->params['store'] .
+                ' - ' .
+                $this->params['report'] .
+                ' - ' .
+                $this->params['date'] .
+                '.pdf';
+        }
+
         $output = $pdf->toString();
 
         Log::info('Output: ' . $output);
