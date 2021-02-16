@@ -1409,6 +1409,7 @@ export default {
   },
   data() {
     return {
+      fillingOutCard: false,
       backdate: false,
       showDeliveryAreaModal: false,
       showDiscounts: {
@@ -4125,6 +4126,13 @@ use next_delivery_dates
       this.syncDiscounts();
     },
     blockedCheckoutMessage() {
+      if (
+        this.fillingOutCard &&
+        this.invalidCheckout === "Please enter a payment method."
+      ) {
+        this.$refs.cardPicker.onClickCreateCard();
+        return;
+      }
       this.$toastr.w(this.invalidCheckout);
     },
     search: _.debounce((loading, search, vm) => {

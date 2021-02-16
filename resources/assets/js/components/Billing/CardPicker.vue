@@ -37,12 +37,12 @@
         :class="{ newCard }"
         :stripe="stripeKey"
         :options="{ hidePostalCode: hidePostalCode }"
-        @change="newCard = $event.complete"
+        @change="(newCard = $event.complete), fillingOutCard()"
       />
     </b-form-group>
     <b-form-group label="Add New Card" inline v-else>
       <inline-credit-card-field
-        @change="evt => onChangeNewCard(evt)"
+        @change="evt => onChangeNewCard(evt), fillingOutCard()"
       ></inline-credit-card-field>
     </b-form-group>
     <div class="d-flex">
@@ -372,6 +372,9 @@ export default {
       })();
 
       return token;
+    },
+    fillingOutCard() {
+      this.$parent.fillingOutCard = true;
     }
   }
 };
