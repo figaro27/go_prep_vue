@@ -42,7 +42,7 @@
     </b-form-group>
     <b-form-group label="Add New Card" inline v-else>
       <inline-credit-card-field
-        @change="evt => onChangeNewCard(evt), fillingOutCard()"
+        @change="evt => onChangeNewCard(evt)"
       ></inline-credit-card-field>
     </b-form-group>
     <div class="d-flex">
@@ -330,6 +330,7 @@ export default {
       this.value = id;
     },
     onChangeNewCard(evt) {
+      this.fillingOutCard();
       this.newCard = evt.card;
       // This is not working when entering four digit year
       // if (!evt.invalid && evt.complete) {
