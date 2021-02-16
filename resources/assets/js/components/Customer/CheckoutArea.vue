@@ -132,7 +132,8 @@
             $route.params.subscriptionId === undefined &&
             $parent.orderId === undefined &&
             !subscriptionId &&
-            !store.modules.frequencyItems
+            !store.modules.frequencyItems &&
+            user.user_role_id !== 4
         "
       >
         <div class="row" v-if="!store.modules.subscriptionOnly">
