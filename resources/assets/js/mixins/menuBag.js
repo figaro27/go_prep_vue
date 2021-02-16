@@ -30,6 +30,16 @@ export default {
       bag: "bagItems",
       bagSubscription: "bagSubscription"
     }),
+    hasDeliveryOption() {
+      return (
+        this.store.settings.transferType.includes("delivery") ||
+        ((this.store.modules.customDeliveryDays ||
+          this.store.modules.multipleDeliveryDays) &&
+          this.store.delivery_days.some(day => {
+            return day.type == "delivery";
+          }))
+      );
+    },
     adjustingSubscription() {
       if (this.bagSubscription) {
         return true;

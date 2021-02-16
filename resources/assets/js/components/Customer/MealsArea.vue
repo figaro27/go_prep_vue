@@ -8,172 +8,171 @@
         : 'left-right-box-shadow main-customer-container gray-background'
     "
   >
-    <b-alert
-      show
-      variant="danger"
-      v-if="store.settings.open === false && !$parent.storeView"
-    >
-      <h4 class="center-text">
-        We are currently not accepting orders.
-      </h4>
-      <p class="center-text mt-3">
-        {{ store.settings.closedReason }}
-      </p>
-    </b-alert>
-
-    <b-alert
-      show
-      variant="success"
-      v-if="$route.query.sub === 'true' && subscriptions"
-    >
-      <h5 class="center-text">
-        Active Subscription
-      </h5>
-      <p class="center-text">
-        You have an active subscription with us. Update your items for your next
-        renewal on
-        {{ moment(subscriptions[0].next_renewal).format("dddd, MMM Do") }}.
-      </p>
-    </b-alert>
-
-    <b-alert
-      variant="warning"
-      show
-      v-if="isAdjustOrder() && bagContainsGiftCard"
-    >
-      This order adjustment shows the gift card(s) purchased for the sake of
-      keeping the order amount consistent. However removing the gift card won't
-      remove the purchased gift card code the customer has access to. And if you
-      want to add a new gift card, a new separate order needs to be created.
-    </b-alert>
-
-    <outside-delivery-area
-      v-if="
-        !$route.params.storeView &&
-          !$parent.storeView &&
-          !store.modules.hideDeliveryOption
-      "
-      :storeView="$parent.storeView"
-    ></outside-delivery-area>
-
-    <div v-for="promotion in activePromotions" :key="promotion.id">
+    <div class="alert-area">
       <b-alert
-        variant="success"
         show
-        v-if="
-          promotion.conditionType === 'meals' &&
-            totalBagQuantity < promotion.conditionAmount
-        "
+        variant="warning"
+        v-if="store.settings.open === false && !$parent.storeView"
       >
-        <h6 class="center-text">
-          Add {{ promotion.conditionAmount - totalBagQuantity }} more meals to
-          receive a discount of
-          <span v-if="promotion.promotionType === 'flat'">{{
-            format.money(promotion.promotionAmount, storeSettings.currency)
-          }}</span>
-          <span v-else>{{ promotion.promotionAmount }}%</span>
-        </h6>
+        <p class="center-text strong">
+          Ordering is currently closed.
+        </p>
+        <p class="center-text strong">
+          {{ store.settings.closedReason }}
+        </p>
       </b-alert>
       <b-alert
-        variant="success"
+        variant="warning"
         show
-        v-if="
-          promotion.conditionType === 'subtotal' &&
-            totalBagPricePreFees < promotion.conditionAmount
-        "
+        v-if="isAdjustOrder() && bagContainsGiftCard"
       >
-        <h6 class="center-text">
-          Add
-          {{
-            format.money(
-              promotion.conditionAmount - totalBagPricePreFees,
-              storeSettings.currency
-            )
-          }}
-          more to receive
-          <span v-if="promotion.promotionAmount > 0">
-            <span v-if="promotion.promotionType === 'flat'">{{
-              format.money(promotion.promotionAmount, storeSettings.currency)
-            }}</span>
-            <span v-else>{{ promotion.promotionAmount }}%</span>
-            off your order.
-          </span>
-          <span
-            v-if="promotion.promotionAmount === 0 && promotion.freeDelivery"
-          >
-            free delivery.
-          </span>
-        </h6>
+        <p class="center-text strong">
+          This order adjustment shows the gift card(s) in order to keep the
+          order amount consistent. However removing the gift card won't remove
+          the purchased gift card code the customer has access to. And if you
+          want to add a new gift card, a new separate order needs to be created.
+        </p>
       </b-alert>
       <b-alert
-        variant="success"
         show
-        v-if="
-          promotion.conditionType === 'orders' &&
-            loggedIn &&
-            getRemainingPromotionOrders(promotion) !== 0 &&
-            !user.storeOwner
-        "
+        variant="warning"
+        v-if="$route.query.sub === 'true' && subscriptions"
       >
-        <h6 class="center-text">
-          Order {{ getRemainingPromotionOrders(promotion) }} more times to
-          receive a discount of
-          <span v-if="promotion.promotionType === 'flat'">{{
-            format.money(promotion.promotionAmount, storeSettings.currency)
-          }}</span>
-          <span v-else>{{ promotion.promotionAmount }}%</span>
-        </h6>
+        <p class="center-text strong">
+          You have an active subscription with us. Update your items for your
+          next renewal on
+          {{ moment(subscriptions[0].next_renewal).format("dddd, MMM Do") }}.
+        </p>
       </b-alert>
-      <b-alert
-        variant="success"
-        show
-        v-if="promotion.promotionType === 'points' && promotionPointsAmount > 0"
-      >
-        <h6 class="center-text">
-          You will earn {{ promotionPointsAmount }}
-          {{ promotion.pointsName }} on this order.
-        </h6>
-      </b-alert>
-    </div>
-
-    <div
-      class="alert alert-success"
-      role="alert"
-      v-if="
-        store &&
-          store.referral_settings &&
-          store.referral_settings.enabled &&
-          store.referral_settings.showInMenu &&
-          user.referralUrlCode
-      "
-    >
-      <h5 class="center-text">Referral Program</h5>
-      <p class="center-text">
-        Give out your referral link to customers and if they order
-        <span v-if="referralSettings.frequency == 'urlOnly'">
-          using your link
-        </span>
-        you will receive {{ referralSettings.amountFormat }} credit
-        <span v-if="referralSettings.frequency == 'firstOrder'">
-          on the first order they place.
-        </span>
-        <span v-else>
-          on every future order they place.
-        </span>
-        <br />Your referral link is
-        <a :href="referralUrl">{{ referralUrl }}</a>
-      </p>
-    </div>
-
-    <div>
       <b-alert
         show
         variant="primary"
         v-if="adjustingSubscription && context !== 'store'"
       >
-        <p class="center-text mt-3 strong">
-          You can update the items in your subscription on this page. Simply add
-          or remove items from your bag and then click Continue when ready.
+        <p class="center-text strong">
+          You can update the items in your subscription on this page.<br />Simply
+          add or remove items from your bag and then click Continue when ready.
+        </p>
+      </b-alert>
+
+      <b-alert
+        v-if="
+          context !== 'store' &&
+            !store.modules.hideDeliveryOption &&
+            !willDeliver &&
+            hasDeliveryOption
+        "
+      >
+        <p class="center-text">You are outside of the delivery area.</p>
+      </b-alert>
+
+      <span v-for="promotion in activePromotions" :key="promotion.id">
+        <b-alert
+          variant="success"
+          show
+          v-if="
+            promotion.conditionType === 'meals' &&
+              totalBagQuantity < promotion.conditionAmount
+          "
+        >
+          <p class="center-text strong">
+            Add {{ promotion.conditionAmount - totalBagQuantity }} more meals to
+            receive a discount of
+            <span v-if="promotion.promotionType === 'flat'">{{
+              format.money(promotion.promotionAmount, storeSettings.currency)
+            }}</span>
+            <span v-else>{{ promotion.promotionAmount }}%</span>
+          </p>
+        </b-alert>
+        <b-alert
+          variant="success"
+          show
+          v-if="
+            promotion.conditionType === 'subtotal' &&
+              totalBagPricePreFees < promotion.conditionAmount
+          "
+        >
+          <p class="center-text strong">
+            Add
+            {{
+              format.money(
+                promotion.conditionAmount - totalBagPricePreFees,
+                storeSettings.currency
+              )
+            }}
+            more to receive
+            <span v-if="promotion.promotionAmount > 0">
+              <span v-if="promotion.promotionType === 'flat'">{{
+                format.money(promotion.promotionAmount, storeSettings.currency)
+              }}</span>
+              <span v-else>{{ promotion.promotionAmount }}%</span>
+              off your order.
+            </span>
+            <span
+              v-if="promotion.promotionAmount === 0 && promotion.freeDelivery"
+            >
+              free delivery.
+            </span>
+          </p>
+        </b-alert>
+        <b-alert
+          variant="success"
+          show
+          v-if="
+            promotion.conditionType === 'orders' &&
+              loggedIn &&
+              getRemainingPromotionOrders(promotion) !== 0 &&
+              !user.storeOwner
+          "
+        >
+          <p class="center-text strong">
+            Order {{ getRemainingPromotionOrders(promotion) }} more times to
+            receive a discount of
+            <span v-if="promotion.promotionType === 'flat'">{{
+              format.money(promotion.promotionAmount, storeSettings.currency)
+            }}</span>
+            <span v-else>{{ promotion.promotionAmount }}%</span>
+          </p>
+        </b-alert>
+        <b-alert
+          variant="success"
+          show
+          v-if="
+            promotion.promotionType === 'points' && promotionPointsAmount > 0
+          "
+        >
+          <p class="center-text strong">
+            You will earn {{ promotionPointsAmount }}
+            {{ promotion.pointsName }} on this order.
+          </p>
+        </b-alert>
+      </span>
+
+      <b-alert
+        show
+        variant="success"
+        v-if="
+          store &&
+            store.referral_settings &&
+            store.referral_settings.enabled &&
+            store.referral_settings.showInMenu &&
+            user.referralUrlCode
+        "
+      >
+        <p class="center-text strong">
+          Give out your referral link to customers and if they order
+          <span v-if="referralSettings.frequency == 'urlOnly'">
+            using your link
+          </span>
+          receive {{ referralSettings.amountFormat }} credit
+          <span v-if="referralSettings.frequency == 'firstOrder'">
+            on the first order they place.
+          </span>
+          <span v-else>
+            on every future order they place.
+          </span>
+          <br />Your referral link is
+          <a :href="referralUrl">{{ referralUrl }}</a>
         </p>
       </b-alert>
     </div>
@@ -191,7 +190,7 @@
       :id="group.category_id"
       :target="'categorySection_' + group.category_id"
       :class="container"
-      style="margin-bottom: 20px;"
+      style="margin-bottom: 20px;margin-top:10px"
       v-if="group.meals.length > 0 && isCategoryVisible(group)"
     >
       <div
@@ -1004,7 +1003,8 @@ export default {
       totalBagPricePreFees: "totalBagPricePreFees",
       minMeals: "minimumMeals",
       minPrice: "minimumPrice",
-      menuSettings: "viewedStoreMenuSettings"
+      menuSettings: "viewedStoreMenuSettings",
+      willDeliver: "viewedStoreWillDeliver"
     }),
     adjustingSubscription() {
       if (
