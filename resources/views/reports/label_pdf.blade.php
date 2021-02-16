@@ -48,7 +48,9 @@ font-size:10px !important;
       @else
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="/ style="width:25vh;height:15vh;margin-top:8px;margin-bottom:4px">
       @endif
+      @if ($reportSettings->lab_index)
       <p class="text-9">{{ $mealOrder->index }} of {{ $mealOrder->totalCount }}</p>
+      @endif
       @if ($reportSettings->lab_dailyOrderNumbers)
       <p class="text-11" style="font-weight:bold">Daily Order #{{ $mealOrder->order->dailyOrderNumber }}</p>
       @endif

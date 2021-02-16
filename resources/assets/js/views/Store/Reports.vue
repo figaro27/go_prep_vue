@@ -479,6 +479,11 @@
             >
           </p>
           <p>
+            <b-form-checkbox v-model="reportSettings.lab_index"
+              >Indexes (E.G. #1 of #5)</b-form-checkbox
+            >
+          </p>
+          <p>
             <b-form-checkbox v-model="reportSettings.lab_nutrition"
               >Nutrition</b-form-checkbox
             >

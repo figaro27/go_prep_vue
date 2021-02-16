@@ -12,6 +12,7 @@ class ReportSetting extends Model
     protected $fillable = ['store_id'];
 
     protected $casts = [
+        'lab_index' => 'boolean',
         'lab_nutrition' => 'boolean',
         'lab_macros' => 'boolean',
         'lab_logo' => 'boolean',
