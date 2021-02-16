@@ -113,31 +113,29 @@
         </div>
       </b-modal>
 
+      <b-modal
+        size="lg"
+        v-model="showDeliveryDayModal"
+        v-if="showDeliveryDayModal"
+        hide-header
+        hide-footer
+        no-fade
+        no-close-on-backdrop
+      >
+        <delivery-day-modal
+          @autoPickUpcomingMultDD="autoPickUpcomingMultDD(sortedDeliveryDays)"
+          @changeDeliveryDay="changeDeliveryDay($event)"
+          @closeDeliveryDayModal="closeDeliveryDayModal()"
+          @continueToCheckout="continueToCheckout($event)"
+          :selectedDeliveryDay="selectedDeliveryDay"
+          :showOtherDaysMessage="showOtherDaysMessage"
+        >
+        </delivery-day-modal>
+      </b-modal>
+
       <div class="row">
         <div :class="`col-md-12 main-menu-area menu-page`">
           <Spinner v-if="showSpinner || forceShow" position="fixed" />
-
-          <b-modal
-            size="lg"
-            v-model="showDeliveryDayModal"
-            v-if="showDeliveryDayModal"
-            hide-header
-            hide-footer
-            no-fade
-            no-close-on-backdrop
-          >
-            <delivery-day-modal
-              @autoPickUpcomingMultDD="
-                autoPickUpcomingMultDD(sortedDeliveryDays)
-              "
-              @changeDeliveryDay="changeDeliveryDay($event)"
-              @closeDeliveryDayModal="closeDeliveryDayModal()"
-              @continueToCheckout="continueToCheckout($event)"
-              :selectedDeliveryDay="selectedDeliveryDay"
-              :showOtherDaysMessage="showOtherDaysMessage"
-            >
-            </delivery-day-modal>
-          </b-modal>
 
           <meals-area
             :meals="mealsMix"
