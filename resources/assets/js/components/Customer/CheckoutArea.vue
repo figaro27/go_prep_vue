@@ -15,14 +15,14 @@
                 totalBagQuantity < promotion.conditionAmount
             "
           >
-            <h6 class="center-text">
+            <p class="center-text strong">
               Add {{ promotion.conditionAmount - totalBagQuantity }} more meals
               to receive a discount of
               <span v-if="promotion.promotionType === 'flat'">{{
                 format.money(promotion.promotionAmount, storeSettings.currency)
               }}</span>
               <span v-else>{{ promotion.promotionAmount }}%</span>
-            </h6>
+            </p>
           </b-alert>
           <b-alert
             variant="success"
@@ -32,7 +32,7 @@
                 subtotal < promotion.conditionAmount
             "
           >
-            <h6 class="center-text">
+            <p class="center-text strong">
               Add
               {{
                 format.money(
@@ -56,7 +56,7 @@
               >
                 free delivery.
               </span>
-            </h6>
+            </p>
           </b-alert>
           <b-alert
             variant="success"
@@ -68,14 +68,14 @@
                 !user.storeOwner
             "
           >
-            <h6 class="center-text">
+            <p class="center-text strong">
               Order {{ getRemainingPromotionOrders(promotion) }} more times to
               receive a discount of
               <span v-if="promotion.promotionType === 'flat'">{{
                 format.money(promotion.promotionAmount, storeSettings.currency)
               }}</span>
               <span v-else>{{ promotion.promotionAmount }}%</span>
-            </h6>
+            </p>
           </b-alert>
 
           <b-alert
@@ -85,10 +85,10 @@
               promotion.promotionType === 'points' && promotionPointsAmount > 0
             "
           >
-            <h6 class="center-text">
+            <p class="center-text strong">
               You will earn {{ promotionPointsAmount }}
               {{ promotionPointsName }} on this order.
-            </h6>
+            </p>
           </b-alert>
         </div>
       </li>

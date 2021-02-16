@@ -15,8 +15,7 @@
             user.referralUrlCode
         "
       >
-        <h5 class="center-text">Referral Program</h5>
-        <p class="center-text">
+        <p class="center-text strong">
           Give out your referral link to customers and if they order
           <span v-if="referralSettings.frequency == 'urlOnly'">
             using your link
@@ -37,13 +36,10 @@
 
       <b-alert
         show
-        variant="success"
+        variant="warning"
         v-if="$route.query.sub === 'true' && subscriptions"
       >
-        <h5 class="center-text">
-          Active Subscription
-        </h5>
-        <p class="center-text">
+        <p class="center-text strong">
           You have an active subscription with us. Update your items for your
           next renewal on
           {{ moment(subscriptions[0].next_renewal).format("dddd, MMM Do") }}.
