@@ -130,18 +130,18 @@ class SMSChatController extends StoreController
             );
             $status = $res->getStatusCode();
             $body = $res->getBody();
+
+            $store = $this->store;
+
+            $smsSettings = SmsSetting::where('store_id', $store->id)->first();
+            $smsSettings->balance += 0.06;
+            $smsSettings->total_spent += 0.06;
+            $smsSettings->update();
+            $smsSettings->chargeBalance($store);
+
+            return $body;
         } catch (\Exception $e) {
         }
-
-        $store = $this->store;
-
-        $smsSettings = SmsSetting::where('store_id', $store->id)->first();
-        $smsSettings->balance += 0.06;
-        $smsSettings->total_spent += 0.06;
-        $smsSettings->update();
-        $smsSettings->chargeBalance($store);
-
-        return $body;
     }
 
     /**
