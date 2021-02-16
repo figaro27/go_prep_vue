@@ -831,7 +831,7 @@
             <option slot="top" disabled>-- Select delivery day --</option>
           </b-select>
           <b-form-checkbox v-model="backdate" class="d-inline pt-1 ml-2"
-            >Backdate</b-form-checkbox
+            >Show Past Dates</b-form-checkbox
           >
         </div>
       </li>
