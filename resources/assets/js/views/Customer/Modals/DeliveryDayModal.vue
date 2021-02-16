@@ -7,6 +7,12 @@
             <h4 class="mb-3" v-if="showOtherDaysMessage">
               Would you like to add items to any other days before proceeding?
             </h4>
+            <b-btn
+              v-if="showOtherDaysMessage"
+              class="menu-bag-btn mb-3 mt-3"
+              @click="$emit('continueToCheckout', true)"
+              >Continue To Checkout</b-btn
+            >
 
             <b-form-radio-group
               v-if="
@@ -60,12 +66,6 @@
                   store.delivery_day_zip_codes.length > 0
               "
             ></div>
-            <b-btn
-              v-if="showOtherDaysMessage"
-              class="menu-bag-btn mb-3 mt-3"
-              @click="$emit('continueToCheckout', true)"
-              >Continue To Checkout</b-btn
-            >
           </div>
         </div>
       </div>
