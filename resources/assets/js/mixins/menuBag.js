@@ -70,6 +70,9 @@ export default {
       // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
       let baseDeliveryDays = this.store.delivery_days;
       let deliveryWeeks = this.store.settings.deliveryWeeks;
+      if (this.context === "store" && deliveryWeeks < 8) {
+        deliveryWeeks = 8;
+      }
       let storeDeliveryDays = [];
 
       for (let i = 0; i <= deliveryWeeks; i++) {
@@ -85,28 +88,28 @@ export default {
       storeDeliveryDays = storeDeliveryDays.reverse();
 
       // Add all future dates with no cutoff for manual orders
-      if (this.context == "store") {
-        storeDeliveryDays = [];
-        let today = new Date();
-        let year = today.getFullYear();
-        let month = today.getMonth();
-        let date = today.getDate();
+      // if (this.context == "store") {
+      //   storeDeliveryDays = [];
+      //   let today = new Date();
+      //   let year = today.getFullYear();
+      //   let month = today.getMonth();
+      //   let date = today.getDate();
 
-        for (let i = 0; i < 30; i++) {
-          let day = new Date(year, month, date + i);
-          let multDD = { ...this.store.delivery_days[0] };
-          multDD.day_friendly = moment(day).format("YYYY-MM-DD");
-          multDD.type = "pickup";
-          storeDeliveryDays.push(multDD);
-        }
-        for (let i = 0; i < 30; i++) {
-          let day = new Date(year, month, date + i);
-          let multDD = { ...this.store.delivery_days[0] };
-          multDD.day_friendly = moment(day).format("YYYY-MM-DD");
-          multDD.type = "delivery";
-          storeDeliveryDays.push(multDD);
-        }
-      }
+      //   for (let i = 0; i < 30; i++) {
+      //     let day = new Date(year, month, date + i);
+      //     let multDD = { ...this.store.delivery_days[0] };
+      //     multDD.day_friendly = moment(day).format("YYYY-MM-DD");
+      //     multDD.type = "pickup";
+      //     storeDeliveryDays.push(multDD);
+      //   }
+      //   for (let i = 0; i < 30; i++) {
+      //     let day = new Date(year, month, date + i);
+      //     let multDD = { ...this.store.delivery_days[0] };
+      //     multDD.day_friendly = moment(day).format("YYYY-MM-DD");
+      //     multDD.type = "delivery";
+      //     storeDeliveryDays.push(multDD);
+      //   }
+      // }
 
       let sortedDays = storeDeliveryDays;
       // let sortedDays = [];

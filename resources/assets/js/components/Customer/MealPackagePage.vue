@@ -951,6 +951,7 @@ import store from "../../store";
 export default {
   data() {
     return {
+      allSelectedOptions: [],
       addonAdded: {},
       defaultSizeSelected: false,
       selectedSizeId: null,
@@ -995,6 +996,9 @@ export default {
       menuSettings: "viewedStoreMenuSettings",
       context: "context"
     }),
+    transferType() {
+      return this.bagPickup ? "pickup" : "delivery";
+    },
     mobile() {
       if (window.innerWidth < 500) return true;
       else return false;
@@ -1050,7 +1054,10 @@ export default {
       sortedDays = storeDeliveryDays;
 
       // If the store only serves certain zip codes on certain delivery days
-      if (this.store.delivery_day_zip_codes.length > 0) {
+      if (
+        this.context !== "store" &&
+        this.store.delivery_day_zip_codes.length > 0
+      ) {
         let deliveryDayIds = [];
         this.store.delivery_day_zip_codes.forEach(ddZipCode => {
           if (ddZipCode.zip_code === parseInt(this.bagZipCode)) {
@@ -1177,17 +1184,26 @@ export default {
     },
     components() {
       return _.filter(this.mealPackage.components, component => {
-        if (
-          this.store.modules.multipleDeliveryDays &&
-          this.mealPackage.divideByComponents
-        ) {
-          if (
-            this.availableDeliveryDayIds.includes(component.delivery_day_id)
-          ) {
+        if (this.store.modules.multipleDeliveryDays) {
+          let componentTransferType = this.deliveryDays.find(day => {
+            return day.id === component.delivery_day_id;
+          }).type;
+          if (componentTransferType === this.transferType) {
             return _.find(component.options, this.sizeCriteria);
           }
         } else {
-          return _.find(component.options, this.sizeCriteria);
+          if (
+            this.store.modules.multipleDeliveryDays &&
+            this.mealPackage.divideByComponents
+          ) {
+            if (
+              this.availableDeliveryDayIds.includes(component.delivery_day_id)
+            ) {
+              return _.find(component.options, this.sizeCriteria);
+            }
+          } else {
+            return _.find(component.options, this.sizeCriteria);
+          }
         }
       });
     },
@@ -1302,11 +1318,10 @@ export default {
         }
         /* Checking Special Instructions End */
         if (this.isMultipleDelivery && this.mealPackage.divideByComponents) {
-          let deliveryDays = this.deliveryDays;
+          let deliveryDays = this.deliveryDays.reverse();
 
           deliveryDays.forEach(day => {
             // Split package by looking at the components & addons delivery_day_ids
-
             let newMealPackage = { ...this.mealPackage };
             let newMealPackageSize = { ...this.mealPackageSize };
 
@@ -1372,11 +1387,6 @@ export default {
               newAddons = [];
             }
 
-            // Adjust for top level meals in the future
-            // Adjust logic w addons
-
-            // newMealPackage.customTitle =
-            //   newMealPackage.title + " - " + day.day_long;
             newMealPackage.title = newMealPackage.title + " - " + day.day_long;
 
             if (!_.isArray(newComponents) && !_.isArray(newComponents)) {
@@ -1496,7 +1506,6 @@ export default {
         },
         min
       );
-      this.$parent.remainingMeals = remainingMeals;
 
       if (min == max) {
         return remainingMeals;
@@ -1506,7 +1515,7 @@ export default {
     },
     getTotalRemainingMeals() {
       let totalRemainingMeals = 0;
-      this.mealPackage.components.forEach(component => {
+      this.components.forEach(component => {
         if (
           this.store.modules.multipleDeliveryDays &&
           this.store.id !== 156 &&
@@ -1775,7 +1784,9 @@ export default {
       }
 
       let choices = this.choices[component.id][option.id] || [];
+      choice.delivery_day_id = component.delivery_day_id;
       choices.push(choice);
+      this.allSelectedOptions.push(choice);
       this.$set(this.choices[component.id], option.id, choices);
       this.onChangeOptionChoices(component, option, choices);
     },

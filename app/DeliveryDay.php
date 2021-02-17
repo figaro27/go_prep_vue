@@ -72,7 +72,12 @@ class DeliveryDay extends Model
     public function getDayFriendlyAttribute()
     {
         $nextDate = '';
-        foreach ($this->next_orderable_dates() as $date) {
+        foreach (
+            Collect($this->next_orderable_dates())
+                ->reverse()
+                ->toArray()
+            as $date
+        ) {
             if (
                 $date['week_index'] == $this->day &&
                 $date['type'] == $this->type

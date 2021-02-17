@@ -53,8 +53,7 @@
             isMultipleDelivery &&
               $route.name != 'store-bag' &&
               $route.name != 'customer-bag' &&
-              hasBothTransferTypes &&
-              deliveryDayZipCodeMatch
+              hasBothTransferTypes
           "
           buttons
           class="filters mb-3"
