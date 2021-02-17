@@ -1040,8 +1040,6 @@ export default {
         !this.noAvailableDays
       ) {
         this.showDeliveryDayModal = true;
-      } else {
-        this.setBagPickup(1);
       }
     }
 
