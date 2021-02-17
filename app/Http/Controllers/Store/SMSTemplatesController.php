@@ -60,33 +60,37 @@ class SMSTemplatesController extends StoreController
      */
     public function store(Request $request)
     {
-        $name = $request->get('name');
-        if ($name === null) {
-            $count =
-                SmsTemplate::where('store_id', $this->store->id)->count() + 1;
-            $name = 'Template #' . $count;
+        try {
+            $name = $request->get('name');
+            if ($name === null) {
+                $count =
+                    SmsTemplate::where('store_id', $this->store->id)->count() +
+                    1;
+                $name = 'Template #' . $count;
+            }
+            $content = $request->get('content');
+
+            if ($content) {
+                $client = new \GuzzleHttp\Client();
+                $res = $client->request('POST', $this->baseURL, [
+                    'headers' => $this->headers,
+                    'form_params' => [
+                        'name' => $name,
+                        'content' => $content
+                    ]
+                ]);
+                $status = $res->getStatusCode();
+                $body = $res->getBody();
+
+                $smsTemplate = new SmsTemplate();
+                $smsTemplate->store_id = $this->store->id;
+                $smsTemplate->template_id = json_decode($body)->id;
+                $smsTemplate->save();
+            }
+
+            return $body;
+        } catch (\Exception $e) {
         }
-        $content = $request->get('content');
-
-        if ($content) {
-            $client = new \GuzzleHttp\Client();
-            $res = $client->request('POST', $this->baseURL, [
-                'headers' => $this->headers,
-                'form_params' => [
-                    'name' => $name,
-                    'content' => $content
-                ]
-            ]);
-            $status = $res->getStatusCode();
-            $body = $res->getBody();
-
-            $smsTemplate = new SmsTemplate();
-            $smsTemplate->store_id = $this->store->id;
-            $smsTemplate->template_id = json_decode($body)->id;
-            $smsTemplate->save();
-        }
-
-        return $body;
     }
 
     /**
