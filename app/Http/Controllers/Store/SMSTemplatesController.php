@@ -76,7 +76,8 @@ class SMSTemplatesController extends StoreController
                     'headers' => $this->headers,
                     'form_params' => [
                         'name' => $name,
-                        'content' => $content
+                        'content' =>
+                            $this->store->details->name . ' - ' . $content
                     ]
                 ]);
                 $status = $res->getStatusCode();
