@@ -798,6 +798,19 @@ export default {
   mounted() {
     if (this.bag) {
       this.bag.forEach(item => {
+        // Remove item if MDD and not in a delivery day
+        if (this.store.modules.multipleDeliveryDays && !item.delivery_day) {
+          this.clearMealFullQuantity(
+            item.meal,
+            item.meal_package,
+            item.size,
+            item.components,
+            item.addons,
+            item.special_instructions
+          );
+        }
+
+        // Disable editing
         this.$set(this.enablingEdit, item.guid, false);
       });
     }

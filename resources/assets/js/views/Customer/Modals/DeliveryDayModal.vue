@@ -4,21 +4,32 @@
       <div class="col-md-12">
         <div style="position: relative">
           <center>
-            <h4 class="mb-3" v-if="showOtherDaysMessage">
-              Would you like to add items to any other days before proceeding?
-            </h4>
-            <b-btn
-              v-if="showOtherDaysMessage"
-              class="menu-bag-btn mb-3 mt-3"
-              @click="$emit('continueToCheckout', true)"
-              >Continue To Checkout</b-btn
-            >
+            <div v-if="showOtherDaysMessage">
+              <h4 class="mb-3">
+                Would you like to add items to any other days before proceeding?
+              </h4>
+              <div class="d-flex" style="justify-content:center">
+                <b-btn
+                  variant="primary"
+                  size="lg"
+                  class="mb-5 mt-3 mr-3"
+                  @click="addMoreDays = true"
+                  >Add Day</b-btn
+                >
+                <b-btn
+                  variant="success"
+                  size="lg"
+                  class="mb-5 mt-3"
+                  @click="$emit('continueToCheckout', true)"
+                  >Continue To Checkout</b-btn
+                >
+              </div>
+            </div>
 
             <b-form-radio-group
               v-if="
                 isMultipleDelivery &&
                   hasBothTranserTypes &&
-                  deliveryDayZipCodeMatch &&
                   !showOtherDaysMessage
               "
               buttons
@@ -33,7 +44,10 @@
           </center>
           <h4
             class="center-text mt-2 mb-2"
-            v-if="sortedDeliveryDays.length > 0"
+            v-if="
+              (sortedDeliveryDays.length > 0 && !showOtherDaysMessage) ||
+                addMoreDays
+            "
           >
             Select Day
           </h4>
@@ -43,7 +57,10 @@
             position="relative"
             style="left: 0;"
           />
-          <div class="delivery_day_wrap mt-3">
+          <div
+            class="delivery_day_wrap mt-3"
+            v-if="!showOtherDaysMessage || addMoreDays"
+          >
             <div
               @click="$emit('changeDeliveryDay', day)"
               v-for="day in sortedDeliveryDays"
@@ -139,6 +156,7 @@ export default {
   },
   data() {
     return {
+      addMoreDays: false,
       zipCode: null,
       selected: false,
       updated: false
