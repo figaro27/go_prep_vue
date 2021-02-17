@@ -13,7 +13,7 @@
                   variant="primary"
                   size="lg"
                   class="mb-5 mt-3 mr-3"
-                  @click="addMoreDays = true"
+                  @click="addMoreDays = !addMoreDays"
                   >Add Day</b-btn
                 >
                 <b-btn
