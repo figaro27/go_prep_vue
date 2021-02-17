@@ -7,6 +7,7 @@
         :meal_sizes="true"
         :selectable_toggle="true"
         :selectable="meal_picker_selectable"
+        :mealPackageAddonPage="true"
         v-model="meal_picker_meals"
         @save="val => onChangeMeals(val.meals, val.selectable)"
       ></meal-picker>

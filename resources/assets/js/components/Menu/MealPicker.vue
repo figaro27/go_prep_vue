@@ -198,6 +198,12 @@ export default {
     selectable: {
       type: Boolean,
       default: false
+    },
+    mealPackageComponentPage: {
+      default: false
+    },
+    mealPackageAddonPage: {
+      default: false
     }
   },
   data() {
@@ -341,7 +347,11 @@ export default {
     this.meals_selectable = this.selectable == true;
   },
   mounted() {
-    if (this.store.modules.multipleDeliveryDays) {
+    if (
+      this.store.modules.multipleDeliveryDays &&
+      !this.mealPackageComponentPage &&
+      !this.mealPackageAddonPage
+    ) {
       this.columns.push("delivery_day_id");
     }
   },
