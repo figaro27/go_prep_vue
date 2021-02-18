@@ -193,10 +193,13 @@ export default {
           }
 
           if (this.store.modules.multipleDeliveryDays) {
-            let deliveryDay = delivery_days.find(day => {
-              return day.day_friendly == pkgItem.delivery_date;
+            let deliveryDay = this.store.delivery_days.find(day => {
+              return day.day === moment(pkgItem.delivery_date.date).format("d");
             });
-            meal_package.dday = deliveryDay;
+            deliveryDay.day_friendly = moment(
+              pkgItem.delivery_date.date
+            ).format("YYYY-MM-DD");
+            meal_package.delivery_day = deliveryDay;
           }
 
           meal_package.adjustOrder = true;
@@ -240,12 +243,12 @@ export default {
 
           meal.price = item.price / item.quantity;
           if (this.store.modules.multipleDeliveryDays) {
-            let deliveryDay = delivery_days.find(day => {
-              return (
-                day.day_friendly ==
-                moment(item.delivery_date.date).format("YYYY-MM-DD")
-              );
+            let deliveryDay = this.store.delivery_days.find(day => {
+              return day.day === moment(item.delivery_date.date).format("d");
             });
+            deliveryDay.day_friendly = moment(item.delivery_date.date).format(
+              "YYYY-MM-DD"
+            );
             meal.delivery_day = deliveryDay;
           }
 
