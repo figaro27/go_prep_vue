@@ -137,7 +137,7 @@ export default {
       });
 
       if (this.order.meal_package_items) {
-        _.forEach(this.order.meal_package_items, pkgItem => {
+        _.forEach(this.order.meal_package_items, (pkgItem, pkgItemIndex) => {
           let meal_package_id = pkgItem.meal_package_id;
           let meal_package = { ...this.getMealPackage(meal_package_id) };
           meal_package.price = pkgItem.price;
@@ -196,14 +196,18 @@ export default {
 
           if (this.store.modules.multipleDeliveryDays) {
             let deliveryDay = this.store.delivery_days.find(day => {
-              return day.day === moment(pkgItem.delivery_date.date).format("d");
+              return day.day === moment(pkgItem.delivery_date).format("d");
             });
-            deliveryDay.day_friendly = moment(
-              pkgItem.delivery_date.date
-            ).format("YYYY-MM-DD");
-            meal_package.delivery_day = deliveryDay;
-            if (index == 0) {
-              this.selectedDeliveryDay = deliveryDay;
+
+            if (!deliveryDay) {
+              deliveryDay = this.store.delivery_days[0];
+              deliveryDay.day_friendly = moment(pkgItem.delivery_date).format(
+                "YYYY-MM-DD"
+              );
+              meal_package.delivery_day = deliveryDay;
+              if (pkgItemIndex == 0) {
+                this.selectedDeliveryDay = deliveryDay;
+              }
             }
           }
 
@@ -251,12 +255,16 @@ export default {
             let deliveryDay = this.store.delivery_days.find(day => {
               return day.day === moment(item.delivery_date.date).format("d");
             });
-            deliveryDay.day_friendly = moment(item.delivery_date.date).format(
-              "YYYY-MM-DD"
-            );
-            meal.delivery_day = deliveryDay;
-            if (index == 0) {
-              this.selectedDeliveryDay = deliveryDay;
+
+            if (!deliveryDay) {
+              deliveryDay = this.store.delivery_days[0];
+              deliveryDay.day_friendly = moment(item.delivery_date.date).format(
+                "YYYY-MM-DD"
+              );
+              meal.delivery_day = deliveryDay;
+              if (index == 0) {
+                this.selectedDeliveryDay = deliveryDay;
+              }
             }
           }
 
