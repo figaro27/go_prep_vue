@@ -1095,11 +1095,13 @@ export default {
     },
     activePromotions() {
       let promotions = [];
-      this.promotions.forEach(promotion => {
-        if (promotion.active) {
-          promotions.push(promotion);
-        }
-      });
+      if (this.promotions.length > 0) {
+        this.promotions.forEach(promotion => {
+          if (promotion.active) {
+            promotions.push(promotion);
+          }
+        });
+      }
       return promotions;
     }
   },
