@@ -214,11 +214,7 @@
               style="margin-bottom:65px"
               class="d-md-none"
               :style="brandColor"
-              v-if="
-                store.modules.multipleDeliveryDays &&
-                  finalDeliveryDay &&
-                  !mealPackagePageView
-              "
+              v-if="store.modules.multipleDeliveryDays && !mealPackagePageView"
             >
               <div
                 class="d-flex flex-column h-100"
