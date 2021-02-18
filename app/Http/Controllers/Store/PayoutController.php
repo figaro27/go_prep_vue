@@ -242,7 +242,7 @@ class PayoutController extends StoreController
         $payoutOrders = collect($payoutOrders)
             ->map(function ($payment) {
                 return [
-                    'created_at' => $payment->created_at,
+                    'created_at' => $payment->paid_at,
                     'order_number' => $payment->order_number,
                     'customer' => $payment->customer_name,
                     'amount' => $payment->amount,

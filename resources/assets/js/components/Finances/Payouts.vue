@@ -118,7 +118,7 @@
         :data="transactionsTableData"
       >
         <div slot="created_at" slot-scope="props">
-          {{ moment(props.row.created_at.date).format("dddd, MMM Do") }}
+          {{ moment(props.row.created_at).format("dddd, MMM Do") }}
         </div>
         <div slot="amount" slot-scope="props">
           {{ format.money(props.row.amount, store.settings.currency) }}
