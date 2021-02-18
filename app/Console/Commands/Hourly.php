@@ -392,6 +392,7 @@ class Hourly extends Command
         ];
         $subs = Subscription::whereBetween('next_renewal_at', $dateRange)
             ->where('status', 'active')
+            ->where('renewalCount', '>', 0)
             ->get();
 
         foreach ($subs as $sub) {
