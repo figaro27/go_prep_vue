@@ -1159,23 +1159,25 @@ export default {
       this.finalDeliveryDay = e;
       this.showDeliveryDayModal = false;
 
-      let dayIndex = moment(this.finalDeliveryDay.day_friendly).day();
-      let type = this.finalDeliveryDay.type;
+      if (this.finalDeliveryDay) {
+        let dayIndex = moment(this.finalDeliveryDay.day_friendly).day();
+        let type = this.finalDeliveryDay.type;
 
-      let deliveryDay = this.store.delivery_days.find(day => {
-        return day.day == dayIndex && day.type == type;
-      });
+        let deliveryDay = this.store.delivery_days.find(day => {
+          return day.day == dayIndex && day.type == type;
+        });
 
-      if (deliveryDay) {
-        this.finalDeliveryDay.id = deliveryDay.id;
+        if (deliveryDay) {
+          this.finalDeliveryDay.id = deliveryDay.id;
+        }
+
+        if (this.store.hasDeliveryDayItems) {
+          e.has_items = true;
+        }
+        store.dispatch("refreshLazyDD", {
+          delivery_day: this.finalDeliveryDay
+        });
       }
-
-      if (this.store.hasDeliveryDayItems) {
-        e.has_items = true;
-      }
-      store.dispatch("refreshLazyDD", {
-        delivery_day: this.finalDeliveryDay
-      });
     },
     showAdjustModal(
       meal,

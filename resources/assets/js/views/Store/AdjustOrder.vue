@@ -11,6 +11,7 @@
       :order="order"
       :inSub="inSub"
       :lineItemOrders="lineItemOrders"
+      ref="customerMenu"
     ></customer-menu>
   </div>
 </template>
@@ -113,6 +114,7 @@ export default {
       // });
 
       let delivery_days = [];
+      let selectedDeliveryDay = null;
 
       if (this.store.modules.multipleDeliveryDays && this.context == "store") {
         let today = new Date();
@@ -161,7 +163,7 @@ export default {
             meal_package.sizes[index].meals = [];
           }
 
-          _.forEach(this.order.items, item => {
+          _.forEach(this.order.items, (item, index) => {
             if (item.meal_package_order_id === pkgItem.id && !item.hidden) {
               const meal = { ...this.getMeal(item.meal_id) };
               meal.meal_size_id = item.meal_size_id;
@@ -200,6 +202,9 @@ export default {
               pkgItem.delivery_date.date
             ).format("YYYY-MM-DD");
             meal_package.delivery_day = deliveryDay;
+            if (index == 0) {
+              this.selectedDeliveryDay = deliveryDay;
+            }
           }
 
           meal_package.adjustOrder = true;
@@ -221,7 +226,7 @@ export default {
         });
       }
 
-      _.forEach(this.order.items, item => {
+      _.forEach(this.order.items, (item, index) => {
         if (!item.meal_package_order_id && !item.hidden && !item.attached) {
           const meal = { ...this.getMeal(item.meal_id) };
           if (!meal) {
@@ -250,6 +255,9 @@ export default {
               "YYYY-MM-DD"
             );
             meal.delivery_day = deliveryDay;
+            if (index == 0) {
+              this.selectedDeliveryDay = deliveryDay;
+            }
           }
 
           meal.customTitle = item.customTitle;
@@ -279,6 +287,10 @@ export default {
 
         this.addOne(item, null);
       });
+
+      if (this.store.modules.multipleDeliveryDays && this.selectedDeliveryDay) {
+        this.$refs.customerMenu.changeDeliveryDay(this.selectedDeliveryDay);
+      }
     }
   }
 };
