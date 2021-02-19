@@ -9,6 +9,7 @@ use App\User;
 use App\UserDetail;
 use Illuminate\Support\Carbon;
 use App\PurchasedGiftCard;
+use App\StoreSetting;
 
 class misc extends Command
 {
@@ -43,22 +44,13 @@ class misc extends Command
      */
     public function handle()
     {
-        $purchasedGiftCards = PurchasedGiftCard::all();
-        foreach ($purchasedGiftCards as $purchasedGiftCard) {
-            try {
-                if ($purchasedGiftCard->order->user) {
-                    $purchasedGiftCard->purchased_by =
-                        $purchasedGiftCard->order->user->user_role_id === 1
-                            ? $purchasedGiftCard->order->user->details
-                                    ->firstname .
-                                ' ' .
-                                $purchasedGiftCard->order->user->details
-                                    ->lastname
-                            : $purchasedGiftCard->store->details->name;
-                    $purchasedGiftCard->update();
-                }
-            } catch (\Exception $e) {
-            }
+        $storeSettings = StoreSetting::all();
+        foreach ($storeSettings as $storeSetting) {
+            $notifications = $storeSetting->notifications;
+            $notifications['delivery_today'] = true;
+            $notifications['subscription_renewing'] = true;
+            $storeSetting->notifications = $notifications;
+            $storeSetting->update();
         }
     }
 }

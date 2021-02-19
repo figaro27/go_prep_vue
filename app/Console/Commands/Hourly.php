@@ -325,7 +325,10 @@ class Hourly extends Command
 
                     $currentHour = date('H');
 
-                    if ($currentHour === "08") {
+                    if (
+                        $settings->notificationEnabled('delivery_today') &&
+                        $currentHour === "08"
+                    ) {
                         $order->user->sendNotification('delivery_today', [
                             'user' => $order->user,
                             'customer' => $order->customer,
@@ -363,7 +366,10 @@ class Hourly extends Command
 
                     $currentHour = date('H');
 
-                    if ($currentHour === "08") {
+                    if (
+                        $settings->notificationEnabled('delivery_today') &&
+                        $currentHour === "08"
+                    ) {
                         $order->user->sendNotification('delivery_today', [
                             'user' => $order->user,
                             'customer' => $order->customer,
@@ -396,11 +402,14 @@ class Hourly extends Command
             ->get();
 
         foreach ($subs as $sub) {
-            $sub->user->sendNotification('subscription_renewing', [
-                'subscription' => $sub
-            ]);
-            // $sub->updated = 0;
-            $sub->save();
+            $settings = $sub->store->settings;
+            if ($settings->notificationEnabled('subscription_renewing')) {
+                $sub->user->sendNotification('subscription_renewing', [
+                    'subscription' => $sub
+                ]);
+
+                $sub->save();
+            }
 
             // Send SMS Subscription Renewal texts
             if ($sub->store->smsSettings->autoSendSubscriptionRenewal) {

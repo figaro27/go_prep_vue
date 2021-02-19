@@ -1234,6 +1234,7 @@
               </b-form-group>
             </b-tab>
             <b-tab title="Notifications">
+              <h5 class="mb-4">Emails to You</h5>
               <b-form @submit.prevent="updateStoreSettings">
                 <b-form-group label="New Orders" :state="true">
                   <c-switch
@@ -1271,6 +1272,29 @@
                     variant="pill"
                     size="lg"
                     v-model="storeSettings.notifications.ready_to_print"
+                    @change.native="updateStoreSettings()"
+                  />
+                </b-form-group>
+              </b-form>
+              <br /><br />
+              <h5 class="mb-4">Emails to Customer</h5>
+              <b-form @submit.prevent="updateStoreSettings">
+                <b-form-group label="Delivery Today" :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.notifications.delivery_today"
+                    @change.native="updateStoreSettings()"
+                  />
+                </b-form-group>
+
+                <b-form-group label="Subscription Renewing" :state="true">
+                  <c-switch
+                    color="success"
+                    variant="pill"
+                    size="lg"
+                    v-model="storeSettings.notifications.subscription_renewing"
                     @change.native="updateStoreSettings()"
                   />
                 </b-form-group>
