@@ -336,7 +336,7 @@ class StoreSetting extends Model
         // Hard coding for Beyond Vegan. Will modulize in future if requested. Ignores cutoff on same day before 3 PM PST.
         $factorCutoff = true;
 
-        if ($this->store_id === 118) {
+        if ($this->store_id === 118 || $this->store_id === 3) {
             $now = Carbon::now();
             $start = Carbon::createFromTimeString('08:00');
             $end = Carbon::createFromTimeString('23:00');
@@ -368,7 +368,10 @@ class StoreSetting extends Model
     {
         // Hard coding for Beyond Vegan. Will modulize in future if requested. Ignores cutoff on same day before 3 PM PST.
         $factorCutoff = true;
-        if ($this->store_id === 118 && (int) date('H') < 22) {
+        if (
+            ($this->store_id === 118 || $this->store_id === 3) &&
+            (int) date('H') < 22
+        ) {
             $factorCutoff = false;
         }
 

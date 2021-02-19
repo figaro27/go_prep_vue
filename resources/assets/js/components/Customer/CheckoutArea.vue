@@ -3869,6 +3869,11 @@ use next_delivery_dates
         .catch(async response => {
           let error = response.response.data.message;
 
+          if (response.response.data.error === "past_delivery") {
+            this.deliveryDay = null;
+            this.clearBagDeliveryDate();
+          }
+
           if (response.response.data.removeableMeal) {
             let removeableMeal = response.response.data.removeableMeal;
             this.bag.forEach(item => {

@@ -167,12 +167,31 @@ class CheckoutController extends UserController
             $deliveryDay = $request->get('delivery_day');
 
             // Beyond Vegan does same day delivery. Will turn this into a module / change when needed.
-            if ($store->id !== 118) {
+            if ($store->id !== 118 && $store->id !== 3) {
                 if (Carbon::parse($deliveryDay)->isPast()) {
                     return response()->json(
                         [
                             'message' =>
-                                'Please refresh the page and try again. Please make sure the selected delivery date is a date in the future.'
+                                'Please refresh the page and try again. Please make sure the selected delivery date is a date in the future.',
+                            'error' => 'past_delivery'
+                        ],
+                        400
+                    );
+                }
+            } else {
+                $today = Carbon::today()
+                    ->startOfDay()
+                    ->toDateTimeString();
+                // dd([
+                //     'today' => $today,
+                //     'deliveryDay' => $deliveryDay
+                // ]);
+                if ($deliveryDay === $today && (int) date('H') > 22) {
+                    return response()->json(
+                        [
+                            'message' =>
+                                'Please refresh the page and try again. Please make sure the selected delivery date is a date in the future.',
+                            'error' => 'past_delivery'
                         ],
                         400
                     );
