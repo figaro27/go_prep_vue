@@ -487,6 +487,7 @@ export default {
   },
   mixins: [MenuBag],
   props: {
+    firstDeliveryDay: null,
     storeView: false,
     preview: false,
     manualOrder: false,
@@ -1026,14 +1027,26 @@ export default {
           this.autoPickUpcomingMultDD(this.sortedDeliveryDays);
         }
       }
-      if (this.sortedDeliveryDays.length > 0) {
+      if (
+        this.sortedDeliveryDays.length > 0 &&
+        !this.adjustOrder &&
+        this.adjustMealPlan
+      ) {
         this.changeDeliveryDay(this.sortedDeliveryDays[0]);
+      }
+      if (
+        this.store.modules.multipleDeliveryDays &&
+        (this.adjustOrder || this.adjustMealPlan)
+      ) {
+        this.changeDeliveryDay(this.firstDeliveryDay);
       }
       if (
         this.bagPickup == 0 &&
         !this.bagZipCode &&
         this.hasDeliveryDayZipCodes &&
-        !this.noAvailableDays
+        !this.noAvailableDays &&
+        !this.adjustOrder &&
+        !this.adjustMealPlan
       ) {
         this.showDeliveryDayModal = true;
       }

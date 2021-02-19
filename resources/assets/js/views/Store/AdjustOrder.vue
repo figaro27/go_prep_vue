@@ -33,7 +33,8 @@ export default {
     return {
       isLoading: false,
       order_bags: [],
-      lineItemOrders: []
+      lineItemOrders: [],
+      firstDeliveryDay: null
     };
   },
   computed: {
@@ -114,7 +115,6 @@ export default {
       // });
 
       let delivery_days = [];
-      let selectedDeliveryDay = null;
 
       if (this.store.modules.multipleDeliveryDays && this.context == "store") {
         let today = new Date();
@@ -204,11 +204,11 @@ export default {
               deliveryDay.day_friendly = moment(pkgItem.delivery_date).format(
                 "YYYY-MM-DD"
               );
-              meal_package.delivery_day = deliveryDay;
-              if (pkgItemIndex == 0) {
-                this.selectedDeliveryDay = deliveryDay;
-              }
             }
+            if (pkgItemIndex == 0) {
+              this.$refs.customerMenu.changeDeliveryDay(deliveryDay);
+            }
+            meal_package.delivery_day = deliveryDay;
           }
 
           meal_package.adjustOrder = true;
@@ -261,11 +261,11 @@ export default {
               deliveryDay.day_friendly = moment(item.delivery_date.date).format(
                 "YYYY-MM-DD"
               );
-              meal.delivery_day = deliveryDay;
-              if (index == 0) {
-                this.selectedDeliveryDay = deliveryDay;
-              }
             }
+            if (index == 0) {
+              this.$refs.customerMenu.changeDeliveryDay(deliveryDay);
+            }
+            meal.delivery_day = deliveryDay;
           }
 
           meal.customTitle = item.customTitle;
