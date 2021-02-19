@@ -354,15 +354,15 @@ $deliveryInstructions = $order->user->userDetail->delivery;
             </tr>@endif
             @if ($order->referralReduction > 0)<tr>
               <td style="border:none"><b>Referral Discount</b></td>
-              <td style="border:none;text-align:right;position:relative;right:8px">(Referral Discount) @money($referralReduction, $currency, 2)</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">@money($referralReduction, $currency, 2)</td>
             </tr>@endif
             @if ($order->promotionReduction > 0)<tr>
               <td style="border:none"><b>Promotional Discount</b></td>
-              <td style="border:none;text-align:right;position:relative;right:8px">(Promotional Discount) @money($promotionReduction, $currency, 2)</td>
+              <td style="border:none;text-align:right;position:relative;right:8px">@money($promotionReduction, $currency, 2)</td>
             </tr>@endif
             @if ($order->pointsReduction > 0)<tr>
-              <td style="border:none"><b>Promotional Discount</b></td>
-              <td style="border:none;text-align:right;position:relative;right:8px">(Points Used) @money($pointsReduction, $currency, 2)</td>
+              <td style="border:none"><b>Points Discount</b></td>
+              <td style="border:none;text-align:right;position:relative;right:8px">@money($pointsReduction, $currency, 2)</td>
             </tr>@endif
             @if ($order->gratuity > 0)<tr>
               <td style="border:none"><b>Gratuity</b></td>
