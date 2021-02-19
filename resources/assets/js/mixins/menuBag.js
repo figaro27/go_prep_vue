@@ -78,7 +78,7 @@ export default {
       for (let i = 0; i <= deliveryWeeks; i++) {
         baseDeliveryDays.forEach(day => {
           let m = moment(day.day_friendly);
-          let newDate = moment(m).subtract(i, "week");
+          let newDate = moment(m).add(i, "week");
           let newDay = { ...day };
           newDay.day_friendly = newDate.format("YYYY-MM-DD");
           storeDeliveryDays.push(newDay);

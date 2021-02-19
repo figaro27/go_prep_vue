@@ -195,16 +195,21 @@ export default {
           }
 
           if (this.store.modules.multipleDeliveryDays) {
+            // let deliveryDay = this.store.delivery_days[0];
+            // deliveryDay.day_friendly = moment(pkgItem.delivery_date).format("YYYY-MM-DD");
+            // deliveryDay.day = moment(pkgItem.delivery_date).format("d")
             let deliveryDay = this.store.delivery_days.find(day => {
               return day.day === moment(pkgItem.delivery_date).format("d");
             });
 
             if (!deliveryDay) {
               deliveryDay = this.store.delivery_days[0];
-              deliveryDay.day_friendly = moment(pkgItem.delivery_date).format(
-                "YYYY-MM-DD"
-              );
             }
+
+            deliveryDay.day_friendly = moment(pkgItem.delivery_date).format(
+              "YYYY-MM-DD"
+            );
+
             if (pkgItemIndex == 0) {
               this.$refs.customerMenu.changeDeliveryDay(deliveryDay);
             }
@@ -252,16 +257,20 @@ export default {
 
           meal.price = item.price / item.quantity;
           if (this.store.modules.multipleDeliveryDays) {
+            // let deliveryDay = this.store.delivery_days[0];
+            // deliveryDay.day_friendly = moment(item.delivery_date.date).format("YYYY-MM-DD");
+            // deliveryDay.day = moment(item.delivery_date.date).format("d");
             let deliveryDay = this.store.delivery_days.find(day => {
               return day.day === moment(item.delivery_date.date).format("d");
             });
 
             if (!deliveryDay) {
               deliveryDay = this.store.delivery_days[0];
-              deliveryDay.day_friendly = moment(item.delivery_date.date).format(
-                "YYYY-MM-DD"
-              );
             }
+
+            deliveryDay.day_friendly = moment(item.delivery_date.date).format(
+              "YYYY-MM-DD"
+            );
             if (index == 0) {
               this.$refs.customerMenu.changeDeliveryDay(deliveryDay);
             }
