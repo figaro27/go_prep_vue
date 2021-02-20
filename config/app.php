@@ -96,6 +96,9 @@ return [
         ],
         'uptownchefs.com' => [
             'front_url' => 'http://order.uptownchefs.com/customer/menu'
+        ],
+        'myfreshnutrition.com' => [
+            'front_url' => 'https://order.myfreshnutrition.com/customer/menu'
         ]
     ],
 
