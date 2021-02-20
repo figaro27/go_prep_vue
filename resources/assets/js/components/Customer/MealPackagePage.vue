@@ -1184,7 +1184,10 @@ export default {
     },
     components() {
       return _.filter(this.mealPackage.components, component => {
-        if (this.store.modules.multipleDeliveryDays) {
+        if (
+          this.store.modules.multipleDeliveryDays &&
+          component.delivery_day_id
+        ) {
           let componentTransferType = this.deliveryDays.find(day => {
             return day.id === component.delivery_day_id;
           }).type;

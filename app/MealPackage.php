@@ -572,7 +572,7 @@ class MealPackage extends Model implements HasMedia
                     $component['delivery_day_id']
                 )
                     ? $component['delivery_day_id']
-                    : 69;
+                    : null;
                 $mealPackageComponent->save();
 
                 $optionIdMap = [];
