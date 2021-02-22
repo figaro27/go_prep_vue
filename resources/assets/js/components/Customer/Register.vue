@@ -1,12 +1,18 @@
 <template>
   <div class="mt-4">
-    <b-modal id="tos" size="xl" ref="tos" no-fade>
+    <div v-if="isTosVisible">
+      <button @click="isTosVisible = false" class="btn btn-primary back-button">
+        Back
+      </button>
       <termsOfService></termsOfService>
-    </b-modal>
-    <b-modal id="toa" size="xl" ref="toa">
+    </div>
+    <div v-else-if="isToaVisible">
+      <button @click="isToaVisible = false" class="btn btn-primary back-button">
+        Back
+      </button>
       <termsOfAgreement></termsOfAgreement>
-    </b-modal>
-    <b-form @submit.prevent="submit" autocomplete="off" ref="form">
+    </div>
+    <b-form v-else @submit.prevent="submit" autocomplete="off" ref="form">
       <div v-if="step === 0">
         <div class="d-flex" style="flex-wrap:wrap">
           <b-form-group
@@ -229,8 +235,8 @@
               > -->
             <span
               class="strong"
-              @click.stop.prevent="$refs.tos.show()"
-              @touch.stop.prevent="$refs.tos.show()"
+              @click.stop.prevent="isTosVisible = true"
+              @touch.stop.prevent="isTosVisible = true"
               >terms of service</span
             >
           </b-form-checkbox>
@@ -396,8 +402,8 @@
             I accept the
             <span
               class="strong"
-              @click.stop.prevent="$refs.tos.show()"
-              @touch.stop.prevent="$refs.tos.show()"
+              @click.stop.prevent="isTosVisible = true"
+              @touch.stop.prevent="isTosVisible = true"
               >terms of service</span
             >
           </b-form-checkbox>
@@ -473,6 +479,8 @@ export default {
   data() {
     return {
       showStatesBox: true,
+      isTosVisible: false,
+      isToaVisible: false,
       redirect: null,
       step: 0,
 
@@ -791,3 +799,11 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.back-button {
+  position: sticky;
+  top: 1.5rem;
+  float: right;
+}
+</style>

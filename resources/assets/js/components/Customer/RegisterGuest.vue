@@ -1,9 +1,12 @@
 <template>
   <div class="mt-4">
-    <b-modal id="tos" size="xl" ref="tos" no-fade>
+    <div v-if="isTosVisible">
+      <button @click="isTosVisible = false" class="btn btn-primary back-button">
+        Back
+      </button>
       <termsOfService></termsOfService>
-    </b-modal>
-    <b-form @submit.prevent="submit" autocomplete="off" ref="form">
+    </div>
+    <b-form v-else @submit.prevent="submit" autocomplete="off" ref="form">
       <div class="d-flex" style="flex-wrap:wrap">
         <b-form-group
           :state="state(0, 'first_name')"
@@ -145,8 +148,8 @@
         By checking out you agree to our
         <span
           class="strong"
-          @click.stop.prevent="$refs.tos.show()"
-          @touch.stop.prevent="$refs.tos.show()"
+          @click.stop.prevent="isTosVisible = true"
+          @touch.stop.prevent="isTosVisible = true"
           >terms of service.</span
         >
       </p>
@@ -177,6 +180,7 @@ export default {
   data() {
     return {
       showStatesBox: true,
+      isTosVisible: false,
       redirect: null,
       step: 0,
 
@@ -285,6 +289,8 @@ export default {
     }
   },
   mounted() {
+    this.$refs.tos.show();
+
     this.form[0].role = "guest";
     this.form[0].email =
       "noemail-guest-" + this.store.id + "-" + this.uniqid() + "@goprep.com";
@@ -468,3 +474,11 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.back-button {
+  position: sticky;
+  top: 1.5rem;
+  float: right;
+}
+</style>
