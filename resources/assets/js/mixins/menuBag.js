@@ -147,6 +147,8 @@ export default {
         }
       }
 
+      console.log(sortedDays);
+
       if (this.bagPickup) {
         sortedDays = sortedDays.filter(day => {
           return day.type === "pickup";
@@ -185,8 +187,6 @@ export default {
           }
         });
       }
-
-      console.log(sortedDays);
 
       return sortedDays;
     },
