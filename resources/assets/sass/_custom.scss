@@ -1309,7 +1309,8 @@ body.forgotresettoken {
   }
 
   .store-logo {
-    height: 70px !important;
+    max-width: 200px !important;
+    max-height: 70px !important;
   }
 
   .adjust-nav {

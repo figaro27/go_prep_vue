@@ -1763,8 +1763,8 @@ export default {
     },
     logoPrefill() {
       if (this.storeDetail.logo) {
-        if (this.storeDetail.logo.url_thumb) {
-          return this.storeDetail.logo.url_thumb;
+        if (this.storeDetail.logo.url) {
+          return this.storeDetail.logo.url;
         } else if (_.isString(this.storeDetail.logo)) {
           return this.storeDetail.logo;
         }
