@@ -113,7 +113,8 @@
         <div
           v-if="
             storeSettings.showMacros &&
-              (meal.macros.calories > 0 || nutritionalFacts.valueCalories > 0)
+              ((meal.macros && meal.macros.calories > 0) ||
+                nutritionalFacts.valueCalories > 0)
           "
           class="macros mt-2 meal-page-text"
         >
