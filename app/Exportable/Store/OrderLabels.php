@@ -133,7 +133,27 @@ class OrderLabels
             throw new \Exception('No orders');
         }
 
-        $filename = 'public/' . md5(time()) . '.pdf';
+        if (isset($this->params['order_id'])) {
+            $filename =
+                'public/' .
+                $this->params['store'] .
+                '_order_labels_' .
+                $orders[0]['firstName'] .
+                '_' .
+                $orders[0]['lastName'] .
+                '_' .
+                $orders[0]['orderNumber'] .
+                '_' .
+                $this->params['date'] .
+                '.pdf';
+        } else {
+            $filename =
+                'public/' .
+                $this->params['store'] .
+                '_order_labels_' .
+                $this->params['date'] .
+                '.pdf';
+        }
 
         $width = $this->store->reportSettings->o_lab_width;
         $height = $this->store->reportSettings->o_lab_height;

@@ -229,7 +229,12 @@ class Labels
             throw new \Exception('No meal orders');
         }
 
-        $filename = 'public/' . md5(time()) . '.pdf';
+        $filename =
+            'public/' .
+            $this->params['store'] .
+            '_labels_' .
+            $this->params['date'] .
+            '.pdf';
 
         $width = $this->store->reportSettings->lab_width;
         $height = $this->store->reportSettings->lab_height;
