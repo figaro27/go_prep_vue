@@ -163,7 +163,6 @@ export default {
 
       // Removing past dates
       sortedDays = sortedDays.filter(day => {
-        console.log(day.day_friendly);
         console.log(moment().startOf("day"));
         return !moment(day.day_friendly).isBefore(moment().startOf("day"));
       });
