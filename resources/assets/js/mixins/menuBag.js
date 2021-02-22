@@ -161,12 +161,12 @@ export default {
         return new Date(a.day_friendly) - new Date(b.day_friendly);
       });
 
-      console.log(sortedDays);
-
       // Removing past dates
       sortedDays = sortedDays.filter(day => {
         return !moment(day.day_friendly).isBefore(moment().startOf("day"));
       });
+
+      console.log(sortedDays);
 
       // Removing inactive days
       sortedDays = sortedDays.filter(day => {
