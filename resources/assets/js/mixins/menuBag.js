@@ -147,8 +147,6 @@ export default {
         }
       }
 
-      console.log(sortedDays);
-
       if (this.bagPickup) {
         sortedDays = sortedDays.filter(day => {
           return day.type === "pickup";
@@ -159,9 +157,9 @@ export default {
         });
       }
 
-      sortedDays.sort(function(a, b) {
-        return new Date(a.day_friendly) - new Date(b.day_friendly);
-      });
+      // sortedDays.sort(function(a, b) {
+      //   return new Date(a.day_friendly) - new Date(b.day_friendly);
+      // });
 
       // Removing past dates
       sortedDays = sortedDays.filter(day => {
