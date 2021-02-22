@@ -53,8 +53,8 @@ export default {
     return {
       options: [
         { value: null, text: "Select a subject" },
-        { value: "General Inquiry", text: "General Inquiry" },
-        { value: "Issue With My Order", text: "Issue With My Order" },
+        { value: "Question About My Order", text: "Question About My Order" },
+        { value: "Technical Issue", text: "Technical Issue" },
         { value: "Suggestion", text: "Suggestion" },
         { value: "Other", text: "Other" }
       ],

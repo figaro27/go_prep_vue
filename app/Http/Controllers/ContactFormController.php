@@ -87,9 +87,19 @@ class ContactFormController extends Controller
             $message->from($data['email']);
             $message
                 ->to($data['storeEmail'])
-                ->bcc('mike@goprep.com')
-                ->bcc('danny@goprep.com')
                 ->subject('GoPrep - Contact Form Inquiry from Customer');
         });
+
+        if ($request->subject === 'Technical Issue') {
+            Mail::send('email.contact-customer', $data, function (
+                $message
+            ) use ($data) {
+                $message->from($data['email']);
+                $message
+                    ->to('mike@goprep.com')
+                    ->cc('danny@goprep.com')
+                    ->subject('GoPrep - Contact Form Inquiry from Customer');
+            });
+        }
     }
 }
