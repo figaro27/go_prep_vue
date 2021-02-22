@@ -679,14 +679,12 @@ export default {
       return payments;
     },
     columns() {
-      let columns = [
-        "paid_at",
-        "delivery_date",
-        "order_number",
-        "customer_name"
-      ];
+      let columns = ["paid_at", "delivery_date"];
       if (this.filters.dailySummary) {
         columns.push("totalPayments");
+      } else {
+        columns.push("order_number");
+        columns.push("customer_name");
       }
       columns.push("subtotal");
 
@@ -694,7 +692,8 @@ export default {
 
       this.payments.forEach(payment => {
         if (payment.couponReduction > 0) addedColumns.couponReduction = true;
-        if (payment.couponReduction > 0) addedColumns.couponCode = true;
+        if (payment.couponReduction > 0 && !filters.dailySummary)
+          addedColumns.couponCode = true;
         if (payment.mealPlanDiscount > 0) addedColumns.mealPlanDiscount = true;
         if (payment.salesTax > 0) addedColumns.salesTax = true;
         if (payment.processingFee > 0) addedColumns.processingFee = true;
