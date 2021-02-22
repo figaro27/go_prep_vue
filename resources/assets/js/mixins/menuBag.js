@@ -70,13 +70,15 @@ export default {
       // If delivery_days table has the same day of the week for both pickup & delivery, only show the day once
       let baseDeliveryDays = this.store.delivery_days;
 
-      // if (this.context === "store") {
-      //   baseDeliveryDays.forEach(day => {
-      //     let m = moment(day.day_friendly);
-      //     let newDate = moment(m).subtract(1, "week");
-      //     day.day_friendly = newDate;
-      //   });
-      // }
+      if (this.context === "store") {
+        baseDeliveryDays.forEach(day => {
+          let m = moment(day.day_friendly);
+          let newDate = moment(m).subtract(1, "week");
+          if (!moment(newDate).isBefore(moment().startOf("day"))) {
+            day.day_friendly = newDate;
+          }
+        });
+      }
 
       let deliveryWeeks = this.store.settings.deliveryWeeks;
       if (this.context === "store" && deliveryWeeks < 8) {
