@@ -18,10 +18,31 @@ mix.options({
     require("autoprefixer")({
       browsers: ["last 40 versions"]
     })
-  ]
+  ],
+  uglify: {}
 });
 
 mix.extract();
+
+if (process.env.NODE_ENV === "production") {
+  mix.webpackConfig({
+    module: {
+      rules: [
+        {
+          test: /\.jsx?$/,
+          exclude: [],
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ["@babel/preset-env"],
+              compact: true
+            }
+          }
+        }
+      ]
+    }
+  });
+}
 
 mix
   .js("resources/assets/js/app.js", "public/js")
