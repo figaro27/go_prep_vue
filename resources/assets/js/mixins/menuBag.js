@@ -186,6 +186,8 @@ export default {
         });
       }
 
+      console.log(sortedDays);
+
       return sortedDays;
     },
     allDeliveryDays() {
