@@ -70,9 +70,9 @@ trait Exportable
         $filename =
             'public/' .
             $this->params['store'] .
-            ' - ' .
+            '_' .
             $this->params['report'] .
-            ' - ' .
+            '_' .
             $this->params['date'] .
             '.csv';
         /*
@@ -117,9 +117,9 @@ trait Exportable
         $filename =
             'public/' .
             $this->params['store'] .
-            ' - ' .
+            '_' .
             $this->params['report'] .
-            ' - ' .
+            '_' .
             $this->params['date'] .
             '.xlsx';
 
@@ -139,9 +139,9 @@ trait Exportable
         $filename =
             'public/' .
             $this->params['store'] .
-            ' - ' .
+            '_' .
             $this->params['report'] .
-            ' - ' .
+            '_' .
             $this->params['date'] .
             '.pdf';
 
@@ -205,9 +205,9 @@ trait Exportable
         $filename =
             'public/' .
             $this->params['store'] .
-            ' - ' .
+            '_' .
             $this->params['report'] .
-            ' - ' .
+            '_' .
             $this->params['date'] .
             '.pdf';
 

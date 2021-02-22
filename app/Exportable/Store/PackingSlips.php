@@ -289,20 +289,20 @@ class PackingSlips
             $filename =
                 'public/' .
                 $this->params['store'] .
-                ' - ' .
+                '_' .
                 $orders->toArray()[0]['customer_name'] .
-                ' - ' .
+                '_' .
                 $orders->toArray()[0]['order_number'] .
-                ' - ' .
+                '_' .
                 $this->params['date'] .
                 '.pdf';
         } else {
             $filename =
                 'public/' .
                 $this->params['store'] .
-                ' - ' .
+                '_' .
                 $this->params['report'] .
-                ' - ' .
+                '_' .
                 $this->params['date'] .
                 '.pdf';
         }
