@@ -157,9 +157,11 @@ export default {
         });
       }
 
-      // sortedDays.sort(function(a, b) {
-      //   return new Date(a.day_friendly) - new Date(b.day_friendly);
-      // });
+      sortedDays.sort(function(a, b) {
+        return new Date(a.day_friendly) - new Date(b.day_friendly);
+      });
+
+      console.log(sortedDays);
 
       // Removing past dates
       sortedDays = sortedDays.filter(day => {
