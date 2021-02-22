@@ -194,6 +194,11 @@
             }}
           </div>
         </div>
+        <div slot="couponCode" slot-scope="props">
+          <div>
+            {{ props.row.couponCode }}
+          </div>
+        </div>
         <div slot="mealPlanDiscount" slot-scope="props">
           <div>
             {{
@@ -429,6 +434,7 @@ export default {
           totalPayments: "# Payments",
           subtotal: "Subtotal",
           couponReduction: "Coupon",
+          couponCode: "Coupon Code",
           mealPlanDiscount: "Subscription",
           salesTax: "Sales Tax",
           processingFee: "Processing Fee",
@@ -688,6 +694,7 @@ export default {
 
       this.payments.forEach(payment => {
         if (payment.couponReduction > 0) addedColumns.couponReduction = true;
+        if (payment.couponReduction > 0) addedColumns.couponCode = true;
         if (payment.mealPlanDiscount > 0) addedColumns.mealPlanDiscount = true;
         if (payment.salesTax > 0) addedColumns.salesTax = true;
         if (payment.processingFee > 0) addedColumns.processingFee = true;
@@ -710,6 +717,7 @@ export default {
       });
 
       if (addedColumns.couponReduction) columns.push("couponReduction");
+      if (addedColumns.couponReduction) columns.push("couponCode");
       if (addedColumns.mealPlanDiscount) columns.push("mealPlanDiscount");
       if (addedColumns.salesTax) columns.push("salesTax");
       if (addedColumns.processingFee) columns.push("processingFee");

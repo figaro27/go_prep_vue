@@ -60,6 +60,7 @@ class Payments
             'customer_name' => null,
             'preFeePreDiscount' => 0,
             'couponReduction' => 0,
+            'couponCode' => null,
             'mealPlanDiscount' => 0,
             'salesTax' => 0,
             'processingFee' => 0,
@@ -102,6 +103,7 @@ class Payments
                 $columns['customer_name'] = $order->customer_name ?? null;
                 $columns['preFeePreDiscount'] = $order->preFeePreDiscount;
                 $columns['couponReduction'] = $order->couponReduction;
+                $columns['couponCode'] = $order->couponCode;
                 $columns['mealPlanDiscount'] = $order->mealPlanDiscount;
                 $columns['salesTax'] = $order->salesTax;
                 $columns['processingFee'] = $order->processingFee;
@@ -150,6 +152,9 @@ class Payments
             if (($columnSum === 0.0 || $columnSum === 0) && $i !== 'orders') {
                 $params[$i] = false;
                 unset($columnSums[$i]);
+                if ($i === 'couponReduction') {
+                    unset($columnSums['couponCode']);
+                }
             } else {
                 $params[$i] = true;
             }
@@ -218,6 +223,7 @@ class Payments
                     unset($payment[$i]);
                 }
             }
+            unset($payment['couponCode']);
             array_push($dailySummaryRows, $payment);
         }
 
@@ -229,6 +235,7 @@ class Payments
             'orders' => 'Orders',
             'preFeePreDiscount' => 'Subtotal',
             'couponReduction' => '(Coupon)',
+            'couponCode' => '(Coupon Code)',
             'mealPlanDiscount' => '(Subscription)',
             'salesTax' => 'Sales Tax',
             'processingFee' => 'Processing Fee',
@@ -256,7 +263,8 @@ class Payments
                     if (
                         $dailySummary &&
                         $i !== 'order_number' &&
-                        $i !== 'customer_name'
+                        $i !== 'customer_name' &&
+                        $i !== 'couponCode'
                     ) {
                         $columnHeaders[] = $headers[$i];
                     } elseif (!$dailySummary && $i !== 'orders') {

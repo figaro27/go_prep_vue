@@ -56,6 +56,9 @@ $currency = $params->currency
             <th>Subtotal</th>
             @if ($params['couponReduction'])
             <th>(Coupon)</th>
+            @if (!$params['dailySummary'])
+            <th>(Coupon Code)</th>
+            @endif
             @endif
             @if ($params['mealPlanDiscount'])
             <th>(Subscription)</th>
