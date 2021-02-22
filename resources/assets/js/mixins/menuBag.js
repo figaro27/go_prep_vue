@@ -94,7 +94,7 @@ export default {
         });
       }
 
-      storeDeliveryDays = storeDeliveryDays.reverse();
+      // storeDeliveryDays = storeDeliveryDays.reverse();
 
       // Add all future dates with no cutoff for manual orders
       // if (this.context == "store") {
