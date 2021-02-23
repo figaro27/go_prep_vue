@@ -692,7 +692,7 @@ export default {
 
       this.payments.forEach(payment => {
         if (payment.couponReduction > 0) addedColumns.couponReduction = true;
-        if (payment.couponReduction > 0 && !filters.dailySummary)
+        if (payment.couponReduction > 0 && !this.filters.dailySummary)
           addedColumns.couponCode = true;
         if (payment.mealPlanDiscount > 0) addedColumns.mealPlanDiscount = true;
         if (payment.salesTax > 0) addedColumns.salesTax = true;
