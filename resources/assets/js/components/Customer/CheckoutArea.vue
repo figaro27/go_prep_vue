@@ -3874,6 +3874,10 @@ use next_delivery_dates
             this.clearBagDeliveryDate();
           }
 
+          if (response.response.data.error === "inactive_coupon") {
+            this.setBagCoupon(null);
+          }
+
           if (response.response.data.removeableMeal) {
             let removeableMeal = response.response.data.removeableMeal;
             this.bag.forEach(item => {

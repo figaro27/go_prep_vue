@@ -164,6 +164,21 @@ class CheckoutController extends UserController
                 }
             }
 
+            // Checking if entered coupon was deleted or made inactive
+
+            $couponId = $request->get('coupon_id');
+
+            if ($couponId && Coupon::where('id', $couponId)->count() === 0) {
+                return response()->json(
+                    [
+                        'message' =>
+                            'The coupon code you entered was deleted or made inactive by the store. Please try again.',
+                        'error' => 'inactive_coupon'
+                    ],
+                    400
+                );
+            }
+
             $deliveryDay = $request->get('delivery_day');
 
             // Beyond Vegan does same day delivery. Will turn this into a module / change when needed.
@@ -246,7 +261,6 @@ class CheckoutController extends UserController
             $shipping = $request->get('shipping');
             $weekIndex = (int) date('N', strtotime($deliveryDay));
             $isMultipleDelivery = (int) $request->get('isMultipleDelivery');
-            $couponId = $request->get('coupon_id');
             $couponReduction = $request->get('couponReduction');
             $couponCode = $request->get('couponCode');
             $couponReferralUserId = Coupon::where('id', $couponId)
