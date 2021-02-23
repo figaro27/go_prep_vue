@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Store\Onboarding;
 use Carbon\Carbon;
+use App\UserDetail;
 
 class RegisterController extends Controller
 {
@@ -96,17 +97,38 @@ class RegisterController extends Controller
 
     public function validateStep(Request $request, $step)
     {
+        $existingUser = UserDetail::where('phone', $request->get('phone'))
+            ->with('user')
+            ->first();
+        if ($existingUser) {
+            $existingUserEmail = preg_replace(
+                "/(?!^).(?=[^@]+@)/",
+                "*",
+                $existingUser->user->email
+            );
+        } else {
+            $existingUserEmail = null;
+        }
+
         switch ($step) {
             case '0':
-                $v = Validator::make($request->all(), [
-                    'role' => 'required|in:customer,store,guest',
-                    'email' =>
-                        'required|string|email|max:255|unique:users,email',
-                    'password' => 'required|string|min:6|confirmed',
-                    'first_name' => 'required',
-                    'last_name' => 'required',
-                    'phone' => 'required'
-                ]);
+                $v = Validator::make(
+                    $request->all(),
+                    [
+                        'role' => 'required|in:customer,store,guest',
+                        'email' =>
+                            'required|string|email|max:255|unique:users,email',
+                        'password' => 'required|string|min:6|confirmed',
+                        'first_name' => 'required',
+                        'last_name' => 'required',
+                        'phone' => 'required|unique:user_details,phone'
+                    ],
+                    [
+                        'phone.unique' =>
+                            'An account using this phone number already exists. Email: ' .
+                            $existingUserEmail
+                    ]
+                );
                 break;
 
             case '1':

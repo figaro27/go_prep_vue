@@ -49,6 +49,36 @@ class RegisterController extends StoreController
                 '@goprep.com';
         $password = $request->get('password');
 
+        $existingUser = User::where('email', $email)->first();
+
+        if ($existingUser) {
+            return response()->json(
+                [
+                    'message' =>
+                        'A user with this email address already exists. Please search the email in the customer box or add the email to your list of customers at the top.'
+                ],
+                400
+            );
+        }
+
+        $existingPhoneUser = UserDetail::where('phone', $request->get('phone'))
+            ->with('user')
+            ->first();
+        $existingUserEmail = $existingPhoneUser
+            ? $existingPhoneUser->user->email
+            : null;
+
+        if ($existingPhoneUser) {
+            return response()->json(
+                [
+                    'message' =>
+                        'A user with this phone number already exists. Please search the phone number in the customer box or add the email to your list of customers at the top: ' .
+                        $existingUserEmail
+                ],
+                400
+            );
+        }
+
         if (!$user) {
             $user = User::create([
                 'user_role_id' => 1,

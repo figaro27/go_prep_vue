@@ -478,6 +478,7 @@ export default {
   },
   data() {
     return {
+      error: null,
       showStatesBox: true,
       isTosVisible: false,
       isToaVisible: false,
@@ -703,6 +704,7 @@ export default {
         const resp = e.response.data;
         if (!_.isEmpty(resp.errors)) {
           this.$set(this.feedback.invalid, step, resp.errors);
+          this.error = resp.errors[Object.keys(resp.errors)[0]];
           this.$forceUpdate();
         }
         return false;
@@ -717,10 +719,7 @@ export default {
             this.step += 2;
           }
         } else if (this.form[1].accepted_tos === 0) {
-          this.$toastr.w(
-            "Please accept the terms of service.",
-            "Registration failed"
-          );
+          this.$toastr.w(this.error);
         } else this.$toastr.w("Please try again.", "Registration failed");
 
         this.$v.form.$touch();

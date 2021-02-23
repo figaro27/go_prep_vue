@@ -266,21 +266,24 @@ export default {
         this.form.state = this.form.state.value;
       }
 
-      axios.post("/api/me/register", form).then(async response => {
-        let resp = JSON.parse(JSON.stringify(response));
-        this.setBagCustomerModel(resp.data);
-        this.$parent.addCustomerModal = false;
-        this.form = {};
-        await this.refreshStoreCustomersNoOrders();
-        // await this.refreshStoreCustomers();
+      axios
+        .post("/api/me/register", form)
+        .then(async response => {
+          let resp = JSON.parse(JSON.stringify(response));
+          this.setBagCustomerModel(resp.data);
+          this.$parent.addCustomerModal = false;
+          this.form = {};
+          await this.refreshStoreCustomersNoOrders();
+          // await this.refreshStoreCustomers();
 
-        this.$toastr.s("Customer Added");
-        // this.$parent.setCustomer(resp.data);
-        //if (this.$route.params.manualOrder) this.$parent.getCards();
-      });
-      // .catch(e => {
-      //   this.$toastr.w("Please try again.", "Registration failed");
-      // });
+          this.$toastr.s("Customer Added");
+          // this.$parent.setCustomer(resp.data);
+          //if (this.$route.params.manualOrder) this.$parent.getCards();
+        })
+        .catch(e => {
+          let error = e.response.data.message;
+          this.$toastr.w(error);
+        });
     },
     checkExistingCustomer() {
       axios
