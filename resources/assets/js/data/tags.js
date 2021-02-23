@@ -8,7 +8,8 @@ let tags = [
   { id: 7, tag: "Low Sodium", slug: "low-sodium" },
   { id: 8, tag: "High Protein", slug: "high-protein" },
   { id: 9, tag: "Low Cholesterol", slug: "low-cholesterol" },
-  { id: 10, tag: "Low Saturated Fat", slug: "low-saturated-fat" }
+  { id: 10, tag: "Low Saturated Fat", slug: "low-saturated-fat" },
+  { id: 11, tag: "Gluten Free", slug: "gluten-free" }
 ];
 
 export default tags;
