@@ -1840,9 +1840,6 @@ export default {
         }
       }
       settings.transferType = this.transferTypes;
-      if (!this.color.includes("#")) {
-        this.color = "#" + this.color;
-      }
       settings.color = this.color;
 
       if (this.logoUpdated) {
