@@ -89,7 +89,12 @@
         </button>
       </div>
     </v-client-table>
-    <b-modal size="xl" v-model="transactionsModal" hide-header>
+    <b-modal
+      size="xl"
+      v-model="transactionsModal"
+      hide-header
+      @close="closePayout()"
+    >
       <div v-if="selectedPayout" class="d-flex d-inline mt-4 mb-1">
         <p class="mr-4 font-18">
           <strong>Initiated:</strong>
@@ -247,6 +252,11 @@ export default {
         this.transactions = resp.data;
         this.transactionsModal = true;
       });
+    },
+    closePayout() {
+      this.selectedPayout = null;
+      this.transactions = [];
+      this.transactionsModal = false;
     },
     async exportData(report, format = "pdf", print = false) {
       let params = this.filters;

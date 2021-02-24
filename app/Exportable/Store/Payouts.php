@@ -97,10 +97,14 @@ class Payouts
                         $payout->arrival_date
                     )->format('D, m/d/Y'),
                     'Bank Name' => $payout->bank_name,
-                    'Total' => Money::$currency($payout->amount)->format(),
+                    'Total' => Money::$currency(
+                        $payout->amount * 100
+                    )->format(),
                     'Status' => $payout->status
                 ];
             });
+
+        dd($payouts);
 
         if ($type !== 'pdf') {
             $payouts->prepend([
