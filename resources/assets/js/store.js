@@ -136,6 +136,9 @@ const state = {
     delivery_fee_zip_codes: {
       data: {}
     },
+    delivery_fee_ranges: {
+      data: {}
+    },
     holiday_transfer_times: {
       data: {}
     },
@@ -971,6 +974,10 @@ const mutations = {
     state.store.delivery_fee_zip_codes.data = deliveryFeeZipCodes;
   },
 
+  storeDeliveryFeeRanges(state, { deliveryFeeRanges }) {
+    state.store.delivery_fee_ranges.data = deliveryFeeRanges;
+  },
+
   storeHolidayTransferTimes(state, { holidayTransferTimes }) {
     state.store.holiday_transfer_times.data = holidayTransferTimes;
   },
@@ -1618,6 +1625,16 @@ const actions = {
 
     try {
       if (
+        !_.isEmpty(data.store.delivery_fee_ranges) &&
+        _.isObject(data.store.delivery_fee_ranges)
+      ) {
+        let deliveryFeeRanges = data.store.delivery_fee_ranges;
+        commit("storeDeliveryFeeRanges", { deliveryFeeRanges });
+      }
+    } catch (e) {}
+
+    try {
+      if (
         !_.isEmpty(data.store.holiday_transfer_times) &&
         _.isObject(data.store.holiday_transfer_times)
       ) {
@@ -2254,6 +2271,16 @@ const actions = {
       commit("storeDeliveryFeeZipCodes", { deliveryFeeZipCodes: data });
     } else {
       throw new Error("Failed to retrieve delivery fee zip codes");
+    }
+  },
+
+  async refreshStoreDeliveryFeeRanges({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/deliveryFeeRanges");
+    const { data } = await res;
+    if (_.isObject(data)) {
+      commit("storeDeliveryFeeRanges", { deliveryFeeRanges: data });
+    } else {
+      throw new Error("Failed to retrieve delivery fee ranges");
     }
   },
 
@@ -3431,6 +3458,13 @@ const getters = {
       return {};
     }
   },
+  viewedStoreDeliveryFeeRanges: state => {
+    try {
+      return state.viewed_store.delivery_fee_ranges || {};
+    } catch (e) {
+      return {};
+    }
+  },
   viewedStoreHolidayTransferTimes: state => {
     try {
       return state.viewed_store.holiday_transfer_times || {};
@@ -3892,6 +3926,14 @@ const getters = {
   storeDeliveryFeeZipCodes: state => {
     try {
       return state.store.delivery_fee_zip_codes.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+
+  storeDeliveryFeeRanges: state => {
+    try {
+      return state.store.delivery_fee_ranges.data || {};
     } catch (e) {
       return {};
     }

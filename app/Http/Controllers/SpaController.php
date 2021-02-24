@@ -91,6 +91,7 @@ class SpaController extends Controller
                         'meals.addons',
                         'meals.macros',
                         'deliveryFeeZipCodes',
+                        'deliveryFeeRanges',
                         'holidayTransferTimes',
                         'menuSettings'
                     ])->find(STORE_ID)
@@ -125,6 +126,7 @@ class SpaController extends Controller
                         'reportSettings',
                         'smsSettings',
                         'deliveryFeeZipCodes',
+                        'deliveryFeeRanges',
                         'holidayTransferTimes',
                         'menuSettings'
                     ])
@@ -163,6 +165,7 @@ class SpaController extends Controller
                         'meals.addons',
                         'meals.macros',
                         'deliveryFeeZipCodes',
+                        'deliveryFeeRanges',
                         'holidayTransferTimes',
                         'menuSettings'
                     ])->find(STORE_ID)
@@ -272,6 +275,7 @@ class SpaController extends Controller
                     'reportSettings',
                     'smsSettings',
                     'deliveryFeeZipCodes',
+                    'deliveryFeeRanges',
                     'deliveryDayZipCodes',
                     'deliveryDays',
                     'holidayTransferTimes',
@@ -301,6 +305,7 @@ class SpaController extends Controller
                     'pickupLocations',
                     'deliveryDays',
                     'deliveryFeeZipCodes',
+                    'deliveryFeeRanges',
                     'deliveryDayZipCodes',
                     'holidayTransferTimes',
                     'menuSettings'
@@ -1423,6 +1428,7 @@ class SpaController extends Controller
                 'reportSettings',
                 'smsSettings',
                 'deliveryFeeZipCodes',
+                'deliveryFeeRanges',
                 'holidayTransferTimes',
                 'menuSettings'
             ])

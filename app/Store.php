@@ -206,6 +206,11 @@ class Store extends Model
         return $this->hasMany('App\LineItem');
     }
 
+    public function deliveryFeeRanges()
+    {
+        return $this->hasMany('App\DeliveryFeeRange');
+    }
+
     public function deliveryFeeZipCodes()
     {
         return $this->hasMany('App\DeliveryFeeZipCode');

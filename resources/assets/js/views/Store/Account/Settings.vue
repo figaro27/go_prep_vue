@@ -123,6 +123,113 @@
 
                 <b-modal
                   size="md"
+                  v-model="deliveryFeeRangeModal"
+                  title="Delivery Fee Ranges"
+                  hide-footer
+                  @close="closeDeliveryFeeRangeModal()"
+                >
+                  <center>
+                    <b-btn
+                      variant="success"
+                      class="mt-2 mb-3"
+                      @click="addDeliveryFeeRange()"
+                      >Add</b-btn
+                    >
+                  </center>
+                  <div class="d-flex">
+                    <p style="width:33%" class="mr-2 strong">Starting Miles</p>
+                    <p style="width:33%" class="strong">Ending Miles</p>
+                    <p style="width:33%" class="mr-2 strong">Price</p>
+                  </div>
+                  <b-form @submit.prevent="updateDeliveryFeeRanges()">
+                    <li
+                      v-for="range in storeDeliveryFeeRanges"
+                      class="d-flex mb-2"
+                    >
+                      <b-form-input
+                        v-model="range.starting_miles"
+                        type="number"
+                        min="0"
+                        class="mr-2"
+                        style="width:28%"
+                        required
+                      ></b-form-input>
+                      <b-form-input
+                        v-model="range.ending_miles"
+                        type="number"
+                        min="0"
+                        class="mr-2"
+                        style="width:28%"
+                        required
+                      ></b-form-input>
+                      <b-form-input
+                        v-model="range.price"
+                        type="number"
+                        min="0"
+                        class="mr-2"
+                        style="width:28%"
+                        required
+                      ></b-form-input>
+                      <b-btn
+                        variant="danger"
+                        @click="deleteDeliveryFeeRange(range.id)"
+                        size="sm"
+                        style="width:12%"
+                        >Delete</b-btn
+                      >
+                    </li>
+                    <li
+                      v-for="range in newDeliveryFeeRanges"
+                      class="d-flex mb-2"
+                    >
+                      <b-form-input
+                        v-model="range.starting_miles"
+                        type="number"
+                        min="0"
+                        class="mr-2"
+                        style="width:28%"
+                        required
+                      ></b-form-input>
+                      <b-form-input
+                        v-model="range.ending_miles"
+                        type="number"
+                        min="0"
+                        class="mr-2"
+                        style="width:28%"
+                        required
+                      ></b-form-input>
+                      <b-form-input
+                        v-model="range.price"
+                        type="number"
+                        min="0"
+                        class="mr-2"
+                        style="width:28%"
+                        required
+                      ></b-form-input>
+                      <b-btn
+                        variant="danger"
+                        @click="deleteDeliveryFeeRange(range.index, false)"
+                        size="sm"
+                        style="width:12%"
+                        >Delete</b-btn
+                      >
+                    </li>
+                    <center>
+                      <b-btn
+                        variant="secondary"
+                        class="mt-2 mr-2"
+                        @click="closeDeliveryFeeRangeModal()"
+                        >Back</b-btn
+                      >
+                      <b-btn variant="primary" class="mt-2" type="submit"
+                        >Save</b-btn
+                      >
+                    </center>
+                  </b-form>
+                </b-modal>
+
+                <b-modal
+                  size="md"
                   v-model="deliveryFeeZipCodeModal"
                   title="Delivery Fee By Zip Code"
                   @ok="updateDeliveryFeeZipCodes"
@@ -489,7 +596,7 @@
                       <span class="mr-1">Delivery Fee Type</span>
                       <img
                         v-b-popover.hover="
-                          'Either choose to apply a flat fee no matter how far the customer is, a flat fee based on the zip code, or a fee based on the distance of the customer in miles. If you choose mileage, you set the base amount first and then the amount per mile. For example - Base amount - $3.00 and then .75 cents per mile. The base amount guarantees you at least receive that amount before the per mile fee gets added.'
+                          'Either choose to apply a flat fee no matter how far the customer is, a flat fee based on the zip code, or a fee based on the distance of the customer in miles. If you choose mileage, you set the base amount first and then the amount per mile. For example - Base amount - $3.00 and then .75 cents per mile. The base amount guarantees you at least receive that amount before the per mile fee gets added. Choose range to specify different prices for different mile range groupings.'
                         "
                         title="Delivery Fee Type"
                         src="/images/store/popover.png"
@@ -506,6 +613,9 @@
                       >
                       <b-form-radio name="mileage" value="mileage"
                         >Mileage</b-form-radio
+                      >
+                      <b-form-radio name="range" value="range"
+                        >Range</b-form-radio
                       >
                     </b-form-radio-group>
 
@@ -530,6 +640,16 @@
                           storeSettings.deliveryFeeType === 'zip'
                       "
                       @click="setDeliveryFeeZipCodes()"
+                      >Set Rates</b-btn
+                    >
+                    <b-btn
+                      variant="primary"
+                      class="mt-3"
+                      v-if="
+                        storeSettings.applyDeliveryFee &&
+                          storeSettings.deliveryFeeType === 'range'
+                      "
+                      @click="deliveryFeeRangeModal = true"
                       >Set Rates</b-btn
                     >
                     <div class="row">
@@ -1637,6 +1757,8 @@ export default {
       deliveryFeeCity: {},
       deliveryFeeZipCode: {},
       deliveryFeeZipCodeModal: false,
+      deliveryFeeRangeModal: false,
+      newDeliveryFeeRanges: [],
       deliveryFeeZipCodes: [],
       logoUpdated: false,
       acceptedTOA: 0,
@@ -1680,6 +1802,7 @@ export default {
       storeModules: "storeModules",
       storeModuleSettings: "storeModuleSettings",
       storeDeliveryFeesZipCodes: "storeDeliveryFeeZipCodes",
+      storeDeliveryFeeRanges: "storeDeliveryFeeRanges",
       isLoading: "isLoading"
     }),
     storeDetails() {
@@ -1805,6 +1928,7 @@ export default {
         this.payments_url = resp.data.url;
       }
     });
+    ``;
 
     this.checkAcceptedTOA();
 
@@ -1821,6 +1945,7 @@ export default {
       "refreshStoreModules",
       "refreshStoreModuleSettings",
       "refreshStoreDeliveryFeeZipCodes",
+      "refreshStoreDeliveryFeeRanges",
       "disableSpinner",
       "enableSpinner"
     ]),
@@ -2200,8 +2325,43 @@ export default {
       });
       this.updateDeliveryFeeZipCodes();
     },
+    closeDeliveryFeeRangeModal() {
+      this.newDeliveryFeeRanges = [];
+      this.deliveryFeeRangeModal = false;
+    },
     getStateNames(country = "US") {
       return states.selectOptions(country);
+    },
+    addDeliveryFeeRange() {
+      this.newDeliveryFeeRanges.push({
+        price: null,
+        starting_miles: null,
+        ending_miles: null,
+        index:
+          this.newDeliveryFeeRanges.length == 0
+            ? 0
+            : this.newDeliveryFeeRanges.length
+      });
+    },
+    updateDeliveryFeeRanges() {
+      let ranges = this.storeDeliveryFeeRanges.concat(
+        this.newDeliveryFeeRanges
+      );
+      axios.post("/api/me/deliveryFeeRanges", ranges).then(resp => {
+        this.$toastr.s("Delivery fee ranges updated.");
+        this.refreshStoreDeliveryFeeRanges();
+        this.newDeliveryFeeRanges = [];
+      });
+    },
+    deleteDeliveryFeeRange(id, existing = true) {
+      if (existing) {
+        axios.delete("/api/me/deliveryFeeRanges/" + id).then(resp => {
+          this.$toastr.s("Delivery fee range deleted.");
+          this.refreshStoreDeliveryFeeRanges();
+        });
+      } else {
+        this.newDeliveryFeeRanges.splice(id, 1);
+      }
     },
     formatZips: _.debounce(function() {
       this.storeSettings.delivery_distance_zipcodes = this.storeSettings.delivery_distance_zipcodes

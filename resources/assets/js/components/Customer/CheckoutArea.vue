@@ -2678,6 +2678,26 @@ use next_delivery_dates
                 : 0;
               fee =
                 parseFloat(mileageBase) + parseFloat(mileagePerMile) * distance;
+            } else if (deliveryFeeType === "range") {
+              if (!this.loggedIn) {
+                fee =
+                  this.store.delivery_fee_ranges.length > 0
+                    ? this.store.delivery_fee_ranges[0].price
+                    : deliveryFee;
+              } else {
+                let distance = this.store.distance
+                  ? Math.ceil(parseFloat(this.store.distance))
+                  : 0;
+
+                let range = this.store.delivery_fee_ranges.find(range => {
+                  return (
+                    distance >= range.starting_miles &&
+                    distance < range.ending_miles
+                  );
+                });
+
+                fee = range ? parseFloat(range.price) : parseFloat(deliveryFee);
+              }
             }
 
             if (this.storeModules.multipleDeliveryDays) {

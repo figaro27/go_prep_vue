@@ -655,6 +655,11 @@ foreach (
                             );
 
                             Route::resource(
+                                'deliveryFeeRanges',
+                                'DeliveryFeeRangeController'
+                            );
+
+                            Route::resource(
                                 'holidayTransferTimes',
                                 'HolidayTransferTimeController'
                             );
