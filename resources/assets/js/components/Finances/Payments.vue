@@ -498,9 +498,6 @@ export default {
       nextDeliveryDates: "storeNextDeliveryDates"
     }),
     tableData() {
-      if (this.store.id === 106) {
-        return [];
-      }
       let filters = { ...this.filters };
 
       let payments = [];
@@ -682,9 +679,6 @@ export default {
       return payments;
     },
     columns() {
-      if (this.store.id === 106) {
-        return [];
-      }
       let columns = ["paid_at", "delivery_date"];
       if (this.filters.dailySummary) {
         columns.push("totalPayments");
