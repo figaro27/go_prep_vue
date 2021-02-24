@@ -89,14 +89,7 @@
         </button>
       </div>
     </v-client-table>
-    <b-modal
-      size="xl"
-      v-model="transactionsModal"
-      hide-header
-      @close="closePayout()"
-      @ok="closePayout()"
-      @backdrop="closePayout()"
-    >
+    <b-modal size="xl" v-model="transactionsModal" hide-header>
       <div v-if="selectedPayout" class="d-flex d-inline mt-4 mb-1">
         <p class="mr-4 font-18">
           <strong>Initiated:</strong>
@@ -250,15 +243,12 @@ export default {
       this.refreshTableData();
     },
     viewPayout(payout) {
+      this.$refs["v-table"].setFilter("");
       this.selectedPayout = payout;
       axios.post("/api/me/getBalanceHistory", { payout: payout }).then(resp => {
         this.transactions = resp.data;
         this.transactionsModal = true;
       });
-    },
-    closePayout() {
-      console.log(1);
-      this.$refs["v-table"].setFilter("");
     },
     async exportData(report, format = "pdf", print = false) {
       let params = this.filters;
