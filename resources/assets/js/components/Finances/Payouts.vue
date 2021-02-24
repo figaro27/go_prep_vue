@@ -123,6 +123,7 @@
         :columns="transactionsColumns"
         :options="transactionsOptions"
         :data="transactionsTableData"
+        ref="v-table"
       >
         <div slot="created_at" slot-scope="props">
           {{ moment(props.row.created_at).format("dddd, MMM Do") }}
@@ -256,9 +257,8 @@ export default {
       });
     },
     closePayout() {
-      this.selectedPayout = null;
-      this.transactions = [];
-      this.transactionsModal = false;
+      console.log(1);
+      this.$refs["v-table"].setFilter("");
     },
     async exportData(report, format = "pdf", print = false) {
       let params = this.filters;
