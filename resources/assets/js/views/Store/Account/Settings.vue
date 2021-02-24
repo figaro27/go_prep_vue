@@ -649,7 +649,7 @@
                         storeSettings.applyDeliveryFee &&
                           storeSettings.deliveryFeeType === 'range'
                       "
-                      @click="deliveryFeeRangeModal = true"
+                      @click="openDeliveryFeeRangeModal()"
                       >Set Rates</b-btn
                     >
                     <div class="row">
@@ -2324,6 +2324,20 @@ export default {
         shipping: this.deliveryFeeZipCode.shipping
       });
       this.updateDeliveryFeeZipCodes();
+    },
+    openDeliveryFeeRangeModal() {
+      if (Object.values(this.storeDeliveryFeeRanges).length === 0) {
+        this.newDeliveryFeeRanges.push({
+          price: null,
+          starting_miles: null,
+          ending_miles: null,
+          index:
+            this.newDeliveryFeeRanges.length == 0
+              ? 0
+              : this.newDeliveryFeeRanges.length
+        });
+      }
+      this.deliveryFeeRangeModal = true;
     },
     closeDeliveryFeeRangeModal() {
       this.newDeliveryFeeRanges = [];

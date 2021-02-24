@@ -1,25 +1,18 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
+      <b-alert style="background-color:#EBFAFF" show dismissible>
         <p>
-          <span class="strong">Update - New & Improved Financials Page</span
-          ><br />
-          1) Advanced Payments Report - Includes additional filters and a daily
-          summary report (how much was made each order date or delivery
-          date).<br />
-          2) Payouts Report - See a summary and breakdown of the batched
-          transfers to your bank account.<br />
-          3) Refunds Area - Keep track of any refunds issued to your
-          customers.<br />
-          4) Card Declines - View a record of any credit card related issues
-          with your customers.
-          <br />
-          <router-link to="/store/financials"
+          <span class="strong">Update - Delivery Fee Ranges</span><br />
+          You can now choose "Range" as a delivery fee option on the Settings
+          page. This lets you add prices for different starting & ending mile
+          ranges. Example: 0-10 miles - $5.00, 10-20 miles - $10.00, 20-30 miles
+          - $15.00<br />
+          <router-link to="/store/account/settings"
             ><strong>Visit it here.</strong></router-link
           >
         </p>
-      </b-alert> -->
+      </b-alert>
 
       <div class="card">
         <div class="card-body">
