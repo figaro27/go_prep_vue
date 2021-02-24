@@ -17,7 +17,6 @@
 $currency = $params->currency
 @endphp
 </head>
-
 <body class="{{ $body_classes }}">
   <div id="print-area">
     <h1>Payments @if ($params['dailySummary'] == 'true') (Daily Summary) @endif</h1>
