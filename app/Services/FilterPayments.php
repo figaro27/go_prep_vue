@@ -159,20 +159,22 @@ class FilterPayments
 
             $orders = $orders->get();
 
+            $payment_gateway = $this->store->settings->payment_gateway;
+
             foreach ($orders as $order) {
                 // Adds any additinal charges on the order to the total order amount
                 // Calculates and subtracts the total transaction fee (Stripe & GoPrep)
                 $order->preTransactionFeeAmount =
                     $order->amount + $order->chargedAmount;
                 $order->transactionFee =
-                    $this->store->settings->payment_gateway === 'stripe'
+                    $payment_gateway === 'stripe'
                         ? ($order->afterDiscountBeforeFees +
                                 $order->chargedAmount) *
                             ($application_fee / 100)
                         : 0;
                 if (
                     !$order->cashOrder &&
-                    $this->store->settings->payment_gateway === 'stripe' &&
+                    $payment_gateway === 'stripe' &&
                     $order->amount > 0.5
                 ) {
                     $order->transactionFee +=
