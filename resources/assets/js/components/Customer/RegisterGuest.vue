@@ -289,8 +289,6 @@ export default {
     }
   },
   mounted() {
-    this.$refs.tos.show();
-
     this.form[0].role = "guest";
     this.form[0].email =
       "noemail-guest-" + this.store.id + "-" + this.uniqid() + "@goprep.com";
