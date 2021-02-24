@@ -94,6 +94,8 @@
       v-model="transactionsModal"
       hide-header
       @close="closePayout()"
+      @ok="closePayout()"
+      @backdrop="closePayout()"
     >
       <div v-if="selectedPayout" class="d-flex d-inline mt-4 mb-1">
         <p class="mr-4 font-18">

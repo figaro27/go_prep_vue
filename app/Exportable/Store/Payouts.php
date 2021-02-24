@@ -104,8 +104,6 @@ class Payouts
                 ];
             });
 
-        dd($payouts);
-
         if ($type !== 'pdf') {
             $payouts->prepend([
                 'Initiated',
