@@ -9,6 +9,7 @@ let tags = [
   { id: 8, tag: "High Protein", slug: "high-protein" },
   { id: 9, tag: "Low Cholesterol", slug: "low-cholesterol" },
   { id: 10, tag: "Gluten Free", slug: "gluten_free" },
+  // Accidentally deleted row #11
   { id: 12, tag: "Vegetarian", slug: "vegetarian" }
 ];
 
