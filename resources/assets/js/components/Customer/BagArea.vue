@@ -524,12 +524,7 @@
           placeholder="Private notes found on your orders page and Order Summary report."
         ></textarea>
       </div>
-      <div
-        class="col-md-12 pt-2"
-        v-if="
-          context === 'store' || store.module_settings.orderNotesForCustomer
-        "
-      >
+      <div class="col-md-12 pt-2" v-if="context === 'store'">
         <h4 v-if="context === 'store'">Public Notes</h4>
         <h4 v-else>Notes</h4>
         <textarea
