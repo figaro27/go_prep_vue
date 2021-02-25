@@ -9,8 +9,7 @@ let tags = [
   { id: 8, tag: "High Protein", slug: "high-protein" },
   { id: 9, tag: "Low Cholesterol", slug: "low-cholesterol" },
   { id: 10, tag: "Low Saturated Fat", slug: "low-saturated-fat" },
-  // Accidentally deleted row #11 from the table
-  { id: 12, tag: "Gluten Free", slug: "gluten-free" }
+  { id: 11, tag: "Gluten Free", slug: "gluten-free" }
 ];
 
 export default tags;
