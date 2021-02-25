@@ -764,7 +764,7 @@
 
                     <div class="content-text-wrap">
                       <p
-                        style="word-break: break-all;"
+                        style="word-break: break-all;margin-bottom:0px;padding-bottom:0px"
                         v-html="getMealTitle(meal.title)"
                       ></p>
                       <div class="mt-1 content-text" v-if="!smallScreen">
@@ -772,6 +772,7 @@
                       </div>
                       <div
                         class="title"
+                        style="margin-top:5px;margin-bottom:0px;padding-bottom:0px"
                         v-if="storeSettings.showMacros && showMacros(meal)"
                       >
                         <div class="title macrosArea d-flex ">
