@@ -246,6 +246,8 @@
                 id="meal-instructions"
                 class="form-control"
                 type="number"
+                min="0"
+                max="9999999"
               ></b-form-input>
             </b-tab>
 
