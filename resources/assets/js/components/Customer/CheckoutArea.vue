@@ -977,7 +977,12 @@
     </div>
     <li
       class="transfer-instruction mt-2"
-      v-if="!$route.params.storeView && !storeOwner && loggedIn"
+      v-if="
+        !$route.params.storeView &&
+          !storeOwner &&
+          loggedIn &&
+          transferInstructions
+      "
     >
       <p class="strong">{{ selectedTransferType }} Instructions</p>
       <p v-html="transferInstructions"></p>
