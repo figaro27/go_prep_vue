@@ -681,6 +681,12 @@
                         {{ format.money(size.price, storeSettings.currency) }}
                       </b-dropdown-item>
                     </b-dropdown>
+                    <thumbnail
+                      style="width:80px;margin-top:5px"
+                      v-if="meal.image != null && smallScreen"
+                      :src="meal.image.url_thumb"
+                      :spinner="false"
+                    ></thumbnail>
                     <!-- Old read only box showing quantity of meal added to the bag already instead of input box -->
 
                     <!-- <b-form-input
@@ -746,7 +752,11 @@
                     style="position: relative;"
                     @click="showMeal(meal, group)"
                   >
-                    <div class="image-area" style="position: relative;">
+                    <div
+                      class="image-area"
+                      style="position: relative;"
+                      v-if="!smallScreen"
+                    >
                       <thumbnail
                         class="text-menu-image"
                         v-if="meal.image != null"
