@@ -15,81 +15,84 @@
     </div>
 
     <div v-else>
-      <div class="mb-4">
-        <b-button variant="primary" @click="addAddon()"
-          >Add Meal Addon</b-button
-        >
-        <img
-          v-b-popover.hover="
-            'Example: Extra meat. Please indicate the price increase that will be added to the overall meal. If you use ingredients, the Adjust Ingredients button lets you adjust how the particular addon affects the overall ingredients for the meal.'
-          "
-          title="Meal Addon"
-          src="/images/store/popover.png"
-          class="popover-size"
-        />
-      </div>
+      <b-form @submit.prevent="save">
+        <div class="mb-4">
+          <b-button variant="primary" @click="addAddon()"
+            >Add Meal Addon</b-button
+          >
+          <img
+            v-b-popover.hover="
+              'Example: Extra meat. Please indicate the price increase that will be added to the overall meal. If you use ingredients, the Adjust Ingredients button lets you adjust how the particular addon affects the overall ingredients for the meal.'
+            "
+            title="Meal Addon"
+            src="/images/store/popover.png"
+            class="popover-size"
+          />
+        </div>
 
-      <div v-for="(addon, i) in meal.addons" :key="addon.id">
-        <!-- <div class="addon-header mb-2">
+        <div v-for="(addon, i) in meal.addons" :key="addon.id">
+          <!-- <div class="addon-header mb-2">
           <h5 class="d-inline-block">#{{ i + 1 }}. {{ addon.title }}</h5>
         </div> -->
-        <b-row class="mb-3">
-          <b-col cols="6">
-            <b-input
-              v-model="addon.title"
-              placeholder="i.e. Extra Protein"
-            ></b-input>
-          </b-col>
-          <b-col>
-            <money
-              :disabled="addon.id === -1"
-              required
-              v-model="addon.price"
-              :min="0.1"
-              :max="999.99"
-              class="form-control"
-              v-bind="{ prefix: storeCurrencySymbol }"
-            ></money>
-          </b-col>
-          <b-col>
-            <b-select
-              v-model="addon.meal_size_id"
-              :options="sizeOptions"
-            ></b-select>
-          </b-col>
-          <b-col>
-            <b-btn
-              variant="primary"
-              @click="changeAddonIngredients(i, addon.meal_size_id)"
-              >Adjust Ingredients</b-btn
-            >
-          </b-col>
-          <b-col>
-            <b-btn
-              variant="danger"
-              @click="deleteAddon(addon.id)"
-              class="pull-right"
-              >Delete</b-btn
-            >
-          </b-col>
-        </b-row>
-      </div>
+          <b-row class="mb-3">
+            <b-col cols="6">
+              <b-input
+                required
+                v-model="addon.title"
+                placeholder="i.e. Extra Protein"
+              ></b-input>
+            </b-col>
+            <b-col>
+              <money
+                :disabled="addon.id === -1"
+                required
+                v-model="addon.price"
+                :min="0.1"
+                :max="999.99"
+                class="form-control"
+                v-bind="{ prefix: storeCurrencySymbol }"
+              ></money>
+            </b-col>
+            <b-col>
+              <b-select
+                v-model="addon.meal_size_id"
+                :options="sizeOptions"
+              ></b-select>
+            </b-col>
+            <b-col>
+              <b-btn
+                variant="primary"
+                @click="changeAddonIngredients(i, addon.meal_size_id)"
+                >Adjust Ingredients</b-btn
+              >
+            </b-col>
+            <b-col>
+              <b-btn
+                variant="danger"
+                @click="deleteAddon(addon.id)"
+                class="pull-right"
+                >Delete</b-btn
+              >
+            </b-col>
+          </b-row>
+        </div>
 
-      <div v-if="meal.addons.length" class="mt-4">
-        <b-button variant="success" @click="addAddon()"
-          >Add Meal Addon</b-button
-        >
-        <b-btn
-          variant="warning"
-          v-if="meal.sizes.length > 0"
-          @click="duplicateAddons(addon)"
-          :disabled="duplicated"
-          >Duplicate Addons for All Sizes</b-btn
-        >
-        <b-button variant="primary" @click="save()" class="pull-right"
-          >Save</b-button
-        >
-      </div>
+        <div v-if="meal.addons.length" class="mt-4">
+          <b-button variant="success" @click="addAddon()"
+            >Add Meal Addon</b-button
+          >
+          <b-btn
+            variant="warning"
+            v-if="meal.sizes.length > 0"
+            @click="duplicateAddons(addon)"
+            :disabled="duplicated"
+            >Duplicate Addons for All Sizes</b-btn
+          >
+          <b-button variant="primary" type="submit" class="pull-right"
+            >Save</b-button
+          >
+        </div>
+      </b-form>
     </div>
   </div>
 </template>

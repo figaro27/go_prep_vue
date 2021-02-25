@@ -19,142 +19,145 @@
     </div>
 
     <div v-else>
-      <div class="mb-4">
-        <b-button variant="primary" @click="addComponent()"
-          >Add Meal Component</b-button
-        >
-        <img
-          v-b-popover.hover="
-            'Example: Choose your protein. Minimum and maximum sets the requirement that the customer needs to choose. For example - minimum 1 would be \'Choose at least 1 protein.\' Maximum 3 would be \'Choose up to 3 veggies.\''
-          "
-          title="Meal Components"
-          src="/images/store/popover.png"
-          class="popover-size"
-        />
-      </div>
+      <b-form @submit.prevent="save">
+        <div class="mb-4">
+          <b-button variant="primary" @click="addComponent()"
+            >Add Meal Component</b-button
+          >
+          <img
+            v-b-popover.hover="
+              'Example: Choose your protein. Minimum and maximum sets the requirement that the customer needs to choose. For example - minimum 1 would be \'Choose at least 1 protein.\' Maximum 3 would be \'Choose up to 3 veggies.\''
+            "
+            title="Meal Components"
+            src="/images/store/popover.png"
+            class="popover-size"
+          />
+        </div>
 
-      <div
-        v-for="(component, i) in meal.components"
-        :key="component.id"
-        role="tablist"
-      >
-        <div class="component-header mb-2">
-          <h5 class="d-inline-block">#{{ i + 1 }}. {{ component.title }}</h5>
-          <b-btn
-            variant="danger"
-            class="pull-right"
-            @click="deleteComponent(component.id)"
-            >Delete</b-btn
+        <div
+          v-for="(component, i) in meal.components"
+          :key="component.id"
+          role="tablist"
+        >
+          <div class="component-header mb-2">
+            <h5 class="d-inline-block">#{{ i + 1 }}. {{ component.title }}</h5>
+            <b-btn
+              variant="danger"
+              class="pull-right"
+              @click="deleteComponent(component.id)"
+              >Delete</b-btn
+            >
+          </div>
+          <b-row>
+            <b-col cols="6">
+              <b-form-group label="Title">
+                <b-input
+                  required
+                  v-model="component.title"
+                  placeholder="i.e. Choose Your Protein"
+                ></b-input>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group label="Minimum">
+                <b-input v-model="component.minimum" required></b-input>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group label="Maximum">
+                <b-input v-model="component.maximum" required></b-input>
+              </b-form-group>
+            </b-col>
+          </b-row>
+
+          <div class="font-weight-bold">Component Options:</div>
+
+          <table class="table">
+            <thead>
+              <th class="border-top-0">Title</th>
+              <th class="border-top-0">Price</th>
+              <th class="border-top-0">Meal Size</th>
+              <th class="border-top-0">Ingredients</th>
+              <th class="border-top-0"></th>
+            </thead>
+
+            <tbody>
+              <tr v-for="(option, x) in component.options" :key="option.id">
+                <td>
+                  <b-input v-model="option.title" required></b-input>
+                </td>
+                <td>
+                  <money
+                    :disabled="option.id === -1"
+                    required
+                    v-model="option.price"
+                    :min="0.1"
+                    :max="999.99"
+                    class="form-control"
+                    v-bind="{ prefix: storeCurrencySymbol }"
+                  ></money>
+                </td>
+                <td>
+                  <b-select
+                    v-model="option.meal_size_id"
+                    :options="sizeOptions"
+                  ></b-select>
+                </td>
+                <td>
+                  <b-btn
+                    variant="primary"
+                    @click="changeOptionIngredients(i, x, option.meal_size_id)"
+                    >Adjust Ingredients</b-btn
+                  >
+                </td>
+                <td>
+                  <b-btn variant="link" @click="deleteComponentOption(i, x)">
+                    <i class="fa fa-close"></i>
+                  </b-btn>
+                </td>
+              </tr>
+            </tbody>
+
+            <tfoot>
+              <tr>
+                <td>
+                  <b-btn
+                    variant="success"
+                    @click="
+                      component.options.push({
+                        //id: 100 + component.options.length,
+                        title: '',
+                        price: null,
+                        ingredients: [],
+                        meal_size_id: null
+                      })
+                    "
+                    >Add Option</b-btn
+                  >
+                  <b-btn
+                    variant="warning"
+                    v-if="meal.sizes.length > 0"
+                    @click="duplicateOptions(component)"
+                    :disabled="duplicated"
+                    >Duplicate Options for All Sizes</b-btn
+                  >
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <hr v-if="i < meal.components.length - 1" class="my-4" />
+        </div>
+
+        <div v-if="meal.components.length" class="mt-4">
+          <b-button variant="primary" @click="addComponent()"
+            >Add Meal Component</b-button
+          >
+          <b-button variant="primary" type="submit" class="pull-right"
+            >Save</b-button
           >
         </div>
-        <b-row>
-          <b-col cols="6">
-            <b-form-group label="Title">
-              <b-input
-                v-model="component.title"
-                placeholder="i.e. Choose Your Protein"
-              ></b-input>
-            </b-form-group>
-          </b-col>
-          <b-col>
-            <b-form-group label="Minimum">
-              <b-input v-model="component.minimum"></b-input>
-            </b-form-group>
-          </b-col>
-          <b-col>
-            <b-form-group label="Maximum">
-              <b-input v-model="component.maximum"></b-input>
-            </b-form-group>
-          </b-col>
-        </b-row>
-
-        <div class="font-weight-bold">Component Options:</div>
-
-        <table class="table">
-          <thead>
-            <th class="border-top-0">Title</th>
-            <th class="border-top-0">Price</th>
-            <th class="border-top-0">Meal Size</th>
-            <th class="border-top-0">Ingredients</th>
-            <th class="border-top-0"></th>
-          </thead>
-
-          <tbody>
-            <tr v-for="(option, x) in component.options" :key="option.id">
-              <td>
-                <b-input v-model="option.title"></b-input>
-              </td>
-              <td>
-                <money
-                  :disabled="option.id === -1"
-                  required
-                  v-model="option.price"
-                  :min="0.1"
-                  :max="999.99"
-                  class="form-control"
-                  v-bind="{ prefix: storeCurrencySymbol }"
-                ></money>
-              </td>
-              <td>
-                <b-select
-                  v-model="option.meal_size_id"
-                  :options="sizeOptions"
-                ></b-select>
-              </td>
-              <td>
-                <b-btn
-                  variant="primary"
-                  @click="changeOptionIngredients(i, x, option.meal_size_id)"
-                  >Adjust Ingredients</b-btn
-                >
-              </td>
-              <td>
-                <b-btn variant="link" @click="deleteComponentOption(i, x)">
-                  <i class="fa fa-close"></i>
-                </b-btn>
-              </td>
-            </tr>
-          </tbody>
-
-          <tfoot>
-            <tr>
-              <td>
-                <b-btn
-                  variant="success"
-                  @click="
-                    component.options.push({
-                      //id: 100 + component.options.length,
-                      title: '',
-                      price: null,
-                      ingredients: [],
-                      meal_size_id: null
-                    })
-                  "
-                  >Add Option</b-btn
-                >
-                <b-btn
-                  variant="warning"
-                  v-if="meal.sizes.length > 0"
-                  @click="duplicateOptions(component)"
-                  :disabled="duplicated"
-                  >Duplicate Options for All Sizes</b-btn
-                >
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-
-        <hr v-if="i < meal.components.length - 1" class="my-4" />
-      </div>
-
-      <div v-if="meal.components.length" class="mt-4">
-        <b-button variant="primary" @click="addComponent()"
-          >Add Meal Component</b-button
-        >
-        <b-button variant="primary" @click="save()" class="pull-right"
-          >Save</b-button
-        >
-      </div>
+      </b-form>
     </div>
   </div>
 </template>
