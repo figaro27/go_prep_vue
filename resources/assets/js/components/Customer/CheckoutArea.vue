@@ -2485,7 +2485,10 @@ use next_delivery_dates
           }
 
           // Change to check if store has delivery_day_pickup_locations instead of just checking for pickup locations
-          if (this.pickupLocations.length > 0) {
+          if (
+            this.pickupLocations.length > 0 &&
+            deliveryDay.pickup_location_ids.length > 0
+          ) {
             return deliveryDay.pickup_location_ids.includes(
               this.selectedPickupLocation
             );
