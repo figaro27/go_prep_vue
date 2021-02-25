@@ -487,6 +487,7 @@ export default {
 
       form: {
         0: {
+          guest: false,
           role: "customer",
           email: null,
           password: null,
@@ -635,6 +636,9 @@ export default {
     }
   },
   mounted() {
+    if (this.store.modules.guestCheckout) {
+      this.form[0].guest = true;
+    }
     if (this.store.details) {
       this.form[1].state = this.store.details.state;
       this.form[1].country = this.store.details.country;
