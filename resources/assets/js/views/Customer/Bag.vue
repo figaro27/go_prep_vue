@@ -61,8 +61,6 @@
             :pickup="pickup"
             :order="order"
             @updateLineItems="updateLineItems($event)"
-            @passOrderNotes="passOrderNotes($event)"
-            @passPublicOrderNotes="passPublicOrderNotes($event)"
             @updateData="updateData"
             ref="bagArea"
           ></bag-area>

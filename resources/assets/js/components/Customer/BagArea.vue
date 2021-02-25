@@ -559,8 +559,8 @@
           id="form7"
           class="md-textarea form-control"
           rows="3"
-          v-model="publicOrderNotes"
-          @input="passPublicOrderNotes"
+          :value="bagPublicNotes"
+          @input="setNotes($event.target.value, 'public')"
           placeholder="Add any special notes about your order here such as if you want your order to be delivered to a different address."
         ></textarea>
       </div>
