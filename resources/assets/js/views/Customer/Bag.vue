@@ -896,12 +896,6 @@ export default {
     updateLineItems(orderLineItems) {
       this.orderLineItems = orderLineItems;
     },
-    passOrderNotes(notes) {
-      this.orderNotes = notes;
-    },
-    passPublicOrderNotes(notes) {
-      this.publicOrderNotes = notes;
-    },
     setPickup() {
       if (
         this.$refs.checkoutArea &&
