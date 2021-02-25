@@ -186,6 +186,7 @@ export default {
 
       form: {
         0: {
+          guest: true,
           role: "customer",
           email: null,
           password: null,

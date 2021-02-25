@@ -112,23 +112,36 @@ class RegisterController extends Controller
 
         switch ($step) {
             case '0':
-                $v = Validator::make(
-                    $request->all(),
-                    [
+                if (!$request->get('guest')) {
+                    $v = Validator::make(
+                        $request->all(),
+                        [
+                            'role' => 'required|in:customer,store,guest',
+                            'email' =>
+                                'required|string|email|max:255|unique:users,email',
+                            'password' => 'required|string|min:6|confirmed',
+                            'first_name' => 'required',
+                            'last_name' => 'required',
+                            'phone' => 'required|unique:user_details,phone'
+                        ],
+                        [
+                            'phone.unique' =>
+                                'An account using this phone number already exists. Email: ' .
+                                $existingUserEmail
+                        ]
+                    );
+                } else {
+                    // Not requiring a unique phone number on guest signup
+                    $v = Validator::make($request->all(), [
                         'role' => 'required|in:customer,store,guest',
                         'email' =>
                             'required|string|email|max:255|unique:users,email',
                         'password' => 'required|string|min:6|confirmed',
                         'first_name' => 'required',
                         'last_name' => 'required',
-                        'phone' => 'required|unique:user_details,phone'
-                    ],
-                    [
-                        'phone.unique' =>
-                            'An account using this phone number already exists. Email: ' .
-                            $existingUserEmail
-                    ]
-                );
+                        'phone' => 'required'
+                    ]);
+                }
                 break;
 
             case '1':
