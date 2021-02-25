@@ -74,7 +74,9 @@ export default {
       "setBagCustomGratuity",
       "setBagCoupon",
       "setBagSubscriptionInterval",
-      "setBagSubscription"
+      "setBagSubscription",
+      "setBagNotes",
+      "setBagPublicNotes"
     ]),
     setSubscriptionCoupon() {
       axios
@@ -117,6 +119,8 @@ export default {
       this.setBagPickupLocation(subscription.pickup_location_id);
       this.setBagGratuityPercent("custom");
       this.setBagCustomGratuity(subscription.gratuity);
+      this.setBagNotes(this.subscription.notes);
+      this.setBagPublicNotes(this.subscription.publicNotes);
       let transferType = this.bagPickup ? "pickup" : "delivery";
 
       let interval = null;

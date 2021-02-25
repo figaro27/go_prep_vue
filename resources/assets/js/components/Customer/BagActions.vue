@@ -196,14 +196,6 @@ export default {
     storeSettings() {
       return this.store.settings;
     },
-    bagView() {
-      if (
-        this.$route.name === "customer-bag" ||
-        this.$route.name === "store-bag"
-      )
-        return true;
-      else return false;
-    },
     groupBag() {
       let grouped = [];
       let groupedDD = [];

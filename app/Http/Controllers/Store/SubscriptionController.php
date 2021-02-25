@@ -205,12 +205,14 @@ class SubscriptionController extends StoreController
     public function updateNotes(Request $request)
     {
         $sub = Subscription::where('id', $request->get('id'))->first();
-        $sub->publicNotes = $request->get('notes');
+        $sub->notes = $request->get('notes');
+        $sub->publicNotes = $request->get('publicNotes');
         $sub->update();
 
         $orders = $sub->orders->where('delivery_date', '>=', Carbon::now());
         foreach ($orders as $order) {
-            $order->publicNotes = $request->get('notes');
+            $order->notes = $request->get('notes');
+            $order->publicNotes = $request->get('publicNotes');
             $order->update();
         }
     }
@@ -336,7 +338,8 @@ class SubscriptionController extends StoreController
             // $total += $salesTax;
             $total = $request->get('grandTotal');
 
-            $publicNotes = $request->get('publicOrderNotes');
+            $notes = $request->get('notes');
+            $publicNotes = $request->get('publicNotes');
 
             $cashOrder = $request->get('cashOrder');
             if ($cashOrder) {
@@ -517,6 +520,7 @@ class SubscriptionController extends StoreController
             $sub->store_updated = Carbon::now(
                 $this->store->settings->timezone
             )->toDateTimeString();
+            $sub->notes = $notes;
             $sub->publicNotes = $publicNotes;
             $sub->save();
 

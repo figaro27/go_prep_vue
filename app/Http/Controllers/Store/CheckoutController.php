@@ -945,6 +945,7 @@ class CheckoutController extends StoreController
                 $userSubscription->stripe_id = strtoupper(
                     substr(uniqid(rand(10, 99), false), 0, 10)
                 );
+                $userSubscription->notes = $notes;
                 $userSubscription->publicNotes = $publicNotes;
                 $userSubscription->stripe_plan = 'GOPREP';
                 $userSubscription->quantity = 1;

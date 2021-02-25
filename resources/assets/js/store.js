@@ -80,7 +80,9 @@ const state = {
     gratuityPercent: null,
     customGratuity: null,
     subscriptionInterval: null,
-    subscription: null
+    subscription: null,
+    notes: null,
+    publicNotes: null
   },
   delivery_date: null,
   zip_code: null,
@@ -852,6 +854,12 @@ const mutations = {
   },
   setBagPickupLocation({ state, dispatch }, pickupLocation) {
     this.state.bag.pickupLocation = pickupLocation;
+  },
+  setBagNotes({ state, dispatch }, notes) {
+    this.state.bag.notes = notes;
+  },
+  setBagPublicNotes({ state, dispatch }, publicNotes) {
+    this.state.bag.publicNotes = publicNotes;
   },
   setBagGratuityPercent({ state, dispatch }, gratuityPercent) {
     this.state.bag.gratuityPercent = gratuityPercent;
@@ -3622,6 +3630,12 @@ const getters = {
   },
   bagPickup(state) {
     return state.bag.pickup;
+  },
+  bagNotes(state) {
+    return state.bag.notes;
+  },
+  bagPublicNotes(state) {
+    return state.bag.publicNotes;
   },
   bagGratuityPercent(state) {
     return state.bag.gratuityPercent;

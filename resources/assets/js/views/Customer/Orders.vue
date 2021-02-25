@@ -123,6 +123,10 @@
               <h4>Order Taken By</h4>
               <p>{{ order.staff_member }}</p>
             </div>
+            <div class="mt-3" v-if="order.publicNotes">
+              <h4>Notes</h4>
+              <p>{{ order.publicNotes }}</p>
+            </div>
           </div>
           <div class="col-md-3 pt-1">
             <h4>Placed On</h4>

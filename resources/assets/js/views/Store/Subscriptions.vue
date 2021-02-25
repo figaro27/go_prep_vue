@@ -566,8 +566,19 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12" v-if="subscription.publicNotes">
-            <h4>Notes</h4>
+          <div class="col-md-12">
+            <h4>Private Notes</h4>
+            <textarea
+              type="text"
+              id="form7"
+              class="md-textarea form-control"
+              rows="3"
+              v-model="subscription.notes"
+              placeholder="Private notes found on your orders page and Order Summary report."
+            ></textarea>
+          </div>
+          <div class="col-md-12">
+            <h4>Public Notes</h4>
             <textarea
               type="text"
               id="form7"
@@ -1160,7 +1171,8 @@ export default {
       axios
         .post("/api/me/updateSubNotes", {
           id: id,
-          notes: this.subscription.publicNotes
+          notes: this.subscription.notes,
+          publicNotes: this.subscription.publicNotes
         })
         .then(resp => {
           this.$toastr.s("Notes updated.");

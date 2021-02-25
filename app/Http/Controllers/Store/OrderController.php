@@ -938,6 +938,8 @@ class OrderController extends StoreController
             $gratuity = $request->get('gratuity');
             $grandTotal = $request->get('grandTotal');
             $adjustedDifference = $request->get('grandTotal') - $order->amount;
+            $notes = $request->get('notes');
+            $publicNotes = $request->get('publicNotes');
 
             $customer = Customer::where('id', $order->customer_id)->first();
             $customer->total_paid += $adjustedDifference;
@@ -988,6 +990,8 @@ class OrderController extends StoreController
             $order->transferTime = $transferTime;
             $order->hot = $hot;
             $order->coolerDeposit = $coolerDeposit;
+            $order->notes = $notes;
+            $order->publicNotes = $publicNotes;
 
             $dailyOrderNumber = 0;
             if (!$isMultipleDelivery) {

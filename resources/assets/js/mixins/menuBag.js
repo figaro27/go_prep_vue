@@ -28,8 +28,18 @@ export default {
       totalBagPricePreFeesBothTypes: "totalBagPricePreFeesBothTypes",
       mealMixItems: "mealMixItems",
       bag: "bagItems",
-      bagSubscription: "bagSubscription"
+      bagSubscription: "bagSubscription",
+      bagNotes: "bagNotes",
+      bagPublicNotes: "bagPublicNotes"
     }),
+    bagView() {
+      if (
+        this.$route.name === "customer-bag" ||
+        this.$route.name === "store-bag"
+      )
+        return true;
+      else return false;
+    },
     hasDeliveryOption() {
       return (
         this.store.settings.transferType.includes("delivery") ||
@@ -599,7 +609,12 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["setBagPurchasedGiftCard", "setBagReferral"]),
+    ...mapMutations([
+      "setBagPurchasedGiftCard",
+      "setBagReferral",
+      "setBagNotes",
+      "setBagPublicNotes"
+    ]),
     getMealQuantity(meal, quantity) {
       if (!quantity) {
         quantity = 1;
@@ -983,13 +998,16 @@ export default {
             pointsReduction: this.promotionPointsReduction,
             gratuity: this.tip,
             coolerDeposit: this.coolerDeposit,
-            publicNotes: this.publicOrderNotes
+            notes: this.bagNotes,
+            publicNotes: this.bagPublicNotes
           }
         );
         await this.refreshSubscriptions();
         this.emptyBag();
         this.setBagMealPlan(false);
         this.setBagCoupon(null);
+        this.setBagNotes(null);
+        this.setBagPublicNotes(null);
 
         if (this.$route.params.storeView) {
           this.$store.commit("refreshStoreSubscriptions");

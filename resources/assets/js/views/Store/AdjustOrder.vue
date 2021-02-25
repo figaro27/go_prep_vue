@@ -84,7 +84,9 @@ export default {
       "setBagPickup",
       "setBagPickupLocation",
       "setBagGratuityPercent",
-      "setBagCustomGratuity"
+      "setBagCustomGratuity",
+      "setBagNotes",
+      "setBagPublicNotes"
     ]),
     async initBag() {
       // await this.refreshUpcomingOrders();
@@ -100,6 +102,8 @@ export default {
       this.setBagPickupLocation(this.order.pickup_location_id);
       this.setBagGratuityPercent("custom");
       this.setBagCustomGratuity(this.order.gratuity);
+      this.setBagNotes(this.order.notes);
+      this.setBagPublicNotes(this.order.publicNotes);
       this.clearAll();
 
       // axios.get("/api/me/order_bag/" + this.order.id).then(resp => {

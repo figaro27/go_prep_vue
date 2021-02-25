@@ -511,35 +511,34 @@
       </ul>
     </div>
 
-    <div
-      class="row mt-5"
-      v-if="
-        store.modules.orderNotes &&
-          $route.params.manualOrder &&
-          $route.name != 'store-manual-order'
-      "
-    >
-      <div class="col-md-12">
-        <h4>Private Order Notes</h4>
+    <div class="row mt-5" v-if="store.modules.orderNotes && bagView">
+      <div class="col-md-12" v-if="context === 'store'">
+        <h4>Private Notes</h4>
         <textarea
           type="text"
           id="form7"
           class="md-textarea form-control"
           rows="3"
-          v-model="orderNotes"
-          @input="passOrderNotes"
+          :value="bagNotes"
+          @input="setNotes($event.target.value, 'private')"
           placeholder="Private notes found on your orders page and Order Summary report."
         ></textarea>
       </div>
-      <div class="col-md-12 pt-2">
-        <h4>Public Order Notes</h4>
+      <div
+        class="col-md-12 pt-2"
+        v-if="
+          context === 'store' || store.module_settings.orderNotesForCustomer
+        "
+      >
+        <h4 v-if="context === 'store'">Public Notes</h4>
+        <h4 v-else>Notes</h4>
         <textarea
           type="text"
           id="form7"
           class="md-textarea form-control"
           rows="3"
-          v-model="publicOrderNotes"
-          @input="passPublicOrderNotes"
+          :value="bagPublicNotes"
+          @input="setNotes($event.target.value, 'public')"
           placeholder="Public notes sent to the customer in their emails and shown on your packing slips."
         ></textarea>
       </div>
@@ -554,7 +553,7 @@
       "
     >
       <div class="col-md-12 pt-2 pb-4">
-        <h4>Order Notes</h4>
+        <h4>Notes</h4>
         <textarea
           type="text"
           id="form7"
@@ -663,6 +662,8 @@ export default {
   },
   data() {
     return {
+      notes: null,
+      publicNotes: null,
       enablingEdit: {},
       customTitle: {},
       customSize: {},
@@ -714,7 +715,9 @@ export default {
       storeProductionGroups: "storeProductionGroups",
       bagPickup: "bagPickup",
       bagZipCode: "bagZipCode",
-      multDDZipCode: "bagMultDDZipCode"
+      multDDZipCode: "bagMultDDZipCode",
+      bagNotes: "bagNotes",
+      bagPublicNotes: "bagPublicNotes"
     }),
     hasBothTransferTypes() {
       let hasPickup = false;
@@ -845,7 +848,9 @@ export default {
       setBagPickup: "setBagPickup",
       setMultDDZipCode: "setMultDDZipCode",
       setBagZipCode: "setBagZipCode",
-      updateBagItemFrequency: "updateBagItemFrequency"
+      updateBagItemFrequency: "updateBagItemFrequency",
+      setBagNotes: "setBagNotes",
+      setBagPublicNotes: "setBagPublicNotes"
     }),
     addToBag(item) {
       item.meal.quantity = 1;
@@ -1187,13 +1192,6 @@ export default {
         this.$set(this.enablingEdit, item.guid, false);
       });
     },
-
-    passOrderNotes() {
-      this.$emit("passOrderNotes", this.orderNotes);
-    },
-    passPublicOrderNotes() {
-      this.$emit("passPublicOrderNotes", this.publicOrderNotes);
-    },
     setOrderLineItems(lineItemOrders) {
       let extras = lineItemOrders;
       this.orderLineItems = this.$route.params.adjustOrder
@@ -1292,7 +1290,22 @@ export default {
       item.meal.subItem = sub;
 
       this.updateBagItemFrequency(item);
-    }
+    },
+    setNotes(val, type) {
+      if (type === "private") {
+        this.notes = val;
+        this.debounceNotes();
+      } else {
+        this.publicNotes = val;
+        this.debouncePublicNotes();
+      }
+    },
+    debounceNotes: _.debounce(function() {
+      this.setBagNotes(this.notes);
+    }, 250),
+    debouncePublicNotes: _.debounce(function() {
+      this.setBagPublicNotes(this.publicNotes);
+    }, 250)
   }
 };
 </script>

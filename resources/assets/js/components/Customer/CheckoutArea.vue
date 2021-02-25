@@ -1480,8 +1480,6 @@ export default {
   },
   props: {
     order: null,
-    orderNotes: null,
-    publicOrderNotes: null,
     customer: null,
     preview: false,
     manualOrder: false,
@@ -1688,7 +1686,9 @@ export default {
       bagGratuityPercent: "bagGratuityPercent",
       bagCustomGratuity: "bagCustomGratuity",
       bagSubscriptionInterval: "bagSubscriptionInterval",
-      distance: "viewedStoreDistance"
+      distance: "viewedStoreDistance",
+      bagNotes: "bagNotes",
+      bagPublicNotes: "bagPublicNotes"
     }),
     prepaid() {
       if (
@@ -3330,7 +3330,9 @@ use next_delivery_dates
       "setBagPickupLocation",
       "setBagGratuityPercent",
       "setBagCustomGratuity",
-      "setBagSubscriptionInterval"
+      "setBagSubscriptionInterval",
+      "setBagNotes",
+      "setBagPublicNotes"
     ]),
     setOrderFrequency() {
       // this.setBagSubscriptionInterval(null)
@@ -3647,8 +3649,8 @@ use next_delivery_dates
 
       axios
         .post(`/api/me/orders/adjustOrder`, {
-          notes: this.orderNotes,
-          publicOrderNotes: this.publicOrderNotes,
+          notes: this.bagNotes,
+          publicNotes: this.bagPublicNotes,
           orderId: this.$parent.orderId,
           deliveryDate: this.deliveryDay,
           isMultipleDelivery: this.isMultipleDelivery,
@@ -3706,6 +3708,8 @@ use next_delivery_dates
           this.setBagCoupon(null);
           this.setBagPurchasedGiftCard(null);
           this.setBagReferral(null);
+          this.setBagNotes(null);
+          this.setBagPublicNotes(null);
           this.emptyBag();
           this.refreshResource("orders");
           this.refreshUpcomingOrders();
@@ -3780,8 +3784,8 @@ use next_delivery_dates
 
       axios
         .post(endPoint, {
-          notes: this.orderNotes,
-          publicOrderNotes: this.publicOrderNotes,
+          notes: this.bagNotes,
+          publicOrderNotes: this.bagPublicNotes,
           subtotal: this.subtotal,
           mealPlanDiscount: this.mealPlanDiscount,
           afterDiscount: this.afterDiscount,
@@ -3856,6 +3860,8 @@ use next_delivery_dates
             this.setBagCoupon(null);
             this.setBagPurchasedGiftCard(null);
             this.setBagReferral(null);
+            this.setBagNotes(null);
+            this.setBagPublicNotes(null);
             this.clearBagDeliveryDate();
             this.clearBagTransferTime();
             this.clearBagStaffMember();

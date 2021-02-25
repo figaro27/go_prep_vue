@@ -347,7 +347,8 @@ class SubscriptionController extends UserController
             // $total += $salesTax;
             $total = $request->get('grandTotal');
 
-            $publicNotes = $request->get('publicOrderNotes');
+            $notes = $request->get('notes');
+            $publicNotes = $request->get('publicNotes');
 
             $cashOrder = $request->get('cashOrder');
             if ($cashOrder) {
@@ -525,6 +526,7 @@ class SubscriptionController extends UserController
             $sub->customer_updated = Carbon::now(
                 $this->store->settings->timezone
             )->toDateTimeString();
+            $sub->notes = $notes;
             $sub->publicNotes = $publicNotes;
             $sub->save();
 

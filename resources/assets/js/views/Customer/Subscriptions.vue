@@ -275,6 +275,10 @@
           <div class="col-md-4">
             <h4>Subscription ID</h4>
             <p>{{ subscription.stripe_id }}</p>
+            <div class="mt-3" v-if="subscription.publicNotes">
+              <h4>Notes</h4>
+              <p>{{ subscription.publicNotes }}</p>
+            </div>
             <router-link
               v-if="!subscription.prepaid"
               :to="`/customer/adjust-subscription/${subscription.id}`"

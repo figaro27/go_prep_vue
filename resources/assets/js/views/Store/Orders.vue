@@ -912,15 +912,9 @@
               id="form7"
               class="md-textarea form-control"
               rows="3"
-              v-model="deliveryNote"
+              v-model="order.notes"
               placeholder="Private notes found on your orders page and Order Summary report."
             ></textarea>
-            <button
-              class="btn btn-primary btn-md pull-right mt-2"
-              @click="saveNotes(orderId)"
-            >
-              Save
-            </button>
           </div>
           <div class="col-md-12">
             <h4>Public Notes</h4>
@@ -929,14 +923,14 @@
               id="form7"
               class="md-textarea form-control"
               rows="3"
-              v-model="publicOrderNotes"
+              v-model="order.publicNotes"
               placeholder="Public notes sent to the customer in their emails and shown on your packing slips."
             ></textarea>
             <button
               class="btn btn-primary btn-md pull-right mt-2"
-              @click="savePublicNotes(orderId)"
+              @click="saveNotes(orderId)"
             >
-              Save
+              Update
             </button>
           </div>
         </div>
@@ -1134,9 +1128,7 @@ export default {
             };
           }
         }
-      },
-      deliveryNote: "",
-      publicOrderNotes: ""
+      }
     };
   },
   created() {},
@@ -1283,7 +1275,9 @@ export default {
       "setBagZipCode",
       "setMultDDZipCode",
       "setBagGratuityPercent",
-      "setBagCustomGratuity"
+      "setBagCustomGratuity",
+      "setBagNotes",
+      "setBagPublicNotes"
     ]),
     refreshTable() {
       this.refreshResource("orders");
@@ -1314,14 +1308,10 @@ export default {
       this.$forceUpdate();
     },
     async saveNotes(id) {
-      let data = { notes: this.deliveryNote };
-      axios.patch(`/api/me/orders/${id}`, data).then(resp => {
-        this.refreshTable();
-        this.$toastr.s("Order notes saved.");
-      });
-    },
-    async savePublicNotes(id) {
-      let data = { publicNotes: this.publicOrderNotes };
+      let data = {
+        notes: this.order.notes,
+        publicNotes: this.order.publicNotes
+      };
       axios.patch(`/api/me/orders/${id}`, data).then(resp => {
         this.refreshTable();
         this.$toastr.s("Order notes saved.");
@@ -1422,8 +1412,6 @@ export default {
         .get(`/api/me/orders/${id}`)
         .then(response => {
           this.orderId = response.data.id;
-          this.deliveryNote = response.data.notes;
-          this.publicOrderNotes = response.data.publicNotes;
           this.order = response.data;
           this.user_detail = response.data.user.user_detail;
           this.meals = response.data.meals;
@@ -1847,6 +1835,8 @@ export default {
       this.setMultDDZipCode(0);
       this.setBagGratuityPercent(0);
       this.setBagCustomGratuity(0);
+      this.setBagNotes(null);
+      this.setBagPublicNotes(null);
       this.store.distance = 1;
     },
     adjustOrder() {

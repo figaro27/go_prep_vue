@@ -544,6 +544,7 @@ class Subscription extends Model
                 $this->intervalCount
             );
             $newOrder->isMultipleDelivery = $this->isMultipleDelivery;
+            $newOrder->notes = $this->notes;
             $newOrder->publicNotes = $this->publicNotes;
             $newOrder->save();
 
@@ -1224,6 +1225,7 @@ class Subscription extends Model
                     ? $this->amount
                     : 0;
             $order->balance = $this->cashOrder ? $this->amount : null;
+            $order->notes = $this->notes;
             $order->publicNotes = $this->publicNotes;
             $order->prepaid = $this->prepaid;
             $order->save();
