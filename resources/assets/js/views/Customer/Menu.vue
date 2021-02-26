@@ -1055,7 +1055,9 @@ export default {
     if (
       !this.$route.params.backFromBagPage &&
       this.store.modules.customDeliveryDays &&
-      this.hasBothTransferTypes
+      this.hasBothTransferTypes &&
+      this.context !== "store" &&
+      !this.adjustingScreen
     ) {
       this.setBagPickup(1);
     }
