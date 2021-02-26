@@ -1698,6 +1698,9 @@ export default {
       ) {
         return true;
       }
+      if (!meal.delivery_day_ids) {
+        return true;
+      }
       if (meal.delivery_day_ids && this.$parent.finalDeliveryDay) {
         if (
           meal.delivery_day_ids.length === 0 ||
@@ -1783,7 +1786,7 @@ export default {
           return false;
         }
       }
-      if (!meal.hideFromMenu) {
+      if (!meal.hideFromMenu && this.assignedToDeliveryDay(meal)) {
         return true;
       }
     },
