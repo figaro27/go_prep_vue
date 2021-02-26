@@ -1053,7 +1053,7 @@ export default {
     }
 
     if (
-      !$route.params.backFromBagPage &&
+      !this.$route.params.backFromBagPage &&
       this.store.modules.customDeliveryDays &&
       this.hasBothTransferTypes
     ) {
