@@ -1052,6 +1052,14 @@ export default {
       }
     }
 
+    if (
+      !$route.params.backFromBagPage &&
+      this.store.modules.customDeliveryDays &&
+      this.hasBothTransferTypes
+    ) {
+      this.setBagPickup(1);
+    }
+
     if (this.$route.query.sub || this.$route.query.subscriptionId) {
       this.bagPageURL =
         "/customer/bag?sub=true&subscriptionId=" + this.$route.params.id;

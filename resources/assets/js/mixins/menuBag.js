@@ -32,6 +32,23 @@ export default {
       bagNotes: "bagNotes",
       bagPublicNotes: "bagPublicNotes"
     }),
+    hasBothTransferTypes() {
+      let hasPickup = false;
+      let hasDelivery = false;
+      this.store.delivery_days.forEach(day => {
+        if (day.type === "delivery") {
+          hasDelivery = true;
+        }
+        if (day.type === "pickup") {
+          hasPickup = true;
+        }
+      });
+      if (hasPickup && hasDelivery) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     bagView() {
       if (
         this.$route.name === "customer-bag" ||
