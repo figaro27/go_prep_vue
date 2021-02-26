@@ -30,7 +30,8 @@ export default {
       bag: "bagItems",
       bagSubscription: "bagSubscription",
       bagNotes: "bagNotes",
-      bagPublicNotes: "bagPublicNotes"
+      bagPublicNotes: "bagPublicNotes",
+      bagPickup: "bagPickup"
     }),
     hasBothTransferTypes() {
       let hasPickup = false;
@@ -400,6 +401,30 @@ export default {
           format.money(this.remainingPrice, this.storeSettings.currency) +
           " more to continue.";
 
+      // Check specific rules on custom delivery day minimums
+      if (this.store.modules.customDeliveryDays) {
+        let transferType = this.bagPickup ? "pickup" : "delivery";
+
+        let selectedDeliveryDay = this.store.delivery_days.find(day => {
+          return (
+            parseInt(day.day) ===
+              parseInt(moment(this.bagDeliveryDate).day()) &&
+            day.type === transferType
+          );
+        });
+
+        if (selectedDeliveryDay) {
+          if (this.totalBagPricePreFees < selectedDeliveryDay.minimum) {
+            message =
+              "Please add " +
+              format.money(
+                selectedDeliveryDay.minimum - this.totalBagPricePreFees
+              ) +
+              " more to continue.";
+          }
+        }
+      }
+
       if (
         this.mealMixItems.finalCategories.some(cat => {
           return cat.minimumType !== null;
@@ -415,6 +440,7 @@ export default {
       let settingsPassed = true;
       let deliveryDayMinimumPassed = true;
       let categoryMinimumPassed = true;
+      let customDeliveryDayRulesPassed = true;
       let giftCardOnly = true;
 
       // Check delivery day minimum passes
@@ -458,6 +484,25 @@ export default {
         settingsPassed = false;
       }
 
+      // Check specific rules on custom delivery day minimums
+      if (this.store.modules.customDeliveryDays) {
+        let transferType = this.bagPickup ? "pickup" : "delivery";
+
+        let selectedDeliveryDay = this.store.delivery_days.find(day => {
+          return (
+            parseInt(day.day) ===
+              parseInt(moment(this.bagDeliveryDate).day()) &&
+            day.type === transferType
+          );
+        });
+
+        if (selectedDeliveryDay) {
+          if (this.totalBagPricePreFees < selectedDeliveryDay.minimum) {
+            customDeliveryDayRulesPassed = false;
+          }
+        }
+      }
+
       // Check if the bag contains only a gift card
       this.bag.forEach(item => {
         if (!item.meal.gift_card) {
@@ -469,7 +514,10 @@ export default {
       }
 
       if (
-        (settingsPassed && deliveryDayMinimumPassed && categoryMinimumPassed) ||
+        (settingsPassed &&
+          deliveryDayMinimumPassed &&
+          categoryMinimumPassed &&
+          customDeliveryDayRulesPassed) ||
         giftCardOnly
       ) {
         return true;

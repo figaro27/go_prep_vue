@@ -60,7 +60,6 @@
                 (!userHasSubscriptions ||
                   store.settings.allowMultipleSubscriptions)
             "
-            :to="menuURL"
             @click.prevent="backToMenu()"
             >Menu</b-nav-item
           >
@@ -367,7 +366,11 @@ export default {
       this.$eventBus.$emit("showAuthModal");
     },
     backToMenu() {
-      this.$eventBus.$emit("backToMenu");
+      this.$router.replace({
+        name: "customer-menu",
+        params: { topMenuClicked: true }
+      });
+      // this.$eventBus.$emit("backToMenu");
     },
     goToBagPage() {
       this.$router.replace("/customer/bag");

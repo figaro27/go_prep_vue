@@ -1054,6 +1054,7 @@ export default {
 
     if (
       !this.$route.params.backFromBagPage &&
+      !this.$route.params.topMenuClicked &&
       this.store.modules.customDeliveryDays &&
       this.hasBothTransferTypes &&
       this.context !== "store" &&
