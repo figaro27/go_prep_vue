@@ -1698,7 +1698,7 @@ export default {
       ) {
         return true;
       }
-      if (!meal.delivery_day_ids) {
+      if (meal.delivery_day_ids.length === 0) {
         return true;
       }
       if (meal.delivery_day_ids && this.$parent.finalDeliveryDay) {
