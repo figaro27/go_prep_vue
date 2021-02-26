@@ -1783,7 +1783,7 @@ export default {
           return false;
         }
       }
-      if (!meal.hideFromMenu && this.assignedToDeliveryDay(meal)) {
+      if (!meal.hideFromMenu) {
         return true;
       }
     },
