@@ -2358,9 +2358,11 @@ export default {
       });
     },
     updateDeliveryFeeRanges() {
-      let ranges = this.storeDeliveryFeeRanges.concat(
-        this.newDeliveryFeeRanges
-      );
+      let ranges =
+        Object.values(this.storeDeliveryFeeRanges).length > 0
+          ? this.storeDeliveryFeeRanges.concat(this.newDeliveryFeeRanges)
+          : this.newDeliveryFeeRanges;
+
       axios.post("/api/me/deliveryFeeRanges", ranges).then(resp => {
         this.$toastr.s("Delivery fee ranges updated.");
         this.refreshStoreDeliveryFeeRanges();

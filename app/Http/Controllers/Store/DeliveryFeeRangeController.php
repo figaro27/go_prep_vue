@@ -40,7 +40,7 @@ class DeliveryFeeRangeController extends StoreController
                 $range = DeliveryFeeRange::where('id', $row['id'])->first();
             }
 
-            if ($range) {
+            if (isset($range)) {
                 $range->price = $row['price'];
                 $range->starting_miles = $row['starting_miles'];
                 $range->ending_miles = $row['ending_miles'];
