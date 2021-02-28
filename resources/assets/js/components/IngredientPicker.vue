@@ -26,6 +26,8 @@
       <div class="col-md-3">
         <strong>Serving Size Quantity</strong>
         <b-form-input
+          type="number"
+          min="1"
           v-model="meal.servingUnitQuantity"
           placeholder="1"
           v-if="!componentAddonPage"
