@@ -193,9 +193,19 @@ export default {
       this.$emit("change", this.meal.sizes);
     },
     save(showToast = true) {
-      this.$emit("save", this.meal.sizes);
-      if (showToast) {
-        this.$toastr.s("Meal variation saved.");
+      let invalid = false;
+      this.tableData.forEach((row, index) => {
+        if (index !== 0 && !row.title) {
+          invalid = true;
+        }
+      });
+      if (invalid) {
+        this.$toastr.w("Please enter a title for the item size.");
+      } else {
+        this.$emit("save", this.meal.sizes);
+        if (showToast) {
+          this.$toastr.s("Item variation saved.");
+        }
       }
     },
     editIngredients(sizeId) {
