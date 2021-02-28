@@ -386,6 +386,19 @@ class SpaController extends Controller
                     }
                 }
 
+                if ($store->settings->deliveryFeeType === 'range') {
+                    $maxRange = 0;
+                    foreach ($store->deliveryFeeRanges as $range) {
+                        if ($maxRange < $range->ending_miles) {
+                            $maxRange = $range->ending_miles;
+                        }
+                    }
+
+                    if ($distance < $maxRange) {
+                        $willDeliver = true;
+                    }
+                }
+
                 $user->last_viewed_store_id = $store->id;
                 $user->save();
 
