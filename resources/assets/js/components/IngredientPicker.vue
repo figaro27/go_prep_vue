@@ -49,12 +49,13 @@
       <b-tabs class="mb-2">
         <b-tab title="Type in Ingredients" active>
           <b-form-textarea
+            required
             v-model="recipe"
             class="flex-grow-1 mr-1 mb-1"
             :rows="3"
             placeholder="Enter ingredients that make up the meal like '3 oz chicken breast, 1/2 tsp salt, etc'. Include measurements such as tsp, tbsp, cup, gram, oz, fl oz, and separate the ingredients by comma."
           ></b-form-textarea>
-          <b-button @click="searchRecipe" variant="primary">Add</b-button>
+          <b-button type="submit" variant="primary">Add</b-button>
         </b-tab>
 
         <b-tab title="Search Ingredients">
