@@ -1,51 +1,54 @@
 <template>
   <div>
-    <div class="row mb-3 mt-2">
-      <div class="col-md-3">
-        <strong>Servings Per Container</strong>
-        <b-form-input
-          v-model="meal.servingsPerMeal"
-          placeholder="1"
-          v-if="!componentAddonPage"
-        ></b-form-input>
-        <span v-if="componentAddonPage" class="strong"
-          >: {{ meal.servingsPerMeal }}</span
-        >
+    <b-form @submit.prevent="saveMealServings">
+      <div class="row mb-3 mt-2">
+        <div class="col-md-3">
+          <strong>Servings Per Container</strong>
+          <b-form-input
+            required
+            v-model="meal.servingsPerMeal"
+            placeholder="1"
+            v-if="!componentAddonPage"
+          ></b-form-input>
+          <span v-if="componentAddonPage" class="strong"
+            >: {{ meal.servingsPerMeal }}</span
+          >
+        </div>
+        <div class="col-md-3">
+          <strong>Serving Size Unit</strong>
+          <b-form-input
+            v-model="meal.servingSizeUnit"
+            placeholder="Protein Pancake"
+            v-if="!componentAddonPage"
+          ></b-form-input>
+          <span v-if="componentAddonPage" class="strong"
+            >: {{ meal.servingSizeUnit }}</span
+          >
+        </div>
+        <div class="col-md-3">
+          <strong>Serving Size Quantity</strong>
+          <b-form-input
+            type="number"
+            min="1"
+            v-model="meal.servingUnitQuantity"
+            placeholder="1"
+            v-if="!componentAddonPage"
+          ></b-form-input>
+          <span v-if="componentAddonPage" class="strong"
+            >: {{ meal.servingSizeUnit }}</span
+          >
+        </div>
+        <div class="col-md-3">
+          <b-btn
+            variant="primary"
+            class="mt-4"
+            type="submit"
+            v-if="!componentAddonPage && !createMealModal"
+            >Save</b-btn
+          >
+        </div>
       </div>
-      <div class="col-md-3">
-        <strong>Serving Size Unit</strong>
-        <b-form-input
-          v-model="meal.servingSizeUnit"
-          placeholder="Protein Pancake"
-          v-if="!componentAddonPage"
-        ></b-form-input>
-        <span v-if="componentAddonPage" class="strong"
-          >: {{ meal.servingSizeUnit }}</span
-        >
-      </div>
-      <div class="col-md-3">
-        <strong>Serving Size Quantity</strong>
-        <b-form-input
-          type="number"
-          min="1"
-          v-model="meal.servingUnitQuantity"
-          placeholder="1"
-          v-if="!componentAddonPage"
-        ></b-form-input>
-        <span v-if="componentAddonPage" class="strong"
-          >: {{ meal.servingSizeUnit }}</span
-        >
-      </div>
-      <div class="col-md-3">
-        <b-btn
-          variant="primary"
-          class="mt-4"
-          @click="saveMealServings"
-          v-if="!componentAddonPage && !createMealModal"
-          >Save</b-btn
-        >
-      </div>
-    </div>
+    </b-form>
     <img src="/images/nutritionix.png" class="nutritionix mb-3" />
     <b-form class="mb-2" @submit.prevent="searchRecipe">
       <b-tabs class="mb-2">
