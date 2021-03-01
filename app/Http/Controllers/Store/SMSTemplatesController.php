@@ -87,9 +87,8 @@ class SMSTemplatesController extends StoreController
                 $smsTemplate->store_id = $this->store->id;
                 $smsTemplate->template_id = json_decode($body)->id;
                 $smsTemplate->save();
+                return $body;
             }
-
-            return $body;
         } catch (\Exception $e) {
         }
     }
