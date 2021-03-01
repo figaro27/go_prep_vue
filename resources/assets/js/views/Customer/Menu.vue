@@ -1003,26 +1003,33 @@ export default {
   },
   mounted() {
     if (this.store.modules.pickupOnly && this.context !== "store") {
+      console.log(1);
       this.setBagPickup(1);
     }
     if (this.store.modules.multipleDeliveryDays) {
       if (!this.transferTypes.delivery && this.transferTypes.pickup) {
+        console.log(2);
         this.setBagPickup(1);
       }
       if (this.transferTypes.delivery && !this.transferTypes.pickup) {
+        console.log(3);
         this.setBagPickup(0);
       }
       if (this.bagPickup === 1) {
+        console.log(4);
         this.autoPickUpcomingMultDD();
       }
       if (this.store.delivery_day_zip_codes.length === 0) {
+        console.log(5);
         this.autoPickUpcomingMultDD();
       } else {
         if (this.loggedIn && this.context !== "store") {
+          console.log(6);
           this.setBagZipCode(parseInt(this.user.user_detail.zip));
           this.autoPickUpcomingMultDD(this.sortedDeliveryDays);
         }
         if (this.bagZipCode) {
+          console.log(7);
           this.setBagZipCode(parseInt(this.bagZipCode));
           this.autoPickUpcomingMultDD(this.sortedDeliveryDays);
         }
@@ -1032,12 +1039,14 @@ export default {
         !this.adjustOrder &&
         this.adjustMealPlan
       ) {
+        console.log(8);
         this.changeDeliveryDay(this.sortedDeliveryDays[0]);
       }
       if (
         this.store.modules.multipleDeliveryDays &&
         (this.adjustOrder || this.adjustMealPlan)
       ) {
+        console.log(9);
         this.changeDeliveryDay(this.firstDeliveryDay);
       }
       if (
