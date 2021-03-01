@@ -2687,37 +2687,30 @@ use next_delivery_dates
               fee =
                 parseFloat(mileageBase) + parseFloat(mileagePerMile) * distance;
             } else if (deliveryFeeType === "range") {
-              console.log(1);
               if (!this.loggedIn) {
-                console.log(2);
                 fee =
                   this.store.delivery_fee_ranges.length > 0
                     ? this.store.delivery_fee_ranges[0].price
                     : deliveryFee;
-                console.log(3);
-                console.log(fee);
               } else {
                 let distance = this.store.distance
                   ? Math.ceil(parseFloat(this.store.distance))
                   : 0;
-                console.log(4);
-                console.log(distance);
                 let range = this.store.delivery_fee_ranges.find(range => {
                   return (
                     distance >= range.starting_miles &&
                     distance < range.ending_miles
                   );
                 });
-                console.log(5);
-                console.log(range);
 
                 fee = range ? parseFloat(range.price) : parseFloat(deliveryFee);
-                console.log(6);
-                console.log(fee);
               }
             }
 
-            if (this.storeModules.multipleDeliveryDays) {
+            if (
+              this.storeModules.multipleDeliveryDays &&
+              !deliveryFeeType !== "range"
+            ) {
               let mddFee = 0;
               this.groupBag.forEach(item => {
                 if (item.delivery_day && item.items && item.items.length > 0) {
