@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\User;
 use App\Coupon;
-
+use App\StoreModule;
+use App\Order;
 use Illuminate\Http\Request;
 use App\Subscription;
 
@@ -21,12 +22,33 @@ class CouponController extends UserController
     public function findCoupon(Request $request)
     {
         $storeId = $request->get('store_id');
+        $userId = $request->get('user_id');
+
         $couponCode = $request->get('couponCode');
         $coupon = Coupon::where([
             'store_id' => $storeId,
             'code' => $couponCode,
             'active' => 1
         ])->first();
+
+        $strictCoupons = StoreModule::where('store_id', $storeId)
+            ->pluck('strictCoupons')
+            ->first();
+        if (
+            $strictCoupons &&
+            Order::where('user_id', $userId)
+                ->where('coupon_id', '!=', null)
+                ->where('paid', 1)
+                ->count() > 0
+        ) {
+            return response()->json(
+                [
+                    'Coupon codes can only be used on one order and a coupon has already been used in the past.'
+                ],
+                400
+            );
+        }
+
         if (isset($coupon)) {
             return $coupon;
         }

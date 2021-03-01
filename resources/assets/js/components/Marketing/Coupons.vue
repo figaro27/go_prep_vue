@@ -8,6 +8,24 @@
         :options="tableOptions"
       >
         <div slot="beforeTable" class="mb-2">
+          <div class="mb-3">
+            <b-form-checkbox
+              v-model="store.modules.strictCoupons"
+              @change="updateStoreModules"
+            >
+              <p>
+                Enable Strict Coupons
+                <img
+                  v-b-popover.hover="
+                    'Enable this to restrict each customer to using ANY coupon code once forever. Once they use any coupon code on one order, they cannot use that code or any other code on any future orders.'
+                  "
+                  title="Strict Coupons"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </p>
+            </b-form-checkbox>
+          </div>
           <b-form @submit.prevent="saveCoupon">
             <b-form-group id="coupon">
               <div class="row">
@@ -233,6 +251,14 @@ export default {
           this.$toastr.s("Coupon Updated", "Success");
           this.refreshStoreCoupons();
         });
+    },
+    updateStoreModules() {
+      this.$nextTick(() => {
+        let modules = { ...this.store.modules };
+        axios.post("/api/me/updateModules", modules).then(response => {
+          this.$toastr.s("Coupon setting updated");
+        });
+      });
     }
   }
 };

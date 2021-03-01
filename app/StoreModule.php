@@ -29,7 +29,8 @@ class StoreModule extends Model
         'frequencyItems' => 'boolean',
         'manualOrderEmails' => 'boolean',
         'guestCheckout' => 'boolean',
-        'noPromosOnSubscriptions' => 'boolean'
+        'noPromosOnSubscriptions' => 'boolean',
+        'strictCoupons' => 'boolean'
     ];
 
     protected $guarded = [];

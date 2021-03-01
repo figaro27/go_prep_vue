@@ -3409,6 +3409,7 @@ use next_delivery_dates
       }
     },
     async applyDiscountCode() {
+      let checkNext = true;
       if (
         this.bag.some(item => {
           return item.meal.gift_card === true;
@@ -3426,50 +3427,62 @@ use next_delivery_dates
         return;
       }
       this.lastUsedDiscountCode = this.discountCode;
-      let coupon = {};
+      let coupon = null;
       await axios
         .post(this.prefix + "findCoupon", {
           store_id: this.store.id,
-          couponCode: this.discountCode
+          couponCode: this.discountCode,
+          user_id: this.user.id
         })
         .then(resp => {
           coupon = resp.data;
+          if (
+            coupon &&
+            this.discountCode.toUpperCase() === coupon.code.toUpperCase()
+          ) {
+            if (
+              coupon.minimum > 0 &&
+              coupon.minimum >= this.totalBagPricePreFees
+            ) {
+              this.$toastr.w(
+                "This coupon requires a minimum amount of " +
+                  this.store.settings.currency_symbol +
+                  coupon.minimum +
+                  " to be used."
+              );
+              return;
+            }
+            if (coupon.oneTime) {
+              let oneTimePass = this.oneTimeCouponCheck(coupon.id);
+              if (oneTimePass === "login") {
+                this.$toastr.w(
+                  "This is a one-time coupon. Please log in or create an account to check if it has already been used."
+                );
+                return;
+              }
+              if (!oneTimePass) {
+                this.$toastr.w(
+                  "This was a one-time coupon that has already been used.",
+                  'Coupon Code: "' + this.discountCode + '"'
+                );
+                this.discountCode = "";
+                return;
+              }
+            }
+            this.coupon = coupon;
+            this.setBagCoupon(coupon);
+            this.discountCode = "";
+            this.$toastr.s("Coupon Applied.", "Success");
+            return;
+          }
+        })
+        .catch(e => {
+          checkNext = false;
+          this.$toastr.w(e.response.data);
+          return;
         });
 
-      if (
-        coupon &&
-        this.discountCode.toUpperCase() === coupon.code.toUpperCase()
-      ) {
-        if (coupon.minimum > 0 && coupon.minimum >= this.totalBagPricePreFees) {
-          this.$toastr.w(
-            "This coupon requires a minimum amount of " +
-              this.store.settings.currency_symbol +
-              coupon.minimum +
-              " to be used."
-          );
-          return;
-        }
-        if (coupon.oneTime) {
-          let oneTimePass = this.oneTimeCouponCheck(coupon.id);
-          if (oneTimePass === "login") {
-            this.$toastr.w(
-              "This is a one-time coupon. Please log in or create an account to check if it has already been used."
-            );
-            return;
-          }
-          if (!oneTimePass) {
-            this.$toastr.w(
-              "This was a one-time coupon that has already been used.",
-              'Coupon Code: "' + this.discountCode + '"'
-            );
-            this.discountCode = "";
-            return;
-          }
-        }
-        this.coupon = coupon;
-        this.setBagCoupon(coupon);
-        this.discountCode = "";
-        this.$toastr.s("Coupon Applied.", "Success");
+      if (!checkNext || coupon) {
         return;
       }
 
