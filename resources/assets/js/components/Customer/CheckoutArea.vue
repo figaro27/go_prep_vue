@@ -3409,6 +3409,16 @@ use next_delivery_dates
       }
     },
     async applyDiscountCode() {
+      if (
+        this.bag.some(item => {
+          return item.meal.gift_card === true;
+        })
+      ) {
+        this.$toastr.w(
+          "Promo codes are disabled when purchasing gift cards. Please order the gift card separately."
+        );
+        return;
+      }
       if (this.discountCode === "sub") {
         this.applySubDiscountOnOrder = true;
         this.discountCode = "";
