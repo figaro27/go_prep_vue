@@ -2709,7 +2709,7 @@ use next_delivery_dates
 
             if (
               this.storeModules.multipleDeliveryDays &&
-              !deliveryFeeType !== "range"
+              deliveryFeeType !== "range"
             ) {
               let mddFee = 0;
               this.groupBag.forEach(item => {
