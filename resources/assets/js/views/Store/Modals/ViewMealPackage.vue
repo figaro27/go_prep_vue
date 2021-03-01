@@ -128,8 +128,8 @@
                 />
               </b-form-group> -->
             </b-tab>
-            <b-tab title="Meals">
-              <h4>Meals</h4>
+            <b-tab title="Items">
+              <h4>Items</h4>
               <v-client-table
                 ref="mealPackageMealsTable"
                 :columns="columns"
@@ -140,7 +140,7 @@
 
                 <span slot="beforeLimit">
                   <div class="mr-2">
-                    Total meal price:
+                    Total item price:
                     {{ format.money(mealPriceTotal, storeSettings.currency) }}
                   </div>
                 </span>

@@ -485,7 +485,9 @@ class MealPackage extends Model implements HasMedia
         if (is_array($rawMeals)) {
             foreach ($rawMeals as $rawMeal) {
                 $meals[$rawMeal['id']] = [
-                    'quantity' => $rawMeal['quantity'],
+                    'quantity' => $rawMeal['quantity']
+                        ? $rawMeal['quantity']
+                        : 1,
                     'meal_size_id' => $rawMeal['meal_size_id'] ?? null,
                     'delivery_day_id' => $rawMeal['delivery_day_id'] ?? null
                 ];
