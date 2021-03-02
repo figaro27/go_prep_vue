@@ -151,8 +151,8 @@ class DeliveryRoutes
                     $data = json_decode($body->getContents());
 
                     $routes[] = [
-                        "startingAddress" =>
-                            $data->data->details->depots[0]->address,
+                        "startingAddress" => $startingAddress,
+                        "endingAddress" => $endingAddress,
                         "stops" => $data->data->stats->total_plan_stops,
                         "miles" => ceil(
                             $data->data->stats->total_plan_distance * 0.621371

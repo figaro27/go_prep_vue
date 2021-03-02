@@ -28,7 +28,8 @@
 
     <div>
     @if ($params['orderByRoutes'] === "true")
-      <p class="text-17"><strong>Starting Point:</strong> {{ $data[0]['startingAddress']}}</p>
+      <p class="text-17"><strong>Starting Address:</strong> {{ $data[0]['startingAddress']}}</p>
+      <p class="text-17"><strong>Ending Address:</strong> {{ $data[0]['endingAddress']}}</p>
       <p class="text-17"><strong>Total Stops:</strong> {{ $data[0]['stops']}}</p>
       <p class="text-17"><strong>Total Distance:</strong> {{ $data[0]['miles']}} Miles</p>
       <br><br>
