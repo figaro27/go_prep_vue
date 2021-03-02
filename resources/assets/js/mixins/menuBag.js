@@ -497,7 +497,9 @@ export default {
         });
 
         if (selectedDeliveryDay) {
-          if (this.totalBagPricePreFees < selectedDeliveryDay.minimum) {
+          if (
+            this.totalBagPricePreFeesBothTypes < selectedDeliveryDay.minimum
+          ) {
             customDeliveryDayRulesPassed = false;
           }
         }
