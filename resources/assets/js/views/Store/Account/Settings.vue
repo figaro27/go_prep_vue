@@ -1204,7 +1204,6 @@
                 <b-form-checkbox
                   v-model="storeSettings.allowWeeklySubscriptions"
                   @input="updateStoreSettings()"
-                  class="mt-3"
                   >Also Allow Weekly Subscriptions</b-form-checkbox
                 >
               </div>
