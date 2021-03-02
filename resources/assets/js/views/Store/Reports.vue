@@ -237,12 +237,20 @@
               >
             </div>
             <p class="center-text pt-2">
-              Summarizes all of the deliveries you have to make.
+              Summarizes all of your order deliveries.
             </p>
             <p class="center-text">
               <b-form-checkbox v-model="orderByRoutes" class="pt-1 pb-2"
                 >Order By Routes</b-form-checkbox
               >
+            </p>
+            <p
+              class="center-text font-14"
+              style="color:#20A8D8"
+              v-if="orderByRoutes"
+              @click="showStartEndAddressModal = true"
+            >
+              Set Start & End Addresses (Optional)
             </p>
             <div class="row">
               <div class="col-md-6">
@@ -415,6 +423,52 @@
         </div>
       </div>
     </div>
+    <b-modal
+      size="lg"
+      hide-header
+      v-model="showStartEndAddressModal"
+      v-if="showStartEndAddressModal"
+      no-fade
+    >
+      <div class="d-flex mt-3">
+        <div style="width:200px">
+          <p class="strong mr-2 pt-1">Start:</p>
+        </div>
+        <b-form-input
+          v-model="startingAddress.address"
+          placeholder="Starting Address"
+          class="mr-2"
+        ></b-form-input>
+        <b-form-input
+          v-model="startingAddress.city"
+          placeholder="Starting City"
+          class="mr-2"
+        ></b-form-input>
+        <b-form-input
+          v-model="startingAddress.zip"
+          placeholder="Starting Postal"
+        ></b-form-input>
+      </div>
+      <div class="d-flex mt-1">
+        <div style="width:200px">
+          <p class="strong mr-2 pt-1">End:</p>
+        </div>
+        <b-form-input
+          v-model="endingAddress.address"
+          placeholder="Ending Address"
+          class="mr-2"
+        ></b-form-input>
+        <b-form-input
+          v-model="endingAddress.city"
+          placeholder="Ending City"
+          class="mr-2"
+        ></b-form-input>
+        <b-form-input
+          v-model="endingAddress.zip"
+          placeholder="Ending Postal"
+        ></b-form-input>
+      </div>
+    </b-modal>
     <b-modal
       size="xl"
       title="Labels Settings"
@@ -718,6 +772,9 @@ export default {
   },
   data() {
     return {
+      startingAddress: {},
+      endingAddress: {},
+      showStartEndAddressModal: false,
       orderPackageSummary: "order_summary",
       orderByRoutes: false,
       delivery_dates: {
@@ -819,9 +876,20 @@ export default {
     }
   },
   mixins: [checkDateRange, printer],
-  async mounted() {},
+  async mounted() {
+    this.setDeliveryAddresses();
+  },
   methods: {
     ...mapActions(["printer/connect", "refreshStoreReportSettings"]),
+    setDeliveryAddresses() {
+      let details = this.store.details;
+      this.startingAddress.address = details.address;
+      this.startingAddress.city = details.city;
+      this.startingAddress.zip = details.zip;
+      this.endingAddress.address = details.address;
+      this.endingAddress.city = details.city;
+      this.endingAddress.zip = details.zip;
+    },
 
     async print(report, format = "pdf", page = 1) {
       let params = { page };
@@ -886,6 +954,27 @@ export default {
       params.height = this.reportSettings.lab_height;
 
       params.orderByRoutes = this.orderByRoutes;
+      params.startingAddress = this.startingAddress;
+      params.endingAddress = this.endingAddress;
+
+      if (report == "delivery_routes") {
+        if (
+          this.startingAddress.address === "" ||
+          this.startingAddress.city === "" ||
+          this.startingAddress.zip === ""
+        ) {
+          this.$toastr.w("Please add a full starting address");
+          return;
+        }
+        if (
+          this.endingAddress.address === "" ||
+          this.endingAddress.city === "" ||
+          this.endingAddress.zip === ""
+        ) {
+          this.$toastr.w("Please add a full ending address");
+          return;
+        }
+      }
 
       if (
         report == "delivery_routes" &&
@@ -951,6 +1040,8 @@ export default {
       let params = { page };
 
       params.orderByRoutes = this.orderByRoutes;
+      params.startingAddress = this.startingAddress;
+      params.endingAddress = this.endingAddress;
 
       this.delivery_dates["package_order_summary"] = this.delivery_dates[
         "order_summary"

@@ -46,14 +46,25 @@ class DeliveryRoutes
         $id = auth('api')->user()->id;
         $store = Store::where('user_id', $id)->first();
         $storeDetails = $store->details;
-        $storeAddress =
-            $storeDetails->address .
+
+        $start = json_decode($this->params->get('startingAddress'), true);
+        $startingAddress =
+            $start['address'] .
             ', ' .
-            $storeDetails->city .
+            $start['city'] .
             ', ' .
             $storeDetails->state .
-            ' ' .
-            $storeDetails->zip;
+            ', ' .
+            $start['zip'];
+        $end = json_decode($this->params->get('endingAddress'), true);
+        $endingAddress =
+            $end['address'] .
+            ', ' .
+            $end['city'] .
+            ', ' .
+            $storeDetails->state .
+            ', ' .
+            $end['zip'];
 
         $url = "https://app.elasticroute.com/api/v1/plan/asdf?c=sync&w=false";
         $names = [];
@@ -96,7 +107,14 @@ class DeliveryRoutes
         $depots = [
             [
                 "name" => $storeDetails->name,
-                "address" => $storeAddress
+                "address" => $startingAddress
+            ]
+        ];
+
+        $endingDepot = [
+            [
+                "name" => $storeDetails->name . ' - Ending Depot',
+                "address" => $endingAddress
             ]
         ];
 
@@ -121,6 +139,7 @@ class DeliveryRoutes
                         'json' => [
                             'stops' => $stops,
                             'depots' => $depots,
+                            'end_depot' => $endingDepot,
                             'vehicles' => $vehicles,
                             'generalSettings' => $generalSettings
                         ]
