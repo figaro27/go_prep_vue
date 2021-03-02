@@ -1687,38 +1687,50 @@ export default {
               this.store.id !== 109 &&
               this.store.id !== 110
             ) {
-              item.meal.meals.forEach(meal => {
-                if (resp.data.includes(meal.id)) {
-                  this.clearMealFullQuantity(
-                    item.meal,
-                    item.meal_package,
-                    item.size,
-                    item.components,
-                    item.addons,
-                    item.special_instructions
-                  );
-                }
-              });
+              let params = this.$route.params;
+              if (
+                typeof params.backFromBagPage === "undefined" &&
+                typeof params.topMenuClicked === "undefined"
+              ) {
+                item.meal.meals.forEach(meal => {
+                  if (resp.data.includes(meal.id)) {
+                    this.clearMealFullQuantity(
+                      item.meal,
+                      item.meal_package,
+                      item.size,
+                      item.components,
+                      item.addons,
+                      item.special_instructions
+                    );
+                  }
+                });
+              }
             }
           }
         });
       });
     },
     async clearInactiveMealPackages() {
-      await axios.get("/api/refresh_inactive_meal_package_ids").then(resp => {
-        this.bag.forEach(item => {
-          if (resp.data.includes(item.meal.id)) {
-            this.clearMealFullQuantity(
-              item.meal,
-              item.meal_package,
-              item.size,
-              item.components,
-              item.addons,
-              item.special_instructions
-            );
-          }
+      let params = this.$route.params;
+      if (
+        typeof params.backFromBagPage === "undefined" &&
+        typeof params.topMenuClicked === "undefined"
+      ) {
+        await axios.get("/api/refresh_inactive_meal_package_ids").then(resp => {
+          this.bag.forEach(item => {
+            if (resp.data.includes(item.meal.id)) {
+              this.clearMealFullQuantity(
+                item.meal,
+                item.meal_package,
+                item.size,
+                item.components,
+                item.addons,
+                item.special_instructions
+              );
+            }
+          });
         });
-      });
+      }
     },
     removeOldDeliveryDates() {
       this.bag.forEach(item => {
