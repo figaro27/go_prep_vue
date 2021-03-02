@@ -35,13 +35,14 @@
               </b-form-group>
               <b-form-group>
                 <h4>Price</h4>
-                <b-form-input
+                <money
                   required
-                  type="number"
                   v-model="meal.price"
+                  :min="0.1"
+                  :max="999.99"
                   class="form-control"
                   v-bind="{ prefix: storeCurrencySymbol }"
-                ></b-form-input>
+                ></money>
               </b-form-group>
               <h4 v-if="store.modules.stockManagement" class="mb-3">Stock</h4>
               <b-form-group
