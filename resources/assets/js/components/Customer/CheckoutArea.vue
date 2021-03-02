@@ -128,7 +128,8 @@
         v-if="
           (storeSettings.allowWeeklySubscriptions ||
             storeSettings.allowBiWeeklySubscriptions ||
-            storeSettings.allowMonthlySubscriptions) &&
+            storeSettings.allowMonthlySubscriptions ||
+            storeSettings.prepaidSubscriptions) &&
             $route.params.subscriptionId === undefined &&
             $parent.orderId === undefined &&
             !subscriptionId &&
@@ -192,7 +193,7 @@
               bagSubscriptionInterval !== 'select'
           "
         >
-          <p>
+          <p v-if="bagSubscriptionInterval !== 'prepaid'">
             A subscription is a {{ bagSubscriptionInterval }}ly recurring order.
             Your card will be automatically charged and new orders will
             continuously be created for you on a {{ bagSubscriptionInterval }}ly
@@ -204,16 +205,30 @@
               orders</span
             >.
           </p>
+          <p v-else>
+            A prepaid is a subscription that will charge you now all at once for
+            the next {{ storeSettings.prepaidWeeks }} weeks of orders.
+          </p>
         </div>
       </li>
       <li
         class="checkout-item"
         v-if="
-          weeklySubscription && hasMultipleSubscriptionIntervals && !adjusting
+          weeklySubscription &&
+            (hasMultipleSubscriptionIntervals ||
+              store.settings.prepaidSubscriptions) &&
+            !adjusting
         "
       >
         <div class="d-inline">
-          <div class="d-inline">
+          <div
+            class="d-inline"
+            v-if="
+              hasMultipleSubscriptionIntervals ||
+                (storeSettings.prepaidSubscriptions &&
+                  storeSettings.allowWeeklySubscriptions)
+            "
+          >
             <img
               v-if="!mobile"
               v-b-popover.hover.bottom="
@@ -234,6 +249,9 @@
             />
             <strong>Frequency:</strong>
           </div>
+          <p class="strong pb-5" v-if="!storeSettings.allowWeeklySubscriptions">
+            Prepaid {{ store.settings.prepaidWeeks }} Week Subscription
+          </p>
           <div class="d-inline pl-3">
             <!-- <span
               v-if="bagSubscriptionInterval === 'select'"
@@ -242,8 +260,9 @@
               >*</span
             > -->
             <b-select
+              v-if="!store.settings.prepaidSubscriptions"
               style="font-size:16px"
-              v-model="bagSubscriptionInterval"
+              :value="bagSubscriptionInterval"
               class="mb-1 delivery-select"
               @input="val => setBagSubscriptionInterval(val)"
             >
@@ -260,6 +279,25 @@
                 value="month"
                 v-if="storeSettings.allowMonthlySubscriptions"
                 ><strong>Monthly</strong></option
+              >
+            </b-select>
+            <!-- If a store winds up not wanting to offer single week subs along with prepaid subscriptions, make a new field in store_settings for this. Checkbox on settings page "Also allow weekly" -->
+            <b-select
+              v-if="
+                storeSettings.prepaidSubscriptions &&
+                  storeSettings.allowWeeklySubscriptions
+              "
+              style="font-size:16px"
+              :value="bagSubscriptionInterval"
+              class="mb-1 delivery-select"
+              @input="val => setBagSubscriptionInterval(val)"
+            >
+              <option value="select"><strong>Select</strong></option>
+              <option value="week"><strong>Weekly</strong></option>
+              <option value="prepaid"
+                ><strong
+                  >Prepaid {{ store.settings.prepaidWeeks }} Weeks</strong
+                ></option
               >
             </b-select>
           </div>
@@ -1699,7 +1737,7 @@ export default {
       if (
         this.weeklySubscriptionValue &&
         this.storeSettings.prepaidSubscriptions &&
-        this.bagSubscriptionInterval === "month"
+        this.bagSubscriptionInterval === "prepaid"
       ) {
         return true;
       } else {
@@ -3350,20 +3388,27 @@ use next_delivery_dates
       let biweek = this.storeSettings.allowBiWeeklySubscriptions;
       let month = this.storeSettings.allowMonthlySubscriptions;
 
-      if (week && !biweek && !month) {
-        this.setBagSubscriptionInterval("week");
-        return;
-      }
-      if (!week && biweek && !month) {
-        this.setBagSubscriptionInterval("biweek");
-        return;
-      }
-      if (!week && !biweek && month) {
-        this.setBagSubscriptionInterval("month");
-        return;
-      }
-      if (this.bagSubscriptionInterval == null) {
-        this.setBagSubscriptionInterval("select");
+      if (!this.storeSettings.prepaidSubscriptions) {
+        if (week && !biweek && !month) {
+          this.setBagSubscriptionInterval("week");
+          return;
+        }
+        if (!week && biweek && !month) {
+          this.setBagSubscriptionInterval("biweek");
+          return;
+        }
+        if (!week && !biweek && month) {
+          this.setBagSubscriptionInterval("month");
+          return;
+        }
+        if (this.bagSubscriptionInterval == null) {
+          this.setBagSubscriptionInterval("select");
+        }
+      } else {
+        if (!week) {
+          this.setBagSubscriptionInterval("prepaid");
+          return;
+        }
       }
     },
     preventNegative() {

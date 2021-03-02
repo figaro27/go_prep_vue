@@ -1175,66 +1175,101 @@
             </b-tab>
             <b-tab title="Subscriptions">
               <p>
-                <span class="mr-1">Allow Weekly Subscriptions</span>
+                <span class="mr-1">Subscriptions Type</span>
                 <img
                   v-b-popover.hover="
-                    'Shows a section on your bag/checkout page that lets the customer opt in for a weekly subscription for an optional discount. The customer will then be charged every week. They can cancel, or change items in their subscriptions.'
+                    'Standard subscriptions charge the customer at the frequency selected (weekly, bi-weekly, monthly). Prepaid subscriptions let you specify the number of weeks that the customer is agreeing to and charges a prepaid amount totaling all those weeks at once.'
                   "
-                  title="Allow Weekly Subscriptions"
+                  title="Subscriptions Type"
                   src="/images/store/popover.png"
                   class="popover-size"
                 />
               </p>
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.allowWeeklySubscriptions"
-                @change.native="updateStoreSettings()"
-              />
-              <b-form-group
-                :state="true"
-                v-if="storeSettings.allowWeeklySubscriptions"
-              >
-                <p class="mt-3">
-                  <span class="mr-1">Minimum Subscription Weeks</span>
+              <b-form-radio-group
+                v-model="storeSettings.prepaidSubscriptions"
+                :options="subscriptionsType"
+                @input="updateStoreSettings()"
+                class="mb-3"
+              ></b-form-radio-group>
+              <div v-if="storeSettings.prepaidSubscriptions">
+                <p>Prepaid Weeks</p>
+                <b-form-input
+                  placeholder="Prepaid Weeks"
+                  v-model="storeSettings.prepaidWeeks"
+                  class="mb-3 w-180"
+                  type="number"
+                  min="1"
+                  @input="updateStoreSettings()"
+                ></b-form-input>
+                <b-form-checkbox
+                  v-model="storeSettings.allowWeeklySubscriptions"
+                  @input="updateStoreSettings()"
+                  class="mt-3"
+                  >Also Allow Weekly Subscriptions</b-form-checkbox
+                >
+              </div>
+              <div v-if="!storeSettings.prepaidSubscriptions">
+                <p>
+                  <span class="mr-1">Allow Weekly Subscriptions</span>
                   <img
                     v-b-popover.hover="
-                      'Type in the number of weeks of orders your customer will be locked into when creating a weekly subscription. The Cancel button will only show for them after they meet this minimum requirement. They would have to contact you directly if they want to cancel. This is a way to prevent abuse of the subscription discount if you have one.'
+                      'Shows a section on your bag/checkout page that lets the customer opt in for a weekly subscription for an optional discount. The customer will then be charged every week. They can cancel, or change items in their subscriptions.'
                     "
-                    title="Minimum Subscription Weeks"
+                    title="Allow Weekly Subscriptions"
                     src="/images/store/popover.png"
                     class="popover-size"
                   />
                 </p>
-                <b-form-input
-                  v-model="storeSettings.minimumSubWeeks"
-                  required
-                  @input="updateStoreSettings()"
-                  class="w-180"
-                  type="number"
-                  min="0"
-                ></b-form-input>
-              </b-form-group>
-              <p>
-                <span class="mr-1">Allow Bi-Weekly Subscriptions</span>
-                <img
-                  v-b-popover.hover="
-                    'Shows a section on your bag/checkout page that lets the customer opt in for a bi-weekly subscription for an optional discount. The customer will then be charged every 2 weeks. They can cancel, or change items in their subscriptions.'
-                  "
-                  title="Allow Bi-Weekly Subscriptions"
-                  src="/images/store/popover.png"
-                  class="popover-size"
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeSettings.allowWeeklySubscriptions"
+                  @change.native="updateStoreSettings()"
                 />
-              </p>
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.allowBiWeeklySubscriptions"
-                @change.native="updateStoreSettings()"
-              />
-              <!-- <p v-if="storeSettings.allowWeeklySubscriptions || storeSettings.allowMonthlySubscriptions" class="mt-3">
+                <b-form-group
+                  :state="true"
+                  v-if="storeSettings.allowWeeklySubscriptions"
+                >
+                  <p class="mt-3">
+                    <span class="mr-1">Minimum Subscription Weeks</span>
+                    <img
+                      v-b-popover.hover="
+                        'Type in the number of weeks of orders your customer will be locked into when creating a weekly subscription. The Cancel button will only show for them after they meet this minimum requirement. They would have to contact you directly if they want to cancel. This is a way to prevent abuse of the subscription discount if you have one.'
+                      "
+                      title="Minimum Subscription Weeks"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </p>
+                  <b-form-input
+                    v-model="storeSettings.minimumSubWeeks"
+                    required
+                    @input="updateStoreSettings()"
+                    class="w-180"
+                    type="number"
+                    min="0"
+                  ></b-form-input>
+                </b-form-group>
+                <p>
+                  <span class="mr-1">Allow Bi-Weekly Subscriptions</span>
+                  <img
+                    v-b-popover.hover="
+                      'Shows a section on your bag/checkout page that lets the customer opt in for a bi-weekly subscription for an optional discount. The customer will then be charged every 2 weeks. They can cancel, or change items in their subscriptions.'
+                    "
+                    title="Allow Bi-Weekly Subscriptions"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeSettings.allowBiWeeklySubscriptions"
+                  @change.native="updateStoreSettings()"
+                />
+                <!-- <p v-if="storeSettings.allowWeeklySubscriptions || storeSettings.allowMonthlySubscriptions" class="mt-3">
                 <span class="mr-1">Weekly Subscriptions Paid Monthly</span>
                 <img
                   v-b-popover.hover="
@@ -1253,24 +1288,25 @@
                   v-model="storeSettings.prepaidSubscriptions"
                   @change.native="updateStoreSettings()"
                 /> -->
-              <p class="mt-3">
-                <span class="mr-1">Allow Monthly Subscriptions</span>
-                <img
-                  v-b-popover.hover="
-                    'Shows a section on your bag/checkout page that lets the customer opt in for a monthly subscription for an optional discount. The customer will then be charged once every 4 weeks and receive 1 order every 4 weeks. They can cancel, or change items in their subscriptions.'
-                  "
-                  title="Allow Monthly Subscriptions"
-                  src="/images/store/popover.png"
-                  class="popover-size"
+                <p class="mt-3">
+                  <span class="mr-1">Allow Monthly Subscriptions</span>
+                  <img
+                    v-b-popover.hover="
+                      'Shows a section on your bag/checkout page that lets the customer opt in for a monthly subscription for an optional discount. The customer will then be charged once every 4 weeks and receive 1 order every 4 weeks. They can cancel, or change items in their subscriptions.'
+                    "
+                    title="Allow Monthly Subscriptions"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeSettings.allowMonthlySubscriptions"
+                  @change.native="updateStoreSettings()"
                 />
-              </p>
-              <c-switch
-                color="success"
-                variant="pill"
-                size="lg"
-                v-model="storeSettings.allowMonthlySubscriptions"
-                @change.native="updateStoreSettings()"
-              />
+              </div>
               <p class="mt-3">
                 <span class="mr-1">Allow Multiple Subscriptions</span>
                 <img
@@ -1289,13 +1325,7 @@
                 v-model="storeSettings.allowMultipleSubscriptions"
                 @change.native="updateStoreSettings()"
               />
-              <b-form-group
-                :state="true"
-                v-if="
-                  storeSettings.allowWeeklySubscriptions ||
-                    storeSettings.allowMonthlySubscriptions
-                "
-              >
+              <b-form-group :state="true">
                 <p class="mt-3">
                   <span class="mr-1">Subscription Discount</span>
                   <img
@@ -1327,14 +1357,7 @@
                 ></b-form-input>
               </b-form-group>
 
-              <b-form-group
-                :state="true"
-                class="mt-4 mb-4"
-                v-if="
-                  storeSettings.allowWeeklySubscriptions ||
-                    storeSettings.allowMonthlySubscriptions
-                "
-              >
+              <b-form-group :state="true" class="mt-4 mb-4">
                 <p>
                   <span class="mr-1">Subscription Renewal Timing</span>
                   <img
@@ -1774,6 +1797,10 @@ export default {
       subscriptionRenewalTypeOptions: [
         { text: "Renew At Cutoff", value: "cutoff" },
         { text: "Renew Now", value: "now" }
+      ],
+      subscriptionsType: [
+        { text: "Standard", value: false },
+        { text: "Prepaid", value: true }
       ],
       minimumSelected: "price",
       minimumOptions: [

@@ -157,6 +157,9 @@ class CheckoutController extends StoreController
                 Constants::INTERVAL_WEEK
             );
             $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
+            if ($interval === 'prepaid') {
+                $prepaid = 1;
+            }
             $notes = $request->get('notes');
             $publicNotes = $request->get('publicOrderNotes');
             $hot = $request->get('hot');

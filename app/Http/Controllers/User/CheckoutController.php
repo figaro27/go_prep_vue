@@ -290,6 +290,9 @@ class CheckoutController extends UserController
                 Constants::INTERVAL_WEEK
             );
             $period = Constants::PERIOD[$interval] ?? Constants::PERIOD_WEEKLY;
+            if ($interval === 'prepaid') {
+                $prepaid = 1;
+            }
             //$stripeToken = $request->get('token');
             $publicNotes = $request->get('publicOrderNotes');
             $deposit = 1;
