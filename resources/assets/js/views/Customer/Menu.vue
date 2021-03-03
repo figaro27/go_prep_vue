@@ -1019,11 +1019,11 @@ export default {
         this.autoPickUpcomingMultDD();
       } else {
         if (this.loggedIn && this.context !== "store") {
-          this.setBagZipCode(parseInt(this.user.user_detail.zip));
+          this.setBagZipCode(this.user.user_detail.zip);
           this.autoPickUpcomingMultDD(this.sortedDeliveryDays);
         }
         if (this.bagZipCode) {
-          this.setBagZipCode(parseInt(this.bagZipCode));
+          this.setBagZipCode(this.bagZipCode);
           this.autoPickUpcomingMultDD(this.sortedDeliveryDays);
         }
       }
@@ -1042,11 +1042,14 @@ export default {
       }
       if (
         this.bagPickup == 0 &&
-        !this.bagZipCode &&
         this.hasDeliveryDayZipCodes &&
-        !this.noAvailableDays &&
         !this.adjustOrder &&
         !this.adjustMealPlan
+      ) {
+      }
+      if (
+        (!this.bagZipCode && !this.noAvailableDays) ||
+        (this.bagZipCode && this.noAvailableDays)
       ) {
         this.showDeliveryDayModal = true;
       }

@@ -159,7 +159,7 @@ export default {
         if (this.store.delivery_day_zip_codes.length > 0) {
           let deliveryDayIds = [];
           this.store.delivery_day_zip_codes.forEach(ddZipCode => {
-            if (ddZipCode.zip_code === parseInt(this.bagZipCode)) {
+            if (ddZipCode.zip_code === this.bagZipCode) {
               deliveryDayIds.push(ddZipCode.delivery_day_id);
             }
           });

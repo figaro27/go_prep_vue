@@ -202,6 +202,7 @@
 
               <b-form-group horizontal :state="state(1, 'country')">
                 <b-select
+                  v-if="!form[1].country || form[1].country === ''"
                   placeholder="Country"
                   :options="countryNames"
                   v-model="form[1].country"
@@ -235,7 +236,11 @@
                 ></b-input>
               </b-form-group>
 
-              <b-form-group horizontal :state="state(1, 'city')">
+              <b-form-group
+                horizontal
+                :state="state(1, 'city')"
+                v-if="showCityInput"
+              >
                 <b-input
                   :placeholder="cityLabel"
                   v-model="form[1].city"
@@ -253,7 +258,7 @@
               <b-form-group
                 horizontal
                 :state="state(1, 'state')"
-                v-if="showStatesBox"
+                v-if="showStatesInput"
               >
                 <b-select
                   :placeholder="stateLabel"
@@ -266,7 +271,19 @@
               </b-form-group>
 
               <b-form-group horizontal :state="state(1, 'zip')">
+                <p class="strong" v-if="selectPostal">
+                  Select {{ postalLabel }}
+                </p>
+                <b-select
+                  :options="getPostalNames(form[1].country)"
+                  v-model="form[1].zip"
+                  class="w-180"
+                  style="font-size:16px"
+                  v-if="selectPostal"
+                >
+                </b-select>
                 <b-input
+                  v-else
                   :placeholder="postalLabel"
                   v-model="form[1].zip"
                   type="text"
@@ -618,6 +635,7 @@ import TermsOfAgreement from "./TermsOfAgreement";
 import countries from "../data/countries.js";
 import currencies from "../data/currencies.js";
 import states from "../data/states.js";
+import postals from "../data/postals.js";
 import { AsYouType } from "libphonenumber-js";
 
 export default {
@@ -644,7 +662,8 @@ export default {
       stripeKey: window.app.stripe_key,
       stripeOptions: {},
       cardStatus: null,
-      showStatesBox: true,
+      showStatesInput: true,
+      showCityInput: true,
 
       form: {
         0: {
@@ -696,6 +715,18 @@ export default {
     ...mapGetters({
       store: "viewedStore"
     }),
+    selectPostal() {
+      // Certain countries have string based postal areas like Barbados having 'Parishes' and this is needed for delivery_day_zip_code input matching
+      if (
+        this.store &&
+        this.store.details &&
+        this.store.details.country === "BB"
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     cityLabel() {
       if (this.form[1].country === "BH") {
         return "Town";
@@ -722,6 +753,9 @@ export default {
           break;
         case "BH":
           return "Block";
+          break;
+        case "BB":
+          return "Parish";
           break;
         default:
           return "Postal Code";
@@ -800,6 +834,9 @@ export default {
           return "Please include the ending of the email such as .com.";
         }
       }
+    },
+    stateNames() {
+      return this.getStateNames();
     }
   },
   validations: {
@@ -874,6 +911,8 @@ export default {
       this.form[1].state = state[0].value;
     }
 
+    // Hides certain inputes like state & city depending on the selected country
+
     if (this.$route.query === "store") {
       this.role = "store";
     }
@@ -883,15 +922,16 @@ export default {
       this.planSelected = this.planOptions[0];
       this.form[0].role = "store";
     }
+
+    this.hideInputs();
   },
   methods: {
     ...mapActions(["init", "setToken"]),
     getStateNames(country = "US") {
-      // Rework for more countries in the future
-      if (country == "BH") {
-        this.showStatesBox = false;
-      }
       return states.selectOptions(country);
+    },
+    getPostalNames(country = "US") {
+      return postals.getPostals(country);
     },
     state(step, key) {
       if (
@@ -1093,6 +1133,20 @@ export default {
         this.store && this.store.details ? this.store.details.country : "US";
       this.form[0].phone = this.form[0].phone.replace(/[^\d.-]/g, "");
       this.form[0].phone = new AsYouType(country).input(this.form[0].phone);
+    },
+    hideInputs() {
+      // Eventually move to external js file
+      if (this.form[1].country === "BH") {
+        this.showStatesInput = false;
+        this.form[1].state = "N/A";
+      }
+
+      if (this.form[1].country === "BB") {
+        this.showStatesInput = false;
+        this.showCityInput = false;
+        this.form[1].state = "N/A";
+        this.form[1].city = "N/A";
+      }
     }
   }
 };

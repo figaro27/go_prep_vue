@@ -88,8 +88,8 @@
       </div>
     </div>
     <div v-if="hasDeliveryDayZipCodes && !bagPickup">
-      <h5 class="mb-3 center-text" v-if="noAvailableDays && !showPostalCodeBox">
-        Unfortunately we do not deliver to your postal code.
+      <h5 class="mb-1 center-text" v-if="noAvailableDays && !showPostalCodeBox">
+        There are no available delivery days to your {{ postalLabel }}.
       </h5>
       <div v-if="!loggedIn">
         <center>
@@ -98,36 +98,58 @@
             v-if="bagZipCode && !bagPickup && !showPostalCodeBox"
             @click="changeZipCode()"
             class="mt-3 mb-2"
-            >Change Postal Code</b-btn
+            >Change {{ postalLabel }}</b-btn
           >
         </center>
 
         <h5 class="mb-1 center-text" v-if="!bagPickup && !bagZipCode">
-          Please enter your delivery postal code.
+          Please enter your {{ postalLabel }}.
         </h5>
 
         <b-form class="mt-2 text-center" @submit.prevent="setZipCode">
           <center>
-            <b-form-group :state="true" class="d-flex d-center">
+            <b-form-group
+              :state="true"
+              class="d-flex d-center"
+              v-if="(!bagPickup && !bagZipCode) || showPostalCodeBox"
+            >
+              <b-select
+                :placeholder="postalLabel"
+                :options="getPostalNames(store.details.country)"
+                v-model="zipCode"
+                class="w-180"
+                style="font-size:16px"
+                v-if="selectPostal"
+              >
+              </b-select>
               <b-form-input
-                v-if="(!bagPickup && !bagZipCode) || showPostalCodeBox"
-                placeholder="Postal Code"
+                v-else
+                :placeholder="postalLabel"
                 v-model="zipCode"
                 class="width-100px mt-1"
               ></b-form-input>
-              <b-btn
-                v-if="
-                  (zipCode && zipCode.length >= 0 && !bagZipCode) ||
-                    showPostalCodeBox
-                "
-                variant="primary"
-                class="mt-2"
-                @click="setZipCode"
-                >Submit</b-btn
-              >
             </b-form-group>
+            <b-btn
+              v-if="
+                (zipCode && zipCode.length >= 0 && !bagZipCode) ||
+                  showPostalCodeBox
+              "
+              variant="primary"
+              @click="setZipCode"
+              >Submit</b-btn
+            >
           </center>
         </b-form>
+      </div>
+      <div v-else>
+        <center>
+          <b-btn
+            variant="primary"
+            @click="$router.push('/customer/account/my-account')"
+            class="mt-3 mb-2"
+            >Update {{ postalLabel }}</b-btn
+          >
+        </center>
       </div>
     </div>
   </div>
@@ -135,6 +157,7 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../../mixins/menuBag";
+import postals from "../../../data/postals.js";
 
 export default {
   watch: {
@@ -171,6 +194,29 @@ export default {
       bagPickup: "bagPickup",
       loggedIn: "loggedIn"
     }),
+    postalLabel() {
+      switch (this.store.details.country) {
+        case "US":
+          return "zip code";
+          break;
+        case "BH":
+          return "block";
+          break;
+        case "BB":
+          return "parish";
+          break;
+        default:
+          return "postal code";
+      }
+    },
+    selectPostal() {
+      // Certain countries have string based postal areas like Barbados having 'Parishes' and this is needed for delivery_day_zip_code input matching
+      if (this.store.details.country === "BB") {
+        return true;
+      } else {
+        return false;
+      }
+    },
     showPostalCodeBox() {
       if (!this.bagPickup && !this.bagZipCode) {
         return true;
@@ -217,6 +263,9 @@ export default {
       setBagPickup: "setBagPickup",
       setMultDDZipCode: "setMultDDZipCode"
     }),
+    getPostalNames(country = "US") {
+      return postals.getPostals(country);
+    },
     setPickup() {
       this.$store.commit("emptyBag");
       this.setBagPickup(1);

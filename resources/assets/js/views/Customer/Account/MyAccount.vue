@@ -56,12 +56,23 @@
             required
           ></b-form-input>
           <hr v-if="store.details.state" />
+
+          <b-select
+            :options="getPostalNames(store.details.country)"
+            v-model="userDetail.zip"
+            class="w-180"
+            style="font-size:16px"
+            v-if="selectPostal"
+          >
+          </b-select>
           <b-form-input
+            v-else
             type="text"
             v-model="userDetail.zip"
-            placeholder="Zip Code"
+            :placeholder="postalLabel"
             required
           ></b-form-input>
+
           <hr />
           <b-form-input
             type="text"
@@ -248,6 +259,7 @@ import { Switch as cSwitch } from "@coreui/vue";
 import states from "../../../data/states.js";
 import toasts from "../../../mixins/toasts";
 import { AsYouType } from "libphonenumber-js";
+import postals from "../../../data/postals.js";
 
 export default {
   mixins: [toasts],
@@ -275,6 +287,29 @@ export default {
       storeSettings: "viewedStoreSettings",
       store: "viewedStore"
     }),
+    postalLabel() {
+      switch (this.store.details.country) {
+        case "US":
+          return "Zip Code";
+          break;
+        case "BH":
+          return "Block";
+          break;
+        case "BB":
+          return "Parish";
+          break;
+        default:
+          return "Postal Code";
+      }
+    },
+    selectPostal() {
+      // Certain countries have string based postal areas like Barbados having 'Parishes' and this is needed for delivery_day_zip_code input matching
+      if (this.store.details.country === "BB") {
+        return true;
+      } else {
+        return false;
+      }
+    },
     gateway() {
       return this.storeSettings.payment_gateway;
     },
@@ -303,6 +338,9 @@ export default {
   },
   methods: {
     ...mapActions(["refreshUser", "refreshViewedStore", "refreshCards"]),
+    getPostalNames(country = "US") {
+      return postals.getPostals(country);
+    },
     updateCustomer() {
       this.asYouType();
       if (this.store.details.country === "US") {
