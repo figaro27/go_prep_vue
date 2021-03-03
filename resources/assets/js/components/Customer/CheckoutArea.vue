@@ -1255,7 +1255,12 @@
 
         <b-alert
           show
-          v-if="store.modules.frequencyItems && bagHasMultipleFrequencyItems"
+          v-if="
+            store.modules.frequencyItems &&
+              bagHasMultipleFrequencyItems &&
+              !adjustingSubscription &&
+              !adjustingOrder
+          "
           variant="secondary"
         >
           <p class="center-text strong">
@@ -1763,7 +1768,7 @@ export default {
       }
     },
     adjustingOrder() {
-      if (this.$route.params.adjustOrder) {
+      if (this.$route.params.adjustOrder || this.$route.params.orderId) {
         return true;
       }
     },
@@ -2598,7 +2603,11 @@ use next_delivery_dates
           totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
         });
       }
-      let subtotal = this.totalBagPricePreFees + totalLineItemsPrice;
+      let preFeeTotal =
+        this.adjustingSubscription || this.adjustingOrder
+          ? this.totalBagPricePreFeesBothTypes
+          : this.totalBagPricePreFees;
+      let subtotal = preFeeTotal + totalLineItemsPrice;
 
       return subtotal;
     },

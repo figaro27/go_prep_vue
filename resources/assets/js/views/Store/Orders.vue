@@ -1277,7 +1277,8 @@ export default {
       "setBagGratuityPercent",
       "setBagCustomGratuity",
       "setBagNotes",
-      "setBagPublicNotes"
+      "setBagPublicNotes",
+      "setBagSubscription"
     ]),
     refreshTable() {
       this.refreshResource("orders");
@@ -1837,6 +1838,7 @@ export default {
       this.setBagCustomGratuity(0);
       this.setBagNotes(null);
       this.setBagPublicNotes(null);
+      this.setBagSubscription(null);
       this.store.distance = 1;
     },
     adjustOrder() {
