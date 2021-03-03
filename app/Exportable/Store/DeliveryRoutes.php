@@ -108,19 +108,17 @@ class DeliveryRoutes
             [
                 "name" => $storeDetails->name,
                 "address" => $startingAddress
-            ]
-        ];
-
-        $endingDepot = [
+            ],
             [
-                "name" => $storeDetails->name . ' - Ending Depot',
+                "name" => 'End Depot',
                 "address" => $endingAddress
             ]
         ];
 
         $vehicles = [
             [
-                "name" => "Vehicle 1"
+                "name" => "Vehicle 1",
+                "end_depot" => "End Depot"
             ]
         ];
 
@@ -139,7 +137,6 @@ class DeliveryRoutes
                         'json' => [
                             'stops' => $stops,
                             'depots' => $depots,
-                            'end_depot' => $endingDepot,
                             'vehicles' => $vehicles,
                             'generalSettings' => $generalSettings
                         ]
