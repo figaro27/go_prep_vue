@@ -102,7 +102,7 @@ class Payments
                 $columns['payout_total'] = $order->payout_total;
                 $columns['payout_date'] = $order->payout_date
                     ? Carbon::parse($order->payout_date)->format('D, m/d/Y')
-                    : null;
+                    : 'Pending';
                 $columns['paid_at'] = Carbon::parse($order->paid_at)->format(
                     'D, m/d/Y'
                 );

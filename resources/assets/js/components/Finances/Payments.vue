@@ -54,7 +54,7 @@
               required
             ></b-form-radio-group>
           </div>
-          <div class="mb-4" v-if="store.id === 100">
+          <div class="mb-4">
             <b-form-checkbox
               class="mediumCheckbox"
               v-model="filters.includePayouts"
@@ -178,6 +178,9 @@
         <div slot="payout_date" slot-scope="props">
           <div v-if="props.index > 1 && props.row.payout_date">
             {{ moment(props.row.payout_date).format("dddd, MMM Do") }}
+          </div>
+          <div v-else>
+            <p>Pending</p>
           </div>
         </div>
         <div slot="paid_at" slot-scope="props">
