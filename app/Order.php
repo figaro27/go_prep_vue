@@ -103,11 +103,6 @@ class Order extends Model
         return $this->belongsTo('App\Store');
     }
 
-    public function payout()
-    {
-        return $this->belongsTo('App\Payout');
-    }
-
     public function meal_orders()
     {
         return $this->hasMany('App\MealOrder');
