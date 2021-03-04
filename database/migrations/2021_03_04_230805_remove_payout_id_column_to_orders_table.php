@@ -14,6 +14,7 @@ class RemovePayoutIdColumnToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
+            $table->dropForeign(['payout_id']);
             $table->dropColumn('payout_id');
         });
     }
