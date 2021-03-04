@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <b-alert style="background-color:#EBFAFF" show dismissible>
+      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
         <p>
           <span class="strong">Update - Delivery Fee Ranges</span><br />
           You can now choose "Range" as a delivery fee option on the Settings
@@ -12,7 +12,7 @@
             ><strong>Visit it here.</strong></router-link
           >
         </p>
-      </b-alert>
+      </b-alert> -->
 
       <div class="card">
         <div class="card-body">
