@@ -105,8 +105,10 @@ class updateOrdersWithPayoutsData extends Command
                                 ) {
                                     $orderTransaction->order->payout_id = Payout::where(
                                         'stripe_id',
-                                        $payout['id']->pluck('id')->first()
-                                    );
+                                        $payout['id']
+                                    )
+                                        ->pluck('id')
+                                        ->first();
                                     $orderTransaction->order->payout_date = Carbon::createFromTimestamp(
                                         $payout['arrival_date']
                                     )->toDateTimeString();
