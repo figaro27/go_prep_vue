@@ -6,7 +6,6 @@ use Illuminate\Console\Command;
 use App\Payout;
 use App\Store;
 use App\Order;
-use App\OrderTransaction;
 use Illuminate\Support\Carbon;
 
 class updateOrdersWithPayoutsData extends Command
@@ -48,11 +47,6 @@ class updateOrdersWithPayoutsData extends Command
             try {
                 $acct = $store->settings->stripe_account;
                 \Stripe\Stripe::setApiKey($acct['access_token']);
-                $bank_name = \Stripe\Account::allExternalAccounts(
-                    $store->settings->stripe_id,
-                    ['object' => 'bank_account']
-                )->data[0]->bank_name;
-
                 // Looping every 3 months since launch since Stripe limits you to getting only 100 at a time.
 
                 $timestamp = Carbon::parse('2019-01-01')->timestamp;
@@ -65,6 +59,7 @@ class updateOrdersWithPayoutsData extends Command
                             'lte' => $timestamp
                         ]
                     ]);
+
                     foreach ($payouts as $payout) {
                         try {
                             // Set the payout_id and payout_date to all orders belonging to the payout
@@ -78,42 +73,26 @@ class updateOrdersWithPayoutsData extends Command
                             // Removing the first item which Stripe returns as the payout itself.
                             array_shift($balanceTransactions);
 
-                            // Get all order transactions
-                            $orderTransactions = OrderTransaction::where(
-                                'store_id',
-                                $store->id
-                            )->get();
-
                             foreach (
                                 $balanceTransactions
                                 as $balanceTransaction
                             ) {
                                 $charge = $balanceTransaction->source;
-
-                                $orderTransaction = $orderTransactions
-                                    ->filter(function ($transaction) use (
-                                        $charge
-                                    ) {
-                                        return $transaction->stripe_id ===
-                                            $charge;
-                                    })
+                                $order = Order::where(
+                                    'stripe_id',
+                                    $charge
+                                )->first();
+                                $order->payout_id = Payout::where(
+                                    'stripe_id',
+                                    $payout['id']
+                                )
+                                    ->pluck('id')
                                     ->first();
-
-                                if (
-                                    $orderTransaction &&
-                                    $orderTransaction->type === 'order'
-                                ) {
-                                    $orderTransaction->order->payout_id = Payout::where(
-                                        'stripe_id',
-                                        $payout['id']
-                                    )
-                                        ->pluck('id')
-                                        ->first();
-                                    $orderTransaction->order->payout_date = Carbon::createFromTimestamp(
-                                        $payout['arrival_date']
-                                    )->toDateTimeString();
-                                    $orderTransaction->order->update();
-                                }
+                                $order->payout_date = Carbon::createFromTimestamp(
+                                    $payout['arrival_date']
+                                )->toDateTimeString();
+                                $order->payout_total = $payout['amount'] / 100;
+                                $order->update();
                             }
                         } catch (\Exception $e) {
                         }
