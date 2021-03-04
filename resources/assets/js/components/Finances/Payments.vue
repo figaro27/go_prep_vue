@@ -171,12 +171,12 @@
           </div>
         </span>
         <div slot="payout_total" slot-scope="props">
-          <div v-if="props.index > 1">
+          <div v-if="props.index > 1 && props.row.payout_total">
             {{ formatMoney(props.row.payout_total, props.row.currency) }}
           </div>
         </div>
         <div slot="payout_date" slot-scope="props">
-          <div v-if="props.index > 1">
+          <div v-if="props.index > 1 && props.row.payout_date">
             {{ moment(props.row.payout_date).format("dddd, MMM Do") }}
           </div>
         </div>

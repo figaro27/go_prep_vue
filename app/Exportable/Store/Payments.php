@@ -100,9 +100,9 @@ class Payments
         $payments = $orders
             ->map(function ($order) use ($columns) {
                 $columns['payout_total'] = $order->payout_total;
-                $columns['payout_date'] = Carbon::parse(
-                    $order->payout_date
-                )->format('D, m/d/Y');
+                $columns['payout_date'] = $order->payout_date
+                    ? Carbon::parse($order->payout_date)->format('D, m/d/Y')
+                    : null;
                 $columns['paid_at'] = Carbon::parse($order->paid_at)->format(
                     'D, m/d/Y'
                 );
