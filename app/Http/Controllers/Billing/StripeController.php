@@ -155,6 +155,8 @@ class StripeController extends Controller
                     $orderTransaction->order->payout_date = Carbon::createFromTimestamp(
                         $obj['arrival_date']
                     )->toDateTimeString();
+                    $orderTransaction->order->payout_total =
+                        $obj['amount'] / 100;
                     $orderTransaction->order->update();
                 }
             }
