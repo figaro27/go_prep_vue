@@ -10,6 +10,7 @@ use Illuminate\Support\Arr;
 use App\Services\FilterPayments;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Payout;
 
 class Payments
 {
@@ -39,11 +40,14 @@ class Payments
             $this->params->get('removeManualOrders') == "true" ? true : false;
         $removeCashOrders =
             $this->params->get('removeCashOrders') == "true" ? true : false;
+        $includePayouts =
+            $this->params->get('includePayouts') == "true" ? true : false;
 
         $this->params->put('dailySummary', $dailySummary);
         $this->params->put('byPaymentDate', $byPaymentDate);
         $this->params->put('removeManualOrders', $removeManualOrders);
         $this->params->put('removeCashOrders', $removeCashOrders);
+        $this->params->put('includePayouts', $includePayouts);
 
         $couponCode = $this->params->get('couponCode');
 
@@ -53,6 +57,8 @@ class Payments
         $this->params->put('storeId', $this->store->id);
 
         $columns = [
+            'payout_total' => 0,
+            'payout_date' => null,
             'paid_at' => null,
             'delivery_date' => null,
             'order_number' => null,
@@ -93,6 +99,10 @@ class Payments
 
         $payments = $orders
             ->map(function ($order) use ($columns) {
+                $columns['payout_total'] = $order->payout_total;
+                $columns['payout_date'] = Carbon::parse(
+                    $order->payout_date
+                )->format('D, m/d/Y');
                 $columns['paid_at'] = Carbon::parse($order->paid_at)->format(
                     'D, m/d/Y'
                 );
@@ -137,19 +147,25 @@ class Payments
         // Add all payment values together to get the sums row
         foreach ($payments as $payment) {
             foreach ($payment as $i => $p) {
-                if (is_numeric($p)) {
-                    $columnSums[$i] += $payment[$i];
+                if ($i !== 'payout_total' && $i !== 'payout_date') {
+                    if (is_numeric($p)) {
+                        $columnSums[$i] += $payment[$i];
+                    }
                 }
             }
         }
         // If the column sum totals 0, remove the column sum entirely and set the param for the blade report
 
         foreach ($columnSums as $i => $columnSum) {
-            $columnSums['paid_at'] = 'TOTALS';
             $columnSums['delivery_date'] = '';
             $columnSums['order_number'] = '';
 
-            if (($columnSum === 0.0 || $columnSum === 0) && $i !== 'orders') {
+            if (
+                ($columnSum === 0.0 || $columnSum === 0) &&
+                $i !== 'orders' &&
+                $i !== 'payout_date' &&
+                $i !== 'payout_total'
+            ) {
                 $params[$i] = false;
                 unset($columnSums[$i]);
                 if ($i === 'couponReduction') {
@@ -158,6 +174,17 @@ class Payments
             } else {
                 $params[$i] = true;
             }
+
+            if ($i === 'payout_total') {
+                $columnSums[$i] = 'TOTALS';
+            }
+
+            if (!$includePayouts) {
+                $columnSums['paid_at'] = 'TOTALS';
+                if ($i === 'payout_date' || $i === 'payout_total') {
+                    unset($columnSums[$i]);
+                }
+            }
         }
 
         // If the column sum totals 0, remove the entire column of data
@@ -165,8 +192,18 @@ class Payments
 
         foreach ($payments as $payment) {
             foreach ($payment as $i => $p) {
-                if (!array_key_exists($i, $columnSums)) {
+                if (
+                    !array_key_exists($i, $columnSums) &&
+                    $i !== 'payout_date' &&
+                    $i !== 'payout_total'
+                ) {
                     unset($payment[$i]);
+                }
+
+                if (!$includePayouts) {
+                    if ($i === 'payout_date' || $i === 'payout_total') {
+                        unset($payment[$i]);
+                    }
                 }
             }
             array_push($rows, $payment);
@@ -184,7 +221,7 @@ class Payments
         $sums = [];
 
         // Adding in total orders column for daily summary report
-        $offset = 2;
+        $offset = 4;
         $columns =
             array_slice($columns, 0, $offset, true) + array('orders' => 0) +
             array_slice($columns, $offset, null, true);
@@ -210,6 +247,7 @@ class Payments
                     }
                 }
             }
+
             $sums = Arr::collapse($sums);
             $dsRows[] = $sums;
         }
@@ -227,7 +265,16 @@ class Payments
             array_push($dailySummaryRows, $payment);
         }
 
-        $headers = [
+        $headers = [];
+
+        if ($includePayouts) {
+            $headers += [
+                'payout_total' => 'Payout Total',
+                'payout_date' => 'Payout Date'
+            ];
+        }
+
+        $headers += [
             'paid_at' => 'Payment Date',
             'delivery_date' => 'Delivery Date',
             'order_number' => 'Order',

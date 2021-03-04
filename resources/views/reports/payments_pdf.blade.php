@@ -39,10 +39,12 @@ $currency = $params->currency
       <table border="1" width="100" class="light-border payments-report">
         <thead>
           <tr>
+            @if ($params['includePayouts'])
+            <th>Payout Total</th>
+            <th>Payout Date</th>
+            @endif
 
             <th style="width:100px">Payment Date</th>
-
-
             <th style="width:100px">Delivery Date</th>
 
             @if (!$params['dailySummary'])

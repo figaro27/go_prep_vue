@@ -39,6 +39,10 @@
         no-fade
         hide-header
       >
+        <p class="small mt-3 mb-2 center-text" v-if="showUnmarkFilterMessage">
+          The 'Include Payouts' & 'Daily Summary' filters can only be viewed one
+          at a time
+        </p>
         <div style="margin-left:155px">
           <div class="mb-4 mt-4" style="position:relative;right:18px">
             <b-form-radio-group
@@ -50,11 +54,22 @@
               required
             ></b-form-radio-group>
           </div>
+          <div class="mb-4" v-if="store.id === 100">
+            <b-form-checkbox
+              class="mediumCheckbox"
+              v-model="filters.includePayouts"
+              type="checkbox"
+              @input="unmarkFilters(filters.includePayouts, 'includePayouts')"
+            >
+              <span class="paragraph">Include Payouts</span>
+            </b-form-checkbox>
+          </div>
           <div class="mb-4">
             <b-form-checkbox
               class="mediumCheckbox"
               type="checkbox"
               v-model="filters.dailySummary"
+              @input="unmarkFilters(filters.dailySummary, 'dailySummary')"
               ><span class="paragraph">Daily Summary</span></b-form-checkbox
             >
           </div>
@@ -155,6 +170,16 @@
             </b-dropdown>
           </div>
         </span>
+        <div slot="payout_total" slot-scope="props">
+          <div v-if="props.index > 1">
+            {{ formatMoney(props.row.payout_total, props.row.currency) }}
+          </div>
+        </div>
+        <div slot="payout_date" slot-scope="props">
+          <div v-if="props.index > 1">
+            {{ moment(props.row.payout_date).format("dddd, MMM Do") }}
+          </div>
+        </div>
         <div slot="paid_at" slot-scope="props">
           <span v-if="props.row.paid_at && props.row.paid_at != 'TOTALS'">{{
             moment(props.row.paid_at).format("dddd, MMM Do")
@@ -399,6 +424,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      showUnmarkFilterMessage: false,
       payments: [],
       upcharges: false,
       showFiltersModal: false,
@@ -420,13 +446,16 @@ export default {
         dailySummary: false,
         byPaymentDate: true,
         removeManualOrders: false,
-        removeCashOrders: false
+        removeCashOrders: false,
+        includePayouts: false
       },
       order: {},
       orderId: "",
       user_detail: {},
       options: {
         headings: {
+          payout_total: "Payout Total",
+          payout_date: "Payout Date",
           paid_at: "Payment Date",
           delivery_date: "Delivery Date",
           order_number: "Order",
@@ -517,10 +546,13 @@ export default {
         payments = [];
 
         paymentsByDay.forEach(paymentByDay => {
+          let payout_total = 0;
+          let payout_date = "";
           let paid_at = "";
           let delivery_date = "";
           let totalPayments = 0;
           let sums = {
+            payout_total: 0,
             totalPayments: 0,
             preFeePreDiscount: 0,
             couponReduction: 0,
@@ -544,6 +576,8 @@ export default {
           };
 
           paymentByDay.forEach(payment => {
+            payout_total = payment.payout_total;
+            payout_date = payment.payout_date;
             paid_at = payment.paid_at;
             delivery_date = payment.delivery_date;
             totalPayments += 1;
@@ -569,6 +603,8 @@ export default {
             sums.balance += payment.balance;
           });
           payments.push({
+            payout_total: null,
+            payout_date: null,
             paid_at: dayType == "order_day" ? paid_at : null,
             delivery_date: dayType == "delivery_date" ? delivery_date : null,
             totalPayments: totalPayments,
@@ -679,7 +715,16 @@ export default {
       return payments;
     },
     columns() {
-      let columns = ["paid_at", "delivery_date"];
+      let columns = [];
+
+      if (this.filters.includePayouts) {
+        columns.push("payout_total");
+        columns.push("payout_date");
+      }
+
+      columns.push("paid_at");
+      columns.push("delivery_date");
+
       if (this.filters.dailySummary) {
         columns.push("totalPayments");
       } else {
@@ -834,6 +879,22 @@ export default {
         .then(resp => {
           this.payments = resp.data;
         });
+    },
+    unmarkFilters(val, filter) {
+      if (val) {
+        if (filter === "includePayouts") {
+          if (this.filters.dailySummary) {
+            this.showUnmarkFilterMessage = true;
+            this.filters.dailySummary = false;
+          }
+        }
+        if (filter === "dailySummary") {
+          if (this.filters.includePayouts) {
+            this.showUnmarkFilterMessage = true;
+            this.filters.includePayouts = false;
+          }
+        }
+      }
     }
   }
 };

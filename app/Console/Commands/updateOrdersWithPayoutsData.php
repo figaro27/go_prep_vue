@@ -41,72 +41,94 @@ class updateOrdersWithPayoutsData extends Command
      */
     public function handle()
     {
-        $stores = Store::with('settings')->get();
+        $stores = Store::with('settings')
+            ->where('id', '>=', 132)
+            ->get();
 
         foreach ($stores as $store) {
-            try {
-                $acct = $store->settings->stripe_account;
-                \Stripe\Stripe::setApiKey($acct['access_token']);
-                // Looping every 3 months since launch since Stripe limits you to getting only 100 at a time.
+            if (
+                $store->id !== 108 &&
+                $store->id !== 109 &&
+                $store->id !== 110
+            ) {
+                $this->info($store->details->id);
+                $this->info($store->details->name);
+                try {
+                    $acct = $store->settings->stripe_account;
+                    \Stripe\Stripe::setApiKey($acct['access_token']);
+                    // Looping every 3 months since launch since Stripe limits you to getting only 100 at a time.
 
-                $timestamp = Carbon::parse('2019-01-01')->timestamp;
-                $stop = false;
+                    $timestamp = Carbon::parse('2019-01-01')->timestamp;
+                    $stop = false;
 
-                while (!$stop) {
-                    $payouts = \Stripe\Payout::all([
-                        'limit' => 100,
-                        'arrival_date' => [
-                            'lte' => $timestamp
-                        ]
-                    ]);
+                    while (!$stop) {
+                        $payouts = \Stripe\Payout::all([
+                            'limit' => 100,
+                            'arrival_date' => [
+                                'lte' => $timestamp
+                            ]
+                        ]);
 
-                    foreach ($payouts as $payout) {
-                        try {
-                            // Set the payout_id and payout_date to all orders belonging to the payout
-                            $balanceTransactions = \Stripe\BalanceTransaction::all(
-                                [
-                                    'payout' => $payout['id'],
-                                    'limit' => 100
-                                ]
-                            )->data;
+                        foreach ($payouts as $payout) {
+                            try {
+                                // Set the payout_id and payout_date to all orders belonging to the payout
+                                $balanceTransactions = \Stripe\BalanceTransaction::all(
+                                    [
+                                        'payout' => $payout['id'],
+                                        'limit' => 100
+                                    ]
+                                )->data;
 
-                            // Removing the first item which Stripe returns as the payout itself.
-                            array_shift($balanceTransactions);
+                                // Removing the first item which Stripe returns as the payout itself.
+                                array_shift($balanceTransactions);
 
-                            foreach (
-                                $balanceTransactions
-                                as $balanceTransaction
-                            ) {
-                                $charge = $balanceTransaction->source;
-                                $order = Order::where(
-                                    'stripe_id',
-                                    $charge
-                                )->first();
-                                $order->payout_id = Payout::where(
-                                    'stripe_id',
-                                    $payout['id']
-                                )
-                                    ->pluck('id')
-                                    ->first();
-                                $order->payout_date = Carbon::createFromTimestamp(
-                                    $payout['arrival_date']
-                                )->toDateTimeString();
-                                $order->payout_total = $payout['amount'] / 100;
-                                $order->update();
+                                foreach (
+                                    $balanceTransactions
+                                    as $balanceTransaction
+                                ) {
+                                    $charge = $balanceTransaction->source;
+                                    $order = Order::where(
+                                        'stripe_id',
+                                        $charge
+                                    )->first();
+                                    // $order->payout_id = Payout::where(
+                                    //     'stripe_id',
+                                    //     $payout['id']
+                                    // )
+                                    //     ->pluck('id')
+                                    //     ->first();
+
+                                    if ($order) {
+                                        $order->payout_date = Carbon::createFromTimestamp(
+                                            $payout['arrival_date']
+                                        )->toDateTimeString();
+                                        $order->payout_total =
+                                            $payout['amount'] / 100;
+                                        $order->update();
+                                    } else {
+                                        $this->info(
+                                            'No charge ID. Charge: ' . $charge
+                                        );
+                                    }
+                                }
+                            } catch (\Exception $e) {
+                                $this->info('Fail transactions');
+                                $this->info($e);
                             }
-                        } catch (\Exception $e) {
                         }
-                    }
 
-                    $timestamp = Carbon::createFromTimestamp($timestamp);
+                        $timestamp = Carbon::createFromTimestamp($timestamp);
 
-                    if (!$timestamp->isPast()) {
-                        $stop = true;
+                        if (!$timestamp->isPast()) {
+                            $stop = true;
+                        }
+                        $timestamp->addDays(90);
+                        $timestamp = Carbon::parse($timestamp)->timestamp;
                     }
-                    $timestamp->addDays(90);
-                    $timestamp = Carbon::parse($timestamp)->timestamp;
+                } catch (\Exception $e) {
+                    $this->info('Fail payouts');
+                    $this->info($e);
                 }
-            } catch (\Exception $e) {
             }
         }
     }
