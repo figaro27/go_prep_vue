@@ -464,12 +464,35 @@ export default {
       }
     },
     async storePackage(e) {
+      let stop = false;
+      this.mealPackage.sizes.forEach(size => {
+        if (!size.title) {
+          this.$toastr.w("Please enter a title for the size");
+          stop = true;
+        }
+      });
+      this.mealPackage.components.forEach(component => {
+        if (!component.title) {
+          this.$toastr.w("Please enter a title for the package component");
+          stop = true;
+        }
+      });
+      this.mealPackage.addons.forEach(addon => {
+        if (!addon.title) {
+          this.$toastr.w("Please enter a title for the package addon");
+          stop = true;
+        }
+      });
+      if (stop) {
+        return;
+      }
+
       if (this.isLoading) {
         return;
       }
 
       if (!this.hasMeals(this.mealPackage)) {
-        this.$toastr.w("Please add at least one meal to the meal package");
+        this.$toastr.w("Please add at least one item to the package");
         return;
       }
 
