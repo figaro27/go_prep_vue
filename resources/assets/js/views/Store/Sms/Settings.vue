@@ -181,6 +181,7 @@
               class="d-inline w-180"
               style="height:30px"
               @change="updateSettings"
+              min="0"
             ></b-form-input>
             <img
               v-b-popover.hover="
@@ -233,7 +234,7 @@
           <span class="mr-1">Auto Send Delivery / Pickup Text</span>
           <img
             v-b-popover.hover="
-              'On the day of delivery or pickup, automatically send a reminder notification text to the customer at a certain time.'
+              'On the day of delivery or pickup, automatically send a reminder notification text to the customer at a certain time. Set the hour of the day to send the text in the box.'
             "
             title="Auto Send Delivery Text"
             src="/images/store/popover.png"
@@ -258,6 +259,7 @@
             class="d-inline w-180"
             style="height:30px"
             @change="updateSettings"
+            min="0"
           ></b-form-input>
         </div>
         <div>

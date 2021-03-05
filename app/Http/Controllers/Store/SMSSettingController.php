@@ -75,6 +75,14 @@ class SMSSettingController extends StoreController
     {
         $settings = $request->get('settings');
         $smsSettings = SMSSetting::where('store_id', $this->store->id)->first();
+        $settings['autoSendOrderReminderHours'] =
+            $settings['autoSendOrderReminderHours'] == null
+                ? $smsSettings->autoSendOrderReminderHours
+                : $settings['autoSendOrderReminderHours'];
+        $settings['autoSendDeliveryTime'] =
+            $settings['autoSendDeliveryTime'] == null
+                ? $smsSettings->autoSendDeliveryTime
+                : $settings['autoSendDeliveryTime'];
         $smsSettings->update($settings);
         return $smsSettings;
     }
