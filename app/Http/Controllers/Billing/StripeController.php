@@ -159,7 +159,6 @@ class StripeController extends Controller
                     ->first();
 
                 if ($orderTransaction && $orderTransaction->type === 'order') {
-                    $orderTransaction->order->payout_id = $payout->id;
                     $orderTransaction->order->payout_date = Carbon::createFromTimestamp(
                         $obj['arrival_date']
                     )->toDateTimeString();
