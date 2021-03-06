@@ -110,7 +110,11 @@
             placeholder="Address"
           ></b-form-input>
         </b-form-group>
-        <b-form-group horizontal :label="cityLabel" v-if="!noAddress">
+        <b-form-group
+          horizontal
+          :label="cityLabel"
+          v-if="!noAddress && showCityInput"
+        >
           <b-form-input
             v-model="form.city"
             type="text"
@@ -122,7 +126,7 @@
         <b-form-group
           horizontal
           :label="stateLabel"
-          v-if="!noAddress && store.details.state"
+          v-if="!noAddress && store.details.state && showStatesInput"
         >
           <v-select
             v-model="form.state"
@@ -132,7 +136,17 @@
           ></v-select>
         </b-form-group>
         <b-form-group horizontal :label="postalLabel" v-if="!noAddress">
+          <b-select
+            :placeholder="postalLabel"
+            :options="getPostalNames(store.details.country)"
+            v-model="form.zip"
+            class="w-180"
+            style="font-size:16px"
+            v-if="selectPostal"
+          >
+          </b-select>
           <b-form-input
+            v-else
             v-model="form.zip"
             type="text"
             required
@@ -172,6 +186,7 @@
 import states from "../../data/states.js";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import { AsYouType } from "libphonenumber-js";
+import postals from "../../data/postals.js";
 
 export default {
   props: {
@@ -179,6 +194,8 @@ export default {
   },
   data() {
     return {
+      showStatesInput: true,
+      showCityInput: true,
       noEmail: false,
       noPassword: false,
       noAddress: false,
@@ -203,11 +220,26 @@ export default {
         this.form.state = state[0].value;
       }
     }
+
+    // Hides certain inputes like state & city depending on the selected country
+    this.hideInputs();
   },
   computed: {
     ...mapGetters({
       store: "viewedStore"
     }),
+    selectPostal() {
+      // Certain countries have string based postal areas like Barbados having 'Parishes' and this is needed for delivery_day_zip_code input matching
+      if (
+        this.store &&
+        this.store.details &&
+        this.store.details.country === "BB"
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     stateNames() {
       return states.selectOptions("US");
     },
@@ -237,6 +269,9 @@ export default {
           break;
         case "BH":
           return "Block";
+          break;
+        case "BB":
+          return "Parish";
           break;
         default:
           return "Postal Code";
@@ -313,7 +348,13 @@ export default {
         });
     },
     getStateNames(country = "US") {
+      if (country == "BH") {
+        this.showStatesInput = false;
+      }
       return states.selectOptions(country);
+    },
+    getPostalNames(country = "US") {
+      return postals.getPostals(country);
     },
     state(step, key) {
       if (
@@ -341,6 +382,20 @@ export default {
       this.form.phone = new AsYouType(this.store.details.country).input(
         this.form.phone
       );
+    },
+    hideInputs() {
+      // Eventually move to external js file
+      if (this.store.details.country === "BH") {
+        this.showStatesInput = false;
+        this.form.state = "N/A";
+      }
+
+      if (this.store.details.country === "BB") {
+        this.showStatesInput = false;
+        this.showCityInput = false;
+        this.form.state = "N/A";
+        this.form.city = "N/A";
+      }
     }
   }
 };
