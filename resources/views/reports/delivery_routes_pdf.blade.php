@@ -7,7 +7,7 @@
 
 <body class="{{ $body_classes }}">
   <div id="print-area" class="unbreakable">
-    <h1>Delivery Routes</h1>
+    <h1>Delivery</h1>
      <div class="delivery-part">
       <h2 style="font-size:22px">
         @if ($delivery_dates)
