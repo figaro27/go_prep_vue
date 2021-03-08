@@ -31,7 +31,8 @@ class Orders
         if (
             $this->store->id == 108 ||
             $this->store->id == 109 ||
-            $this->store->id == 110
+            $this->store->id == 110 ||
+            $this->store->id == 278
         ) {
             $params->put('livotis', true);
         }
