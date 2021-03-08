@@ -14,9 +14,13 @@ class AddStoreIdToMealSizesTable extends Migration
     public function up()
     {
         Schema::table('meal_sizes', function (Blueprint $table) {
-            $table->unsignedInteger('store_id')->after('id');
             $table
                 ->foreign('store_id')
+                ->references('id')
+                ->on('stores');
+            $table
+                ->unsignedInteger('store_id')
+                ->after('id')
                 ->references('id')
                 ->on('stores');
         });
