@@ -68,13 +68,20 @@ class DeliveryRoutes
 
         $url = "https://app.elasticroute.com/api/v1/plan/asdf?c=sync&w=false";
         $names = [];
+        $uniqueAddresses = [];
 
         foreach ($orders as $order) {
             $customerDetails = $order->user->details;
             $name =
                 $customerDetails->firstname . ' ' . $customerDetails->lastname;
+            $uniqueAddress = implode(', ', [
+                $customerDetails->address,
+                $customerDetails->city,
+                $customerDetails->state,
+                $customerDetails->zip
+            ]);
 
-            if (!in_array($name, $names)) {
+            if (!in_array($uniqueAddress, $uniqueAddresses)) {
                 $address = implode(', ', [
                     $customerDetails->address,
                     $customerDetails->city,
@@ -88,6 +95,7 @@ class DeliveryRoutes
                 ];
 
                 $names[] = $name;
+                $uniqueAddresses[] = $uniqueAddress;
 
                 $recipients[] = [
                     "name" =>
