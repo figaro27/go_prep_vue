@@ -50,10 +50,13 @@ class misc extends Command
         $mealSizes = MealSize::all();
 
         foreach ($mealSizes as $mealSize) {
-            $mealSize->store_id = Meal::where('id', $mealSize->meal_id)
-                ->pluck('store_id')
-                ->first();
-            $mealSize->update();
+            try {
+                $mealSize->store_id = Meal::where('id', $mealSize->meal_id)
+                    ->pluck('store_id')
+                    ->first();
+                $mealSize->update();
+            } catch (\Exception $e) {
+            }
         }
     }
 }
