@@ -44,13 +44,20 @@ class Payments
             $this->params->get('includePayouts') == "true" ? true : false;
 
         $payoutId = $this->params->get('payoutId');
+        $payoutDate = Payout::where('id', $payoutId)
+            ->pluck('arrival_date')
+            ->first();
+        $formattedPayoutDate = $payoutDate
+            ? Carbon::parse($payoutDate)->format('D, m/d/Y')
+            : null;
 
         $this->params->put('dailySummary', $dailySummary);
         $this->params->put('byPaymentDate', $byPaymentDate);
         $this->params->put('removeManualOrders', $removeManualOrders);
         $this->params->put('removeCashOrders', $removeCashOrders);
         $this->params->put('includePayouts', $includePayouts);
-        $this->params->put('payoutId', $payoutId);
+        $this->params->put('payoutDate', $payoutDate);
+        $this->params->put('formattedPayoutDate', $formattedPayoutDate);
 
         $couponCode = $this->params->get('couponCode');
 

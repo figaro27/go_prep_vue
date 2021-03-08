@@ -41,10 +41,7 @@ class FilterPayments
         $removeManualOrders = $filters['removeManualOrders'];
         $couponId = $filters['couponId'];
 
-        $payoutId = $request->get('payoutId');
-        $payoutDate = Payout::where('id', $payoutId)
-            ->pluck('arrival_date')
-            ->first();
+        $payoutDate = $request->get('payoutDate');
 
         if ($startDate) {
             $startDate = Carbon::parse($startDate);
