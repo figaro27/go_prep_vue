@@ -105,9 +105,9 @@
           :disabled="duplicated"
           >Duplicate Addons for All Sizes</b-btn
         >
-        <b-button variant="primary" @click="save()" class="pull-right"
+        <!-- <b-button variant="primary" @click="save()" class="pull-right"
           >Save</b-button
-        >
+        > -->
       </div>
     </div>
   </div>

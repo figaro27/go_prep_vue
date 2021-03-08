@@ -153,9 +153,9 @@
           <b-button variant="primary" @click="addComponent()"
             >Add Meal Component</b-button
           >
-          <b-button variant="primary" type="submit" class="pull-right"
+          <!-- <b-button variant="primary" type="submit" class="pull-right"
             >Save</b-button
-          >
+          > -->
         </div>
       </b-form>
     </div>

@@ -95,9 +95,9 @@
         </div>
       </v-client-table>
 
-      <b-button variant="primary" @click="save()" class="pull-right"
+      <!-- <b-button variant="primary" @click="save()" class="pull-right"
         >Save</b-button
-      >
+      > -->
     </div>
   </div>
 </template>

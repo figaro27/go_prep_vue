@@ -88,9 +88,9 @@
             :disabled="duplicated"
             >Duplicate Addons for All Sizes</b-btn
           >
-          <b-button variant="primary" type="submit" class="pull-right"
+          <!-- <b-button variant="primary" type="submit" class="pull-right"
             >Save</b-button
-          >
+          > -->
         </div>
       </b-form>
     </div>
