@@ -894,6 +894,7 @@ class Meal extends Model implements HasMedia
             if (is_array($sizes)) {
                 foreach ($sizes as $size) {
                     $mealSize = new MealSize();
+                    $mealSize->store_id = $store->id;
                     $mealSize->meal_id = $meal->id;
                     $mealSize->title = $size['title'];
                     $mealSize->full_title =
@@ -1285,6 +1286,7 @@ class Meal extends Model implements HasMedia
                     $mealSize->meal_id = $meal->id;
                 }
 
+                $mealSize->store_id = $store->id;
                 $mealSize->title = $size['title'];
                 $mealSize->full_title = $meal->title . ' - ' . $size['title'];
                 $mealSize->price = $size['price'];

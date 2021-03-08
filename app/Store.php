@@ -101,6 +101,11 @@ class Store extends Model
         return $this->hasMany('App\Meal')->orderBy('title');
     }
 
+    public function mealSizes()
+    {
+        return $this->hasMany('App\MealSize');
+    }
+
     public function packages()
     {
         return $this->hasMany('App\MealPackage')->orderBy('title');

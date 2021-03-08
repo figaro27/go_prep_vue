@@ -152,6 +152,7 @@ class MealsSeeder extends Seeder
 
                 if ($i < 4) {
                     $size1 = DB::table('meal_sizes')->insertGetId([
+                        'store_id' => $store,
                         'meal_id' => $id,
                         'title' => 'Large',
                         'price' => 14,
@@ -159,6 +160,7 @@ class MealsSeeder extends Seeder
                     ]);
 
                     $size2 = DB::table('meal_sizes')->insertGetId([
+                        'store_id' => $store,
                         'meal_id' => $id,
                         'title' => 'Family Size',
                         'price' => 20,

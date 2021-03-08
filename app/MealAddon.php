@@ -39,6 +39,11 @@ class MealAddon extends Model
         return $this->belongsTo('meal');
     }
 
+    public function mealSize()
+    {
+        return $this->belongsTo('App\MealSize', 'meal_size_id');
+    }
+
     public function store()
     {
         return $this->belongsTo('store');

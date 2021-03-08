@@ -90,6 +90,14 @@ class MealPackage extends Model implements HasMedia
         );
     }
 
+    public function componentOptions()
+    {
+        return $this->hasManyThrough(
+            'App\MealPackageComponentOption',
+            'App\MealPackageComponent'
+        );
+    }
+
     public function selections()
     {
         return $this->hasMany(
