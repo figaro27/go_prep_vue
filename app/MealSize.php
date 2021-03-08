@@ -16,7 +16,7 @@ class MealSize extends Model
 {
     use SoftDeletes;
 
-    public $fillable = [];
+    public $fillable = ['store_id'];
     public $hidden = ['meal'];
     protected $with = ['ingredients'];
 
