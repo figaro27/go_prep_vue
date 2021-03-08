@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddStoreIdToMealSizesTable extends Migration
+class RemoveStoreIdFromMealSizes extends Migration
 {
     /**
      * Run the migrations.
@@ -14,15 +14,7 @@ class AddStoreIdToMealSizesTable extends Migration
     public function up()
     {
         Schema::table('meal_sizes', function (Blueprint $table) {
-            $table
-                ->foreign('store_id')
-                ->references('id')
-                ->on('stores');
-            $table
-                ->unsignedInteger('store_id')
-                ->after('id')
-                ->references('id')
-                ->on('stores');
+            $table->dropColumn('store_id');
         });
     }
 

@@ -47,15 +47,18 @@ class misc extends Command
      */
     public function handle()
     {
-        $mealSizes = MealSize::all();
+        $mealSizes = MealSize::withTrashed()->get();
 
         foreach ($mealSizes as $mealSize) {
             try {
-                $mealSize->store_id = Meal::where('id', $mealSize->meal_id)
+                $storeId = Meal::where('id', $mealSize->meal_id)
+                    ->withTrashed()
                     ->pluck('store_id')
                     ->first();
+                $mealSize->store_id = $storeId;
                 $mealSize->update();
             } catch (\Exception $e) {
+                $this->info($mealSize);
             }
         }
     }
