@@ -6,6 +6,7 @@ use App\Store;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
+use App\Payout;
 
 class FilterPayments
 {
@@ -39,6 +40,11 @@ class FilterPayments
         $removeCashOrders = $filters['removeCashOrders'];
         $removeManualOrders = $filters['removeManualOrders'];
         $couponId = $filters['couponId'];
+
+        $payoutId = $request->get('payoutId');
+        $payoutDate = Payout::where('id', $payoutId)
+            ->pluck('arrival_date')
+            ->first();
 
         if ($startDate) {
             $startDate = Carbon::parse($startDate);
@@ -155,6 +161,10 @@ class FilterPayments
 
             $orders = $couponId
                 ? $orders->where('coupon_id', $couponId)
+                : $orders;
+
+            $orders = $payoutDate
+                ? $this->store->orders()->where('payout_date', $payoutDate)
                 : $orders;
 
             $orders = $orders->get();

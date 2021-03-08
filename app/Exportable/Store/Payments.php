@@ -43,11 +43,14 @@ class Payments
         $includePayouts =
             $this->params->get('includePayouts') == "true" ? true : false;
 
+        $payoutId = $this->params->get('payoutId');
+
         $this->params->put('dailySummary', $dailySummary);
         $this->params->put('byPaymentDate', $byPaymentDate);
         $this->params->put('removeManualOrders', $removeManualOrders);
         $this->params->put('removeCashOrders', $removeCashOrders);
         $this->params->put('includePayouts', $includePayouts);
+        $this->params->put('payoutId', $payoutId);
 
         $couponCode = $this->params->get('couponCode');
 

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <b-alert style="background-color:#EBFAFF" class="mt-1" show dismissible>
+    <!-- <b-alert style="background-color:#EBFAFF" class="mt-1" show dismissible>
       <p>
         You can now include payout data including the payout total and payout
         date in your payments report. Find it in Filters.
       </p>
-    </b-alert>
+    </b-alert> -->
     <div class="row mt-3">
       <div class="col-md-12">
         <b-modal

@@ -118,6 +118,28 @@
         :data="transactionsTableData"
         ref="v-table"
       >
+        <span slot="beforeLimit">
+          <div class="d-flex">
+            <b-btn
+              variant="primary"
+              @click="exportData('payments', 'pdf', true)"
+            >
+              <i class="fa fa-print"></i>&nbsp; Print Report
+            </b-btn>
+            <b-dropdown class="mx-1 mt-2 mt-sm-0" right text="Export as">
+              <b-dropdown-item @click="exportData('payments', 'csv')"
+                >CSV</b-dropdown-item
+              >
+              <b-dropdown-item @click="exportData('payments', 'xls')"
+                >XLS</b-dropdown-item
+              >
+              <b-dropdown-item @click="exportData('payments', 'pdf')"
+                >PDF</b-dropdown-item
+              >
+            </b-dropdown>
+          </div>
+        </span>
+
         <div slot="created_at" slot-scope="props">
           {{ moment(props.row.created_at).format("dddd, MMM Do") }}
         </div>
@@ -259,6 +281,8 @@ export default {
       this.filters.endDate = this.filters.dates.end
         ? moment(this.filters.dates.end).format("YYYY-MM-DD")
         : null;
+
+      params.payoutId = this.selectedPayout.id;
 
       axios
         .get(`/api/me/print/${report}/${format}`, {
