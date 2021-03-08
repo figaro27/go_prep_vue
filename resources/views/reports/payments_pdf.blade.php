@@ -19,14 +19,14 @@ $currency = $params->currency
 </head>
 <body class="{{ $body_classes }}">
   <div id="print-area">
-    @if (!isset($params['payoutDate']))
+    @if (!$params['payoutDate'])
     <h1>Payments @if ($params['dailySummary'] == 'true') (Daily Summary) @endif</h1>
     @else
     <h1>Payments for {{ $params['formattedPayoutDate'] }} Payout</h1>
     @endif
     <div class="delivery-part">
       
-      @if (!isset($params['payoutDate']))
+      @if (!$params['payoutDate'])
       <h2 style="font-size:22px">
         @if ($delivery_dates['from']->format($params->date_format) !== $delivery_dates['to']->format($params->date_format))
         @if (isset($params['byPaymentDate']) && $params['byPaymentDate'] == 'true')
