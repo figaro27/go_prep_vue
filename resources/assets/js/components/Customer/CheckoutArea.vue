@@ -173,6 +173,7 @@
                 variant="pill"
                 size="lg"
                 class="pt-2"
+                v-model="bagMealPlan"
                 @change="
                   val => {
                     setWeeklySubscriptionValue(val);
@@ -1595,10 +1596,12 @@ export default {
   mounted: function() {
     this.setOrderFrequency();
 
-    if (this.bagHasMultipleFrequencyItems || this.bagHasOnlySubItems) {
-      this.setFrequencySubscription("sub");
-    } else {
-      this.setFrequencySubscription(null);
+    if (this.store.modules.frequencyItems) {
+      if (this.bagHasMultipleFrequencyItems || this.bagHasOnlySubItems) {
+        this.setFrequencySubscription("sub");
+      } else {
+        this.setFrequencySubscription(null);
+      }
     }
 
     if (this.customer) {
@@ -1736,7 +1739,8 @@ export default {
       bagSubscriptionInterval: "bagSubscriptionInterval",
       distance: "viewedStoreDistance",
       bagNotes: "bagNotes",
-      bagPublicNotes: "bagPublicNotes"
+      bagPublicNotes: "bagPublicNotes",
+      bagMealPlan: "bagMealPlan"
     }),
     prepaid() {
       if (
