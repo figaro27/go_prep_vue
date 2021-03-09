@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\Customer\RenewalFailed;
 use App\Customer;
 use App\StoreModule;
+use App\Error;
 
 class Subscription extends Model
 {
@@ -789,6 +790,13 @@ class Subscription extends Model
             $this->failed_renewal = Carbon::now('UTC');
             $this->save();
             $this->failed_renewal_error = $e->getMessage();
+
+            $error = new Error();
+            $error->store_id = $this->store_id;
+            $error->user_id = $this->user_id;
+            $error->type = 'Renewal';
+            $error->error = $e->getMessage();
+            $error->save();
         }
     }
 
