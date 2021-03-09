@@ -18,11 +18,6 @@ class AddStoreIdColumnToMealSizesTable extends Migration
                 ->foreign('store_id')
                 ->references('id')
                 ->on('stores');
-            $table
-                ->unsignedInteger('store_id')
-                ->after('id')
-                ->references('id')
-                ->on('stores');
         });
     }
 
