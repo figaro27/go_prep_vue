@@ -17,7 +17,8 @@ class AddStoreIdColumnToMealSizesTable extends Migration
             $table
                 ->foreign('store_id')
                 ->references('id')
-                ->on('stores');
+                ->on('stores')
+                ->default(13);
         });
     }
 
