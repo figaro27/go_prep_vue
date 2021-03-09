@@ -39,20 +39,20 @@ class PromotionController extends StoreController
 
         $promotions = Promotion::where('store_id', $this->store->id)->get();
         foreach ($promotions as $promotion) {
-            if (
-                isset($data['conditionType']) &&
-                $promotion->conditionType === $data['conditionType']
-            ) {
-                return response()->json(
-                    [
-                        'message' =>
-                            'A promotion with the condition type "' .
-                            $data['conditionType'] .
-                            '" already exists. Please edit the existing promotion instead of adding a duplicate.'
-                    ],
-                    400
-                );
-            }
+            // if (
+            //     isset($data['conditionType']) &&
+            //     $promotion->conditionType === $data['conditionType']
+            // ) {
+            //     return response()->json(
+            //         [
+            //             'message' =>
+            //                 'A promotion with the condition type "' .
+            //                 $data['conditionType'] .
+            //                 '" already exists. Please edit the existing promotion instead of adding a duplicate.'
+            //         ],
+            //         400
+            //     );
+            // }
             if (
                 $promotion->promotionType === 'points' &&
                 isset($data['promotionType']) &&

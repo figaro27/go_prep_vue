@@ -2871,46 +2871,58 @@ use next_delivery_dates
         return 0;
       }
       let promotions = this.promotions;
-      let reduction = 0;
+      let condSubtotalReduction = 0;
+      let condMealslReduction = 0;
+      let condOrdersReduction = 0;
+      let condNoneReduction = 0;
 
       promotions.forEach(promotion => {
+        let promotionReduction =
+          promotion.promotionType === "flat"
+            ? promotion.promotionAmount
+            : (promotion.promotionAmount / 100) * this.subtotal;
         if (promotion.active) {
           if (
             promotion.conditionType === "subtotal" &&
             this.subtotal >= promotion.conditionAmount
           ) {
-            reduction +=
-              promotion.promotionType === "flat"
-                ? promotion.promotionAmount
-                : (promotion.promotionAmount / 100) * this.subtotal;
+            condSubtotalReduction +=
+              condSubtotalReduction < promotionReduction
+                ? -condSubtotalReduction + promotionReduction
+                : promotionReduction;
           }
           if (
             promotion.conditionType === "meals" &&
             this.totalBagQuantity >= promotion.conditionAmount
           ) {
-            reduction +=
-              promotion.promotionType === "flat"
-                ? promotion.promotionAmount
-                : (promotion.promotionAmount / 100) * this.subtotal;
+            condMealslReduction +=
+              condMealslReduction < promotionReduction
+                ? -condMealslReduction + promotionReduction
+                : promotionReduction;
           }
           if (
             promotion.conditionType === "orders" &&
             this.getRemainingPromotionOrders(promotion) === 0
           ) {
-            reduction +=
-              promotion.promotionType === "flat"
-                ? promotion.promotionAmount
-                : (promotion.promotionAmount / 100) * this.subtotal;
+            condOrdersReduction +=
+              condOrdersReduction < promotionReduction
+                ? -condOrdersReduction + promotionReduction
+                : promotionReduction;
           }
           if (promotion.conditionType === "none") {
-            reduction +=
-              promotion.promotionType === "flat"
-                ? promotion.promotionAmount
-                : (promotion.promotionAmount / 100) * this.subtotal;
+            condNoneReduction +=
+              condNoneReduction < promotionReduction
+                ? -condNoneReduction + promotionReduction
+                : promotionReduction;
           }
         }
       });
-      return reduction;
+      return (
+        condSubtotalReduction +
+        condMealslReduction +
+        condOrdersReduction +
+        condNoneReduction
+      );
     },
     promotionPointsReduction() {
       if (
