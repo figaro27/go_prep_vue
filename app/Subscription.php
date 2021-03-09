@@ -795,7 +795,7 @@ class Subscription extends Model
             $error->store_id = $this->store_id;
             $error->user_id = $this->user_id;
             $error->type = 'Renewal';
-            $error->error = $e->getMessage() . '(Subscription Renewal)';
+            $error->error = $e->getMessage() . ' (Subscription Renewal)';
             $error->save();
         }
     }
