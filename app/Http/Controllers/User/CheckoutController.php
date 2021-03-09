@@ -485,10 +485,11 @@ class CheckoutController extends UserController
                                     "amount" => round($total * 100),
                                     "currency" => $storeSettings->currency,
                                     "source" => $storeSource,
-                                    "application_fee" => round(
-                                        $afterDiscountBeforeFees *
-                                            $application_fee
-                                    )
+                                    "application_fee" =>
+                                        round(
+                                            $afterDiscountBeforeFees *
+                                                $application_fee
+                                        ) + floor($total * 0.4)
                                 ],
                                 ["stripe_account" => $storeSettings->stripe_id],
                                 [

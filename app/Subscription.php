@@ -950,10 +950,11 @@ class Subscription extends Model
                     "amount" => round($this->amount * 100),
                     "currency" => $this->store->settings->currency,
                     "source" => $storeSource,
-                    "application_fee" => round(
-                        $this->afterDiscountBeforeFees *
-                            $this->store->settings->application_fee
-                    ),
+                    "application_fee" =>
+                        round(
+                            $this->afterDiscountBeforeFees *
+                                $this->store->settings->application_fee
+                        ) + floor($this->amount * 0.4),
                     'description' =>
                         'Renewal #' .
                         $renewalCount .
