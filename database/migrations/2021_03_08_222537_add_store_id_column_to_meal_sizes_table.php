@@ -13,11 +13,6 @@ class AddStoreIdColumnToMealSizesTable extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('meal_sizes', 'store_id')) {
-            Schema::table('meal_sizes', function (Blueprint $table) {
-                $table->dropColumn('store_id');
-            });
-        }
         Schema::disableForeignKeyConstraints();
         Schema::table('meal_sizes', function (Blueprint $table) {
             $table->unsignedInteger('store_id');
