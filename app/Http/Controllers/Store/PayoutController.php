@@ -245,7 +245,7 @@ class PayoutController extends StoreController
                     'created_at' => $payment->paid_at,
                     'order_number' => $payment->order_number,
                     'customer' => $payment->customer_name,
-                    'amount' => $payment->amount,
+                    'amount' => $payment->originalAmount,
                     'type' => $payment->manual
                         ? 'Manual Order'
                         : 'Customer Order'
