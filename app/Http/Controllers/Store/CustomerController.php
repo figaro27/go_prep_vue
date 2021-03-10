@@ -242,22 +242,32 @@ class CustomerController extends StoreController
         $queryEscaped = addslashes(str_replace('@', ' ', $query));
 
         if ($query) {
-            $customers = Customer::where('store_id', $this->store->id)
-                ->whereHas('user', function ($q) use ($query, $queryEscaped) {
-                    $q
-                        ->where('email', 'LIKE', "%$query%")
-                        ->orWhereHas('userDetail', function ($q) use (
-                            $query,
-                            $queryEscaped
-                        ) {
-                            $q->whereRaw(
-                                "MATCH(firstname, lastname, phone, address) AGAINST('*{$queryEscaped}*' IN BOOLEAN MODE)"
-                            );
-                        });
-                })
-                ->get();
+            $customers = Customer::where('store_id', $this->store->id);
 
-            return $customers;
+            $customer = $customers->where('name', 'LIKE', "%$query%")->get();
+            if ($customer) {
+                return $customer;
+            } else {
+                $customers = $customers
+                    ->whereHas('user', function ($q) use (
+                        $query,
+                        $queryEscaped
+                    ) {
+                        $q
+                            ->where('email', 'LIKE', "%$query%")
+                            ->orWhereHas('userDetail', function ($q) use (
+                                $query,
+                                $queryEscaped
+                            ) {
+                                $q->whereRaw(
+                                    "MATCH(firstname, lastname, phone, address) AGAINST('*{$queryEscaped}*' IN BOOLEAN MODE)"
+                                );
+                            });
+                    })
+                    ->get();
+
+                return $customers;
+            }
         }
 
         return [];
