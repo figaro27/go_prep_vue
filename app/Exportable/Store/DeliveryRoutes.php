@@ -9,6 +9,7 @@ use App\Order;
 use App\UserDetail;
 use App\ReportRecord;
 use Illuminate\Support\Carbon;
+use App\Customer;
 
 class DeliveryRoutes
 {
@@ -167,21 +168,24 @@ class DeliveryRoutes
                     foreach ($data->data->details->stops as $stop) {
                         // Get the delivery instructions
                         $address = explode(',', $stop->address);
+                        if (count($address) <= 4) {
+                            $i = 0;
+                        } else {
+                            $i = 1;
+                        }
 
-                        $userDetail = UserDetail::where([
-                            'address' => $address[0],
-                            'city' => ltrim($address[1]),
-                            'state' => ltrim($address[2]),
-                            'zip' => ltrim($address[3])
+                        $customer = Customer::where([
+                            'name' => $stop->name,
+                            'city' => ltrim($address[$i + 1]),
+                            'state' => ltrim($address[$i + 2]),
+                            'zip' => ltrim($address[$i + 3])
                         ])->first();
 
                         $routes[] = [
                             "name" => $stop->name,
                             "address" => $stop->address,
-                            "phone" => $userDetail ? $userDetail->phone : null,
-                            "delivery" => $userDetail
-                                ? $userDetail->delivery
-                                : null
+                            "phone" => $customer ? $customer->phone : null,
+                            "delivery" => $customer ? $customer->delivery : null
                         ];
                     }
                 }
