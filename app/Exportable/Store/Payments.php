@@ -90,8 +90,8 @@ class Payments
             'chargedAmount' => 0,
             'preTransactionFeeAmount' => 0,
             'transactionFee' => 0,
-            'amount' => 0,
             'refundedAmount' => 0,
+            'amount' => 0,
             'balance' => 0
         ];
 
@@ -144,10 +144,10 @@ class Payments
                 $columns['transactionFee'] = isset($order->transactionFee)
                     ? $order->transactionFee
                     : 0;
-                $columns['amount'] = $order->amount;
                 $columns['refundedAmount'] = $order->refundedAmount
                     ? $order->refundedAmount
                     : 0;
+                $columns['amount'] = $order->amount;
                 $columns['balance'] = $order->balance ? $order->balance : 0;
 
                 return $columns;
@@ -306,8 +306,8 @@ class Payments
             'chargedAmount' => 'Additional Charges',
             'preTransactionFeeAmount' => 'Pre-Fee Total',
             'transactionFee' => '(Transaction Fee)',
-            'amount' => 'Total',
             'refundedAmount' => '(Refunded)',
+            'amount' => 'Total',
             'balance' => 'Balance'
         ];
 

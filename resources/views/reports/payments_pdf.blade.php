@@ -107,10 +107,10 @@ $currency = $params->currency
             @if ($params['transactionFee'])
             <th>(Transaction Fee)</th> 
             @endif
-            <th>Total</th>  
             @if ($params['refundedAmount'])
             <th>(Refunded)</th> 
             @endif
+            <th>Total</th>  
             @if ($params['balance']) 
             <th>Balance</th>
             @endif
