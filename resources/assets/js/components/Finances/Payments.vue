@@ -802,9 +802,8 @@ export default {
       if (addedColumns.chargedAmount) columns.push("chargedAmount");
       if (addedColumns.preTransactionFeeAmount)
         columns.push("preTransactionFeeAmount");
-
-      if (addedColumns.refundedAmount) columns.push("refundedAmount");
       if (addedColumns.transactionFee) columns.push("transactionFee");
+      if (addedColumns.refundedAmount) columns.push("refundedAmount");
       columns.push("amount");
 
       if (addedColumns.balance) columns.push("balance");
