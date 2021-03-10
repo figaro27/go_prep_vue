@@ -979,7 +979,10 @@ class Subscription extends Model
                 ],
                 ["stripe_account" => $this->store->settings->stripe_id]
             );
-
+            $additionalFee =
+                $this->store->details->country === 'US'
+                    ? floor($this->amount * 0.4)
+                    : 0;
             $charge = \Stripe\Charge::create(
                 [
                     "amount" => round($this->amount * 100),
@@ -989,7 +992,7 @@ class Subscription extends Model
                         round(
                             $this->afterDiscountBeforeFees *
                                 $this->store->settings->application_fee
-                        ) + floor($this->amount * 0.4),
+                        ) + $additionalFee,
                     'description' =>
                         'Renewal #' .
                         $renewalCount .

@@ -1401,7 +1401,10 @@ class OrderController extends StoreController
                     ],
                     ["stripe_account" => $store->settings->stripe_id]
                 );
-
+                $additionalFee =
+                    $store->details->country === 'US'
+                        ? floor($chargeAmount * 0.4)
+                        : 0;
                 $charge = \Stripe\Charge::create(
                     [
                         "amount" => round(100 * $chargeAmount),
@@ -1410,7 +1413,7 @@ class OrderController extends StoreController
                         // Change to "application_fee_amount" as per Stripe's updates
                         "application_fee" =>
                             round($chargeAmount * $application_fee) +
-                            floor($chargeAmount * 0.4)
+                            $additionalFee
                     ],
                     ["stripe_account" => $store->settings->stripe_id],
                     [

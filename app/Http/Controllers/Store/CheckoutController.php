@@ -304,6 +304,10 @@ class CheckoutController extends StoreController
                         );
 
                         try {
+                            $additionalFee =
+                                $store->details->country === 'US'
+                                    ? floor($total * 0.4)
+                                    : 0;
                             $charge = \Stripe\Charge::create(
                                 [
                                     "amount" => round($total * 100),
@@ -313,7 +317,7 @@ class CheckoutController extends StoreController
                                         round(
                                             $afterDiscountBeforeFees *
                                                 $application_fee
-                                        ) + floor($total * 0.4)
+                                        ) + $additionalFee
                                 ],
                                 ["stripe_account" => $storeSettings->stripe_id],
                                 [
