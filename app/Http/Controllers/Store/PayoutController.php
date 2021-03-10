@@ -256,9 +256,9 @@ class PayoutController extends StoreController
         $payoutCharges = collect($payoutCharges)
             ->map(function ($charge) {
                 return [
-                    'created_at' => Carbon::parse($charge->created_at)->format(
-                        'D, m/d/y'
-                    ),
+                    'created_at' => Carbon::parse(
+                        $charge->created_at
+                    )->toDateTimeString(),
                     'order_number' => $charge->order_number,
                     'customer' => $charge->customer_name,
                     'amount' => $charge->amount,
