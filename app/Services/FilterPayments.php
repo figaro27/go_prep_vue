@@ -185,7 +185,9 @@ class FilterPayments
                     $order->amount > 0.5
                 ) {
                     $order->transactionFee +=
-                        ($order->amount + $order->chargedAmount) * 0.029 + 0.3;
+                        ($order->originalAmount + $order->chargedAmount) *
+                            0.029 +
+                        0.3;
                 }
 
                 $order->amount =
