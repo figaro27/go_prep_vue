@@ -237,6 +237,8 @@ class CustomerController extends StoreController
     public function searchCustomer(Request $request)
     {
         $query = strtolower($request->get('query'));
+        $query = str_replace("(", "", $query);
+        $query = str_replace(")", "", $query);
         $queryEscaped = addslashes(str_replace('@', ' ', $query));
 
         if ($query) {

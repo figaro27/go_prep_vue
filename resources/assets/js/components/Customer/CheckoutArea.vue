@@ -4146,8 +4146,6 @@ use next_delivery_dates
     },
     onSearchCustomer(search, loading) {
       if (search !== "") {
-        search.replace("(", "");
-        search.replace(")", "");
         this.customerOptions = [];
         loading(true);
         this.search(loading, search, this);
