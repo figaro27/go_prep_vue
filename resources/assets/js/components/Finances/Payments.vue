@@ -401,9 +401,9 @@
               />
             </div>
           </div>
-          <div slot="amount" slot-scope="props">
+          <div slot="originalAmount" slot-scope="props">
             <div>
-              {{ formatMoney(props.row.amount, props.row.currency) }}
+              {{ formatMoney(props.row.originalAmount, props.row.currency) }}
             </div>
           </div>
           <div slot="refundedAmount" slot-scope="props">
@@ -503,7 +503,7 @@ export default {
           chargedAmount: "Additional Charges",
           preTransactionFeeAmount: "Pre-Fee Total",
           transactionFee: "Transaction Fee",
-          amount: "Total",
+          originalAmount: "Total",
           refundedAmount: "Refunded",
           balance: "Balance"
         },
@@ -799,12 +799,14 @@ export default {
       if (addedColumns.referralReduction) columns.push("referralReduction");
       if (addedColumns.promotionReduction) columns.push("promotionReduction");
       if (addedColumns.pointsReduction) columns.push("pointsReduction");
-      if (addedColumns.chargedAmount) columns.push("chargedAmount");
+
       if (addedColumns.preTransactionFeeAmount)
         columns.push("preTransactionFeeAmount");
       if (addedColumns.transactionFee) columns.push("transactionFee");
+
+      columns.push("originalAmount");
+      if (addedColumns.chargedAmount) columns.push("chargedAmount");
       if (addedColumns.refundedAmount) columns.push("refundedAmount");
-      columns.push("amount");
 
       if (addedColumns.balance) columns.push("balance");
 

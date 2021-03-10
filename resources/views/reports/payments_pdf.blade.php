@@ -98,19 +98,19 @@ $currency = $params->currency
             @if ($params['pointsReduction'])
             <th>(Points)</th> 
             @endif
-            @if ($params['chargedAmount'])
-            <th>Additional Charges</th> 
-            @endif
             @if ($params['preTransactionFeeAmount'])
             <th>Pre-Fee Total</th> 
             @endif
             @if ($params['transactionFee'])
             <th>(Transaction Fee)</th> 
             @endif
+            <th>Total</th>
+            @if ($params['chargedAmount'])
+            <th>Additional Charges</th> 
+            @endif
             @if ($params['refundedAmount'])
             <th>(Refunded)</th> 
             @endif
-            <th>Total</th>  
             @if ($params['balance']) 
             <th>Balance</th>
             @endif
