@@ -23,8 +23,6 @@ class Order extends Model
     protected $hidden = [
         'store',
         'store_id',
-        'cutoff_date',
-        'cutoff_passed',
         'adjustedDifference',
         'card_id',
         'fulfilled'
@@ -32,7 +30,6 @@ class Order extends Model
 
     protected $casts = [
         'delivery_date' => 'date:Y-m-d',
-        'cutoff_date' => 'date:Y-m-d H:i:s',
         'deposit' => 'float',
         'preFeePreDiscount' => 'float',
         'afterDiscountBeforeFees' => 'float',
@@ -64,28 +61,13 @@ class Order extends Model
         'items',
         'meal_orders',
         'meal_package_items',
-        'store_name',
-        'cutoff_date',
-        'cutoff_passed',
         'pre_coupon',
         'order_day',
         'delivery_day',
-        'goprep_fee',
-        'stripe_fee',
-        'grandTotal',
         'line_items_order',
-        'added_by_store_id',
         'multiple_dates',
         'delivery_dates_array',
-        'purchased_gift_card_code',
-        'customer_name',
-        'customer_address',
-        'customer_zip',
-        'visible_items',
-        'pickup_location_name',
-        'staff_member',
-        'transfer_type'
-        // 'balance'
+        'visible_items'
     ];
 
     public function user()
@@ -190,40 +172,6 @@ class Order extends Model
         }
     }
 
-    public function getCustomerNameAttribute()
-    {
-        return $this->user->details->firstname .
-            ' ' .
-            $this->user->details->lastname;
-    }
-
-    public function getCustomerAddressAttribute()
-    {
-        return $this->user->details->address;
-    }
-
-    public function getCustomerZipAttribute()
-    {
-        return $this->user->details->zip;
-    }
-
-    public function getPurchasedGiftCardCodeAttribute()
-    {
-        if ($this->purchased_gift_card_id) {
-            return PurchasedGiftCard::where('id', $this->purchased_gift_card_id)
-                ->pluck('code')
-                ->first();
-        } else {
-            return null;
-        }
-    }
-
-    // public function getBalanceAttribute()
-    // {
-    //     $amount = $this->amount * (100 - $this->deposit) / 100;
-    //     return ($amount + ($amount - $this->adjustedDifference)) * -1;
-    // }
-
     public function getDeliveryDatesArrayAttribute()
     {
         $dates = [];
@@ -281,30 +229,6 @@ class Order extends Model
         return $this->delivery_date->format('m d');
     }
 
-    public function getGoprepFeeAttribute()
-    {
-        if (!$this->cashOrder) {
-            return $this->afterDiscountBeforeFees *
-                ($this->store->settings->application_fee / 100);
-        } else {
-            return 0;
-        }
-    }
-
-    public function getStripeFeeAttribute()
-    {
-        if (!$this->cashOrder && $this->amount > 0.5) {
-            return $this->amount * 0.029 + 0.3;
-        } else {
-            return 0;
-        }
-    }
-
-    public function getGrandTotalAttribute()
-    {
-        return $this->amount - $this->goprep_fee - $this->stripe_fee;
-    }
-
     public function getPreCouponAttribute()
     {
         return $this->amount + $this->couponReduction;
@@ -319,11 +243,6 @@ class Order extends Model
         }
     }
 
-    public function getAddedByStoreIdAttribute()
-    {
-        return $this->user->added_by_store_id;
-    }
-
     public function getMealOrdersAttribute()
     {
         // $mealIDs = MealOrder::where('order_id', $this->id)->pluck('meal_id');
@@ -334,21 +253,9 @@ class Order extends Model
         // return $meals;
     }
 
-    public function getPickupLocationNameAttribute()
-    {
-        return PickupLocation::where('id', $this->pickup_location_id)
-            ->pluck('name')
-            ->first();
-    }
-
     public function getLineItemsOrderAttribute()
     {
         return LineItemOrder::where('order_id', $this->id)->get();
-    }
-
-    public function getStoreNameAttribute()
-    {
-        return $this->store->storeDetail->name;
     }
 
     public function getMealIdsAttribute()
@@ -453,23 +360,8 @@ class Order extends Model
             });
     }
 
-    public function getCutoffDateAttribute()
-    {
-        return $this->getCutoffDate()
-            ->setTimezone('utc')
-            ->toDateTimeString();
-    }
-    public function getCutoffPassedAttribute()
-    {
-        return $this->getCutoffDate()->isPast();
-    }
-
     public function getCutoffDate()
     {
-        // return $this->store->getCutoffDate(
-        //     $this->delivery_date,
-        //     $this->delivery_day
-        // );
         return $this->store->getCutoffDate($this->delivery_date);
     }
 
@@ -482,21 +374,5 @@ class Order extends Model
         $order->update($props->toArray());
 
         return $order;
-    }
-
-    public function getStaffMemberAttribute()
-    {
-        return Staff::where('id', $this->staff_id)
-            ->pluck('name')
-            ->first();
-    }
-
-    public function getTransferTypeAttribute()
-    {
-        if ($this->shipping) {
-            return 'Shipping';
-        } else {
-            return $this->pickup ? 'Pickup' : 'Delivery';
-        }
     }
 }

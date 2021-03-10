@@ -863,7 +863,7 @@
               <p>{{ user_detail.phone }}</p>
             </span>
 
-            <div v-if="order.added_by_store_id === store.id">
+            <div>
               <b-btn
                 variant="warning"
                 class="d-inline mb-2 mt-2"

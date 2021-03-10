@@ -35,6 +35,7 @@ use App\Subscription;
 use App\MealSubscription;
 use App\Mail\Customer\NewGiftCard;
 use App\Refund;
+use App\PickupLocation;
 
 class OrderController extends StoreController
 {
@@ -271,8 +272,6 @@ class OrderController extends StoreController
                 'meal_orders',
                 'meal_package_items',
                 'store_name',
-                'cutoff_date',
-                'cutoff_passed',
                 'pre_coupon',
                 'order_day',
                 'delivery_day',
@@ -280,7 +279,6 @@ class OrderController extends StoreController
                 'stripe_fee',
                 'grandTotal',
                 'line_items_order',
-                'added_by_store_id',
                 'multiple_dates',
                 'delivery_dates_array',
                 'purchased_gift_card_code',
@@ -361,7 +359,6 @@ class OrderController extends StoreController
                 'meal_ids',
                 'line_items_order',
                 'meal_package_items',
-                'added_by_store_id',
                 'chargedAmount',
                 'currency',
                 'order_day',
@@ -1004,6 +1001,38 @@ class OrderController extends StoreController
                     $order->dailyOrderNumber = $dailyOrderNumber;
                 }
             }
+
+            $order->pickup_location_name = PickupLocation::where(
+                'id',
+                $pickupLocation
+            )
+                ->pluck('name')
+                ->first();
+            $order->purchased_gift_card_code = PurchasedGiftCard::where(
+                'id',
+                $purchasedGiftCardId
+            )
+                ->pluck('code')
+                ->first();
+            $order->store_name = $store->details->name;
+            $order->transfer_type = ($request->get('shipping')
+                    ? 'Shipping'
+                    : $request->get('pickup'))
+                ? 'Pickup'
+                : 'Delivery';
+            $order->customer_name = $customer->name;
+            $order->customer_address = $customer->address;
+            $order->customer_zip = $customer->zip;
+            $goPrepFee =
+                $order->afterDiscountBeforeFees *
+                ($store->settings->application_fee / 100);
+            $stripeFee =
+                !$order->cashOrder && $order->amount > 0.5
+                    ? $order->amount * 0.029 + 0.3
+                    : 0;
+            $order->goprep_fee = $goPrepFee;
+            $order->stripe_fee = $stripeFee;
+            $order->grandTotal = $order->amount - $goPrepFee - $stripeFee;
 
             $order->save();
 

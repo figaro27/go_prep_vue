@@ -21,6 +21,7 @@ use App\MealPackageOrder;
 use App\Subscription;
 use App\PurchasedGiftCard;
 use App\Error;
+use App\PickupLocation;
 
 class SubscriptionController extends StoreController
 {
@@ -533,7 +534,7 @@ class SubscriptionController extends StoreController
 
             foreach ($futureOrders as $order) {
                 // Cutoff already passed. Missed your chance bud!
-                if ($order->cutoff_passed) {
+                if ($order->getCutoffDate()->isPast()) {
                     continue;
                 }
 
@@ -559,6 +560,38 @@ class SubscriptionController extends StoreController
                 $order->pickup = $pickup;
                 $order->pickup_location_id = $pickupLocation;
                 $order->publicNotes = $publicNotes;
+                $order->pickup_location_name = PickupLocation::where(
+                    'id',
+                    $pickupLocation
+                )
+                    ->pluck('name')
+                    ->first();
+                $order->purchased_gift_card_code = PurchasedGiftCard::where(
+                    'id',
+                    $purchasedGiftCardId
+                )
+                    ->pluck('code')
+                    ->first();
+                $order->store_name = $store->details->name;
+                $order->transfer_type = ($shipping
+                        ? 'Shipping'
+                        : $pickup)
+                    ? 'Pickup'
+                    : 'Delivery';
+                $customer = Customer::where('id', $sub->customer_id)->first();
+                $order->customer_name = $customer->name;
+                $order->customer_address = $customer->address;
+                $order->customer_zip = $customer->zip;
+                $goPrepFee =
+                    $sub->afterDiscountBeforeFees *
+                    ($store->settings->application_fee / 100);
+                $stripeFee =
+                    !$sub->cashOrder && $sub->amount > 0.5
+                        ? $sub->amount * 0.029 + 0.3
+                        : 0;
+                $order->goprep_fee = $goPrepFee;
+                $order->stripe_fee = $stripeFee;
+                $order->grandTotal = $sub->amount - $goPrepFee - $stripeFee;
                 $order->save();
 
                 // Replace order meals && meal packages

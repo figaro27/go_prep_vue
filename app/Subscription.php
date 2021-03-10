@@ -25,6 +25,7 @@ use App\Mail\Customer\RenewalFailed;
 use App\Customer;
 use App\StoreModule;
 use App\Error;
+use App\PickupLocation;
 
 class Subscription extends Model
 {
@@ -547,6 +548,40 @@ class Subscription extends Model
             $newOrder->isMultipleDelivery = $this->isMultipleDelivery;
             $newOrder->notes = $this->notes;
             $newOrder->publicNotes = $this->publicNotes;
+
+            // New order fields
+            $newOrder->staff_member = $latestOrder->staff_member;
+            $newOrder->pickup_location_name = PickupLocation::where(
+                'id',
+                $this->pickup_location_id
+            )
+                ->pluck('name')
+                ->first();
+            $newOrder->purchased_gift_card_code = $this->prepaidChargeWeek
+                ? PurchasedGiftCard::where('id', $this->purchased_gift_card_id)
+                    ->pluck('code')
+                    ->first()
+                : null;
+            $newOrder->store_name = $latestOrder->store_name;
+            $newOrder->transfer_type = ($this->shipping
+                    ? 'Shipping'
+                    : $this->pickup)
+                ? 'Pickup'
+                : 'Delivery';
+            $newOrder->customer_name = $latestOrder->customer_name;
+            $newOrder->customer_address = $latestOrder->customer_address;
+            $newOrder->customer_zip = $latestOrder->customer_zip;
+            $goPrepFee =
+                $newOrder->afterDiscountBeforeFees *
+                ($this->store->settings->application_fee / 100);
+            $stripeFee =
+                !$newOrder->cashOrder && $newOrder->amount > 0.5
+                    ? $newOrder->amount * 0.029 + 0.3
+                    : 0;
+            $newOrder->goprep_fee = $goPrepFee;
+            $newOrder->stripe_fee = $stripeFee;
+            $newOrder->grandTotal = $newOrder->amount - $goPrepFee - $stripeFee;
+
             $newOrder->save();
 
             // Assign meal package orders from meal package subscriptions
@@ -1180,7 +1215,7 @@ class Subscription extends Model
             // Cutoff already passed. Missed your chance bud!
 
             // Removing to try to fix issue with longer than 7 day cutoff times. Will bring back if it causes issues.
-            // if ($order->cutoff_passed) {
+            // if ($order->getCutoffDate()->isPast()) {
             //     continue;
             // }
 
@@ -1237,6 +1272,16 @@ class Subscription extends Model
             $order->notes = $this->notes;
             $order->publicNotes = $this->publicNotes;
             $order->prepaid = $this->prepaid;
+            $goPrepFee =
+                $this->afterDiscountBeforeFees *
+                ($this->store->settings->application_fee / 100);
+            $stripeFee =
+                !$this->cashOrder && $this->amount > 0.5
+                    ? $this->amount * 0.029 + 0.3
+                    : 0;
+            $order->goprep_fee = $goPrepFee;
+            $order->stripe_fee = $stripeFee;
+            $order->grandTotal = $this->amount - $goPrepFee - $stripeFee;
             $order->save();
 
             // Replace order meals

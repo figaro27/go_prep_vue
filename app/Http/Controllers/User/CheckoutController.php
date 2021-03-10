@@ -46,6 +46,8 @@ use App\Traits\DeliveryDates;
 use App\SmsSetting;
 use App\Billing\Exceptions\BillingException;
 use App\Error;
+use App\Staff;
+use App\PickupLocation;
 
 class CheckoutController extends UserController
 {
@@ -541,8 +543,12 @@ class CheckoutController extends UserController
                 $order = new Order();
                 $order->user_id = $user->id;
                 $order->customer_id = $customer->id;
+                $order->customer_name = $customer->name;
+                $order->customer_address = $customer->address;
+                $order->customer_zip = $customer->zip;
                 $order->card_id = $cardId;
                 $order->store_id = $store->id;
+                $order->store_name = $store->details->name;
                 $order->order_number =
                     strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                     chr(rand(65, 90)) .
@@ -577,11 +583,28 @@ class CheckoutController extends UserController
                 $order->couponCode = $couponCode;
                 $order->purchased_gift_card_id = $purchasedGiftCardId;
                 $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
+                $order->purchased_gift_card_code = PurchasedGiftCard::where(
+                    'id',
+                    $purchasedGiftCardId
+                )
+                    ->pluck('code')
+                    ->first();
                 $order->promotionReduction = $promotionReduction;
                 $order->pointsReduction = $pointsReduction;
                 $order->applied_referral_id = $appliedReferralId;
                 $order->referralReduction = $referralReduction;
                 $order->pickup_location_id = $pickupLocation;
+                $order->pickup_location_name = PickupLocation::where(
+                    'id',
+                    $pickupLocation
+                )
+                    ->pluck('name')
+                    ->first();
+                $order->transfer_type = ($order->shipping
+                        ? 'Shipping'
+                        : $order->pickup)
+                    ? 'Pickup'
+                    : 'Delivery';
                 $order->transferTime = $transferTime;
                 $order->cashOrder = $cashOrder;
                 $order->payment_gateway = $gateway;
@@ -593,6 +616,17 @@ class CheckoutController extends UserController
                 if ($customDD) {
                     $order->delivery_day_id = $customDD->id;
                 }
+
+                $goPrepFee =
+                    $order->afterDiscountBeforeFees *
+                    ($store->settings->application_fee / 100);
+                $stripeFee =
+                    !$order->cashOrder && $order->amount > 0.5
+                        ? $order->amount * 0.029 + 0.3
+                        : 0;
+                $order->goprep_fee = $goPrepFee;
+                $order->stripe_fee = $stripeFee;
+                $order->grandTotal = $order->amount - $goPrepFee - $stripeFee;
 
                 $order->save();
 
@@ -1107,8 +1141,12 @@ class CheckoutController extends UserController
                 $order = new Order();
                 $order->user_id = $user->id;
                 $order->customer_id = $customer->id;
+                $order->customer_name = $customer->name;
+                $order->customer_address = $customer->address;
+                $order->customer_zip = $customer->zip;
                 $order->card_id = $cardId;
                 $order->store_id = $store->id;
+                $order->store_name = $store->details->name;
                 $order->subscription_id = $userSubscription->id;
                 $order->order_number =
                     strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
@@ -1143,12 +1181,39 @@ class CheckoutController extends UserController
                 $order->referralReduction = $referralReduction;
                 $order->purchased_gift_card_id = $purchasedGiftCardId;
                 $order->purchasedGiftCardReduction = $purchasedGiftCardReduction;
+                $order->purchased_gift_card_code = PurchasedGiftCard::where(
+                    'id',
+                    $purchasedGiftCardId
+                )
+                    ->pluck('code')
+                    ->first();
                 $order->pickup_location_id = $pickupLocation;
+                $order->pickup_location_name = PickupLocation::where(
+                    'id',
+                    $pickupLocation
+                )
+                    ->pluck('name')
+                    ->first();
+                $order->transfer_type = ($order->shipping
+                        ? 'Shipping'
+                        : $order->pickup)
+                    ? 'Pickup'
+                    : 'Delivery';
                 $order->transferTime = $transferTime;
                 $order->dailyOrderNumber = $dailyOrderNumber;
                 $order->originalAmount = $total * $deposit;
                 $order->cashOrder = $cashOrder;
                 $order->isMultipleDelivery = $isMultipleDelivery;
+                $goPrepFee =
+                    $order->afterDiscountBeforeFees *
+                    ($store->settings->application_fee / 100);
+                $stripeFee =
+                    !$order->cashOrder && $order->amount > 0.5
+                        ? $order->amount * 0.029 + 0.3
+                        : 0;
+                $order->goprep_fee = $goPrepFee;
+                $order->stripe_fee = $stripeFee;
+                $order->grandTotal = $order->amount - $goPrepFee - $stripeFee;
                 $order->save();
 
                 $orderId = $order->id;
