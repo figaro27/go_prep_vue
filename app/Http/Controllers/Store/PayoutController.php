@@ -204,9 +204,9 @@ class PayoutController extends StoreController
                     $orderTransaction->order->amount > 0.5
                 ) {
                     $orderTransaction->order->transactionFee +=
-                        $orderTransaction->order->amount * 0.029 + 0.3;
+                        $orderTransaction->order->originalAmount * 0.029 + 0.3;
                 }
-                $orderTransaction->order->amount -=
+                $orderTransaction->order->originalAmount -=
                     $orderTransaction->order->transactionFee;
                 $payoutOrders[] = $orderTransaction->order;
             }
@@ -245,7 +245,7 @@ class PayoutController extends StoreController
                     'created_at' => $payment->paid_at,
                     'order_number' => $payment->order_number,
                     'customer' => $payment->customer_name,
-                    'amount' => $payment->amount,
+                    'amount' => $payment->originalAmount,
                     'type' => $payment->manual
                         ? 'Manual Order'
                         : 'Customer Order'
