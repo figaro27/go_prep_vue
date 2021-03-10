@@ -483,10 +483,7 @@
                 >Apply Refund to Balance</b-form-checkbox
               >
               <br />
-              <b-btn
-                :disabled="fullyRefunded"
-                class="btn mb-2 d-inline mr-1 purpleBG"
-                @click="refund"
+              <b-btn class="btn mb-2 d-inline mr-1 purpleBG" @click="refund"
                 >Refund</b-btn
               >
               <b-form-input
