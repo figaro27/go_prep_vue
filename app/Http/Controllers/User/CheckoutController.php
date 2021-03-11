@@ -440,7 +440,7 @@ class CheckoutController extends UserController
                 $gateway
             );
 
-            $firstCustomer = Customer::where('user_id', $userId)->first();
+            $firstCustomer = Customer::where('user_id', $user->id)->first();
             $firstCustomer->last_order = Carbon::now();
             $firstCustomer->total_payments += 1;
             $firstCustomer->total_paid += $grandTotal;
