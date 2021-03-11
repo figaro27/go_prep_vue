@@ -66,6 +66,7 @@ class misc extends Command
                         $order->customer_id
                     )->first();
                     if ($customer) {
+                        $this->info($customer->id);
                         $customer->total_payments += 1;
                         $customer->total_paid += $order->amount;
                         if (
