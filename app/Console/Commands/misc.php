@@ -69,12 +69,7 @@ class misc extends Command
                         $this->info($customer->id);
                         $customer->total_payments += 1;
                         $customer->total_paid += $order->amount;
-                        if (
-                            $customer->last_order &&
-                            $customer->last_order < $order->created_at
-                        ) {
-                            $customer->last_order = $order->created_at;
-                        }
+                        $customer->last_order = $order->created_at;
                         $customer->update();
                     }
                 }
