@@ -44,7 +44,6 @@ class mergeCustomerOrderTotals extends Command
         $customers = $customers->groupBy('user_id');
 
         foreach ($customers as $customer) {
-            $this->info($customer->id);
             try {
                 $groupedCustomers = json_decode($customer);
                 if (count($groupedCustomers) > 1) {
@@ -53,6 +52,7 @@ class mergeCustomerOrderTotals extends Command
                         $groupedCustomers[0]->id
                     )->first();
                     foreach ($groupedCustomers as $i => $groupedCustomer) {
+                        $this->info($groupedCustomer->id);
                         if ($i > 0) {
                             $firstCustomer->total_payments +=
                                 $groupedCustomer->total_payments;
