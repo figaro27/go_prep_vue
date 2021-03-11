@@ -440,10 +440,11 @@ class CheckoutController extends UserController
                 $gateway
             );
 
-            $customer->last_order = Carbon::now();
-            $customer->total_payments += 1;
-            $customer->total_paid += $grandTotal;
-            $customer->update();
+            $firstCustomer = Customer::where('user_id', $userId)->first();
+            $firstCustomer->last_order = Carbon::now();
+            $firstCustomer->total_payments += 1;
+            $firstCustomer->total_paid += $grandTotal;
+            $firstCustomer->update();
 
             $storeCustomer = null;
 
