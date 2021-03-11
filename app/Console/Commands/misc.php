@@ -13,6 +13,7 @@ use App\StoreSetting;
 use App\MealMealTag;
 use App\Meal;
 use App\MealSize;
+use App\Order;
 
 class misc extends Command
 {
@@ -47,18 +48,36 @@ class misc extends Command
      */
     public function handle()
     {
-        $mealSizes = MealSize::withTrashed()->get();
+        $customers = Customer::all();
+        foreach ($customers as $customer) {
+            $customer->total_payments = 0;
+            $customer->total_paid = 0;
+            $customer->last_order = null;
+            $customer->update();
+        }
 
-        foreach ($mealSizes as $mealSize) {
+        $orders = Order::all();
+
+        foreach ($orders as $order) {
             try {
-                $storeId = Meal::where('id', $mealSize->meal_id)
-                    ->withTrashed()
-                    ->pluck('store_id')
-                    ->first();
-                $mealSize->store_id = $storeId;
-                $mealSize->update();
+                if ($order->paid) {
+                    $customer = Customer::where(
+                        'id',
+                        $order->customer_id
+                    )->first();
+                    if ($customer) {
+                        $customer->total_payments += 1;
+                        $customer->total_paid += $order->amount;
+                        if (
+                            $customer->last_order &&
+                            $customer->last_order < $order->created_at
+                        ) {
+                            $customer->last_order = $order->created_at;
+                        }
+                        $customer->update();
+                    }
+                }
             } catch (\Exception $e) {
-                $this->info($mealSize);
             }
         }
     }
