@@ -234,6 +234,13 @@
                 <div class="col-md-4">
                   <h4>Order ID</h4>
                   <p>{{ order.order_number }}</p>
+                  <i
+                    v-if="order.cashOrder"
+                    class="fas fa-money-bill text-success"
+                    v-b-popover.hover.top="
+                      'A credit card wasn\'t processed through GoPrep for this order.'
+                    "
+                  ></i>
                   <h4 v-if="storeModules.dailyOrderNumbers">Daily Order #</h4>
                   <p v-if="storeModules.dailyOrderNumbers">
                     {{ order.dailyOrderNumber }}

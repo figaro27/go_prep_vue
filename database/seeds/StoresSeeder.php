@@ -100,6 +100,7 @@ class StoresSeeder extends Seeder
 
             DB::table('store_modules')->insert([
                 'store_id' => $i,
+                'cashOrders' => 1,
                 'manualOrders' => 1,
                 'manualCustomers' => 1,
                 'productionGroups' => 1,
