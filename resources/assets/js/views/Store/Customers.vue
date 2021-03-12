@@ -685,7 +685,13 @@ export default {
 
       let data = [];
 
-      order.meal_package_items.forEach(meal_package_item => {
+      let meal_package_items = _.orderBy(
+        order.meal_package_items,
+        "delivery_date"
+      );
+      let items = _.orderBy(order.items, "delivery_date");
+
+      meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
           data.push({
             delivery_date: meal_package_item.delivery_date
@@ -725,7 +731,7 @@ export default {
             meal_package: true
           });
         }
-        order.items.forEach(item => {
+        items.forEach(item => {
           if (
             item.meal_package_order_id === meal_package_item.id &&
             !item.hidden
@@ -768,7 +774,7 @@ export default {
         });
       });
 
-      order.items.forEach(item => {
+      items.forEach(item => {
         if (item.meal_package_order_id === null && !item.hidden) {
           const meal = this.getStoreMeal(item.meal_id);
           if (!meal) {
@@ -836,7 +842,7 @@ export default {
           });
         });
       }
-      data = _.orderBy(data, "delivery_date");
+      // data = _.orderBy(data, "delivery_date");
       return _.filter(data);
     },
     showAddCustomerModal() {
