@@ -1621,7 +1621,7 @@
                   <span class="mr-1 mt-2">Cooler Bag Deposit</span>
                   <img
                     v-b-popover.hover="
-                      'Apply a deposit on your customer\'s orders for a cooler bag which can then be refunded upon return of the bag..'
+                      'Apply a deposit on your customer\'s orders for a cooler bag which can then be refunded upon return of the bag.'
                     "
                     title="Cooler Bag Deposit"
                     src="/images/store/popover.png"
