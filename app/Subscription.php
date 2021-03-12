@@ -440,26 +440,6 @@ class Subscription extends Model
             $latestOrder->prepaid = $this->prepaid;
             $latestOrder->save();
 
-            $latestOrder->events()->create([
-                'type' => 'payment_succeeded',
-                'stripe_event' => !$applyCharge ? json_encode($charge) : null
-            ]);
-
-            $order_transaction = new OrderTransaction();
-            $order_transaction->order_id = $latestOrder->id;
-            $order_transaction->store_id = $latestOrder->store_id;
-            $order_transaction->user_id = $latestOrder->user_id;
-            $order_transaction->customer_id = $latestOrder->customer_id;
-            $order_transaction->type = 'order';
-            $order_transaction->stripe_id = $latestOrder->stripe_id
-                ? $latestOrder->stripe_id
-                : null;
-            $order_transaction->card_id = $latestOrder->card_id
-                ? $latestOrder->card_id
-                : null;
-            $order_transaction->amount = $latestOrder->amount;
-            $order_transaction->save();
-
             // Create new order for next delivery
             $newOrder = new Order();
 
@@ -800,6 +780,33 @@ class Subscription extends Model
                 ->second(0);
             $this->failed_renewal = null;
             $this->save();
+
+            // Fetching latest order again after updating figures
+            if ($isMultipleDelivery == 1) {
+                $latestOrder = $this->getLatestUnpaidMDOrder();
+            } else {
+                $latestOrder = $this->getLatestUnpaidOrder();
+            }
+
+            $latestOrder->events()->create([
+                'type' => 'payment_succeeded',
+                'stripe_event' => !$applyCharge ? json_encode($charge) : null
+            ]);
+
+            $order_transaction = new OrderTransaction();
+            $order_transaction->order_id = $latestOrder->id;
+            $order_transaction->store_id = $latestOrder->store_id;
+            $order_transaction->user_id = $latestOrder->user_id;
+            $order_transaction->customer_id = $latestOrder->customer_id;
+            $order_transaction->type = 'order';
+            $order_transaction->stripe_id = $latestOrder->stripe_id
+                ? $latestOrder->stripe_id
+                : null;
+            $order_transaction->card_id = $latestOrder->card_id
+                ? $latestOrder->card_id
+                : null;
+            $order_transaction->amount = $latestOrder->amount;
+            $order_transaction->save();
         } catch (\Exception $e) {
             $id = $this->id;
             $sub = $this->replicate();
@@ -1264,6 +1271,9 @@ class Subscription extends Model
                 : 0;
             $order->purchasedGiftCardReduction = $this->prepaidChargeWeek
                 ? $this->purchasedGiftCardReduction
+                : 0;
+            $order->originalAmount = $this->prepaidChargeWeek
+                ? $this->amount
                 : 0;
             $order->amount = $this->prepaidChargeWeek ? $this->amount : 0;
             $modules = StoreModule::where('store_id', $this->store_id)->first();
