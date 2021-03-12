@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Validation\Rule;
 use Validator;
+use Illuminate\Support\Facades\Hash;
 
 class PasswordController extends UserController
 {
@@ -23,18 +24,22 @@ class PasswordController extends UserController
             'new' => 'required|string|min:6|confirmed'
         ]);
 
-        $currentHash = $this->user->password;
-
-        $validator->after(function (
-            \Illuminate\Validation\Validator $validator
-        ) use ($request, $currentHash) {
-            if ($currentHash !== bcrypt($request->get('current'))) {
-                $validator
-                    ->errors()
-                    ->add('current', 'Your current password doesn\'t match');
-            }
-        });
-
         $validator->validate($request);
+
+        $currentPassword = $this->user->password;
+        $verifiedCurrentPassword = $request->get('current');
+        $newPassword = bcrypt($request->get('new'));
+
+        // If the current password entered matches
+        if (Hash::check($verifiedCurrentPassword, $currentPassword)) {
+            if (count($validator->errors()) === 0) {
+                $this->user->update(['password' => $newPassword]);
+            }
+        } else {
+            $validator
+                ->errors()
+                ->add('errors', 'Your current password doesn\'t match');
+            throw new \Exception($validator->errors()->messages()['errors'][0]);
+        }
     }
 }

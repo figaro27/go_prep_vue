@@ -18,6 +18,9 @@ use App\MealAttachment;
 use App\MealMealPackageComponentOption;
 use App\MealPackageComponentOption;
 use App\MealPackageComponent;
+use App\MealMealPackageAddon;
+use App\MealPackageAddon;
+use App\MealPackage;
 
 class misc extends Command
 {
@@ -92,39 +95,54 @@ class misc extends Command
                 ->first();
         }
 
-        $mealMealPackageComponentOptions = MealMealPackageComponentOption::all();
+        $mealMealPackageAddons = MealMealPackageAddon::all();
 
-        foreach (
-            $mealMealPackageComponentOptions
-            as $mealMealPackageComponentOption
-        ) {
+        foreach ($mealMealPackageAddons as $mealMealPackageAddon) {
             if (
                 array_key_exists(
-                    $mealMealPackageComponentOption->meal_size_id,
+                    $mealMealPackageAddon->meal_size_id,
                     $syncMealSizes
                 )
             ) {
-                $mealPackageComponentOptionId = MealPackageComponentOption::where(
+                $mealPackageId = MealPackageAddon::where(
                     'id',
-                    $mealMealPackageComponentOption->meal_package_component_option_id
+                    $mealMealPackageAddon->meal_package_addon_id
                 )
-                    ->pluck('meal_package_component_id')
+                    ->pluck('meal_package_id')
                     ->first();
-                $mealPackageComponent = MealPackageComponent::where(
-                    'id',
-                    $mealPackageComponentOptionId
-                )->first();
-                if (
-                    $mealPackageComponent &&
-                    $mealPackageComponent->store_id === $newStoreId
-                ) {
-                    $this->info($mealMealPackageComponentOption);
-                    $mealMealPackageComponentOption->meal_size_id =
-                        $syncMealSizes[
-                            $mealMealPackageComponentOption->meal_size_id
-                        ];
-                    $mealMealPackageComponentOption->update();
+
+                $storeId = MealPackage::where('id', $mealPackageId)
+                    ->pluck('store_id')
+                    ->first();
+
+                if ($storeId === $newStoreId) {
+                    $this->info($mealMealPackageAddon->id);
+                    $mealMealPackageAddon->meal_size_id =
+                        $syncMealSizes[$mealMealPackageAddon->meal_size_id];
+                    $mealMealPackageAddon->update();
                 }
+
+                // $mealPackageComponentOptionId = MealPackageComponentOption::where(
+                //     'id',
+                //     $mealMealPackageComponentOption->meal_package_component_option_id
+                // )
+                //     ->pluck('meal_package_component_id')
+                //     ->first();
+                // $mealPackageComponent = MealPackageComponent::where(
+                //     'id',
+                //     $mealPackageComponentOptionId
+                // )->first();
+                // if (
+                //     $mealPackageComponent &&
+                //     $mealPackageComponent->store_id === $newStoreId
+                // ) {
+                //     $this->info($mealMealPackageComponentOption);
+                //     $mealMealPackageComponentOption->meal_size_id =
+                //         $syncMealSizes[
+                //             $mealMealPackageComponentOption->meal_size_id
+                //         ];
+                //     $mealMealPackageComponentOption->update();
+                // }
             }
         }
     }

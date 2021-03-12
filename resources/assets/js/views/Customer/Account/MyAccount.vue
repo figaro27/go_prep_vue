@@ -367,10 +367,7 @@ export default {
           this.refreshUser();
         })
         .catch(e => {
-          this.toastErrorResponse(
-            e.response.data,
-            "Failed to update password."
-          );
+          this.toastErrorResponse(e.response.data);
         });
     },
     updateEmail() {

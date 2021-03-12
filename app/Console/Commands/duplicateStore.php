@@ -395,6 +395,8 @@ class duplicateStore extends Command
                             $newMeal = $mealMeal->replicate();
                             $newMeal->meal_package_addon_id = $newAddon->id;
                             $newMeal->meal_id = $syncMeals[$mealMeal->meal_id];
+                            $newMeal->meal_size_id =
+                                $syncMealSizes[$mealMeal->meal_size_id];
                             $newMeal->save();
                         }
                     }
