@@ -14,6 +14,10 @@ use App\MealMealTag;
 use App\Meal;
 use App\MealSize;
 use App\Order;
+use App\MealAttachment;
+use App\MealMealPackageComponentOption;
+use App\MealPackageComponentOption;
+use App\MealPackageComponent;
 
 class misc extends Command
 {
@@ -48,32 +52,79 @@ class misc extends Command
      */
     public function handle()
     {
-        $customers = Customer::all();
-        foreach ($customers as $customer) {
-            $customer->total_payments = 0;
-            $customer->total_paid = 0;
-            $customer->last_order = null;
-            $customer->update();
+        $oldStoreId = 108;
+        $newStoreId = 278;
+
+        $syncMeals = [];
+
+        $meals = Meal::where('store_id', $oldStoreId)
+            ->withTrashed()
+            ->get();
+        foreach ($meals as $meal) {
+            $syncMeals[$meal->id] = Meal::where('store_id', $newStoreId)
+                ->where('title', $meal->title)
+                ->where('description', $meal->description)
+                ->where('price', $meal->price)
+                ->where('hidden', $meal->hidden)
+                ->where('hideFromMenu', $meal->hideFromMenu)
+                ->withTrashed()
+                ->pluck('id')
+                ->first();
         }
 
-        $orders = Order::all();
+        $syncMealSizes = [];
 
-        foreach ($orders as $order) {
-            try {
-                if ($order->paid) {
-                    $customer = Customer::where(
-                        'id',
-                        $order->customer_id
-                    )->first();
-                    if ($customer) {
-                        $this->info($customer->id);
-                        $customer->total_payments += 1;
-                        $customer->total_paid += $order->amount;
-                        $customer->last_order = $order->created_at;
-                        $customer->update();
-                    }
+        $mealSizes = MealSize::where('store_id', $oldStoreId)
+            ->where('deleted_at', null)
+            ->withTrashed()
+            ->get();
+        foreach ($mealSizes as $mealSize) {
+            $meal = Meal::where('id', $mealSize->meal_id)
+                ->withTrashed()
+                ->first();
+            $syncMealSizes[$mealSize->id] = MealSize::where(
+                'store_id',
+                $newStoreId
+            )
+                ->where('meal_id', $syncMeals[$mealSize->meal_id])
+                ->withTrashed()
+                ->pluck('id')
+                ->first();
+        }
+
+        $mealMealPackageComponentOptions = MealMealPackageComponentOption::all();
+
+        foreach (
+            $mealMealPackageComponentOptions
+            as $mealMealPackageComponentOption
+        ) {
+            if (
+                array_key_exists(
+                    $mealMealPackageComponentOption->meal_size_id,
+                    $syncMealSizes
+                )
+            ) {
+                $mealPackageComponentOptionId = MealPackageComponentOption::where(
+                    'id',
+                    $mealMealPackageComponentOption->meal_package_component_option_id
+                )
+                    ->pluck('meal_package_component_id')
+                    ->first();
+                $mealPackageComponent = MealPackageComponent::where(
+                    'id',
+                    $mealPackageComponentOptionId
+                )->first();
+                if (
+                    $mealPackageComponent &&
+                    $mealPackageComponent->store_id === $newStoreId
+                ) {
+                    $this->info($mealMealPackageComponentOption);
+                    $mealMealPackageComponentOption->meal_size_id =
+                        $syncMealSizes[
+                            $mealMealPackageComponentOption->meal_size_id
+                        ];
+                    $mealMealPackageComponentOption->update();
                 }
-            } catch (\Exception $e) {
             }
         }
     }

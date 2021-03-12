@@ -284,6 +284,8 @@ class duplicateStore extends Command
                             $newMeal->meal_package_component_option_id =
                                 $newComponentOption->id;
                             $newMeal->meal_id = $syncMeals[$mealMeal->meal_id];
+                            $newMeal->meal_size_id =
+                                $syncMealSizes[$mealMeal->meal_size_id];
                             $newMeal->save();
                         }
                     }
