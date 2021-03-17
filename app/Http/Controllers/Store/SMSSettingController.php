@@ -145,6 +145,13 @@ class SMSSettingController extends StoreController
 
     public function buyNumber(Request $request)
     {
+        $smsSettings = SMSSetting::where('store_id', $this->store->id)->first();
+        if ($smsSettings->phone) {
+            return response()->json(
+                ['You have already purchased a phone number.'],
+                400
+            );
+        }
         $phone = $request->get('phone');
 
         $client = new \GuzzleHttp\Client();

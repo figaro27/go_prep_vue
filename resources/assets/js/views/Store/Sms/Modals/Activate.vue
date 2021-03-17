@@ -89,6 +89,10 @@ export default {
           this.refreshSMSSettings();
           this.$emit("closeModal");
           this.$toastr.s("Number activated.");
+        })
+        .catch(resp => {
+          let error = resp.response.data;
+          this.$toastr.w(error);
         });
     }
   }
