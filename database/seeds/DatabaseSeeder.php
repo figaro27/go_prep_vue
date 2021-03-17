@@ -46,5 +46,6 @@ class DatabaseSeeder extends Seeder
         Artisan::call('migrate:images');
 
         Artisan::call('goprep:updateCustomersTable');
+        Artisan::call('goprep:optimizeOrders');
     }
 }
