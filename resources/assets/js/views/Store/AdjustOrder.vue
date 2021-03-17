@@ -178,9 +178,14 @@ export default {
               meal.item_id = item.item_id;
 
               if (pkgItem.meal_package_size && index !== null) {
-                if (!meal_package.sizes[index].hasOwnProperty("meals")) {
-                  meal_package.sizes[index].meals = [];
-                }
+                console.log("test 1");
+                console.log(index);
+                console.log("test 2");
+                console.log(meal_package);
+                console.log("test 3");
+                console.log(meal_package.sizes);
+                console.log("test 4");
+                console.log(meal_package.sizes[index]);
                 meal_package.sizes[index].meals.push(meal);
                 meal_package.sizes[index].price = pkgItem.price;
               } else {
