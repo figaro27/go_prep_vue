@@ -40,7 +40,7 @@ class SMSMessagesController extends StoreController
             $body = $res->getBody();
             $message = new stdClass();
             $message->id = json_decode($body)->id;
-            $message->price = json_decode($body)->price;
+            $message->price = (json_decode($body)->price / 4) * 6;
             $message->numbersCount = json_decode($body)->numbersCount;
             $message->messageTime = json_decode($body)->startTime;
             $message->text = json_decode($body)->text;
