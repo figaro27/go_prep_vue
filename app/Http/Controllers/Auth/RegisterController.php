@@ -466,6 +466,7 @@ class RegisterController extends Controller
                     ]);
                 }
 
+                $storePlan->stripe_customer_id = $customer->id;
                 $storePlan->save();
 
                 // If using credit card billing, charge here
@@ -480,7 +481,6 @@ class RegisterController extends Controller
                         ]
                     ]);
 
-                    $storePlan->stripe_customer_id = $customer->id;
                     $storePlan->stripe_subscription_id = $subscription->id;
 
                     // Get card ID
