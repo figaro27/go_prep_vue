@@ -358,7 +358,7 @@ export default {
     nextChargeDate() {
       let now = moment();
 
-      if (now.date() > this.storePlan.day) {
+      if (now.date() >= this.storePlan.day) {
         return moment()
           .add(this.storePlan.day - now.date(), "days")
           .add(1, "months");
