@@ -56,7 +56,6 @@ Route::get(
 Route::get('/mail/storeNewOrder', 'EmailTestController@storeNewOrder');
 
 foreach ([config('app.domain')] as $domain) {
-    Route::any('/stripe/goPrepEvent', 'Billing\\StripeController@goPrepEvent');
     Route::any('/stripe/event', 'Billing\\StripeController@event');
     Route::any(
         '/textmagic/incomingSMS',

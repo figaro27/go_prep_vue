@@ -17,13 +17,24 @@ use App\StorePlanTransaction;
 
 class StripeController extends Controller
 {
-    public function goPrepEvent(Request $request)
+    public function event(Request $request)
     {
         $event = collect($request->json());
         $data = collect($event->get('data', []));
         $obj = collect($data->get('object', []));
+
         $type = $event->get('type', null);
 
+        $storeId = StoreSetting::where('stripe_id', $event->get('account'))
+            ->pluck('store_id')
+            ->first();
+
+        $storeSetting = StoreSetting::where(
+            'stripe_id',
+            $event->get('account')
+        )->first();
+
+        // Store Plan Subscription Renewals
         // Add bank account withdrawals too
         if ($type === 'charge.succeeded') {
             $storePlan = StorePlan::where(
@@ -74,24 +85,6 @@ class StripeController extends Controller
             $storePlan->charge_attempts += 1;
             $storePlan->update();
         }
-    }
-
-    public function event(Request $request)
-    {
-        $event = collect($request->json());
-        $data = collect($event->get('data', []));
-        $obj = collect($data->get('object', []));
-
-        $type = $event->get('type', null);
-
-        $storeId = StoreSetting::where('stripe_id', $event->get('account'))
-            ->pluck('store_id')
-            ->first();
-
-        $storeSetting = StoreSetting::where(
-            'stripe_id',
-            $event->get('account')
-        )->first();
 
         //$subscriptions = Subscription::all();
 
