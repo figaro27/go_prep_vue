@@ -466,6 +466,8 @@ class RegisterController extends Controller
                     ]);
                 }
 
+                $storePlan->save();
+
                 // If using credit card billing, charge here
                 if (!$payAsYouGo && $planMethod === 'credit_card') {
                     $subscription = \Stripe\Subscription::create([
@@ -500,7 +502,7 @@ class RegisterController extends Controller
                 }
 
                 // if (!$payAsYouGo) {
-                $storePlan->save();
+                $storePlan->update();
                 // }
             }
         }
