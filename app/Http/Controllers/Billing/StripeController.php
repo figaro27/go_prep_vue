@@ -41,17 +41,20 @@ class StripeController extends Controller
                 'stripe_customer_id',
                 $obj['customer']
             )->first();
-            $storePlan->charged_failed = null;
-            $storePlan->charged_failed_reason = null;
-            $storePlan->charge_attempts = 0;
-            $storePlan->last_charged = Carbon::now();
-            $storePlan->update();
+            if ($storePlan) {
+                $storePlan->charged_failed = null;
+                $storePlan->charged_failed_reason = null;
+                $storePlan->charge_attempts = 0;
+                $storePlan->last_charged = Carbon::now();
+                $storePlan->update();
+            }
 
             $card = $obj['payment_method_details']['card'];
 
             $storePlanTransaction = new StorePlanTransaction();
             $storePlanTransaction->store_plan_id = $storePlan->id;
             $storePlanTransaction->store_id = $storePlan->store_id;
+            $storePlanTransaction->stripe_id = $obj['id'];
             $storePlanTransaction->amount = $obj['amount'];
             $storePlanTransaction->currency = $obj['currency'];
             $storePlanTransaction->card_brand = $card['brand'];
@@ -62,7 +65,7 @@ class StripeController extends Controller
                 $obj['created']
             )->toDateTimeString();
             $storePlanTransaction->period_end =
-                $storePlan->period == 'monthly'
+                ($storePlan && $storePlan->period == 'monthly') || !$storePlan
                     ? Carbon::createFromTimestamp($obj['created'])
                         ->addMonthsNoOverflow(1)
                         ->toDateTimeString()
@@ -77,13 +80,15 @@ class StripeController extends Controller
                 'stripe_customer_id',
                 $obj['customer']
             )->first();
-            $storePlan->charged_failed = Carbon::createFromTimestamp(
-                $obj['created']
-            )->toDateTimeString();
-            $storePlan->charged_failed_reason =
-                $obj['failure_message'] ?? 'Charge Failed';
-            $storePlan->charge_attempts += 1;
-            $storePlan->update();
+            if ($storePlan) {
+                $storePlan->charged_failed = Carbon::createFromTimestamp(
+                    $obj['created']
+                )->toDateTimeString();
+                $storePlan->charged_failed_reason =
+                    $obj['failure_message'] ?? 'Charge Failed';
+                $storePlan->charge_attempts += 1;
+                $storePlan->update();
+            }
         }
 
         //$subscriptions = Subscription::all();
