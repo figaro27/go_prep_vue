@@ -36,8 +36,8 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Barryvdh\Cors\HandleCors::class,
-            \ElicDev\SiteProtection\Http\Middleware\SiteProtection::class
+            \Barryvdh\Cors\HandleCors::class
+            // \ElicDev\SiteProtection\Http\Middleware\SiteProtection::class
         ],
 
         'api' => [
