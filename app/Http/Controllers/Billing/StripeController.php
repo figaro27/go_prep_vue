@@ -36,50 +36,52 @@ class StripeController extends Controller
         )->first();
 
         // Store Plan Subscription Renewals
-        // Add bank account withdrawals too
         if ($type === 'charge.succeeded') {
-            Log::info($obj);
-            Log::info(StorePlan::all());
+            if (
+                strpos($obj['description'], 'subscription') !== false ||
+                strpos($obj['description'], 'invoice') !== false
+            ) {
+                continue;
+            }
             $stripeCustomerId = (string) $obj['customer'];
-            Log::info($stripeCustomerId);
             $storePlan = StorePlan::where(
                 'stripe_customer_id',
                 $stripeCustomerId
             )->first();
-            Log::info($storePlan);
             if ($storePlan) {
                 $storePlan->charge_failed = null;
                 $storePlan->charge_failed_reason = null;
                 $storePlan->charge_attempts = 0;
                 $storePlan->last_charged = Carbon::now();
                 $storePlan->update();
+
+                $card = $obj['payment_method_details']['card'];
+
+                $storePlanTransaction = new StorePlanTransaction();
+                $storePlanTransaction->store_plan_id = $storePlan->id;
+                $storePlanTransaction->store_id = $storePlan->store_id;
+                $storePlanTransaction->stripe_id = $obj['id'];
+                $storePlanTransaction->amount = $obj['amount'];
+                $storePlanTransaction->currency = $obj['currency'];
+                $storePlanTransaction->card_brand = $card['brand'];
+                $storePlanTransaction->card_expiration =
+                    $card['exp_month'] . '/' . $card['exp_year'];
+                $storePlanTransaction->card_last4 = $card['last4'];
+                $storePlanTransaction->period_start = Carbon::createFromTimestamp(
+                    $obj['created']
+                )->toDateTimeString();
+                $storePlanTransaction->period_end =
+                    ($storePlan && $storePlan->period == 'monthly') ||
+                    !$storePlan
+                        ? Carbon::createFromTimestamp($obj['created'])
+                            ->addMonthsNoOverflow(1)
+                            ->toDateTimeString()
+                        : Carbon::createFromTimestamp($obj['created'])
+                            ->addYears(1)
+                            ->toDateTimeString();
+                $storePlanTransaction->receipt_url = $obj['receipt_url'];
+                $storePlanTransaction->save();
             }
-
-            $card = $obj['payment_method_details']['card'];
-
-            $storePlanTransaction = new StorePlanTransaction();
-            $storePlanTransaction->store_plan_id = $storePlan->id;
-            $storePlanTransaction->store_id = $storePlan->store_id;
-            $storePlanTransaction->stripe_id = $obj['id'];
-            $storePlanTransaction->amount = $obj['amount'];
-            $storePlanTransaction->currency = $obj['currency'];
-            $storePlanTransaction->card_brand = $card['brand'];
-            $storePlanTransaction->card_expiration =
-                $card['exp_month'] . '/' . $card['exp_year'];
-            $storePlanTransaction->card_last4 = $card['last4'];
-            $storePlanTransaction->period_start = Carbon::createFromTimestamp(
-                $obj['created']
-            )->toDateTimeString();
-            $storePlanTransaction->period_end =
-                ($storePlan && $storePlan->period == 'monthly') || !$storePlan
-                    ? Carbon::createFromTimestamp($obj['created'])
-                        ->addMonthsNoOverflow(1)
-                        ->toDateTimeString()
-                    : Carbon::createFromTimestamp($obj['created'])
-                        ->addYears(1)
-                        ->toDateTimeString();
-            $storePlanTransaction->receipt_url = $obj['receipt_url'];
-            $storePlanTransaction->save();
         }
         if ($type === 'charge.failed') {
             $storePlan = StorePlan::where(
