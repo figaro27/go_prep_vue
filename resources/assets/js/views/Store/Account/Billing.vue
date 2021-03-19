@@ -356,14 +356,11 @@ export default {
       storeSettings: "storeSettings"
     }),
     nextChargeDate() {
-      let now = moment();
-
-      if (now.date() >= this.storePlan.day) {
-        return moment()
-          .add(this.storePlan.day - now.date(), "days")
-          .add(1, "months");
+      let lastCharged = moment(this.storePlan.last_charged);
+      if (this.storePlan.period == "monthly") {
+        return lastCharged.add(1, "months");
       } else {
-        return moment().add(this.storePlan.day - now.date(), "days");
+        return lastCharged.add(1, "years");
       }
     },
     planOptions() {
