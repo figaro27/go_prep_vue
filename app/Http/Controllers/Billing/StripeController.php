@@ -48,8 +48,8 @@ class StripeController extends Controller
             )->first();
             Log::info($storePlan);
             if ($storePlan) {
-                $storePlan->charged_failed = null;
-                $storePlan->charged_failed_reason = null;
+                $storePlan->charge_failed = null;
+                $storePlan->charge_failed_reason = null;
                 $storePlan->charge_attempts = 0;
                 $storePlan->last_charged = Carbon::now();
                 $storePlan->update();
