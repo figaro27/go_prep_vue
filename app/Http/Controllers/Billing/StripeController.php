@@ -38,8 +38,8 @@ class StripeController extends Controller
         // Store Plan Subscription Renewals
         if ($type === 'charge.succeeded') {
             if (
-                strpos($obj['description'], 'subscription') !== false ||
-                strpos($obj['description'], 'invoice') !== false
+                strpos($obj['description'], 'Subscription') !== false ||
+                strpos($obj['description'], 'Invoice') !== false
             ) {
                 $stripeCustomerId = (string) $obj['customer'];
                 $storePlan = StorePlan::where(
