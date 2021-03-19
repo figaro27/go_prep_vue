@@ -391,6 +391,8 @@ class RegisterController extends Controller
             }
 
             $planless = $data['planless'] ?? false;
+            $freeTrial = $data['plan']['plan'] == 'free_trial' ? true : false;
+            $allowed_orders = $data['plan']['allowed_orders'];
 
             if ($planless) {
                 // todo: send notification to admin
@@ -403,7 +405,6 @@ class RegisterController extends Controller
                 $planPeriod = $planObj->get('plan_period');
                 $planToken = $planObj->get('stripe_token');
                 $payAsYouGo = $planId === 'pay-as-you-go';
-
                 try {
                     $plan = collect($plans[$planId][$planPeriod]);
                 } catch (\Exception $e) {
@@ -414,12 +415,44 @@ class RegisterController extends Controller
 
                 if (!$payAsYouGo) {
                     $storePlan = new StorePlan();
-                    $storePlan->active = 1;
+                    $storePlan->status = 'active';
                     $storePlan->store_id = $store->id;
+                    $storePlan->store_name = $store->details->name;
+                    $storePlan->contact_email = $user->email;
+                    $storePlan->contact_phone = $userDetails->phone;
+                    $storePlan->contact_name =
+                        $userDetails->firstname . ' ' . $userDetails->lastname;
                     $storePlan->method = $planMethod;
                     $storePlan->amount = $plan->get('price');
+                    $storePlan->plan_name = $planObj->get('plan');
+                    $storePlan->allowed_orders = $allowed_orders
+                        ? $allowed_orders
+                        : $plan->get('orders');
                     $storePlan->period = $planPeriod;
-                    $storePlan->day = date('d');
+                    $storePlan->free_trial = $freeTrial;
+                    $storePlan->day = $freeTrial
+                        ? Carbon::now()->addWeeks(2)->day
+                        : Carbon::now()->day;
+                    $storePlan->month = $freeTrial
+                        ? Carbon::now()->addWeeks(2)->month
+                        : Carbon::now()->month;
+                } else {
+                    $storePlan = new StorePlan();
+                    $storePlan->status = 'active';
+                    $storePlan->store_id = $store->id;
+                    $storePlan->store_name = $store->details->name;
+                    $storePlan->contact_email = $user->email;
+                    $storePlan->contact_phone = $userDetails->phone;
+                    $storePlan->contact_name =
+                        $userDetails->firstname . ' ' . $userDetails->lastname;
+                    $storePlan->method = 'n/a';
+                    $storePlan->amount = 0;
+                    $storePlan->plan_name = 'pay-as-you-go';
+                    $storePlan->allowed_orders = 0;
+                    $storePlan->period = 'n/a';
+                    $storePlan->free_trial = $freeTrial;
+                    $storePlan->day = 0;
+                    $storePlan->month = 0;
                 }
 
                 // A credit card was entered
@@ -435,10 +468,7 @@ class RegisterController extends Controller
                 if (!$payAsYouGo && $planMethod === 'credit_card') {
                     $subscription = \Stripe\Subscription::create([
                         'customer' => $customer,
-                        'trial_from_plan' =>
-                            $data['plan']['plan'] == 'free_trial'
-                                ? true
-                                : false,
+                        'trial_from_plan' => $freeTrial,
                         'items' => [
                             [
                                 'plan' => $plan->get('stripe_id')
@@ -448,6 +478,13 @@ class RegisterController extends Controller
 
                     $storePlan->stripe_customer_id = $customer->id;
                     $storePlan->stripe_subscription_id = $subscription->id;
+
+                    // Get card ID
+                    $customer = \Stripe\Customer::retrieve($customer->id, []);
+                    $storePlan->stripe_card_id = $customer->allSources(
+                        $customer->id,
+                        []
+                    )->data[0]['id'];
                 }
 
                 // Charge the up-front fee
@@ -460,9 +497,9 @@ class RegisterController extends Controller
                     ]);
                 }
 
-                if (!$payAsYouGo) {
-                    $storePlan->save();
-                }
+                // if (!$payAsYouGo) {
+                $storePlan->save();
+                // }
             }
         }
 

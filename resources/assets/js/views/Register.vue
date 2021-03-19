@@ -587,12 +587,8 @@
                   Please enter your card details below to get started with your
                   free two week trial. You will not be charged now. After two
                   weeks, you will be charged $119 for our Basic Plan which
-                  allows up to 50 orders per month. <br /><br />To upgrade or
-                  cancel before the first charge, contact us before two weeks at
-                  <a href="https://www.goprep.com" target="_blank"
-                    >www.GoPrep.com</a
-                  >
-                  or email <a href="mailto:help@goprep.com">help@goprep.com</a>
+                  allows up to 50 orders per month. <br /><br />You can cancel
+                  before the two weeks are up on the Billing page.
                 </p>
               </b-alert>
 
@@ -702,7 +698,8 @@ export default {
           plan: null,
           plan_method: "credit_card",
           plan_period: "monthly",
-          stripe_token: null
+          stripe_token: null,
+          allowed_orders: null
         }
       },
       feedback: {
@@ -921,6 +918,18 @@ export default {
       this.freeTrial = true;
       this.planSelected = this.planOptions[0];
       this.form[0].role = "store";
+    }
+
+    if (this.$route.query.orders) {
+      this.form[3].allowed_orders = this.$route.query.orders;
+    }
+
+    if (this.$route.query.plan) {
+      this.form[3].plan = this.$route.query.plan;
+    }
+
+    if (this.$route.query.period) {
+      this.form[3].plan_period = this.$route.query.period;
     }
 
     this.hideInputs();

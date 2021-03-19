@@ -40,7 +40,8 @@ class Store extends Model
         'url',
         'hasPromoCodes',
         'bulkCustomers',
-        'hasDeliveryDayItems'
+        'hasDeliveryDayItems',
+        'status'
     ];
 
     public static function boot()
@@ -1598,6 +1599,11 @@ class Store extends Model
         }
 
         return false;
+    }
+
+    public function getStatusAttribute()
+    {
+        return $this->plan ? $this->plan->status : null;
     }
 
     public function getCutoffPassedAttribute()

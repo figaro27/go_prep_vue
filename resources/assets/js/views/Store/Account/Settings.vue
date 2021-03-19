@@ -2060,6 +2060,12 @@ export default {
           this.showTOAModal = true;
           return;
         }
+        if (this.store.status === "cancelled") {
+          this.storeSettings.open = false;
+          this.$toastr.w(
+            "Your subscription has been cancelled. Please contact us to resume."
+          );
+        }
       } else {
         if (
           this.storeSubscriptions.some(sub => {

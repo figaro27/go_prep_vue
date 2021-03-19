@@ -270,6 +270,9 @@ const mutations = {
   tags(state, tags) {
     state.tags = tags;
   },
+  setCards(state, data) {
+    state.cards = data;
+  },
   setSMSMessages(state, data) {
     state.store.sms.messages.data = data.messages;
   },

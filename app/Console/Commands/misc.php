@@ -21,6 +21,7 @@ use App\MealPackageComponent;
 use App\MealMealPackageAddon;
 use App\MealPackageAddon;
 use App\MealPackage;
+use App\Subscription;
 
 class misc extends Command
 {
@@ -55,95 +56,17 @@ class misc extends Command
      */
     public function handle()
     {
-        $oldStoreId = 108;
-        $newStoreId = 278;
-
-        $syncMeals = [];
-
-        $meals = Meal::where('store_id', $oldStoreId)
-            ->withTrashed()
+        $subscriptions = Subscription::where('status', 'active')
+            ->orWhere('status', 'paused')
             ->get();
-        foreach ($meals as $meal) {
-            $syncMeals[$meal->id] = Meal::where('store_id', $newStoreId)
-                ->where('title', $meal->title)
-                ->where('description', $meal->description)
-                ->where('price', $meal->price)
-                ->where('hidden', $meal->hidden)
-                ->where('hideFromMenu', $meal->hideFromMenu)
-                ->withTrashed()
-                ->pluck('id')
-                ->first();
-        }
-
-        $syncMealSizes = [];
-
-        $mealSizes = MealSize::where('store_id', $oldStoreId)
-            ->where('deleted_at', null)
-            ->withTrashed()
-            ->get();
-        foreach ($mealSizes as $mealSize) {
-            $meal = Meal::where('id', $mealSize->meal_id)
-                ->withTrashed()
-                ->first();
-            $syncMealSizes[$mealSize->id] = MealSize::where(
-                'store_id',
-                $newStoreId
+        foreach ($subscriptions as $subscription) {
+            $this->info($subscription->id);
+            $subscription->next_renewal_at = Carbon::parse(
+                $subscription->next_renewal_at
             )
-                ->where('meal_id', $syncMeals[$mealSize->meal_id])
-                ->withTrashed()
-                ->pluck('id')
-                ->first();
-        }
-
-        $mealMealPackageAddons = MealMealPackageAddon::all();
-
-        foreach ($mealMealPackageAddons as $mealMealPackageAddon) {
-            if (
-                array_key_exists(
-                    $mealMealPackageAddon->meal_size_id,
-                    $syncMealSizes
-                )
-            ) {
-                $mealPackageId = MealPackageAddon::where(
-                    'id',
-                    $mealMealPackageAddon->meal_package_addon_id
-                )
-                    ->pluck('meal_package_id')
-                    ->first();
-
-                $storeId = MealPackage::where('id', $mealPackageId)
-                    ->pluck('store_id')
-                    ->first();
-
-                if ($storeId === $newStoreId) {
-                    $this->info($mealMealPackageAddon->id);
-                    $mealMealPackageAddon->meal_size_id =
-                        $syncMealSizes[$mealMealPackageAddon->meal_size_id];
-                    $mealMealPackageAddon->update();
-                }
-
-                // $mealPackageComponentOptionId = MealPackageComponentOption::where(
-                //     'id',
-                //     $mealMealPackageComponentOption->meal_package_component_option_id
-                // )
-                //     ->pluck('meal_package_component_id')
-                //     ->first();
-                // $mealPackageComponent = MealPackageComponent::where(
-                //     'id',
-                //     $mealPackageComponentOptionId
-                // )->first();
-                // if (
-                //     $mealPackageComponent &&
-                //     $mealPackageComponent->store_id === $newStoreId
-                // ) {
-                //     $this->info($mealMealPackageComponentOption);
-                //     $mealMealPackageComponentOption->meal_size_id =
-                //         $syncMealSizes[
-                //             $mealMealPackageComponentOption->meal_size_id
-                //         ];
-                //     $mealMealPackageComponentOption->update();
-                // }
-            }
+                ->subHours(1)
+                ->toDateTimeString();
+            $subscription->update();
         }
     }
 }

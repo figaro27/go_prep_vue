@@ -30,7 +30,39 @@
         >
       </div>
     </b-modal>
-    <b-form-group label="Add New Card" v-if="gateway === 'stripe'">
+
+    <b-list-group class="card-list mb-3" v-if="billingPage">
+      <b-list-group-item
+        v-for="card in creditCards"
+        :key="card.id"
+        :active="card.id == activeCardId"
+        class="card-list-item"
+        :href="selectable ? '#' : ''"
+      >
+        <img
+          class="card-logo"
+          :src="icons.cards[card.card.brand.toLowerCase()]"
+          @click="$emit('updateCard', card)"
+        />
+        <div class="flex-grow-1" @click="$emit('updateCard', card)">
+          Ending in {{ card.card.last4 }}
+        </div>
+        <div>
+          <b-btn
+            class="card-delete"
+            variant="plain"
+            @click="$emit('deleteCard', card)"
+          >
+            <i class="fa fa-minus-circle text-danger"></i>
+          </b-btn>
+        </div>
+      </b-list-group-item>
+    </b-list-group>
+
+    <b-form-group
+      label="Add New Card"
+      v-if="gateway === 'stripe' || billingPage"
+    >
       <card
         v-if="!isLoading"
         class="stripe-card"
@@ -49,24 +81,32 @@
       <b-btn
         variant="primary"
         @click="onClickCreateCard()"
-        :disabled="addingCard"
+        :disabled="addingCard && !billingPage"
         class="mb-3 mr-2 d-inline"
         >Add Card</b-btn
+      >
+      <b-btn
+        v-if="billingPage"
+        variant="secondary"
+        @click="$emit('back')"
+        class="mb-3 mr-2 d-inline"
+        >Back</b-btn
       >
       <b-form-checkbox
         v-model="saveCard"
         class="d-inline pt-1"
-        v-if="user && user.user_role_id !== 4"
+        v-if="user && user.user_role_id !== 4 && !billingPage"
         >Save card for future use</b-form-checkbox
       >
     </div>
     <!-- <b-btn variant="primary" @click="onClickCreateCard()" class="mb-3"
       >Add Card</b-btn
     > -->
-    <div v-if="cards.length && !$route.params.manualOrder">
+
+    <div v-if="cards.length && !$route.params.manualOrder && !billingPage">
       <b-list-group class="card-list">
         <b-list-group-item
-          v-for="card in cards"
+          v-for="card in creditCards"
           :key="card.id"
           :active="value === card.id"
           @click="e => selectCard(card.id)"
@@ -149,6 +189,12 @@ export default {
     InlineCreditCardField
   },
   props: {
+    billingPage: {
+      default: false
+    },
+    activeCardId: {
+      default: null
+    },
     value: {
       default: null
     },
@@ -202,7 +248,7 @@ export default {
       let token = null;
       let card = null;
 
-      if (this.gateway === "stripe") {
+      if (this.gateway === "stripe" || this.billingPage) {
         const data = await createToken();
 
         if (!data.token) {
@@ -234,7 +280,16 @@ export default {
         };
       }
 
-      if (token) {
+      // Updates card in store subscription
+      if (this.billingPage) {
+        let obj = {
+          token: token,
+          card: card
+        };
+        this.$emit("addCard", obj);
+      }
+
+      if (token && !this.billingPage) {
         this.createCard(token, card);
       }
     },

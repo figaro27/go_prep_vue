@@ -12,6 +12,8 @@ use App\Facades\StorePlanService;
 use Carbon\Carbon;
 use App\SmsSetting;
 use Illuminate\Support\Facades\Storage;
+use App\StorePlan;
+use App\StoreSetting;
 
 class Daily extends Command
 {
@@ -46,35 +48,45 @@ class Daily extends Command
      */
     public function handle()
     {
+        $this->updateStorePlans();
+
         $this->storePlanRenewals();
 
         $this->SMSPhoneRenewals();
 
         $this->deleteWeekOldStorage();
 
-        // Moved to Hourly cron job so it can be sent at a certain time in the morning instead of midnight.
+        $this->closeCancelledStores();
+    }
 
-        // Orders
-        // $orders = Order::where([
-        //     'delivery_date' => date('Y-m-d'),
-        //     'paid' => 1
-        // ])->get();
+    protected function updateStorePlans()
+    {
+        $today = Carbon::now()->format('d');
+        $lastDayOfMonth = new Carbon('last day of this month');
+        $lastDayOfMonth = $lastDayOfMonth->format('d');
 
-        // $this->info(count($orders) . ' orders for delivery today');
+        $now = Carbon::now();
+        $firstDayOfMonth = $now->firstOfMonth()->toDateTimeString();
 
-        // foreach ($orders as $order) {
-        //     try {
-        //         if ($order->store->modules->hideTransferOptions === 0) {
-        //             $order->user->sendNotification('delivery_today', [
-        //                 'user' => $order->user,
-        //                 'customer' => $order->customer,
-        //                 'order' => $order,
-        //                 'settings' => $order->store->settings
-        //             ]);
-        //         }
-        //     } catch (\Exception $e) {
-        //     }
-        // }
+        if ($now === $lastDayOfMonth) {
+            $storePlans = StorePlan::with('store')->get();
+            foreach ($storePlans as $storePlan) {
+                $ordersCount = $storePlan->store->orders
+                    ->where('paid_at', '>=', $firstDayOfMonth)
+                    ->count();
+                $storePlan->last_month_total_orders = $ordersCount;
+                $storePlan->months_over_limit +=
+                    $storePlan->plan_name !== 'pay-as-you-go' &&
+                    $ordersCount > $storePlan->allowed_orders
+                        ? 1
+                        : 0;
+                $storePlan->update();
+
+                if ($storePlan->months_over_limit >= 2) {
+                    // Automatically upgrade to the next plan ?
+                }
+            }
+        }
     }
 
     protected function storePlanRenewals()
@@ -83,7 +95,7 @@ class Daily extends Command
         $this->info(count($plans) . ' store plans renewing today');
 
         foreach ($plans as $plan) {
-            if ($plan->billing_method === 'connect') {
+            if ($plan->method === 'connect') {
                 dispatch(function () use ($plan) {
                     StorePlanService::renew($plan);
                 });
@@ -127,6 +139,29 @@ class Daily extends Command
             $time = Carbon::createFromTimestamp($time);
             if ($time < $lastWeek) {
                 Storage::delete($file);
+            }
+        }
+    }
+
+    protected function closeCancelledStores()
+    {
+        $stores = Store::all();
+        foreach ($stores as $store) {
+            $storePlan = StorePlan::where('store_id', $store->id)->first();
+            $storeSettings = StoreSetting::where('id', $store->id)->first();
+            if (
+                $storePlan &&
+                $storePlan->status === 'cancelled' &&
+                $storeSettings->open
+            ) {
+                $dayOfMonth = Carbon::now()->format('d');
+                if (
+                    (int) $dayOfMonth === (int) $storePlan->day &&
+                    Carbon::now()->startOfDay() > $storePlan->cancelled_at
+                ) {
+                    $storeSettings->open = false;
+                    $storeSettings->update();
+                }
             }
         }
     }
