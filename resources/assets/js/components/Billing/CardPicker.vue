@@ -106,7 +106,7 @@
     <div v-if="cards.length && !$route.params.manualOrder && !billingPage">
       <b-list-group class="card-list">
         <b-list-group-item
-          v-for="card in creditCards"
+          v-for="card in cards"
           :key="card.id"
           :active="value === card.id"
           @click="e => selectCard(card.id)"
