@@ -39,10 +39,14 @@ class StripeController extends Controller
         // Add bank account withdrawals too
         if ($type === 'charge.succeeded') {
             Log::info($obj);
+            Log::info(StorePlan::all());
+            $stripeCustomerId = (string) $obj['customer'];
+            Log::info($stripeCustomerId);
             $storePlan = StorePlan::where(
                 'stripe_customer_id',
-                $obj['customer']
+                $stripeCustomerId
             )->first();
+            Log::info($storePlan);
             if ($storePlan) {
                 $storePlan->charged_failed = null;
                 $storePlan->charged_failed_reason = null;
