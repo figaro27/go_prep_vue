@@ -410,9 +410,10 @@ class RegisterController extends Controller
                     Log::error($e->getMessage());
                 }
 
-                $allowed_orders = $data['plan']['allowed_orders']
-                    ? $data['plan']['allowed_orders']
-                    : $plan->get('orders');
+                $allowed_orders =
+                    $data['plan']['allowed_orders'] !== null
+                        ? $data['plan']['allowed_orders']
+                        : $plan->get('orders');
 
                 $upfrontFee = $plan->get('price_upfront', null);
 
