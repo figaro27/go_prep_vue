@@ -14,6 +14,7 @@ use App\Order;
 use App\OrderTransaction;
 use App\StorePlan;
 use App\StorePlanTransaction;
+use Illuminate\Support\Facades\Log;
 
 class StripeController extends Controller
 {
@@ -37,6 +38,7 @@ class StripeController extends Controller
         // Store Plan Subscription Renewals
         // Add bank account withdrawals too
         if ($type === 'charge.succeeded') {
+            Log::info($obj);
             $storePlan = StorePlan::where(
                 'stripe_customer_id',
                 $obj['customer']

@@ -392,7 +392,6 @@ class RegisterController extends Controller
 
             $planless = $data['planless'] ?? false;
             $freeTrial = $data['plan']['plan'] == 'free_trial' ? true : false;
-            $allowed_orders = $data['plan']['allowed_orders'];
 
             if ($planless) {
                 // todo: send notification to admin
@@ -411,6 +410,10 @@ class RegisterController extends Controller
                     Log::error($e->getMessage());
                 }
 
+                $allowed_orders = $data['plan']['allowed_orders']
+                    ? $data['plan']['allowed_orders']
+                    : $plan->get('orders');
+
                 $upfrontFee = $plan->get('price_upfront', null);
 
                 if (!$payAsYouGo) {
@@ -425,9 +428,7 @@ class RegisterController extends Controller
                     $storePlan->method = $planMethod;
                     $storePlan->amount = $plan->get('price');
                     $storePlan->plan_name = $planObj->get('plan');
-                    $storePlan->allowed_orders = $allowed_orders
-                        ? $allowed_orders
-                        : $plan->get('orders');
+                    $storePlan->allowed_orders = $allowed_orders;
                     $storePlan->period = $planPeriod;
                     $storePlan->free_trial = $freeTrial;
                     $storePlan->day = $freeTrial
