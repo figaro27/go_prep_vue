@@ -95,6 +95,10 @@ class AddFieldsToStorePlansTable extends Migration
                 ->string('stripe_card_id')
                 ->after('stripe_subscription_id')
                 ->nullable();
+            $table
+                ->dateTime('last_charged')
+                ->nullable()
+                ->change();
             $table->dropColumn('active');
         });
         Schema::disableForeignKeyConstraints();
