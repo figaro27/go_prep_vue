@@ -13,6 +13,7 @@ class AddFieldsToStorePlansTable extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::table('store_plans', function (Blueprint $table) {
             $table
                 ->unsignedInteger('store_id')
@@ -96,6 +97,7 @@ class AddFieldsToStorePlansTable extends Migration
                 ->nullable();
             $table->dropColumn('active');
         });
+        Schema::disableForeignKeyConstraints();
     }
 
     /**

@@ -13,6 +13,7 @@ class AddFieldsToStorePlanTransactionsTable extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::table('store_plan_transactions', function (Blueprint $table) {
             $table
                 ->unsignedInteger('store_id')
@@ -49,6 +50,7 @@ class AddFieldsToStorePlanTransactionsTable extends Migration
                 ->nullable();
             $table->dropColumn('timestamp');
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
