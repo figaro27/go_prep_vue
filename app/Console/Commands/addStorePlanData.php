@@ -172,6 +172,9 @@ class addStorePlanData extends Command
                     $storePlan->cancelled_at = $cancelledAt
                         ? $cancelledAt
                         : null;
+
+                    $existingStorePlan->delete();
+
                     $storePlan->save();
 
                     if ($storePlan->stripe_subscription_id) {
