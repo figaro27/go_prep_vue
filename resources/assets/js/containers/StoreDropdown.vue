@@ -17,13 +17,13 @@
         My Account
       </router-link>
 
-      <router-link
+      <!-- <router-link
         to="/store/account/billing"
         class="link-remove dropdown-item"
       >
         <i class="fa fa-money-bill" />
         Billing
-      </router-link>
+      </router-link> -->
 
       <!-- <router-link to="/store/account/contact" class="link-remove dropdown-item">
         <i class="fa fa-comment-dots"/>

@@ -50,7 +50,7 @@ class Daily extends Command
     {
         $this->updateStorePlans();
 
-        $this->storePlanRenewals();
+        // $this->storePlanRenewals();
 
         $this->SMSPhoneRenewals();
 

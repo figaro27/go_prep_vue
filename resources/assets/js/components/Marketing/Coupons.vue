@@ -55,6 +55,8 @@
                 </div>
                 <div class="col-md-1">
                   <b-form-input
+                    type="number"
+                    min="0"
                     id="coupon-code"
                     v-model="coupon.amount"
                     placeholder="Enter Amount"
@@ -83,6 +85,8 @@
                 </div>
                 <div class="col-md-2">
                   <b-form-input
+                    type="number"
+                    min="0"
                     v-model="coupon.minimum"
                     class="pt-2"
                     placeholder="Minimum Amount (optional)"
