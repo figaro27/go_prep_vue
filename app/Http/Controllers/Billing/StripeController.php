@@ -88,10 +88,10 @@ class StripeController extends Controller
                 $obj['customer']
             )->first();
             if ($storePlan) {
-                $storePlan->charged_failed = Carbon::createFromTimestamp(
+                $storePlan->charge_failed = Carbon::createFromTimestamp(
                     $obj['created']
                 )->toDateTimeString();
-                $storePlan->charged_failed_reason =
+                $storePlan->charge_failed_reason =
                     $obj['failure_message'] ?? 'Charge Failed';
                 $storePlan->charge_attempts += 1;
                 $storePlan->update();
