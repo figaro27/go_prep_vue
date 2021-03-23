@@ -87,7 +87,10 @@
               <b>Notes:</b> {{ storePlan.plan_notes }}
             </p>
           </div>
-          <div class="mt-2 mb-2" v-if="storePlan.plan_name !== 'pay-as-you-go'">
+          <div
+            class="mt-2 mb-2"
+            v-if="storePlan && storePlan.plan_name !== 'pay-as-you-go'"
+          >
             <b-btn variant="primary" @click="showUpdatePlanModal = true"
               >Update Plan</b-btn
             >
