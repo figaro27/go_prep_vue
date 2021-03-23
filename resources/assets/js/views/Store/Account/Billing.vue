@@ -105,6 +105,7 @@
             :data="storePlanTransactions"
             :options="options"
             class="mt-4"
+            v-if="storePlanTransactions.length > 0"
           >
             <div slot="beforeTable" class="mb-2" v-if="storePlan">
               <h3>Invoices</h3>
@@ -343,7 +344,18 @@ export default {
           period_end: "Period End",
           receipt_url: "Receipt"
         },
-        filterable: false
+        filterable: false,
+        customSorting: {
+          period_start: function(ascending) {
+            return function(a, b) {
+              a = a.period_start;
+              b = b.period_start;
+
+              if (ascending) return a.isBefore(b, "day") ? 1 : -1;
+              return a.isAfter(b, "day") ? 1 : -1;
+            };
+          }
+        }
       }
     };
   },
