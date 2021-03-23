@@ -964,6 +964,7 @@ export default {
     };
   },
   updated() {
+    console.log(this.bag);
     let url = new URL(window.location.href);
 
     this.selectedSizeId = url.searchParams.get("package_size")
@@ -994,7 +995,8 @@ export default {
       bagZipCode: "bagZipCode",
       bagPickup: "bagPickup",
       menuSettings: "viewedStoreMenuSettings",
-      context: "context"
+      context: "context",
+      bag: "bagItems"
     }),
     transferType() {
       return this.bagPickup ? "pickup" : "delivery";
