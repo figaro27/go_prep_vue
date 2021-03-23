@@ -346,12 +346,12 @@ export default {
         },
         filterable: false,
         customSorting: {
-          period_start: function(ascending) {
+          period_start: function(descending) {
             return function(a, b) {
               a = a.period_start;
               b = b.period_start;
 
-              if (ascending) return a.isBefore(b, "day") ? 1 : -1;
+              if (descending) return a.isBefore(b, "day") ? 1 : -1;
               return a.isAfter(b, "day") ? 1 : -1;
             };
           }
