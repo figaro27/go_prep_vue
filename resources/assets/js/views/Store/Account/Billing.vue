@@ -138,8 +138,8 @@
                 }}
               </p>
             </div>
-            <div slot="created_at" slot-scope="props">
-              {{ moment(props.row.created_at).format("ddd, MM/D/YYYY") }}
+            <div slot="created" slot-scope="props">
+              {{ moment(props.row.created).format("ddd, MM/D/YYYY") }}
             </div>
             <div slot="card_brand" slot-scope="props">
               {{
