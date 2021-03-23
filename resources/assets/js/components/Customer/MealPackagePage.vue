@@ -1324,7 +1324,7 @@ export default {
           let deliveryDays = this.deliveryDays.reverse();
 
           // Fix day_friendly (not sure what causes this)
-          deliveryDays.foreach(day => {
+          deliveryDays.forEach(day => {
             day.day_friendly = moment(day.day_friendly).format("YYYY-MM-DD");
           });
 
