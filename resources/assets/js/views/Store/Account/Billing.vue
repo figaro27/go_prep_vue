@@ -433,7 +433,7 @@ export default {
     ...mapMutations(["setCards"]),
     showOverOrdersToast() {
       this.$toastr.w(
-        "You are currently over your order limit for the month. If this occurs for two months in a row your subscription will be upgraded to the next plan."
+        "You are currently over your order limit for the month. We may contact you to upgrade your plan."
       );
     },
     getStorePlan() {
