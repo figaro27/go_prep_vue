@@ -50,7 +50,7 @@ class Daily extends Command
     {
         $this->updateStorePlans();
 
-        // $this->storePlanRenewals();
+        $this->storePlanRenewals();
 
         $this->SMSPhoneRenewals();
 
@@ -95,7 +95,7 @@ class Daily extends Command
         $this->info(count($plans) . ' store plans renewing today');
 
         foreach ($plans as $plan) {
-            if ($plan->method === 'connect') {
+            if ($plan->method === 'connect' && $plan->amount > 0) {
                 dispatch(function () use ($plan) {
                     StorePlanService::renew($plan);
                 });
