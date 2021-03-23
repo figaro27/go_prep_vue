@@ -1321,7 +1321,7 @@ export default {
         }
         /* Checking Special Instructions End */
         if (this.isMultipleDelivery && this.mealPackage.divideByComponents) {
-          let deliveryDays = this.deliveryDays.reverse();
+          let deliveryDays = this.store.delivery_days.reverse();
           console.log(deliveryDays);
 
           deliveryDays.forEach(day => {
