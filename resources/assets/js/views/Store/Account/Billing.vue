@@ -9,8 +9,7 @@
               moment(storePlan.charge_failed).format("ddd, MM/D/YYYY")
             }}</b>
             and it failed with the reason:
-            <b>{{ storePlan.charge_failed_reason }}</b
-            >.
+            <b>{{ storePlan.charge_failed_reason }}</b>
           </p>
           <p>
             Please update your credit card or settle the issue with your current
@@ -88,7 +87,7 @@
               <b>Notes:</b> {{ storePlan.plan_notes }}
             </p>
           </div>
-          <div class="mt-2 mb-2">
+          <div class="mt-2 mb-2" v-if="storePlan.plan_name !== 'pay-as-you-go'">
             <b-btn variant="primary" @click="showUpdatePlanModal = true"
               >Update Plan</b-btn
             >
