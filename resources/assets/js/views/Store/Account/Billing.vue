@@ -327,7 +327,7 @@ export default {
       storePlanTransactions: [],
       monthToDateOrders: 0,
       columns: [
-        "created_at",
+        "created",
         "card_brand",
         "card_last4",
         "amount",
@@ -337,7 +337,7 @@ export default {
       ],
       options: {
         headings: {
-          created_at: "Charge Date",
+          created: "Charge Date",
           card_brand: "Card",
           card_last4: "Last 4",
           period_start: "Period Start",
