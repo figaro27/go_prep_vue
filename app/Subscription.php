@@ -404,8 +404,6 @@ class Subscription extends Model
                 );
             }
 
-            $this->syncPrices();
-
             $applyCharge =
                 !$this->cashOrder &&
                 $this->status != 'paused' &&
@@ -439,6 +437,8 @@ class Subscription extends Model
             $latestOrder->stripe_id = $charge ? $charge->id : null;
             $latestOrder->prepaid = $this->prepaid;
             $latestOrder->save();
+
+            $this->syncPrices();
 
             // Create new order for next delivery
             $newOrder = new Order();
@@ -772,8 +772,7 @@ class Subscription extends Model
                 $this->save();
                 return;
             }
-            $this->removeOneTimeCoupons();
-            $this->syncPrices(false, true);
+
             $this->next_renewal_at = $this->next_renewal_at
                 ->addWeeks($this->intervalCount)
                 ->minute(0)
@@ -1086,6 +1085,12 @@ class Subscription extends Model
         $afterDiscountBeforeFees = $prePackagePrice + $totalPackagePrice;
         $preFeePreDiscount = $prePackagePrice + $totalPackagePrice;
 
+        if (!$syncPricesOnly) {
+            $this->updateCurrentMealOrders();
+            $this->syncDiscountPrices($mealsReplaced);
+            $this->removeOneTimeCoupons();
+        }
+
         $coupon = Coupon::where('id', $this->coupon_id)->first();
         if (isset($coupon)) {
             if (!$coupon->active) {
@@ -1178,11 +1183,6 @@ class Subscription extends Model
         $this->save();
 
         $this->preReductionTotal = $total;
-
-        if (!$syncPricesOnly) {
-            $this->updateCurrentMealOrders();
-            $this->syncDiscountPrices($mealsReplaced);
-        }
 
         $total -= $this->referralReduction;
         $total -= $this->promotionReduction;
