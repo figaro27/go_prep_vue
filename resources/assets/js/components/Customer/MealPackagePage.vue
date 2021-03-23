@@ -1328,8 +1328,6 @@ export default {
             day.day_friendly = moment(day.day_friendly).format("YYYY-MM-DD");
           });
 
-          console.log(deliveryDays);
-
           deliveryDays.forEach(day => {
             // Split package by looking at the components & addons delivery_day_ids
             let newMealPackage = { ...this.mealPackage };
