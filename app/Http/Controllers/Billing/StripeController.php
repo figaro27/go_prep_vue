@@ -171,66 +171,71 @@ class StripeController extends Controller
                 $payout->update();
             }
         } elseif ($type === 'payout.created') {
-            $bank_name = \Stripe\Account::allExternalAccounts(
-                $event->get('account'),
-                [
-                    'object' => 'bank_account'
-                ]
-            );
+            if ($event->get('account') !== null) {
+                $bank_name = \Stripe\Account::allExternalAccounts(
+                    $event->get('account'),
+                    [
+                        'object' => 'bank_account'
+                    ]
+                );
 
-            $bank_name = $bank_name->data
-                ? $bank_name->data[0]->bank_name
-                : null;
+                $bank_name = $bank_name->data
+                    ? $bank_name->data[0]->bank_name
+                    : null;
 
-            $payout = new Payout();
-            $payout->store_id = $storeId;
-            $payout->status = $obj['status'];
-            $payout->stripe_id = $obj['id'];
-            $payout->bank_id = $obj['destination'];
-            $payout->bank_name = $bank_name;
-            $payout->created = Carbon::createFromTimestamp(
-                $obj['created']
-            )->toDateTimeString();
-            $payout->arrival_date = Carbon::createFromTimestamp(
-                $obj['arrival_date']
-            )->toDateTimeString();
-            $payout->amount = $obj['amount'] / 100;
-            $payout->save();
+                $payout = new Payout();
+                $payout->store_id = $storeId;
+                $payout->status = $obj['status'];
+                $payout->stripe_id = $obj['id'];
+                $payout->bank_id = $obj['destination'];
+                $payout->bank_name = $bank_name;
+                $payout->created = Carbon::createFromTimestamp(
+                    $obj['created']
+                )->toDateTimeString();
+                $payout->arrival_date = Carbon::createFromTimestamp(
+                    $obj['arrival_date']
+                )->toDateTimeString();
+                $payout->amount = $obj['amount'] / 100;
+                $payout->save();
 
-            // Set the payout_id and payout_date to all orders belonging to the payout
-            $acct = $storeSetting->stripe_account;
-            \Stripe\Stripe::setApiKey($acct['access_token']);
+                // Set the payout_id and payout_date to all orders belonging to the payout
+                $acct = $storeSetting->stripe_account;
+                \Stripe\Stripe::setApiKey($acct['access_token']);
 
-            $balanceTransactions = \Stripe\BalanceTransaction::all([
-                'payout' => $obj['id'],
-                'limit' => 100
-            ])->data;
+                $balanceTransactions = \Stripe\BalanceTransaction::all([
+                    'payout' => $obj['id'],
+                    'limit' => 100
+                ])->data;
 
-            // Removing the first item which Stripe returns as the payout itself.
-            array_shift($balanceTransactions);
+                // Removing the first item which Stripe returns as the payout itself.
+                array_shift($balanceTransactions);
 
-            // Get all order transactions
-            $orderTransactions = OrderTransaction::where(
-                'store_id',
-                $storeId
-            )->get();
+                // Get all order transactions
+                $orderTransactions = OrderTransaction::where(
+                    'store_id',
+                    $storeId
+                )->get();
 
-            foreach ($balanceTransactions as $balanceTransaction) {
-                $charge = $balanceTransaction->source;
+                foreach ($balanceTransactions as $balanceTransaction) {
+                    $charge = $balanceTransaction->source;
 
-                $orderTransaction = $orderTransactions
-                    ->filter(function ($transaction) use ($charge) {
-                        return $transaction->stripe_id === $charge;
-                    })
-                    ->first();
+                    $orderTransaction = $orderTransactions
+                        ->filter(function ($transaction) use ($charge) {
+                            return $transaction->stripe_id === $charge;
+                        })
+                        ->first();
 
-                if ($orderTransaction && $orderTransaction->type === 'order') {
-                    $orderTransaction->order->payout_date = Carbon::createFromTimestamp(
-                        $obj['arrival_date']
-                    )->toDateTimeString();
-                    $orderTransaction->order->payout_total =
-                        $obj['amount'] / 100;
-                    $orderTransaction->order->update();
+                    if (
+                        $orderTransaction &&
+                        $orderTransaction->type === 'order'
+                    ) {
+                        $orderTransaction->order->payout_date = Carbon::createFromTimestamp(
+                            $obj['arrival_date']
+                        )->toDateTimeString();
+                        $orderTransaction->order->payout_total =
+                            $obj['amount'] / 100;
+                        $orderTransaction->order->update();
+                    }
                 }
             }
         }
