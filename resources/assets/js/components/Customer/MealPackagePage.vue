@@ -1322,6 +1322,7 @@ export default {
         /* Checking Special Instructions End */
         if (this.isMultipleDelivery && this.mealPackage.divideByComponents) {
           let deliveryDays = this.deliveryDays.reverse();
+          console.log(deliveryDays);
 
           deliveryDays.forEach(day => {
             // Split package by looking at the components & addons delivery_day_ids
@@ -1329,8 +1330,6 @@ export default {
             let newMealPackageSize = { ...this.mealPackageSize };
 
             newMealPackage.delivery_day = day;
-
-            console.log(newMealPackage.delivery_day);
 
             // Components
             let includedComponentIds = [];
