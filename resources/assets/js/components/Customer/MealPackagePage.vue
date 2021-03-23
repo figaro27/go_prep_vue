@@ -964,7 +964,6 @@ export default {
     };
   },
   updated() {
-    console.log(this.bag);
     let url = new URL(window.location.href);
 
     this.selectedSizeId = url.searchParams.get("package_size")
@@ -995,8 +994,7 @@ export default {
       bagZipCode: "bagZipCode",
       bagPickup: "bagPickup",
       menuSettings: "viewedStoreMenuSettings",
-      context: "context",
-      bag: "bagItems"
+      context: "context"
     }),
     transferType() {
       return this.bagPickup ? "pickup" : "delivery";
@@ -1331,6 +1329,8 @@ export default {
             let newMealPackageSize = { ...this.mealPackageSize };
 
             newMealPackage.delivery_day = day;
+
+            console.log(newMealPackage.delivery_day);
 
             // Components
             let includedComponentIds = [];
