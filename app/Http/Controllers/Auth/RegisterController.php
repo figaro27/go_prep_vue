@@ -415,6 +415,10 @@ class RegisterController extends Controller
                         ? $data['plan']['allowed_orders']
                         : $plan->get('orders');
 
+                if ($allowed_orders == null) {
+                    $allowed_orders = 50;
+                }
+
                 $upfrontFee = $plan->get('price_upfront', null);
 
                 if (!$payAsYouGo) {
