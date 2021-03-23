@@ -1322,7 +1322,7 @@ export default {
         /* Checking Special Instructions End */
         if (this.isMultipleDelivery && this.mealPackage.divideByComponents) {
           let deliveryDays = this.store.delivery_days.reverse();
-          console.log(deliveryDays);
+          console.log(this.store.delivery_days);
 
           deliveryDays.forEach(day => {
             // Split package by looking at the components & addons delivery_day_ids
