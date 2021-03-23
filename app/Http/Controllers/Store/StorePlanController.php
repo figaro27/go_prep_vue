@@ -49,7 +49,7 @@ class StorePlanController extends StoreController
     public function getStorePlanTransactions()
     {
         return StorePlanTransaction::where('store_id', $this->store->id)
-            ->orderBy('id', 'desc')
+            ->orderBy('created', 'desc')
             ->get();
 
         // Originally had it getting invoices through Stripe before saving to store_plan_transactions

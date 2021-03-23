@@ -344,18 +344,7 @@ export default {
           period_end: "Period End",
           receipt_url: "Receipt"
         },
-        filterable: false,
-        customSorting: {
-          period_start: function(descending) {
-            return function(a, b) {
-              a = a.period_start;
-              b = b.period_start;
-
-              if (descending) return a.isBefore(b, "day") ? 1 : -1;
-              return a.isAfter(b, "day") ? 1 : -1;
-            };
-          }
-        }
+        filterable: false
       }
     };
   },
