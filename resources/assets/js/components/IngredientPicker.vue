@@ -508,7 +508,8 @@ export default {
   computed: {
     ...mapGetters({
       existingIngredients: "ingredients",
-      defaultWeightUnit: "defaultWeightUnit"
+      defaultWeightUnit: "defaultWeightUnit",
+      store: "viewedStore"
     }),
     nutrition() {
       return nutrition;
@@ -780,7 +781,8 @@ export default {
     searchRecipe() {
       axios
         .post("/api/nutrients", {
-          query: this.recipe
+          query: this.recipe,
+          storeId: this.store.id
         })
         .then(response => {
           let newIngredients = this.processFoods(response.data.foods);

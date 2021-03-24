@@ -14,6 +14,7 @@ use App\SmsSetting;
 use Illuminate\Support\Facades\Storage;
 use App\StorePlan;
 use App\StoreSetting;
+use App\ReportRecord;
 
 class Daily extends Command
 {
@@ -57,6 +58,8 @@ class Daily extends Command
         $this->deleteWeekOldStorage();
 
         $this->closeCancelledStores();
+
+        $this->resetNutritionix();
     }
 
     protected function updateStorePlans()
@@ -163,6 +166,31 @@ class Daily extends Command
                     $storeSettings->update();
                 }
             }
+        }
+    }
+
+    protected function resetNutritionix()
+    {
+        ReportRecord::query()->update(['daily_nutritionix_calls' => 0]);
+
+        $path = base_path('.env');
+        if (file_exists($path)) {
+            file_put_contents(
+                $path,
+                str_replace(
+                    'NUTRITIONIX_ID=1cb5966f',
+                    'NUTRITIONIX_ID=d9ff48c3',
+                    file_get_contents($path)
+                )
+            );
+            file_put_contents(
+                $path,
+                str_replace(
+                    'NUTRITIONIX_KEY=95534f28cd549764a32c5363f13699a9',
+                    'NUTRITIONIX_KEY=0ba7e0ffd7b498eaa01035b05fa8717f',
+                    file_get_contents($path)
+                )
+            );
         }
     }
 }
