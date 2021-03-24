@@ -50,7 +50,9 @@ class StripeController extends Controller
                     $storePlan->charge_failed = null;
                     $storePlan->charge_failed_reason = null;
                     $storePlan->charge_attempts = 0;
-                    $storePlan->last_charged = Carbon::now();
+                    $now = Carbon::now();
+                    $storePlan->last_charged =
+                        $obj['amount'] > 0 ? $now : $now->addWeeks(2);
                     $storePlan->update();
 
                     $card = $obj['payment_method_details']['card'];
