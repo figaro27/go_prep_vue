@@ -276,7 +276,7 @@
                 >
                 <a
                   class="dropdown-item"
-                  @click="voidOrder"
+                  @click="showVoidOrderModal(props.row)"
                   v-if="!props.row.voided"
                   >Void</a
                 >
@@ -285,6 +285,12 @@
                   @click="voidOrder"
                   v-if="props.row.voided"
                   >Unvoid</a
+                >
+                <a
+                  class="dropdown-item"
+                  v-if="!props.row.cashOrder"
+                  @click="refund()"
+                  >Refund</a
                 >
                 <a class="dropdown-item" @click="printPackingSlip(props.row.id)"
                   >Print Packing Slip</a
@@ -345,6 +351,33 @@
         </div>
       </div>
     </div>
+
+    <b-modal
+      v-model="voidOrderModal"
+      v-if="voidOrderModal"
+      size="md"
+      hide-header
+      hide-footer
+      no-fade
+    >
+      <center>
+        <p class="strong mt-3">
+          Voiding an order just removes the order from all of your reports.
+        </p>
+        <p class="strong mb-3">Would you also like to refund the order?</p>
+        <div class="d-flex d-center">
+          <b-btn @click="voidOrder()" class="mr-3" variant="danger"
+            >Void Only</b-btn
+          >
+          <b-btn @click="refund(), voidOrder()" class="mr-3" variant="warning"
+            >Void & Refund</b-btn
+          >
+          <b-btn @click="voidOrderModal = false" variant="secondary"
+            >Back</b-btn
+          >
+        </div>
+      </center>
+    </b-modal>
 
     <div class="modal-basic modal-wider">
       <b-modal
@@ -571,7 +604,7 @@
                 v-if="order.voided === 0"
                 class="btn mb-2"
                 variant="danger"
-                @click="voidOrder"
+                @click="showVoidOrderModal(order, true)"
                 >Void</b-btn
               >
               <img
@@ -1021,6 +1054,7 @@ export default {
   mixins: [checkDateRange, printer],
   data() {
     return {
+      voidOrderModal: false,
       page: 1,
       editingCustomer: false,
       editingBalance: false,
@@ -1455,6 +1489,19 @@ export default {
       this.filter = !this.filter;
       this.refreshTable();
     },
+    showVoidOrderModal(order) {
+      this.order = order;
+      if (
+        !order.voided &&
+        !order.cashOrder &&
+        (order.refundedAmount == 0 || order.refundedAmount == null)
+      ) {
+        this.voidOrderModal = true;
+      } else {
+        this.orderId = order.id;
+        this.voidOrder();
+      }
+    },
     async exportData(report, format = "pdf", print = false, page = 1) {
       // const warning = this.checkDateRange({ ...this.filters.delivery_dates });
       // if (warning) {
@@ -1572,7 +1619,9 @@ export default {
         .post("/api/me/refundOrder", {
           orderId: this.order.id,
           refundAmount:
-            this.refundAmount == null ? this.order.amount : this.refundAmount,
+            this.refundAmount == null || this.refundAmount == 0
+              ? this.order.amount
+              : this.refundAmount,
           applyToBalance: this.applyToBalanceRefund,
           cooler: isCoolerRefund
         })
@@ -1584,20 +1633,25 @@ export default {
               "Error"
             );
           } else {
-            this.viewOrderModal = false;
             this.$toastr.s(
               "Successfully refunded " +
                 format.money(
-                  this.refundAmount == null
+                  this.refundAmount == null ||
+                    this.refundAmount == 0 ||
+                    this.refundedAmount == 0
                     ? this.order.amount
                     : this.refundAmount,
                   this.storeSettings.currency
                 )
             );
             this.refundAmount = 0;
+            if (this.viewOrderModal) {
+              this.viewOrder(this.orderId);
+            }
             this.refreshResource("orders");
             this.applyToBalanceCharge = false;
             this.applyToBalanceRefund = false;
+            this.voidOrderModal = false;
           }
         })
         .catch(err => {
@@ -1622,6 +1676,11 @@ export default {
         .then(response => {
           this.refreshResource("orders");
           this.$toastr.s(response.data);
+          this.voidOrderModal = false;
+          this.refreshResource("orders");
+          if (this.viewOrderModal) {
+            this.viewOrder(this.orderId);
+          }
         });
     },
     getMealTableData(order) {
