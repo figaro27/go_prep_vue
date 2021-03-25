@@ -23,6 +23,7 @@ $balance = $order->balance;
 $brandColor = $order->store->settings->color;
 $hot = $order->hot;
 $deliveryInstructions = $order->user->userDetail->delivery;
+$settings = $params['settings'];
 @endphp
 
 <head>
@@ -188,36 +189,14 @@ $deliveryInstructions = $order->user->userDetail->delivery;
     </div>
     <br><br>
 
-    <!-- <table class="no-border table-heading" style="border-style:none">
-      <thead>
-        <tr>
-          <th class="full-left-border-radius drop-shadow no-border">
-            <div class="text-11 align-center">
-              {{ $order->store->details->address }}<br>
-              {{ $order->store->details->city }}, {{ $order->store->details->state }}, {{ $order->store->details->zip }}
-            </div>
-          </th>
-          <th class="drop-shadow no-border">
-            <div class="text-11 align-center" style="position:relative;right:27px">
-            @if ($order->store->settings->website) {{ $order->store->settings->website }}<br>
-            @else www{{$order->store->settings->domain}}.goprep.com<br>
-            @endif
-            {{ $order->store->user->email }}
-          </th>
-          <th class="full-right-border-radius drop-shadow no-border">
-            <div class="text-11 align-center" style="position:relative;right:18px;top:8px">
-            {{ $order->store->user->details->phone }}
-          </div>
-        </th>
-        </tr>
-      </thead>
-    </table> -->
     <table class="no-border table-heading" style="border-style:none;">
       <thead>
           <th class="top-left-border-radius drop-shadow no-border" style="text-align:center">Quantity</th>
           <th class="drop-shadow no-border" style="width:100px">Size</th>
           <th class="drop-shadow no-border">Item</th>
+          @if (!$settings->hide_pricing)
           <th class="top-right-border-radius drop-shadow no-border" style="text-align:right;padding-right:12px">Price</th>
+          @endif
       </thead>
 
       <tbody>
@@ -233,7 +212,9 @@ $deliveryInstructions = $order->user->userDetail->delivery;
             @endif
           </td>
           <td>{{ $mealPackageItem->customTitle ? $mealPackageItem->customTitle : $mealPackageItem->meal_package->title }}</td>
+          @if (!$settings->hide_pricing)
           <td style="text-align:right;padding-right:12px">@money($mealPackageItem->price * $mealPackageItem->quantity, $currency, 2)</td>
+          @endif
         </tr>
 
         @php
@@ -246,6 +227,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
           <td>{{ $item->base_size }}</td>
           <!--<td>{!! $item->html_title !!}</td>!-->
           <td>{!! $item->base_title !!}</td>
+          @if (!$settings->hide_pricing)
           <td style="text-align:right;padding-right:12px">
             @if ($item->added_price > 0)
               <span style="padding-right:8px">(@money($item->added_price, $currency, 2))</span> In Package
@@ -253,6 +235,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
               In Package
             @endif
           </td>
+          @endif
         </tr>
         @php
         $count += 1;
@@ -273,6 +256,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
           <td>{{ $item->base_size }}</td>
           <!--<td>{!! $item->html_title !!}</td>!-->
           <td>{!! $item->base_title !!}</td>
+          @if (!$settings->hide_pricing)
           <td style="text-align:right;padding-right:12px">
             @if ($item->attached || $item->free)
             Included
@@ -280,6 +264,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
             @money($item->price, $currency, 2)
             @endif
           </td>
+          @endif
           @php
         $count += 1;
         @endphp
@@ -296,7 +281,9 @@ $deliveryInstructions = $order->user->userDetail->delivery;
           <td style="text-align:center">{{$lineItemOrder->quantity}}</td>
           <td>{!! $lineItemOrder->size !!}</td>
           <td>{!! $lineItemOrder->title !!}</td>
+          @if (!$settings->hide_pricing)
           <td style="text-align:right;padding-right:12px">@money($lineItemOrder->price * $lineItemOrder->quantity, $currency, 2)</td>
+          @endif
         </tr>
         @php
         $count += 1;
@@ -317,6 +304,7 @@ $deliveryInstructions = $order->user->userDetail->delivery;
           <p style="position:relative;top:10px" class="text-11">{!! nl2br($order->store->settings->notesForCustomer) !!}</p>
           @endif
         </td>
+        @if (!$settings->hide_pricing)
         <td style="width:30%;margin-left:0px;padding-left:0px">
           <table border="0" style="border:0px;border-style:none;">
             @if ($order->prepaid)
@@ -385,9 +373,10 @@ $deliveryInstructions = $order->user->userDetail->delivery;
             @endif
           </table>
         </td>
+        @endif
       </tr>
       <tfoot>
-        
+        @if (!$settings->hide_pricing)
         <tr>
           @if ($order->balance === 0.00 || $order->balance === 0 || $order->balance === null)
             <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Total Paid</th>
@@ -401,8 +390,8 @@ $deliveryInstructions = $order->user->userDetail->delivery;
             <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Amount Owed To Customer</th>
             <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">@money($order->balance * -1, $currency, 2)</th>
           @endif
-
         </tr> 
+        @endif
       </tfoot>
     </table>
 

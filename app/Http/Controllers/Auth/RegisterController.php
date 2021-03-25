@@ -359,6 +359,8 @@ class RegisterController extends Controller
 
             $storeMenuSettings = $store->menuSettings()->create();
 
+            $storePackingSlipSettings = $store->packingSlipSettings()->create();
+
             try {
                 $key = new \Cloudflare\API\Auth\APIKey(
                     config('services.cloudflare.user'),

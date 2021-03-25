@@ -24,6 +24,7 @@ use App\MealPackage;
 use App\Subscription;
 use App\StorePlan;
 use App\StorePlanTransaction;
+use App\PackingSlipSetting;
 
 class misc extends Command
 {
@@ -58,23 +59,12 @@ class misc extends Command
      */
     public function handle()
     {
-        $key = 'sk_live_lyBbZ71GozcirrBo4LFEReX8';
-        \Stripe\Stripe::setApiKey($key);
+        $stores = Store::all();
 
-        $storePlans = StorePlan::where(
-            'stripe_subscription_id',
-            '!=',
-            null
-        )->get();
-
-        foreach ($storePlans as $storePlan) {
-            $storePlanTransactions = StorePlanTransaction::where(
-                'store_id',
-                $storePlan->store_id
-            )->count();
-            if ($storePlanTransactions == 0) {
-                $this->info($storePlan->store_id);
-            }
+        foreach ($stores as $store) {
+            $packingSlipSetting = new PackingSlipSetting();
+            $packingSlipSetting->store_id = $store->id;
+            $packingSlipSetting->save();
         }
     }
 }

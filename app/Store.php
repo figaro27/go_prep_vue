@@ -267,6 +267,11 @@ class Store extends Model
         return $this->hasOne('App\ReferralSetting');
     }
 
+    public function packingSlipSettings()
+    {
+        return $this->hasOne('App\PackingSlipSetting');
+    }
+
     public function promotions()
     {
         return $this->hasMany('App\Promotion');
