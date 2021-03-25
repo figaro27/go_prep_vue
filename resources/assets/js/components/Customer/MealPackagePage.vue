@@ -1840,12 +1840,12 @@ export default {
           }
           this.$set(this.choices[component.id], option.id, truncated);
         } else if (remaining == 0) {
-          alert("a");
           // Next Part
           let elem = $(
             '.categoryNavItem[target="categorySection_' + component.id + '"]'
           ).next();
           if (elem && elem.length > 0) {
+            alert("b");
             elem.click();
           }
         }
