@@ -421,6 +421,7 @@ $(function() {
   };
 
   $("body").on("click", ".categoryNavItem", function() {
+    alert("test3");
     if ($(this).hasClass("active")) {
       return;
     }
