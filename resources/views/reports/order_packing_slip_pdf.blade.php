@@ -399,28 +399,20 @@ $settings = $params['settings'];
       @endif
     </table>
 
+    <br/><br/>
+
   @php
     $titles = [];
   @endphp
 
   @foreach ($order->visible_items as $i => $item)
     @if ($item->instructions && !in_array($item->short_title, $titles))
+    <p><b>{{ $item->short_title }}</b>: {{ $item->instructions }}</p>
       @php
       array_push($titles, $item->short_title);
       @endphp
     @endif
   @endforeach
-
-  @if (count($titles) > 0)
-  <br/><br/>
-  @endif
-
-  @foreach ($order->visible_items as $i => $item)
-    @if ($item->instructions && !in_array($item->short_title, $titles))
-    <p><b>{{ $item->short_title }}</b>: {{ $item->instructions }}</p>
-    @endif
-  @endforeach
-
 
   </div>
 </div>
