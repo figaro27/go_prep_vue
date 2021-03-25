@@ -760,10 +760,9 @@ export default {
       for (let i = 0; i <= 60; i++) {
         let now = moment();
         let date = now.add(i, "days");
-        let formattedDate = now.add(i, "days").format("ddd, MMM Do");
         allDays.push({
           value: date,
-          text: formattedDate
+          text: date.format("ddd, MMM Do")
         });
       }
 
