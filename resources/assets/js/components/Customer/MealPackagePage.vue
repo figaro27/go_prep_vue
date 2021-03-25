@@ -1839,13 +1839,16 @@ export default {
             truncated = choices.slice(0, component.maximum - length);
           }
           this.$set(this.choices[component.id], option.id, truncated);
-        } else {
+        } else if (remaining == 0) {
+          alert("test 1");
           // Next Part
           let elem = $(
             '.categoryNavItem[target="categorySection_' + component.id + '"]'
           ).next();
-
-          elem.click();
+          if (elem && elem.length > 0) {
+            alert("test 2");
+            elem.click();
+          }
         }
 
         choices = this.choices[component.id][option.id];
