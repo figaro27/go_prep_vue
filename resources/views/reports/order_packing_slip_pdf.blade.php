@@ -292,7 +292,11 @@ $settings = $params['settings'];
         @endif
       </tbody>
     </table>
+    @if (!$settings->hide_pricing)
     <table class="no-border drop-shadow" style="border-style:none">
+    @else
+    <table class="no-border" style="border-style:none">
+    @endif
       <tr>
         <td style="width:70%;padding:5px 5px 20px 0px">
           @if ($order->publicNotes !== null)
