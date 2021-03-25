@@ -1844,8 +1844,9 @@ export default {
           let elem = $(
             '.categoryNavItem[target="categorySection_' + component.id + '"]'
           ).next();
-          alert("a");
-          elem.click();
+          if (elem && elem.length > 0) {
+            elem.click();
+          }
         }
 
         choices = this.choices[component.id][option.id];
