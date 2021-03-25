@@ -25,7 +25,9 @@
             agree to remove them from your list if requested to do so by them.
           </p>
           <div style="text-align:center">
-            <b-btn variant="primary" @click="buyNumber">Activate Number</b-btn>
+            <b-btn variant="primary" @click="buyNumber" :disabled="buyingNumber"
+              >Activate Number</b-btn
+            >
           </div>
         </div>
       </div>
@@ -54,6 +56,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      buyingNumber: false,
       numbers: [],
       selectedNumber: null
     };
@@ -83,12 +86,18 @@ export default {
     }),
     formatMoney: format.money,
     buyNumber() {
+      this.buyingNumber = true;
       axios
         .post("/api/me/buyNumber", { phone: this.selectedNumber })
         .then(resp => {
           this.refreshSMSSettings();
           this.$emit("closeModal");
           this.$toastr.s("Number activated.");
+          this.buyingNumber = false;
+        })
+        .catch(resp => {
+          let error = resp.response.data;
+          this.$toastr.w(error);
         });
     }
   }

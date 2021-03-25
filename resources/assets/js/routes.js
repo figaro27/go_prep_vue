@@ -27,6 +27,7 @@ import StoreProduction from "./views/Store/Production.vue";
 import StoreOrders from "./views/Store/Orders.vue";
 import StoreSubscriptions from "./views/Store/Subscriptions.vue";
 import StoreMyAccount from "./views/Store/Account/MyAccount.vue";
+import StoreBilling from "./views/Store/Account/Billing.vue";
 import StoreStripeConnect from "./views/Store/Account/Stripe.vue";
 import StoreContact from "./views/Store/Account/Contact.vue";
 import StoreSettings from "./views/Store/Account/Settings.vue";
@@ -183,6 +184,11 @@ let routes = [
     path: "/store/account/my-account",
     component: StoreMyAccount,
     name: "store-my-account"
+  },
+  {
+    path: "/store/account/billing",
+    component: StoreBilling,
+    name: "store-billing"
   },
   {
     path: "/store/stripe/redirect",

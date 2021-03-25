@@ -1472,6 +1472,9 @@ export default {
       if (action === "activate") {
         active = 1;
       }
+      if (action === "delete") {
+        this.deleteMeal = true;
+      }
       if (action === "deactivate_and_keep") {
         active = 0;
         await this._updateMeal({ id, data: { active } });

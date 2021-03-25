@@ -156,7 +156,7 @@ class TestController extends Controller
 
         foreach ($futureOrders as $order) {
             // Cutoff already passed. Missed your chance bud!
-            if ($order->cutoff_passed) {
+            if ($order->getCutoffDate()->isPast()) {
                 continue;
             }
 

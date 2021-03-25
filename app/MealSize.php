@@ -16,13 +16,28 @@ class MealSize extends Model
 {
     use SoftDeletes;
 
-    public $fillable = [];
+    public $fillable = ['store_id'];
     public $hidden = ['meal'];
     protected $with = ['ingredients'];
 
     public function meal()
     {
         return $this->belongsTo('App\Meal');
+    }
+
+    public function store()
+    {
+        return $this->belongsTo('App\Store');
+    }
+
+    public function componentOptions()
+    {
+        return $this->hasMany('App\MealComponentOption');
+    }
+
+    public function addons()
+    {
+        return $this->hasMany('App\MealAddon');
     }
 
     public function ingredients()

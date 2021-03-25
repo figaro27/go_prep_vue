@@ -75,6 +75,14 @@ class SMSSettingController extends StoreController
     {
         $settings = $request->get('settings');
         $smsSettings = SMSSetting::where('store_id', $this->store->id)->first();
+        $settings['autoSendOrderReminderHours'] =
+            $settings['autoSendOrderReminderHours'] == null
+                ? $smsSettings->autoSendOrderReminderHours
+                : $settings['autoSendOrderReminderHours'];
+        $settings['autoSendDeliveryTime'] =
+            $settings['autoSendDeliveryTime'] == null
+                ? $smsSettings->autoSendDeliveryTime
+                : $settings['autoSendDeliveryTime'];
         $smsSettings->update($settings);
         return $smsSettings;
     }
@@ -137,6 +145,13 @@ class SMSSettingController extends StoreController
 
     public function buyNumber(Request $request)
     {
+        $smsSettings = SMSSetting::where('store_id', $this->store->id)->first();
+        if ($smsSettings->phone) {
+            return response()->json(
+                ['You have already purchased a phone number.'],
+                400
+            );
+        }
         $phone = $request->get('phone');
 
         $client = new \GuzzleHttp\Client();

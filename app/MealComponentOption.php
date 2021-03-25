@@ -36,6 +36,11 @@ class MealComponentOption extends Model
         return $this->belongsTo('App\MealComponent', 'meal_component_id');
     }
 
+    public function mealSize()
+    {
+        return $this->belongsTo('App\MealSize', 'meal_size_id');
+    }
+
     public function store()
     {
         return $this->belongsTo('App\Store', 'store_id');

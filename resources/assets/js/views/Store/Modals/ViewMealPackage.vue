@@ -508,6 +508,28 @@ export default {
       }
     },
     async updateMealPackage(e, close = false) {
+      let stop = false;
+      this.mealPackage.sizes.forEach(size => {
+        if (!size.title) {
+          this.$toastr.w("Please enter a title for the size");
+          stop = true;
+        }
+      });
+      this.mealPackage.components.forEach(component => {
+        if (!component.title) {
+          this.$toastr.w("Please enter a title for the package component");
+          stop = true;
+        }
+      });
+      this.mealPackage.addons.forEach(addon => {
+        if (!addon.title) {
+          this.$toastr.w("Please enter a title for the package addon");
+          stop = true;
+        }
+      });
+      if (stop) {
+        return;
+      }
       const req = {
         ...this.mealPackage,
         validate_all: true

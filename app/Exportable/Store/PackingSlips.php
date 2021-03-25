@@ -10,6 +10,7 @@ use mikehaertl\wkhtmlto\Pdf;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\ReportRecord;
+use App\PackingSlipSetting;
 
 class PackingSlips
 {
@@ -32,8 +33,13 @@ class PackingSlips
         $this->params->put('store', $this->store->details->name);
         $this->params->put('report', 'Packing Slips');
         $this->params->put('date', Carbon::now()->format('m-d-Y'));
+        $this->params->put(
+            'settings',
+            PackingSlipSetting::where('store_id', $this->store->id)->first()
+        );
 
         $params = $this->params;
+
         $params['dailyOrderNumbers'] = $this->store->modules->dailyOrderNumbers;
 
         if (isset($params['order_id']) && (int) $params['order_id'] != 0) {

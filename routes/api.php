@@ -207,6 +207,47 @@ foreach (
                         ],
                         function ($router) {
                             Route::get(
+                                'getStorePlan',
+                                'StorePlanController@getStorePlan'
+                            );
+                            Route::get(
+                                'getMonthToDateOrders',
+                                'StorePlanController@getMonthToDateOrders'
+                            );
+                            Route::get(
+                                'getStripeSubscription',
+                                'StorePlanController@getStripeSubscription'
+                            );
+                            Route::get(
+                                'getStorePlanTransactions',
+                                'StorePlanController@getStorePlanTransactions'
+                            );
+                            Route::post(
+                                'cancelSubscription',
+                                'StorePlanController@cancelSubscription'
+                            );
+                            Route::post(
+                                'updatePlan',
+                                'StorePlanController@updatePlan'
+                            );
+                            Route::get(
+                                'getStorePlanCards',
+                                'StorePlanController@getStorePlanCards'
+                            );
+                            Route::post(
+                                'addStorePlanCard',
+                                'StorePlanController@addStorePlanCard'
+                            );
+                            Route::post(
+                                'updateStorePlanCard',
+                                'StorePlanController@updateStorePlanCard'
+                            );
+                            Route::post(
+                                'deleteStorePlanCard',
+                                'StorePlanController@deleteStorePlanCard'
+                            );
+
+                            Route::get(
                                 'viewedUpdates',
                                 'StoreController@viewedUpdates'
                             );

@@ -446,12 +446,14 @@ class MealReplacementService
             $subSizeId = $params->getSizeSubstitute(
                 $subscriptionMeal->meal_size_id
             );
-            $subSize = MealSize::findOrFail($subSizeId);
+            if ($subSizeId) {
+                $subSize = MealSize::findOrFail($subSizeId);
 
-            $subscriptionMeal->last_meal_size_id =
-                $subscriptionMeal->meal_size_id;
-            $subscriptionMeal->meal_size_id = $subSizeId;
-            $newSubscriptionMealPrice = $subSize->price;
+                $subscriptionMeal->last_meal_size_id =
+                    $subscriptionMeal->meal_size_id;
+                $subscriptionMeal->meal_size_id = $subSizeId;
+                $newSubscriptionMealPrice = $subSize->price;
+            }
         }
 
         // Substitute components

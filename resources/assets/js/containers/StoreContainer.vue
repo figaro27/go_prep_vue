@@ -10,13 +10,6 @@
           height="40"
           alt="GoPrep Logo"
         />
-        <img
-          class="navbar-brand-minimized"
-          src="/images/logo.png"
-          width="90"
-          height="40"
-          alt="GoPrep Logo"
-        />
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" />
       <b-navbar-nav class="ml-auto">

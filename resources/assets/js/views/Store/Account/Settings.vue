@@ -1621,7 +1621,7 @@
                   <span class="mr-1 mt-2">Cooler Bag Deposit</span>
                   <img
                     v-b-popover.hover="
-                      'Apply a deposit on your customer\'s orders for a cooler bag which can then be refunded upon return of the bag..'
+                      'Apply a deposit on your customer\'s orders for a cooler bag which can then be refunded upon return of the bag.'
                     "
                     title="Cooler Bag Deposit"
                     src="/images/store/popover.png"
@@ -2059,6 +2059,12 @@ export default {
         if (this.store.accepted_toa === 0) {
           this.showTOAModal = true;
           return;
+        }
+        if (this.store.status === "cancelled") {
+          this.storeSettings.open = false;
+          this.$toastr.w(
+            "Your subscription has been cancelled. Please contact us to resume."
+          );
         }
       } else {
         if (

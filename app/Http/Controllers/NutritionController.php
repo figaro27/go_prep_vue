@@ -6,6 +6,7 @@ use App\Unit;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use App\ReportRecord;
 
 class NutritionController extends Controller
 {
@@ -51,6 +52,34 @@ class NutritionController extends Controller
     public function getNutrients(Request $request, $nixId = null)
     {
         $client = new Client();
+
+        // Swaps out the Nutritionix API key if we're approaching daily limit (200).
+        $storeId = $request->get('storeId');
+        $reportRecord = ReportRecord::where('store_id', $storeId)->first();
+        $reportRecord->daily_nutritionix_calls += 1;
+        $reportRecord->update();
+        $totalDailyCalls = ReportRecord::sum('daily_nutritionix_calls');
+        if ($totalDailyCalls >= 180) {
+            $path = base_path('.env');
+            if (file_exists($path)) {
+                file_put_contents(
+                    $path,
+                    str_replace(
+                        'NUTRITIONIX_ID=d9ff48c3',
+                        'NUTRITIONIX_ID=1cb5966f',
+                        file_get_contents($path)
+                    )
+                );
+                file_put_contents(
+                    $path,
+                    str_replace(
+                        'NUTRITIONIX_KEY=0ba7e0ffd7b498eaa01035b05fa8717f',
+                        'NUTRITIONIX_KEY=95534f28cd549764a32c5363f13699a9',
+                        file_get_contents($path)
+                    )
+                );
+            }
+        }
 
         if ($nixId) {
             $response = $client->get($this->item_search_url, [

@@ -8,17 +8,15 @@ use Illuminate\Support\Carbon;
 
 class StorePlan extends Model
 {
-    protected $appends = ['period_name'];
-
-    public function __toString()
-    {
-        return sprintf(
-            '%s - %s %s',
-            $this->store->details->name,
-            '$' . number_format($this->amount / 100, 2),
-            $this->period_name
-        );
-    }
+    // public function __toString()
+    // {
+    //     return sprintf(
+    //         '%s - %s %s',
+    //         $this->store->details->name,
+    //         '$' . number_format($this->amount / 100, 2),
+    //         $this->period_name
+    //     );
+    // }
 
     public function store()
     {
@@ -38,7 +36,7 @@ class StorePlan extends Model
 
         $plan = new StorePlan();
         $plan->store_id = $store->id;
-        $plan->active = true;
+        $plan->store_name = $store->details->name;
         $plan->amount = $amount;
         $plan->period = $period;
         $plan->day = $day;
@@ -49,32 +47,9 @@ class StorePlan extends Model
 
     public function _update($amount, $period, $day)
     {
-        $this->active = true;
         $this->amount = $amount;
         $this->period = $period;
         $this->day = $day;
         $this->save();
-    }
-
-    public function isToday()
-    {
-        if ($this->last_paid && $this->last_paid->isToday()) {
-            return false;
-        }
-
-        if ($this->period === 'month') {
-            return Carbon::now()->day === $this->day;
-        } else {
-            return Carbon::now()->dayOfWeekIso === $this->day;
-        }
-    }
-
-    public function getPeriodNameAttribute()
-    {
-        $names = [
-            'month' => 'Monthly',
-            'week' => 'Weekly'
-        ];
-        return $names[$this->period];
     }
 }

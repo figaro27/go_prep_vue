@@ -7,6 +7,7 @@ use App\Order;
 use App\User;
 use App\UserDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class CustomerController extends StoreController
 {
@@ -31,6 +32,8 @@ class CustomerController extends StoreController
         if ($customers && count($customers) > 0) {
             $customers = $customers->unique('user_id');
             return $customers->values();
+        } else {
+            return [];
         }
     }
 
@@ -92,11 +95,26 @@ class CustomerController extends StoreController
     public function show(Request $request)
     {
         $id = $request->route()->parameter('customer');
-        return $this->store
-            ->customers()
+        $userId = Customer::where('id', $id)
+            ->pluck('user_id')
+            ->first();
+        $orders = [];
+        $customers = Customer::where('user_id', $userId)
             ->with('orders')
+            ->get();
+        foreach ($customers as $customer) {
+            array_push($orders, $customer->orders()->get());
+        }
+        $orders = Arr::collapse($orders);
+
+        $customer = $this->store
+            ->customers()
             ->without(['user'])
             ->find($id);
+
+        $customer->orders = $orders;
+
+        return $customer;
     }
 
     /**
@@ -237,25 +255,37 @@ class CustomerController extends StoreController
     public function searchCustomer(Request $request)
     {
         $query = strtolower($request->get('query'));
+        $query = str_replace("(", "", $query);
+        $query = str_replace(")", "", $query);
         $queryEscaped = addslashes(str_replace('@', ' ', $query));
 
         if ($query) {
-            $customers = Customer::where('store_id', $this->store->id)
-                ->whereHas('user', function ($q) use ($query, $queryEscaped) {
-                    $q
-                        ->where('email', 'LIKE', "%$query%")
-                        ->orWhereHas('userDetail', function ($q) use (
-                            $query,
-                            $queryEscaped
-                        ) {
-                            $q->whereRaw(
-                                "MATCH(firstname, lastname, phone, address) AGAINST('*{$queryEscaped}*' IN BOOLEAN MODE)"
-                            );
-                        });
-                })
-                ->get();
+            $customers = Customer::where('store_id', $this->store->id);
 
-            return $customers;
+            $customer = $customers->where('name', 'LIKE', "%$query%")->get();
+            if ($customer) {
+                return $customer;
+            } else {
+                $customers = $customers
+                    ->whereHas('user', function ($q) use (
+                        $query,
+                        $queryEscaped
+                    ) {
+                        $q
+                            ->where('email', 'LIKE', "%$query%")
+                            ->orWhereHas('userDetail', function ($q) use (
+                                $query,
+                                $queryEscaped
+                            ) {
+                                $q->whereRaw(
+                                    "MATCH(firstname, lastname, phone, address) AGAINST('*{$queryEscaped}*' IN BOOLEAN MODE)"
+                                );
+                            });
+                    })
+                    ->get();
+
+                return $customers;
+            }
         }
 
         return [];

@@ -90,6 +90,14 @@ class MealPackage extends Model implements HasMedia
         );
     }
 
+    public function componentOptions()
+    {
+        return $this->hasManyThrough(
+            'App\MealPackageComponentOption',
+            'App\MealPackageComponent'
+        );
+    }
+
     public function selections()
     {
         return $this->hasMany(
@@ -297,8 +305,12 @@ class MealPackage extends Model implements HasMedia
                 }
 
                 $mealPackageComponent->title = $component['title'];
-                $mealPackageComponent->minimum = $component['minimum'];
-                $mealPackageComponent->maximum = $component['maximum'];
+                $mealPackageComponent->minimum = $component['minimum'] ?? 1;
+                $mealPackageComponent->maximum = ($component['maximum']
+                        ? $component['maximum']
+                        : $component['minimum'])
+                    ? $component['minimum']
+                    : 1;
                 $mealPackageComponent->price = $component['price']
                     ? $component['price']
                     : 0;
@@ -564,9 +576,14 @@ class MealPackage extends Model implements HasMedia
                     $mealPackageComponent->meal_package_id = $this->id;
                     $mealPackageComponent->store_id = $this->store_id;
                 }
+
                 $mealPackageComponent->title = $component['title'];
-                $mealPackageComponent->minimum = $component['minimum'];
-                $mealPackageComponent->maximum = $component['maximum'];
+                $mealPackageComponent->minimum = $component['minimum'] ?? 1;
+                $mealPackageComponent->maximum = ($component['maximum']
+                        ? $component['maximum']
+                        : $component['minimum'])
+                    ? $component['minimum']
+                    : 1;
                 $mealPackageComponent->price = $component['price']
                     ? $component['price']
                     : 0;

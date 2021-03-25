@@ -9,6 +9,7 @@ use App\Order;
 use App\UserDetail;
 use App\ReportRecord;
 use Illuminate\Support\Carbon;
+use App\Customer;
 
 class DeliveryRoutes
 {
@@ -68,13 +69,20 @@ class DeliveryRoutes
 
         $url = "https://app.elasticroute.com/api/v1/plan/asdf?c=sync&w=false";
         $names = [];
+        $uniqueAddresses = [];
 
         foreach ($orders as $order) {
             $customerDetails = $order->user->details;
             $name =
                 $customerDetails->firstname . ' ' . $customerDetails->lastname;
+            $uniqueAddress = implode(', ', [
+                $customerDetails->address,
+                $customerDetails->city,
+                $customerDetails->state,
+                $customerDetails->zip
+            ]);
 
-            if (!in_array($name, $names)) {
+            if (!in_array($uniqueAddress, $uniqueAddresses)) {
                 $address = implode(', ', [
                     $customerDetails->address,
                     $customerDetails->city,
@@ -88,6 +96,7 @@ class DeliveryRoutes
                 ];
 
                 $names[] = $name;
+                $uniqueAddresses[] = $uniqueAddress;
 
                 $recipients[] = [
                     "name" =>
@@ -108,19 +117,17 @@ class DeliveryRoutes
             [
                 "name" => $storeDetails->name,
                 "address" => $startingAddress
-            ]
-        ];
-
-        $endingDepot = [
+            ],
             [
-                "name" => $storeDetails->name . ' - Ending Depot',
+                "name" => 'End Depot',
                 "address" => $endingAddress
             ]
         ];
 
         $vehicles = [
             [
-                "name" => "Vehicle 1"
+                "name" => "Vehicle 1",
+                "end_depot" => "End Depot"
             ]
         ];
 
@@ -139,7 +146,6 @@ class DeliveryRoutes
                         'json' => [
                             'stops' => $stops,
                             'depots' => $depots,
-                            'end_depot' => $endingDepot,
                             'vehicles' => $vehicles,
                             'generalSettings' => $generalSettings
                         ]
@@ -162,21 +168,24 @@ class DeliveryRoutes
                     foreach ($data->data->details->stops as $stop) {
                         // Get the delivery instructions
                         $address = explode(',', $stop->address);
+                        if (count($address) <= 4) {
+                            $i = 0;
+                        } else {
+                            $i = 1;
+                        }
 
-                        $userDetail = UserDetail::where([
-                            'address' => $address[0],
-                            'city' => ltrim($address[1]),
-                            'state' => ltrim($address[2]),
-                            'zip' => ltrim($address[3])
+                        $customer = Customer::where([
+                            'name' => $stop->name,
+                            'city' => ltrim($address[$i + 1]),
+                            'state' => ltrim($address[$i + 2]),
+                            'zip' => ltrim($address[$i + 3])
                         ])->first();
 
                         $routes[] = [
                             "name" => $stop->name,
                             "address" => $stop->address,
-                            "phone" => $userDetail ? $userDetail->phone : null,
-                            "delivery" => $userDetail
-                                ? $userDetail->delivery
-                                : null
+                            "phone" => $customer ? $customer->phone : null,
+                            "delivery" => $customer ? $customer->delivery : null
                         ];
                     }
                 }

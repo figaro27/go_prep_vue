@@ -187,9 +187,9 @@
         <b-button variant="primary" @click="addComponent()"
           >Add Meal Package Component</b-button
         >
-        <b-button variant="primary" @click.prevent="save()" class="pull-right"
+        <!-- <b-button variant="primary" @click.prevent="save()" class="pull-right"
           >Save</b-button
-        >
+        > -->
       </div>
     </div>
   </div>

@@ -19,8 +19,14 @@ $currency = $params->currency
 </head>
 <body class="{{ $body_classes }}">
   <div id="print-area">
+    @if (!$params['payoutDate'])
     <h1>Payments @if ($params['dailySummary'] == 'true') (Daily Summary) @endif</h1>
+    @else
+    <h1>Payments for {{ $params['formattedPayoutDate'] }} Payout</h1>
+    @endif
     <div class="delivery-part">
+      
+      @if (!$params['payoutDate'])
       <h2 style="font-size:22px">
         @if ($delivery_dates['from']->format($params->date_format) !== $delivery_dates['to']->format($params->date_format))
         @if (isset($params['byPaymentDate']) && $params['byPaymentDate'] == 'true')
@@ -31,6 +37,7 @@ $currency = $params->currency
           {{ $delivery_dates['from']->format($params->date_format) }} - {{ $delivery_dates['to']->format($params->date_format) }}
         @endif
       </h2>
+      @endif
 
       <h2 style="font-size:15px;position:relative;top:10px">{{ date('m/d/Y h:i:a')}}</h2>
       <div style="clear:both"></div>
@@ -39,10 +46,12 @@ $currency = $params->currency
       <table border="1" width="100" class="light-border payments-report">
         <thead>
           <tr>
+            @if ($params['includePayouts'])
+            <th>Payout Total</th>
+            <th>Payout Date</th>
+            @endif
 
             <th style="width:100px">Payment Date</th>
-
-
             <th style="width:100px">Delivery Date</th>
 
             @if (!$params['dailySummary'])
@@ -89,16 +98,16 @@ $currency = $params->currency
             @if ($params['pointsReduction'])
             <th>(Points)</th> 
             @endif
-            @if ($params['chargedAmount'])
-            <th>Additional Charges</th> 
-            @endif
             @if ($params['preTransactionFeeAmount'])
             <th>Pre-Fee Total</th> 
             @endif
             @if ($params['transactionFee'])
             <th>(Transaction Fee)</th> 
             @endif
-            <th>Total</th>  
+            <th>Total</th>
+            @if ($params['chargedAmount'])
+            <th>Additional Charges</th> 
+            @endif
             @if ($params['refundedAmount'])
             <th>(Refunded)</th> 
             @endif

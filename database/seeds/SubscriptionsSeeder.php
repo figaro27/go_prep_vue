@@ -15,7 +15,7 @@ class SubscriptionsSeeder extends Seeder
     public function run()
     {
         for ($u = 1; $u <= 30; $u++) {
-            for ($i = 11; $i <= 20; $i++) {
+            for ($i = 31; $i <= 40; $i++) {
                 DB::table('subscriptions')->insert([
                     'user_id' => $i,
                     'customer_id' => $i,
@@ -30,7 +30,8 @@ class SubscriptionsSeeder extends Seeder
                     'amount' => mt_rand(1100, 2000) / 10,
                     'interval' => 'week',
                     'delivery_day' => rand(4, 7),
-                    'next_renewal_at' => Carbon::now()->subDays($i),
+                    'next_renewal_at' => Carbon::now()->addDays(3),
+                    'next_delivery_date' => Carbon::now()->addDays(5),
                     'created_at' => Carbon::now()->subDays($i),
                     'updated_at' => Carbon::now()
                 ]);

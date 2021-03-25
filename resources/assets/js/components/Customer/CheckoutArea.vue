@@ -173,6 +173,7 @@
                 variant="pill"
                 size="lg"
                 class="pt-2"
+                v-model="bagMealPlan"
                 @change="
                   val => {
                     setWeeklySubscriptionValue(val);
@@ -1255,7 +1256,12 @@
 
         <b-alert
           show
-          v-if="store.modules.frequencyItems && bagHasMultipleFrequencyItems"
+          v-if="
+            store.modules.frequencyItems &&
+              bagHasMultipleFrequencyItems &&
+              !adjustingSubscription &&
+              !adjustingOrder
+          "
           variant="secondary"
         >
           <p class="center-text strong">
@@ -1590,10 +1596,12 @@ export default {
   mounted: function() {
     this.setOrderFrequency();
 
-    if (this.bagHasMultipleFrequencyItems || this.bagHasOnlySubItems) {
-      this.setFrequencySubscription("sub");
-    } else {
-      this.setFrequencySubscription(null);
+    if (this.store.modules.frequencyItems) {
+      if (this.bagHasMultipleFrequencyItems || this.bagHasOnlySubItems) {
+        this.setFrequencySubscription("sub");
+      } else {
+        this.setFrequencySubscription(null);
+      }
     }
 
     if (this.customer) {
@@ -1731,7 +1739,8 @@ export default {
       bagSubscriptionInterval: "bagSubscriptionInterval",
       distance: "viewedStoreDistance",
       bagNotes: "bagNotes",
-      bagPublicNotes: "bagPublicNotes"
+      bagPublicNotes: "bagPublicNotes",
+      bagMealPlan: "bagMealPlan"
     }),
     prepaid() {
       if (
@@ -1763,7 +1772,7 @@ export default {
       }
     },
     adjustingOrder() {
-      if (this.$route.params.adjustOrder) {
+      if (this.$route.params.adjustOrder || this.$route.params.orderId) {
         return true;
       }
     },
@@ -2598,7 +2607,11 @@ use next_delivery_dates
           totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
         });
       }
-      let subtotal = this.totalBagPricePreFees + totalLineItemsPrice;
+      let preFeeTotal =
+        this.adjustingSubscription || this.adjustingOrder
+          ? this.totalBagPricePreFeesBothTypes
+          : this.totalBagPricePreFees;
+      let subtotal = preFeeTotal + totalLineItemsPrice;
 
       return subtotal;
     },
@@ -2747,7 +2760,8 @@ use next_delivery_dates
 
             if (
               this.storeModules.multipleDeliveryDays &&
-              deliveryFeeType !== "range"
+              deliveryFeeType !== "range" &&
+              deliveryFeeType !== "zip"
             ) {
               let mddFee = 0;
               this.groupBag.forEach(item => {
@@ -2858,46 +2872,58 @@ use next_delivery_dates
         return 0;
       }
       let promotions = this.promotions;
-      let reduction = 0;
+      let condSubtotalReduction = 0;
+      let condMealslReduction = 0;
+      let condOrdersReduction = 0;
+      let condNoneReduction = 0;
 
       promotions.forEach(promotion => {
+        let promotionReduction =
+          promotion.promotionType === "flat"
+            ? promotion.promotionAmount
+            : (promotion.promotionAmount / 100) * this.subtotal;
         if (promotion.active) {
           if (
             promotion.conditionType === "subtotal" &&
             this.subtotal >= promotion.conditionAmount
           ) {
-            reduction +=
-              promotion.promotionType === "flat"
-                ? promotion.promotionAmount
-                : (promotion.promotionAmount / 100) * this.subtotal;
+            condSubtotalReduction +=
+              condSubtotalReduction < promotionReduction
+                ? -condSubtotalReduction + promotionReduction
+                : promotionReduction;
           }
           if (
             promotion.conditionType === "meals" &&
             this.totalBagQuantity >= promotion.conditionAmount
           ) {
-            reduction +=
-              promotion.promotionType === "flat"
-                ? promotion.promotionAmount
-                : (promotion.promotionAmount / 100) * this.subtotal;
+            condMealslReduction +=
+              condMealslReduction < promotionReduction
+                ? -condMealslReduction + promotionReduction
+                : promotionReduction;
           }
           if (
             promotion.conditionType === "orders" &&
             this.getRemainingPromotionOrders(promotion) === 0
           ) {
-            reduction +=
-              promotion.promotionType === "flat"
-                ? promotion.promotionAmount
-                : (promotion.promotionAmount / 100) * this.subtotal;
+            condOrdersReduction +=
+              condOrdersReduction < promotionReduction
+                ? -condOrdersReduction + promotionReduction
+                : promotionReduction;
           }
           if (promotion.conditionType === "none") {
-            reduction +=
-              promotion.promotionType === "flat"
-                ? promotion.promotionAmount
-                : (promotion.promotionAmount / 100) * this.subtotal;
+            condNoneReduction +=
+              condNoneReduction < promotionReduction
+                ? -condNoneReduction + promotionReduction
+                : promotionReduction;
           }
         }
       });
-      return reduction;
+      return (
+        condSubtotalReduction +
+        condMealslReduction +
+        condOrdersReduction +
+        condNoneReduction
+      );
     },
     promotionPointsReduction() {
       if (
@@ -3802,7 +3828,8 @@ use next_delivery_dates
           if (
             this.store.id === 108 ||
             this.store.id === 109 ||
-            this.store.id === 110
+            this.store.id === 110 ||
+            this.store.id === 278
           ) {
             this.setBagPickup(1);
           }
@@ -3952,7 +3979,8 @@ use next_delivery_dates
             if (
               this.store.id === 108 ||
               this.store.id === 109 ||
-              this.store.id === 110
+              this.store.id === 110 ||
+              this.store.id === 278
             ) {
               this.setBagPickup(1);
             }

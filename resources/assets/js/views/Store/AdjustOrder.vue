@@ -178,8 +178,11 @@ export default {
               meal.item_id = item.item_id;
 
               if (pkgItem.meal_package_size && index !== null) {
-                meal_package.sizes[index].meals.push(meal);
-                meal_package.sizes[index].price = pkgItem.price;
+                let sizeIndex = meal_package.sizes.findIndex(size => {
+                  return size.id == pkgItem.meal_package_size.id;
+                });
+                meal_package.sizes[sizeIndex].meals.push(meal);
+                meal_package.sizes[sizeIndex].price = pkgItem.price;
               } else {
                 meal_package.meals.push(meal);
               }

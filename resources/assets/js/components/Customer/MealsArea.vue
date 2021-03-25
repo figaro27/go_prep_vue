@@ -1648,9 +1648,9 @@ export default {
           this.$parent.showMealPage(meal, size ? size.id : null);
           this.$parent.showMealsArea = false;
           this.$parent.showMealPackagesArea = false;
+          this.$parent.search = "";
         });
       }
-      this.$parent.search = "";
     },
     getRemainingPromotionOrders(promotion) {
       let conditionAmount = promotion.conditionAmount;

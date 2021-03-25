@@ -40,7 +40,8 @@ class Store extends Model
         'url',
         'hasPromoCodes',
         'bulkCustomers',
-        'hasDeliveryDayItems'
+        'hasDeliveryDayItems',
+        'status'
     ];
 
     public static function boot()
@@ -99,6 +100,11 @@ class Store extends Model
     public function meals()
     {
         return $this->hasMany('App\Meal')->orderBy('title');
+    }
+
+    public function mealSizes()
+    {
+        return $this->hasMany('App\MealSize');
     }
 
     public function packages()
@@ -259,6 +265,11 @@ class Store extends Model
     public function referralSettings()
     {
         return $this->hasOne('App\ReferralSetting');
+    }
+
+    public function packingSlipSettings()
+    {
+        return $this->hasOne('App\PackingSlipSetting');
     }
 
     public function promotions()
@@ -1593,6 +1604,11 @@ class Store extends Model
         }
 
         return false;
+    }
+
+    public function getStatusAttribute()
+    {
+        return $this->plan ? $this->plan->status : null;
     }
 
     public function getCutoffPassedAttribute()

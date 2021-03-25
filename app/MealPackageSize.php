@@ -24,6 +24,28 @@ class MealPackageSize extends Model
         return $this->belongsTo('App\MealPackage', 'meal_package_id');
     }
 
+    public function addons()
+    {
+        return $this->hasMany('App\MealPackageAddon');
+    }
+
+    public function components()
+    {
+        return $this->hasMany(
+            'App\MealPackageComponents',
+            'meal_package_id',
+            'id'
+        );
+    }
+
+    public function componentOptions()
+    {
+        return $this->hasManyThrough(
+            'App\MealPackageComponentOption',
+            'App\MealPackageComponent'
+        );
+    }
+
     public function meals()
     {
         return $this->belongsToMany('App\Meal', 'meal_meal_package_size')

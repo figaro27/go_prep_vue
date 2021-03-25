@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ReferralsSeeder::class);
         $this->call(ReportRecordsSeeder::class);
         $this->call(MenuSettingsSeeder::class);
+        $this->call(PackingSlipSettingsSeeder::class);
 
         Artisan::call('db:dump', [
             'path' => database_path() . '/backups/local-db.sql'
@@ -46,5 +47,6 @@ class DatabaseSeeder extends Seeder
         Artisan::call('migrate:images');
 
         Artisan::call('goprep:updateCustomersTable');
+        Artisan::call('goprep:optimizeOrders');
     }
 }

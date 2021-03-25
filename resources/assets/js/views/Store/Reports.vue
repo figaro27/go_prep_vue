@@ -244,14 +244,14 @@
                 >Order By Routes</b-form-checkbox
               >
             </p>
-            <!-- <p
+            <p
               class="center-text font-14"
               style="color:#20A8D8"
               v-if="orderByRoutes"
               @click="showStartEndAddressModal = true"
             >
               Set Start & End Addresses (Optional)
-            </p> -->
+            </p>
             <div class="row">
               <div class="col-md-6">
                 <button
@@ -978,7 +978,10 @@ export default {
 
       if (
         report == "delivery_routes" &&
-        (this.store.id == 108 || this.store.id == 109 || this.store.id == 110)
+        (this.store.id == 108 ||
+          this.store.id == 109 ||
+          this.store.id == 110 ||
+          this.store.id == 278)
       ) {
         report = "delivery_routes_livotis";
       }

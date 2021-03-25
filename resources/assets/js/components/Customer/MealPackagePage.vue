@@ -1323,6 +1323,11 @@ export default {
         if (this.isMultipleDelivery && this.mealPackage.divideByComponents) {
           let deliveryDays = this.deliveryDays.reverse();
 
+          // Fix day_friendly (not sure what causes this)
+          deliveryDays.forEach(day => {
+            day.day_friendly = moment(day.day_friendly).format("YYYY-MM-DD");
+          });
+
           deliveryDays.forEach(day => {
             // Split package by looking at the components & addons delivery_day_ids
             let newMealPackage = { ...this.mealPackage };

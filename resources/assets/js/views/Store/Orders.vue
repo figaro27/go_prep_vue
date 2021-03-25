@@ -3,13 +3,11 @@
     <div class="col-md-12">
       <b-alert style="background-color:#EBFAFF" show dismissible>
         <p>
-          <span class="strong">Update - Delivery Fee Ranges</span><br />
-          You can now choose "Range" as a delivery fee option on the Settings
-          page. This lets you add prices for different starting & ending mile
-          ranges. Example: 0-10 miles - $5.00, 10-20 miles - $10.00, 20-30 miles
-          - $15.00<br />
-          <router-link to="/store/account/settings"
-            ><strong>Visit it here.</strong></router-link
+          <span class="strong">New - Billing Area</span><br />
+          Click your email address on the top right to see the new Billing page
+          or
+          <router-link to="/store/account/billing"
+            ><strong>visit it here.</strong></router-link
           >
         </p>
       </b-alert>
@@ -278,7 +276,7 @@
                 >
                 <a
                   class="dropdown-item"
-                  @click="voidOrder"
+                  @click="showVoidOrderModal(props.row)"
                   v-if="!props.row.voided"
                   >Void</a
                 >
@@ -287,6 +285,12 @@
                   @click="voidOrder"
                   v-if="props.row.voided"
                   >Unvoid</a
+                >
+                <a
+                  class="dropdown-item"
+                  v-if="!props.row.cashOrder"
+                  @click="refund()"
+                  >Refund</a
                 >
                 <a class="dropdown-item" @click="printPackingSlip(props.row.id)"
                   >Print Packing Slip</a
@@ -347,6 +351,33 @@
         </div>
       </div>
     </div>
+
+    <b-modal
+      v-model="voidOrderModal"
+      v-if="voidOrderModal"
+      size="md"
+      hide-header
+      hide-footer
+      no-fade
+    >
+      <center>
+        <p class="strong mt-3">
+          Voiding an order just removes the order from all of your reports.
+        </p>
+        <p class="strong mb-3">Would you also like to refund the order?</p>
+        <div class="d-flex d-center">
+          <b-btn @click="voidOrder()" class="mr-3" variant="danger"
+            >Void Only</b-btn
+          >
+          <b-btn @click="refund(), voidOrder()" class="mr-3" variant="warning"
+            >Void & Refund</b-btn
+          >
+          <b-btn @click="voidOrderModal = false" variant="secondary"
+            >Back</b-btn
+          >
+        </div>
+      </center>
+    </b-modal>
 
     <div class="modal-basic modal-wider">
       <b-modal
@@ -573,7 +604,7 @@
                 v-if="order.voided === 0"
                 class="btn mb-2"
                 variant="danger"
-                @click="voidOrder"
+                @click="showVoidOrderModal(order, true)"
                 >Void</b-btn
               >
               <img
@@ -863,7 +894,7 @@
               <p>{{ user_detail.phone }}</p>
             </span>
 
-            <div v-if="order.added_by_store_id === store.id">
+            <div>
               <b-btn
                 variant="warning"
                 class="d-inline mb-2 mt-2"
@@ -1023,6 +1054,7 @@ export default {
   mixins: [checkDateRange, printer],
   data() {
     return {
+      voidOrderModal: false,
       page: 1,
       editingCustomer: false,
       editingBalance: false,
@@ -1136,7 +1168,8 @@ export default {
     if (
       this.store.id === 108 ||
       this.store.id === 109 ||
-      this.store.id === 110
+      this.store.id === 110 ||
+      this.store.id === 278
     ) {
       this.setBagPickup(1);
     } else {
@@ -1277,7 +1310,8 @@ export default {
       "setBagGratuityPercent",
       "setBagCustomGratuity",
       "setBagNotes",
-      "setBagPublicNotes"
+      "setBagPublicNotes",
+      "setBagSubscription"
     ]),
     refreshTable() {
       this.refreshResource("orders");
@@ -1455,6 +1489,19 @@ export default {
       this.filter = !this.filter;
       this.refreshTable();
     },
+    showVoidOrderModal(order) {
+      this.order = order;
+      if (
+        !order.voided &&
+        !order.cashOrder &&
+        (order.refundedAmount == 0 || order.refundedAmount == null)
+      ) {
+        this.voidOrderModal = true;
+      } else {
+        this.orderId = order.id;
+        this.voidOrder();
+      }
+    },
     async exportData(report, format = "pdf", print = false, page = 1) {
       // const warning = this.checkDateRange({ ...this.filters.delivery_dates });
       // if (warning) {
@@ -1572,7 +1619,9 @@ export default {
         .post("/api/me/refundOrder", {
           orderId: this.order.id,
           refundAmount:
-            this.refundAmount == null ? this.order.amount : this.refundAmount,
+            this.refundAmount == null || this.refundAmount == 0
+              ? this.order.amount
+              : this.refundAmount,
           applyToBalance: this.applyToBalanceRefund,
           cooler: isCoolerRefund
         })
@@ -1584,20 +1633,25 @@ export default {
               "Error"
             );
           } else {
-            this.viewOrderModal = false;
             this.$toastr.s(
               "Successfully refunded " +
                 format.money(
-                  this.refundAmount == null
+                  this.refundAmount == null ||
+                    this.refundAmount == 0 ||
+                    this.refundedAmount == 0
                     ? this.order.amount
                     : this.refundAmount,
                   this.storeSettings.currency
                 )
             );
             this.refundAmount = 0;
+            if (this.viewOrderModal) {
+              this.viewOrder(this.orderId);
+            }
             this.refreshResource("orders");
             this.applyToBalanceCharge = false;
             this.applyToBalanceRefund = false;
+            this.voidOrderModal = false;
           }
         })
         .catch(err => {
@@ -1622,6 +1676,11 @@ export default {
         .then(response => {
           this.refreshResource("orders");
           this.$toastr.s(response.data);
+          this.voidOrderModal = false;
+          this.refreshResource("orders");
+          if (this.viewOrderModal) {
+            this.viewOrder(this.orderId);
+          }
         });
     },
     getMealTableData(order) {
@@ -1629,7 +1688,13 @@ export default {
 
       let data = [];
 
-      order.meal_package_items.forEach(meal_package_item => {
+      let meal_package_items = _.orderBy(
+        order.meal_package_items,
+        "delivery_date"
+      );
+      let items = _.orderBy(order.items, "delivery_date");
+
+      meal_package_items.forEach(meal_package_item => {
         if (meal_package_item.meal_package_size === null) {
           data.push({
             delivery_date: meal_package_item.delivery_date
@@ -1669,7 +1734,7 @@ export default {
             meal_package: true
           });
         }
-        order.items.forEach(item => {
+        items.forEach(item => {
           if (
             item.meal_package_order_id === meal_package_item.id &&
             !item.hidden
@@ -1712,7 +1777,7 @@ export default {
         });
       });
 
-      order.items.forEach(item => {
+      items.forEach(item => {
         if (item.meal_package_order_id === null && !item.hidden) {
           const meal = this.getStoreMeal(item.meal_id);
 
@@ -1781,7 +1846,7 @@ export default {
         });
       });
 
-      data = _.orderBy(data, "delivery_date");
+      // data = _.orderBy(data, "delivery_date");
       return _.filter(data);
     },
     updateBalance(id) {
@@ -1837,6 +1902,7 @@ export default {
       this.setBagCustomGratuity(0);
       this.setBagNotes(null);
       this.setBagPublicNotes(null);
+      this.setBagSubscription(null);
       this.store.distance = 1;
     },
     adjustOrder() {

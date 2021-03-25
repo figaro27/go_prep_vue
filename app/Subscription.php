@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\Customer\RenewalFailed;
 use App\Customer;
 use App\StoreModule;
+use App\Error;
+use App\PickupLocation;
 
 class Subscription extends Model
 {
@@ -402,8 +404,6 @@ class Subscription extends Model
                 );
             }
 
-            $this->syncPrices();
-
             $applyCharge =
                 !$this->cashOrder &&
                 $this->status != 'paused' &&
@@ -438,25 +438,7 @@ class Subscription extends Model
             $latestOrder->prepaid = $this->prepaid;
             $latestOrder->save();
 
-            $latestOrder->events()->create([
-                'type' => 'payment_succeeded',
-                'stripe_event' => !$applyCharge ? json_encode($charge) : null
-            ]);
-
-            $order_transaction = new OrderTransaction();
-            $order_transaction->order_id = $latestOrder->id;
-            $order_transaction->store_id = $latestOrder->store_id;
-            $order_transaction->user_id = $latestOrder->user_id;
-            $order_transaction->customer_id = $latestOrder->customer_id;
-            $order_transaction->type = 'order';
-            $order_transaction->stripe_id = $latestOrder->stripe_id
-                ? $latestOrder->stripe_id
-                : null;
-            $order_transaction->card_id = $latestOrder->card_id
-                ? $latestOrder->card_id
-                : null;
-            $order_transaction->amount = $latestOrder->amount;
-            $order_transaction->save();
+            $this->syncPrices();
 
             // Create new order for next delivery
             $newOrder = new Order();
@@ -546,6 +528,40 @@ class Subscription extends Model
             $newOrder->isMultipleDelivery = $this->isMultipleDelivery;
             $newOrder->notes = $this->notes;
             $newOrder->publicNotes = $this->publicNotes;
+
+            // New order fields
+            $newOrder->staff_member = $latestOrder->staff_member;
+            $newOrder->pickup_location_name = PickupLocation::where(
+                'id',
+                $this->pickup_location_id
+            )
+                ->pluck('name')
+                ->first();
+            $newOrder->purchased_gift_card_code = $this->prepaidChargeWeek
+                ? PurchasedGiftCard::where('id', $this->purchased_gift_card_id)
+                    ->pluck('code')
+                    ->first()
+                : null;
+            $newOrder->store_name = $latestOrder->store_name;
+            $newOrder->transfer_type = ($this->shipping
+                    ? 'Shipping'
+                    : $this->pickup)
+                ? 'Pickup'
+                : 'Delivery';
+            $newOrder->customer_name = $latestOrder->customer_name;
+            $newOrder->customer_address = $latestOrder->customer_address;
+            $newOrder->customer_zip = $latestOrder->customer_zip;
+            $goPrepFee =
+                $newOrder->afterDiscountBeforeFees *
+                ($this->store->settings->application_fee / 100);
+            $stripeFee =
+                !$newOrder->cashOrder && $newOrder->amount > 0.5
+                    ? $newOrder->amount * 0.029 + 0.3
+                    : 0;
+            $newOrder->goprep_fee = $goPrepFee;
+            $newOrder->stripe_fee = $stripeFee;
+            $newOrder->grandTotal = $newOrder->amount - $goPrepFee - $stripeFee;
+
             $newOrder->save();
 
             // Assign meal package orders from meal package subscriptions
@@ -756,14 +772,40 @@ class Subscription extends Model
                 $this->save();
                 return;
             }
-            $this->removeOneTimeCoupons();
-            $this->syncPrices(false, true);
+
             $this->next_renewal_at = $this->next_renewal_at
                 ->addWeeks($this->intervalCount)
                 ->minute(0)
                 ->second(0);
             $this->failed_renewal = null;
             $this->save();
+
+            // Fetching latest order again after updating figures
+            if ($isMultipleDelivery == 1) {
+                $latestOrder = $this->getLatestUnpaidMDOrder();
+            } else {
+                $latestOrder = $this->getLatestUnpaidOrder();
+            }
+
+            $latestOrder->events()->create([
+                'type' => 'payment_succeeded',
+                'stripe_event' => !$applyCharge ? json_encode($charge) : null
+            ]);
+
+            $order_transaction = new OrderTransaction();
+            $order_transaction->order_id = $latestOrder->id;
+            $order_transaction->store_id = $latestOrder->store_id;
+            $order_transaction->user_id = $latestOrder->user_id;
+            $order_transaction->customer_id = $latestOrder->customer_id;
+            $order_transaction->type = 'order';
+            $order_transaction->stripe_id = $latestOrder->stripe_id
+                ? $latestOrder->stripe_id
+                : null;
+            $order_transaction->card_id = $latestOrder->card_id
+                ? $latestOrder->card_id
+                : null;
+            $order_transaction->amount = $latestOrder->amount;
+            $order_transaction->save();
         } catch (\Exception $e) {
             $id = $this->id;
             $sub = $this->replicate();
@@ -789,6 +831,13 @@ class Subscription extends Model
             $this->failed_renewal = Carbon::now('UTC');
             $this->save();
             $this->failed_renewal_error = $e->getMessage();
+
+            $error = new Error();
+            $error->store_id = $this->store_id;
+            $error->user_id = $this->user_id;
+            $error->type = 'Renewal';
+            $error->error = $e->getMessage() . ' (Subscription Renewal)';
+            $error->save();
         }
     }
 
@@ -936,16 +985,20 @@ class Subscription extends Model
                 ],
                 ["stripe_account" => $this->store->settings->stripe_id]
             );
-
+            $additionalFee =
+                $this->store->details->country === 'US'
+                    ? floor($this->amount * 0.4)
+                    : 0;
             $charge = \Stripe\Charge::create(
                 [
                     "amount" => round($this->amount * 100),
                     "currency" => $this->store->settings->currency,
                     "source" => $storeSource,
-                    "application_fee" => round(
-                        $this->afterDiscountBeforeFees *
-                            $this->store->settings->application_fee
-                    ),
+                    "application_fee" =>
+                        round(
+                            $this->afterDiscountBeforeFees *
+                                $this->store->settings->application_fee
+                        ) + $additionalFee,
                     'description' =>
                         'Renewal #' .
                         $renewalCount .
@@ -1031,6 +1084,12 @@ class Subscription extends Model
         $total = $prePackagePrice + $totalPackagePrice;
         $afterDiscountBeforeFees = $prePackagePrice + $totalPackagePrice;
         $preFeePreDiscount = $prePackagePrice + $totalPackagePrice;
+
+        if (!$syncPricesOnly) {
+            $this->updateCurrentMealOrders();
+            $this->syncDiscountPrices($mealsReplaced);
+            $this->removeOneTimeCoupons();
+        }
 
         $coupon = Coupon::where('id', $this->coupon_id)->first();
         if (isset($coupon)) {
@@ -1125,11 +1184,6 @@ class Subscription extends Model
 
         $this->preReductionTotal = $total;
 
-        if (!$syncPricesOnly) {
-            $this->updateCurrentMealOrders();
-            $this->syncDiscountPrices($mealsReplaced);
-        }
-
         $total -= $this->referralReduction;
         $total -= $this->promotionReduction;
         $total -= $this->pointsReduction;
@@ -1171,7 +1225,7 @@ class Subscription extends Model
             // Cutoff already passed. Missed your chance bud!
 
             // Removing to try to fix issue with longer than 7 day cutoff times. Will bring back if it causes issues.
-            // if ($order->cutoff_passed) {
+            // if ($order->getCutoffDate()->isPast()) {
             //     continue;
             // }
 
@@ -1218,6 +1272,9 @@ class Subscription extends Model
             $order->purchasedGiftCardReduction = $this->prepaidChargeWeek
                 ? $this->purchasedGiftCardReduction
                 : 0;
+            $order->originalAmount = $this->prepaidChargeWeek
+                ? $this->amount
+                : 0;
             $order->amount = $this->prepaidChargeWeek ? $this->amount : 0;
             $modules = StoreModule::where('store_id', $this->store_id)->first();
             $order->balance =
@@ -1228,6 +1285,16 @@ class Subscription extends Model
             $order->notes = $this->notes;
             $order->publicNotes = $this->publicNotes;
             $order->prepaid = $this->prepaid;
+            $goPrepFee =
+                $this->afterDiscountBeforeFees *
+                ($this->store->settings->application_fee / 100);
+            $stripeFee =
+                !$this->cashOrder && $this->amount > 0.5
+                    ? $this->amount * 0.029 + 0.3
+                    : 0;
+            $order->goprep_fee = $goPrepFee;
+            $order->stripe_fee = $stripeFee;
+            $order->grandTotal = $this->amount - $goPrepFee - $stripeFee;
             $order->save();
 
             // Replace order meals

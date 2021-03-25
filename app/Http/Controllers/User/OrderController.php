@@ -27,7 +27,6 @@ class OrderController extends UserController
             'meal_ids',
             'line_items_order',
             'meal_package_items',
-            'added_by_store_id',
             'chargedAmount',
             'currency',
             'order_day',

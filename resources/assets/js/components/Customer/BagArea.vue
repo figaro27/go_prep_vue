@@ -286,7 +286,8 @@
                   v-if="
                     store.modules.frequencyItems &&
                       item.meal &&
-                      !$parent.adjustingScreen
+                      !adjustingSubscription &&
+                      !adjustingOrder
                   "
                 >
                   <span
@@ -714,6 +715,11 @@ export default {
       bagNotes: "bagNotes",
       bagPublicNotes: "bagPublicNotes"
     }),
+    adjustingOrder() {
+      if (this.$route.params.adjustOrder || this.$route.params.orderId) {
+        return true;
+      }
+    },
     hasBothTransferTypes() {
       let hasPickup = false;
       let hasDelivery = false;

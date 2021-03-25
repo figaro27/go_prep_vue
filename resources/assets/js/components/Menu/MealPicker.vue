@@ -54,7 +54,14 @@
 
       <span slot="beforeLimit" class="d-flex align-items-start">
         <!-- Helpers for Danny -->
-        <div v-if="store.id === 108 || store.id === 109 || store.id === 110">
+        <div
+          v-if="
+            store.id === 108 ||
+              store.id === 109 ||
+              store.id === 110 ||
+              store.id === 278
+          "
+        >
           <b-form-checkbox
             @change="addAll"
             v-model="all"
