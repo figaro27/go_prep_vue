@@ -407,8 +407,7 @@ $(function() {
 
     $([document.documentElement, document.body]).animate(
       {
-        scrollTop:
-          $(".categorySection[target='" + target + "']").offset().top - 100
+        scrollTop: $(".categorySection").offset().top - 100
       },
       speed
     );
@@ -421,7 +420,6 @@ $(function() {
   };
 
   $("body").on("click", ".categoryNavItem", function() {
-    alert("test3");
     if ($(this).hasClass("active")) {
       return;
     }
