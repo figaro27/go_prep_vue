@@ -596,7 +596,7 @@ export default {
             chargedAmount: 0,
             preTransactionFeeAmount: 0,
             transactionFee: 0,
-            originalAmount: 0,
+            amount: 0,
             refundedAmount: 0,
             balance: 0
           };
@@ -624,7 +624,7 @@ export default {
             sums.chargedAmount += payment.chargedAmount;
             sums.preTransactionFeeAmount += payment.preTransactionFeeAmount;
             sums.transactionFee += payment.transactionFee;
-            sums.originalAmount += payment.originalAmount;
+            sums.amount += payment.amount;
             sums.refundedAmount += payment.refundedAmount;
             sums.balance += payment.balance;
           });
@@ -650,7 +650,7 @@ export default {
             chargedAmount: sums.chargedAmount,
             preTransactionFeeAmount: sums.preTransactionFeeAmount,
             transactionFee: sums.transactionFee,
-            originalAmount: sums.originalAmount,
+            amount: sums.amount,
             refundedAmount: sums.refundedAmount,
             balance: sums.balance
           });
@@ -683,7 +683,7 @@ export default {
           chargedAmount: 0,
           preTransactionFeeAmount: 0,
           transactionFee: 0,
-          originalAmount: 0,
+          amount: 0,
           refundedAmount: 0,
           balance: 0
         };
@@ -706,7 +706,7 @@ export default {
           sums.chargedAmount += payment.chargedAmount;
           sums.preTransactionFeeAmount += payment.preTransactionFeeAmount;
           sums.transactionFee += payment.transactionFee;
-          sums.originalAmount += payment.originalAmount;
+          sums.amount += payment.amount;
           sums.refundedAmount += payment.refundedAmount;
           sums.balance += payment.balance;
         });
@@ -731,7 +731,7 @@ export default {
           preTransactionFeeAmount: sums.preTransactionFeeAmount,
           transactionFee: sums.transactionFee,
           chargedAmount: sums.chargedAmount,
-          originalAmount: sums.originalAmount,
+          amount: sums.amount,
           refundedAmount: sums.refundedAmount,
           balance: sums.balance,
           sumRow: 1
