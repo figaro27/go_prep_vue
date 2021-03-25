@@ -1825,7 +1825,6 @@ export default {
 
       this.$nextTick(() => {
         const remaining = this.getRemainingMeals(component.id);
-        alert(remaining);
         if (remaining < 0) {
           this.$toastr.w("You have selected the maximum number of options.");
           let truncated = choices.slice(0, remaining);
@@ -1841,6 +1840,7 @@ export default {
           }
           this.$set(this.choices[component.id], option.id, truncated);
         } else if (remaining == 0) {
+          alert("a");
           // Next Part
           let elem = $(
             '.categoryNavItem[target="categorySection_' + component.id + '"]'
