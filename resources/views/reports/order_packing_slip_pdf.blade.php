@@ -375,8 +375,8 @@ $settings = $params['settings'];
         </td>
         @endif
       </tr>
+      @if (!$settings->hide_pricing)
       <tfoot>
-        @if (!$settings->hide_pricing)
         <tr>
           @if ($order->balance === 0.00 || $order->balance === 0 || $order->balance === null)
             <th class="full-left-border-radius bold-text" style="border:none;font-size:18px;position:relative;left:30px">Total Paid</th>
@@ -391,8 +391,8 @@ $settings = $params['settings'];
             <th class="full-right-border-radius bold-text" style="border:none;font-size:18px;text-align:right;position:relative;right:20px">@money($order->balance * -1, $currency, 2)</th>
           @endif
         </tr> 
-        @endif
       </tfoot>
+      @endif
     </table>
 
 
