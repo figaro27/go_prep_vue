@@ -1844,7 +1844,7 @@ export default {
           let elem = $(
             '.categoryNavItem[target="categorySection_' + component.id + '"]'
           ).next();
-          alert(JSON.stringify(elem));
+          alert(JSON.stringify(elem[0]["_prevClass"]));
           if (elem) {
             elem.click();
           }
