@@ -1844,7 +1844,7 @@ export default {
           let elem = $(
             '.categoryNavItem[target="categorySection_' + component.id + '"]'
           ).next();
-          if (elem && elem.length > 0) {
+          if (elem) {
             elem.click();
           }
         }
