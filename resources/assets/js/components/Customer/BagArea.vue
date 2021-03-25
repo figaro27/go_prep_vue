@@ -98,17 +98,55 @@
             v-if="isMultipleDelivery && groupItem.delivery_day"
             :style="activeDD(groupItem.delivery_day)"
           >
-            <h5 @click="loadDeliveryDayMenu(groupItem.delivery_day)">
-              ({{
-                groupItem.delivery_day.type.charAt(0).toUpperCase() +
-                  groupItem.delivery_day.type.slice(1)
-              }})
-              {{
-                moment(groupItem.delivery_day.day_friendly).format(
-                  "ddd, MMM Do"
-                )
-              }}
-            </h5>
+            <div
+              v-if="
+                groupItem &&
+                  !enablingDeliveryDayEdit[groupItem.delivery_day.day_friendly]
+              "
+            >
+              <h5 @click="loadDeliveryDayMenu(groupItem.delivery_day)">
+                ({{
+                  groupItem.delivery_day.type.charAt(0).toUpperCase() +
+                    groupItem.delivery_day.type.slice(1)
+                }})
+                {{
+                  moment(groupItem.delivery_day.day_friendly).format(
+                    "ddd, MMM Do"
+                  )
+                }}
+              </h5>
+            </div>
+            <div
+              v-if="
+                enablingDeliveryDayEdit[groupItem.delivery_day.day_friendly]
+              "
+            >
+              <b-form-select
+                :options="allDeliveryDays"
+                class="ml-2 mb-1 w-180"
+                style="height:25px"
+                @input="
+                  val => updateSelectedDeliveryDay(val, groupItem.delivery_day)
+                "
+              ></b-form-select>
+            </div>
+            <i
+              v-if="
+                ($route.params.storeView ||
+                  storeView !== undefined ||
+                  context == 'store') &&
+                  (enablingDeliveryDayEdit[groupItem.delivery_day.day_friendly]
+                    ? enablingDeliveryDayEdit[
+                        groupItem.delivery_day.day_friendly
+                      ] === false
+                    : true)
+              "
+              @click="
+                enableDeliveryDayEdit(groupItem.delivery_day.day_friendly)
+              "
+              class="fa fa-edit text-warning ml-2 mb-2 white-text"
+              :style="checkMarkStyle"
+            ></i>
             <i
               class="fas fa-arrow-circle-left ml-1 mb-2"
               :style="checkMarkStyle"
@@ -661,6 +699,7 @@ export default {
       notes: null,
       publicNotes: null,
       enablingEdit: {},
+      enablingDeliveryDayEdit: {},
       customTitle: {},
       customSize: {},
       customPrice: {},
@@ -715,6 +754,21 @@ export default {
       bagNotes: "bagNotes",
       bagPublicNotes: "bagPublicNotes"
     }),
+    allDeliveryDays() {
+      let allDays = [];
+
+      for (let i = 0; i <= 60; i++) {
+        let now = moment();
+        let date = now.add(i, "days");
+        let formattedDate = now.add(i, "days").format("ddd, MMM Do");
+        allDays.push({
+          value: date,
+          text: formattedDate
+        });
+      }
+
+      return allDays;
+    },
     adjustingOrder() {
       if (this.$route.params.adjustOrder || this.$route.params.orderId) {
         return true;
@@ -1193,6 +1247,11 @@ export default {
         this.$set(this.enablingEdit, item.guid, false);
       });
     },
+    enableDeliveryDayEdit(dayFriendly) {
+      this.$nextTick(() => {
+        this.$set(this.enablingDeliveryDayEdit, dayFriendly, true);
+      });
+    },
     setOrderLineItems(lineItemOrders) {
       let extras = lineItemOrders;
       this.orderLineItems = this.$route.params.adjustOrder
@@ -1300,6 +1359,12 @@ export default {
         this.publicNotes = val;
         this.debouncePublicNotes();
       }
+    },
+    updateSelectedDeliveryDay(newDay, oldDay) {
+      oldDay.day_friendly = moment(newDay).format("YYYY-MM-DD");
+      this.$nextTick(() => {
+        this.$set(this.enablingDeliveryDayEdit, oldDay.day_friendly, false);
+      });
     },
     debounceNotes: _.debounce(function() {
       this.setBagNotes(this.notes);
