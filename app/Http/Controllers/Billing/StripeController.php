@@ -96,7 +96,10 @@ class StripeController extends Controller
                 $storePlanTransaction->store_id = $storePlan->store_id;
                 $storePlanTransaction->stripe_id = $obj['id'];
                 $storePlanTransaction->amount = $obj['amount'];
-                $storePlanTransaction->description = $obj['description'];
+                $storePlanTransaction->description =
+                    strpos($obj['description'], 'Invoice') !== false
+                        ? 'GoPrep subscription renewal'
+                        : $obj['description'];
                 $storePlanTransaction->currency = $obj['currency'];
                 $storePlanTransaction->card_brand = $card
                     ? $card['brand']
@@ -110,6 +113,7 @@ class StripeController extends Controller
                 $storePlanTransaction->period_start = $periodStart;
                 $storePlanTransaction->period_end = $periodEnd;
                 $storePlanTransaction->receipt_url = $obj['receipt_url'];
+                $storePlanTransaction->created = $obj['created'];
                 $storePlanTransaction->save();
             }
         }
