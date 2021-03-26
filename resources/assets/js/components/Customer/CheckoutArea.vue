@@ -2938,12 +2938,13 @@ use next_delivery_dates
     tip() {
       let customGratuity =
         this.bagCustomGratuity !== null ? this.bagCustomGratuity : 0;
-      return;
-      this.bagGratuityPercent && this.bagGratuityPercent === "custom"
-        ? parseFloat(customGratuity)
-        : parseFloat(
-            (this.bagGratuityPercent / 100) * this.totalBagPricePreFees
-          );
+      let tip =
+        this.bagGratuityPercent && this.bagGratuityPercent === "custom"
+          ? parseFloat(customGratuity)
+          : parseFloat(
+              (this.bagGratuityPercent / 100) * this.totalBagPricePreFees
+            );
+      return tip;
     },
     coolerDeposit() {
       if (this.bagPickup == 1) {
