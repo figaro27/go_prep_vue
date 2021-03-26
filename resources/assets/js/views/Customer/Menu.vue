@@ -427,6 +427,7 @@ $(function() {
   };
 
   $("body").on("click", ".categoryNavItem", function() {
+    alert("b");
     if ($(this).hasClass("active")) {
       return;
     }
