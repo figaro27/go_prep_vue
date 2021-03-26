@@ -2936,24 +2936,14 @@ use next_delivery_dates
       return this.pointsReduction;
     },
     tip() {
-      console.log(1);
-      console.log(this.bagGratuityPercent);
-      console.log(2);
-      console.log(this.bagCustomGratuity);
-      console.log(3);
-      console.log(this.totalBagPricePreFees);
       let customGratuity =
         this.bagCustomGratuity !== null ? this.bagCustomGratuity : 0;
-      console.log(customGratuity);
-      let test =
-        this.bagGratuityPercent && this.bagGratuityPercent === "custom"
-          ? parseFloat(customGratuity)
-          : parseFloat(
-              (this.bagGratuityPercent / 100) * this.totalBagPricePreFees
-            );
-      console.log(4);
-      console.log(test);
-      return test;
+      return;
+      this.bagGratuityPercent && this.bagGratuityPercent === "custom"
+        ? parseFloat(customGratuity)
+        : parseFloat(
+            (this.bagGratuityPercent / 100) * this.totalBagPricePreFees
+          );
     },
     coolerDeposit() {
       if (this.bagPickup == 1) {
