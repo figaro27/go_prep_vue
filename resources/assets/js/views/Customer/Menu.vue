@@ -231,7 +231,7 @@
           <!--<meal-packages-area :mealPackages="mealPackages"></meal-packages-area>!-->
         </div>
 
-        <div class="categoryNavArea" v-if="!mobile">
+        <div class="categoryNavArea">
           <!-- <div class="categoryNavArea_header">
             <h3 class="white-text d-inline pr-2">Category</h3>
           </div> -->
@@ -426,8 +426,7 @@ $(function() {
     $('.categoryNavItem[target="' + target + '"]').addClass("active");
   };
 
-  $("body").on("click", ".categorySection", function() {
-    alert("b");
+  $("body").on("click", ".categoryNavItem", function() {
     if ($(this).hasClass("active")) {
       return;
     }
