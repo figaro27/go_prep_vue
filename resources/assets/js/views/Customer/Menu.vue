@@ -254,7 +254,13 @@
                 </div>
               </div>
 
-              <div v-if="finalCategoriesSub && finalCategoriesSub.length > 0">
+              <div
+                v-if="
+                  finalCategoriesSub &&
+                    finalCategoriesSub.length > 0 &&
+                    mealPackagePageView
+                "
+              >
                 <div
                   v-for="(cat, index) in finalCategoriesSub"
                   v-if="isCategoryVisible(cat) && hasItems(null, cat)"
