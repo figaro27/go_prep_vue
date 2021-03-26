@@ -37,19 +37,38 @@ class StripeController extends Controller
 
         // Store Plan Subscription Renewals
         if ($type === 'charge.succeeded') {
+            $nonSubscriptionPayment = false;
             $stripeCustomerId = (string) $obj['customer'];
-            $storePlan = StorePlan::where(
-                'stripe_customer_id',
-                $stripeCustomerId
-            )->first();
-            if ($storePlan) {
-                $storePlan->charge_failed = null;
-                $storePlan->charge_failed_reason = null;
-                $storePlan->charge_attempts = 0;
-                $storePlan->last_charged = Carbon::now();
-                $storePlan->update();
+            if ($obj['payment_method_details']['type'] === 'card') {
+                $storePlan = StorePlan::where(
+                    'stripe_customer_id',
+                    $stripeCustomerId
+                )->first();
+            } else {
+                $storeId = StoreSetting::where(
+                    'stripe_id',
+                    $obj['source']['id']
+                )
+                    ->pluck('store_id')
+                    ->first();
+                $storePlan = StorePlan::where('store_id', $storeId)->first();
+                $nonSubscriptionPayment = true;
+            }
 
-                $card = $obj['payment_method_details']['card'];
+            if ($storePlan) {
+                if (!$nonSubscriptionPayment) {
+                    $storePlan->charge_failed = null;
+                    $storePlan->charge_failed_reason = null;
+                    $storePlan->charge_attempts = 0;
+                    $storePlan->last_charged = Carbon::now();
+                    $storePlan->update();
+                }
+
+                $card = null;
+
+                if (isset($obj['payment_method_details']['card'])) {
+                    $card = $obj['payment_method_details']['card'];
+                }
 
                 $periodStart = null;
                 $periodEnd = null;
@@ -79,10 +98,15 @@ class StripeController extends Controller
                 $storePlanTransaction->amount = $obj['amount'];
                 $storePlanTransaction->description = $obj['description'];
                 $storePlanTransaction->currency = $obj['currency'];
-                $storePlanTransaction->card_brand = $card['brand'];
-                $storePlanTransaction->card_expiration =
-                    $card['exp_month'] . '/' . $card['exp_year'];
-                $storePlanTransaction->card_last4 = $card['last4'];
+                $storePlanTransaction->card_brand = $card
+                    ? $card['brand']
+                    : null;
+                $storePlanTransaction->card_expiration = $card
+                    ? $card['exp_month'] . '/' . $card['exp_year']
+                    : null;
+                $storePlanTransaction->card_last4 = $card
+                    ? $card['last4']
+                    : null;
                 $storePlanTransaction->period_start = $periodStart;
                 $storePlanTransaction->period_end = $periodEnd;
                 $storePlanTransaction->receipt_url = $obj['receipt_url'];
