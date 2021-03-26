@@ -90,6 +90,7 @@ class Payments
             'preTransactionFeeAmount' => 0,
             'transactionFee' => 0,
             'originalAmount' => 0,
+            'adjustedDifference' => 0,
             'chargedAmount' => 0,
             'refundedAmount' => 0,
             'balance' => 0
@@ -144,6 +145,7 @@ class Payments
                     ? $order->transactionFee
                     : 0;
                 $columns['originalAmount'] = $order->originalAmount;
+                $columns['adjustedDifference'] = $order->adjustedDifference;
                 $columns['chargedAmount'] = $order->chargedAmount;
                 $columns['refundedAmount'] = $order->refundedAmount
                     ? $order->refundedAmount
@@ -306,6 +308,7 @@ class Payments
             'preTransactionFeeAmount' => 'Pre-Fee Total',
             'transactionFee' => '(Transaction Fee)',
             'originalAmount' => 'Total',
+            'adjustedDifference' => 'Adjusted Difference',
             'chargedAmount' => 'Additional Charges',
             'refundedAmount' => '(Refunded)',
             'balance' => 'Balance'

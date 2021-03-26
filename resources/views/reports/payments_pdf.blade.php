@@ -105,6 +105,9 @@ $currency = $params->currency
             <th>(Transaction Fee)</th> 
             @endif
             <th>Total</th>
+            @if ($params['adjustedDifference'])
+            <th>Adjusted Difference</th>
+            @endif
             @if ($params['chargedAmount'])
             <th>Additional Charges</th> 
             @endif

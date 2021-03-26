@@ -20,13 +20,7 @@ class Order extends Model
         'referral_id'
     ];
 
-    protected $hidden = [
-        'store',
-        'store_id',
-        'adjustedDifference',
-        'card_id',
-        'fulfilled'
-    ];
+    protected $hidden = ['store', 'store_id', 'card_id', 'fulfilled'];
 
     protected $casts = [
         'delivery_date' => 'date:Y-m-d',
@@ -50,6 +44,7 @@ class Order extends Model
         'pointsReduction' => 'float',
         'gratuity' => 'float',
         'coolerDeposit' => 'float',
+        'grandTotal' => 'float',
         'shipping' => 'boolean',
         'prepaid' => 'boolean'
         //'created_at' => 'date:F d, Y'

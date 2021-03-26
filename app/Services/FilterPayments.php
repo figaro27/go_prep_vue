@@ -199,7 +199,6 @@ class FilterPayments
             'delivery_day',
             'goprep_fee',
             'stripe_fee',
-            'grandTotal',
             'line_items_order',
             'added_by_store_id',
             'multiple_dates',
@@ -342,10 +341,10 @@ class FilterPayments
                         0.3;
                 }
 
-                $order->originalAmount =
-                    $order->originalAmount +
-                    $order->chargedAmount -
-                    $order->transactionFee;
+                // $order->originalAmount =
+                //     $order->originalAmount +
+                //     $order->chargedAmount -
+                //     $order->transactionFee;
             }
 
             $orders->makeHidden([
@@ -359,7 +358,6 @@ class FilterPayments
                 'delivery_day',
                 'goprep_fee',
                 'stripe_fee',
-                'grandTotal',
                 'line_items_order',
                 'multiple_dates',
                 'delivery_dates_array',

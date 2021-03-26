@@ -401,9 +401,16 @@
               />
             </div>
           </div>
-          <div slot="originalAmount" slot-scope="props">
+          <div slot="grandTotal" slot-scope="props">
             <div>
-              {{ formatMoney(props.row.originalAmount, props.row.currency) }}
+              {{ formatMoney(props.row.grandTotal, props.row.currency) }}
+            </div>
+          </div>
+          <div slot="adjustedDifference" slot-scope="props">
+            <div>
+              {{
+                formatMoney(props.row.adjustedDifference, props.row.currency)
+              }}
             </div>
           </div>
           <div slot="refundedAmount" slot-scope="props">
@@ -503,7 +510,8 @@ export default {
           chargedAmount: "Additional Charges",
           preTransactionFeeAmount: "Pre-Fee Total",
           transactionFee: "Transaction Fee",
-          originalAmount: "Total",
+          grandTotal: "Total",
+          adjustedDifference: "Adjusted",
           refundedAmount: "Refunded",
           balance: "Balance"
         },
@@ -596,7 +604,8 @@ export default {
             chargedAmount: 0,
             preTransactionFeeAmount: 0,
             transactionFee: 0,
-            amount: 0,
+            grandTotal: 0,
+            adjustedDifference: 0,
             refundedAmount: 0,
             balance: 0
           };
@@ -624,7 +633,8 @@ export default {
             sums.chargedAmount += payment.chargedAmount;
             sums.preTransactionFeeAmount += payment.preTransactionFeeAmount;
             sums.transactionFee += payment.transactionFee;
-            sums.amount += payment.amount;
+            sums.grandTotal += payment.grandTotal;
+            sums.adjustedDifference += payment.adjustedDifference;
             sums.refundedAmount += payment.refundedAmount;
             sums.balance += payment.balance;
           });
@@ -650,7 +660,8 @@ export default {
             chargedAmount: sums.chargedAmount,
             preTransactionFeeAmount: sums.preTransactionFeeAmount,
             transactionFee: sums.transactionFee,
-            amount: sums.amount,
+            grandTotal: sums.grandTotal,
+            adjustedDifference: sums.adjustedDifference,
             refundedAmount: sums.refundedAmount,
             balance: sums.balance
           });
@@ -683,7 +694,8 @@ export default {
           chargedAmount: 0,
           preTransactionFeeAmount: 0,
           transactionFee: 0,
-          amount: 0,
+          grandTotal: 0,
+          adjustedDifference: 0,
           refundedAmount: 0,
           balance: 0
         };
@@ -706,7 +718,8 @@ export default {
           sums.chargedAmount += payment.chargedAmount;
           sums.preTransactionFeeAmount += payment.preTransactionFeeAmount;
           sums.transactionFee += payment.transactionFee;
-          sums.amount += payment.amount;
+          sums.grandTotal += payment.grandTotal;
+          sums.adjustedDifference += payment.adjustedDifference;
           sums.refundedAmount += payment.refundedAmount;
           sums.balance += payment.balance;
         });
@@ -731,7 +744,8 @@ export default {
           preTransactionFeeAmount: sums.preTransactionFeeAmount,
           transactionFee: sums.transactionFee,
           chargedAmount: sums.chargedAmount,
-          amount: sums.amount,
+          grandTotal: sums.grandTotal,
+          adjustedDifference: sums.adjustedDifference,
           refundedAmount: sums.refundedAmount,
           balance: sums.balance,
           sumRow: 1
@@ -782,6 +796,8 @@ export default {
         if (payment.preTransactionFeeAmount > 0)
           addedColumns.preTransactionFeeAmount = true;
         if (payment.transactionFee > 0) addedColumns.transactionFee = true;
+        if (payment.adjustedDifference !== 0)
+          addedColumns.adjustedDifference = true;
         if (payment.refundedAmount > 0) addedColumns.refundedAmount = true;
         if (payment.balance > 0) addedColumns.balance = true;
       });
@@ -804,7 +820,8 @@ export default {
         columns.push("preTransactionFeeAmount");
       if (addedColumns.transactionFee) columns.push("transactionFee");
 
-      columns.push("originalAmount");
+      columns.push("grandTotal");
+      if (addedColumns.adjustedDifference) columns.push("adjustedDifference");
       if (addedColumns.chargedAmount) columns.push("chargedAmount");
       if (addedColumns.refundedAmount) columns.push("refundedAmount");
 
