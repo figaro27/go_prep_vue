@@ -141,9 +141,16 @@
               </p>
             </div>
             <div slot="created" slot-scope="props">
-              {{ moment(props.row.created).format("ddd, MM/D/YYYY") }}
+              <p v-if="props.row.created">
+                {{ moment(props.row.created).format("ddd, MM/D/YYYY") }}
+              </p>
+              <p v-else>n/a</p>
             </div>
-            <div slot="card_brand" slot-scope="props">
+            <div
+              slot="card_brand"
+              slot-scope="props"
+              v-if="props.row.card_brand"
+            >
               {{
                 props.row.card_brand.charAt(0).toUpperCase() +
                   props.row.card_brand.substring(1)
@@ -155,10 +162,16 @@
               }}
             </div>
             <div slot="period_start" slot-scope="props">
-              {{ moment(props.row.period_start).format("ddd, MM/D/YYYY") }}
+              <p v-if="props.row.period_start">
+                {{ moment(props.row.period_start).format("ddd, MM/D/YYYY") }}
+              </p>
+              <p v-else>n/a</p>
             </div>
             <div slot="period_end" slot-scope="props">
-              {{ moment(props.row.period_end).format("ddd, MM/D/YYYY") }}
+              <p v-if="props.row.period_start">
+                {{ moment(props.row.period_end).format("ddd, MM/D/YYYY") }}
+              </p>
+              <p v-else>n/a</p>
             </div>
             <div slot="receipt_url" slot-scope="props">
               <a :href="props.row.receipt_url" target="_blank"
@@ -330,6 +343,7 @@ export default {
       monthToDateOrders: 0,
       columns: [
         "created",
+        "description",
         "card_brand",
         "card_last4",
         "amount",

@@ -59,12 +59,11 @@ class misc extends Command
      */
     public function handle()
     {
-        $stores = Store::all();
+        $storePlanTransactions = StorePlanTransaction::all();
 
-        foreach ($stores as $store) {
-            $packingSlipSetting = new PackingSlipSetting();
-            $packingSlipSetting->store_id = $store->id;
-            $packingSlipSetting->save();
+        foreach ($storePlanTransactions as $storePlanTransaction) {
+            $storePlanTransaction->description = 'GoPrep subscription renewal';
+            $storePlanTransaction->update();
         }
     }
 }
