@@ -426,7 +426,7 @@ $(function() {
     $('.categoryNavItem[target="' + target + '"]').addClass("active");
   };
 
-  $("body").on("click", ".categoryNavItem", function() {
+  $("body").on("click", ".categorySection", function() {
     alert("b");
     if ($(this).hasClass("active")) {
       return;
