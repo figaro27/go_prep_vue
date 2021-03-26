@@ -3098,11 +3098,9 @@ use next_delivery_dates
     },
     tax() {
       if (this.customSalesTax !== null && this.customSalesTax !== "") {
-        console.log(1);
         return parseFloat(this.customSalesTax);
       }
       if (this.$route.params.adjustOrder && this.order.customSalesTax) {
-        console.log(2);
         return parseFloat(this.order.salesTax);
       }
       // Custom Sales Tax Per Meal
@@ -3204,14 +3202,19 @@ use next_delivery_dates
         this.storeSettings.enableSalesTax === 0 ||
         this.storeSettings.enableSalesTax === false
       ) {
-        console.log(3);
         return 0;
       }
       if (this.storeSettings.salesTax > 0) {
-        console.log(4);
-        return parseFloat(
+        let test = parseFloat(
           ((this.storeSettings.salesTax / 100) * taxableAmount).toFixed(2)
         );
+        console.log(1);
+        console.log(test);
+        console.log(2);
+        console.log(this.storeSettings.salesTax);
+        console.log(3);
+        console.log(taxableAmount);
+        return test;
       } else {
         console.log(5);
         return parseFloat((this.salesTax * taxableAmount).toFixed(2));
