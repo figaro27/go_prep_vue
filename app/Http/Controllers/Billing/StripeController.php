@@ -113,7 +113,9 @@ class StripeController extends Controller
                 $storePlanTransaction->period_start = $periodStart;
                 $storePlanTransaction->period_end = $periodEnd;
                 $storePlanTransaction->receipt_url = $obj['receipt_url'];
-                $storePlanTransaction->created = $obj['created'];
+                $storePlanTransaction->created = Carbon::createFromTimestamp(
+                    $obj['created']
+                )->toDateTimeString();
                 $storePlanTransaction->save();
             }
         }
