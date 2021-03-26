@@ -1841,9 +1841,10 @@ export default {
           this.$set(this.choices[component.id], option.id, truncated);
         } else if (remaining == 0) {
           // Next Part
-          let elem = $(".categorySection").next();
-          if (elem) {
-            alert("a");
+          let elem = $(
+            '.categoryNavItem[target="categorySection_' + component.id + '"]'
+          ).next();
+          if (elem && elem.length > 0) {
             elem.click();
           }
         }
