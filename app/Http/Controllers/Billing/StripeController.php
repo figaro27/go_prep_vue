@@ -51,6 +51,27 @@ class StripeController extends Controller
 
                 $card = $obj['payment_method_details']['card'];
 
+                $periodStart = null;
+                $periodEnd = null;
+
+                if (
+                    strpos($obj['description'], 'Subscription') !== false ||
+                    strpos($obj['description'], 'Invoice') !== false
+                ) {
+                    $periodStart = Carbon::createFromTimestamp(
+                        $obj['created']
+                    )->toDateTimeString();
+                    $periodEnd =
+                        ($storePlan && $storePlan->period == 'monthly') ||
+                        !$storePlan
+                            ? Carbon::createFromTimestamp($obj['created'])
+                                ->addMonthsNoOverflow(1)
+                                ->toDateTimeString()
+                            : Carbon::createFromTimestamp($obj['created'])
+                                ->addYears(1)
+                                ->toDateTimeString();
+                }
+
                 $storePlanTransaction = new StorePlanTransaction();
                 $storePlanTransaction->store_plan_id = $storePlan->id;
                 $storePlanTransaction->store_id = $storePlan->store_id;
@@ -62,18 +83,8 @@ class StripeController extends Controller
                 $storePlanTransaction->card_expiration =
                     $card['exp_month'] . '/' . $card['exp_year'];
                 $storePlanTransaction->card_last4 = $card['last4'];
-                $storePlanTransaction->period_start = Carbon::createFromTimestamp(
-                    $obj['created']
-                )->toDateTimeString();
-                $storePlanTransaction->period_end =
-                    ($storePlan && $storePlan->period == 'monthly') ||
-                    !$storePlan
-                        ? Carbon::createFromTimestamp($obj['created'])
-                            ->addMonthsNoOverflow(1)
-                            ->toDateTimeString()
-                        : Carbon::createFromTimestamp($obj['created'])
-                            ->addYears(1)
-                            ->toDateTimeString();
+                $storePlanTransaction->period_start = $periodStart;
+                $storePlanTransaction->period_end = $periodEnd;
                 $storePlanTransaction->receipt_url = $obj['receipt_url'];
                 $storePlanTransaction->save();
             }
@@ -123,6 +134,8 @@ class StripeController extends Controller
                 return 'Subscription not found';
             }
         } elseif ($type === 'invoice.payment_failed') {
+            // Subscriptions are internal now
+            return;
             $subId = $obj->get('subscription', null);
             $subscription = null;
 
@@ -144,6 +157,8 @@ class StripeController extends Controller
             //$subscription->pause(false);
             //return 'Subscription paused';
         } elseif ($type === 'customer.subscription.deleted') {
+            // Subscriptions are internal now
+            return;
             $subId = $obj->get('subscription', null);
             $subscription = null;
 
