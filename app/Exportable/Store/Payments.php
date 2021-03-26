@@ -89,7 +89,7 @@ class Payments
             'pointsReduction' => 0,
             'preTransactionFeeAmount' => 0,
             'transactionFee' => 0,
-            'originalAmount' => 0,
+            'grandTotal' => 0,
             'adjustedDifference' => 0,
             'chargedAmount' => 0,
             'refundedAmount' => 0,
@@ -144,7 +144,7 @@ class Payments
                 $columns['transactionFee'] = isset($order->transactionFee)
                     ? $order->transactionFee
                     : 0;
-                $columns['originalAmount'] = $order->originalAmount;
+                $columns['grandTotal'] = $order->grandTotal;
                 $columns['adjustedDifference'] = $order->adjustedDifference;
                 $columns['chargedAmount'] = $order->chargedAmount;
                 $columns['refundedAmount'] = $order->refundedAmount
@@ -307,7 +307,7 @@ class Payments
             'pointsReduction' => '(Points)',
             'preTransactionFeeAmount' => 'Pre-Fee Total',
             'transactionFee' => '(Transaction Fee)',
-            'originalAmount' => 'Total',
+            'grandTotal' => 'Total',
             'adjustedDifference' => 'Adjusted Difference',
             'chargedAmount' => 'Additional Charges',
             'refundedAmount' => '(Refunded)',
