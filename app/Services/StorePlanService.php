@@ -56,26 +56,9 @@ class StorePlanService
         $charge = Charge::create([
             'amount' => $plan->amount,
             'currency' => $plan->currency,
-            'source' => $plan->store->settings->stripe_id
+            'source' => $plan->store->settings->stripe_id,
+            'description' => 'GoPrep subscription renewal (bank withdrawal)'
         ]);
-
-        $storePlanTransaction = new StorePlanTransaction();
-        $storePlanTransaction->store_id = $plan->store_id;
-        $storePlanTransaction->store_plan_id = $plan->id;
-        $storePlanTransaction->stripe_id = $charge->id;
-        $storePlanTransaction->amount = $charge->amount;
-        $storePlanTransaction->currency = $plan->currency;
-        $storePlanTransaction->receipt_url = $charge->receipt_url;
-        $storePlanTransaction->period_start = Carbon::now()->toDateTimeString();
-        $storePlanTransaction->period_end =
-            $plan->period == 'monthly'
-                ? Carbon::now()
-                    ->addMonths(1)
-                    ->toDateTimeString()
-                : Carbon::now()
-                    ->addYears(1)
-                    ->toDateTimeString();
-        $storePlanTransaction->save();
 
         $plan->last_charged = Carbon::today();
         $plan->update();
