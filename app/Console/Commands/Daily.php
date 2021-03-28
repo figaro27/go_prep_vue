@@ -151,7 +151,10 @@ class Daily extends Command
         $stores = Store::all();
         foreach ($stores as $store) {
             $storePlan = StorePlan::where('store_id', $store->id)->first();
-            $storeSettings = StoreSetting::where('id', $store->id)->first();
+            $storeSettings = StoreSetting::where(
+                'store_id',
+                $store->id
+            )->first();
             if (
                 $storePlan &&
                 $storePlan->status === 'cancelled' &&
