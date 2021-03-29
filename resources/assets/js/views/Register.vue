@@ -555,7 +555,7 @@
             <div v-if="step === 3">
               <h4 v-if="!freeTrial">Payment Details</h4>
 
-              <b-form-group label="Billing method" horizontal v-if="!freeTrial">
+              <!-- <b-form-group label="Billing method" horizontal v-if="!freeTrial">
                 <b-form-radio-group
                   v-model="form[3].plan_method"
                   :options="[
@@ -563,7 +563,7 @@
                     { text: 'Bank Transfer', value: 'connect' }
                   ]"
                 ></b-form-radio-group>
-              </b-form-group>
+              </b-form-group> -->
 
               <b-form-group label="Billing period" horizontal v-if="!freeTrial">
                 <b-form-radio-group
