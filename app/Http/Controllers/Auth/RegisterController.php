@@ -432,7 +432,8 @@ class RegisterController extends Controller
                     $storePlan->contact_phone = $userDetails->phone;
                     $storePlan->contact_name =
                         $userDetails->firstname . ' ' . $userDetails->lastname;
-                    $storePlan->method = $planMethod;
+                    $storePlan->method =
+                        $planMethod == 'free_trial' ? 'basic' : $planMethod;
                     $storePlan->amount = $plan->get('price');
                     $storePlan->plan_name = $planObj->get('plan');
                     $storePlan->allowed_orders = $allowed_orders;
