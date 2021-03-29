@@ -414,6 +414,11 @@ export default {
         },
         {
           value:
+            "I misunderstood what this platform is used for / what it does",
+          text: "I misunderstood what this platform is used for / what it does"
+        },
+        {
+          value:
             "You don't have certain features I need to run my business effectively",
           text:
             "You don't have certain features I need to run my business effectively"
