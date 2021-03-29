@@ -75,42 +75,46 @@ class DeliveryRoutes
             $customerDetails = $order->user->details;
             $name =
                 $customerDetails->firstname . ' ' . $customerDetails->lastname;
-            $uniqueAddress = implode(', ', [
+
+            // No longer restricting the report to unique addresses or names. Will just list the name/address multiple times if there are multiple orders.
+
+            // $uniqueAddress = implode(', ', [
+            //     $customerDetails->
+            //     $customerDetails->address,
+            //     $customerDetails->city,
+            //     $customerDetails->state,
+            //     $customerDetails->zip
+            // ]);
+
+            // if (!in_array($uniqueAddress, $uniqueAddresses)) {
+            $address = implode(', ', [
                 $customerDetails->address,
                 $customerDetails->city,
                 $customerDetails->state,
                 $customerDetails->zip
             ]);
 
-            if (!in_array($uniqueAddress, $uniqueAddresses)) {
-                $address = implode(', ', [
-                    $customerDetails->address,
-                    $customerDetails->city,
-                    $customerDetails->state,
-                    $customerDetails->zip
-                ]);
+            $stops[] = [
+                "name" => $name,
+                "address" => $address
+            ];
 
-                $stops[] = [
-                    "name" => $name,
-                    "address" => $address
-                ];
+            $names[] = $name;
+            // $uniqueAddresses[] = $uniqueAddress;
 
-                $names[] = $name;
-                $uniqueAddresses[] = $uniqueAddress;
-
-                $recipients[] = [
-                    "name" =>
-                        $customerDetails->firstname .
-                        ' ' .
-                        $customerDetails->lastname,
-                    "phone" => $customerDetails->phone,
-                    "address" => $customerDetails->address,
-                    "city" => $customerDetails->city,
-                    "state" => $customerDetails->state,
-                    "zip" => $customerDetails->zip,
-                    "delivery" => $customerDetails->delivery
-                ];
-            }
+            $recipients[] = [
+                "name" =>
+                    $customerDetails->firstname .
+                    ' ' .
+                    $customerDetails->lastname,
+                "phone" => $customerDetails->phone,
+                "address" => $customerDetails->address,
+                "city" => $customerDetails->city,
+                "state" => $customerDetails->state,
+                "zip" => $customerDetails->zip,
+                "delivery" => $customerDetails->delivery
+            ];
+            // }
         }
 
         $depots = [
