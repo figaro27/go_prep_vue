@@ -23,8 +23,6 @@ class StorePlanService
         $month = $now->month;
 
         return StorePlan::where('status', 'active')
-            ->whereDate('last_charged', '<', Carbon::today())
-            ->orWhere('last_charged', null)
             ->where(function ($query) use ($dom) {
                 $query->where([
                     'period' => 'monthly',

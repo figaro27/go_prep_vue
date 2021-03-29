@@ -25,6 +25,7 @@ use App\Subscription;
 use App\StorePlan;
 use App\StorePlanTransaction;
 use App\PackingSlipSetting;
+use App\Facades\StorePlanService;
 
 class misc extends Command
 {
@@ -59,11 +60,16 @@ class misc extends Command
      */
     public function handle()
     {
-        $storePlanTransactions = StorePlanTransaction::all();
+        $plans = StorePlanService::getRenewingPlans();
+        // $this->info(count($plans) . ' store plans renewing today');
 
-        foreach ($storePlanTransactions as $storePlanTransaction) {
-            $storePlanTransaction->description = 'GoPrep subscription renewal';
-            $storePlanTransaction->update();
+        foreach ($plans as $plan) {
+            if ($plan->method === 'connect' && $plan->amount > 0) {
+                $this->info($plan->store_name);
+                // dispatch(function () use ($plan) {
+                //     StorePlanService::renew($plan);
+                // });
+            }
         }
     }
 }
