@@ -141,7 +141,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
 
                   <p>You can call us at (347) 433-7990 or email us at <a href="mailto:help@goprep.com">help@goprep.com</a></p>
 
-                  <p>View Documentation: <a style="color:#0645AD" href="https://www.goprep.com/documentation">https://www.goprep.com/documentation</a></p>
+                  <p>View Documentation: <a style="color:#0645AD" href="https://goprep.zendesk.com/">https://goprep.zendesk.com/</a></p>
                   <p>Watch Overview Video: <a style="color:#0645AD" href="https://www.goprep.com/demo-video/"> https://www.goprep.com/demo/</a></p>
                   <p>Book a Demo: <a style="color:#0645AD" href="https://calendly.com/goprep/support">https://calendly.com/goprep/demo</a></p>
 
