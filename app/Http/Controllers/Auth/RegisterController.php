@@ -471,7 +471,12 @@ class RegisterController extends Controller
                     // Create customer
                     $customer = \Stripe\Customer::create([
                         'description' => '',
-                        'source' => $planToken
+                        'source' => $planToken,
+                        'email' => $user->email,
+                        'name' =>
+                            $userDetails->firstname .
+                            ' ' .
+                            $userDetails->lastname
                     ]);
                 }
 
