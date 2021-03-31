@@ -1600,7 +1600,7 @@ export default {
     }
   },
   mounted: function() {
-    this.refreshStoreCustomers();
+    // this.refreshStoreCustomers();
 
     this.setOrderFrequency();
 
