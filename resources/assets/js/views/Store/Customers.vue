@@ -87,287 +87,191 @@
         v-if="viewCustomerModal"
         no-fade
       >
-        <div class="row light-background border-bottom mb-3">
-          <div class="col-md-4 pt-4">
-            <h4>Customer</h4>
-            <span v-if="customer.companyname">
+        <b-form @submit.prevent="updateCustomer">
+          <div class="row light-background border-bottom mb-3">
+            <div class="col-md-4 pt-4">
+              <h4>Customer</h4>
+              <span v-if="customer.companyname">
+                <span v-if="editingCustomer">
+                  <b-form-input
+                    v-model="customer.companyname"
+                    class="d-inline width-70 mb-3"
+                  ></b-form-input>
+                </span>
+                <span v-else>
+                  <p>{{ customer.companyname }}</p>
+                </span>
+              </span>
+
               <span v-if="editingCustomer">
                 <b-form-input
-                  v-model="customer.companyname"
+                  v-model="customer.firstname"
+                  class="d-inline width-70 mb-3"
+                  required
+                ></b-form-input>
+                <b-form-input
+                  v-model="customer.lastname"
+                  class="d-inline width-70 mb-3"
+                  required
+                ></b-form-input>
+              </span>
+              <span v-else>
+                <p>{{ customer.firstname }} {{ customer.lastname }}</p>
+              </span>
+
+              <h4>Phone</h4>
+              <span v-if="editingCustomer">
+                <b-form-input
+                  v-model="customer.phone"
+                  class="d-inline width-70 mb-3"
+                  required
+                ></b-form-input>
+              </span>
+              <span v-else>
+                <p>{{ customer.phone }}</p>
+              </span>
+
+              <h4>
+                Email
+              </h4>
+              <span v-if="editingCustomer">
+                <b-form-input
+                  v-model="customer.email"
+                  class="d-inline width-70 mb-3"
+                  required
+                ></b-form-input>
+              </span>
+              <span v-else>
+                <p>{{ customer.email }}</p>
+              </span>
+
+              <span v-if="editingCustomer">
+                <h4>
+                  Password
+                  <img
+                    v-b-popover.hover="
+                      'Here you can reset your customers password. Leave this field blank to not affect the customer\'s current password.'
+                    "
+                    title="Password Reset"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </h4>
+                <b-form-input
+                  placeholder="Leave blank to not update password."
+                  v-model="password"
+                  class="d-inline mb-3"
+                  style="width:80%"
+                ></b-form-input>
+              </span>
+              <!-- No longer requiring the customer to be created by the store for the store to edit the customer -->
+              <div>
+                <!-- <div v-if="customer.added_by_store_id === store.id"> -->
+                <b-btn
+                  variant="warning"
+                  class="d-inline mb-2"
+                  @click="editCustomer"
+                  >Edit Customer</b-btn
+                >
+                <b-btn variant="primary" class="d-inline mb-2" type="submit"
+                  >Save</b-btn
+                >
+              </div>
+            </div>
+            <div class="col-md-4 pt-4">
+              <h4>Address</h4>
+              <span v-if="editingCustomer">
+                <b-form-input
+                  v-model="customer.address"
+                  class="d-inline width-70 mb-3"
+                  required
+                ></b-form-input>
+                <b-form-input
+                  v-model="customer.city"
+                  class="d-inline width-70 mb-3"
+                  required
+                ></b-form-input>
+                <b-form-input
+                  v-model="customer.state"
+                  class="d-inline width-70 mb-3"
+                  required
+                ></b-form-input>
+                <b-form-input
+                  v-model="customer.zip"
+                  class="d-inline width-70 mb-3"
+                  required
+                ></b-form-input>
+              </span>
+              <span v-else>
+                <p>{{ customer.address }}</p>
+                <p>
+                  {{ customer.city }}, {{ customer.state }} {{ customer.zip }}
+                </p>
+              </span>
+            </div>
+            <div class="col-md-4 pt-4">
+              <h4>Delivery Instructions</h4>
+              <span v-if="editingCustomer">
+                <b-form-input
+                  v-model="customer.delivery"
                   class="d-inline width-70 mb-3"
                 ></b-form-input>
               </span>
               <span v-else>
-                <p>{{ customer.companyname }}</p>
+                <p>{{ customer.delivery }}</p>
               </span>
-            </span>
-
-            <span v-if="editingCustomer">
-              <b-form-input
-                v-model="customer.firstname"
-                class="d-inline width-70 mb-3"
-              ></b-form-input>
-              <b-form-input
-                v-model="customer.lastname"
-                class="d-inline width-70 mb-3"
-              ></b-form-input>
-            </span>
-            <span v-else>
-              <p>{{ customer.firstname }} {{ customer.lastname }}</p>
-            </span>
-
-            <h4>Phone</h4>
-            <span v-if="editingCustomer">
-              <b-form-input
-                v-model="customer.phone"
-                class="d-inline width-70 mb-3"
-              ></b-form-input>
-            </span>
-            <span v-else>
-              <p>{{ customer.phone }}</p>
-            </span>
-
-            <h4>
-              Email
-            </h4>
-            <span v-if="editingCustomer">
-              <b-form-input
-                v-model="customer.email"
-                class="d-inline width-70 mb-3"
-              ></b-form-input>
-            </span>
-            <span v-else>
-              <p>{{ customer.email }}</p>
-            </span>
-
-            <span v-if="editingCustomer">
-              <h4>
-                Password
-                <img
-                  v-b-popover.hover="
-                    'Here you can reset your customers password. Leave this field blank to not affect the customer\'s current password.'
-                  "
-                  title="Password Reset"
-                  src="/images/store/popover.png"
-                  class="popover-size"
-                />
-              </h4>
-              <b-form-input
-                placeholder="Leave blank to not update password."
-                v-model="password"
-                class="d-inline mb-3"
-                style="width:80%"
-              ></b-form-input>
-            </span>
-            <!-- No longer requiring the customer to be created by the store for the store to edit the customer -->
-            <div>
-              <!-- <div v-if="customer.added_by_store_id === store.id"> -->
-              <b-btn
-                variant="warning"
-                class="d-inline mb-2"
-                @click="editCustomer"
-                >Edit Customer</b-btn
-              >
-              <b-btn
-                variant="primary"
-                class="d-inline mb-2"
-                @click="updateCustomer(customer.id)"
-                >Save</b-btn
-              >
+              <span v-if="pointsName">
+                <h4>{{ pointsName }}</h4>
+                <span v-if="customer.points && customer.points > 0">{{
+                  customer.points
+                }}</span>
+                <span v-else>0</span>
+              </span>
             </div>
           </div>
-          <div class="col-md-4 pt-4">
-            <h4>Address</h4>
-            <span v-if="editingCustomer">
-              <b-form-input
-                v-model="customer.address"
-                class="d-inline width-70 mb-3"
-              ></b-form-input>
-              <b-form-input
-                v-model="customer.city"
-                class="d-inline width-70 mb-3"
-              ></b-form-input>
-              <b-form-input
-                v-model="customer.state"
-                class="d-inline width-70 mb-3"
-              ></b-form-input>
-              <b-form-input
-                v-model="customer.zip"
-                class="d-inline width-70 mb-3"
-              ></b-form-input>
-            </span>
-            <span v-else>
-              <p>{{ customer.address }}</p>
-              <p>
-                {{ customer.city }}, {{ customer.state }} {{ customer.zip }}
-              </p>
-            </span>
-          </div>
-          <div class="col-md-4 pt-4">
-            <h4>Delivery Instructions</h4>
-            <span v-if="editingCustomer">
-              <b-form-input
-                v-model="customer.delivery"
-                class="d-inline width-70 mb-3"
-              ></b-form-input>
-            </span>
-            <span v-else>
-              <p>{{ customer.delivery }}</p>
-            </span>
-            <span v-if="pointsName">
-              <h4>{{ pointsName }}</h4>
-              <span v-if="customer.points && customer.points > 0">{{
-                customer.points
-              }}</span>
-              <span v-else>0</span>
-            </span>
-          </div>
-        </div>
-        <div
-          v-for="order in customer.orders"
-          :key="`order-${order.order_number}`"
-          class="mb-2"
-        >
-          <div v-b-toggle="'collapse' + order.order_number">
-            <b-list-group-item>
-              <div class="row">
-                <div class="col-md-4">
-                  <h4>Order ID</h4>
-                  <p>{{ order.order_number }}</p>
-                  <i
-                    v-if="order.cashOrder"
-                    class="fas fa-money-bill text-success"
-                    v-b-popover.hover.top="
-                      'A credit card wasn\'t processed through GoPrep for this order.'
-                    "
-                  ></i>
-                  <h4 v-if="storeModules.dailyOrderNumbers">Daily Order #</h4>
-                  <p v-if="storeModules.dailyOrderNumbers">
-                    {{ order.dailyOrderNumber }}
-                  </p>
-                  <div class="mt-3" v-if="order.staff_id">
-                    <h4>Order Taken By</h4>
-                    <p>{{ order.staff_member }}</p>
+
+          <div
+            v-for="order in customer.orders"
+            :key="`order-${order.order_number}`"
+            class="mb-2"
+          >
+            <div v-b-toggle="'collapse' + order.order_number">
+              <b-list-group-item>
+                <div class="row">
+                  <div class="col-md-4">
+                    <h4>Order ID</h4>
+                    <p>{{ order.order_number }}</p>
+                    <i
+                      v-if="order.cashOrder"
+                      class="fas fa-money-bill text-success"
+                      v-b-popover.hover.top="
+                        'A credit card wasn\'t processed through GoPrep for this order.'
+                      "
+                    ></i>
+                    <h4 v-if="storeModules.dailyOrderNumbers">Daily Order #</h4>
+                    <p v-if="storeModules.dailyOrderNumbers">
+                      {{ order.dailyOrderNumber }}
+                    </p>
+                    <div class="mt-3" v-if="order.staff_id">
+                      <h4>Order Taken By</h4>
+                      <p>{{ order.staff_member }}</p>
+                    </div>
                   </div>
-                </div>
-                <div class="col-md-4">
-                  <h4>Placed On</h4>
-                  <p>
-                    {{
-                      moment
-                        .utc(order.paid_at)
-                        .local()
-                        .format("dddd, MMM Do, Y")
-                    }}
-                  </p>
-                </div>
-                <div class="col-md-4">
-                  <p v-if="order.prepaid">
-                    (Prepaid Subscription Order)
-                  </p>
-                  <p>
-                    Subtotal:
-                    {{ format.money(order.preFeePreDiscount, order.currency) }}
-                  </p>
-                  <p class="text-success" v-if="order.couponReduction > 0">
-                    Coupon {{ order.couponCode }}: ({{
-                      format.money(order.couponReduction, order.currency)
-                    }})
-                  </p>
-                  <p v-if="order.mealPlanDiscount > 0" class="text-success">
-                    Subscription Discount: ({{
-                      format.money(order.mealPlanDiscount, order.currency)
-                    }})
-                  </p>
-                  <p v-if="order.salesTax > 0">
-                    Sales Tax:
-                    {{ format.money(order.salesTax, order.currency) }}
-                  </p>
-                  <p v-if="order.deliveryFee > 0">
-                    {{ order.transfer_type }} Fee:
-                    {{ format.money(order.deliveryFee, order.currency) }}
-                  </p>
-                  <p v-if="order.processingFee > 0">
-                    Processing Fee:
-                    {{ format.money(order.processingFee, order.currency) }}
-                  </p>
-                  <p
-                    class="text-success"
-                    v-if="order.purchasedGiftCardReduction > 0"
-                  >
-                    Gift Card
-                    {{ order.purchased_gift_card_code }} ({{
-                      format.money(
-                        order.purchasedGiftCardReduction,
-                        order.currency
-                      )
-                    }})
-                  </p>
-                  <p class="text-success" v-if="order.referralReduction > 0">
-                    Referral Discount: ({{
-                      format.money(order.referralReduction, order.currency)
-                    }})
-                  </p>
-                  <p class="text-success" v-if="order.promotionReduction > 0">
-                    Promotional Discount: ({{
-                      format.money(order.promotionReduction, order.currency)
-                    }})
-                  </p>
-                  <p class="text-success" v-if="order.pointsReduction > 0">
-                    Points Used: ({{
-                      format.money(order.pointsReduction, order.currency)
-                    }})
-                  </p>
-                  <p v-if="order.gratuity > 0">
-                    Gratuity:
-                    {{ format.money(order.gratuity, order.currency) }}
-                  </p>
-                  <p v-if="order.coolerDeposit > 0">
-                    Cooler Deposit:
-                    {{ format.money(order.coolerDeposit, order.currency) }}
-                  </p>
-                  <p class="strong">
-                    Total: {{ format.money(order.amount, order.currency) }}
-                  </p>
-                  <p v-if="order.balance !== null">
-                    Original Total:
-                    {{ format.money(order.originalAmount, order.currency) }}
-                  </p>
-                  <p v-if="order.chargedAmount">
-                    Additional Charges:
-                    {{ format.money(order.chargedAmount, order.currency) }}
-                  </p>
-                  <p v-if="order.refundedAmount">
-                    Refunded:
-                    {{ format.money(order.refundedAmount, order.currency) }}
-                  </p>
-                  <p>
-                    Balance: {{ format.money(order.balance, order.currency) }}
-                  </p>
-                </div>
-                <div class="col-md-1">
-                  <img
-                    class="pull-right mt-2"
-                    src="/images/collapse-arrow.png"
-                  />
-                </div>
-              </div>
-
-              <b-collapse :id="'collapse' + order.order_number" class="mt-2">
-                <v-client-table
-                  v-if="!order.isMultipleDelivery"
-                  striped
-                  stacked="sm"
-                  :columns="columnsMeal"
-                  :options="optionsMeal"
-                  :data="getMealTableData(order)"
-                  foot-clone
-                >
-                  <template slot="meal" slot-scope="props">
-                    <div v-html="props.row.meal"></div>
-                  </template>
-
-                  <template slot="FOOT_subtotal" slot-scope="row">
+                  <div class="col-md-4">
+                    <h4>Placed On</h4>
+                    <p>
+                      {{
+                        moment
+                          .utc(order.paid_at)
+                          .local()
+                          .format("dddd, MMM Do, Y")
+                      }}
+                    </p>
+                  </div>
+                  <div class="col-md-4">
+                    <p v-if="order.prepaid">
+                      (Prepaid Subscription Order)
+                    </p>
                     <p>
                       Subtotal:
                       {{
@@ -384,6 +288,10 @@
                         format.money(order.mealPlanDiscount, order.currency)
                       }})
                     </p>
+                    <p v-if="order.salesTax > 0">
+                      Sales Tax:
+                      {{ format.money(order.salesTax, order.currency) }}
+                    </p>
                     <p v-if="order.deliveryFee > 0">
                       {{ order.transfer_type }} Fee:
                       {{ format.money(order.deliveryFee, order.currency) }}
@@ -392,9 +300,32 @@
                       Processing Fee:
                       {{ format.money(order.processingFee, order.currency) }}
                     </p>
-                    <p>
-                      Sales Tax:
-                      {{ format.money(order.salesTax, order.currency) }}
+                    <p
+                      class="text-success"
+                      v-if="order.purchasedGiftCardReduction > 0"
+                    >
+                      Gift Card
+                      {{ order.purchased_gift_card_code }} ({{
+                        format.money(
+                          order.purchasedGiftCardReduction,
+                          order.currency
+                        )
+                      }})
+                    </p>
+                    <p class="text-success" v-if="order.referralReduction > 0">
+                      Referral Discount: ({{
+                        format.money(order.referralReduction, order.currency)
+                      }})
+                    </p>
+                    <p class="text-success" v-if="order.promotionReduction > 0">
+                      Promotional Discount: ({{
+                        format.money(order.promotionReduction, order.currency)
+                      }})
+                    </p>
+                    <p class="text-success" v-if="order.pointsReduction > 0">
+                      Points Used: ({{
+                        format.money(order.pointsReduction, order.currency)
+                      }})
                     </p>
                     <p v-if="order.gratuity > 0">
                       Gratuity:
@@ -405,68 +336,147 @@
                       {{ format.money(order.coolerDeposit, order.currency) }}
                     </p>
                     <p class="strong">
-                      Total:
-                      {{ format.money(order.amount, order.currency) }}
+                      Total: {{ format.money(order.amount, order.currency) }}
                     </p>
-                  </template>
-
-                  <template slot="table-caption"></template>
-                </v-client-table>
-                <v-client-table
-                  v-if="order.isMultipleDelivery"
-                  striped
-                  stacked="sm"
-                  :columns="columnsMealMultipleDelivery"
-                  :data="getMealTableData(order)"
-                  ref="mealsTable"
-                  foot-clone
-                  :options="optionsMeal"
-                >
-                  <template slot="meal" slot-scope="props">
-                    <div v-html="props.row.meal"></div>
-                  </template>
-
-                  <template slot="FOOT_subtotal" slot-scope="row">
+                    <p v-if="order.balance !== null">
+                      Original Total:
+                      {{ format.money(order.originalAmount, order.currency) }}
+                    </p>
+                    <p v-if="order.chargedAmount">
+                      Additional Charges:
+                      {{ format.money(order.chargedAmount, order.currency) }}
+                    </p>
+                    <p v-if="order.refundedAmount">
+                      Refunded:
+                      {{ format.money(order.refundedAmount, order.currency) }}
+                    </p>
                     <p>
-                      Subtotal:
-                      {{
-                        format.money(order.preFeePreDiscount, order.currency)
-                      }}
+                      Balance: {{ format.money(order.balance, order.currency) }}
                     </p>
-                    <p class="text-success" v-if="order.couponReduction > 0">
-                      Coupon {{ order.couponCode }}: ({{
-                        format.money(order.couponReduction, order.currency)
-                      }})
-                    </p>
-                    <p v-if="order.mealPlanDiscount > 0" class="text-success">
-                      Subscription Discount: ({{
-                        format.money(order.mealPlanDiscount, order.currency)
-                      }})
-                    </p>
-                    <p v-if="order.deliveryFee > 0">
-                      {{ order.transfer_type }} Fee:
-                      {{ format.money(order.deliveryFee, order.currency) }}
-                    </p>
-                    <p v-if="order.processingFee > 0">
-                      Processing Fee:
-                      {{ format.money(order.processingFee, order.currency) }}
-                    </p>
-                    <p v-if="order.salesTax > 0">
-                      Sales Tax:
-                      {{ format.money(order.salesTax, order.currency) }}
-                    </p>
-                    <p class="strong">
-                      Total:
-                      {{ format.money(order.amount, order.currency) }}
-                    </p>
-                  </template>
+                  </div>
+                  <div class="col-md-1">
+                    <img
+                      class="pull-right mt-2"
+                      src="/images/collapse-arrow.png"
+                    />
+                  </div>
+                </div>
 
-                  <template slot="table-caption"></template>
-                </v-client-table>
-              </b-collapse>
-            </b-list-group-item>
+                <b-collapse :id="'collapse' + order.order_number" class="mt-2">
+                  <v-client-table
+                    v-if="!order.isMultipleDelivery"
+                    striped
+                    stacked="sm"
+                    :columns="columnsMeal"
+                    :options="optionsMeal"
+                    :data="getMealTableData(order)"
+                    foot-clone
+                  >
+                    <template slot="meal" slot-scope="props">
+                      <div v-html="props.row.meal"></div>
+                    </template>
+
+                    <template slot="FOOT_subtotal" slot-scope="row">
+                      <p>
+                        Subtotal:
+                        {{
+                          format.money(order.preFeePreDiscount, order.currency)
+                        }}
+                      </p>
+                      <p class="text-success" v-if="order.couponReduction > 0">
+                        Coupon {{ order.couponCode }}: ({{
+                          format.money(order.couponReduction, order.currency)
+                        }})
+                      </p>
+                      <p v-if="order.mealPlanDiscount > 0" class="text-success">
+                        Subscription Discount: ({{
+                          format.money(order.mealPlanDiscount, order.currency)
+                        }})
+                      </p>
+                      <p v-if="order.deliveryFee > 0">
+                        {{ order.transfer_type }} Fee:
+                        {{ format.money(order.deliveryFee, order.currency) }}
+                      </p>
+                      <p v-if="order.processingFee > 0">
+                        Processing Fee:
+                        {{ format.money(order.processingFee, order.currency) }}
+                      </p>
+                      <p>
+                        Sales Tax:
+                        {{ format.money(order.salesTax, order.currency) }}
+                      </p>
+                      <p v-if="order.gratuity > 0">
+                        Gratuity:
+                        {{ format.money(order.gratuity, order.currency) }}
+                      </p>
+                      <p v-if="order.coolerDeposit > 0">
+                        Cooler Deposit:
+                        {{ format.money(order.coolerDeposit, order.currency) }}
+                      </p>
+                      <p class="strong">
+                        Total:
+                        {{ format.money(order.amount, order.currency) }}
+                      </p>
+                    </template>
+
+                    <template slot="table-caption"></template>
+                  </v-client-table>
+                  <v-client-table
+                    v-if="order.isMultipleDelivery"
+                    striped
+                    stacked="sm"
+                    :columns="columnsMealMultipleDelivery"
+                    :data="getMealTableData(order)"
+                    ref="mealsTable"
+                    foot-clone
+                    :options="optionsMeal"
+                  >
+                    <template slot="meal" slot-scope="props">
+                      <div v-html="props.row.meal"></div>
+                    </template>
+
+                    <template slot="FOOT_subtotal" slot-scope="row">
+                      <p>
+                        Subtotal:
+                        {{
+                          format.money(order.preFeePreDiscount, order.currency)
+                        }}
+                      </p>
+                      <p class="text-success" v-if="order.couponReduction > 0">
+                        Coupon {{ order.couponCode }}: ({{
+                          format.money(order.couponReduction, order.currency)
+                        }})
+                      </p>
+                      <p v-if="order.mealPlanDiscount > 0" class="text-success">
+                        Subscription Discount: ({{
+                          format.money(order.mealPlanDiscount, order.currency)
+                        }})
+                      </p>
+                      <p v-if="order.deliveryFee > 0">
+                        {{ order.transfer_type }} Fee:
+                        {{ format.money(order.deliveryFee, order.currency) }}
+                      </p>
+                      <p v-if="order.processingFee > 0">
+                        Processing Fee:
+                        {{ format.money(order.processingFee, order.currency) }}
+                      </p>
+                      <p v-if="order.salesTax > 0">
+                        Sales Tax:
+                        {{ format.money(order.salesTax, order.currency) }}
+                      </p>
+                      <p class="strong">
+                        Total:
+                        {{ format.money(order.amount, order.currency) }}
+                      </p>
+                    </template>
+
+                    <template slot="table-caption"></template>
+                  </v-client-table>
+                </b-collapse>
+              </b-list-group-item>
+            </div>
           </div>
-        </div>
+        </b-form>
       </b-modal>
     </div>
   </div>
@@ -860,7 +870,8 @@ export default {
     editCustomer() {
       this.editingCustomer = !this.editingCustomer;
     },
-    updateCustomer(id) {
+    updateCustomer() {
+      let id = this.customer.id;
       this.customer.name =
         this.customer.firstname + " " + this.customer.lastname;
 
