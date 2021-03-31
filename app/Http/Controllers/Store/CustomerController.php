@@ -260,22 +260,46 @@ class CustomerController extends StoreController
         $queryEscaped = addslashes(str_replace('@', ' ', $query));
 
         if ($query) {
-            $customers = Customer::where('store_id', $this->store->id);
-            $customer = $customers
+            $allCustomers = Customer::where('store_id', $this->store->id);
+            $customers = $allCustomers
                 ->where('name', 'LIKE', '%' . $query . '%')
                 ->get();
-            if (count($customer) > 0) {
-                return $customer;
-            } else {
-                $customers = Customer::where('store_id', $this->store->id);
-                $customers = $customers
-                    ->where('email', 'LIKE', '%' . $query . '%')
-                    ->orWhere('phone', 'LIKE', '%' . $query . '%')
-                    ->orWhere('firstname', 'LIKE', '%' . $query . '%')
-                    ->orWhere('lastname', 'LIKE', '%' . $query . '%')
-                    ->orWhere('address', 'LIKE', '%' . $query . '%')
-                    ->get();
-
+            if (count($customers) > 0) {
+                return $customers;
+            }
+            $allCustomers = Customer::where('store_id', $this->store->id);
+            $customers = $allCustomers
+                ->where('email', 'LIKE', '%' . $query . '%')
+                ->get();
+            if (count($customers) > 0) {
+                return $customers;
+            }
+            $allCustomers = Customer::where('store_id', $this->store->id);
+            $customers = $allCustomers
+                ->where('phone', 'LIKE', '%' . $query . '%')
+                ->get();
+            if (count($customers) > 0) {
+                return $customers;
+            }
+            $allCustomers = Customer::where('store_id', $this->store->id);
+            $customers = $allCustomers
+                ->where('address', 'LIKE', '%' . $query . '%')
+                ->get();
+            if (count($customers) > 0) {
+                return $customers;
+            }
+            $allCustomers = Customer::where('store_id', $this->store->id);
+            $customers = $allCustomers
+                ->where('firstname', 'LIKE', '%' . $query . '%')
+                ->get();
+            if (count($customers) > 0) {
+                return $customers;
+            }
+            $allCustomers = Customer::where('store_id', $this->store->id);
+            $customers = $allCustomers
+                ->where('lastname', 'LIKE', '%' . $query . '%')
+                ->get();
+            if (count($customers) > 0) {
                 return $customers;
             }
         }
