@@ -1062,7 +1062,7 @@
             >!-->
 
             <!-- Hide regular customer dropdown & show search customer dropdown if store has 250 or more customers -->
-            <v-select
+            <!-- <v-select
               v-if="
                 store.id === 108 ||
                   store.id === 109 ||
@@ -1075,7 +1075,7 @@
               :value="customerModel"
               @input="val => changeCustomer(val)"
             >
-            </v-select>
+            </v-select> -->
 
             <v-select
               label="text"
