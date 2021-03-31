@@ -261,33 +261,24 @@ class CustomerController extends StoreController
 
         if ($query) {
             $customers = Customer::where('store_id', $this->store->id);
-
-            $customer = $customers->where('name', 'LIKE', "%$query%")->get();
-            if ($customer) {
+            $customer = $customers
+                ->where('name', 'LIKE', '%' . $query . '%')
+                ->get();
+            if (count($customer) > 0) {
                 return $customer;
             } else {
+                $customers = Customer::where('store_id', $this->store->id);
                 $customers = $customers
-                    ->whereHas('user', function ($q) use (
-                        $query,
-                        $queryEscaped
-                    ) {
-                        $q
-                            ->where('email', 'LIKE', "%$query%")
-                            ->orWhereHas('userDetail', function ($q) use (
-                                $query,
-                                $queryEscaped
-                            ) {
-                                $q->whereRaw(
-                                    "MATCH(firstname, lastname, phone, address) AGAINST('*{$queryEscaped}*' IN BOOLEAN MODE)"
-                                );
-                            });
-                    })
+                    ->where('email', 'LIKE', '%' . $query . '%')
+                    ->orWhere('phone', 'LIKE', '%' . $query . '%')
+                    ->orWhere('firstname', 'LIKE', '%' . $query . '%')
+                    ->orWhere('lastname', 'LIKE', '%' . $query . '%')
+                    ->orWhere('address', 'LIKE', '%' . $query . '%')
                     ->get();
 
                 return $customers;
             }
         }
-
         return [];
     }
 
