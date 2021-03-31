@@ -1062,27 +1062,21 @@
             >!-->
 
             <!-- Hide regular customer dropdown & show search customer dropdown if store has 250 or more customers -->
-            <v-select
-              v-if="
-                store.id === 108 ||
-                  store.id === 109 ||
-                  store.id === 110 ||
-                  store.id === 278
-              "
-              placeholder="Search customer name"
+            <!-- <v-select
+              v-if="!store.bulkCustomers"
               label="text"
               :options="customers"
-              :value="customerModel"
-              @input="val => changeCustomer(val)"
+              v-model="customerModel"
+              @input="inputCustomer"
             >
-            </v-select>
+            </v-select> -->
 
             <v-select
               label="text"
               :options="customerOptions"
               @search="onSearchCustomer"
               @input="val => changeCustomer(val)"
-              placeholder="Or search by email, phone, or address."
+              placeholder="Type name, email, phone, or address."
               :filterable="false"
               :value="customerModel"
             >
@@ -1600,8 +1594,6 @@ export default {
     }
   },
   mounted: function() {
-    this.refreshStoreCustomers();
-
     this.setOrderFrequency();
 
     if (this.store.modules.frequencyItems) {
@@ -3392,8 +3384,7 @@ use next_delivery_dates
       "refreshUpcomingOrdersWithoutItems",
       "refreshStoreCustomers",
       "refreshStorePurchasedGiftCards",
-      "refreshCards",
-      "refreshStoreCustomers"
+      "refreshCards"
     ]),
     ...mapActions("resources", ["refreshResource"]),
     ...mapMutations([

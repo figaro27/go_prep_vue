@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
+      <b-alert style="background-color:#EBFAFF" show dismissible>
         <p>
           <span class="strong">New - Billing Area</span><br />
           Click your email address on the top right to see the new Billing page
@@ -10,7 +10,7 @@
             ><strong>visit it here.</strong></router-link
           >
         </p>
-      </b-alert> -->
+      </b-alert>
 
       <div class="card">
         <div class="card-body">
