@@ -631,6 +631,8 @@
               placeholder="Price"
               class="mr-3"
               required
+              type="number"
+              min="0"
             ></b-form-input>
           </div>
           <div class="col-md-2">
