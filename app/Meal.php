@@ -916,7 +916,11 @@ class Meal extends Model implements HasMedia
                         $servingSizeUnit = $size['servingSizeUnit'];
                     }
 
-                    if (isset($servingsPerMeal) && isset($servingSizeUnit)) {
+                    if (
+                        isset($servingsPerMeal) &&
+                        isset($servingSizeUnit) &&
+                        isset($servingUnitQuantity)
+                    ) {
                         Meal::saveMealServings(
                             null,
                             $meal,
