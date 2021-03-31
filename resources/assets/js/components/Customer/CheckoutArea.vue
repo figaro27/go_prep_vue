@@ -1062,15 +1062,16 @@
             >!-->
 
             <!-- Hide regular customer dropdown & show search customer dropdown if store has 250 or more customers -->
-            <v-select
+            <!-- <v-select
+              v-if="!store.bulkCustomers"
               label="text"
               :options="customers"
               v-model="customerModel"
               @input="inputCustomer"
             >
-            </v-select>
+            </v-select> -->
 
-            <!-- <v-select
+            <v-select
               label="text"
               :options="customerOptions"
               @search="onSearchCustomer"
@@ -1079,7 +1080,7 @@
               :filterable="false"
               :value="customerModel"
             >
-            </v-select> -->
+            </v-select>
           </b-form-group>
 
           <b-btn variant="primary" v-if="store.id === 3" @click="setSample"
@@ -1593,7 +1594,6 @@ export default {
     }
   },
   mounted: function() {
-    this.refreshStoreCustomers();
     this.setOrderFrequency();
 
     if (this.store.modules.frequencyItems) {
@@ -3384,8 +3384,7 @@ use next_delivery_dates
       "refreshUpcomingOrdersWithoutItems",
       "refreshStoreCustomers",
       "refreshStorePurchasedGiftCards",
-      "refreshCards",
-      "refreshStoreCustomers"
+      "refreshCards"
     ]),
     ...mapActions("resources", ["refreshResource"]),
     ...mapMutations([
