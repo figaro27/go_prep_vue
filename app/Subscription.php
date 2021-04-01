@@ -684,6 +684,74 @@ class Subscription extends Model
                 }
             }
 
+            if ($applyCharge || $markAsPaidOnly) {
+                $this->paid_order_count += 1;
+                $customer = Customer::where('user_id', $this->user_id)->first();
+                $customer->last_order = Carbon::now();
+                $customer->total_payments += 1;
+                $customer->total_paid += $this->amount;
+                $customer->update();
+            }
+
+            $nextOrder = $this->orders->firstWhere(
+                'delivery_date',
+                '>=',
+                Carbon::now()
+            );
+            $this->next_delivery_date = $nextOrder->delivery_date;
+
+            $this->latest_unpaid_order_date = $this->orders()
+                ->where('paid', 0)
+                ->latest()
+                ->pluck('delivery_date')
+                ->first();
+
+            $this->renewalCount += 1;
+            // Cancelling the subscription for next month if cancelled_at is marked
+            if (
+                $this->prepaid &&
+                $this->cancelled_at !== null &&
+                $this->paid_order_count % $this->prepaidWeeks === 0
+            ) {
+                $this->status = 'cancelled';
+                $this->save();
+                return;
+            }
+
+            $this->next_renewal_at = $this->next_renewal_at
+                ->addWeeks($this->intervalCount)
+                ->minute(0)
+                ->second(0);
+            $this->failed_renewal = null;
+            $this->save();
+
+            // Fetching latest order again after updating figures
+            // if ($isMultipleDelivery == 1) {
+            //     $latestOrder = $this->getLatestUnpaidMDOrder();
+            // } else {
+            //     $latestOrder = $this->getLatestUnpaidOrder();
+            // }
+
+            $latestOrder->events()->create([
+                'type' => 'payment_succeeded',
+                'stripe_event' => !$applyCharge ? json_encode($charge) : null
+            ]);
+
+            $order_transaction = new OrderTransaction();
+            $order_transaction->order_id = $latestOrder->id;
+            $order_transaction->store_id = $latestOrder->store_id;
+            $order_transaction->user_id = $latestOrder->user_id;
+            $order_transaction->customer_id = $latestOrder->customer_id;
+            $order_transaction->type = 'order';
+            $order_transaction->stripe_id = $latestOrder->stripe_id
+                ? $latestOrder->stripe_id
+                : null;
+            $order_transaction->card_id = $latestOrder->card_id
+                ? $latestOrder->card_id
+                : null;
+            $order_transaction->amount = $latestOrder->amount;
+            $order_transaction->save();
+
             if ($this->status !== 'paused') {
                 // Send new order notification to store at the cutoff once the order is paid
                 if ($this->store->settings->notificationEnabled('new_order')) {
@@ -738,74 +806,6 @@ class Subscription extends Model
                     }
                 }
             }
-
-            if ($applyCharge || $markAsPaidOnly) {
-                $this->paid_order_count += 1;
-                $customer = Customer::where('user_id', $this->user_id)->first();
-                $customer->last_order = Carbon::now();
-                $customer->total_payments += 1;
-                $customer->total_paid += $this->amount;
-                $customer->update();
-            }
-
-            $nextOrder = $this->orders->firstWhere(
-                'delivery_date',
-                '>=',
-                Carbon::now()
-            );
-            $this->next_delivery_date = $nextOrder->delivery_date;
-
-            $this->latest_unpaid_order_date = $this->orders()
-                ->where('paid', 0)
-                ->latest()
-                ->pluck('delivery_date')
-                ->first();
-
-            $this->renewalCount += 1;
-            // Cancelling the subscription for next month if cancelled_at is marked
-            if (
-                $this->prepaid &&
-                $this->cancelled_at !== null &&
-                $this->paid_order_count % $this->prepaidWeeks === 0
-            ) {
-                $this->status = 'cancelled';
-                $this->save();
-                return;
-            }
-
-            $this->next_renewal_at = $this->next_renewal_at
-                ->addWeeks($this->intervalCount)
-                ->minute(0)
-                ->second(0);
-            $this->failed_renewal = null;
-            $this->save();
-
-            // Fetching latest order again after updating figures
-            if ($isMultipleDelivery == 1) {
-                $latestOrder = $this->getLatestUnpaidMDOrder();
-            } else {
-                $latestOrder = $this->getLatestUnpaidOrder();
-            }
-
-            $latestOrder->events()->create([
-                'type' => 'payment_succeeded',
-                'stripe_event' => !$applyCharge ? json_encode($charge) : null
-            ]);
-
-            $order_transaction = new OrderTransaction();
-            $order_transaction->order_id = $latestOrder->id;
-            $order_transaction->store_id = $latestOrder->store_id;
-            $order_transaction->user_id = $latestOrder->user_id;
-            $order_transaction->customer_id = $latestOrder->customer_id;
-            $order_transaction->type = 'order';
-            $order_transaction->stripe_id = $latestOrder->stripe_id
-                ? $latestOrder->stripe_id
-                : null;
-            $order_transaction->card_id = $latestOrder->card_id
-                ? $latestOrder->card_id
-                : null;
-            $order_transaction->amount = $latestOrder->amount;
-            $order_transaction->save();
         } catch (\Exception $e) {
             $id = $this->id;
             $sub = $this->replicate();
@@ -1086,7 +1086,6 @@ class Subscription extends Model
         $preFeePreDiscount = $prePackagePrice + $totalPackagePrice;
 
         if (!$syncPricesOnly) {
-            $this->updateCurrentMealOrders();
             $this->syncDiscountPrices($mealsReplaced);
             $this->removeOneTimeCoupons();
         }
@@ -1206,6 +1205,9 @@ class Subscription extends Model
             $this->mealsReplaced = 1;
         }
         $this->save();
+
+        // Now update all the future orders with the correct pricing
+        $this->updateCurrentMealOrders();
     }
 
     public function updateCurrentMealOrders()
