@@ -2881,7 +2881,7 @@ use next_delivery_dates
       }
       let promotions = this.promotions;
       let condSubtotalReduction = 0;
-      let condMealslReduction = 0;
+      let condMealsReduction = 0;
       let condOrdersReduction = 0;
       let condNoneReduction = 0;
 
@@ -2904,9 +2904,9 @@ use next_delivery_dates
             promotion.conditionType === "meals" &&
             this.totalBagQuantity >= promotion.conditionAmount
           ) {
-            condMealslReduction +=
-              condMealslReduction < promotionReduction
-                ? -condMealslReduction + promotionReduction
+            condMealsReduction +=
+              condMealsReduction < promotionReduction
+                ? -condMealsReduction + promotionReduction
                 : promotionReduction;
           }
           if (
@@ -2928,7 +2928,7 @@ use next_delivery_dates
       });
       return (
         condSubtotalReduction +
-        condMealslReduction +
+        condMealsReduction +
         condOrdersReduction +
         condNoneReduction
       );
@@ -3050,7 +3050,11 @@ use next_delivery_dates
     totalBagQuantity() {
       let quantity = 0;
       this.bag.forEach(item => {
-        quantity += item.quantity;
+        if (item.meal_package) {
+          quantity += this.getItemMeals(item);
+        } else {
+          quantity += item.quantity;
+        }
       });
       return quantity;
     },
@@ -4289,6 +4293,163 @@ use next_delivery_dates
         return;
       }
       this.$toastr.w(this.invalidCheckout);
+    },
+    getItemMeals(item) {
+      const mealPackage = !!item.meal_package;
+
+      if (!mealPackage || !item.meal) {
+        return [];
+      }
+
+      const pkg = this.getMealPackage(item.meal.id, item.meal);
+      //const size = pkg && item.size ? pkg.getSize(item.size.id) : null;
+      const size = pkg && item.size ? item.size : null;
+
+      const packageMeals = size ? size.meals : pkg ? pkg.meals : null;
+
+      let mealQuantities = _.mapValues(
+        _.keyBy(packageMeals, pkgMeal => {
+          return JSON.stringify({
+            mealId: pkgMeal.id,
+            sizeId: pkgMeal.meal_size_id,
+            itemId: pkgMeal.item_id
+          });
+        }),
+        mealItem => {
+          return {
+            quantity: mealItem.quantity,
+            meal: mealItem,
+            special_instructions: mealItem.special_instructions
+          };
+        }
+      );
+
+      // Add on component option selections
+      _(item.components).forEach((options, componentId) => {
+        const component = pkg.getComponent(componentId);
+        const optionIds = mealPackage ? Object.keys(options) : options;
+
+        _.forEach(optionIds, optionId => {
+          const option = pkg.getComponentOption(component, optionId);
+          if (!option) {
+            return null;
+          }
+
+          //if (option.selectable) {
+          _.forEach(options[option.id], item => {
+            const mealId = item.meal_id;
+            const sizeId = item.meal_size_id;
+            const guid = JSON.stringify({ mealId, sizeId });
+
+            if (mealQuantities[guid]) {
+              mealQuantities[guid].quantity += item.quantity;
+            } else if (item.meal) {
+              mealQuantities[guid] = {
+                quantity: item.quantity,
+                meal: item.meal,
+                special_instructions: item.special_instructions
+              };
+            }
+          });
+          /*} else {
+            _.forEach(option.meals, mealItem => {
+              const mealId = mealItem.meal_id;
+              const sizeId = mealItem.meal_size_id;
+              const guid = JSON.stringify({ mealId, sizeId });
+
+              if (mealQuantities[guid]) {
+                mealQuantities[guid].quantity += mealItem.quantity;
+              } else if (item.meal) {
+                mealQuantities[guid] = {
+                  quantity: item.quantity,
+                  meal: item.meal,
+                  special_instructions: item.special_instructions
+                };
+              }
+            });
+          }*/
+        });
+      });
+
+      _(item.addons).forEach((addonItems, addonId) => {
+        const addon = pkg.getAddon(addonId);
+
+        if (addon.selectable) {
+          _.forEach(addonItems, addonItem => {
+            const mealId = addonItem.meal_id;
+            const sizeId = addonItem.meal_size_id;
+            const guid = JSON.stringify({ mealId, sizeId });
+
+            if (mealQuantities[guid]) {
+              mealQuantities[guid].quantity += addonItem.quantity;
+            } else if (addonItem.meal) {
+              mealQuantities[guid] = {
+                quantity: addonItem.quantity,
+                meal: addonItem.meal,
+                special_instructions: addonItem.special_instructions
+              };
+            }
+          });
+        } else {
+          _.forEach(addonItems, addonItem => {
+            const mealId = addonItem.meal_id;
+            const sizeId = addonItem.meal_size_id;
+            const guid = JSON.stringify({ mealId, sizeId });
+
+            if (mealQuantities[guid]) {
+              mealQuantities[guid].quantity += addonItem.quantity;
+            } else if (addonItem.meal) {
+              mealQuantities[guid] = {
+                quantity: addonItem.quantity,
+                meal: addonItem.meal,
+                special_instructions: addonItem.special_instructions
+              };
+            }
+          });
+        }
+      });
+
+      const meals = _(mealQuantities)
+        .map((item, guid) => {
+          if (
+            !item.hasOwnProperty("quantity") ||
+            !item.hasOwnProperty("meal")
+          ) {
+            return null;
+          }
+
+          const { mealId, sizeId } = JSON.parse(guid);
+          const meal = this.getMeal(mealId, item.meal);
+
+          if (!meal) return null;
+
+          //const size = meal && sizeId ? meal.getSize(sizeId) : null;
+          const size =
+            meal && meal.meal_size
+              ? meal.meal_size
+              : meal && sizeId
+              ? meal.getSize(sizeId)
+              : null;
+          const title = size ? size.full_title : meal.full_title;
+
+          const special_instructions = item.special_instructions;
+
+          return {
+            meal,
+            size,
+            quantity: item.quantity,
+            title,
+            special_instructions
+          };
+        })
+        .filter()
+        .value();
+
+      let totalQuantity = 0;
+      meals.forEach(meal => {
+        totalQuantity += meal.quantity;
+      });
+      return totalQuantity;
     },
     search: _.debounce((loading, search, vm) => {
       axios
