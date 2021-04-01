@@ -355,9 +355,12 @@ class Order extends Model
             });
     }
 
-    public function getCutoffDate()
+    public function getCutoffDate($customDeliveryDay = null)
     {
-        return $this->store->getCutoffDate($this->delivery_date);
+        return $this->store->getCutoffDate(
+            $this->delivery_date,
+            $customDeliveryDay
+        );
     }
 
     public static function updateOrder($id, $props)

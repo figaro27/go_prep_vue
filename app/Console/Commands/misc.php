@@ -60,16 +60,21 @@ class misc extends Command
      */
     public function handle()
     {
-        $plans = StorePlanService::getRenewingPlans();
-        // $this->info(count($plans) . ' store plans renewing today');
+        $store = Store::where('id', 238)->first();
+        $deliveryDate = Carbon::parse('2021-03-31');
 
-        foreach ($plans as $plan) {
-            if ($plan->method === 'connect' && $plan->amount > 0) {
-                $this->info($plan->store_name);
-                // dispatch(function () use ($plan) {
-                //     StorePlanService::renew($plan);
-                // });
-            }
-        }
+        $weekIndex = date('N', strtotime($deliveryDate));
+
+        $customDD = $store
+            ->deliveryDays()
+            ->where([
+                'day' => $weekIndex,
+                'type' => 'pickup'
+            ])
+            ->first();
+
+        $cutoff = $store->getCutoffDate($deliveryDate, $customDD);
+
+        $this->info($cutoff);
     }
 }

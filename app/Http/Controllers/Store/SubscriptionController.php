@@ -534,7 +534,18 @@ class SubscriptionController extends StoreController
 
             foreach ($futureOrders as $order) {
                 // Cutoff already passed. Missed your chance bud!
-                if ($order->getCutoffDate()->isPast()) {
+                $customDD = null;
+                if ($store->modules->customDeliveryDays) {
+                    $weekIndex = date('N', strtotime($order->delivery_date));
+                    $customDD = $store
+                        ->deliveryDays()
+                        ->where([
+                            'day' => $weekIndex,
+                            'type' => $sub->pickup ? 'pickup' : 'delivery'
+                        ])
+                        ->first();
+                }
+                if ($order->getCutoffDate($customDD)->isPast()) {
                     continue;
                 }
 
