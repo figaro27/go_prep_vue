@@ -187,341 +187,398 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        switch ($data['user']['role']) {
-            case 'store':
-                $role = 2;
-                break;
-            case 'customer':
-                $role = 1;
-                break;
-            case 'guest':
-                $role = 4;
-                break;
-        }
-        $user = User::create([
-            //'name' => $data['name'],
-            'user_role_id' => $role,
-            'email' => $data['user']['email'],
-            'password' => Hash::make($data['user']['password']),
-            'remember_token' => Hash::make(str_random(10)),
-            'accepted_tos' => 1,
-            'referralUrlCode' =>
-                'R' .
-                strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
-                chr(rand(65, 90)) .
-                rand(0, 9) .
-                rand(0, 9) .
-                chr(rand(65, 90)),
-            'last_viewed_store_id' => $data['last_viewed_store_id'] ?? null
-        ]);
-
-        $zip = $data['user_details']['zip']
-            ? $data['user_details']['zip']
-            : 'N/A';
-        if ($data['user_details']['country'] == 'US') {
-            $zip = substr($zip, 0, 5);
-        }
-
-        $userDetails = $user->details()->create([
-            //'user_id' => $user->id,
-            'companyname' => isset($data['user']['company_name'])
-                ? $data['user']['company_name']
-                : null,
-            'firstname' => $data['user']['first_name'],
-            'lastname' => $data['user']['last_name'],
-            'phone' => $data['user']['phone'],
-            'address' => isset($data['user_details']['unit'])
-                ? $data['user_details']['address'] .
-                    ' ' .
-                    $data['user_details']['unit']
-                : $data['user_details']['address'],
-            'city' => $data['user_details']['city'],
-            'state' => $data['user_details']['state'],
-            'zip' => $zip,
-            'country' => $data['user_details']['country'],
-            'delivery' => isset($data['user_details']['delivery'])
-                ? $data['user_details']['delivery']
-                : '',
-            'created_at' => now(),
-            'updated_at' => now(),
-            'notifications' => array(
-                'delivery_today' => true,
-                'meal_plan' => true,
-                'meal_plan_paused' => true,
-                'new_order' => true,
-                'subscription_meal_substituted' => true,
-                'subscription_renewing' => true,
-                'new_referral' => true
-            )
-        ]);
-
-        if ($data['user']['role'] === 'store') {
-            $store = $user->store()->create([
-                //'accepted_toa' => 1
+        try {
+            switch ($data['user']['role']) {
+                case 'store':
+                    $role = 2;
+                    break;
+                case 'customer':
+                    $role = 1;
+                    break;
+                case 'guest':
+                    $role = 4;
+                    break;
+            }
+            $user = User::create([
+                //'name' => $data['name'],
+                'user_role_id' => $role,
+                'email' => $data['user']['email'],
+                'password' => Hash::make($data['user']['password']),
+                'remember_token' => Hash::make(str_random(10)),
+                'accepted_tos' => 1,
+                'referralUrlCode' =>
+                    'R' .
+                    strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
+                    chr(rand(65, 90)) .
+                    rand(0, 9) .
+                    rand(0, 9) .
+                    chr(rand(65, 90)),
+                'last_viewed_store_id' => $data['last_viewed_store_id'] ?? null
             ]);
 
-            $storeDetail = $store->details()->create([
-                'name' => $data['store']['store_name'],
+            $zip = $data['user_details']['zip']
+                ? $data['user_details']['zip']
+                : 'N/A';
+            if ($data['user_details']['country'] == 'US') {
+                $zip = substr($zip, 0, 5);
+            }
+
+            $userDetails = $user->details()->create([
+                //'user_id' => $user->id,
+                'companyname' => isset($data['user']['company_name'])
+                    ? $data['user']['company_name']
+                    : null,
+                'firstname' => $data['user']['first_name'],
+                'lastname' => $data['user']['last_name'],
                 'phone' => $data['user']['phone'],
-                'address' => $data['store']['address'],
-                'city' => $data['store']['city'],
-                'state' => $data['store']['state'],
-                'zip' => $data['store']['zip'],
-                'country' => $data['store']['country'],
-                'logo' => '',
-                'domain' => $data['store']['domain'],
-                'created_at' => now()
-            ]);
-
-            if (
-                isset($data['store']['currency']) &&
-                in_array($data['store']['currency'], ['USD', 'GBP', 'CAD'])
-            ) {
-                $currency = $data['store']['currency'];
-            } else {
-                switch ($data['store']['country']) {
-                    case 'GB':
-                        $currency = 'GBP';
-                        break;
-                    case 'CA':
-                        $currency = 'CAD';
-                        break;
-                    default:
-                        $currency = 'USD';
-                }
-            }
-
-            $storeSettings = $store->settings()->create([
-                'timezone' => $this->getTimeZone($data),
-                'currency' => $currency,
-                'open' => 0,
-                'notifications' => [],
-                'transferType' => 'delivery',
-                'view_delivery_days' => 1,
-                'delivery_days' => ["sun"],
-                'delivery_distance_zipcodes' => [],
-                'meal_packages' => 1,
+                'address' => isset($data['user_details']['unit'])
+                    ? $data['user_details']['address'] .
+                        ' ' .
+                        $data['user_details']['unit']
+                    : $data['user_details']['address'],
+                'city' => $data['user_details']['city'],
+                'state' => $data['user_details']['state'],
+                'zip' => $zip,
+                'country' => $data['user_details']['country'],
+                'delivery' => isset($data['user_details']['delivery'])
+                    ? $data['user_details']['delivery']
+                    : '',
+                'created_at' => now(),
+                'updated_at' => now(),
                 'notifications' => array(
+                    'delivery_today' => true,
+                    'meal_plan' => true,
+                    'meal_plan_paused' => true,
                     'new_order' => true,
-                    'new_orders' => true,
-                    'ready_to_print' => true,
-                    'new_subscription' => true,
-                    'new_subscriptions' => true,
-                    'cancelled_subscription' => true,
-                    'cancelled_subscriptions' => true
-                ),
-                'subscriptionRenewalType' => 'cutoff',
-                'application_fee' =>
-                    collect($data['plan'])->get('plan') === 'pay-as-you-go'
-                        ? 5
-                        : 0
+                    'subscription_meal_substituted' => true,
+                    'subscription_renewing' => true,
+                    'new_referral' => true
+                )
             ]);
 
-            $storeSettings = $store->categories()->create([
-                'category' => 'Entrees'
-            ]);
+            if ($data['user']['role'] === 'store') {
+                $store = $user->store()->create([
+                    //'accepted_toa' => 1
+                ]);
 
-            $storeModules = $store->modules()->create([
-                'cashOrders' => 1,
-                'manualOrders' => 1,
-                'manualCustomers' => 1,
-                'deposits' => 1,
-                'lineItems' => 1,
-                'orderNotes' => 1,
-                'emailBranding' => 1
-            ]);
+                $storeDetail = $store->details()->create([
+                    'name' => $data['store']['store_name'],
+                    'phone' => $data['user']['phone'],
+                    'address' => $data['store']['address'],
+                    'city' => $data['store']['city'],
+                    'state' => $data['store']['state'],
+                    'zip' => $data['store']['zip'],
+                    'country' => $data['store']['country'],
+                    'logo' => '',
+                    'domain' => $data['store']['domain'],
+                    'created_at' => now()
+                ]);
 
-            $storeModuleSettings = $store->moduleSettings()->create();
-
-            $storeReferralSettings = $store->referralSettings()->create([
-                'signupEmail' => 0,
-                'showInNotifications' => 0,
-                'showInMenu' => 0,
-                'type' => 'percent',
-                'amount' => 5.0
-            ]);
-
-            $storeReportSettings = $store->reportSettings()->create();
-            $storeSMSSettings = $store->smsSettings()->create([
-                'autoSendOrderReminderTemplate' =>
-                    'Last chance to order for {next delivery}. Our cutoff time is {cutoff}. Please order at {URL}.',
-                'autoSendDeliveryTemplate' =>
-                    'Your order from {store name} {pickup/delivery} today.',
-                'autoSendOrderConfirmationTemplate' =>
-                    'Thank you for your order. Your order {pickup/delivery} on {delivery date}.',
-                'autoSendSubscriptionRenewalTemplate' =>
-                    'Your subscription from {store name} will renew in 24 hours. If you\'d like to make any changes, please visit {URL}.'
-            ]);
-
-            $storeSMSMasterList = $store->smsSettings->createMasterList();
-
-            $storeReportRecords = $store->reportRecords()->create();
-
-            $storeMenuSettings = $store->menuSettings()->create();
-
-            $storePackingSlipSettings = $store->packingSlipSettings()->create();
-
-            try {
-                $key = new \Cloudflare\API\Auth\APIKey(
-                    config('services.cloudflare.user'),
-                    config('services.cloudflare.key')
-                );
-                $adapter = new \Cloudflare\API\Adapter\Guzzle($key);
-                $zones = new \Cloudflare\API\Endpoints\Zones($adapter);
-                $dns = new \Cloudflare\API\Endpoints\DNS($adapter);
-
-                $zoneId = $zones->getZoneID(config('services.cloudflare.zone'));
-
-                $dns->addRecord(
-                    $zoneId,
-                    'CNAME',
-                    $storeDetail->domain . '.dev',
-                    config('services.cloudflare.zone'),
-                    0,
-                    true
-                );
-                $dns->addRecord(
-                    $zoneId,
-                    'CNAME',
-                    $storeDetail->domain,
-                    config('services.cloudflare.zone'),
-                    0,
-                    true
-                );
-            } catch (\Exception $e) {
-                // todo: send notification to admin
-            }
-
-            $planless = $data['planless'] ?? false;
-            $freeTrial = $data['plan']['plan'] == 'free_trial' ? true : false;
-
-            if ($planless) {
-                // todo: send notification to admin
-            } else {
-                // Create plan
-                $plans = config('plans');
-                $planObj = collect($data['plan']);
-                $planId = $planObj->get('plan');
-                $planMethod = $planObj->get('plan_method');
-                $planPeriod = $planObj->get('plan_period');
-                $planToken = $planObj->get('stripe_token');
-                $payAsYouGo = $planId === 'pay-as-you-go';
-                try {
-                    $plan = collect($plans[$planId][$planPeriod]);
-                } catch (\Exception $e) {
-                    Log::error($e->getMessage());
-                }
-
-                $allowed_orders =
-                    $data['plan']['allowed_orders'] !== null
-                        ? $data['plan']['allowed_orders']
-                        : $plan->get('orders');
-
-                if ($allowed_orders == null) {
-                    $allowed_orders = 50;
-                }
-
-                $upfrontFee = $plan->get('price_upfront', null);
-
-                if (!$payAsYouGo) {
-                    $storePlan = new StorePlan();
-                    $storePlan->status = 'active';
-                    $storePlan->store_id = $store->id;
-                    $storePlan->store_name = $store->details->name;
-                    $storePlan->contact_email = $user->email;
-                    $storePlan->contact_phone = $userDetails->phone;
-                    $storePlan->contact_name =
-                        $userDetails->firstname . ' ' . $userDetails->lastname;
-                    $storePlan->method = $planMethod;
-                    $storePlan->amount = $plan->get('price');
-                    $storePlan->plan_name =
-                        $planObj->get('plan') === 'free_trial'
-                            ? 'basic'
-                            : $planObj->get('plan');
-                    $storePlan->allowed_orders = $allowed_orders;
-                    $storePlan->period = $planPeriod;
-                    $storePlan->free_trial = $freeTrial;
-                    $storePlan->day = $freeTrial
-                        ? Carbon::now()->addWeeks(2)->day
-                        : Carbon::now()->day;
-                    $storePlan->month = $freeTrial
-                        ? Carbon::now()->addWeeks(2)->month
-                        : Carbon::now()->month;
+                if (
+                    isset($data['store']['currency']) &&
+                    in_array($data['store']['currency'], ['USD', 'GBP', 'CAD'])
+                ) {
+                    $currency = $data['store']['currency'];
                 } else {
-                    $storePlan = new StorePlan();
-                    $storePlan->status = 'active';
-                    $storePlan->store_id = $store->id;
-                    $storePlan->store_name = $store->details->name;
-                    $storePlan->contact_email = $user->email;
-                    $storePlan->contact_phone = $userDetails->phone;
-                    $storePlan->contact_name =
-                        $userDetails->firstname . ' ' . $userDetails->lastname;
-                    $storePlan->method = 'n/a';
-                    $storePlan->amount = 0;
-                    $storePlan->plan_name = 'pay-as-you-go';
-                    $storePlan->allowed_orders = 0;
-                    $storePlan->period = 'n/a';
-                    $storePlan->free_trial = $freeTrial;
-                    $storePlan->day = 0;
-                    $storePlan->month = 0;
+                    switch ($data['store']['country']) {
+                        case 'GB':
+                            $currency = 'GBP';
+                            break;
+                        case 'CA':
+                            $currency = 'CAD';
+                            break;
+                        default:
+                            $currency = 'USD';
+                    }
                 }
 
-                // A credit card was entered
-                if ($planToken) {
-                    // Create customer
-                    $customer = \Stripe\Customer::create([
-                        'description' => '',
-                        'source' => $planToken,
-                        'email' => $user->email,
-                        'name' =>
+                $storeSettings = $store->settings()->create([
+                    'timezone' => $this->getTimeZone($data),
+                    'currency' => $currency,
+                    'open' => 0,
+                    'notifications' => [],
+                    'transferType' => 'delivery',
+                    'view_delivery_days' => 1,
+                    'delivery_days' => ["sun"],
+                    'delivery_distance_zipcodes' => [],
+                    'meal_packages' => 1,
+                    'notifications' => array(
+                        'new_order' => true,
+                        'new_orders' => true,
+                        'ready_to_print' => true,
+                        'new_subscription' => true,
+                        'new_subscriptions' => true,
+                        'cancelled_subscription' => true,
+                        'cancelled_subscriptions' => true
+                    ),
+                    'subscriptionRenewalType' => 'cutoff',
+                    'application_fee' =>
+                        collect($data['plan'])->get('plan') === 'pay-as-you-go'
+                            ? 5
+                            : 0
+                ]);
+
+                $storeSettings = $store->categories()->create([
+                    'category' => 'Entrees'
+                ]);
+
+                $storeModules = $store->modules()->create([
+                    'cashOrders' => 1,
+                    'manualOrders' => 1,
+                    'manualCustomers' => 1,
+                    'deposits' => 1,
+                    'lineItems' => 1,
+                    'orderNotes' => 1,
+                    'emailBranding' => 1
+                ]);
+
+                $storeModuleSettings = $store->moduleSettings()->create();
+
+                $storeReferralSettings = $store->referralSettings()->create([
+                    'signupEmail' => 0,
+                    'showInNotifications' => 0,
+                    'showInMenu' => 0,
+                    'type' => 'percent',
+                    'amount' => 5.0
+                ]);
+
+                $storeReportSettings = $store->reportSettings()->create();
+                $storeSMSSettings = $store->smsSettings()->create([
+                    'autoSendOrderReminderTemplate' =>
+                        'Last chance to order for {next delivery}. Our cutoff time is {cutoff}. Please order at {URL}.',
+                    'autoSendDeliveryTemplate' =>
+                        'Your order from {store name} {pickup/delivery} today.',
+                    'autoSendOrderConfirmationTemplate' =>
+                        'Thank you for your order. Your order {pickup/delivery} on {delivery date}.',
+                    'autoSendSubscriptionRenewalTemplate' =>
+                        'Your subscription from {store name} will renew in 24 hours. If you\'d like to make any changes, please visit {URL}.'
+                ]);
+
+                $storeSMSMasterList = $store->smsSettings->createMasterList();
+
+                $storeReportRecords = $store->reportRecords()->create();
+
+                $storeMenuSettings = $store->menuSettings()->create();
+
+                $storePackingSlipSettings = $store
+                    ->packingSlipSettings()
+                    ->create();
+
+                try {
+                    $key = new \Cloudflare\API\Auth\APIKey(
+                        config('services.cloudflare.user'),
+                        config('services.cloudflare.key')
+                    );
+                    $adapter = new \Cloudflare\API\Adapter\Guzzle($key);
+                    $zones = new \Cloudflare\API\Endpoints\Zones($adapter);
+                    $dns = new \Cloudflare\API\Endpoints\DNS($adapter);
+
+                    $zoneId = $zones->getZoneID(
+                        config('services.cloudflare.zone')
+                    );
+
+                    $dns->addRecord(
+                        $zoneId,
+                        'CNAME',
+                        $storeDetail->domain . '.dev',
+                        config('services.cloudflare.zone'),
+                        0,
+                        true
+                    );
+                    $dns->addRecord(
+                        $zoneId,
+                        'CNAME',
+                        $storeDetail->domain,
+                        config('services.cloudflare.zone'),
+                        0,
+                        true
+                    );
+                } catch (\Exception $e) {
+                    // todo: send notification to admin
+                }
+
+                $planless = $data['planless'] ?? false;
+                $freeTrial =
+                    $data['plan']['plan'] == 'free_trial' ? true : false;
+
+                if ($planless) {
+                    // todo: send notification to admin
+                } else {
+                    // Create plan
+                    $plans = config('plans');
+                    $planObj = collect($data['plan']);
+                    $planId = $planObj->get('plan');
+                    $planMethod = $planObj->get('plan_method');
+                    $planPeriod = $planObj->get('plan_period');
+                    $planToken = $planObj->get('stripe_token');
+                    $payAsYouGo = $planId === 'pay-as-you-go';
+                    try {
+                        $plan = collect($plans[$planId][$planPeriod]);
+                    } catch (\Exception $e) {
+                        Log::error($e->getMessage());
+                    }
+
+                    $allowed_orders =
+                        $data['plan']['allowed_orders'] !== null
+                            ? $data['plan']['allowed_orders']
+                            : $plan->get('orders');
+
+                    if ($allowed_orders == null) {
+                        $allowed_orders = 50;
+                    }
+
+                    $upfrontFee = $plan->get('price_upfront', null);
+
+                    if (!$payAsYouGo) {
+                        $storePlan = new StorePlan();
+                        $storePlan->status = 'active';
+                        $storePlan->store_id = $store->id;
+                        $storePlan->store_name = $store->details->name;
+                        $storePlan->contact_email = $user->email;
+                        $storePlan->contact_phone = $userDetails->phone;
+                        $storePlan->contact_name =
                             $userDetails->firstname .
                             ' ' .
-                            $userDetails->lastname
-                    ]);
-                }
+                            $userDetails->lastname;
+                        $storePlan->method = $planMethod;
+                        $storePlan->amount = $plan->get('price');
+                        $storePlan->plan_name =
+                            $planObj->get('plan') === 'free_trial'
+                                ? 'basic'
+                                : $planObj->get('plan');
+                        $storePlan->allowed_orders = $allowed_orders;
+                        $storePlan->period = $planPeriod;
+                        $storePlan->free_trial = $freeTrial;
+                        $storePlan->day = $freeTrial
+                            ? Carbon::now()->addWeeks(2)->day
+                            : Carbon::now()->day;
+                        $storePlan->month = $freeTrial
+                            ? Carbon::now()->addWeeks(2)->month
+                            : Carbon::now()->month;
+                    } else {
+                        $storePlan = new StorePlan();
+                        $storePlan->status = 'active';
+                        $storePlan->store_id = $store->id;
+                        $storePlan->store_name = $store->details->name;
+                        $storePlan->contact_email = $user->email;
+                        $storePlan->contact_phone = $userDetails->phone;
+                        $storePlan->contact_name =
+                            $userDetails->firstname .
+                            ' ' .
+                            $userDetails->lastname;
+                        $storePlan->method = 'n/a';
+                        $storePlan->amount = 0;
+                        $storePlan->plan_name = 'pay-as-you-go';
+                        $storePlan->allowed_orders = 0;
+                        $storePlan->period = 'n/a';
+                        $storePlan->free_trial = $freeTrial;
+                        $storePlan->day = 0;
+                        $storePlan->month = 0;
+                    }
 
-                $storePlan->stripe_customer_id = $customer->id;
-                $storePlan->save();
+                    // A credit card was entered
+                    if ($planToken) {
+                        // Create customer
+                        $customer = \Stripe\Customer::create([
+                            'description' => '',
+                            'source' => $planToken,
+                            'email' => $user->email,
+                            'name' =>
+                                $userDetails->firstname .
+                                ' ' .
+                                $userDetails->lastname
+                        ]);
+                    }
 
-                // If using credit card billing, charge here
-                if (!$payAsYouGo && $planMethod === 'credit_card') {
-                    $subscription = \Stripe\Subscription::create([
-                        'customer' => $customer,
-                        'trial_from_plan' => $freeTrial,
-                        'items' => [
-                            [
-                                'plan' => $plan->get('stripe_id')
+                    $storePlan->stripe_customer_id = $customer->id;
+                    $storePlan->save();
+
+                    // If using credit card billing, charge here
+                    if (!$payAsYouGo && $planMethod === 'credit_card') {
+                        $subscription = \Stripe\Subscription::create([
+                            'customer' => $customer,
+                            'trial_from_plan' => $freeTrial,
+                            'items' => [
+                                [
+                                    'plan' => $plan->get('stripe_id')
+                                ]
                             ]
-                        ]
-                    ]);
+                        ]);
 
-                    $storePlan->stripe_subscription_id = $subscription->id;
+                        $storePlan->stripe_subscription_id = $subscription->id;
 
-                    // Get card ID
-                    $customer = \Stripe\Customer::retrieve($customer->id, []);
-                    $storePlan->stripe_card_id = $customer->allSources(
-                        $customer->id,
-                        []
-                    )->data[0]['id'];
+                        // Get card ID
+                        $customer = \Stripe\Customer::retrieve(
+                            $customer->id,
+                            []
+                        );
+                        $storePlan->stripe_card_id = $customer->allSources(
+                            $customer->id,
+                            []
+                        )->data[0]['id'];
+                    }
+
+                    // Charge the up-front fee
+                    if ($upfrontFee) {
+                        $charge = \Stripe\Charge::create([
+                            'amount' => $upfrontFee,
+                            'currency' => 'usd',
+                            'customer' => $customer,
+                            'description' => 'GoPrep: One-time signup fee'
+                        ]);
+                    }
+
+                    // if (!$payAsYouGo) {
+                    $storePlan->update();
+                    // }
                 }
+            }
 
-                // Charge the up-front fee
-                if ($upfrontFee) {
-                    $charge = \Stripe\Charge::create([
-                        'amount' => $upfrontFee,
-                        'currency' => 'usd',
-                        'customer' => $customer,
-                        'description' => 'GoPrep: One-time signup fee'
-                    ]);
-                }
-
-                // if (!$payAsYouGo) {
-                $storePlan->update();
-                // }
+            return $user;
+        } catch (\Exception $e) {
+            if ($user) {
+                $user->delete();
+            }
+            if ($userDetails) {
+                $userDetails->delete();
+            }
+            if ($store) {
+                $store->delete();
+            }
+            if ($storeDetail) {
+                $storeDetail->delete();
+            }
+            if ($storeSettings) {
+                $storeSettings->delete();
+            }
+            if ($storeModules) {
+                $storeModules->delete();
+            }
+            if ($storeModuleSettings) {
+                $storeModuleSettings->delete();
+            }
+            if ($storeReferralSettings) {
+                $storeReferralSettings->delete();
+            }
+            if ($storeReportSettings) {
+                $storeReportSettings->delete();
+            }
+            if ($storeSMSSettings) {
+                $storeSMSSettings->delete();
+            }
+            if ($storeReportRecords) {
+                $storeReportRecords->delete();
+            }
+            if ($storeMenuSettings) {
+                $storeMenuSettings->delete();
+            }
+            if ($storePackingSlipSettings) {
+                $storePackingSlipSettings->delete();
+            }
+            if ($storePlan) {
+                $storePlan->delete();
             }
         }
-
-        return $user;
     }
 
     protected function registered(Request $request, $user)
