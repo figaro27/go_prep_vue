@@ -95,7 +95,7 @@
       <b-form-checkbox
         v-model="saveCard"
         class="d-inline pt-1"
-        v-if="user && user.user_role_id !== 4 && !billingPage"
+        v-if="user && user.user_role_id !== 4 && !billingPage && !bagMealPlan"
         >Save card for future use</b-form-checkbox
       >
     </div>
@@ -230,7 +230,8 @@ export default {
       storeSettings: "viewedStoreSettings",
       store: "viewedStore",
       isLoading: "isLoading",
-      user: "user"
+      user: "user",
+      bagMealPlan: "bagMealPlan"
     })
   },
   mounted() {
@@ -294,6 +295,9 @@ export default {
       }
     },
     createCard(token, card) {
+      if (this.bagMealPlan) {
+        this.saveCard = true;
+      }
       let customer = this.$parent.getCustomer()
         ? this.$parent.getCustomer()
         : this.user;
@@ -341,15 +345,14 @@ export default {
         });
     },
     checkCardSubscriptions(id) {
-      let card = this.cards.find(card => {
-        return (card.id = id);
+      axios.post("/api/me/cardHasSubscription", { cardId: id }).then(resp => {
+        if (resp.data === true) {
+          this.showDeleteCardModal = true;
+          this.cardId = id;
+        } else {
+          this.deleteCard(id);
+        }
       });
-      if (card.in_subscription > 0) {
-        this.showDeleteCardModal = true;
-        this.cardId = id;
-      } else {
-        this.deleteCard(id);
-      }
     },
     deleteCard(id) {
       axios.delete("/api/me/cards/" + id).then(async resp => {

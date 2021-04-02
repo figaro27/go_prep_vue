@@ -3709,27 +3709,9 @@ use next_delivery_dates
       if (this.store.modules.cashOrderAutoSelect) {
         return;
       }
+      this.refreshCards();
       this.updateParentData();
-
       window.localStorage.clear();
-      this.creditCardId = null;
-      //this.creditCards = null;
-      this.$nextTick(() => {
-        axios
-          .post("/api/me/getCards", {
-            id: this.getCustomer()
-          })
-          .then(response => {
-            this.$parent.creditCardList = response.data;
-            if (response.data.length) {
-              this.creditCardId = response.data[0].id;
-              this.creditCard = response.data[0];
-              if (this.$refs.cardPicker) {
-                this.$refs.cardPicker.setCard(response.data[0].id);
-              }
-            }
-          });
-      });
     },
     getCustomer() {
       if (this.customerModel) {

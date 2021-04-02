@@ -18,8 +18,6 @@ class Card extends Model
 
     protected $dates = ['deleted_at'];
 
-    protected $appends = ['in_subscription'];
-
     protected $fillable = [
         'stripe_id',
         'brand',
@@ -42,13 +40,5 @@ class Card extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
-    }
-
-    public function getInSubscriptionAttribute()
-    {
-        return Subscription::where([
-            'status' => 'active',
-            'card_id' => $this->id
-        ])->count();
     }
 }

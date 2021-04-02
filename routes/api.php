@@ -573,6 +573,10 @@ foreach (
                                 'StoreSettingController@getApplicationFee'
                             );
                             Route::resource('cards', 'CardController');
+                            Route::post(
+                                'cardHasSubscription',
+                                'CardController@cardHasSubscription'
+                            );
 
                             Route::resource(
                                 'referralSettings',
@@ -890,6 +894,11 @@ foreach (
                             Route::resource(
                                 'me/cards',
                                 'Billing\CardController'
+                            );
+
+                            Route::post(
+                                'me/cardHasSubscription',
+                                'Billing\CardController@cardHasSubscription'
                             );
 
                             Route::resource('/me', 'UserController');

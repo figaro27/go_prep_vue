@@ -213,6 +213,20 @@ class CardController extends UserController
         $card->delete();
     }
 
+    public function cardHasSubscription(Request $request)
+    {
+        $cardId = $request->get('cardId');
+
+        if (
+            Subscription::where('status', '!=', 'cancelled')
+                ->where('card_id', $cardId)
+                ->count() > 0
+        ) {
+            return 'true';
+        }
+        return;
+    }
+
     public function destroySubscription($id)
     {
         $sub = Subscription::where('card_id', $id)->first();

@@ -676,7 +676,8 @@ export default {
       "refreshOrders",
       "refreshStoreSubscriptions",
       "refreshUpcomingOrders",
-      "refreshStoreCustomers"
+      "refreshStoreCustomers",
+      "refreshCards"
     ]),
     ...mapMutations([
       "emptyBag",
@@ -837,23 +838,7 @@ export default {
       return couponCheck;
     },
     getCards() {
-      this.$nextTick(() => {
-        axios
-          .post("/api/me/getCards", {
-            id: this.customer
-          })
-          .then(response => {
-            this.creditCardList = response.data;
-
-            if (response.data.length) {
-              this.creditCardId = response.data[0].id;
-              this.creditCard = response.data[0];
-              if (this.$refs.cardPicker) {
-                this.$refs.cardPicker.setCard(response.data[0].id);
-              }
-            }
-          });
-      });
+      this.refreshCards();
     },
     getCustomer() {
       return this.customer;
