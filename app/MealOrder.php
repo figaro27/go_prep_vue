@@ -509,7 +509,9 @@ class MealOrder extends Pivot
         $meal = $this->meal;
 
         if ($this->meal_size_id) {
-            $meal = MealSize::where('id', $this->meal_size_id)->first();
+            $meal = MealSize::where('id', $this->meal_size_id)
+                ->withTrashed()
+                ->first();
         }
 
         $mainIngredients = $meal->ingredients;
