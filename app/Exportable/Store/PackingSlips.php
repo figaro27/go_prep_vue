@@ -233,7 +233,9 @@ class PackingSlips
             // 'margin-right' => 0,
             //'binary' => '/usr/local/bin/wkhtmltopdf',
             'disable-smart-shrinking',
-            'no-pdf-compression'
+            // Wait 800ms before rendering
+            'javascript-delay' => 800
+            //'no-pdf-compression'
         ];
 
         if (config('pdf.xserver')) {
