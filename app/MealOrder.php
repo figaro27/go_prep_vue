@@ -527,6 +527,7 @@ class MealOrder extends Pivot
                 $component['meal_component_option_id']
             )
                 ->with('ingredients')
+                ->withTrashed()
                 ->first()->ingredients;
             foreach ($ingredients as $ingredient) {
                 if (!$ingredient->attributes['hidden']) {
@@ -538,6 +539,7 @@ class MealOrder extends Pivot
         foreach ($this->addons as $addon) {
             $ingredients = MealAddon::where('id', $addon['meal_addon_id'])
                 ->with('ingredients')
+                ->withTrashed()
                 ->first()->ingredients;
             foreach ($ingredients as $ingredient) {
                 if (!$ingredient->attributes['hidden']) {
