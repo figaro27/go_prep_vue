@@ -1484,12 +1484,12 @@ export default {
       }
       if (type === "gift_card") {
         await this._updateGiftCard({ id, data: { active } });
-        this.$toastr.s("Item " + action + "ed.");
+        this.$toastr.s("Item " + action + "d.");
         return;
       }
       if (type === "package") {
         await this._updateMealPackage({ id, data: { active } });
-        this.$toastr.s("Item " + action + "ed.");
+        this.$toastr.s("Item " + action + "d.");
         return;
       }
       if (type === "meal") {
