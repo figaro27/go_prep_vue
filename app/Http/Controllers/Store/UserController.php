@@ -102,35 +102,35 @@ class UserController extends StoreController
 
     public function getLeads()
     {
-        return User::where('last_viewed_store_id', $this->store->id)
-            ->whereDoesntHave('orders')
+        // return User::where('last_viewed_store_id', $this->store->id)
+        //     ->whereDoesntHave('orders')
+        //     ->get();
+
+        $users = UserDetail::where('last_viewed_store_id', $this->store->id)
+            ->where('total_payments', 0)
+            ->where('multiple_store_orders', 0)
             ->get();
 
-        // $users = UserDetail::where('last_viewed_store_id', $this->store->id)
-        //     ->where('total_payments', 0)
-        //     ->where('multiple_store_orders', 0)
-        //     ->get();
+        $multipleStoreOrderUsers = UserDetail::where(
+            'last_viewed_store_id',
+            $this->store->id
+        )
+            ->where('total_payments', '>=', 1)
+            ->where('multiple_store_orders', 1)
+            ->get();
 
-        // $multipleStoreOrderUsers = UserDetail::where(
-        //     'last_viewed_store_id',
-        //     $this->store->id
-        // )
-        //     ->where('total_payments', '>=', 1)
-        //     ->where('multiple_store_orders', 1)
-        //     ->get();
-
-        // // The user could have created orders but on a different store
-        // foreach ($multipleStoreOrderUsers as $userDetail) {
-        //     $addToList = true;
-        //     foreach ($userDetail->user->orders as $order) {
-        //         if ($order->store_id === $this->store->id) {
-        //             $addToList = false;
-        //         }
-        //     }
-        //     if ($addToList) {
-        //         $users->push($userDetail);
-        //     }
-        // }
-        // return $users;
+        // The user could have created orders but on a different store
+        foreach ($multipleStoreOrderUsers as $userDetail) {
+            $addToList = true;
+            foreach ($userDetail->user->orders as $order) {
+                if ($order->store_id === $this->store->id) {
+                    $addToList = false;
+                }
+            }
+            if ($addToList) {
+                $users->push($userDetail);
+            }
+        }
+        return $users;
     }
 }
