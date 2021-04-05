@@ -106,6 +106,7 @@ class RegisterController extends StoreController
 
             $userDetails = $user->details()->create([
                 'companyname' => $request->get('company_name'),
+                'email' => $email,
                 'firstname' => $request->get('first_name'),
                 'lastname' => $request->get('last_name'),
                 'phone' => $request->get('phone'),
@@ -135,6 +136,7 @@ class RegisterController extends StoreController
         } else {
             // Update user detail with newly entered data
             $userDetail = UserDetail::where('user_id', $user->id)->first();
+            $userDetail->email = $email;
             $userDetail->firstname = $request->get('first_name');
             $userDetail->lastname = $request->get('last_name');
             $userDetail->address = $request->get('address')

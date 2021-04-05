@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserDetail extends Model
 {
     protected $fillable = [
+        'email',
         'firstname',
         'lastname',
         'phone',
@@ -21,7 +22,10 @@ class UserDetail extends Model
         'billingAddress',
         'billingCity',
         'billingState',
-        'billingZip'
+        'billingZip',
+        'last_viewed_store_id',
+        'multiple_store_orders',
+        'total_payments'
     ];
 
     public function user()

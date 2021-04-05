@@ -111,7 +111,7 @@ class UserController extends StoreController
         //     ->where('multiple_store_orders', 0)
         //     ->get();
 
-        // $multipleStoreOrderUsers = User::where(
+        // $multipleStoreOrderUsers = UserDetail::where(
         //     'last_viewed_store_id',
         //     $this->store->id
         // )
@@ -120,15 +120,15 @@ class UserController extends StoreController
         //     ->get();
 
         // // The user could have created orders but on a different store
-        // foreach ($multipleStoreOrderUsers as $user) {
+        // foreach ($multipleStoreOrderUsers as $userDetail) {
         //     $addToList = true;
-        //     foreach ($user->orders as $order) {
+        //     foreach ($userDetail->user->orders as $order) {
         //         if ($order->store_id === $this->store->id) {
         //             $addToList = false;
         //         }
         //     }
         //     if ($addToList) {
-        //         $users->push($user);
+        //         $users->push($userDetail);
         //     }
         // }
         // return $users;

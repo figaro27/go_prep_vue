@@ -26,23 +26,17 @@
             >
           </b-dropdown>
         </span>
+
+        <!-- <div slot="name" slot-scope="props">
+          <div>
+            {{ props.row.firstname }} {{ props.row.lastname }}
+          </div>
+        </div> -->
+
         <div slot="created_at" slot-scope="props">
           <div>
             {{ moment(props.row.created_at).format("dddd, MMM Do, YYYY") }}
           </div>
-        </div>
-
-        <div slot="total_paid" slot-scope="props">
-          <div>{{ format.money(props.row.total_paid) }}</div>
-        </div>
-
-        <div slot="actions" class="text-nowrap" slot-scope="props">
-          <button
-            class="btn view btn-primary btn-sm"
-            @click="viewCustomer(props.row.id)"
-          >
-            View Customer
-          </button>
         </div>
       </v-client-table>
     </div>
@@ -68,19 +62,19 @@ export default {
       columns: [
         "name",
         "email",
-        "user_detail.phone",
-        "user_detail.address",
-        "user_detail.city",
-        "user_detail.zip",
+        "phone",
+        "address",
+        "city",
+        "zip",
         "created_at"
       ],
       options: {
         headings: {
           Name: "Name",
-          "user_detail.phone": "Phone",
-          "user_detail.address": "Address",
-          "user_detail.city": "City",
-          "user_detail.zip": "Zip",
+          phone: "Phone",
+          address: "Address",
+          city: "City",
+          zip: "Zip",
           created_at: "Menu Viewed"
         },
         customSorting: {

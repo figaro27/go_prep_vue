@@ -228,6 +228,7 @@ class RegisterController extends Controller
                 'companyname' => isset($data['user']['company_name'])
                     ? $data['user']['company_name']
                     : null,
+                'email' => $data['user']['email'],
                 'firstname' => $data['user']['first_name'],
                 'lastname' => $data['user']['last_name'],
                 'phone' => $data['user']['phone'],
