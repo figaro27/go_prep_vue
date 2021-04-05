@@ -5,6 +5,7 @@ namespace App\Exportable\Store;
 use App\Exportable\Exportable;
 use App\Store;
 use App\User;
+use App\userDetail;
 use App\ReportRecord;
 use Illuminate\Support\Carbon;
 
@@ -26,21 +27,44 @@ class Leads
         $this->params->put('report', 'Leads');
         $this->params->put('date', Carbon::now()->format('m-d-Y'));
 
-        $leads = User::doesntHave('orders')
-            ->where('last_viewed_store_id', $this->store->id)
-            ->with('details')
-            ->get()
-            ->map(function ($lead) {
-                return [
-                    $lead['details']['full_name'],
-                    $lead['email'],
-                    $lead['details']['phone'],
-                    $lead['details']['city'],
-                    $lead['details']['address'],
-                    $lead['details']['zip'],
-                    $lead['created_at']->format('m/d/Y')
-                ];
-            });
+        $leads = UserDetail::where('last_viewed_store_id', $this->store->id)
+            ->where('total_payments', 0)
+            ->where('multiple_store_orders', 0)
+            ->get();
+
+        $multipleStoreOrderUsers = UserDetail::where(
+            'last_viewed_store_id',
+            $this->store->id
+        )
+            ->where('total_payments', '>=', 1)
+            ->where('multiple_store_orders', 1)
+            ->get();
+
+        // The user could have created orders but on a different store
+        foreach ($multipleStoreOrderUsers as $userDetail) {
+            $addToList = true;
+            foreach ($userDetail->user->orders as $order) {
+                if ($order->store_id === $this->store->id) {
+                    $addToList = false;
+                }
+            }
+            if ($addToList) {
+                $leads->push($userDetail);
+            }
+        }
+
+        $leads = $leads->map(function ($lead) {
+            return [
+                $lead['firstname'] . ' ' . $lead['lastname'],
+                $lead['email'],
+                $lead['phone'],
+                $lead['city'],
+                $lead['address'],
+                $lead['zip'],
+                $lead['created_at']->format('m/d/Y')
+            ];
+        });
+
         if ($type !== 'pdf') {
             $leads->prepend([
                 'Name',
