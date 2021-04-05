@@ -1787,16 +1787,16 @@ class CheckoutController extends UserController
                 $firstCustomer->total_paid += $grandTotal;
                 $firstCustomer->update();
 
-                $user->total_payments += 1;
+                $user->details->total_payments += 1;
 
                 if (!$user->multiple_store_orders) {
                     foreach ($user->orders as $order) {
                         if ($order->store_id !== $store->id) {
-                            $user->multiple_store_orders = true;
+                            $user->details->multiple_store_orders = true;
                         }
                     }
                 }
-                $user->update();
+                $user->details->update();
             }
         } catch (\Exception $e) {
             $error = new Error();

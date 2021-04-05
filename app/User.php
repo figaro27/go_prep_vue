@@ -66,8 +66,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     protected $casts = [
-        'stripe_account' => 'json',
-        'multiple_store_orders' => 'boolean'
+        'stripe_account' => 'json'
     ];
 
     protected $appends = [

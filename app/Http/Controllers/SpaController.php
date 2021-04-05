@@ -191,6 +191,8 @@ class SpaController extends Controller
 
                     $user->last_viewed_store_id = $store->id;
                     $user->save();
+                    $user->details->last_viewed_store_id = $store->id;
+                    $user->details->save();
 
                     return [
                         'context' => $context,
@@ -401,6 +403,8 @@ class SpaController extends Controller
 
                 $user->last_viewed_store_id = $store->id;
                 $user->save();
+                $user->details->last_viewed_store_id = $store->id;
+                $user->details->save();
 
                 return [
                     'context' => $context,

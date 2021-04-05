@@ -63,20 +63,24 @@ class misc extends Command
         $users = User::all();
 
         foreach ($users as $user) {
-            $this->info($user->id);
-            $storeIds = [];
-            foreach ($user->orders as $order) {
-                if ($order->paid) {
-                    if (!in_array($order->store_id, $storeIds)) {
-                        $storeIds[] = $order->store_id;
+            $userDetail = $user->details;
+            if ($userDetail) {
+                $this->info($userDetail->id);
+                $userDetail->last_viewed_store_id = $user->last_viewed_store_id;
+                $storeIds = [];
+                foreach ($user->orders as $order) {
+                    if ($order->paid) {
+                        if (!in_array($order->store_id, $storeIds)) {
+                            $storeIds[] = $order->store_id;
+                        }
+                        $userDetail->total_payments += 1;
                     }
-                    $user->total_payments += 1;
                 }
+                if (count($storeIds) > 1) {
+                    $userDetail->multiple_store_orders = 1;
+                }
+                $userDetail->update();
             }
-            if (count($storeIds) > 1) {
-                $user->multiple_store_orders = 1;
-            }
-            $user->update();
         }
     }
 }

@@ -37,7 +37,8 @@ class UserDetail extends Model
     protected $appends = ['full_name'];
 
     protected $casts = [
-        'notifications' => 'json'
+        'notifications' => 'json',
+        'multiple_store_orders' => 'boolean'
     ];
 
     public function notificationEnabled($notif)

@@ -692,16 +692,19 @@ class Subscription extends Model
                 $customer->total_paid += $this->amount;
                 $customer->update();
 
-                $user = User::where('id', $this->user_id)->first();
-                $user->total_payments += 1;
-                if (!$user->multiple_store_orders) {
-                    foreach ($user->orders as $order) {
+                $userDetail = UserDetail::where(
+                    'user_id',
+                    $this->user_id
+                )->first();
+                $userDetail->total_payments += 1;
+                if (!$userDetail->multiple_store_orders) {
+                    foreach ($userDetail->orders as $order) {
                         if ($order->store_id !== $this->store_id) {
-                            $user->multiple_store_orders = true;
+                            $userDetail->multiple_store_orders = true;
                         }
                     }
                 }
-                $user->update();
+                $userDetail->update();
             }
 
             $nextOrder = $this->orders->firstWhere(
