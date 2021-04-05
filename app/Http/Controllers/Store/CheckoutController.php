@@ -1608,11 +1608,13 @@ class CheckoutController extends StoreController
             } catch (\Exception $e) {
             }
 
-            $firstCustomer = Customer::where('user_id', $userId)->first();
-            $firstCustomer->last_order = Carbon::now();
-            $firstCustomer->total_payments += 1;
-            $firstCustomer->total_paid += $grandTotal;
-            $firstCustomer->update();
+            if (!$weeklyPlan || ($weeklyPlan && $renewNow)) {
+                $firstCustomer = Customer::where('user_id', $userId)->first();
+                $firstCustomer->last_order = Carbon::now();
+                $firstCustomer->total_payments += 1;
+                $firstCustomer->total_paid += $grandTotal;
+                $firstCustomer->update();
+            }
 
             return $orderId;
         } catch (\Exception $e) {
