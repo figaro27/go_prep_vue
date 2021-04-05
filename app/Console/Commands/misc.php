@@ -60,21 +60,23 @@ class misc extends Command
      */
     public function handle()
     {
-        $store = Store::where('id', 238)->first();
-        $deliveryDate = Carbon::parse('2021-03-31');
+        $users = User::all();
 
-        $weekIndex = date('N', strtotime($deliveryDate));
-
-        $customDD = $store
-            ->deliveryDays()
-            ->where([
-                'day' => $weekIndex,
-                'type' => 'pickup'
-            ])
-            ->first();
-
-        $cutoff = $store->getCutoffDate($deliveryDate, $customDD);
-
-        $this->info($cutoff);
+        foreach ($users as $user) {
+            $this->info($user->id);
+            $storeIds = [];
+            foreach ($user->orders as $order) {
+                if ($order->paid) {
+                    if (!in_array($order->store_id, $storeIds)) {
+                        $storeIds[] = $order->store_id;
+                    }
+                    $user->total_payments += 1;
+                }
+            }
+            if (count($storeIds) > 1) {
+                $user->multiple_store_orders = 1;
+            }
+            $user->update();
+        }
     }
 }

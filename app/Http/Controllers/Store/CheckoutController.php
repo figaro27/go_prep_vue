@@ -1614,6 +1614,17 @@ class CheckoutController extends StoreController
                 $firstCustomer->total_payments += 1;
                 $firstCustomer->total_paid += $grandTotal;
                 $firstCustomer->update();
+
+                $customerUser->total_payments += 1;
+
+                if (!$customerUser->multiple_store_orders) {
+                    foreach ($customerUser->orders as $order) {
+                        if ($order->store_id !== $store->id) {
+                            $customerUser->multiple_store_orders = true;
+                        }
+                    }
+                }
+                $customerUser->update();
             }
 
             return $orderId;
