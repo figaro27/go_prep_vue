@@ -5,7 +5,7 @@ namespace App\Exportable\Store;
 use App\Exportable\Exportable;
 use App\Store;
 use App\User;
-use App\userDetail;
+use App\UserDetail;
 use App\ReportRecord;
 use Illuminate\Support\Carbon;
 
