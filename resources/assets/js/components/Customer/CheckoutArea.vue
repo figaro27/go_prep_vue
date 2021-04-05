@@ -3709,7 +3709,25 @@ use next_delivery_dates
       if (this.store.modules.cashOrderAutoSelect) {
         return;
       }
-      this.refreshCards();
+      if (this.context !== "store") {
+        this.refreshCards();
+      } else {
+        this.$nextTick(() => {
+          axios
+            .post("/api/me/getCards", { id: this.customer })
+            .then(response => {
+              this.$parent.creditCardList = response.data;
+              if (response.data.length) {
+                this.creditCardId = response.data[0].id;
+                this.creditCard = response.data[0];
+                if (this.$refs.cardPicker) {
+                  this.$refs.cardPicker.setCard(response.data[0].id);
+                }
+              }
+            });
+        });
+      }
+
       this.updateParentData();
       window.localStorage.clear();
     },
