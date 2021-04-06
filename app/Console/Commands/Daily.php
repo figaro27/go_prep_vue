@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use App\StorePlan;
 use App\StoreSetting;
 use App\ReportRecord;
+use App\Mail\Store\StoresOverLimit;
 
 class Daily extends Command
 {
@@ -73,6 +74,7 @@ class Daily extends Command
 
         if ($now === $lastDayOfMonth) {
             $storePlans = StorePlan::with('store')->get();
+            $storesOverLimit = [];
             foreach ($storePlans as $storePlan) {
                 $ordersCount = $storePlan->store->orders
                     ->where('paid_at', '>=', $firstDayOfMonth)
@@ -86,7 +88,33 @@ class Daily extends Command
                 $storePlan->update();
 
                 if ($storePlan->months_over_limit >= 2) {
-                    // Automatically upgrade to the next plan ?
+                    $data = [
+                        'store_name' => $storePlan->store_name,
+                        'contact_name' => $storePlan->contact_name,
+                        'contact_email' => $storePlan->contact_email,
+                        'contact_phone' => $storePlan->contact_phone,
+                        'allowed_orders' => $storePlan->allowed_orders,
+                        'last_month_total_orders' =>
+                            $storePlan->last_month_total_orders,
+                        'months_over_limit' => $storePlan->months_over_limit,
+                        'joined_store_ids' => $storePlan->joined_store_ids,
+                        'plan_name' => $storePlan->plan_name,
+                        'plan_notes' => $storePlan->plan_notes,
+                        'amount' => $storePlan->amount,
+                        'period' => $storePlan->period
+                    ];
+                    $storesOverLimit[] = $data;
+                }
+            }
+            if (count($storesOverLimit) > 0) {
+                $email = new StoresOverLimit([
+                    'stores' => $storesOverLimit
+                ]);
+                try {
+                    Mail::to('danny@goprep.com')
+                        ->bcc('mike@goprep.com')
+                        ->send($email);
+                } catch (\Exception $e) {
                 }
             }
         }
