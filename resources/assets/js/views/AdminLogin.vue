@@ -11,11 +11,11 @@
       hide-footer
     >
       <b-form @submit.prevent="submitAdminPassword" class="pt-3">
-        <p class="center-text strong">Enter Password</p>
-        <b-form-group horizontal>
+        <p class="strong">Enter Password</p>
+        <b-form-group>
           <b-input v-model="adminPassword" type="password" required></b-input>
         </b-form-group>
-        <b-form-group horizontal class="center-text">
+        <b-form-group class="center-text">
           <button type="submit" class="btn btn-primary">Submit</button>
         </b-form-group>
       </b-form>
