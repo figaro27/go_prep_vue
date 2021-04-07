@@ -26,6 +26,7 @@ use App\Customer;
 use App\StoreModule;
 use App\Error;
 use App\PickupLocation;
+use App\User;
 
 class Subscription extends Model
 {
@@ -698,7 +699,8 @@ class Subscription extends Model
                 )->first();
                 $userDetail->total_payments += 1;
                 if (!$userDetail->multiple_store_orders) {
-                    foreach ($userDetail->orders as $order) {
+                    $user = User::where('id', $this->user_id)->first();
+                    foreach ($user->orders as $order) {
                         if ($order->store_id !== $this->store_id) {
                             $userDetail->multiple_store_orders = true;
                         }
