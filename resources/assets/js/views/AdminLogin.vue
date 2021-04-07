@@ -10,7 +10,7 @@
       hide-header
       hide-footer
     >
-      <b-form @submit.prevent="submitAdminPassword" class="pt-3 pl-3 pr-3">
+      <b-form @submit.prevent="submitAdminPassword" class="pt-3">
         <p class="center-text strong">Enter Password</p>
         <b-form-group horizontal>
           <b-input v-model="adminPassword" type="password" required></b-input>
@@ -31,7 +31,6 @@
                 :options="storeOptions"
                 v-model="selectedUserId"
                 placeholder="Select Store"
-                :filterable="false"
                 :reduce="store => store.user_id"
                 class="mb-2"
                 @input="submit"
