@@ -50,6 +50,7 @@ foreach (
             'prefix' => 'auth'
         ],
         function ($router) {
+            Route::get('getAdminStores', 'AuthController@getAdminStores');
             Route::post('login', 'AuthController@login');
             Route::post('logout', 'AuthController@logout');
             Route::post('refresh', 'AuthController@refresh');

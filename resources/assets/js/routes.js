@@ -5,6 +5,7 @@ import store from "./store";
 import auth from "./lib/auth";
 
 import Login from "./views/Login.vue";
+import AdminLogin from "./views/AdminLogin.vue";
 import Register from "./views/Register.vue";
 import Forgot from "./views/ForgotPassword.vue";
 import Reset from "./views/ResetPassword.vue";
@@ -62,6 +63,17 @@ let routes = [
     name: "login",
     meta: {
       bodyClass: "login"
+    },
+    props(route) {
+      return route.query;
+    }
+  },
+  {
+    path: "/admin",
+    component: AdminLogin,
+    name: "adminLogin",
+    meta: {
+      bodyClass: "adminLogin"
     },
     props(route) {
       return route.query;

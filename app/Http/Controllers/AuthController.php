@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
 use App\StoreDetail;
+use App\User;
+use App\Store;
 
 class AuthController extends Controller
 {
@@ -16,7 +18,24 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', [
+            'except' => ['login', 'getAdminStores']
+        ]);
+    }
+
+    public function getAdminStores()
+    {
+        $stores = Store::all();
+        $data = [];
+
+        foreach ($stores as $store) {
+            $data[] = [
+                'user_id' => $store->user_id,
+                'store_name' => $store->details->name
+            ];
+        }
+
+        return $data;
     }
 
     /**
@@ -26,12 +45,16 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $credentials = request(['email', 'password']);
-
-        if (!($token = auth()->attempt($credentials))) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        $userId = request(['userId']);
+        if ($userId) {
+            $user = User::find($userId['userId']);
+            $token = Auth::login($user);
+        } else {
+            $credentials = request(['email', 'password']);
+            if (!($token = auth()->attempt($credentials))) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
         }
-
         return $this->respondWithToken($token);
     }
 
