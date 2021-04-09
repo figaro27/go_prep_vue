@@ -535,7 +535,10 @@ class SubscriptionController extends StoreController
             foreach ($futureOrders as $order) {
                 // Cutoff already passed. Missed your chance bud!
                 $customDD = null;
-                if ($store->modules->customDeliveryDays) {
+                if (
+                    $store->modules->customDeliveryDays ||
+                    $store->modules->multipleDeliveryDays
+                ) {
                     $weekIndex = date('N', strtotime($order->delivery_date));
                     $customDD = $store
                         ->deliveryDays()
