@@ -604,7 +604,6 @@ export default {
 
     if (this.$route.params.subscription) {
       this.customer = this.$route.params.subscription.customer_id;
-      this.getCards();
     }
   },
   updated() {

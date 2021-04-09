@@ -1186,6 +1186,7 @@
             v-if="!cashOrder && storeSettings.payment_gateway !== 'cash'"
             :selectable="true"
             :creditCards="creditCardList"
+            :checkoutPage="true"
             v-model="card"
             class="mb-2"
             ref="cardPicker"
@@ -1465,6 +1466,7 @@ export default {
   },
   data() {
     return {
+      overrideCardId: null,
       fillingOutCard: false,
       backdate: false,
       showDeliveryAreaModal: false,
@@ -1685,6 +1687,7 @@ export default {
     }
 
     if (this.$parent.$route.params.subscription) {
+      this.getCards();
       this.setBagGratuityPercent("custom");
       this.customGratuity =
         this.$parent.$route.params.subscription.gratuity > 0
@@ -2278,12 +2281,16 @@ export default {
       else return this.creditCards;
     },
     card() {
-      if (this.creditCardId !== null) {
-        return this.creditCardId;
+      if (this.overrideCardId) {
+        return this.overrideCardId;
       }
 
       if (this.$route.params.subscription) {
         return this.$route.params.subscription.card_id;
+      }
+
+      if (this.creditCardId !== null) {
+        return this.creditCardId;
       }
 
       if (this.creditCards.length != 1) {

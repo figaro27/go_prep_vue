@@ -48,11 +48,7 @@
           Ending in {{ card.card.last4 }}
         </div>
         <div>
-          <b-btn
-            class="card-delete"
-            variant="plain"
-            @click="$emit('deleteCard', card)"
-          >
+          <b-btn class="card-delete" variant="plain" @click="deleteCard(card)">
             <i class="fa fa-minus-circle text-danger"></i>
           </b-btn>
         </div>
@@ -119,7 +115,7 @@
             <b-btn
               class="card-delete"
               variant="plain"
-              @click="e => checkCardSubscriptions(card.id)"
+              @click.stop="e => checkCardSubscriptions(card.id)"
             >
               <i class="fa fa-minus-circle text-danger"></i>
             </b-btn>
@@ -144,7 +140,7 @@
             <b-btn
               class="card-delete"
               variant="plain"
-              @click="e => checkCardSubscriptions(card.id)"
+              @click.stop="e => checkCardSubscriptions(card.id)"
             >
               <i class="fa fa-minus-circle text-danger"></i>
             </b-btn>
@@ -192,6 +188,9 @@ export default {
     billingPage: {
       default: false
     },
+    checkoutPage: {
+      default: false
+    },
     activeCardId: {
       default: null
     },
@@ -226,6 +225,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      context: "context",
       cards: "cards",
       storeSettings: "viewedStoreSettings",
       store: "viewedStore",
@@ -346,7 +346,7 @@ export default {
     },
     checkCardSubscriptions(id) {
       axios.post("/api/me/cardHasSubscription", { cardId: id }).then(resp => {
-        if (resp.data === true) {
+        if (resp.data === true && !this.checkoutPage) {
           this.showDeleteCardModal = true;
           this.cardId = id;
         } else {
@@ -356,17 +356,16 @@ export default {
     },
     deleteCard(id) {
       axios.delete("/api/me/cards/" + id).then(async resp => {
-        if (this.manualOrder || this.$route.params.manualOrder) {
+        if (this.checkoutPage) {
           this.$parent.getCards();
-        }
-        await this.refreshCards();
-        this.$parent.card = null;
-        if (this.value === id) {
-          this.selectCard(_.first(this.cards).id);
+        } else {
+          this.refreshCards();
         }
         this.showDeleteCardModal = false;
         this.$toastr.s("Payment method deleted.");
-        this.refreshSubscriptions();
+        if (this.context !== "store") {
+          this.refreshSubscriptions();
+        }
       });
     },
     selectCard(id) {
@@ -379,7 +378,7 @@ export default {
         this.creditCards.push(this.creditCard);
         return;
       }
-
+      this.$parent.overrideCardId = id;
       this.$parent.creditCardId = id;
       this.value = id;
       this.$emit("input", id);
