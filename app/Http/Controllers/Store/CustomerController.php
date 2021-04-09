@@ -182,6 +182,11 @@ class CustomerController extends StoreController
             $user->update();
         }
 
+        foreach ($customer->orders as $order) {
+            $order->customer_name = $customer->name;
+            $order->update();
+        }
+
         //Add Email
     }
 
