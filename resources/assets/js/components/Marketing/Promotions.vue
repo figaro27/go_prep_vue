@@ -124,7 +124,7 @@
           >This example</a
         >
         would give the customer $5 off and free delivery on orders of $80 or
-        more. You can add one promotion of each condition type.
+        more.
         <b-form @submit.prevent="addPromotion">
           <h6 class="strong mt-2 mb-2">
             Promotion Type
