@@ -2582,6 +2582,10 @@ use next_delivery_dates
       return options;
     },
     deliveryDateOptionsStoreView() {
+      if (this.storeModules.customDeliveryDays) {
+        return this.deliveryDateOptions;
+      }
+
       let options = [];
       let today = new Date();
 
