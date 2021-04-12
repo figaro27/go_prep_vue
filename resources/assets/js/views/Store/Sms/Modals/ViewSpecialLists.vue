@@ -33,7 +33,7 @@
           <br />
           <p class="strong" v-if="conditionType === 'date'">
             Insert all customers who haven't ordered in
-            {{ conditionAmount }} days.
+            {{ conditionAmount }} or more days.
           </p>
           <p class="strong" v-if="conditionType === 'orders'">
             Insert all customers who have only ordered {{ conditionAmount }} or
