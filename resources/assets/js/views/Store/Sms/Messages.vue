@@ -39,6 +39,19 @@
 
       <b-modal
         size="md"
+        title="Special List"
+        v-model="showSpecialListModal"
+        v-if="showSpecialListModal"
+        no-fade
+        hide-footer
+      >
+        <view-special-lists
+          @insertSpecialContacts="insertSpecialContacts($event)"
+        ></view-special-lists>
+      </b-modal>
+
+      <b-modal
+        size="md"
         title="Activate"
         v-model="showActivateModal"
         v-if="showActivateModal"
@@ -139,7 +152,18 @@
                   class="fas fa-users d-inline pr-1 pt-1"
                   style="color:#737373"
                 ></i>
-                <p class="d-inline"><u>Insert list</u></p>
+                <p class="d-inline"><u>Insert preset list</u></p>
+              </div>
+              <div
+                class="d-flex"
+                @click="showSpecialListModal = !showSpecialListModal"
+                v-if="store.id === 40"
+              >
+                <i
+                  class="fas fa-users d-inline pr-1 pt-1"
+                  style="color:#737373"
+                ></i>
+                <p class="d-inline"><u>Insert special list</u></p>
               </div>
             </div>
           </div>
@@ -263,6 +287,7 @@ import format from "../../../lib/format";
 import store from "../../../store";
 import ViewTemplates from "./Modals/ViewTemplates.vue";
 import ViewLists from "./Modals/ViewLists.vue";
+import ViewSpecialLists from "./Modals/ViewSpecialLists.vue";
 import ViewContacts from "./Modals/ViewContacts.vue";
 import ViewMessage from "./Modals/ViewMessage.vue";
 import Activate from "./Modals/Activate.vue";
@@ -283,6 +308,7 @@ export default {
     vSelect,
     ViewTemplates,
     ViewLists,
+    ViewSpecialLists,
     ViewContacts,
     ViewMessage,
     Activate
@@ -296,6 +322,7 @@ export default {
       showTagDropdown: false,
       showTemplateModal: false,
       showListModal: false,
+      showSpecialListModal: false,
       showContactsModal: false,
       showMessageModal: false,
       viewedMessage: null,
@@ -449,6 +476,14 @@ export default {
       this.SMSContacts.forEach(contact => {
         contact.included = false;
       });
+    },
+    insertSpecialContacts(contacts) {
+      contacts.forEach(contact => {
+        if (!this.contacts.includes(contact)) {
+          this.contacts.push(contact);
+        }
+      });
+      this.showSpecialListModal = false;
     },
     removeContact(contact) {
       let index = this.contacts.indexOf(contact);

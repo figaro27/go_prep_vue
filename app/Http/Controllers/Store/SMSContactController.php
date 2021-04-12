@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Customer;
 use App\SmsList;
 use stdClass;
+use Illuminate\Support\Carbon;
+use App\UserDetail;
 
 class SMSContactController extends StoreController
 {
@@ -309,5 +311,48 @@ class SMSContactController extends StoreController
 
         $contact = SmsContact::where('contact_id', $id)->first();
         $contact->delete();
+    }
+
+    public function insertSpecialSMSContacts(Request $request)
+    {
+        $conditionType = $request->get('conditionType');
+        $conditionAmount = $request->get('conditionAmount');
+        // $allContactsNumbers = $this->index()->pluck('phone');
+        $customers = Customer::where('store_id', $this->store->id);
+
+        if ($conditionType === 'date') {
+            $lastOrderDate = Carbon::now()
+                ->subDays($conditionAmount)
+                ->toDateTimeString();
+            $customers = $customers
+                ->where('last_order', '<=', $lastOrderDate)
+                ->get()
+                ->map(function ($customer) {
+                    return [
+                        'included' => true,
+                        'firstName' => $customer->firstname,
+                        'lastName' => $customer->lastname,
+                        'phone' => $customer->phone
+                    ];
+                });
+            return $customers;
+        } elseif ($conditionType === 'orders') {
+            $customers = UserDetail::where(
+                'last_viewed_store_id',
+                $this->store->id
+            )
+                ->where('total_payments', '<=', $conditionAmount)
+                ->get()
+                ->map(function ($customer) {
+                    return [
+                        'included' => true,
+                        'firstName' => $customer->firstname,
+                        'lastName' => $customer->lastname,
+                        'phone' => $customer->phone
+                    ];
+                });
+
+            return $customers;
+        }
     }
 }

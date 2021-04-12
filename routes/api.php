@@ -741,6 +741,7 @@ foreach (
                                 'SMSTemplatesController'
                             );
                             Route::resource('SMSLists', 'SMSListsController');
+
                             Route::post(
                                 'showContactsInList',
                                 'SMSListsController@showContactsInList'
@@ -756,6 +757,10 @@ foreach (
                             Route::post(
                                 'SMSContactUpdate',
                                 'SMSContactController@update'
+                            );
+                            Route::post(
+                                'insertSpecialSMSContacts',
+                                'SMSContactController@insertSpecialSMSContacts'
                             );
                             Route::resource(
                                 'smsSettings',
