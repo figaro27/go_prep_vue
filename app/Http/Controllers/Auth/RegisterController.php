@@ -254,7 +254,8 @@ class RegisterController extends Controller
                     'subscription_meal_substituted' => true,
                     'subscription_renewing' => true,
                     'new_referral' => true
-                )
+                ),
+                'store_id' => $data['last_viewed_store_id'] ?? null
             ]);
 
             if ($data['user']['role'] === 'store') {

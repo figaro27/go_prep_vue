@@ -736,6 +736,10 @@ foreach (
                                 'SMSMessages',
                                 'SMSMessagesController'
                             );
+                            Route::post(
+                                'viewAllSMSMessages',
+                                'SMSMessagesController@viewAllSMSMessages'
+                            );
                             Route::resource(
                                 'SMSTemplates',
                                 'SMSTemplatesController'
@@ -784,6 +788,10 @@ foreach (
                                 'SMSSettingController@smsAccountInfo'
                             );
                             Route::resource('SMSChats', 'SMSChatController');
+                            Route::post(
+                                'viewAllChats',
+                                'SMSChatController@viewAllChats'
+                            );
 
                             Route::post(
                                 'submitMultiAuthPassword',

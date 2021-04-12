@@ -23,7 +23,7 @@ class UserDetail extends Model
         'billingCity',
         'billingState',
         'billingZip',
-        'last_viewed_store_id',
+        'store_id',
         'multiple_store_orders',
         'total_payments'
     ];

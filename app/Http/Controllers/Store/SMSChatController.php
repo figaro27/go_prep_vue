@@ -61,8 +61,40 @@ class SMSChatController extends StoreController
 
     public function index()
     {
-        // $this->getNewChats();
+        $smsChats = SmsChat::where('store_id', $this->store->id)
+            ->take(5)
+            ->get();
 
+        $chats = [];
+
+        foreach ($smsChats as $smsChat) {
+            $chatId = $smsChat['chat_id'];
+            $unread = $smsChat['unread'];
+            try {
+                $client = new \GuzzleHttp\Client();
+                $res = $client->request('GET', $this->baseURL . '/' . $chatId, [
+                    'headers' => $this->headers
+                ]);
+                $body = $res->getBody();
+                $chat = new stdClass();
+                $chat->id = json_decode($body)->id;
+                $chat->firstName = json_decode($body)->contact->firstName;
+                $chat->lastName = json_decode($body)->contact->lastName;
+                $chat->lastMessage = json_decode($body)->lastMessage;
+                $chat->phone = json_decode($body)->contact->phone;
+                $chat->unread = $unread;
+                $chat->updatedAt = json_decode($body)->updatedAt;
+                $chat->updated_at = $smsChat->updated_at;
+                array_push($chats, $chat);
+            } catch (\Exception $e) {
+            }
+        }
+
+        return $chats;
+    }
+
+    public function viewAllChats()
+    {
         $smsChats = SmsChat::where('store_id', $this->store->id)->get();
 
         $chats = [];

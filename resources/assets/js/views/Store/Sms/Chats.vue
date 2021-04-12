@@ -49,6 +49,7 @@
           </button>
         </div>
       </v-client-table>
+      <b-btn variant="primary" @click="viewAllChats">View All</b-btn>
     </div>
   </div>
 </template>
@@ -89,6 +90,7 @@ export default {
       phone: null,
       row: null,
       conflict: false,
+      allChats: [],
       columns: ["name", "phone", "updatedAt", "actions"],
       options: {
         headings: { updatedAt: "Last Message" },
@@ -115,6 +117,9 @@ export default {
       SMSChats: "SMSChats"
     }),
     SMSChatsData() {
+      if (this.allChats.length > 0) {
+        return this.allChats;
+      }
       if (_.isArray(this.SMSChats)) {
         return this.SMSChats;
       } else {
@@ -171,6 +176,11 @@ export default {
         this.conflict = false;
         // Refresh chats
         this.refreshSMSChats();
+      });
+    },
+    viewAllChats() {
+      axios.post("/api/me/viewAllChats").then(resp => {
+        this.allChats = resp.data;
       });
     }
   }

@@ -328,27 +328,40 @@ class SMSContactController extends StoreController
                 ->where('last_order', '<=', $lastOrderDate)
                 ->get()
                 ->map(function ($customer) {
+                    $phone = (int) preg_replace(
+                        '/[^0-9]/',
+                        '',
+                        $customer->phone
+                    );
+                    if (strlen((string) $phone) === 10) {
+                        $phone = 1 . $phone;
+                    }
                     return [
                         'included' => true,
                         'firstName' => $customer->firstname,
                         'lastName' => $customer->lastname,
-                        'phone' => $customer->phone
+                        'phone' => $phone
                     ];
                 });
             return $customers;
         } elseif ($conditionType === 'orders') {
-            $customers = UserDetail::where(
-                'last_viewed_store_id',
-                $this->store->id
-            )
+            $customers = UserDetail::where('store_id', $this->store->id)
                 ->where('total_payments', '<=', $conditionAmount)
                 ->get()
                 ->map(function ($customer) {
+                    $phone = (int) preg_replace(
+                        '/[^0-9]/',
+                        '',
+                        $customer->phone
+                    );
+                    if (strlen((string) $phone) === 10) {
+                        $phone = 1 . $phone;
+                    }
                     return [
                         'included' => true,
                         'firstName' => $customer->firstname,
                         'lastName' => $customer->lastname,
-                        'phone' => $customer->phone
+                        'phone' => $phone
                     ];
                 });
 

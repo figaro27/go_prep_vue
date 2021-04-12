@@ -22,6 +22,36 @@ class SMSMessagesController extends StoreController
 
     public function index()
     {
+        $messageIds = SmsMessage::where('store_id', $this->store->id)
+            ->pluck('message_id')
+            ->take(5);
+
+        $messages = [];
+
+        foreach ($messageIds as $messageId) {
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request(
+                'GET',
+                'https://rest.textmagic.com/api/v2/sessions/' . $messageId,
+                [
+                    'headers' => $this->headers
+                ]
+            );
+            $body = $res->getBody();
+            $message = new stdClass();
+            $message->id = json_decode($body)->id;
+            $message->price = (json_decode($body)->price / 4) * 6;
+            $message->numbersCount = json_decode($body)->numbersCount;
+            $message->messageTime = json_decode($body)->startTime;
+            $message->text = json_decode($body)->text;
+            array_push($messages, $message);
+        }
+
+        return $messages;
+    }
+
+    public function viewAllSMSMessages()
+    {
         $messageIds = SmsMessage::where('store_id', $this->store->id)->pluck(
             'message_id'
         );
@@ -77,6 +107,20 @@ class SMSMessagesController extends StoreController
                 return $phone;
             })
         );
+
+        $specialPhones = json_decode(
+            collect($request->get('specialPhones'))->map(function (
+                $specialPhone
+            ) {
+                $specialPhone =
+                    (int) 1 . preg_replace('/[^0-9]/', '', $specialPhone);
+                return $specialPhone;
+            })
+        );
+
+        if (count($specialPhones) > 0) {
+            $phones = $specialPhones;
+        }
 
         // Store standalone phone numbers are contacts for purposes of retrieving chats
         SmsContact::addNumbersToContacts($phones, $this->store->id);

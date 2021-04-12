@@ -18,6 +18,7 @@
                 :options="conditionOptions"
                 v-model="conditionType"
                 class="pull-right"
+                @change="updateConditionAmount()"
               ></b-form-select>
             </div>
             <div class="col-md-5">
@@ -65,15 +66,6 @@
           filterable: false
         }"
       >
-        <div slot="included" slot-scope="props">
-          <b-form-checkbox
-            v-model="props.row.included"
-            type="checkbox"
-            :value="true"
-            :unchecked-value="false"
-            @change="val => addToSelectedLists(props.row, val)"
-          ></b-form-checkbox>
-        </div>
       </v-client-table>
     </div>
   </div>
@@ -95,7 +87,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
-      columns: ["included", "firstName", "lastName", "phone"],
+      columns: ["firstName", "lastName", "phone"],
       conditionType: "date",
       conditionAmount: 14,
       specialContactsTableData: []
@@ -119,6 +111,14 @@ export default {
   methods: {
     ...mapActions({}),
     formatMoney: format.money,
+    updateConditionAmount() {
+      if (this.conditionType === "orders") {
+        this.conditionAmount = 2;
+      }
+      if (this.conditionType === "date") {
+        this.conditionAmount = 14;
+      }
+    },
     insertSpecialSMSContacts() {
       this.specialContactsTableData = [];
       axios

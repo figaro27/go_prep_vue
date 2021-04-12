@@ -27,13 +27,13 @@ class Leads
         $this->params->put('report', 'Leads');
         $this->params->put('date', Carbon::now()->format('m-d-Y'));
 
-        $leads = UserDetail::where('last_viewed_store_id', $this->store->id)
+        $leads = UserDetail::where('store_id', $this->store->id)
             ->where('total_payments', 0)
             ->where('multiple_store_orders', 0)
             ->get();
 
         $multipleStoreOrderUsers = UserDetail::where(
-            'last_viewed_store_id',
+            'store_id',
             $this->store->id
         )
             ->where('total_payments', '>=', 1)

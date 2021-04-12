@@ -160,7 +160,7 @@
                 v-if="store.id === 40"
               >
                 <i
-                  class="fas fa-users d-inline pr-1 pt-1"
+                  class="fas fa-users-cog d-inline pr-1 pt-1"
                   style="color:#737373"
                 ></i>
                 <p class="d-inline"><u>Insert special list</u></p>
@@ -249,7 +249,7 @@
         :options="{
           orderBy: {
             column: 'messageTime',
-            ascending: 'desc'
+            ascending: false
           },
           headings: {
             messageTime: 'Sent On',
@@ -274,6 +274,7 @@
           </button>
         </div>
       </v-client-table>
+      <b-btn variant="primary" @click="viewAllSMSMessages">View All</b-btn>
     </div>
   </div>
 </template>
@@ -316,6 +317,7 @@ export default {
   mixins: [checkDateRange],
   data() {
     return {
+      specialListAdded: false,
       loaded: false,
       showActivateModal: false,
       showNewSMSArea: false,
@@ -335,7 +337,8 @@ export default {
       contacts: [],
       phonesList: "",
       phones: [],
-      selectedContact: null
+      selectedContact: null,
+      allMessages: []
     };
   },
   created() {},
@@ -360,6 +363,9 @@ export default {
       initialized: "initialized"
     }),
     SMSMessagesData() {
+      if (this.allMessages.length > 0) {
+        return this.allMessages;
+      }
       if (_.isArray(this.SMSMessages)) {
         return this.SMSMessages;
       } else {
@@ -438,12 +444,21 @@ export default {
         this.$toastr.w("Please add a message.");
         return;
       }
+      let specialPhones = [];
+      if (this.specialListAdded) {
+        this.contacts.forEach(contact => {
+          specialPhones.push(contact.phone);
+        });
+        this.contacts = [];
+        this.lists = [];
+      }
       axios
         .post("/api/me/SMSMessages", {
           message: this.message.content,
           lists: this.lists,
           contacts: this.contacts,
           phones: this.phones,
+          specialPhones: specialPhones,
           charge: this.messageCost
         })
         .then(resp => {
@@ -478,6 +493,7 @@ export default {
       });
     },
     insertSpecialContacts(contacts) {
+      this.specialListAdded = true;
       contacts.forEach(contact => {
         if (!this.contacts.includes(contact)) {
           this.contacts.push(contact);
@@ -511,6 +527,11 @@ export default {
       this.showNewSMSArea = !this.showNewSMSArea;
       this.refreshSMSContacts();
       this.refreshSMSLists();
+    },
+    viewAllSMSMessages() {
+      axios.post("/api/me/viewAllSMSMessages").then(resp => {
+        this.allMessages = resp.data;
+      });
     }
   }
 };

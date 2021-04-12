@@ -66,19 +66,9 @@ class misc extends Command
             $userDetail = $user->details;
             if ($userDetail) {
                 $this->info($userDetail->id);
-                $userDetail->last_viewed_store_id = $user->last_viewed_store_id;
-                $storeIds = [];
-                foreach ($user->orders as $order) {
-                    if ($order->paid) {
-                        if (!in_array($order->store_id, $storeIds)) {
-                            $storeIds[] = $order->store_id;
-                        }
-                        $userDetail->total_payments += 1;
-                    }
-                }
-                if (count($storeIds) > 1) {
-                    $userDetail->multiple_store_orders = 1;
-                }
+                $userDetail->store_id = $user->last_viewed_store_id
+                    ? $user->last_viewed_store_id
+                    : $user->added_by_store_id;
                 $userDetail->update();
             }
         }
