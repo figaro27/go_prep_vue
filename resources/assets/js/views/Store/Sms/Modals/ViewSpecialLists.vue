@@ -32,11 +32,11 @@
           </div>
           <br />
           <p class="strong" v-if="conditionType === 'date'">
-            Insert all customers who haven't ordered in
+            Get all customers who haven't ordered in
             {{ conditionAmount }} or more days.
           </p>
           <p class="strong" v-if="conditionType === 'orders'">
-            Insert all customers who have only ordered {{ conditionAmount }} or
+            Get all customers who have only ordered {{ conditionAmount }} or
             less times.
           </p>
           <b-btn variant="primary" @click="insertSpecialSMSContacts"
@@ -112,10 +112,10 @@ export default {
     ...mapActions({}),
     formatMoney: format.money,
     updateConditionAmount() {
-      if (this.conditionType === "orders") {
+      if (this.conditionType === "date") {
         this.conditionAmount = 2;
       }
-      if (this.conditionType === "date") {
+      if (this.conditionType === "orders") {
         this.conditionAmount = 14;
       }
     },
