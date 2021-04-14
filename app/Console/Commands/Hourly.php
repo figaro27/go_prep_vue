@@ -123,7 +123,9 @@ class Hourly extends Command
                 'store_email' => $recentMenuSession->store->email,
                 'user_name' => $recentMenuSession->user->details->firstname,
                 'store_name' => $recentMenuSession->store_name,
-                'store_url' => $recentMenuSession->store->url . '/customer/menu'
+                'store_url' =>
+                    $recentMenuSession->store->url . '/customer/menu',
+                'store_id' => $recentMenuSession->store->id
             ];
             // Testing
             if ($recentMenuSession->user->id === 36) {

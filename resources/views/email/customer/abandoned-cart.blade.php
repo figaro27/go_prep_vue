@@ -100,7 +100,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- title -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:28px; color:#3b3b3b; line-height:26px;">Revisit Your Order</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Revisit Your Order</td>
                       </tr>
                       <!-- end title -->
                       <tr>
@@ -119,10 +119,32 @@ u + .body .full { width:100% !important; width:100vw !important;}
                         <td height="15"></td>
                       </tr>
                       <!-- company name -->
-                      
                       <tr>
-                        <td height="25">
-                          
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $order->store_name }}</td>
+                      </tr>
+                      @if ($order->user->details->companyname)
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">{{ $order->user->details->companyname }}</td>
+                      </tr>
+                      @endif
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $order->user->details->full_name }}</td>
+                      </tr>
+                      <!-- end company name -->
+                      <!-- address -->
+                      @if ($order->user->details->address !== 'N/A')
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $order->user->details->address }}</td>
+                      </tr>
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
+                          {{ $order->user->details->city }}, {{ $order->user->details->state }} {{ $order->user->details->zip }}
+                          </td>
+                      </tr>
+                      @endif
+                      <tr>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
+                          {{ $order->user->details->phone }}
                         </td>
                       </tr>
                     </table>
