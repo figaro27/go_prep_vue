@@ -815,7 +815,10 @@ foreach (
                         ],
                         function ($router) {
                             //Route::resource('stores', 'User\\StoreController');
-
+                            Route::resource(
+                                '/me/menuSessions',
+                                'MenuSessionController'
+                            );
                             Route::resource('/me/coupons', 'CouponController');
                             Route::post(
                                 '/me/findCoupon',

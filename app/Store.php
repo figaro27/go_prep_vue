@@ -127,6 +127,11 @@ class Store extends Model
         return $this->hasMany('App\Staff');
     }
 
+    public function menuSessions()
+    {
+        return $this->hasMany('App\MenuSession');
+    }
+
     public function storeDetail()
     {
         return $this->hasOne('App\StoreDetail');

@@ -13,6 +13,7 @@ use App\DeliveryDay;
 use App\Mail\RenewalFailed;
 use Illuminate\Support\Facades\Mail;
 use App\User;
+use App\MenuSession;
 
 class Hourly extends Command
 {
@@ -67,6 +68,10 @@ class Hourly extends Command
      */
     public function handle()
     {
+        // Send automated email abandoned cart reminders
+        $this->sendCartReminderEmails();
+        return;
+
         // Send email check-in on new store signups 24 hours after registration
         $this->sendSignupCheckins();
 
@@ -102,6 +107,32 @@ class Hourly extends Command
 
         // Send Order Reminder SMS if enabled
         $this->sendSMSReminders();
+    }
+
+    public function sendCartReminderEmails()
+    {
+        $recentMenuSessions = MenuSession::where(
+            'created_at',
+            '>',
+            Carbon::now()
+                ->subHours(1)
+                ->toDateTimeString()
+        )->get();
+        foreach ($recentMenuSessions as $recentMenuSession) {
+            $data = [
+                'email' => $recentMenuSession->user->email,
+                'user_name' => $recentMenuSession->user->details->firstname,
+                'store_name' => $recentMenuSession->store_name,
+                'store_url' => $recentMenuSession->store->url . '/customer/menu'
+            ];
+            // Testing
+            if ($recentMenuSession->user->id === 13) {
+                $recentMenuSession->user->sendNotification(
+                    'abandoned_cart',
+                    $data
+                );
+            }
+        }
     }
 
     public function sendSMSReminders()

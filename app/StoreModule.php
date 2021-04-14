@@ -30,7 +30,8 @@ class StoreModule extends Model
         'manualOrderEmails' => 'boolean',
         'guestCheckout' => 'boolean',
         'noPromosOnSubscriptions' => 'boolean',
-        'strictCoupons' => 'boolean'
+        'strictCoupons' => 'boolean',
+        'cartReminders' => 'boolean'
     ];
 
     protected $guarded = [];

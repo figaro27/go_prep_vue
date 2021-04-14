@@ -14,6 +14,7 @@ use App\Mail\Customer\SubscriptionMealSubstituted;
 use App\Mail\Customer\SubscriptionCancelled;
 use App\Mail\Customer\AdjustedOrder;
 use App\Mail\Customer\NewReferral;
+use App\Mail\Customer\AbandonedCart;
 use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -123,6 +124,11 @@ class User extends Authenticatable implements JWTSubject
     public function customers()
     {
         return $this->hasMany('App\Customer');
+    }
+
+    public function menuSessions()
+    {
+        return $this->hasMany('App\MenuSession');
     }
 
     public function order()
@@ -515,6 +521,9 @@ class User extends Authenticatable implements JWTSubject
         $receipt = isset($data['receipt']) ? $data['receipt'] : false;
 
         switch ($notif) {
+            case 'abandoned_cart':
+                $email = new AbandonedCart($data);
+                break;
             case 'delivery_today':
                 $email = new DeliveryToday($data);
                 break;

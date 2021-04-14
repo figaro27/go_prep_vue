@@ -1673,6 +1673,25 @@
                   type="number"
                   @change.native="updateStoreModules(false, true)"
                 ></b-form-input>
+
+                <!-- <p class="mt-2">
+                  <span class="mr-1 mt-2">Abandoned Cart Emails</span>
+                  <img
+                    v-b-popover.hover="
+                      'If a customer adds items to their cart but doesn\'t checkout. Automatically send them a reminder email 1 hour later.'
+                    "
+                    title="Abandoned Cart Emails"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </p>
+                <c-switch
+                  color="success"
+                  variant="pill"
+                  size="lg"
+                  v-model="storeModules.cartReminders"
+                  @change.native="updateStoreModules()"
+                /> -->
               </b-form>
             </b-tab>
           </b-tabs>
