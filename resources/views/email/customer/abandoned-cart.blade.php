@@ -47,6 +47,8 @@ u + .body .full { width:100% !important; width:100vw !important;}
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
+  border-radius: 5px;
+  font-family:'open sans';
 }
 </style>
 </head>

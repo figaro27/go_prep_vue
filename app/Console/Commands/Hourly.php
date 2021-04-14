@@ -120,7 +120,7 @@ class Hourly extends Command
         foreach ($recentMenuSessions as $recentMenuSession) {
             $data = [
                 'email' => $recentMenuSession->user->email,
-                'store_email' => $recentMenuSession->store->email,
+                'store_email' => $recentMenuSession->store->user->email,
                 'user_name' => $recentMenuSession->user->details->firstname,
                 'details' => $recentMenuSession->user->details,
                 'store_name' => $recentMenuSession->store_name,
@@ -129,6 +129,7 @@ class Hourly extends Command
                 'store_id' => $recentMenuSession->store->id
             ];
             // Testing
+            $this->info($recentMenuSession);
             if ($recentMenuSession->user->id === 36) {
                 $recentMenuSession->user->sendNotification(
                     'abandoned_cart',
