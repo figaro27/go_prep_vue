@@ -30,8 +30,12 @@ class AbandonedCart extends Mailable
      */
     public function build()
     {
+        $storeEmail = $this->data['store_email'];
+        $storeName = $this->data['store_name'];
+
         return $this->view('email.customer.abandoned-cart')
             ->with($this->data)
-            ->subject('Don\'t Forget Your Bag!');
+            ->subject('Don\'t Forget Your Bag!')
+            ->from($storeEmail, $storeName);
     }
 }

@@ -100,7 +100,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- title -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:28px; color:#3b3b3b; line-height:26px;">Come Back</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:28px; color:#3b3b3b; line-height:26px;">Revisit Your Order</td>
                       </tr>
                       <!-- end title -->
                       <tr>
@@ -152,7 +152,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   </td>
                 </tr>
                 <tr>
-                  <td height="20"></td>
+                  <td height="10"></td>
                 </tr>
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:15px; color:#7f8c8d; line-height:30px;"> 
@@ -171,6 +171,9 @@ u + .body .full { width:100% !important; width:100vw !important;}
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:15px; color:#7f8c8d; line-height:45px;">
                   <a href="{{ $store_url}}"><button type="button" class="purchaseButton">Finish Checking Out</button></a>
                   </td>
+                </tr>
+                <tr>
+                  <td height="20"></td>
                 </tr>
                 <!-- end title -->
                 

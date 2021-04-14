@@ -120,6 +120,7 @@ class Hourly extends Command
         foreach ($recentMenuSessions as $recentMenuSession) {
             $data = [
                 'email' => $recentMenuSession->user->email,
+                'store_email' => $recentMenuSession->store->email,
                 'user_name' => $recentMenuSession->user->details->firstname,
                 'store_name' => $recentMenuSession->store_name,
                 'store_url' => $recentMenuSession->store->url . '/customer/menu'
