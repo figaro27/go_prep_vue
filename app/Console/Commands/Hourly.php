@@ -70,7 +70,6 @@ class Hourly extends Command
     {
         // Send automated email abandoned cart reminders
         $this->sendCartReminderEmails();
-        return;
 
         // Send email check-in on new store signups 24 hours after registration
         $this->sendSignupCheckins();
@@ -126,7 +125,7 @@ class Hourly extends Command
                 'store_url' => $recentMenuSession->store->url . '/customer/menu'
             ];
             // Testing
-            if ($recentMenuSession->user->id === 13) {
+            if ($recentMenuSession->user->id === 36) {
                 $recentMenuSession->user->sendNotification(
                     'abandoned_cart',
                     $data
