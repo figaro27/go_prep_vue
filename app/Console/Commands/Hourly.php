@@ -122,6 +122,7 @@ class Hourly extends Command
                 'email' => $recentMenuSession->user->email,
                 'store_email' => $recentMenuSession->store->email,
                 'user_name' => $recentMenuSession->user->details->firstname,
+                'details' => $recentMenuSession->user->details,
                 'store_name' => $recentMenuSession->store_name,
                 'store_url' =>
                     $recentMenuSession->store->url . '/customer/menu',
