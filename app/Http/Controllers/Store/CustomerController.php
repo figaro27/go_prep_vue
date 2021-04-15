@@ -143,6 +143,7 @@ class CustomerController extends StoreController
     {
         $customerId = $request->get('id');
         $details = $request->get('details');
+        $details['store_id'] = $this->store->id;
         $customers = $request->get('customers');
 
         if ($customers) {
