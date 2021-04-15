@@ -1678,7 +1678,7 @@
                   <span class="mr-1 mt-2">Abandoned Cart Emails</span>
                   <img
                     v-b-popover.hover="
-                      'If a customer adds items to their cart but doesn\'t checkout. Automatically send them a reminder email 1 hour later.'
+                      'If a customer adds items to their cart but doesn\'t checkout. Automatically send them a reminder email approx. 1-2 hours later.'
                     "
                     title="Abandoned Cart Emails"
                     src="/images/store/popover.png"
