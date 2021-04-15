@@ -68,8 +68,8 @@ class Hourly extends Command
      */
     public function handle()
     {
-        // Send automated email abandoned cart reminders
-        $this->sendCartReminderEmails();
+        // Send automated abandoned cart emails if module is turned on
+        $this->sendAbandonedCartEmails();
 
         // Send email check-in on new store signups 24 hours after registration
         $this->sendSignupCheckins();
@@ -108,7 +108,7 @@ class Hourly extends Command
         $this->sendSMSReminders();
     }
 
-    public function sendCartReminderEmails()
+    public function sendAbandonedCartEmails()
     {
         $recentMenuSessions = MenuSession::where(
             'created_at',
@@ -118,18 +118,29 @@ class Hourly extends Command
                 ->toDateTimeString()
         )->get();
         foreach ($recentMenuSessions as $recentMenuSession) {
+            $recentOrder = Order::where('user_id', $recentMenuSession->user_id)
+                ->where('paid', 1)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            if (
+                $recentOrder &&
+                $recentOrder->created_at > $recentMenuSession->created_at
+            ) {
+                $this->info('Order was created');
+                return;
+            }
             $data = [
                 'email' => $recentMenuSession->user->email,
                 'store_email' => $recentMenuSession->store->user->email,
                 'user_name' => $recentMenuSession->user->details->firstname,
                 'details' => $recentMenuSession->user->details,
                 'store_name' => $recentMenuSession->store_name,
-                'store_url' =>
-                    $recentMenuSession->store->url . '/customer/menu',
+                'store_url' => $recentMenuSession->store->url,
                 'store_id' => $recentMenuSession->store->id
             ];
             // Testing
-            $this->info($recentMenuSession);
+            $this->info($recentMenuSession->id);
             if ($recentMenuSession->user->id === 36) {
                 $recentMenuSession->user->sendNotification(
                     'abandoned_cart',

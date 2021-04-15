@@ -44,7 +44,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 15px;
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 5px;
@@ -102,7 +102,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                       </tr>
                       <!-- title -->
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Revisit Your Order</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:38px; color:#3b3b3b; line-height:26px;">Resume Your Order</td>
                       </tr>
                       <!-- end title -->
                       <tr>

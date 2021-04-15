@@ -55,7 +55,7 @@ class AbandonedCart extends Mailable
 
         return $this->view('email.customer.abandoned-cart')
             ->with($this->data)
-            ->subject('Don\'t Forget Your Bag!')
+            ->subject('Don\'t Forget To Complete Your Order!')
             ->from($storeEmail, $storeName);
     }
 }

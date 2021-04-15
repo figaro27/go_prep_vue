@@ -1530,7 +1530,12 @@ export default {
       }
     },
     async addMeal(meal, mealPackage, size, group) {
-      if (this.context !== "store" && this.loggedIn && this.bag.length === 0) {
+      if (
+        this.context !== "store" &&
+        this.loggedIn &&
+        this.bag.length === 0 &&
+        this.$parent.adjustingSubscription === undefined
+      ) {
         axios.post("/api/me/menuSessions", {
           store_id: this.store.id,
           user_id: this.user.id

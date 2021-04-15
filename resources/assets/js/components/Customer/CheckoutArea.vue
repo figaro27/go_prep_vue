@@ -1604,6 +1604,8 @@ export default {
   mounted: function() {
     // this.refreshStoreCustomers();
 
+    this.addMenuSession();
+
     this.setOrderFrequency();
 
     if (this.store.modules.frequencyItems) {
@@ -4304,6 +4306,18 @@ use next_delivery_dates
         return;
       }
       this.$toastr.w(this.invalidCheckout);
+    },
+    addMenuSession() {
+      if (
+        this.context !== "store" &&
+        this.loggedIn &&
+        this.$route.query.sub === undefined
+      ) {
+        axios.post("/api/me/menuSessions", {
+          store_id: this.store.id,
+          user_id: this.user.id
+        });
+      }
     },
     getItemMeals(item) {
       const mealPackage = !!item.meal_package;
