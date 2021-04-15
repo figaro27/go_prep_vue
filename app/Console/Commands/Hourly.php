@@ -111,12 +111,18 @@ class Hourly extends Command
 
     public function sendAbandonedCartEmails()
     {
-        $recentMenuSessions = MenuSession::where(
-            'created_at',
-            '>',
-            Carbon::now()
+        $hourRange = [
+            Carbon::now('utc')
+                ->subHours(2)
+                ->toDateTimeString(),
+            Carbon::now('utc')
                 ->subHours(1)
                 ->toDateTimeString()
+        ];
+
+        $recentMenuSessions = MenuSession::whereBetween(
+            'created_at',
+            $hourRange
         )->get();
         foreach ($recentMenuSessions as $recentMenuSession) {
             $timezone = StoreSetting::where(

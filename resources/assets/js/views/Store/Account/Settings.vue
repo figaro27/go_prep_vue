@@ -1674,7 +1674,7 @@
                   @change.native="updateStoreModules(false, true)"
                 ></b-form-input>
 
-                <!-- <p class="mt-2">
+                <p class="mt-2">
                   <span class="mr-1 mt-2">Abandoned Cart Emails</span>
                   <img
                     v-b-popover.hover="
@@ -1691,7 +1691,7 @@
                   size="lg"
                   v-model="storeModules.cartReminders"
                   @change.native="updateStoreModules()"
-                /> -->
+                />
               </b-form>
             </b-tab>
           </b-tabs>

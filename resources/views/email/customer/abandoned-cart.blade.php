@@ -40,7 +40,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
   border: none;
   background-color:#3082CF;
   color: white;
-  padding: 15px 32px;
+  padding: 10px 25px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
