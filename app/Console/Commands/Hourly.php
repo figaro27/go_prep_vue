@@ -119,41 +119,50 @@ class Hourly extends Command
                 ->toDateTimeString()
         )->get();
         foreach ($recentMenuSessions as $recentMenuSession) {
+            $timezone = StoreSetting::where(
+                'store_id',
+                $recentMenuSession->store_id
+            )
+                ->pluck('timezone')
+                ->first();
             $module = StoreModule::where(
                 'store_id',
                 $recentMenuSession->store_id
             )->first();
-            if (!$module->cartReminders) {
-                return;
-            }
-            $recentOrder = Order::where('user_id', $recentMenuSession->user_id)
-                ->where('paid', 1)
-                ->orderBy('created_at', 'desc')
-                ->first();
+            if ($module->cartReminders) {
+                $recentOrder = Order::where(
+                    'user_id',
+                    $recentMenuSession->user_id
+                )
+                    ->where('paid', 1)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
 
-            if (
-                $recentOrder &&
-                $recentOrder->created_at > $recentMenuSession->created_at
-            ) {
-                $this->info('Order was created');
-                return;
-            }
-            $data = [
-                'email' => $recentMenuSession->user->email,
-                'store_email' => $recentMenuSession->store->user->email,
-                'user_name' => $recentMenuSession->user->details->firstname,
-                'details' => $recentMenuSession->user->details,
-                'store_name' => $recentMenuSession->store_name,
-                'store_url' => $recentMenuSession->store->url,
-                'store_id' => $recentMenuSession->store_id
-            ];
-            // Testing
-            $this->info($recentMenuSession->id);
-            if ($recentMenuSession->user->id === 36) {
-                $recentMenuSession->user->sendNotification(
-                    'abandoned_cart',
-                    $data
-                );
+                if (
+                    $recentOrder &&
+                    $recentOrder->created_at->toDateTimeString() >
+                        $recentMenuSession->created_at
+                            ->setTimezone($timezone)
+                            ->toDateTimeString()
+                ) {
+                    $this->info('Order was created');
+                } else {
+                    $data = [
+                        'email' => $recentMenuSession->user->email,
+                        'store_email' => $recentMenuSession->store->user->email,
+                        'user_name' =>
+                            $recentMenuSession->user->details->firstname,
+                        'details' => $recentMenuSession->user->details,
+                        'store_name' => $recentMenuSession->store_name,
+                        'store_url' => $recentMenuSession->store->url,
+                        'store_id' => $recentMenuSession->store_id
+                    ];
+
+                    $recentMenuSession->user->sendNotification(
+                        'abandoned_cart',
+                        $data
+                    );
+                }
             }
         }
     }

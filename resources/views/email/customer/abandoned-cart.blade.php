@@ -193,7 +193,7 @@ u + .body .full { width:100% !important; width:100vw !important;}
                 </tr>
                 <tr>
                   <td align="left" style="font-family: 'Open Sans', Arial, sans-serif; font-size:15px; color:#7f8c8d; line-height:45px;">
-                  <a href="{{ $store_url}}"><button type="button" class="purchaseButton">Finish Checking Out</button></a>
+                  <a href="{{ $store_url}}"><div class="purchaseButton">Finish Checking Out</div></a>
                   </td>
                 </tr>
                 <tr>
