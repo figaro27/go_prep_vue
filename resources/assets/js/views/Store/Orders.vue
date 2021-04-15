@@ -5,8 +5,8 @@
         <p>
           <span class="strong">New Feature - Abandoned Cart Emails</span><br />
           If a customer views your menu and adds items to their cart but doesn't
-          checkout, send them an automated reminder email approx. 1-2 hours
-          later reminding them to finish their order.
+          checkout, send them an automated email approx. 1-2 hours later
+          reminding them to finish their order.
           <br />
           <router-link to="/store/account/settings"
             ><strong
