@@ -14,6 +14,7 @@ use App\Mail\RenewalFailed;
 use Illuminate\Support\Facades\Mail;
 use App\User;
 use App\MenuSession;
+use App\StoreModule;
 
 class Hourly extends Command
 {
@@ -118,6 +119,13 @@ class Hourly extends Command
                 ->toDateTimeString()
         )->get();
         foreach ($recentMenuSessions as $recentMenuSession) {
+            $module = StoreModule::where(
+                'store_id',
+                $recentMenuSession->store_id
+            )->first();
+            if (!$module->cartReminders) {
+                return;
+            }
             $recentOrder = Order::where('user_id', $recentMenuSession->user_id)
                 ->where('paid', 1)
                 ->orderBy('created_at', 'desc')
@@ -137,7 +145,7 @@ class Hourly extends Command
                 'details' => $recentMenuSession->user->details,
                 'store_name' => $recentMenuSession->store_name,
                 'store_url' => $recentMenuSession->store->url,
-                'store_id' => $recentMenuSession->store->id
+                'store_id' => $recentMenuSession->store_id
             ];
             // Testing
             $this->info($recentMenuSession->id);
