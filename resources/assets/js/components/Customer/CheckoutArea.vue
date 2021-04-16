@@ -770,6 +770,7 @@
         </div>
       </li>
     </ul>
+
     <li
       class="checkout-item"
       v-if="
@@ -793,20 +794,6 @@
         show
         >Orders are closed until {{ storeSettings.menuReopening }}.</b-alert
       >
-    </li>
-
-    <li
-      class="checkout-item"
-      v-if="
-        transferTypeCheckDelivery &&
-          transferTypeCheckPickup &&
-          (!storeModules.hideDeliveryOption ||
-            $route.params.storeView === true ||
-            storeOwner) &&
-          store.delivery_day_zip_codes.length == 0 &&
-          !transferTypes.both
-      "
-    >
       <b-form-group>
         <b-form-radio-group v-model="bagPickup" @change="changePickup">
           <b-form-radio
