@@ -2585,9 +2585,10 @@ use next_delivery_dates
       return options;
     },
     deliveryDateOptionsStoreView() {
-      if (this.storeModules.customDeliveryDays) {
-        return this.deliveryDateOptions;
-      }
+      let dayIndexes = [];
+      this.store.delivery_days.forEach(day => {
+        dayIndexes.push(parseInt(day.day));
+      });
 
       let options = [];
       let today = new Date();
@@ -2600,10 +2601,20 @@ use next_delivery_dates
 
       for (start; start < 180; start++) {
         let day = new Date(year, month, date + start);
-        options.push({
-          value: moment(day).format("YYYY-MM-DD 00:00:00"),
-          text: moment(day).format("dddd MMM Do")
-        });
+
+        if (this.storeModules.customDeliveryDays) {
+          if (dayIndexes.includes(moment(day).day())) {
+            options.push({
+              value: moment(day).format("YYYY-MM-DD 00:00:00"),
+              text: moment(day).format("dddd MMM Do")
+            });
+          }
+        } else {
+          options.push({
+            value: moment(day).format("YYYY-MM-DD 00:00:00"),
+            text: moment(day).format("dddd MMM Do")
+          });
+        }
       }
       return options;
     },
