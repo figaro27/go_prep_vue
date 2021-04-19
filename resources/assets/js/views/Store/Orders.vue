@@ -17,6 +17,22 @@
         </p>
       </b-alert>
 
+      <b-alert
+        variant="warning"
+        show
+        dismissible
+        v-if="failedSubscriptionRenewalCount > 0"
+      >
+        <p class="strong">
+          {{ failedSubscriptionRenewalCount }}
+          <span v-if="failedSubscriptionRenewalCount > 1">subscriptions</span
+          ><span v-else>subscription</span> recently failed to renew.
+          <router-link to="/store/subscriptions"
+            >View the reason on the subscriptions page.</router-link
+          >
+        </p>
+      </b-alert>
+
       <div class="card">
         <div class="card-body">
           <Spinner v-if="orders.loading" />
@@ -1224,7 +1240,8 @@ export default {
       storeSettings: "storeSettings",
       getStoreMeal: "storeMeal",
       reportSettings: "storeReportSettings",
-      mealMixItems: "mealMixItems"
+      mealMixItems: "mealMixItems",
+      subscriptions: "storeSubscriptions"
     }),
     orders: createInstance("orders", {
       page: 1,
@@ -1283,6 +1300,17 @@ export default {
       if (this.order.originalAmount - this.order.refundedAmount <= 0)
         return true;
       else return false;
+    },
+    failedSubscriptionRenewalCount() {
+      return _.reduce(
+        this.subscriptions,
+        (sum, sub) => {
+          if (sub.failed_renewal) {
+            return sum + 1;
+          }
+        },
+        0
+      );
     }
   },
   beforeDestroy() {

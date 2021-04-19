@@ -82,7 +82,8 @@
               <span v-if="props.row.failed_renewal">
                 <img
                   v-b-popover.hover="
-                    'This subscription failed to renew. This is most likely due to a credit card issue. An email was sent to you and the customer at the time of failure. Once the issue has been sorted out you can manually renew this subscription.'
+                    'Subscription failed to renew. Please fix the issue and then manually renew the subscription. Error: ' +
+                      props.row.failed_renewal_error
                   "
                   title="Failed Renewal"
                   src="/images/store/caution.png"

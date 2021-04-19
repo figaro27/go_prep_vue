@@ -90,6 +90,26 @@
               >{{ moment(props.row.next_delivery_date).format("dddd, MMM Do") }}
             </span>
           </div>
+          <div slot="status" class="text-nowrap" slot-scope="props">
+            {{
+              props.row.status.charAt(0).toUpperCase() +
+                props.row.status.slice(1)
+            }}
+            <span v-if="props.row.failed_renewal">
+              <img
+                v-b-popover.hover="
+                  'Subscription failed to renew. Please fix the issue and then manually renew the subscription. Error: ' +
+                    props.row.failed_renewal_error
+                "
+                title="Failed Renewal"
+                src="/images/store/caution.png"
+                class="pb-1"
+              />
+              <b-btn variant="dark" size="sm" @click="renew(props.row.id)"
+                >Renew</b-btn
+              >
+            </span>
+          </div>
           <div slot="actions" class="text-nowrap" slot-scope="props">
             <button
               class="btn view btn-primary btn-sm"
@@ -1058,6 +1078,20 @@ export default {
             this.$toastr.s("Subscription renewal day successfully moved.");
           }
         });
+    },
+    renew(subId) {
+      axios.post("/api/me/renewSubscription", { id: subId }).then(resp => {
+        this.refreshSubscriptions();
+        this.showRenewModal = false;
+        if (!resp.data.failed_renewal) {
+          this.$toastr.s("Subscription renewed.");
+        } else {
+          this.$toastr.w(
+            "Subscription failed to renew. Reason: " +
+              JSON.stringify(resp.data.failed_renewal_error)
+          );
+        }
+      });
     },
     formatMoney: format.money
   }

@@ -248,6 +248,15 @@ class SubscriptionController extends UserController
         $subscription->update();
     }
 
+    public function renew(Request $request)
+    {
+        $sub = Subscription::where('id', $request->get('id'))
+            ->with(['pickup_location', 'user'])
+            ->first();
+        $sub->renew(true);
+        return $sub;
+    }
+
     /**
      * Update meals
      *

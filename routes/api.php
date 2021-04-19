@@ -896,6 +896,10 @@ foreach (
                                 'me/expediteRenewal',
                                 'SubscriptionController@expediteRenewal'
                             );
+                            Route::post(
+                                'me/renewSubscription',
+                                'SubscriptionController@renew'
+                            );
                             Route::get(
                                 'me/getSubscriptionPickup/{id}',
                                 'SubscriptionController@getSubscriptionPickup'

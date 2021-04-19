@@ -739,6 +739,7 @@ class Subscription extends Model
                 ->minute(0)
                 ->second(0);
             $this->failed_renewal = null;
+            $this->failed_renewal_error = null;
             $this->save();
 
             // Fetching latest order again after updating figures
@@ -845,8 +846,8 @@ class Subscription extends Model
             }
 
             $this->failed_renewal = Carbon::now('UTC');
-            $this->save();
             $this->failed_renewal_error = $e->getMessage();
+            $this->save();
 
             $error = new Error();
             $error->store_id = $this->store_id;
