@@ -1073,8 +1073,16 @@ export default {
     vSelect
   },
   mixins: [checkDateRange, printer],
+  watch: {
+    subscriptions: function(val) {
+      if (val.length > 0) {
+        this.getFailedSubscriptionRenewalCount();
+      }
+    }
+  },
   data() {
     return {
+      failedSubscriptionRenewalCount: 0,
       voidOrderModal: false,
       page: 1,
       editingCustomer: false,
@@ -1301,17 +1309,6 @@ export default {
       if (this.order.originalAmount - this.order.refundedAmount <= 0)
         return true;
       else return false;
-    },
-    failedSubscriptionRenewalCount() {
-      return _.reduce(
-        this.subscriptions,
-        (sum, sub) => {
-          if (sub.failed_renewal) {
-            return sum + 1;
-          }
-        },
-        0
-      );
     }
   },
   beforeDestroy() {
@@ -1950,6 +1947,17 @@ export default {
         this.refreshTable();
         this.$toastr.s("Cooler marked as returned.");
       });
+    },
+    getFailedSubscriptionRenewalCount() {
+      this.failedSubscriptionRenewalCount = _.reduce(
+        this.subscriptions,
+        (sum, sub) => {
+          if (sub.failed_renewal) {
+            return sum + 1;
+          }
+        },
+        0
+      );
     }
   }
 };
