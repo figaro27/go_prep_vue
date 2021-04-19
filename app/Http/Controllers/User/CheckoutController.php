@@ -900,7 +900,10 @@ class CheckoutController extends UserController
                             ? $item['meal']['category_id']
                             : null;
 
-                        if ($item['meal']['delivery_date']) {
+                        if (
+                            isset($item['meal']['delivery_date']) &&
+                            $item['meal']['delivery_date']
+                        ) {
                             $mealOrder->delivery_date =
                                 $item['meal']['delivery_date'];
                         }
@@ -1367,7 +1370,10 @@ class CheckoutController extends UserController
                         ? $item['meal']['category_id']
                         : null;
 
-                    if ($item['meal']['delivery_date']) {
+                    if (
+                        isset($item['meal']['delivery_date']) &&
+                        $item['meal']['delivery_date']
+                    ) {
                         $mealOrder->delivery_date =
                             $item['meal']['delivery_date'];
                     }
