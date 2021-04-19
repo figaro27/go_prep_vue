@@ -373,11 +373,19 @@ export default {
       storeSettings: "storeSettings"
     }),
     nextChargeDate() {
-      let lastCharged = moment(this.storePlan.last_charged);
-      if (this.storePlan.period == "monthly") {
-        return lastCharged.add(1, "months");
+      if (this.storePlan.last_charged) {
+        let lastCharged = moment(this.storePlan.last_charged);
+        if (this.storePlan.period == "monthly") {
+          return lastCharged.add(1, "months");
+        } else {
+          return lastCharged.add(1, "years");
+        }
       } else {
-        return lastCharged.add(1, "years");
+        let currentYear = moment().year();
+        return moment(
+          this.storePlan.month + "-" + this.storePlan.day + "-" + currentYear,
+          "MM-DD-YYYY"
+        );
       }
     },
     planOptions() {
