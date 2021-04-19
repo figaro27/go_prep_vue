@@ -1956,8 +1956,6 @@ export default {
         }
       });
       this.failedSubscriptionRenewalCount = count;
-      console.log("test 2");
-      console.log(this.failedSubscriptionRenewalCount);
     }
   }
 };
