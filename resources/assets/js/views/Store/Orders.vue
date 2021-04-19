@@ -1185,6 +1185,9 @@ export default {
     };
   },
   created() {},
+  updated() {
+    console.log(this.subscriptions);
+  },
   mounted() {
     if (
       this.store.id === 108 ||
@@ -1303,19 +1306,15 @@ export default {
       else return false;
     },
     failedSubscriptionRenewalCount() {
-      if (this.subscriptions.length > 0) {
-        return _.reduce(
-          this.subscriptions,
-          (sum, sub) => {
-            if (sub.failed_renewal) {
-              return sum + 1;
-            }
-          },
-          0
-        );
-      } else {
-        return 0;
-      }
+      return _.reduce(
+        this.subscriptions,
+        (sum, sub) => {
+          if (sub.failed_renewal) {
+            return sum + 1;
+          }
+        },
+        0
+      );
     }
   },
   beforeDestroy() {
