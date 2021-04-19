@@ -1185,9 +1185,6 @@ export default {
     };
   },
   created() {},
-  updated() {
-    console.log(this.subscriptions);
-  },
   mounted() {
     if (
       this.store.id === 108 ||
