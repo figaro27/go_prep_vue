@@ -1221,6 +1221,9 @@ export default {
     }
 
     this.clearBag();
+
+    console.log(this.failedSubscriptionRenewalCount);
+    console.log(this.subscriptions);
     /* Sidebar Check End */
 
     // if (this.storeModules.manualOrders || this.storeModules.cashOrders) {
