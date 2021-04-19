@@ -734,6 +734,11 @@ class CheckoutController extends StoreController
                             ? $item['meal']['category_id']
                             : null;
 
+                        if ($item['meal']['delivery_date']) {
+                            $mealOrder->delivery_date =
+                                $item['meal']['delivery_date'];
+                        }
+
                         $mealOrder->save();
 
                         if (isset($item['components']) && $item['components']) {
@@ -1282,6 +1287,12 @@ class CheckoutController extends StoreController
                     )
                         ? $item['meal']['category_id']
                         : null;
+
+                    if ($item['meal']['delivery_date']) {
+                        $mealOrder->delivery_date =
+                            $item['meal']['delivery_date'];
+                    }
+
                     $mealOrder->save();
 
                     if (isset($item['components']) && $item['components']) {

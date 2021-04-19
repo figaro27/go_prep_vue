@@ -748,7 +748,6 @@ class CheckoutController extends UserController
                                 $meal->update();
                             }
                         }
-
                         $mealOrder = new MealOrder();
                         $mealOrder->order_id = $order->id;
                         $mealOrder->store_id = $store->id;
@@ -900,6 +899,11 @@ class CheckoutController extends UserController
                         )
                             ? $item['meal']['category_id']
                             : null;
+
+                        if ($item['meal']['delivery_date']) {
+                            $mealOrder->delivery_date =
+                                $item['meal']['delivery_date'];
+                        }
 
                         $mealOrder->save();
 
@@ -1362,6 +1366,11 @@ class CheckoutController extends UserController
                     )
                         ? $item['meal']['category_id']
                         : null;
+
+                    if ($item['meal']['delivery_date']) {
+                        $mealOrder->delivery_date =
+                            $item['meal']['delivery_date'];
+                    }
 
                     $mealOrder->save();
 
