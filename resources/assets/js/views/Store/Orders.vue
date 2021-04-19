@@ -1949,6 +1949,7 @@ export default {
       });
     },
     getFailedSubscriptionRenewalCount() {
+      console.log("test");
       this.failedSubscriptionRenewalCount = _.reduce(
         this.subscriptions,
         (sum, sub) => {
@@ -1958,6 +1959,8 @@ export default {
         },
         0
       );
+      console.log("test 2");
+      console.log(this.failedSubscriptionRenewalCount);
     }
   }
 };
