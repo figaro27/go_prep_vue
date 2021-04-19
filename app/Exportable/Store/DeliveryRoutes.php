@@ -74,7 +74,12 @@ class DeliveryRoutes
         foreach ($orders as $order) {
             $customerDetails = $order->user->details;
             $name =
-                $customerDetails->firstname . ' ' . $customerDetails->lastname;
+                ' - ' .
+                $order->order_number .
+                ' | ' .
+                $customerDetails->firstname .
+                ' ' .
+                $customerDetails->lastname;
 
             // No longer restricting the report to unique addresses or names. Will just list the name/address multiple times if there are multiple orders.
 
