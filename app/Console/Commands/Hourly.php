@@ -144,14 +144,26 @@ class Hourly extends Command
                     ->orderBy('created_at', 'desc')
                     ->first();
 
+                $recentSubscription = Subscription::where(
+                    'user_id',
+                    $recentMenuSession->user_id
+                )
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
                 if (
-                    $recentOrder &&
-                    $recentOrder->created_at->toDateTimeString() >
-                        $recentMenuSession->created_at
-                            ->setTimezone($timezone)
-                            ->toDateTimeString()
+                    ($recentOrder &&
+                        $recentOrder->created_at->toDateTimeString() >
+                            $recentMenuSession->created_at
+                                ->setTimezone($timezone)
+                                ->toDateTimeString()) ||
+                    ($recentSubscription &&
+                        $recentSubscription->created_at->toDateTimeString() >
+                            $recentMenuSession->created_at
+                                ->setTimezone($timezone)
+                                ->toDateTimeString())
                 ) {
-                    $this->info('Order was created');
+                    $this->info('Recent order or subscription was created');
                 } else {
                     $data = [
                         'email' => $recentMenuSession->user->email,
