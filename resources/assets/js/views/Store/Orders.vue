@@ -1949,17 +1949,12 @@ export default {
       });
     },
     getFailedSubscriptionRenewalCount() {
-      console.log("test");
-      console.log(this.subscriptions);
-      let count = _.reduce(
-        this.subscriptions,
-        (sum, sub) => {
-          if (sub.failed_renewal) {
-            return sum + 1;
-          }
-        },
-        0
-      );
+      let count = 0;
+      this.subscriptions.forEach(sub => {
+        if (sub.failed_renewal) {
+          count++;
+        }
+      });
       this.failedSubscriptionRenewalCount = count;
       console.log("test 2");
       console.log(this.failedSubscriptionRenewalCount);
