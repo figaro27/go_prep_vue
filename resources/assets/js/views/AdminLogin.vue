@@ -79,6 +79,9 @@ export default {
       }
     },
     submit() {
+      if (!this.selectedUserId) {
+        return;
+      }
       let data = {
         userId: this.selectedUserId
       };
