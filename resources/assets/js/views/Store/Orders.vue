@@ -1950,7 +1950,8 @@ export default {
     },
     getFailedSubscriptionRenewalCount() {
       console.log("test");
-      this.failedSubscriptionRenewalCount = _.reduce(
+      console.log(this.subscriptions);
+      let count = _.reduce(
         this.subscriptions,
         (sum, sub) => {
           if (sub.failed_renewal) {
@@ -1959,6 +1960,7 @@ export default {
         },
         0
       );
+      this.failedSubscriptionRenewalCount = count;
       console.log("test 2");
       console.log(this.failedSubscriptionRenewalCount);
     }
