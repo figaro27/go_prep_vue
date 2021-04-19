@@ -1222,8 +1222,6 @@ export default {
 
     this.clearBag();
 
-    console.log(this.failedSubscriptionRenewalCount);
-    console.log(this.subscriptions);
     /* Sidebar Check End */
 
     // if (this.storeModules.manualOrders || this.storeModules.cashOrders) {
@@ -1305,15 +1303,19 @@ export default {
       else return false;
     },
     failedSubscriptionRenewalCount() {
-      return _.reduce(
-        this.subscriptions,
-        (sum, sub) => {
-          if (sub.failed_renewal) {
-            return sum + 1;
-          }
-        },
-        0
-      );
+      if (this.subscriptions.length > 0) {
+        return _.reduce(
+          this.subscriptions,
+          (sum, sub) => {
+            if (sub.failed_renewal) {
+              return sum + 1;
+            }
+          },
+          0
+        );
+      } else {
+        return 0;
+      }
     }
   },
   beforeDestroy() {
