@@ -588,6 +588,9 @@ export default {
           this.getStorePlanCards();
           // Change stripe customer ID in store plan?
           this.$toastr.s("New card added & made default paying method.");
+        })
+        .catch(e => {
+          this.$toastr.w(e.response.data.message);
         });
     },
     updateCard(card) {
