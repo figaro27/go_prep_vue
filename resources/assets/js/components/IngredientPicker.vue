@@ -9,6 +9,8 @@
             v-model="meal.servingsPerMeal"
             placeholder="1"
             v-if="!componentAddonPage"
+            type="number"
+            min="0"
           ></b-form-input>
           <span v-if="componentAddonPage" class="strong"
             >: {{ meal.servingsPerMeal }}</span

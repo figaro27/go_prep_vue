@@ -348,6 +348,11 @@ export default {
       }
       this.userDetail.name =
         this.userDetail.firstname + " " + this.userDetail.lastname;
+
+      this.userDetail.store_id = this.user.last_viewed_store_id
+        ? this.user.last_viewed_store_id
+        : this.user.added_by_store_id;
+
       axios
         .patch("/api/me/detail", this.userDetail)
         .then(response => {
