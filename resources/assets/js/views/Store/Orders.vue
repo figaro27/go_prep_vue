@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <b-alert style="background-color:#EBFAFF" show dismissible>
+      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
         <p>
           <span class="strong">New Feature - Abandoned Cart Emails</span><br />
           If a customer views your menu and adds items to their cart but doesn't
@@ -15,7 +15,7 @@
             ></router-link
           >
         </p>
-      </b-alert>
+      </b-alert> -->
 
       <b-alert
         variant="warning"
