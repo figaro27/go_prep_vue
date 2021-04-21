@@ -183,8 +183,13 @@ class DeliveryRoutes
                             $i = 1;
                         }
 
+                        $customerName = ltrim(
+                            strstr($stop->name, ' | '),
+                            ' | '
+                        );
+
                         $customer = Customer::where([
-                            'name' => $stop->name,
+                            'name' => $customerName,
                             'city' => ltrim($address[$i + 1]),
                             'state' => ltrim($address[$i + 2]),
                             'zip' => ltrim($address[$i + 3])
