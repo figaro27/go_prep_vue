@@ -51,6 +51,7 @@ import VueObserveVisibility from "vue-observe-visibility";
 import { PaginationPlugin } from "vuex-pagination";
 import i18n from "./i18n";
 import VueFacebookPixel from "vue-analytics-facebook-pixel";
+import VueClipboard from "vue-clipboard2";
 
 Vue.prototype.$eventBus = new Vue();
 
@@ -70,6 +71,8 @@ Vue.use(vUUID);
 Vue.use(VueNumberInput);
 Vue.use(PaginationPlugin);
 Vue.use(VueFacebookPixel);
+VueClipboard.config.autoSetContainer = true;
+Vue.use(VueClipboard);
 Vue.component("input-tag", InputTag);
 Vue.component("v-select", vSelect);
 Vue.component("timepicker", VueTimepicker);

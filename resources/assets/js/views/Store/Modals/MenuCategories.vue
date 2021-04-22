@@ -128,9 +128,13 @@
                   </div>
                   <div class="d-flex d-inline">
                     <p class="mr-2">
-                      External Link: {{ store.url }}/customer/menu?cat={{
-                        category.id
-                      }}
+                      External Link: {{ getCategoryLink(category) }}
+                      <i
+                        class="fas fa-clipboard ml-1"
+                        style="color:#20A8D8"
+                        v-clipboard:copy="getCategoryLink(category)"
+                        v-clipboard:success="onCopy"
+                      ></i>
                     </p>
                   </div>
                   <div class="d-flex d-inline">
@@ -310,6 +314,17 @@ export default {
       value = !value;
       this.editing.activeForStore = value;
       this.updateCategory();
+    },
+    getCategoryLink(category) {
+      return (
+        "https://" +
+        this.store.details.domain +
+        ".goprep.com/customer/menu?cat=" +
+        category.id
+      );
+    },
+    onCopy: function(e) {
+      this.$toastr.s("Link copied to clipboard.");
     }
   }
 };
