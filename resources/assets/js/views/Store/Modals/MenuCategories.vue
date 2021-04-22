@@ -128,7 +128,9 @@
                   </div>
                   <div class="d-flex d-inline">
                     <p class="mr-2">
-                      External Link: {{ store.url }}?cat={{ category.id }}
+                      External Link: {{ store.url }}/customer/menu?cat={{
+                        category.id
+                      }}
                     </p>
                   </div>
                   <div class="d-flex d-inline">
