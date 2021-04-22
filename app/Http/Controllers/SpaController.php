@@ -396,7 +396,7 @@ class SpaController extends Controller
                         }
                     }
 
-                    if ($distance < $maxRange) {
+                    if ($distance !== null && $distance < $maxRange) {
                         $willDeliver = true;
                     }
                 }
