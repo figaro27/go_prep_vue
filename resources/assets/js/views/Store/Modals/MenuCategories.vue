@@ -206,7 +206,15 @@ export default {
       getCategoryTitle: "storeCategoryTitle",
       getAllergyTitle: "storeAllergyTitle",
       storeModules: "storeModules"
-    })
+    }),
+    storeMenuUrl() {
+      return this.store.details.host
+        ? this.store.details.domain +
+            "." +
+            this.store.details.host +
+            ".com/customer/menu"
+        : this.store.details.domain + "." + "goprep.com/customer/menu";
+    }
   },
   created() {
     this.fetchCategories();
@@ -316,12 +324,7 @@ export default {
       this.updateCategory();
     },
     getCategoryLink(category) {
-      return (
-        "https://" +
-        this.store.details.domain +
-        ".goprep.com/customer/menu?cat=" +
-        category.id
-      );
+      return "https://" + this.storeMenuUrl + "?cat=" + category.id;
     },
     onCopy: function(e) {
       this.$toastr.s("Link copied to clipboard.");
