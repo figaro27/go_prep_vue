@@ -127,6 +127,11 @@
                     ></b-form-checkbox>
                   </div>
                   <div class="d-flex d-inline">
+                    <p class="mr-2">
+                      External Link: {{ store.url }}?cat={{ category.id }}
+                    </p>
+                  </div>
+                  <div class="d-flex d-inline">
                     <b-btn @click.prevent="updateCategory" variant="primary"
                       >Save</b-btn
                     >
