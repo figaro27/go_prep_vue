@@ -144,12 +144,12 @@ class Hourly extends Command
                     ->orderBy('created_at', 'desc')
                     ->first();
 
-                $recentSubscription = Subscription::where(
+                $hasSubscription = Subscription::where(
                     'user_id',
                     $recentMenuSession->user_id
                 )
-                    ->orderBy('created_at', 'desc')
-                    ->first();
+                    ->where('status', '!=', 'cancelled')
+                    ->count();
 
                 if (
                     ($recentOrder &&
@@ -157,13 +157,11 @@ class Hourly extends Command
                             $recentMenuSession->created_at
                                 ->setTimezone($timezone)
                                 ->toDateTimeString()) ||
-                    ($recentSubscription &&
-                        $recentSubscription->created_at->toDateTimeString() >
-                            $recentMenuSession->created_at
-                                ->setTimezone($timezone)
-                                ->toDateTimeString())
+                    $hasSubscription > 0
                 ) {
-                    $this->info('Recent order or subscription was created');
+                    $this->info(
+                        'Recent order was created or user has active subscription.'
+                    );
                 } else {
                     $data = [
                         'email' => $recentMenuSession->user->email,
