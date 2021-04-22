@@ -212,7 +212,7 @@ export default {
         ? this.store.details.domain +
             "." +
             this.store.details.host +
-            ".com/customer/menu"
+            "/customer/menu"
         : this.store.details.domain + "." + "goprep.com/customer/menu";
     }
   },
