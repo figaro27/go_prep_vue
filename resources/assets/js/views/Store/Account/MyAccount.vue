@@ -340,7 +340,6 @@ export default {
       if (typeof data.logo !== "string") {
         delete data.logo;
       }
-      this.spliceZip();
       axios
         .patch("/api/me/details", data)
         .then(response => {})
@@ -355,13 +354,6 @@ export default {
       settings.delivery_distance_zipcodes = this.zipcodes;
 
       axios.patch("/api/me/settings", settings).then(response => {});
-    },
-    spliceZip() {
-      if (this.storeDetail.zip.toString().length > 5) {
-        let intToString = this.storeDetail.zip.toString();
-        let newZip = parseInt(intToString.substring(0, 5));
-        this.storeDetail.zip = newZip;
-      }
     },
     updateZips(zips) {
       this.zipcodes = zips.split(",").map(zip => {
