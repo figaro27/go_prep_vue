@@ -23,6 +23,7 @@ class SMSMessagesController extends StoreController
     public function index()
     {
         $messageIds = SmsMessage::where('store_id', $this->store->id)
+            ->orderBy('created_at', 'desc')
             ->pluck('message_id')
             ->take(5);
 
