@@ -1,21 +1,18 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <!-- <b-alert style="background-color:#EBFAFF" show dismissible>
+      <b-alert style="background-color:#EBFAFF" show dismissible>
         <p>
-          <span class="strong">New Feature - Abandoned Cart Emails</span><br />
-          If a customer views your menu and adds items to their cart but doesn't
-          checkout, send them an automated email approx. 1-2 hours later
-          reminding them to finish their order.
+          <span class="strong">New Feature - Special SMS Lists</span><br />
+          Send out SMS texts to a list of customers who meet a certain condition
+          such as those who haven't placed an order in X number of days or those
+          who only have ordered once or leads who have never ordered.
           <br />
-          <router-link to="/store/account/settings"
-            ><strong
-              >Turn this setting on at the bottom of the Advanced tab
-              here.</strong
-            ></router-link
+          <router-link to="/store/SMS"
+            ><strong>View it here.</strong></router-link
           >
         </p>
-      </b-alert> -->
+      </b-alert>
 
       <b-alert
         variant="warning"

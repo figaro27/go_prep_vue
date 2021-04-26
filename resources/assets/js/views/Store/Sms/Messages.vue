@@ -157,7 +157,6 @@
               <div
                 class="d-flex"
                 @click="showSpecialListModal = !showSpecialListModal"
-                v-if="store.id === 40"
               >
                 <i
                   class="fas fa-users-cog d-inline pr-1 pt-1"

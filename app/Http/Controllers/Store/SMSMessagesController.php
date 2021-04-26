@@ -124,7 +124,7 @@ class SMSMessagesController extends StoreController
         }
 
         // Store standalone phone numbers are contacts for purposes of retrieving chats
-        SmsContact::addNumbersToContacts($phones, $this->store->id);
+        // SmsContact::addNumbersToContacts($phones, $this->store->id);
 
         $lists = json_decode(
             collect($request->get('lists'))->map(function ($list) {
