@@ -370,7 +370,13 @@ export default {
     },
     mealIngredients() {
       let ingredients = "";
-      this.meal.ingredients.forEach(ingredient => {
+      let meal = this.meal;
+      if (this.mealSize) {
+        meal = this.meal.sizes.find(size => {
+          return size.id === this.mealSize;
+        });
+      }
+      meal.ingredients.forEach(ingredient => {
         // Don't show custom entered nutrition as an ingredient
         if (!ingredient.food_name.includes("ID -")) {
           ingredients += ingredient.food_name + ", ";

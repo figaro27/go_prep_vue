@@ -223,7 +223,7 @@ export default {
       });
       this.ingredient_picker_size.ingredients = ingredients;
       this.$set(this.meal.sizes, index, this.ingredient_picker_size);
-
+      this.save();
       this.closeIngredientPicker();
     },
     closeIngredientPicker() {

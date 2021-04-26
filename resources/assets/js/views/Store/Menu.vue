@@ -1531,9 +1531,9 @@ export default {
           this.$toastr.s("Item updated.");
         }
 
-        if (id === this.meal.id) {
-          this.meal = meal;
-        }
+        // if (id === this.meal.id) {
+        //   this.meal = meal;
+        // }
 
         return true;
       } catch (e) {
