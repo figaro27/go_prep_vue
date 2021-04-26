@@ -556,6 +556,14 @@ class CheckoutController extends UserController
                     strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                     chr(rand(65, 90)) .
                     rand(10, 99);
+                if (
+                    Order::where(
+                        'order_number',
+                        $order->order_number
+                    )->count() > 0
+                ) {
+                    $order->order_number = $order->order_number . 1;
+                }
                 $order->prepaid = $prepaid;
                 $order->preFeePreDiscount = $preFeePreDiscount;
                 $order->mealPlanDiscount = $mealPlanDiscount;
@@ -1162,6 +1170,14 @@ class CheckoutController extends UserController
                     strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                     chr(rand(65, 90)) .
                     rand(10, 99);
+                if (
+                    Order::where(
+                        'order_number',
+                        $order->order_number
+                    )->count() > 0
+                ) {
+                    $order->order_number = $order->order_number . 1;
+                }
                 $order->prepaid = $prepaid;
                 $order->preFeePreDiscount = $preFeePreDiscount;
                 $order->mealPlanDiscount = $mealPlanDiscount;

@@ -453,6 +453,12 @@ class Subscription extends Model
                 strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
                 chr(rand(65, 90)) .
                 rand(10, 99);
+            if (
+                Order::where('order_number', $newOrder->order_number)->count() >
+                0
+            ) {
+                $newOrder->order_number = $newOrder->order_number . 1;
+            }
             $newOrder->prepaid = $this->prepaid;
             $newOrder->preFeePreDiscount = $this->prepaidChargeWeek
                 ? $this->preFeePreDiscount
