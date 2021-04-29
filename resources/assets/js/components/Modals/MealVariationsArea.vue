@@ -68,6 +68,7 @@
         v-model="quant"
         type="number"
         class="mb-2 width-115"
+        min="1"
       ></b-form-input>
       <button
         type="button"
