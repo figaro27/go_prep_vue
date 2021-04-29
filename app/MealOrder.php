@@ -421,7 +421,7 @@ class MealOrder extends Pivot
 
     public function getUnitPriceAttribute()
     {
-        if ($this->price) {
+        if ($this->price && $this->quantity !== 0) {
             return $this->price / $this->quantity;
         }
 
