@@ -8,6 +8,11 @@
         : 'left-right-box-shadow main-customer-container gray-background'
     "
   >
+    <p
+      v-html="store.details.description"
+      v-if="store.details.description"
+      class="mb-2"
+    ></p>
     <div class="alert-area">
       <b-alert
         show
@@ -176,8 +181,6 @@
         </p>
       </b-alert>
     </div>
-
-    <p v-html="store.details.description" v-if="store.details.description"></p>
 
     <meal-package-components-modal
       ref="packageComponentModal"
