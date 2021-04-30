@@ -11,7 +11,7 @@
     <p
       v-html="store.details.description"
       v-if="store.details.description"
-      class="mb-3"
+      class="mb-1"
     ></p>
     <div class="alert-area">
       <b-alert
