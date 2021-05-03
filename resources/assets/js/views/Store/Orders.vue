@@ -1,7 +1,7 @@
 <template>
   <div class="row mt-3">
     <div class="col-md-12">
-      <b-alert style="background-color:#EBFAFF" show dismissible>
+      <!--       <b-alert style="background-color:#EBFAFF" show dismissible>
         <p>
           <span class="strong">New Feature - Special SMS Lists</span><br />
           Send out SMS texts to a list of customers who meet a certain condition
@@ -12,7 +12,7 @@
             ><strong>View it here.</strong></router-link
           >
         </p>
-      </b-alert>
+      </b-alert> -->
 
       <b-alert
         variant="warning"
