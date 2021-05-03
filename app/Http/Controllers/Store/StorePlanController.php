@@ -8,6 +8,8 @@ use App\StorePlanTransaction;
 use Illuminate\Support\Carbon;
 use App\StoreSetting;
 use App\Store;
+use App\Mail\Store\StorePlanCancelled;
+use Illuminate\Support\Facades\Mail;
 
 class StorePlanController extends StoreController
 {
@@ -118,6 +120,9 @@ class StorePlanController extends StoreController
         $storePlan->cancellation_reason = $reason;
         $storePlan->cancellation_additional_info = $additionalInfo;
         $storePlan->update();
+
+        $email = new StorePlanCancelled(['plan' => $storePlan]);
+        Mail::send($email);
 
         return $storePlan;
     }
