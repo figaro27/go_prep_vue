@@ -55,7 +55,7 @@ class OrderController extends StoreController
         $this->store->orders = Order::whereIn(
             'store_id',
             $this->store->active_child_store_ids
-        );
+        )->orderBy('created_at', 'desc');
 
         $hide = $request->query('hide', ['items']);
         // Start date is all future orders by default
