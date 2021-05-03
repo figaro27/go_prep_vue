@@ -26,6 +26,15 @@ use App\StorePlan;
 use App\StorePlanTransaction;
 use App\PackingSlipSetting;
 use App\Facades\StorePlanService;
+use App\ChildMeal;
+use App\ChildMealPackage;
+use App\ChildGiftCard;
+use App\GiftCard;
+use Spatie\Image\Manipulations;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\Models\Media;
+use App\Media\Utils as MediaUtils;
 
 class misc extends Command
 {
@@ -60,16 +69,29 @@ class misc extends Command
      */
     public function handle()
     {
-        $users = User::all();
+        $meals = Meal::where('store_id', 40)->get();
 
-        foreach ($users as $user) {
-            $userDetail = $user->details;
-            if ($userDetail) {
-                $this->info($userDetail->id);
-                $userDetail->store_id = $user->last_viewed_store_id
-                    ? $user->last_viewed_store_id
-                    : $user->added_by_store_id;
-                $userDetail->update();
+        foreach ($meals as $meal) {
+            $newMeal = Meal::where([
+                'store_id' => 313,
+                'title' => $meal->title,
+                'description' => $meal->description,
+                'price' => $meal->price,
+                'deleted_at' => null
+            ])->first();
+
+            $mediaItem = $meal->getMedia('featured_image')->first();
+            if ($mediaItem && $newMeal) {
+                $this->info($newMeal->title);
+                try {
+                    $copiedMediaItem = $mediaItem->copy(
+                        $newMeal,
+                        'featured_image',
+                        's3'
+                    );
+                } catch (\Exception $e) {
+                    $this->info($e);
+                }
             }
         }
     }
