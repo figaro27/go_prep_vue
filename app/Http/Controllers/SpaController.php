@@ -767,7 +767,7 @@ class SpaController extends Controller
                     ]);
 
                     $meals =
-                        $store->childMeals()->count() > 0
+                        $store->parentStore->count() > 0
                             ? $store->childMeals()
                             : $meals;
 
@@ -830,7 +830,7 @@ class SpaController extends Controller
                         ]);
 
                     $packages =
-                        $store->childPackages()->count() > 0
+                        $store->parentStore->count() > 0
                             ? $store->childPackages()
                             : $packages;
 
@@ -892,7 +892,7 @@ class SpaController extends Controller
                 }
 
                 $giftCards =
-                    $store->childGiftCards()->count() > 0
+                    $store->parentStore->count() > 0
                         ? $store->childGiftCards()->get()
                         : $giftCards;
 

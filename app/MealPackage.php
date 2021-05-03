@@ -213,7 +213,7 @@ class MealPackage extends Model implements HasMedia
         $childStoreIds = isset($props['child_store_ids'])
             ? $props['child_store_ids']
             : null;
-        if ($childStoreIds) {
+        if (isset($props['child_store_ids'])) {
             $package->childStores()->sync($childStoreIds);
         }
 
@@ -487,7 +487,7 @@ class MealPackage extends Model implements HasMedia
         $childStoreIds = isset($props['child_store_ids'])
             ? $props['child_store_ids']
             : null;
-        if ($childStoreIds) {
+        if (isset($props['child_store_ids'])) {
             $this->childStores()->sync($childStoreIds);
         }
 
