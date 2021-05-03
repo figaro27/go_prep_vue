@@ -62,7 +62,8 @@ class StoreSetting extends Model
         'stripe',
         'currency_symbol',
         'date_format',
-        'menuReopening'
+        'menuReopening',
+        'stripe_rate'
     ];
 
     public static function boot()
@@ -486,6 +487,15 @@ class StoreSetting extends Model
             return 'D, m/d/Y';
         } else {
             return 'D, d/m/Y';
+        }
+    }
+
+    public function getStripeRateAttribute()
+    {
+        if ($this->currency === 'USD') {
+            return 2.9;
+        } else {
+            return 3.5;
         }
     }
 

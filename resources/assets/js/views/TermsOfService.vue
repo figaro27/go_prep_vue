@@ -345,10 +345,12 @@
         >7.6 The Third-Party Provider may opt in to pay a flat monthly fee based
         on the amount of monthly orders collected, with no additional percentage
         per transaction with the exception of the two and nine-tenth (2.9%) and
-        .30 cents per transaction credit card processing / application fee. Flat
-        monthly fees are billed automatically from the Customer&rsquo;s
-        connected Stripe account balance per month or with a provided credit
-        card that will be kept on file.&nbsp;</span
+        .30 cents per transaction credit card processing / application fee for
+        USA based stores and three and nine-tenth (3.9%) and .30 cents per
+        transaction credit card processing / application fee for non USA based
+        stores. Flat monthly fees are billed automatically from the
+        Customer&rsquo;s connected Stripe account balance per month or with a
+        provided credit card that will be kept on file.&nbsp;</span
       >
     </p>
     <p>&nbsp;</p>

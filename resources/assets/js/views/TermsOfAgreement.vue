@@ -159,7 +159,10 @@
         agreement between the Company and the Service Provider based on the
         gross order amount, minus the processing and delivery fees. There is an
         additional two and nine-tenth percent (2.9%) and .30 cents credit card
-        processing/application fee per transaction.&nbsp;</span
+        processing/application fee per transaction for USA based stores and
+        three and nine-tenth percent (3.9%) and .30 cents credit card
+        processing/application fee per transaction for non USA based
+        stores.&nbsp;</span
       >
     </p>
     <p>
