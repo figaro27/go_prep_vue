@@ -60,7 +60,8 @@ class MealPackageController extends StoreController
                 'meal_carousel',
                 'category_ids',
                 'delivery_day_ids',
-                'frequencyType'
+                'frequencyType',
+                'child_store_ids'
             ])
         );
         $props->put('store_id', $this->store->id);
@@ -256,7 +257,8 @@ class MealPackageController extends StoreController
                 'meal_carousel',
                 'category_ids',
                 'delivery_day_ids',
-                'frequencyType'
+                'frequencyType',
+                'child_store_ids'
             ])
         );
 

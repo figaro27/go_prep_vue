@@ -110,6 +110,28 @@
                 "
                 class="storeFilters"
               ></b-form-radio-group>
+              <h4 class="mt-4" v-if="store.child_stores.length > 0">
+                Child Stores
+                <img
+                  v-b-popover.hover="
+                    'Activate and deactivate the package on each child store.'
+                  "
+                  title="Child Stores"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </h4>
+              <b-form-checkbox-group
+                v-if="store.child_stores.length > 0"
+                buttons
+                v-model="mealPackage.child_store_ids"
+                :options="childStoreOptions"
+                class="storeFilters"
+                @input="
+                  val =>
+                    updateMealPackage(mealPackage.id, { child_store_ids: val })
+                "
+              ></b-form-checkbox-group>
 
               <!-- <p class="mt-4">
                 <span class="mr-1">Display Included Meals in Packages</span>
@@ -340,6 +362,14 @@ export default {
       storeSettings: "storeSettings",
       storeCategories: "storeCategories"
     }),
+    childStoreOptions() {
+      return this.store.child_stores.map(childStore => {
+        return {
+          text: childStore.details.name,
+          value: childStore.id
+        };
+      });
+    },
     categoryOptions() {
       return Object.values(this.storeCategories).map(cat => {
         return {

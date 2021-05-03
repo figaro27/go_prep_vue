@@ -1694,6 +1694,16 @@
                 />
               </b-form>
             </b-tab>
+            <b-tab title="Child Stores" v-if="store.child_stores">
+              <b-form-checkbox-group
+                class="child_stores storeFilters"
+                buttons
+                stacked
+                v-model="store.active_child_store_ids"
+                :options="childStoreOptions"
+                @input="updateStoreSettings()"
+              ></b-form-checkbox-group>
+            </b-tab>
           </b-tabs>
         </b-col>
       </b-row>
@@ -1756,6 +1766,9 @@
 .nav-tabs .nav-item {
   margin-bottom: -10px;
   margin-right: 2px;
+}
+.child_stores .btn {
+  margin-bottom: 10px;
 }
 </style>
 
@@ -1850,6 +1863,14 @@ export default {
       storeDeliveryFeeRanges: "storeDeliveryFeeRanges",
       isLoading: "isLoading"
     }),
+    childStoreOptions() {
+      return this.store.child_stores.map(childStore => {
+        return {
+          text: childStore.details.name,
+          value: childStore.id
+        };
+      });
+    },
     storeDetails() {
       return this.storeDetail;
     },
@@ -2015,6 +2036,8 @@ export default {
       if (this.logoUpdated) {
         this.updateStoreLogo();
       }
+
+      settings.active_child_store_ids = this.store.active_child_store_ids;
 
       axios
         .patch("/api/me/settings", settings)

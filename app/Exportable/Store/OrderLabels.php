@@ -84,7 +84,33 @@ class OrderLabels
                 });
         }
 
+        $storeIds = [];
+        foreach ($orders as $order) {
+            if (!in_array($order->store_id, $storeIds)) {
+                $storeIds[] = $order->store_id;
+            }
+        }
+        $storeLogos = [];
+
+        foreach ($storeIds as $storeId) {
+            $store = Store::where('id', $storeId)->first();
+            try {
+                $logo = \App\Utils\Images::encodeB64(
+                    $store->details->logo['url']
+                );
+            } catch (\Exception $e) {
+                $logo = $store->details->logo['url'];
+            }
+            $storeLogos[$storeId] = $logo;
+        }
+
         $orders = $orders->map(function ($order) {
+            try {
+                $logo = $storeLogos[$order->store_id];
+            } catch (\Exception $e) {
+                $logo = $order->store->details->logo['url'];
+            }
+
             return [
                 'dailyOrderNumber' => $order->dailyOrderNumber,
                 'orderNumber' => $order->order_number,
@@ -107,7 +133,8 @@ class OrderLabels
                 'transferType' => $order->transfer_type,
                 'pickupLocation' => isset($order->pickup_location)
                     ? $order->pickup_location->name
-                    : null
+                    : null,
+                'logo' => $logo
                 // 'numberOfItems' => $order->numberOfItems
             ];
         });
@@ -158,14 +185,6 @@ class OrderLabels
         $width = $this->store->reportSettings->o_lab_width;
         $height = $this->store->reportSettings->o_lab_height;
 
-        try {
-            $logo = \App\Utils\Images::encodeB64(
-                $this->store->details->logo['url']
-            );
-        } catch (\Exception $e) {
-            $logo = $this->store->details->logo['url'];
-        }
-
         // Temporary solution
         $testStore = Store::where('id', 13)->first();
         $whiteSpace = $testStore->details->logo['url'];
@@ -178,7 +197,6 @@ class OrderLabels
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
             'body_classes' => implode(' ', [$this->orientation]),
-            'logo' => $logo,
             'whiteSpace' => $whiteSpace
         ];
 

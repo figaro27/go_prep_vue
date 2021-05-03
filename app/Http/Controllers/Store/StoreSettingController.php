@@ -127,6 +127,20 @@ class StoreSettingController extends StoreController
             $updateStatementDescriptor = true;
         }
 
+        $store = Store::where('id', $this->store->id)
+            ->with('childStores')
+            ->first();
+        foreach ($store->childStores as $childStore) {
+            if (in_array($childStore->id, $values['active_child_store_ids'])) {
+                $childStore->settings->activeForParent = true;
+            } else {
+                $childStore->settings->activeForParent = false;
+            }
+            $childStore->settings->update();
+        }
+
+        unset($values['active_child_store_ids']);
+
         $settings->update($values);
 
         // If the statement descriptor was updated, update it in Stripe

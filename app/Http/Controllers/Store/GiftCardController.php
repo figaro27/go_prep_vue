@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Store;
 
 use App\GiftCard;
 use Illuminate\Http\Request;
+use App\ChildGiftCard;
 
 class GiftCardController extends StoreController
 {
@@ -56,6 +57,12 @@ class GiftCardController extends StoreController
 
         $giftCard->save();
 
+        $childStoreIds = $request->get('child_store_ids');
+
+        if ($childStoreIds) {
+            $giftCard->childStores()->sync($childStoreIds);
+        }
+
         $categories = $request->get('category_ids');
         if (is_array($categories)) {
             $giftCard->categories()->sync($categories);
@@ -98,6 +105,11 @@ class GiftCardController extends StoreController
             $giftCard->title = $request->get('title');
             $giftCard->price = $request->get('price');
             $giftCard->value = $request->get('value');
+
+            $childStoreIds = $request->get('child_store_ids');
+            if (is_array($childStoreIds)) {
+                $giftCard->childStores()->sync($childStoreIds);
+            }
 
             $categories = $request->get('category_ids');
             if (is_array($categories)) {

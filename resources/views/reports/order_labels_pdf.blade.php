@@ -36,7 +36,7 @@ font-size:10px !important;
   </div>
   <div>
   <center>
-    <img src="{{$logo}}"/ style="width:28vh;height:28vh;margin-bottom:8px">
+    <img src="{{$order['logo']}}"/ style="width:28vh;height:28vh;margin-bottom:8px">
     @if ($reportSettings->o_lab_customer)
     <p class="text-18" style="font-weight:bold;margin-top:7px">Client: {{ $order['firstName'] }} {{ $order['lastName'] }}</p>
     @endif

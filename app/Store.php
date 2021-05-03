@@ -41,7 +41,8 @@ class Store extends Model
         'hasPromoCodes',
         'bulkCustomers',
         'hasDeliveryDayItems',
-        'status'
+        'status',
+        'active_child_store_ids'
     ];
 
     public static function boot()
@@ -67,6 +68,26 @@ class Store extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    public function parentStore()
+    {
+        return $this->belongsToMany(
+            'App\Store',
+            'child_parent_stores',
+            'store_id',
+            'parent_store_id'
+        );
+    }
+
+    public function childStores()
+    {
+        return $this->belongsToMany(
+            'App\Store',
+            'child_parent_stores',
+            'parent_store_id',
+            'store_id'
+        );
     }
 
     public function orders()
@@ -102,6 +123,16 @@ class Store extends Model
         return $this->hasMany('App\Meal')->orderBy('title');
     }
 
+    public function childMeals()
+    {
+        return $this->belongsToMany(
+            'App\Meal',
+            'child_meals',
+            'store_id',
+            'meal_id'
+        );
+    }
+
     public function mealSizes()
     {
         return $this->hasMany('App\MealSize');
@@ -110,6 +141,16 @@ class Store extends Model
     public function packages()
     {
         return $this->hasMany('App\MealPackage')->orderBy('title');
+    }
+
+    public function childPackages()
+    {
+        return $this->belongsToMany(
+            'App\MealPackage',
+            'child_meal_packages',
+            'store_id',
+            'meal_package_id'
+        );
     }
 
     public function ingredients()
@@ -195,6 +236,16 @@ class Store extends Model
     public function giftCards()
     {
         return $this->hasMany('App\GiftCard');
+    }
+
+    public function childGiftCards()
+    {
+        return $this->belongsToMany(
+            'App\GiftCard',
+            'child_gift_cards',
+            'store_id',
+            'gift_card_id'
+        );
     }
 
     public function purchasedGiftCards()
@@ -1071,7 +1122,11 @@ class Store extends Model
         $removeManualOrders = false,
         $removeCashOrders = false
     ) {
-        $orders = $this->orders()->with(['meals', 'meal_orders']);
+        $orders = Order::whereIn(
+            'store_id',
+            $this->active_child_store_ids
+        )->with(['meals', 'meal_orders']);
+
         if ($orderDates === false) {
             $orders = $orders->where(function ($query) use (
                 $dateRange,
@@ -1614,6 +1669,15 @@ class Store extends Model
     public function getStatusAttribute()
     {
         return $this->plan ? $this->plan->status : null;
+    }
+
+    public function getActiveChildStoreIdsAttribute()
+    {
+        $childStoreIds = $this->childStores
+            ->where('settings.activeForParent', true)
+            ->pluck('id');
+        $childStoreIds->push($this->id);
+        return $childStoreIds;
     }
 
     public function getCutoffPassedAttribute()

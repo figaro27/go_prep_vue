@@ -1170,7 +1170,8 @@ export default {
           amount: "Total",
           balance: "Balance",
           // chargeType: "Charge Type",
-          actions: "Actions"
+          actions: "Actions",
+          store_name: "Store Name"
         },
         rowClassCallback: function(row) {
           let classes = `order-${row.id}`;
@@ -1237,6 +1238,10 @@ export default {
     }
 
     this.clearBag();
+
+    if (this.store.child_stores.length > 0) {
+      this.columns.splice(1, 0, "store_name");
+    }
 
     /* Sidebar Check End */
 

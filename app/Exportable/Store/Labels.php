@@ -21,6 +21,7 @@ use PhpUnitsOfMeasure\PhysicalQuantity\Mass;
 use PhpUnitsOfMeasure\PhysicalQuantity\Volume;
 use App\Ingredient;
 use App\ReportRecord;
+use App\Order;
 
 class Labels
 {
@@ -49,6 +50,11 @@ class Labels
 
     public function exportData($type = null)
     {
+        $this->store->orders = Order::whereIn(
+            'store_id',
+            $this->store->active_child_store_ids
+        );
+
         $this->params->put('store', $this->store->details->name);
         $this->params->put('report', 'Labels');
         $this->params->put('date', Carbon::now()->format('m-d-Y'));
@@ -61,8 +67,7 @@ class Labels
         $allDates = [];
 
         if ($this->orderId) {
-            $orders = $this->store
-                ->orders()
+            $orders = $this->store->orders
                 ->where([
                     'paid' => 1,
                     // 'voided' => 0,
@@ -110,8 +115,29 @@ class Labels
                     $totalCount += $mealOrder->quantity;
                 }
 
+                $storeIds = [];
+                foreach ($mealOrders as $mealOrder) {
+                    if (!in_array($mealOrder->store_id, $storeIds)) {
+                        $storeIds[] = $mealOrder->store_id;
+                    }
+                }
+                $storeLogos = [];
+
+                foreach ($storeIds as $storeId) {
+                    $store = Store::where('id', $storeId)->first();
+                    try {
+                        $logo = \App\Utils\Images::encodeB64(
+                            $store->details->logo['url']
+                        );
+                    } catch (\Exception $e) {
+                        $logo = $store->details->logo['url'];
+                    }
+                    $storeLogos[$storeId] = $logo;
+                }
+
                 $number = 0;
                 foreach ($mealOrders as $mealOrder) {
+                    $mealOrder->logo = $storeLogos[$mealOrder->store_id];
                     for ($i = 1; $i <= $mealOrder->quantity; $i++) {
                         $mealOrderCopy = $mealOrder->replicate();
                         $mealOrderCopy->index = $number + $i;
@@ -153,7 +179,7 @@ class Labels
                 $dates['from']
             )
                 ->where('delivery_date', '<=', $dates['to'])
-                ->where('store_id', $this->store->id)
+                ->whereIn('store_id', $this->store->active_child_store_ids)
                 ->whereHas('order', function ($order) {
                     $order->where('paid', 1)->where('voided', 0);
                 });
@@ -164,9 +190,30 @@ class Labels
 
             $mealOrders = $mealOrders->with('meal', 'meal.ingredients')->get();
 
+            $storeIds = [];
+            foreach ($mealOrders as $mealOrder) {
+                if (!in_array($mealOrder->store_id, $storeIds)) {
+                    $storeIds[] = $mealOrder->store_id;
+                }
+            }
+            $storeLogos = [];
+
+            foreach ($storeIds as $storeId) {
+                $store = Store::where('id', $storeId)->first();
+                try {
+                    $logo = \App\Utils\Images::encodeB64(
+                        $store->details->logo['url']
+                    );
+                } catch (\Exception $e) {
+                    $logo = $store->details->logo['url'];
+                }
+                $storeLogos[$storeId] = $logo;
+            }
+
             $totalCount[] = 0;
 
             foreach ($mealOrders as $mealOrder) {
+                $mealOrder->logo = $storeLogos[$mealOrder->store_id];
                 $order_id = $mealOrder->order_id;
 
                 if (!isset($totalCount[$order_id])) {
@@ -239,14 +286,6 @@ class Labels
         $width = $this->store->reportSettings->lab_width;
         $height = $this->store->reportSettings->lab_height;
 
-        try {
-            $logo = \App\Utils\Images::encodeB64(
-                $this->store->details->logo['url']
-            );
-        } catch (\Exception $e) {
-            $logo = $this->store->details->logo['url'];
-        }
-
         // Temporary solution
         $testStore = Store::where('id', 13)->first();
         $whiteSpace = $testStore->details->logo['url'];
@@ -256,7 +295,6 @@ class Labels
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
             'body_classes' => implode(' ', [$this->orientation]),
-            'logo' => $logo,
             'whiteSpace' => $whiteSpace
         ];
 
@@ -269,6 +307,7 @@ class Labels
             ->waitForFunction('window.status === "ready"', 100, 3000);
 
         $output = $page->pdf();
+
         Log::info('Saved to ' . $filename);
 
         $reportRecord = ReportRecord::where(

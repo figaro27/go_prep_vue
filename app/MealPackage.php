@@ -9,6 +9,7 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\DeliveryDayMealPackage;
+use App\ChildMealPackage;
 
 class MealPackage extends Model implements HasMedia
 {
@@ -25,7 +26,12 @@ class MealPackage extends Model implements HasMedia
         'meal_carousel',
         'frequencyType'
     ];
-    public $appends = ['image', 'category_ids', 'delivery_day_ids'];
+    public $appends = [
+        'image',
+        'category_ids',
+        'delivery_day_ids',
+        'child_store_ids'
+    ];
     public $hidden = ['store', 'categories'];
 
     protected $casts = [
@@ -57,6 +63,16 @@ class MealPackage extends Model implements HasMedia
     public function store()
     {
         return $this->belongsTo('App\\Store');
+    }
+
+    public function childStores()
+    {
+        return $this->belongsToMany(
+            'App\Store',
+            'child_meal_packages',
+            'meal_package_id',
+            'store_id'
+        );
     }
 
     public function sizes()
@@ -110,6 +126,11 @@ class MealPackage extends Model implements HasMedia
     public function addons()
     {
         return $this->hasMany('App\MealPackageAddon', 'meal_package_id', 'id');
+    }
+
+    public function getChildStoreIdsAttribute()
+    {
+        return $this->childStores->pluck('id');
     }
 
     public function getImageAttribute()
@@ -179,7 +200,8 @@ class MealPackage extends Model implements HasMedia
             'meal_carousel',
             'category_ids',
             'delivery_day_ids',
-            'frequencyType'
+            'frequencyType',
+            'child_store_ids'
         ]);
 
         $package = MealPackage::create(
@@ -187,6 +209,13 @@ class MealPackage extends Model implements HasMedia
                 ->except(['featured_image', 'category_ids', 'delivery_day_ids'])
                 ->toArray()
         );
+
+        $childStoreIds = isset($props['child_store_ids'])
+            ? $props['child_store_ids']
+            : null;
+        if ($childStoreIds) {
+            $package->childStores()->sync($childStoreIds);
+        }
 
         if ($props->has('featured_image')) {
             $imagePath = Utils\Images::uploadB64(
@@ -451,8 +480,16 @@ class MealPackage extends Model implements HasMedia
             'meal_carousel',
             'category_ids',
             'delivery_day_ids',
-            'frequencyType'
+            'frequencyType',
+            'child_store_ids'
         ]);
+
+        $childStoreIds = isset($props['child_store_ids'])
+            ? $props['child_store_ids']
+            : null;
+        if ($childStoreIds) {
+            $this->childStores()->sync($childStoreIds);
+        }
 
         if ($props->has('featured_image')) {
             $imagePath = Utils\Images::uploadB64(

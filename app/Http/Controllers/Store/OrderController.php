@@ -52,6 +52,11 @@ class OrderController extends StoreController
             return [];
         }
 
+        $this->store->orders = Order::whereIn(
+            'store_id',
+            $this->store->active_child_store_ids
+        );
+
         $hide = $request->query('hide', ['items']);
         // Start date is all future orders by default
         $start = $request->query('start', Carbon::today());
@@ -60,11 +65,18 @@ class OrderController extends StoreController
         $voided = $request->query('voided', null);
         $productionGroupId = $request->query('production_group_id', null);
 
-        $query = $this->store
-            ->orders()
+        $storeIds = $this->store->active_child_store_ids;
+
+        $query = $this->store->orders
             ->with(['user', 'pickup_location', 'purchased_gift_cards'])
             ->where(['paid' => 1])
             ->without($hide);
+
+        // $query = $this->store
+        //     ->orders()
+        //     ->with(['user', 'pickup_location', 'purchased_gift_cards'])
+        //     ->where(['paid' => 1])
+        //     ->without($hide);
 
         if ($start) {
             $query = $query->whereDate('delivery_date', '>=', $start);
@@ -76,7 +88,10 @@ class OrderController extends StoreController
 
         // If multiple delivery days, get orders by looking at meal order dates
         if ($this->store->modules->multipleDeliveryDays) {
-            $mealOrders = $this->store->mealOrders();
+            $mealOrders = MealOrder::whereIn(
+                'store_id',
+                $this->store->active_child_store_ids
+            );
             if ($start) {
                 $mealOrders = $mealOrders->where('delivery_date', '>=', $start);
             }
@@ -89,8 +104,7 @@ class OrderController extends StoreController
                 return $mealOrder->order->id;
             });
 
-            $query = $this->store
-                ->orders()
+            $query = $this->store->orders
                 ->with(['user', 'pickup_location', 'purchased_gift_cards'])
                 ->whereIn('id', $orderIds)
                 ->where(['paid' => 1])
@@ -588,8 +602,10 @@ class OrderController extends StoreController
         //         })
         //     : [];
 
-        $orders = $this->store
-            ->orders()
+        $orders = Order::whereIn(
+            'store_id',
+            $this->store->active_child_store_ids
+        )
             ->where(['paid' => 1, 'voided' => 0, 'isMultipleDelivery' => 0])
             ->where('delivery_date', '>=', $startDate)
             ->where('delivery_date', '<=', $endDate)
@@ -708,7 +724,7 @@ class OrderController extends StoreController
 
         $mealOrders = MealOrder::where('delivery_date', '>=', $startDate)
             ->where('delivery_date', '<=', $endDate)
-            ->where('store_id', $this->store->id)
+            ->whereIn('store_id', $this->store->active_child_store_ids)
             ->whereHas('order', function ($order) {
                 $order->where('paid', 1)->where('voided', 0);
             })
@@ -783,8 +799,12 @@ class OrderController extends StoreController
      */
     public function show($id)
     {
-        $order = $this->store
-            ->orders()
+        $this->store->orders = Order::whereIn(
+            'store_id',
+            $this->store->active_child_store_ids
+        );
+
+        $order = $this->store->orders
             ->with([
                 'user.userDetail',
                 'meals',

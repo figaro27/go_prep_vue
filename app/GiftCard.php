@@ -15,7 +15,13 @@ class GiftCard extends Model implements HasMedia
     use HasMediaTrait;
     use SoftDeletes;
 
-    public $appends = ['category_ids', 'gift_card', 'salesTax', 'image'];
+    public $appends = [
+        'category_ids',
+        'gift_card',
+        'salesTax',
+        'image',
+        'child_store_ids'
+    ];
 
     protected $casts = [
         'created_at' => 'date:F d, Y',
@@ -50,6 +56,16 @@ class GiftCard extends Model implements HasMedia
         return $this->belongsTo('App\Store');
     }
 
+    public function childStores()
+    {
+        return $this->belongsToMany(
+            'App\Store',
+            'child_gift_cards',
+            'gift_card_id',
+            'store_id'
+        );
+    }
+
     public function getCategoryIdsAttribute()
     {
         return $this->categories->pluck('id');
@@ -63,6 +79,11 @@ class GiftCard extends Model implements HasMedia
     public function getSalesTaxAttribute()
     {
         return 0;
+    }
+
+    public function getChildStoreIdsAttribute()
+    {
+        return $this->childStores->pluck('id');
     }
 
     public function getImageAttribute()

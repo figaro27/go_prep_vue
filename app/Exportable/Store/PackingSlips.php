@@ -11,6 +11,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\ReportRecord;
 use App\PackingSlipSetting;
+use App\Order;
 
 class PackingSlips
 {
@@ -30,6 +31,11 @@ class PackingSlips
 
     public function exportData($type = null)
     {
+        $this->store->orders = Order::whereIn(
+            'store_id',
+            $this->store->active_child_store_ids
+        );
+
         $this->params->put('store', $this->store->details->name);
         $this->params->put('report', 'Packing Slips');
         $this->params->put('date', Carbon::now()->format('m-d-Y'));
@@ -52,7 +58,7 @@ class PackingSlips
                 ])
                 ->get();
         } else {
-            $orders = $this->store->orders()->where([
+            $orders = $this->store->orders->where([
                 'paid' => 1
                 // 'voided' => 0
                 // 'fulfilled' => 0
@@ -251,43 +257,65 @@ class PackingSlips
 
         $pdf = new Pdf($pdfConfig);
 
-        try {
-            $logo = \App\Utils\Images::encodeB64(
-                $this->store->details->logo['url']
-            );
-        } catch (\Exception $e) {
-            $logo = $this->store->details->logo['url'];
-        }
-
-        Log::info('Logo URL: ' . $logo);
-
-        $squareLogo = true;
-
-        if ($logo) {
-            if ($this->store->details->host) {
-                $logo = 'https://goprep.com' . $logo;
-            }
-
-            $logoSize = getImageSize($logo);
-
-            if ($logoSize[0] !== $logoSize[1]) {
-                $squareLogo = false;
-            }
-        }
-
         $vars = [
             'order' => null,
             'params' => $this->params,
             'delivery_dates' => $this->getDeliveryDates(),
             'body_classes' => implode(' ', [$this->orientation]),
-            'logo' => $logo,
-            'squareLogo' => $squareLogo
+            'logo' => null,
+            'squareLogo' => null
         ];
 
         Log::info($vars);
 
+        $storeIds = [];
+        foreach ($orders as $order) {
+            if (!in_array($order->store_id, $storeIds)) {
+                $storeIds[] = $order->store_id;
+            }
+        }
+        $storeLogos = [];
+
+        foreach ($storeIds as $storeId) {
+            $store = Store::where('id', $storeId)->first();
+            try {
+                $logo = \App\Utils\Images::encodeB64(
+                    $store->details->logo['url']
+                );
+            } catch (\Exception $e) {
+                $logo = $store->details->logo['url'];
+            }
+            $storeLogos[$storeId] = $logo;
+        }
+
         foreach ($orders as $i => $order) {
             $vars['order'] = $order;
+
+            try {
+                $logo = $storeLogos[$order->store_id];
+            } catch (\Exception $e) {
+                $logo = $order->store->details->logo['url'];
+            }
+
+            Log::info('Logo URL: ' . $logo);
+
+            $squareLogo = true;
+
+            if ($logo) {
+                if ($order->store->details->host) {
+                    $logo = 'https://goprep.com' . $logo;
+                }
+
+                $logoSize = getImageSize($logo);
+
+                if ($logoSize[0] !== $logoSize[1]) {
+                    $squareLogo = false;
+                }
+            }
+
+            $vars['logo'] = $logo;
+            $vars['squareLogo'] = $squareLogo;
+
             $html = view($this->exportPdfView(), $vars)->render();
             Log::info('Page HTML: ' . $html);
             $pdf->addPage($html);

@@ -281,7 +281,8 @@ class SpaController extends Controller
                     'deliveryDayZipCodes',
                     'deliveryDays',
                     'holidayTransferTimes',
-                    'menuSettings'
+                    'menuSettings',
+                    'childStores'
                 ])
                 ->first();
 
@@ -456,6 +457,12 @@ class SpaController extends Controller
             $store_id = $user->store->id;
         }
 
+        $store = Store::where('id', $store_id)->first();
+
+        if (count($store->parentStore) > 0) {
+            $store_id = $store->parentStore[0]->id;
+        }
+
         $limit = 30;
         $offset_meal = $offset_package = $bypass_meal = 0;
 
@@ -476,10 +483,16 @@ class SpaController extends Controller
                 'ingredients',
                 'sizes',
                 'attachments'
-            ])
+            ])->where('store_id', $store_id);
+
+            $meals =
+                $store->childMeals()->count() > 0
+                    ? $store->childMeals()
+                    : $meals;
+
+            $meals = $meals
                 ->without(['allergies', 'categories', 'store'])
                 ->withTrashed()
-                ->where('store_id', $store_id)
                 ->orderBy('title')
                 ->offset($offset_meal)
                 ->limit($limit)
@@ -493,8 +506,17 @@ class SpaController extends Controller
         }
 
         if ($new_limit > 0) {
-            $packages = MealPackage::with(['meals'])
-                ->where('store_id', $store_id)
+            $packages = MealPackage::with(['meals'])->where(
+                'store_id',
+                $store_id
+            );
+
+            $packages =
+                $store->childPackages()->count() > 0
+                    ? $store->childPackages()
+                    : $packages;
+
+            $packages = $packages
                 // ->withTrashed()
                 ->orderBy('title')
                 ->offset($offset_package)
@@ -563,7 +585,12 @@ class SpaController extends Controller
             }
         }
 
+        $store = Store::where('id', $store_id)->first();
         $storeSetting = StoreSetting::where('store_id', $store_id)->first();
+
+        if (count($store->parentStore) > 0) {
+            $store_id = $store->parentStore[0]->id;
+        }
 
         $nextDeliveryDayWeekIndex = null;
         if ($storeSetting && $storeSetting->store->hasDeliveryDayItems) {
@@ -734,7 +761,17 @@ class SpaController extends Controller
                 $meals = [];
                 $packages = [];
                 if ($bypass_meal == 0) {
-                    $meals = Meal::where('active', 1)
+                    $meals = Meal::where('active', 1)->where([
+                        'store_id' => $store_id,
+                        'deleted_at' => null
+                    ]);
+
+                    $meals =
+                        $store->childMeals()->count() > 0
+                            ? $store->childMeals()
+                            : $meals;
+
+                    $meals = $meals
                         ->with([
                             'allergies',
                             'sizes',
@@ -747,11 +784,7 @@ class SpaController extends Controller
                             $category_id
                         ) {
                             $query->where('categories.id', $category_id);
-                        })
-                        ->where([
-                            'store_id' => $store_id,
-                            'deleted_at' => null
-                        ]);
+                        });
 
                     if ($delivery_day_id != 0 && $isValidDD) {
                         $meals = $meals
@@ -795,6 +828,11 @@ class SpaController extends Controller
                             'store_id' => $store_id,
                             'deleted_at' => null
                         ]);
+
+                    $packages =
+                        $store->childPackages()->count() > 0
+                            ? $store->childPackages()
+                            : $packages;
 
                     if ($delivery_day_id != 0 && $isValidDD) {
                         $packages = $packages
@@ -853,6 +891,11 @@ class SpaController extends Controller
                         ->toArray();
                 }
 
+                $giftCards =
+                    $store->childGiftCards()->count() > 0
+                        ? $store->childGiftCards()->get()
+                        : $giftCards;
+
                 /* Set Delivery Day */
                 if ($delivery_day && $delivery_day_id != 0) {
                     if (count($meals)) {
@@ -905,6 +948,9 @@ class SpaController extends Controller
                 }
 
                 if (count($giftCards)) {
+                    if (!is_array($giftCards)) {
+                        $giftCards = $giftCards->toArray();
+                    }
                     $items = array_merge($items, $giftCards);
                 }
 

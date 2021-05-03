@@ -29,6 +29,7 @@ use App\MealMealPackageAddon;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use App\DeliveryDayMeal;
+use App\ChildMeal;
 
 class Meal extends Model implements HasMedia
 {
@@ -90,7 +91,8 @@ class Meal extends Model implements HasMedia
         'item_quantity',
         'meal_size_id',
         'hasVariations',
-        'subItem'
+        'subItem',
+        'child_store_ids'
     ];
 
     protected $hidden = [
@@ -504,6 +506,16 @@ class Meal extends Model implements HasMedia
         return $this->belongsTo('App\Store');
     }
 
+    public function childStores()
+    {
+        return $this->belongsToMany(
+            'App\Store',
+            'child_meals',
+            'meal_id',
+            'store_id'
+        );
+    }
+
     public function ingredients()
     {
         return $this->belongsToMany('App\Ingredient')
@@ -712,7 +724,8 @@ class Meal extends Model implements HasMedia
             'servingsPerMeal',
             'servingUnitQuantity',
             'servingSizeUnit',
-            'frequencyType'
+            'frequencyType',
+            'child_store_ids'
         ]);
 
         $meal = new Meal();
@@ -725,6 +738,13 @@ class Meal extends Model implements HasMedia
         $meal->default_size_title = $props->get('default_size_title', '');
         $meal->salesTax = $props->get('salesTax');
         $meal->save();
+
+        $childStoreIds = isset($props['child_store_ids'])
+            ? $props['child_store_ids']
+            : null;
+        if ($childStoreIds) {
+            $meal->childStores()->sync($childStoreIds);
+        }
 
         try {
             if ($props->has('featured_image')) {
@@ -1123,8 +1143,16 @@ class Meal extends Model implements HasMedia
             'salesTax',
             'stock',
             'expirationDays',
-            'frequencyType'
+            'frequencyType',
+            'child_store_ids'
         ]);
+
+        $childStoreIds = isset($props['child_store_ids'])
+            ? $props['child_store_ids']
+            : null;
+        if ($childStoreIds) {
+            $meal->childStores()->sync($childStoreIds);
+        }
 
         if ($props->has('featured_image')) {
             $imagePath = Utils\Images::uploadB64(
@@ -1835,6 +1863,11 @@ class Meal extends Model implements HasMedia
     public function getCreatedAtLocalAttribute()
     {
         return $this->localizeDate($this->created_at)->format('F d, Y');
+    }
+
+    public function getChildStoreIdsAttribute()
+    {
+        return $this->childStores->pluck('id');
     }
 
     public function getHasVariationsAttribute()

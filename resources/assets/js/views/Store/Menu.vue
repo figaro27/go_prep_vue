@@ -457,6 +457,28 @@
                     class="storeFilters"
                   ></b-form-radio-group>
 
+                  <h4 class="mt-4" v-if="store.child_stores.length > 0">
+                    Child Stores
+                    <img
+                      v-b-popover.hover="
+                        'Activate and deactivate the meal on each child store.'
+                      "
+                      title="Child Stores"
+                      src="/images/store/popover.png"
+                      class="popover-size"
+                    />
+                  </h4>
+                  <b-form-checkbox-group
+                    v-if="store.child_stores.length > 0"
+                    buttons
+                    v-model="meal.child_store_ids"
+                    :options="childStoreOptions"
+                    class="storeFilters"
+                    @change="
+                      val => updateMeal(meal.id, { child_store_ids: val })
+                    "
+                  ></b-form-checkbox-group>
+
                   <div v-if="store.modules.customSalesTax">
                     <h4 class="mt-4">
                       Custom Sales Tax
@@ -1247,6 +1269,14 @@ export default {
       storeProductionGroups: "storeProductionGroups",
       giftCards: "storeGiftCards"
     }),
+    childStoreOptions() {
+      return this.store.child_stores.map(childStore => {
+        return {
+          text: childStore.details.name,
+          value: childStore.id
+        };
+      });
+    },
     storeURLcheck() {
       let URL = window.location.href;
       let subdomainCheck = URL.substr(0, URL.indexOf("."));

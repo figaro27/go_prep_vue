@@ -108,7 +108,8 @@ class StoreSetting extends Model
         'enableSalesTax' => 'boolean',
         'minimumDeliveryOnly' => 'boolean',
         'salesTaxAfterFees' => 'boolean',
-        'allowMultipleSubscriptions' => 'boolean'
+        'allowMultipleSubscriptions' => 'boolean',
+        'activeForParent' => 'boolean'
     ];
 
     public function setAttributeVisibility()
