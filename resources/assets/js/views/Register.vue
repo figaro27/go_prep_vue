@@ -213,7 +213,7 @@
 
               <b-form-group horizontal :state="state(1, 'address')">
                 <b-input
-                  placeholder="Delivery Address"
+                  placeholder="Address"
                   v-model="form[1].address"
                   type="text"
                   @input="
