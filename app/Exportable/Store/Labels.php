@@ -53,7 +53,7 @@ class Labels
         $this->store->orders = Order::whereIn(
             'store_id',
             $this->store->active_child_store_ids
-        );
+        )->orderBy('created_at', 'desc');
 
         $this->params->put('store', $this->store->details->name);
         $this->params->put('report', 'Labels');
