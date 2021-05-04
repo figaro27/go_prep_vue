@@ -486,7 +486,7 @@ class SpaController extends Controller
             ])->where('store_id', $store_id);
 
             $meals =
-                $store->childMeals()->count() > 0
+                $store && $store->childMeals()->count() > 0
                     ? $store->childMeals()
                     : $meals;
 
