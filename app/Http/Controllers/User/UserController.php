@@ -9,6 +9,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Validator;
 use Auth;
+use App\Customer;
 
 class UserController extends Controller
 {
@@ -53,5 +54,11 @@ class UserController extends Controller
         $newEmail = $request->get('email');
         $this->user->email = $newEmail;
         $this->user->update();
+
+        $customers = Customer::where('user_id', $this->user->id)->get();
+        foreach ($customers as $customer) {
+            $customer->email = $newEmail;
+            $customer->update();
+        }
     }
 }

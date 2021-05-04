@@ -17,7 +17,16 @@ class Order extends Model
         'notes',
         'publicNotes',
         'delivery_day',
-        'referral_id'
+        'referral_id',
+        'customer_address',
+        'customer_city',
+        'customer_company',
+        'customer_delivery',
+        'customer_name',
+        'customer_phone',
+        'customer_state',
+        'customer_zip',
+        'customer_email'
     ];
 
     protected $hidden = ['store', 'store_id', 'card_id', 'fulfilled'];
@@ -366,8 +375,20 @@ class Order extends Model
     public static function updateOrder($id, $props)
     {
         $order = Order::with(['user', 'user.userDetail'])->findOrFail($id);
-
-        $props = collect($props)->only(['fulfilled', 'notes', 'publicNotes']);
+        $props = collect($props)->only([
+            'fulfilled',
+            'notes',
+            'publicNotes',
+            'customer_address',
+            'customer_city',
+            'customer_company',
+            'customer_delivery',
+            'customer_name',
+            'customer_phone',
+            'customer_state',
+            'customer_zip',
+            'customer_email'
+        ]);
 
         $order->update($props->toArray());
 

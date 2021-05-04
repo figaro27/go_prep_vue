@@ -93,9 +93,9 @@ class UserDetailController extends UserController
         $details->update($values);
         $details->update($request->toArray());
 
-        $customer = Customer::where('id', $this->user->id)->first();
-        if ($customer) {
-            $customer->update($request->toArray());
+        $customers = Customer::where('user_id', $this->user->id)->get();
+        foreach ($customers as $customer) {
+            $customer->update($request->except('store_id'));
         }
 
         // return $user->details;

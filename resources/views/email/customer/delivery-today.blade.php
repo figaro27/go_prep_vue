@@ -120,29 +120,29 @@ $orderBalance = $order->balance > 0 ? $order->balance : 0;
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $order->store_name }}</td>
                       </tr>
-                      @if ($order->user->details->companyname)
+                      @if ($order->customer_company)
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">{{ $order->user->details->companyname }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">{{ $order->customer_company }}</td>
                       </tr>
                       @endif
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $order->user->details->full_name }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px; ">{{ $order->customer_name }}</td>
                       </tr>
                       <!-- end company name -->
                       <!-- address -->
-                      @if ($order->user->details->address !== 'N/A')
+                      @if ($order->customer_address !== 'N/A')
                       <tr>
-                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $order->user->details->address }}</td>
+                        <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> {{ $order->customer_address }}</td>
                       </tr>
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;">
-                          {{ $order->user->details->city }}, {{ $order->user->details->state }} {{ $order->user->details->zip }}
+                          {{ $order->customer_city }}, {{ $order->customer_state }} {{ $order->customer_zip }}
                           </td>
                       </tr>
                       @endif
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#7f8c8d; line-height:26px;"> 
-                          {{ $order->user->details->phone }}
+                          {{ $order->customer_phone }}
                         </td>
                       </tr>
                       @if ($order->store->modules->hideTransferOptions === 0 && $order->isMultipleDelivery === 0)

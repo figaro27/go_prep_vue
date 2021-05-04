@@ -142,18 +142,15 @@ class OrderSummary
                     'delivery_date' => !$mealOrder->order->isMultipleDelivery
                         ? $mealOrder->order->delivery_date->format('Y-m-d')
                         : $mealOrder->delivery_date->format('Y-m-d'),
-                    'customer' =>
-                        $mealOrder->order->user->details->firstname .
-                        ' ' .
-                        $mealOrder->order->user->details->lastname,
+                    'customer' => $mealOrder->order->customer_name,
                     'email' => $mealOrder->order->user->email,
-                    'phone' => $mealOrder->order->user->details->phone,
-                    'address' => $mealOrder->order->user->details->address,
-                    'city' => $mealOrder->order->user->details->city,
-                    'state' => $mealOrder->order->user->details->state,
-                    'zip' => $mealOrder->order->user->details->zip,
+                    'phone' => $mealOrder->order->customer_phone,
+                    'address' => $mealOrder->order->customer_address,
+                    'city' => $mealOrder->order->customer_city,
+                    'state' => $mealOrder->order->customer_state,
+                    'zip' => $mealOrder->order->customer_zip,
                     'delivery_instructions' =>
-                        $mealOrder->order->user->details->delivery,
+                        $mealOrder->order->customer_delivery,
                     'meal_id' => $mealOrder->meal->title,
                     'meal_size' => $mealOrder->meal_size
                         ? $mealOrder->meal_size->title
@@ -220,13 +217,13 @@ class OrderSummary
                             return [
                                 'id' => $order->id,
                                 'order_number' => $order->order_number,
-                                'phone' => $order->user->details->phone,
-                                'address' => $order->user->userDetail->address,
-                                'city' => $order->user->userDetail->city,
-                                'state' => $order->user->userDetail->state,
-                                'zip' => $order->user->userDetail->zip,
-                                'delivery' =>
-                                    $order->user->userDetail->delivery,
+                                'customer' => $order->customer_name,
+                                'phone' => $order->customer_phone,
+                                'address' => $order->customer_address,
+                                'city' => $order->customer_city,
+                                'state' => $order->customer_state,
+                                'zip' => $order->customer_zip,
+                                'delivery' => $order->customer_delivery,
                                 'delivery_date' => $order->delivery_date,
                                 'transferTime' => $order->transferTime,
                                 'pickup' => $order->pickup,

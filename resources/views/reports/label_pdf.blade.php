@@ -91,7 +91,7 @@ font-size:10px !important;
   
  @if ($reportSettings->lab_customer)
 
-        <p class="text-11" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->user->name !!}</p>
+        <p class="text-11" style="font-weight:bold;margin-top:5px">Client: {!! $mealOrder->order->customer_name !!}</p>
 
         @endif
 

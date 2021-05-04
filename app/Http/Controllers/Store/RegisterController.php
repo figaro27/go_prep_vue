@@ -39,9 +39,7 @@ class RegisterController extends StoreController
      */
     public function store(Request $request)
     {
-        $user = User::where('email', $request->get('email'))->first();
         $store = $this->store;
-        $storeId = $this->store->id;
         $email = $request->get('email')
             ? $request->get('email')
             : 'noemail-' .
@@ -49,37 +47,34 @@ class RegisterController extends StoreController
                 '@goprep.com';
         $password = $request->get('password');
 
-        $existingUser = User::where('email', $email)->first();
+        // See if a user exists with either the entered email or phone number
 
-        if ($existingUser) {
-            return response()->json(
-                [
-                    'message' =>
-                        'A user with this email address already exists. Please search the email in the customer box or add the email to your list of customers at the top.'
-                ],
-                400
-            );
-        }
-
-        $existingPhoneUser = UserDetail::where('phone', $request->get('phone'))
-            ->with('user')
-            ->first();
-        $existingUserEmail = $existingPhoneUser
-            ? $existingPhoneUser->user->email
-            : null;
-
-        if ($existingPhoneUser) {
-            return response()->json(
-                [
-                    'message' =>
-                        'A user with this phone number already exists. Please search the phone number in the customer box or add the email to your list of customers at the top: ' .
-                        $existingUserEmail
-                ],
-                400
-            );
-        }
-
+        $user = User::where('email', $email)->first();
         if (!$user) {
+            $userId = UserDetail::where('phone', $request->get('phone'))
+                ->pluck('user_id')
+                ->first();
+            if ($userId) {
+                $user = User::where('id', $userId)
+                    ->with('details')
+                    ->first();
+            }
+        }
+
+        // If there's an existing user, check if the home store of that user is trying to add it again and if so, block them
+        if ($user) {
+            // Add check for last_viewed_store_id also?
+            if ($user->added_by_store_id === $store->id) {
+                return response()->json(
+                    [
+                        'message' =>
+                            'A user with this email address or phone already exists. Please exit out of this window and search the customer by name'
+                    ],
+                    400
+                );
+            }
+        } else {
+            // If the user doesn't exist, add a new user record, new user detail record, and then add them as a new customer
             $user = User::create([
                 'user_role_id' => 1,
                 'email' => $email,
@@ -89,7 +84,7 @@ class RegisterController extends StoreController
                 'timezone' => 'America/New_York',
                 'remember_token' => Hash::make(str_random(10)),
                 'accepted_tos' => 1,
-                'added_by_store_id' => $storeId,
+                'added_by_store_id' => $store->id,
                 'referralUrlCode' =>
                     'R' .
                     strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
@@ -133,73 +128,160 @@ class RegisterController extends StoreController
                     'subscription_renewing' => true
                 )
             ]);
-        } else {
-            // Update user detail with newly entered data
-            $userDetail = UserDetail::where('user_id', $user->id)->first();
-            $userDetail->email = $email;
-            $userDetail->firstname = $request->get('first_name');
-            $userDetail->lastname = $request->get('last_name');
-            $userDetail->address = $request->get('address')
-                ? $request->get('address')
-                : 'N/A';
-            $userDetail->city = $request->get('city')
-                ? $request->get('city')
-                : 'N/A';
-            $userDetail->zip = $request->get('zip')
-                ? $request->get('zip')
-                : 'N/A';
-            $userDetail->state = $request->get('state')
-                ? $request->get('state')
-                : 'N/A';
-            $userDetail->phone = $request->get('phone');
-            $userDetail->country = 'USA';
-            $userDetail->delivery = $request->get('delivery')
-                ? $request->get('delivery')
-                : 'N/A';
-            $userDetail->update();
         }
 
-        $user = User::findOrFail($user->id);
-        $user->createStoreCustomer(
-            $storeId,
+        // If not blocked by an existing user being added again by the home store, add the customer
+        $customer = $user->createStoreCustomer(
+            $store->id,
             $store->settings->currency,
-            $store->settings->payment_gateway
+            $store->settings->payment_gateway,
+            $request->all()
         );
 
-        $id = Customer::where('user_id', $user->id)
-            ->pluck('id')
-            ->first();
-
-        $firstname = UserDetail::where('user_id', $user->id)
-            ->pluck('firstname')
-            ->first();
-
-        $lastname = UserDetail::where('user_id', $user->id)
-            ->pluck('lastname')
-            ->first();
-
         return [
-            'text' => $firstname . ' ' . $lastname,
-            'value' => $id
+            'text' => $customer->name,
+            'value' => $customer->id
         ];
 
-        /*
+        // $user = User::where('email', $request->get('email'))->first();
+        // $store = $this->store;
+        // $storeId = $this->store->id;
+        // $email = $request->get('email') ? $request->get('email') : 'noemail-' . substr(uniqid(rand(10, 99), false), 0, 12) . '@goprep.com';
+        // $password = $request->get('password');
 
-        $acct = $store->settings->stripe_account;
-        \Stripe\Stripe::setApiKey($acct['access_token']);
-        $stripeCustomer = \Stripe\Customer::create([
-            'email' => $user->email,
-            'description' => $user->name
-        ]);
-        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+        // $existingUser = User::where('email', $email)->first();
 
-        $customer = new Customer();
-        $customer->user_id = $userId;
-        $customer->store_id = $storeId;
-        $customer->stripe_id = null; //$stripeCustomer->id;
-        $customer->currency = $store->settings->currency;
-        $customer->save();
-        */
+        // if ($existingUser) {
+        //     return response()->json(
+        //         [
+        //             'message' =>
+        //                 'A user with this email address already exists. Please search the email in the customer box or add the email to your list of customers at the top.'
+        //         ],
+        //         400
+        //     );
+        // }
+
+        // $existingPhoneUser = Customer::where('phone', $request->get('phone'))
+        //     ->with('user')
+        //     ->first();
+        // $existingUserEmail = $existingPhoneUser
+        //     ? $existingPhoneUser->user->email
+        //     : null;
+
+        // if ($existingPhoneUser) {
+        //     return response()->json(
+        //         [
+        //             'message' =>
+        //                 'A user with this phone number already exists. Please search the phone number in the customer box or add the email to your list of customers at the top: ' .
+        //                 $existingUserEmail
+        //         ],
+        //         400
+        //     );
+        // }
+
+        // if (!$user) {
+        //     $user = User::create([
+        //         'user_role_id' => 1,
+        //         'email' => $email,
+        //         'password' => $password
+        //             ? bcrypt($password)
+        //             : Hash::make(str_random(10)),
+        //         'timezone' => 'America/New_York',
+        //         'remember_token' => Hash::make(str_random(10)),
+        //         'accepted_tos' => 1,
+        //         'added_by_store_id' => $storeId,
+        //         'referralUrlCode' =>
+        //             'R' .
+        //             strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
+        //             chr(rand(65, 90)) .
+        //             rand(0, 9) .
+        //             rand(0, 9) .
+        //             chr(rand(65, 90))
+        //     ]);
+
+        //     $zip = $request->get('zip') ? $request->get('zip') : 'N/A';
+        //     if ($store->details->country == 'US') {
+        //         $zip = substr($zip, 0, 5);
+        //     }
+
+        //     $userDetails = $user->details()->create([
+        //         'companyname' => $request->get('company_name'),
+        //         'email' => $email,
+        //         'firstname' => $request->get('first_name'),
+        //         'lastname' => $request->get('last_name'),
+        //         'phone' => $request->get('phone'),
+        //         'address' => $request->get('address')
+        //             ? $request->get('address')
+        //             : 'N/A',
+        //         'city' => $request->get('city') ? $request->get('city') : 'N/A',
+        //         'state' => $request->get('state')
+        //             ? $request->get('state')
+        //             : null,
+        //         'zip' => $zip,
+        //         'delivery' => $request->get('delivery')
+        //             ? $request->get('delivery')
+        //             : 'N/A',
+        //         'country' => $store->details->country,
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //         'notifications' => array(
+        //             'delivery_today' => true,
+        //             'meal_plan' => true,
+        //             'meal_plan_paused' => true,
+        //             'new_order' => true,
+        //             'subscription_meal_substituted' => true,
+        //             'subscription_renewing' => true
+        //         )
+        //     ]);
+        // } else {
+        //     // Update user detail with newly entered data
+        //     $userDetail = UserDetail::where('user_id', $user->id)->first();
+        //     $userDetail->email = $email;
+        //     $userDetail->firstname = $request->get('first_name');
+        //     $userDetail->lastname = $request->get('last_name');
+        //     $userDetail->address = $request->get('address')
+        //         ? $request->get('address')
+        //         : 'N/A';
+        //     $userDetail->city = $request->get('city')
+        //         ? $request->get('city')
+        //         : 'N/A';
+        //     $userDetail->zip = $request->get('zip')
+        //         ? $request->get('zip')
+        //         : 'N/A';
+        //     $userDetail->state = $request->get('state')
+        //         ? $request->get('state')
+        //         : 'N/A';
+        //     $userDetail->phone = $request->get('phone');
+        //     $userDetail->country = 'USA';
+        //     $userDetail->delivery = $request->get('delivery')
+        //         ? $request->get('delivery')
+        //         : 'N/A';
+        //     $userDetail->update();
+        // }
+
+        // $user = User::findOrFail($user->id);
+        // $user->createStoreCustomer(
+        //     $storeId,
+        //     $store->settings->currency,
+        //     $store->settings->payment_gateway
+        // );
+
+        // $id = Customer::where('user_id', $user->id)
+        //     ->pluck('id')
+        //     ->first();
+
+        // $firstname = UserDetail::where('user_id', $user->id)
+        //     ->pluck('firstname')
+        //     ->first();
+
+        // $lastname = UserDetail::where('user_id', $user->id)
+        //     ->pluck('lastname')
+        //     ->first();
+
+        // return [
+        //     'text' => $firstname . ' ' . $lastname,
+        //     'value' => $id
+        // ];
     }
 
     public function checkExistingCustomer(Request $request)

@@ -357,9 +357,15 @@ class CheckoutController extends StoreController
                 $order = new Order();
                 $order->user_id = $customerUser->id;
                 $order->customer_id = $customer->id;
+                $order->customer_email = $customer->email;
                 $order->customer_name = $customer->name;
                 $order->customer_address = $customer->address;
                 $order->customer_zip = $customer->zip;
+                $order->customer_company = $customer->company;
+                $order->customer_phone = $customer->phone;
+                $order->customer_city = $customer->city;
+                $order->customer_state = $customer->state;
+                $order->customer_delivery = $customer->delivery;
                 $order->card_id = $cardId;
                 $order->store_id = $store->id;
                 $order->store_name = $store->details->name;
@@ -891,6 +897,7 @@ class CheckoutController extends StoreController
 
                 if ($request->get('emailCustomer')) {
                     try {
+                        $customerUser->email = $order->customer_email;
                         $customerUser->sendNotification('new_order', [
                             'order' => $order ?? null,
                             'pickup' => $pickup ?? null,
@@ -1055,8 +1062,14 @@ class CheckoutController extends StoreController
                 $order = new Order();
                 $order->user_id = $customerUser->id;
                 $order->customer_id = $customer->id;
+                $order->customer_email = $customer->email;
                 $order->customer_name = $customer->name;
                 $order->customer_address = $customer->address;
+                $order->customer_company = $customer->company;
+                $order->customer_phone = $customer->phone;
+                $order->customer_city = $customer->city;
+                $order->customer_state = $customer->state;
+                $order->customer_delivery = $customer->delivery;
                 $order->customer_zip = $customer->zip;
                 $order->card_id = $cardId;
                 $order->store_id = $store->id;
@@ -1642,7 +1655,10 @@ class CheckoutController extends StoreController
             }
 
             if (!$weeklyPlan || ($weeklyPlan && $renewNow)) {
-                $firstCustomer = Customer::where('user_id', $userId)->first();
+                $firstCustomer = Customer::where([
+                    'user_id' => $customerUser->id,
+                    'store_id' => $storeId
+                ])->first();
                 $firstCustomer->last_order = Carbon::now();
                 $firstCustomer->total_payments += 1;
                 $firstCustomer->total_paid += $grandTotal;

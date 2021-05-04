@@ -73,11 +73,7 @@ class misc extends Command
 
         foreach ($orders as $order) {
             try {
-                $order->customer_company = $order->user->details->companyname;
-                $order->customer_phone = $order->user->details->phone;
-                $order->customer_city = $order->user->details->city;
-                $order->customer_state = $order->user->details->state;
-                $order->customer_delivery = $order->user->details->delivery;
+                $order->customer_email = $order->user->email;
                 $order->update();
                 $this->info($order->id . ' updated successfully.');
             } catch (\Exception $e) {

@@ -1618,6 +1618,7 @@ class OrderController extends StoreController
         // Send email to customer
         $order = Order::where('id', $request->get('id'))->first();
         $customerUser = User::where('id', $order->user_id)->first();
+        $customerUser->email = $order->customer_email;
         try {
             $customerUser->sendNotification('new_order', [
                 'order' => $order ?? null,

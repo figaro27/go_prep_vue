@@ -114,13 +114,12 @@ class OrderLabels
             return [
                 'dailyOrderNumber' => $order->dailyOrderNumber,
                 'orderNumber' => $order->order_number,
-                'firstName' => $order->user->details->firstname,
-                'lastName' => $order->user->details->lastname,
-                'address' => $order->user->details->address,
-                'city' => $order->user->details->city,
-                'state' => $order->user->details->state,
-                'zip' => $order->user->details->zip,
-                'phone' => $order->user->details->phone,
+                'customer' => $order->customer_name,
+                'address' => $order->customer_address,
+                'city' => $order->customer_city,
+                'state' => $order->customer_state,
+                'zip' => $order->customer_zip,
+                'phone' => $order->customer_phone,
                 'email' => $order->user->email,
                 'amount' => '$' . number_format($order->amount, 2),
                 'balance' => '$' . number_format($order->balance, 2),
@@ -128,7 +127,7 @@ class OrderLabels
                 'deliveryDate' => !$order->isMultipleDelivery
                     ? $order->delivery_date->format('D, m/d/Y')
                     : 'Multiple',
-                'deliveryInstructions' => $order->user->details->delivery,
+                'deliveryInstructions' => $order->customer_delivery,
                 'pickup' => $order->pickup,
                 'transferType' => $order->transfer_type,
                 'pickupLocation' => isset($order->pickup_location)

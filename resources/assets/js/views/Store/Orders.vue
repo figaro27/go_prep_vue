@@ -823,66 +823,90 @@
             </div>
           </div>
         </div>
-        <b-form @submit.prevent="updateCustomer(user_detail.user_id)">
+        <b-form @submit.prevent="patchOrder(order.id)">
           <div class="row">
             <div class="col-md-4">
               <h4>Customer</h4>
-              <span v-if="user_detail.companyname">
+              <span v-if="order.customer_company">
                 <span v-if="editingCustomer">
+                  <p class="small pb-0 mb-0">Company</p>
                   <b-form-input
-                    v-model="user_detail.companyname"
+                    v-model="order.customer_company"
                     class="d-inline width-70 mb-3"
                   ></b-form-input>
                 </span>
                 <span v-else>
-                  <p>{{ user_detail.companyname }}</p>
+                  <p>{{ order.customer_company }}</p>
                 </span>
               </span>
               <span v-if="editingCustomer">
+                <p class="small pb-0 mb-0">Name</p>
                 <b-form-input
                   required
-                  v-model="user_detail.firstname"
-                  class="d-inline width-70 mb-3"
-                ></b-form-input>
-                <b-form-input
-                  required
-                  v-model="user_detail.lastname"
+                  v-model="order.customer_name"
                   class="d-inline width-70 mb-3"
                 ></b-form-input>
               </span>
               <span v-else>
-                <p>{{ user_detail.firstname }} {{ user_detail.lastname }}</p>
+                <p>{{ order.customer_name }}</p>
+              </span>
+              <h4>Phone</h4>
+              <span v-if="editingCustomer">
+                <b-form-input
+                  required
+                  v-model="order.customer_phone"
+                  class="d-inline width-70 mb-3"
+                  @input="asYouType()"
+                ></b-form-input>
+              </span>
+              <span v-else>
+                <p>{{ order.customer_phone }}</p>
+              </span>
+              <h4>Email</h4>
+              <span v-if="editingCustomer">
+                <b-form-input
+                  required
+                  v-model="order.customer_email"
+                  class="d-inline width-70 mb-3"
+                ></b-form-input>
+              </span>
+              <span v-else>
+                <p>{{ order.customer_email }}</p>
               </span>
             </div>
             <div class="col-md-4">
               <h4>Address</h4>
               <span v-if="editingCustomer">
+                <p class="small pb-0 mb-0">Address</p>
                 <b-form-input
                   required
-                  v-model="user_detail.address"
+                  v-model="order.customer_address"
                   class="d-inline width-70 mb-3"
                 ></b-form-input>
+                <p class="small pb-0 mb-0">City</p>
                 <b-form-input
                   required
-                  v-model="user_detail.city"
+                  v-model="order.customer_city"
                   class="d-inline width-70 mb-3"
                 ></b-form-input>
+                <p class="small pb-0 mb-0">State</p>
                 <b-form-input
                   required
-                  v-model="user_detail.state"
+                  v-model="order.customer_state"
                   class="d-inline width-70 mb-3"
                 ></b-form-input>
+                <p class="small pb-0 mb-0">Zip</p>
                 <b-form-input
                   required
-                  v-model="user_detail.zip"
+                  v-model="order.customer_zip"
                   class="d-inline width-70 mb-3"
                 ></b-form-input>
               </span>
               <span v-else>
-                <p>{{ user_detail.address }}</p>
+                <p>{{ order.customer_address }}</p>
                 <p>
-                  {{ user_detail.city }}, {{ user_detail.state }}
-                  {{ user_detail.zip }}
+                  {{ order.customer_city }}, {{ order.customer_state }}
+                  {{ order.customer_zip }}
                 </p>
               </span>
             </div>
@@ -905,22 +929,25 @@
               </h4>
               {{ order.pickup_location_name }}
               <br />
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-4">
-              <h4>Phone</h4>
-              <span v-if="editingCustomer">
+              <h4 v-if="!order.pickup">Delivery Instructions</h4>
+              <span v-if="editingCustomer && !order.pickup">
                 <b-form-input
-                  required
-                  v-model="user_detail.phone"
-                  @input="asYouType()"
+                  v-model="order.customer_delivery"
+                  class="d-inline width-70 mb-3"
                 ></b-form-input>
               </span>
               <span v-else>
-                <p>{{ user_detail.phone }}</p>
+                <p v-if="!order.pickup">{{ order.customer_delivery }}</p>
               </span>
-
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <p class="small strong" v-if="editingCustomer">
+                This only updates the customer details associated with this
+                order. To permanently change customer details, please do it on
+                the Customer page.
+              </p>
               <div>
                 <b-btn
                   variant="warning"
@@ -936,31 +963,6 @@
                   >Save</b-btn
                 >
               </div>
-            </div>
-            <div class="col-md-4">
-              <h4>Email</h4>
-              <span v-if="editingCustomer">
-                <b-form-input
-                  required
-                  v-model="email"
-                  class="d-inline width-70 mb-3"
-                ></b-form-input>
-              </span>
-              <span v-else>
-                <p>{{ email }}</p>
-              </span>
-            </div>
-            <div class="col-md-4">
-              <h4 v-if="!order.pickup">Delivery Instructions</h4>
-              <span v-if="editingCustomer">
-                <b-form-input
-                  v-model="user_detail.delivery"
-                  class="d-inline width-70 mb-3"
-                ></b-form-input>
-              </span>
-              <span v-else>
-                <p v-if="!order.pickup">{{ user_detail.delivery }}</p>
-              </span>
             </div>
           </div>
         </b-form>
@@ -1357,6 +1359,12 @@ export default {
       "setBagPublicNotes",
       "setBagSubscription"
     ]),
+    async patchOrder(id) {
+      await axios.patch(`/api/me/orders/${id}`, this.order);
+      this.$toastr.s("Customer updated.");
+      this.editingCustomer = false;
+      this.refreshTable();
+    },
     refreshTable() {
       this.refreshResource("orders");
     },

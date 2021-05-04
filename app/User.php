@@ -379,26 +379,75 @@ class User extends Authenticatable implements JWTSubject
     public function createStoreCustomer(
         $storeId,
         $currency = 'USD',
-        $gateway = Constants::GATEWAY_STRIPE
+        $gateway = Constants::GATEWAY_STRIPE,
+        $existingUserNewCustomer = null
     ) {
         $store = Store::find($storeId);
+
+        if ($existingUserNewCustomer) {
+            $name =
+                $existingUserNewCustomer['first_name'] .
+                ' ' .
+                $existingUserNewCustomer['last_name'];
+            $firstname = $existingUserNewCustomer['first_name'];
+            $lastname = $existingUserNewCustomer['last_name'];
+            $phone = $existingUserNewCustomer['phone'];
+            $address = isset($existingUserNewCustomer['address'])
+                ? $existingUserNewCustomer['address']
+                : 'N/A';
+            $city = isset($existingUserNewCustomer['city'])
+                ? $existingUserNewCustomer['city']
+                : 'N/A';
+            $state = isset($existingUserNewCustomer['state'])
+                ? $existingUserNewCustomer['state']
+                : null;
+            $zip = isset($existingUserNewCustomer['zip'])
+                ? $existingUserNewCustomer['zip']
+                : 'N/A';
+            $delivery = isset($existingUserNewCustomer['delivery'])
+                ? $existingUserNewCustomer['delivery']
+                : 'N/A';
+            $company = isset($existingUserNewCustomer['company'])
+                ? $existingUserNewCustomer['company']
+                : 'N/A';
+        }
+
+        if (
+            $existingUserNewCustomer &&
+            !isset($existingUserNewCustomer['state'])
+        ) {
+            $state = null;
+        } else {
+            $state = $this->userDetail->state;
+        }
 
         $customer = new Customer();
         $customer->user_id = $this->id;
         $customer->store_id = $storeId;
         $customer->currency = $currency;
         $customer->payment_gateway = $gateway;
-        $customer->name =
-            $this->userDetail->firstname . ' ' . $this->userDetail->lastname;
-        $customer->firstname = $this->userDetail->firstname;
-        $customer->lastname = $this->userDetail->lastname;
-        $customer->phone = $this->userDetail->phone;
-        $customer->address = $this->userDetail->address;
-        $customer->city = $this->userDetail->city;
-        $customer->state = $this->userDetail->state;
-        $customer->zip = $this->userDetail->zip;
-        $customer->zip = $this->userDetail->zip;
-        $customer->delivery = $this->userDetail->delivery;
+        $customer->name = isset($name)
+            ? $name
+            : $this->userDetail->firstname . ' ' . $this->userDetail->lastname;
+        $customer->firstname = isset($firstname)
+            ? $firstname
+            : $this->userDetail->firstname;
+        $customer->lastname = isset($lastname)
+            ? $lastname
+            : $this->userDetail->lastname;
+        $customer->phone = isset($phone) ? $phone : $this->userDetail->phone;
+        $customer->address = isset($address)
+            ? $address
+            : $this->userDetail->address;
+        $customer->city = isset($city) ? $city : $this->userDetail->city;
+        $customer->state = $state;
+        $customer->zip = isset($zip) ? $zip : $this->userDetail->zip;
+        $customer->delivery = isset($delivery)
+            ? $delivery
+            : $this->userDetail->delivery;
+        $customer->company = isset($company)
+            ? $company
+            : $this->userDetail->companyname;
         $customer->email = $this->email;
         $customer->total_payments = 0;
         $customer->total_paid = 0;
@@ -408,7 +457,7 @@ class User extends Authenticatable implements JWTSubject
             \Stripe\Stripe::setApiKey($acct['access_token']);
             $stripeCustomer = \Stripe\Customer::create([
                 'email' => $this->email,
-                'description' => $this->name
+                'description' => isset($name) ? $name : $this->name
             ]);
             $gatewayCustomerId = $stripeCustomer->id;
             \Stripe\Stripe::setApiKey(config('services.stripe.secret'));

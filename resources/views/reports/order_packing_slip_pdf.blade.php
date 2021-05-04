@@ -22,7 +22,7 @@ $cashOrder = $order->cashOrder;
 $balance = $order->balance;
 $brandColor = $order->store->settings->color;
 $hot = $order->hot;
-$deliveryInstructions = $order->user->userDetail->delivery;
+$deliveryInstructions = $order->customer_delivery;
 $settings = $params['settings'];
 @endphp
 
@@ -124,17 +124,17 @@ $settings = $params['settings'];
 
 
       <div class="col-4 align-right">
-        @if ($order->user->details->companyname)
-          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">{{ $order->user->details->companyname }}</p>
+        @if ($order->customer_company)
+          <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">{{ $order->customer_company }}</p>
           @endif
-        <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">{{$order->user->name}}</p>
-        @if ($order->user->details->address !== 'N/A')
-        <p>{{$order->user->details->address}}</p>
-        <p>{{$order->user->details->city}},
-          {{$order->user->details->state}}
-          {{$order->user->details->zip}}</p>
+        <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">{{$order->customer_name}}</p>
+        @if ($order->customer_address !== 'N/A')
+        <p>{{$order->customer_address}}</p>
+        <p>{{$order->customer_city}},
+          {{$order->customer_state}}
+          {{$order->customer_zip}}</p>
         @endif
-        <p>{{$order->user->details->phone}}</p>
+        <p>{{$order->customer_phone}}</p>
         @if (strpos($order->user->email, 'noemail') === false)
         <p>{{$order->user->email}}</p>
         @endif

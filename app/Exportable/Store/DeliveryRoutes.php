@@ -74,12 +74,7 @@ class DeliveryRoutes
         foreach ($orders as $order) {
             $customerDetails = $order->user->details;
             $name =
-                ' - ' .
-                $order->order_number .
-                ' | ' .
-                $customerDetails->firstname .
-                ' ' .
-                $customerDetails->lastname;
+                ' - ' . $order->order_number . ' | ' . $order->customer_name;
 
             // No longer restricting the report to unique addresses or names. Will just list the name/address multiple times if there are multiple orders.
 
@@ -93,10 +88,10 @@ class DeliveryRoutes
 
             // if (!in_array($uniqueAddress, $uniqueAddresses)) {
             $address = implode(', ', [
-                $customerDetails->address,
-                $customerDetails->city,
-                $customerDetails->state,
-                $customerDetails->zip
+                $order->customer_address,
+                $order->customer_city,
+                $order->customer_state,
+                $order->customer_zip
             ]);
 
             $stops[] = [
@@ -108,16 +103,13 @@ class DeliveryRoutes
             // $uniqueAddresses[] = $uniqueAddress;
 
             $recipients[] = [
-                "name" =>
-                    $customerDetails->firstname .
-                    ' ' .
-                    $customerDetails->lastname,
-                "phone" => $customerDetails->phone,
-                "address" => $customerDetails->address,
-                "city" => $customerDetails->city,
-                "state" => $customerDetails->state,
-                "zip" => $customerDetails->zip,
-                "delivery" => $customerDetails->delivery
+                "name" => $order->customer_name,
+                "phone" => $order->customer_phone,
+                "address" => $order->customer_address,
+                "city" => $order->customer_city,
+                "state" => $order->customer_state,
+                "zip" => $order->customer_zip,
+                "delivery" => $order->customer_delivery
             ];
             // }
         }

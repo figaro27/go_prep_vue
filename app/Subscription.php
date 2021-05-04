@@ -556,8 +556,14 @@ class Subscription extends Model
                 ? 'Pickup'
                 : 'Delivery';
             $newOrder->customer_name = $latestOrder->customer_name;
+            $newOrder->customer_email = $latestOrder->customer_email;
             $newOrder->customer_address = $latestOrder->customer_address;
             $newOrder->customer_zip = $latestOrder->customer_zip;
+            $newOrder->customer_company = $latestOrder->customer_company;
+            $newOrder->customer_phone = $latestOrder->customer_phone;
+            $newOrder->customer_city = $latestOrder->customer_city;
+            $newOrder->customer_state = $latestOrder->customer_state;
+            $newOrder->customer_delivery = $latestOrder->customer_delivery;
             $goPrepFee =
                 $newOrder->afterDiscountBeforeFees *
                 ($this->store->settings->application_fee / 100);
@@ -693,7 +699,10 @@ class Subscription extends Model
 
             if ($applyCharge || $markAsPaidOnly) {
                 $this->paid_order_count += 1;
-                $customer = Customer::where('user_id', $this->user_id)->first();
+                $customer = Customer::where([
+                    'user_id' => $this->user_id,
+                    'store_id' => $this->store_id
+                ])->first();
                 $customer->last_order = Carbon::now();
                 $customer->total_payments += 1;
                 $customer->total_paid += $this->amount;
@@ -789,6 +798,7 @@ class Subscription extends Model
 
                 // Send new order notification to customer at the cutoff once the order is paid
                 if ($this->user->details->notificationEnabled('new_order')) {
+                    $this->user->email = $latestOrder->customer_email;
                     $this->user->sendNotification('new_order', [
                         'order' => $latestOrder ?? null,
                         'pickup' => $latestOrder->pickup ?? null,

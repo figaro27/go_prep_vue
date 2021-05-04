@@ -66,7 +66,7 @@
           @endif
         </h5>
         <h5><span style="font-weight:bold">Order ID:</span> {{$order['order_number']}}</h5>
-        <h5><span style="font-weight:bold">Customer:</span> {{$orderGroup['user']->name }}</h5>
+        <h5><span style="font-weight:bold">Customer:</span> {{$order['customer'] }}</h5>
         <h5><span style="font-weight:bold">Email:</span> {{$orderGroup['user']->email }}</h5>
         @if ($order['address'] !== 'N/A')
         <h5><span style="font-weight:bold">Address:</span> {{$order['address']}}, {{$order['city']}}, {{$order['state']}}, {{$order['zip']}}</h5>

@@ -153,16 +153,17 @@ class CustomerController extends StoreController
                 $customer->email = $details['email'] ?? null;
                 $customer->update();
             }
-            $userDetail = UserDetail::where(
-                'user_id',
-                $customer->user_id
-            )->first();
-            $userDetail->update($details);
+            // No longer updating user details. Customer updating allowed only. Details associated with specific Orders are now in the Orders table.
+            // $userDetail = UserDetail::where(
+            //     'user_id',
+            //     $customer->user_id
+            // )->first();
+            // $userDetail->update($details);
             $user = User::where('id', $customer->user_id)->first();
             $user->email = $details['email'];
             $user->save();
         } else {
-            $userDetail = UserDetail::where('id', $details['id'])->first();
+            // $userDetail = UserDetail::where('id', $details['id'])->first();
             $customer = Customer::where(
                 'id',
                 $request->get('customerId')
@@ -172,7 +173,7 @@ class CustomerController extends StoreController
                 $customer->email = $details['email'] ?? null;
                 $customer->update();
             }
-            $userDetail->update($details);
+            // $userDetail->update($details);
             $user = User::where('id', $details['user_id'])->first();
             $user->email = $request->get('email');
             $user->save();
