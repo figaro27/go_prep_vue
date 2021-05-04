@@ -75,6 +75,8 @@ class misc extends Command
             try {
                 $order->customer_company = $order->user->details->companyname;
                 $order->customer_phone = $order->user->details->phone;
+                $order->customer_city = $order->user->details->city;
+                $order->customer_state = $order->user->details->state;
                 $order->customer_delivery = $order->user->details->delivery;
                 $order->update();
                 $this->info($order->id . ' updated successfully.');
