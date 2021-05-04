@@ -118,4 +118,18 @@ class DeliveryDay extends Model
     {
         return $this->day;
     }
+
+    public function isPastCutoff($dayFriendly)
+    {
+        $date = Carbon::parse($dayFriendly);
+
+        $cutoffDate = $date
+            ->subDays($this->cutoff_days)
+            ->subHours($this->cutoff_hours);
+
+        if ($cutoffDate->isPast()) {
+            return true;
+        }
+        return false;
+    }
 }
