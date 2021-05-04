@@ -69,29 +69,17 @@ class misc extends Command
      */
     public function handle()
     {
-        $meals = Meal::where('store_id', 40)->get();
+        $orders = Order::all();
 
-        foreach ($meals as $meal) {
-            $newMeal = Meal::where([
-                'store_id' => 313,
-                'title' => $meal->title,
-                'description' => $meal->description,
-                'price' => $meal->price,
-                'deleted_at' => null
-            ])->first();
-
-            $mediaItem = $meal->getMedia('featured_image')->first();
-            if ($mediaItem && $newMeal) {
-                $this->info($newMeal->title);
-                try {
-                    $copiedMediaItem = $mediaItem->copy(
-                        $newMeal,
-                        'featured_image',
-                        's3'
-                    );
-                } catch (\Exception $e) {
-                    $this->info($e);
-                }
+        foreach ($orders as $order) {
+            try {
+                $order->customer_phone = $order->user->details->phone;
+                $order->customer_delivery = $order->user->details->delivery;
+                $order->update();
+                $this->info($order->id . ' updated successfully.');
+            } catch (\Exception $e) {
+                $this->info('Error with ' . $order->id);
+                $this->info($e);
             }
         }
     }
