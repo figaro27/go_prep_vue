@@ -77,13 +77,14 @@ class OrderController extends StoreController
         //     ->with(['user', 'pickup_location', 'purchased_gift_cards'])
         //     ->where(['paid' => 1])
         //     ->without($hide);
+        if (!$this->store->modules->multipleDeliveryDays) {
+            if ($start) {
+                $query = $query->whereDate('delivery_date', '>=', $start);
+            }
 
-        if ($start) {
-            $query = $query->whereDate('delivery_date', '>=', $start);
-        }
-
-        if ($end) {
-            $query = $query->whereDate('delivery_date', '<=', $end);
+            if ($end) {
+                $query = $query->whereDate('delivery_date', '<=', $end);
+            }
         }
 
         // If multiple delivery days, get orders by looking at meal order dates
