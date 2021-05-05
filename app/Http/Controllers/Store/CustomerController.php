@@ -95,24 +95,28 @@ class CustomerController extends StoreController
     public function show(Request $request)
     {
         $id = $request->route()->parameter('customer');
-        $userId = Customer::where('id', $id)
-            ->pluck('user_id')
-            ->first();
-        $orders = [];
-        $customers = Customer::where('user_id', $userId)
+        $customer = Customer::where('id', $id)
             ->with('orders')
-            ->get();
-        foreach ($customers as $customer) {
-            array_push($orders, $customer->orders()->get());
-        }
-        $orders = Arr::collapse($orders);
+            ->first();
 
-        $customer = $this->store
-            ->customers()
-            ->without(['user'])
-            ->find($id);
+        // $userId = Customer::where('id', $id)
+        //     ->pluck('user_id')
+        //     ->first();
+        // $orders = [];
+        // $customers = Customer::where('user_id', $userId)
+        //     ->with('orders')
+        //     ->get();
+        // foreach ($customers as $customer) {
+        //     array_push($orders, $customer->orders()->get());
+        // }
+        // $orders = Arr::collapse($orders);
 
-        $customer->orders = $orders;
+        // $customer = $this->store
+        //     ->customers()
+        //     ->without(['user'])
+        //     ->find($id);
+
+        // $customer->orders = $orders;
 
         return $customer;
     }
