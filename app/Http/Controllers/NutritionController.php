@@ -55,12 +55,7 @@ class NutritionController extends Controller
 
         // Swaps out the Nutritionix API key if we're approaching daily limit (200).
         $storeId = $request->get('storeId');
-        $reportRecord = ReportRecord::where('store_id', $storeId)->first();
-        if (!$reportRecord) {
-            $reportRecord = ReportRecord::where('store_id', 13)->first();
-        }
-        $reportRecord->daily_nutritionix_calls += 1;
-        $reportRecord->update();
+
         $totalDailyCalls = ReportRecord::sum('daily_nutritionix_calls');
         if ($totalDailyCalls >= 180) {
             $path = base_path('.env');
@@ -142,6 +137,14 @@ class NutritionController extends Controller
                 return [$key => $item];
             });
         }
+
+        $reportRecord = ReportRecord::where('store_id', $storeId)->first();
+        if (!$reportRecord) {
+            $reportRecord = ReportRecord::where('store_id', 13)->first();
+        }
+        $reportRecord->daily_nutritionix_calls += count($foods);
+        $reportRecord->update();
+
         return [
             'foods' => $foods
         ];
