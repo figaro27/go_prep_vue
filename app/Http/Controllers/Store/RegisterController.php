@@ -102,8 +102,8 @@ class RegisterController extends StoreController
             $userDetails = $user->details()->create([
                 'companyname' => $request->get('company_name'),
                 'email' => $email,
-                'firstname' => $request->get('first_name'),
-                'lastname' => $request->get('last_name'),
+                'firstname' => $request->get('firstname'),
+                'lastname' => $request->get('lastname'),
                 'phone' => $request->get('phone'),
                 'address' => $request->get('address')
                     ? $request->get('address')
@@ -207,8 +207,8 @@ class RegisterController extends StoreController
         //     $userDetails = $user->details()->create([
         //         'companyname' => $request->get('company_name'),
         //         'email' => $email,
-        //         'firstname' => $request->get('first_name'),
-        //         'lastname' => $request->get('last_name'),
+        //         'firstname' => $request->get('firstname'),
+        //         'lastname' => $request->get('lastname'),
         //         'phone' => $request->get('phone'),
         //         'address' => $request->get('address')
         //             ? $request->get('address')
@@ -237,8 +237,8 @@ class RegisterController extends StoreController
         //     // Update user detail with newly entered data
         //     $userDetail = UserDetail::where('user_id', $user->id)->first();
         //     $userDetail->email = $email;
-        //     $userDetail->firstname = $request->get('first_name');
-        //     $userDetail->lastname = $request->get('last_name');
+        //     $userDetail->firstname = $request->get('firstname');
+        //     $userDetail->lastname = $request->get('lastname');
         //     $userDetail->address = $request->get('address')
         //         ? $request->get('address')
         //         : 'N/A';

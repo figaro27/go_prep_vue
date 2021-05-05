@@ -16,34 +16,34 @@
       <div v-if="step === 0">
         <div class="d-flex" style="flex-wrap:wrap">
           <b-form-group
-            :state="state(0, 'first_name')"
+            :state="state(0, 'firstname')"
             style="flex-grow:1"
             class="mr-2"
           >
             <b-input
               placeholder="First Name"
-              v-model="form[0].first_name"
+              v-model="form[0].firstname"
               type="text"
               @input="
-                $v.form[0].first_name.$touch();
-                clearFeedback(0, 'first_name');
+                $v.form[0].firstname.$touch();
+                clearFeedback(0, 'firstname');
               "
-              :state="state(0, 'first_name')"
+              :state="state(0, 'firstname')"
               autocomplete="new-password"
               style="font-size:16px"
             ></b-input>
           </b-form-group>
 
-          <b-form-group :state="state(0, 'last_name')" style="flex-grow:1">
+          <b-form-group :state="state(0, 'lastname')" style="flex-grow:1">
             <b-input
               placeholder="Last Name"
-              v-model="form[0].last_name"
+              v-model="form[0].lastname"
               type="text"
               @input="
-                $v.form[0].last_name.$touch();
-                clearFeedback(0, 'last_name');
+                $v.form[0].lastname.$touch();
+                clearFeedback(0, 'lastname');
               "
-              :state="state(0, 'last_name')"
+              :state="state(0, 'lastname')"
               autocomplete="new-password"
               style="font-size:16px"
             ></b-input>
@@ -508,8 +508,8 @@ export default {
           email: null,
           password: null,
           password_confirmation: null,
-          first_name: null,
-          last_name: null,
+          firstname: null,
+          lastname: null,
           phone: null
         },
         1: {
@@ -634,8 +634,8 @@ export default {
         email: validators.email,
         password: validators.password,
         password_confirmation: validators.password,
-        first_name: validators.first_name,
-        last_name: validators.last_name,
+        firstname: validators.firstname,
+        lastname: validators.lastname,
         phone: validators.phone
       },
       1: {

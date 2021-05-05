@@ -64,8 +64,8 @@ class RegisterController extends Controller
             'user.role' => 'required|in:customer,store,guest',
             'user.email' => 'required|string|email|max:255|unique:users,email',
             'user.password' => 'required|string|min:6|confirmed',
-            'user.first_name' => 'required',
-            'user.last_name' => 'required',
+            'user.firstname' => 'required',
+            'user.lastname' => 'required',
             'user.phone' => 'required',
             // 'user.accepted_tos' => 'in:1',
 
@@ -120,8 +120,8 @@ class RegisterController extends Controller
                             'email' =>
                                 'required|string|email|max:255|unique:users,email',
                             'password' => 'required|string|min:6|confirmed',
-                            'first_name' => 'required',
-                            'last_name' => 'required',
+                            'firstname' => 'required',
+                            'lastname' => 'required',
                             'phone' => 'required|unique:user_details,phone'
                         ],
                         [
@@ -137,8 +137,8 @@ class RegisterController extends Controller
                         'email' =>
                             'required|string|email|max:255|unique:users,email',
                         'password' => 'required|string|min:6|confirmed',
-                        'first_name' => 'required',
-                        'last_name' => 'required',
+                        'firstname' => 'required',
+                        'lastname' => 'required',
                         'phone' => 'required'
                     ]);
                 }
@@ -229,8 +229,8 @@ class RegisterController extends Controller
                     ? $data['user']['company_name']
                     : null,
                 'email' => $data['user']['email'],
-                'firstname' => $data['user']['first_name'],
-                'lastname' => $data['user']['last_name'],
+                'firstname' => $data['user']['firstname'],
+                'lastname' => $data['user']['lastname'],
                 'phone' => $data['user']['phone'],
                 'address' => isset($data['user_details']['unit'])
                     ? $data['user_details']['address'] .

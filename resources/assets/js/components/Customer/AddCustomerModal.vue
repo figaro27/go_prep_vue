@@ -51,7 +51,7 @@
         </b-form-group>
         <b-form-group horizontal label="First Name">
           <b-form-input
-            v-model="form.first_name"
+            v-model="form.firstname"
             type="text"
             required
             pattern=".*\S+.*"
@@ -60,7 +60,7 @@
         </b-form-group>
         <b-form-group horizontal label="Last Name">
           <b-form-input
-            v-model="form.last_name"
+            v-model="form.lastname"
             type="text"
             required
             pattern=".*\S+.*"

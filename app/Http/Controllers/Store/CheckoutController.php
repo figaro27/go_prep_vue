@@ -228,10 +228,15 @@ class CheckoutController extends StoreController
                     $gateway
                 )
             ) {
+                $existingCustomerDetails = Customer::where(
+                    'id',
+                    $request->get('customer')
+                )->first();
                 $customerUser->createStoreCustomer(
                     $store->id,
                     $storeSettings->currency,
-                    $gateway
+                    $gateway,
+                    $existingCustomerDetails
                 );
             }
 

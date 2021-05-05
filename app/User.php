@@ -386,11 +386,11 @@ class User extends Authenticatable implements JWTSubject
 
         if ($existingUserNewCustomer) {
             $name =
-                $existingUserNewCustomer['first_name'] .
+                $existingUserNewCustomer['firstname'] .
                 ' ' .
-                $existingUserNewCustomer['last_name'];
-            $firstname = $existingUserNewCustomer['first_name'];
-            $lastname = $existingUserNewCustomer['last_name'];
+                $existingUserNewCustomer['lastname'];
+            $firstname = $existingUserNewCustomer['firstname'];
+            $lastname = $existingUserNewCustomer['lastname'];
             $phone = $existingUserNewCustomer['phone'];
             $address = isset($existingUserNewCustomer['address'])
                 ? $existingUserNewCustomer['address']

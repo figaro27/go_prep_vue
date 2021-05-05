@@ -10,10 +10,10 @@ const validators = {
     required,
     email
   },
-  first_name: {
+  firstname: {
     required
   },
-  last_name: {
+  lastname: {
     required
   },
   phone: {
