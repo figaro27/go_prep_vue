@@ -224,18 +224,21 @@
                 <div class="col-md-2">
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.calories"
                     placeholder="Calories"
                     class="mt-2"
                   ></b-form-input>
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.cholesterol"
                     placeholder="Cholesterol"
                     class="mt-2"
                   ></b-form-input>
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.vitamind"
                     placeholder="Vitamin D"
                     class="mt-2"
@@ -244,18 +247,21 @@
                 <div class="col-md-2">
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.totalfat"
                     placeholder="Total Fat"
                     class="mt-2"
                   ></b-form-input>
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.satfat"
                     placeholder="Saturated Fat"
                     class="mt-2"
                   ></b-form-input>
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.transfat"
                     placeholder="Trans Fat"
                     class="mt-2"
@@ -264,18 +270,21 @@
                 <div class="col-md-2">
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.totalcarb"
                     placeholder="Total Carb"
                     class="mt-2"
                   ></b-form-input>
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.sugars"
                     placeholder="Sugars"
                     class="mt-2"
                   ></b-form-input>
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.sodium"
                     placeholder="Sodium"
                     class="mt-2"
@@ -284,18 +293,21 @@
                 <div class="col-md-2">
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.proteins"
                     placeholder="Proteins"
                     class="mt-2"
                   ></b-form-input>
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.potassium"
                     placeholder="Potassium"
                     class="mt-2"
                   ></b-form-input>
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.calcium"
                     placeholder="Calcium"
                     class="mt-2"
@@ -304,12 +316,14 @@
                 <div class="col-md-2">
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.fibers"
                     placeholder="Fibers"
                     class="mt-2"
                   ></b-form-input>
                   <b-form-input
                     type="number"
+                    min="0"
                     v-model="customIngredient.iron"
                     placeholder="Iron"
                     class="mt-2"

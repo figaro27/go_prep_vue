@@ -445,9 +445,11 @@ class User extends Authenticatable implements JWTSubject
         $customer->delivery = isset($delivery)
             ? $delivery
             : $this->userDetail->delivery;
-        $customer->company = isset($company)
-            ? $company
-            : $this->userDetail->companyname;
+        $customer->company = (isset($company)
+                ? $company
+                : $this->userDetail->companyname)
+            ? $this->userDetail->companyname
+            : 'N/A';
         $customer->email = $this->email;
         $customer->total_payments = 0;
         $customer->total_paid = 0;
