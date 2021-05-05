@@ -106,9 +106,13 @@ class OrderController extends StoreController
 
             $query = $this->store->orders
                 ->with(['user', 'pickup_location', 'purchased_gift_cards'])
-                ->whereIn('id', $orderIds)
+
                 ->where(['paid' => 1])
                 ->without($hide);
+
+            if ($this->store->id === 189) {
+                dd($query->get());
+            }
         }
 
         if ($search) {
