@@ -512,7 +512,7 @@ class SpaController extends Controller
             );
 
             $packages =
-                $store->childPackages()->count() > 0
+                $store && $store->childPackages()->count() > 0
                     ? $store->childPackages()
                     : $packages;
 
