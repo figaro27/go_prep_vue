@@ -556,6 +556,8 @@ class Subscription extends Model
                 ? 'Pickup'
                 : 'Delivery';
             $newOrder->customer_name = $latestOrder->customer_name;
+            $newOrder->customer_firstname = $latestOrder->firstname;
+            $newOrder->customer_lastname = $latestOrder->lastname;
             $newOrder->customer_email = $latestOrder->customer_email;
             $newOrder->customer_address = $latestOrder->customer_address;
             $newOrder->customer_zip = $latestOrder->customer_zip;

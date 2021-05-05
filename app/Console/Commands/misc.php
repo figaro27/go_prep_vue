@@ -69,33 +69,33 @@ class misc extends Command
      */
     public function handle()
     {
-        // $customers = Customer::all();
+        $customers = Customer::all();
 
-        // foreach ($customers as $customer){
-        //     try {
-        //     $customer->company = $customer->user->details->companyname;
-        //     $customer->update();
-        //         $this->info($customer->id . 'customer updated successfully.');
-        //     } catch (\Exception $e) {
-        //         $this->info('Error with ' . $customer->id);
-        //         $this->info($e);
-        //     }
-        // }
-
-        $orders = Order::all();
-
-        foreach ($orders as $order) {
+        foreach ($customers as $customer) {
             try {
-                $order->customer_firstname = $order->user->details->firstname;
-                $order->customer_lastname = $order->user->details->lastname;
-                $order->customer_email = $order->user->email;
-                $order->customer_company = $order->user->details->companyname;
-                $order->update();
-                $this->info($order->id . ' updated successfully.');
+                $customer->email = $customer->user->email;
+                $customer->update();
+                $this->info($customer->id . ' customer updated successfully.');
             } catch (\Exception $e) {
-                $this->info('Error with ' . $order->id);
+                $this->info('Error with ' . $customer->id);
                 $this->info($e);
             }
         }
+
+        // $orders = Order::all();
+
+        // foreach ($orders as $order) {
+        //     try {
+        //         $order->customer_firstname = $order->user->details->firstname;
+        //         $order->customer_lastname = $order->user->details->lastname;
+        //         $order->customer_email = $order->user->email;
+        //         $order->customer_company = $order->user->details->companyname;
+        //         $order->update();
+        //         $this->info($order->id . ' updated successfully.');
+        //     } catch (\Exception $e) {
+        //         $this->info('Error with ' . $order->id);
+        //         $this->info($e);
+        //     }
+        // }
     }
 }

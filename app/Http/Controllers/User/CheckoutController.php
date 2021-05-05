@@ -591,6 +591,8 @@ class CheckoutController extends UserController
                 $order->customer_email = $customer->email;
                 $order->customer_id = $customer->id;
                 $order->customer_name = $customer->name;
+                $order->customer_firstname = $customer->firstname;
+                $order->customer_lastname = $customer->lastname;
                 $order->customer_address = $customer->address;
                 $order->customer_zip = $customer->zip;
                 $order->customer_company = $customer->company;
@@ -1210,6 +1212,8 @@ class CheckoutController extends UserController
                 $order->customer_email = $customer->email;
                 $order->customer_id = $customer->id;
                 $order->customer_name = $customer->name;
+                $order->customer_firstname = $customer->firstname;
+                $order->customer_lastname = $customer->lastname;
                 $order->customer_address = $customer->address;
                 $order->customer_zip = $customer->zip;
                 $order->customer_company = $customer->company;
