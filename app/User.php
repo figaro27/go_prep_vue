@@ -418,7 +418,7 @@ class User extends Authenticatable implements JWTSubject
         ) {
             $state = null;
         } else {
-            $state = $this->userDetail->state;
+            $state = $this->userDetail ? $this->userDetail->state : null;
         }
 
         $customer = new Customer();
