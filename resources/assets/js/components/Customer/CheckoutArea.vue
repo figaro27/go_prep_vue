@@ -1618,7 +1618,7 @@ export default {
     }
 
     if (this.customer) {
-      this.setBagCustomerModel(this.getCustomerObject(this.customer));
+      // this.setBagCustomerModel(this.getCustomerObject(this.customer));
     } else {
       this.setBagCustomerModel(null);
     }
