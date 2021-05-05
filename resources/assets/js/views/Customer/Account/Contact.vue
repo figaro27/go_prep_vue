@@ -20,6 +20,13 @@
             />
           </div>
 
+          <div v-if="fields.subject === 'Technical Issue'">
+            <p>
+              Please be as specific as possible telling us the error message you
+              see or exactly what's happening so we can better help you.
+            </p>
+          </div>
+
           <div class="form-group">
             <label for="message">Message</label>
             <textarea
