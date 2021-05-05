@@ -497,7 +497,11 @@ class MealOrder extends Pivot
 
     public function getExpirationDateAttribute()
     {
-        $deliveryDate = new Carbon($this->order->delivery_date);
+        if (!$this->store->modules->multipleDeliveryDays) {
+            $deliveryDate = new Carbon($this->order->delivery_date);
+        } else {
+            $deliveryDate = new Carbon($this->delivery_date);
+        }
         $expirationDate = $deliveryDate
             ->addDays($this->meal->expirationDays)
             ->format('m/d/Y');
