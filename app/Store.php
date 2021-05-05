@@ -1478,15 +1478,17 @@ class Store extends Model
                 return true;
             }
         }
-
-        foreach ($this->settings->delivery_distance_zipcodes as $zipcode) {
-            $zipcode = strtoupper(strval($zipcode));
-            $zipcode = preg_replace("/\s+/", "", $zipcode);
-            list($zipcode) = explode(' ', $zipcode);
-            if ($zip === $zipcode) {
-                return true;
+        if ($this->settings && $this->settings->delivery_distance_zipcodes) {
+            foreach ($this->settings->delivery_distance_zipcodes as $zipcode) {
+                $zipcode = strtoupper(strval($zipcode));
+                $zipcode = preg_replace("/\s+/", "", $zipcode);
+                list($zipcode) = explode(' ', $zipcode);
+                if ($zip === $zipcode) {
+                    return true;
+                }
             }
         }
+
         return false;
     }
 
