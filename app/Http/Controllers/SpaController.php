@@ -588,7 +588,7 @@ class SpaController extends Controller
         $store = Store::where('id', $store_id)->first();
         $storeSetting = StoreSetting::where('store_id', $store_id)->first();
 
-        if (count($store->parentStore) > 0) {
+        if ($store && count($store->parentStore) > 0) {
             $store_id = $store->parentStore[0]->id;
         }
 
