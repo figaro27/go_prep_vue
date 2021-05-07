@@ -1754,7 +1754,8 @@ export default {
       distance: "viewedStoreDistance",
       bagNotes: "bagNotes",
       bagPublicNotes: "bagPublicNotes",
-      bagMealPlan: "bagMealPlan"
+      bagMealPlan: "bagMealPlan",
+      bagLineItems: "bagLineItems"
     }),
     prepaid() {
       if (
@@ -2635,9 +2636,9 @@ use next_delivery_dates
     },
     subtotal() {
       let totalLineItemsPrice = 0;
-      if (this.orderLineItems != null && this.orderLineItems.length > 0) {
-        this.orderLineItems.forEach(orderLineItem => {
-          totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
+      if (this.bagLineItems.length > 0) {
+        this.bagLineItems.forEach(bagLineItem => {
+          totalLineItemsPrice += bagLineItem.price * bagLineItem.quantity;
         });
       }
       let preFeeTotal =
@@ -3438,6 +3439,7 @@ use next_delivery_dates
       "clearBagStaffMember",
       "clearBagCustomerModel",
       "clearBagDeliveryFee",
+      "clearBagLineItems",
       "setBagPickup",
       "setBagTransferTime",
       "setBagCustomerModel",
@@ -3726,8 +3728,7 @@ use next_delivery_dates
         transferTime: this.transferTime,
         deliveryDay: this.deliveryDay,
         cashOrder: this.cashOrder,
-        creditCardList: this.creditCardList,
-        lineItemOrders: this.orderLineItems
+        creditCardList: this.creditCardList
       });
     },
     getCards() {
@@ -3828,7 +3829,7 @@ use next_delivery_dates
             : this.customer,
           deposit: deposit,
           cashOrder: this.cashOrder,
-          lineItemsOrder: this.orderLineItems,
+          lineItemsOrder: this.bagLineItems,
           gratuity: this.tip,
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer,
@@ -3972,7 +3973,7 @@ use next_delivery_dates
           noBalance: this.noBalance,
           hot: this.hot ? this.hot : false,
           transferTime: this.transferTime,
-          lineItemsOrder: this.orderLineItems,
+          lineItemsOrder: this.bagLineItems,
           gratuity: this.tip,
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer,
@@ -4014,6 +4015,7 @@ use next_delivery_dates
             this.clearBagStaffMember();
             this.clearBagCustomerModel();
             this.clearBagDeliveryFee();
+            this.clearBagLineItems();
             this.refreshCards();
             this.emptyBag();
 

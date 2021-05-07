@@ -68,7 +68,6 @@
             forceValue: forceValue,
             inSub: inSub,
             weeklySubscriptionValue: weeklySubscriptionValue,
-            lineItemOrders: lineItemOrders,
             subscription: subscription
           }
         }"
@@ -175,11 +174,6 @@ export default {
       mealMixItems: "mealMixItems",
       context: "context"
     }),
-    lineItemOrders() {
-      return this.$route.params.checkoutData
-        ? this.$route.params.checkoutData.lineItemOrders
-        : null;
-    },
     subId() {
       return this.$route.params.subscriptionId
         ? this.$route.params.subscriptionId

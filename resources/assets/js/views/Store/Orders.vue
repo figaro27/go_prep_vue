@@ -1349,6 +1349,7 @@ export default {
       "clearBagStaffMember",
       "clearBagCustomerModel",
       "clearBagDeliveryFee",
+      "clearBagLineItems",
       "setBagPickup",
       "setBagCoupon",
       "setBagZipCode",
@@ -1947,6 +1948,7 @@ export default {
       this.clearBagStaffMember();
       this.clearBagCustomerModel();
       this.clearBagDeliveryFee();
+      this.clearBagLineItems();
       this.setBagCoupon(null);
       this.setBagZipCode(null);
       this.setMultDDZipCode(0);

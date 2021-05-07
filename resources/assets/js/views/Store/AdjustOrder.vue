@@ -10,7 +10,6 @@
       :pickup="pickup"
       :order="order"
       :inSub="inSub"
-      :lineItemOrders="lineItemOrders"
       ref="customerMenu"
     ></customer-menu>
   </div>
@@ -33,7 +32,6 @@ export default {
     return {
       isLoading: false,
       order_bags: [],
-      lineItemOrders: [],
       firstDeliveryDay: null
     };
   },
@@ -86,7 +84,8 @@ export default {
       "setBagGratuityPercent",
       "setBagCustomGratuity",
       "setBagNotes",
-      "setBagPublicNotes"
+      "setBagPublicNotes",
+      "setBagLineItems"
     ]),
     async initBag() {
       // await this.refreshUpcomingOrders();
@@ -104,6 +103,8 @@ export default {
       this.setBagCustomGratuity(this.order.gratuity);
       this.setBagNotes(this.order.notes);
       this.setBagPublicNotes(this.order.publicNotes);
+      this.setBagLineItems(this.order.line_items_order);
+
       this.clearAll();
 
       // axios.get("/api/me/order_bag/" + this.order.id).then(resp => {
@@ -133,12 +134,6 @@ export default {
           delivery_days.push(multDD);
         }
       }
-
-      axios.get("/api/me/getLineItemOrders/" + this.order.id).then(resp => {
-        resp.data.forEach(lineItemOrder => {
-          this.lineItemOrders.push(lineItemOrder);
-        });
-      });
 
       if (this.order.meal_package_items) {
         _.forEach(this.order.meal_package_items, (pkgItem, pkgItemIndex) => {

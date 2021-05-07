@@ -347,7 +347,6 @@
               :order="order"
               :inSub="inSub"
               :weeklySubscriptionValue="weeklySubscriptionValue"
-              :lineItemOrders="lineItemOrders"
             ></bag-actions>
           </div>
         </div>
@@ -510,8 +509,7 @@ export default {
     transferTime: null,
     staffMember: null,
     inSub: null,
-    weeklySubscriptionValue: null,
-    lineItemOrders: null
+    weeklySubscriptionValue: null
   },
   data() {
     return {
@@ -1775,7 +1773,6 @@ export default {
           pickup: this.pickup,
           inSub: this.inSub,
           weeklySubscriptionValue: this.weeklySubscriptionValue,
-          lineItemOrders: this.lineItemOrders,
           subscription: this.subscription
         },
         query: {
@@ -1828,7 +1825,6 @@ export default {
           pickup: this.pickup,
           inSub: this.inSub,
           weeklySubscriptionValue: this.weeklySubscriptionValue,
-          lineItemOrders: this.lineItemOrders,
           subscription: this.subscription
         },
         query: {

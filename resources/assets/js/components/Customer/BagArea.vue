@@ -464,7 +464,8 @@
       v-if="
         ($route.params.storeView || storeView) &&
           storeModules.lineItems &&
-          !storeModules.multipleDeliveryDays
+          !storeModules.multipleDeliveryDays &&
+          $route.name === 'store-bag'
       "
     >
       <b-button
@@ -495,25 +496,29 @@
       /></span>
       <ul class="list-group mt-2">
         <li
-          v-for="(orderLineItem, index) in orderLineItems"
+          v-for="(bagLineItem, index) in bagLineItems"
           v-bind:key="'orderLineItem' + index"
           class="bag-item"
         >
           <div
-            v-if="orderLineItem.quantity > 0"
+            v-if="bagLineItem.quantity > 0"
             class="d-flex align-items-center"
           >
             <div class="bag-item-quantity mr-2">
               <div
                 class="bag-plus-minus brand-color white-text"
-                @click="updateLineItems(orderLineItem, 1)"
+                @click="
+                  (bagLineItem.increment = 1), setBagLineItem(bagLineItem)
+                "
               >
                 <i>+</i>
               </div>
-              <p class="bag-quantity">{{ orderLineItem.quantity }}</p>
+              <p class="bag-quantity">{{ bagLineItem.quantity }}</p>
               <div
                 class="bag-plus-minus gray white-text"
-                @click="updateLineItems(orderLineItem, -1)"
+                @click="
+                  (bagLineItem.increment = -1), setBagLineItem(bagLineItem)
+                "
               >
                 <i>-</i>
               </div>
@@ -525,14 +530,14 @@
               <span>
                 <p>
                   {{
-                    orderLineItem.size
-                      ? orderLineItem.size + " - " + orderLineItem.title
-                      : orderLineItem.title
+                    bagLineItem.size
+                      ? bagLineItem.size + " - " + bagLineItem.title
+                      : bagLineItem.title
                   }}
                   -
                   {{
                     format.money(
-                      orderLineItem.price * orderLineItem.quantity,
+                      bagLineItem.price * bagLineItem.quantity,
                       storeSettings.currency
                     )
                   }}
@@ -716,7 +721,6 @@ export default {
         production_group_id: null
       },
       selectedLineItem: {},
-      orderLineItems: [],
       showZipCodeModal: false
     };
   },
@@ -754,7 +758,8 @@ export default {
       bagZipCode: "bagZipCode",
       multDDZipCode: "bagMultDDZipCode",
       bagNotes: "bagNotes",
-      bagPublicNotes: "bagPublicNotes"
+      bagPublicNotes: "bagPublicNotes",
+      bagLineItems: "bagLineItems"
     }),
     allDeliveryDays() {
       let allDays = [];
@@ -828,7 +833,7 @@ export default {
     },
     lineItemTotal() {
       let totalLineItemsPrice = 0;
-      this.orderLineItems.forEach(orderLineItem => {
+      this.bagLineItems.forEach(orderLineItem => {
         totalLineItemsPrice += orderLineItem.price * orderLineItem.quantity;
       });
       return totalLineItemsPrice;
@@ -872,28 +877,12 @@ export default {
         this.$set(this.enablingEdit, item.guid, false);
       });
     }
-
-    let lineItemsOrder = [];
-
-    if (this.$route.params && this.$route.params.line_items_order) {
-      lineItemsOrder = this.$route.params.order.line_items_order;
-    }
-
-    lineItemsOrder.forEach(lineItemOrder => {
-      this.orderLineItems.push(lineItemOrder);
-    });
-    this.$emit("updateLineItems", this.orderLineItems);
-
     // If adjusting
     if (
       this.store.modules.multipleDeliveryDays &&
       (this.$route.params.order || this.$parent.subscription)
     ) {
       this.autoPickAdjustDD();
-    }
-
-    if (this.$route.params.lineItemOrders) {
-      this.orderLineItems = this.$route.params.lineItemOrders;
     }
   },
   methods: {
@@ -906,7 +895,8 @@ export default {
       setBagZipCode: "setBagZipCode",
       updateBagItemFrequency: "updateBagItemFrequency",
       setBagNotes: "setBagNotes",
-      setBagPublicNotes: "setBagPublicNotes"
+      setBagPublicNotes: "setBagPublicNotes",
+      setBagLineItem: "setBagLineItem"
     }),
     addToBag(item) {
       item.meal.quantity = 1;
@@ -1168,13 +1158,13 @@ export default {
           this.$toastr.w("Please select an extra from the dropdown.");
           return;
         }
-        if (this.orderLineItems.includes(this.selectedLineItem)) {
-          let index = _.findIndex(this.orderLineItems, orderLineItem => {
+        if (this.bagLineItems.includes(this.selectedLineItem)) {
+          let index = _.findIndex(this.bagLineItems, orderLineItem => {
             return orderLineItem.title === this.selectedLineItem.title;
           });
-          this.orderLineItems[index].quantity += 1;
+          this.bagLineItems[index].quantity += 1;
         } else {
-          this.orderLineItems.push(this.selectedLineItem);
+          this.setBagLineItem(this.selectedLineItem);
         }
         this.showLineItemModal = false;
         this.lineItem = { title: "", price: null, quantity: 1 };
@@ -1194,26 +1184,15 @@ export default {
         axios.post("/api/me/lineItems", this.lineItem).then(resp => {
           this.lineItem.id = resp.data.id;
           this.lineItem.production_group_id = null;
-          this.orderLineItems.push(this.lineItem);
+          this.setBagLineItem(this.lineItem);
           this.showLineItemModal = false;
           this.lineItem = { title: "", price: null, quantity: 1 };
           this.selectedLineItem = { title: "", price: null, quantity: 1 };
         });
       }
-      this.$parent.checkoutData.lineItemOrders = this.orderLineItems;
-    },
-    updateLineItems(orderLineItem, increment) {
-      orderLineItem.quantity += increment;
-      if (orderLineItem.quantity === 0) {
-        this.orderLineItems.pop(orderLineItem);
-      }
-
-      this.$emit("updateData", {
-        lineItemOrders: this.orderLineItems
-      });
     },
     removeLineItem(index) {
-      this.orderLineItems.splice(index, 1);
+      this.bagLineItems.splice(index, 1);
     },
     makeFree(item, event) {
       item.free = event.target.checked;
@@ -1252,13 +1231,6 @@ export default {
       this.$nextTick(() => {
         this.$set(this.enablingDeliveryDayEdit, dayFriendly, true);
       });
-    },
-    setOrderLineItems(lineItemOrders) {
-      let extras = lineItemOrders;
-      this.orderLineItems = this.$route.params.adjustOrder
-        ? this.$parent.order.line_items_order
-        : extras;
-      this.$emit("updateLineItems", this.orderLineItems);
     },
     addDeliveryDay() {
       store.dispatch("refreshDeliveryDay");

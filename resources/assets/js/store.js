@@ -82,7 +82,8 @@ const state = {
     subscriptionInterval: null,
     subscription: null,
     notes: null,
-    publicNotes: null
+    publicNotes: null,
+    lineItems: []
   },
   delivery_date: null,
   zip_code: null,
@@ -269,6 +270,20 @@ const mutations = {
   },
   tags(state, tags) {
     state.tags = tags;
+  },
+  setBagLineItem(state, data) {
+    if (state.bag.lineItems.includes(data)) {
+      let existingLineItem = state.bag.lineItems.find(lineItem => {
+        return lineItem === data;
+      });
+      let increment = data.increment;
+      existingLineItem.quantity += increment;
+    } else {
+      state.bag.lineItems.push(data);
+    }
+  },
+  setBagLineItems(state, data) {
+    state.bag.lineItems = data;
   },
   setCards(state, data) {
     state.cards = data;
@@ -900,6 +915,9 @@ const mutations = {
   },
   clearBagDeliveryFee(state, deliveryFee) {
     this.state.bag.deliveryFee = null;
+  },
+  clearBagLineItems(state, lineItem) {
+    this.state.bag.lineItems = [];
   },
   setBagPickup({ state, dispatch }, pickup) {
     this.state.bag.pickup = pickup;
@@ -3678,6 +3696,9 @@ const getters = {
   },
   bagFrequencyType(state) {
     return state.bag.frequencyType;
+  },
+  bagLineItems(state) {
+    return state.bag.lineItems;
   },
   bagDeliverySettings(state, getters) {
     const { bagCustomDeliveryDay } = getters;

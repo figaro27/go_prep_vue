@@ -52,7 +52,6 @@
             :storeView="storeView || storeOwner"
             :manualOrder="manualOrder"
             :checkoutData="checkoutData"
-            :lineItemOrders="lineItemOrders"
             ref="aboveBag"
             class="mb-4"
           >
@@ -70,7 +69,6 @@
             :adjustMealPlan="adjustMealPlan"
             :subscriptionId="subscriptionId"
             :orderId="orderId"
-            :lineItemOrders="lineItemOrders"
           ></bag-actions>
         </div>
 
@@ -161,7 +159,6 @@ export default {
     order: null,
     checkoutDataProp: null,
     adjustMealPlan: null,
-    lineItemOrders: null,
     subscription: null
   },
   mixins: [MenuBag],
@@ -579,10 +576,6 @@ export default {
       this.setPickup();
     }
 
-    if (this.$route.params.lineItemOrders != undefined) {
-      this.$parent.lineItemOrders = this.$route.params.lineItemOrders;
-    }
-
     this.creditCardId = this.card;
 
     SalesTax.getSalesTax("US", this.store.details.state).then(tax => {
@@ -608,25 +601,6 @@ export default {
   },
   updated() {
     this.creditCardId = this.card;
-
-    if (this.$route.params.adjustOrder) {
-      this.$refs.bagArea.setOrderLineItems(this.lineItemOrders);
-    }
-    if (
-      (this.checkoutDataProp &&
-        this.checkoutDataProp.lineItemOrders &&
-        this.checkoutDataProp.lineItemOrders.length > 0) ||
-      (this.$route.params.checkoutData &&
-        this.checkoutDataProp.lineItemOrders &&
-        this.$route.params.checkoutData.lineItemOrders.length > 0)
-    ) {
-      this.$refs.bagArea.setOrderLineItems(
-        this.checkoutDataProp.lineItemOrders
-      );
-      this.$refs.aboveBag.setOrderLineItems(
-        this.$route.params.checkoutData.lineItemOrders
-      );
-    }
   },
   methods: {
     updateData(newData) {
@@ -658,10 +632,6 @@ export default {
 
         if (newData.hasOwnProperty("creditCardList")) {
           this.creditCardList = newData.creditCardList;
-        }
-
-        if (newData.hasOwnProperty("lineItemOrders")) {
-          this.$parent.lineItemOrders = newData.lineItemOrders;
         }
       }
     },
