@@ -22,7 +22,7 @@ try {
         : 1;
       const servingSizeUnit = meal.servingSizeUnit
         ? meal.servingSizeUnit
-        : "1 Meal";
+        : "1 Item";
       const showIngredients = false;
 
       el.nutritionLabel({
@@ -37,6 +37,7 @@ try {
         showItemName: false,
         valueServingPerContainer: servingsPerMeal,
         valueServingUnitQuantity: servingUnitQuantity,
+        valueServingSizeUnit: servingSizeUnit,
         showPolyFat: false,
         showMonoFat: false,
         showTransFat: false,
