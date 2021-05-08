@@ -60,8 +60,8 @@ class duplicateStore extends Command
      */
     public function handle()
     {
-        $oldStoreId = 108;
-        $newStoreId = 278;
+        $oldStoreId = 40;
+        $newStoreId = 313;
 
         $syncMeals = [];
         $syncMealSizes = [];

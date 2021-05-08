@@ -1,0 +1,466 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use App\MealAllergy;
+use App\Category;
+use App\CategoryMeal;
+use App\CategoryMealPackage;
+use App\MealSize;
+use App\MealAddon;
+use App\MealAttachment;
+use App\MealComponentOption;
+use App\MealComponent;
+use App\MealMealPackage;
+use App\MealMealPackageAddon;
+use App\MealMealPackageComponentOption;
+use App\MealMealPackageSize;
+use App\MealMealTag;
+use App\MealPackage;
+use App\MealPackageAddon;
+use App\MealPackageComponent;
+use App\MealPackageComponentOption;
+use App\MealPackageSize;
+use App\Meal;
+use App\ProductionGroup;
+use App\StoreSetting;
+use App\Store;
+use App\Ingredient;
+use App\IngredientMeal;
+use App\IngredientMealAddon;
+use App\IngredientMealComponentOption;
+use App\IngredientMealSize;
+
+class duplicateMealsTwice extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'goprep:duplicateMealsTwice';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Did for Js meal prep with double for Gilicious Meals meals';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $oldStoreId = 40;
+        $newStoreId = 313;
+
+
+
+
+        // $meals = Meal::where('store_id', $oldStoreId)
+        //     ->with(['sizes', 'components', 'componentOptions', 'addons'])
+        //     ->get();
+        // foreach ($meals as $meal) {
+        //     foreach ($meal->ingredients as $mealIngredient) {
+        //         $test = $mealIngredient->pivot->replicate();
+        //         dd($test);
+        //     }
+        // }
+
+        // dd();
+
+
+
+
+
+
+
+        $syncProductionGroups = [];
+        $syncIngredients = [];
+
+        $syncMeals = [];
+        $syncMealSizes = [];
+        $syncCategories = [];
+        $syncAllergies = [];
+        $syncTags = [];
+
+        $GsyncMeals = [];
+        $GsyncMealSizes = [];
+        $GsyncCategories = [];
+        $GsyncAllergies = [];
+        $GsyncTags = [];
+
+        // Categories
+        $categories = Category::where('store_id', $oldStoreId)->get();
+        foreach ($categories as $category) {
+            $newCategory = new Category();
+            $newCategory = $category->replicate();
+            $newCategory->store_id = $newStoreId;
+            $newCategory->save();
+
+            $syncCategories[$category->id] = $newCategory->id;
+        }
+
+        // Production Groups
+        $productionGroups = ProductionGroup::where(
+            'store_id',
+            $oldStoreId
+        )->get();
+        foreach ($productionGroups as $productionGroup) {
+            $newProductionGroup = new ProductionGroup();
+            $newProductionGroup = $productionGroup->replicate();
+            $newProductionGroup->store_id = $newStoreId;
+            $newProductionGroup->save();
+
+            $syncProductionGroups[$productionGroup->id] =
+                $newProductionGroup->id;
+        }
+
+        $ingredients = Ingredient::where('store_id', $oldStoreId)->get();
+
+        foreach ($ingredients as $ingredient){
+            $newIngredient = new Ingredient();
+            $newIngredient = $ingredient->replicate();
+            $newIngredient->store_id = $newStoreId;
+            $newIngredient->save();
+
+            $syncIngredients[$ingredient->id] = $newIngredient->id;
+        }
+
+        // Meals
+        $meals = Meal::where('store_id', $oldStoreId)
+            ->with(['sizes', 'components', 'componentOptions', 'addons'])
+            ->get();
+        foreach ($meals as $meal) {
+            // Main Meal
+            $newMeal = new Meal();
+            $newMeal = $meal->replicate();
+            $newMeal->store_id = $newStoreId;
+            $newMeal->production_group_id = isset(
+                $syncProductionGroups[$meal->production_group_id]
+            )
+                ? $syncProductionGroups[$meal->production_group_id]
+                : null;
+            $newMeal->save();
+
+            $syncMeals[$meal->id] = $newMeal->id;
+            $syncAllergies[$meal->id] = $newMeal->id;
+            $syncTags[$meal->id] = $newMeal->id;
+
+
+            $GnewMeal = new Meal();
+            $GnewMeal = $meal->replicate();
+            $GnewMeal->title = $meal->title . ' - G';
+            $GnewMeal->store_id = $newStoreId;
+            $GnewMeal->production_group_id = isset(
+                $syncProductionGroups[$meal->production_group_id]
+            )
+                ? $syncProductionGroups[$meal->production_group_id]
+                : null;
+            $GnewMeal->save();
+
+            $GsyncMeals[$meal->id] = $newMeal->id;
+            $GsyncAllergies[$meal->id] = $newMeal->id;
+            $GsyncTags[$meal->id] = $newMeal->id;
+
+            foreach ($meal->ingredients as $mealIngredient) {
+                $newMealIngredient = $mealIngredient->pivot->replicate();
+                $newMealIngredient->meal_id = $newMeal->id;
+                $newMealIngredient->ingredient_id = $syncIngredients[$mealIngredient->pivot->ingredient_id];
+                $newMealIngredient->save();
+
+                $newMealIngredient = $mealIngredient->pivot->replicate();
+                $newMealIngredient->meal_id = $GnewMeal->id;
+                $newMealIngredient->ingredient_id = $syncIngredients[$mealIngredient->pivot->ingredient_id];
+                $newMealIngredient->save();
+            }
+
+            foreach ($meal->categories as $category) {
+                $categoryMeal = new CategoryMeal();
+                $categoryMeal->category_id = $syncCategories[$category->id];
+                $categoryMeal->meal_id = $newMeal->id;
+                $categoryMeal->save();
+
+
+
+                $categoryMeal = new CategoryMeal();
+                $categoryMeal->category_id = $syncCategories[$category->id];
+                $categoryMeal->meal_id = $GnewMeal->id;
+                $categoryMeal->save();
+            }
+
+            foreach ($meal->allergies as $allergy) {
+                $allergyMeal = new MealAllergy();
+                $allergyMeal->meal_id = $syncAllergies[$meal->id];
+                $allergyMeal->allergy_id = $allergy->pivot['allergy_id'];
+                $allergyMeal->save();
+
+
+                $allergyMeal = new MealAllergy();
+                $allergyMeal->meal_id = $GsyncAllergies[$meal->id];
+                $allergyMeal->allergy_id = $allergy->pivot['allergy_id'];
+                $allergyMeal->save();
+            }
+
+            foreach ($meal->tags as $tag) {
+                $tagMeal = new MealMealTag();
+                $tagMeal->meal_id = $syncTags[$meal->id];
+                $tagMeal->meal_tag_id = $tag->pivot['meal_tag_id'];
+                $tagMeal->save();
+
+                $tagMeal = new MealMealTag();
+                $tagMeal->meal_id = $GsyncTags[$meal->id];
+                $tagMeal->meal_tag_id = $tag->pivot['meal_tag_id'];
+                $tagMeal->save();
+            }
+
+            // Components (Base Size)
+            foreach ($meal->components as $component) {
+                $newComponent = new MealComponent();
+                $newComponent = $component->replicate();
+                $newComponent->store_id = $newStoreId;
+                $newComponent->meal_id = $newMeal->id;
+                $newComponent->save();
+
+                // Component Options (Base Size)
+                foreach ($component->options as $option) {
+                    if ($option->meal_size_id === null) {
+                        $newComponentOption = new MealComponentOption();
+                        $newComponentOption = $option->replicate();
+                        $newComponentOption->store_id = $newStoreId;
+                        $newComponentOption->meal_component_id =
+                            $newComponent->id;
+                        $newComponentOption->save();
+
+
+                        foreach ($option->ingredients as $optionMealIngredient) {
+                            $newOptionMealIngredient = $optionMealIngredient->pivot->replicate();
+                            $newOptionMealIngredient->meal_component_option_id = $newComponentOption->id;
+                            $newOptionMealIngredient->ingredient_id = $syncIngredients[$optionMealIngredient->pivot->ingredient_id];
+                            $newOptionMealIngredient->save();
+                        }
+
+
+
+                    }
+                }
+
+
+                $GnewComponent = new MealComponent();
+                $GnewComponent = $component->replicate();
+                $GnewComponent->store_id = $newStoreId;
+                $GnewComponent->meal_id = $GnewMeal->id;
+                $GnewComponent->save();
+
+                // Added to add the size components later
+                // Added to add the size components later
+                $component->newComponentId = $newComponent->id;
+                $component->GnewComponentId = $GnewComponent->id;
+
+                // Component Options (Base Size)
+                foreach ($component->options as $option) {
+                    if ($option->meal_size_id === null) {
+                        $newComponentOption = new MealComponentOption();
+                        $newComponentOption = $option->replicate();
+                        $newComponentOption->store_id = $newStoreId;
+                        $newComponentOption->meal_component_id =
+                            $GnewComponent->id;
+                        $newComponentOption->save();
+
+                        foreach ($option->ingredients as $optionMealIngredient) {
+                            $newOptionMealIngredient = $optionMealIngredient->pivot->replicate();
+                            $newOptionMealIngredient->meal_component_option_id = $newComponentOption->id;
+                            $newOptionMealIngredient->ingredient_id = $syncIngredients[$optionMealIngredient->pivot->ingredient_id];
+                            $newOptionMealIngredient->save();
+                        }
+                    }
+                }
+
+
+
+
+
+            }
+
+            // Addons (Base Size)
+            foreach ($meal->addons as $addon) {
+                if ($addon->meal_size_id === null) {
+                    $newAddon = new MealAddon();
+                    $newAddon = $addon->replicate();
+                    $newAddon->store_id = $newStoreId;
+                    $newAddon->meal_id = $newMeal->id;
+                    $newAddon->save();
+
+                    foreach ($addon->ingredients as $addonMealIngredient) {
+                        $newAddonMealIngredient = $addonMealIngredient->pivot->replicate();
+                        $newAddonMealIngredient->meal_addon_id = $newAddon->id;
+                        $newAddonMealIngredient->ingredient_id = $syncIngredients[$addonMealIngredient->pivot->ingredient_id];
+                        $newAddonMealIngredient->save();
+                    }
+                }
+
+
+
+                if ($addon->meal_size_id === null) {
+                    $newAddon = new MealAddon();
+                    $newAddon = $addon->replicate();
+                    $newAddon->store_id = $newStoreId;
+                    $newAddon->meal_id = $GnewMeal->id;
+                    $newAddon->save();
+
+                    foreach ($addon->ingredients as $addonMealIngredient) {
+                        $newAddonMealIngredient = $addonMealIngredient->pivot->replicate();
+                        $newAddonMealIngredient->meal_addon_id = $newAddon->id;
+                        $newAddonMealIngredient->ingredient_id = $syncIngredients[$addonMealIngredient->pivot->ingredient_id];
+                        $newAddonMealIngredient->save();
+                    }
+                }
+            }
+
+
+
+
+
+
+
+
+            foreach ($meal->sizes as $size) {
+                $newSize = new MealSize();
+                $newSize = $size->replicate();
+                $newSize->meal_id = $newMeal->id;
+                $newSize->store_id = $newStoreId;
+                $newSize->save();
+
+                $syncMealSizes[$size->id] = $newSize->id;
+
+                foreach ($size->ingredients as $sizeMealIngredient) {
+                    $newSizeMealIngredient = $sizeMealIngredient->pivot->replicate();
+                    $newSizeMealIngredient->meal_size_id = $newSize->id;
+                    $newSizeMealIngredient->ingredient_id = $syncIngredients[$sizeMealIngredient->pivot->ingredient_id];
+                    $newSizeMealIngredient->save();
+                }
+
+                // Components (Meal Sizes)
+                foreach ($meal->components as $component) {
+                    foreach ($component->options as $option) {
+                        if ($option->meal_size_id === $size->id) {
+                            $newComponentOption = new MealComponentOption();
+                            $newComponentOption = $option->replicate();
+                            $newComponentOption->store_id = $newStoreId;
+                            $newComponentOption->meal_size_id = $newSize->id;
+                            $newComponentOption->meal_component_id =
+                                $component->newComponentId;
+                            $newComponentOption->save();
+
+                            foreach ($option->ingredients as $optionMealIngredient) {
+                                $newOptionMealIngredient = $optionMealIngredient->pivot->replicate();
+                                $newOptionMealIngredient->meal_component_option_id = $newComponentOption->id;
+                                $newOptionMealIngredient->ingredient_id = $syncIngredients[$optionMealIngredient->pivot->ingredient_id];
+                                $newOptionMealIngredient->save();
+                            }
+                        }
+                    }
+                }
+
+                // Addons (Meal Sizes)
+                foreach ($size->addons as $addon) {
+                    if ($addon->meal_size_id === $size->id) {
+                        $newAddon = new MealAddon();
+                        $newAddon = $addon->replicate();
+                        $newAddon->store_id = $newStoreId;
+                        $newAddon->meal_size_id = $newSize->id;
+                        $newAddon->meal_id = $newMeal->id;
+                        $newAddon->save();
+
+                        foreach ($addon->ingredients as $addonMealIngredient) {
+                            $newAddonMealIngredient = $addonMealIngredient->pivot->replicate();
+                            $newAddonMealIngredient->meal_addon_id = $newAddon->id;
+                            $newAddonMealIngredient->ingredient_id = $syncIngredients[$addonMealIngredient->pivot->ingredient_id];
+                            $newAddonMealIngredient->save();
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+                $newSize = new MealSize();
+                $newSize = $size->replicate();
+                $newSize->meal_id = $GnewMeal->id;
+                $newSize->store_id = $newStoreId;
+                $newSize->save();
+
+                $GsyncMealSizes[$size->id] = $newSize->id;
+
+                foreach ($size->ingredients as $sizeMealIngredient) {
+                    $newSizeMealIngredient = $sizeMealIngredient->pivot->replicate();
+                    $newSizeMealIngredient->meal_size_id = $newSize->id;
+                    $newSizeMealIngredient->ingredient_id = $syncIngredients[$sizeMealIngredient->pivot->ingredient_id];
+                    $newSizeMealIngredient->save();
+                }
+
+                // Components (Meal Sizes)
+                foreach ($meal->components as $component) {
+                    foreach ($component->options as $option) {
+                        if ($option->meal_size_id === $size->id) {
+                            $newComponentOption = new MealComponentOption();
+                            $newComponentOption = $option->replicate();
+                            $newComponentOption->store_id = $newStoreId;
+                            $newComponentOption->meal_size_id = $newSize->id;
+                            $newComponentOption->meal_component_id =
+                                $component->GnewComponentId;
+                            $newComponentOption->save();
+
+                            foreach ($option->ingredients as $optionMealIngredient) {
+                                $newOptionMealIngredient = $optionMealIngredient->pivot->replicate();
+                                $newOptionMealIngredient->meal_component_option_id = $newComponentOption->id;
+                                $newOptionMealIngredient->ingredient_id = $syncIngredients[$optionMealIngredient->pivot->ingredient_id];
+                                $newOptionMealIngredient->save();
+                            }
+                        }
+                    }
+                }
+
+                // Addons (Meal Sizes)
+                foreach ($size->addons as $addon) {
+                    if ($addon->meal_size_id === $size->id) {
+                        $newAddon = new MealAddon();
+                        $newAddon = $addon->replicate();
+                        $newAddon->store_id = $newStoreId;
+                        $newAddon->meal_size_id = $newSize->id;
+                        $newAddon->meal_id = $GnewMeal->id;
+                        $newAddon->save();
+
+                        foreach ($addon->ingredients as $addonMealIngredient) {
+                            $newAddonMealIngredient = $addonMealIngredient->pivot->replicate();
+                            $newAddonMealIngredient->meal_addon_id = $newAddon->id;
+                            $newAddonMealIngredient->ingredient_id = $syncIngredients[$addonMealIngredient->pivot->ingredient_id];
+                            $newAddonMealIngredient->save();
+                        }
+                    }
+                }
+            }
+        }
+
+        
+
+
+    }
+}
