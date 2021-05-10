@@ -35,7 +35,15 @@ class AuthController extends Controller
             ];
         }
 
-        return $data;
+        $ip = Request::ip();
+
+        $isAdminIp =
+            $ip == '127.0.0.1' || $ip == '162.84.177.27' ? true : false;
+
+        return [
+            'stores' => $data,
+            'adminIP' => $isAdminIp
+        ];
     }
 
     /**
