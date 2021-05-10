@@ -124,7 +124,7 @@ $settings = $params['settings'];
 
 
       <div class="col-4 align-right">
-        @if ($order->customer_company)
+        @if ($order->customer_company !== 'N/A')
           <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">{{ $order->customer_company }}</p>
           @endif
         <p class="text-16 bold-text" style="text-transform: uppercase;color: #3e3e3e;">{{$order->customer_name}}</p>
