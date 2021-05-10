@@ -1263,7 +1263,8 @@ export default {
       storeModules: "storeModules",
       storeSettings: "storeSettings",
       getStoreMeal: "storeMeal",
-      reportSettings: "storeReportSettings",
+      labelSettings: "storeLabelSettings",
+      orderLabelsettings: "storeOrderLabelSettings",
       mealMixItems: "mealMixItems",
       subscriptions: "storeSubscriptions"
     }),
@@ -1431,12 +1432,12 @@ export default {
     printLabel(order_id, report, format, page = 1) {
       let params = { page };
 
-      let width = this.reportSettings.lab_width;
-      let height = this.reportSettings.lab_height;
+      let width = this.labelSettings.width;
+      let height = this.labelSettings.height;
 
       if (report == "order_labels") {
-        width = this.reportSettings.o_lab_width;
-        height = this.reportSettings.o_lab_height;
+        width = this.orderLabelSettings.width;
+        height = this.orderLabelSettings.height;
       }
 
       params.width = width;
@@ -1453,10 +1454,10 @@ export default {
           if (format === "b64") {
             const size = new PrintSize(width, height);
             const margins = {
-              top: this.reportSettings.lab_margin_top,
-              right: this.reportSettings.lab_margin_right,
-              bottom: this.reportSettings.lab_margin_bottom,
-              left: this.reportSettings.lab_margin_left
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0
             };
             const job = new PrintJob(data.url, size, margins);
 
