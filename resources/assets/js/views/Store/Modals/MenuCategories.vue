@@ -266,43 +266,43 @@ export default {
       const {
         id,
         category,
-        date_range_from,
-        date_range_to,
-        date_range_exclusive_from,
-        date_range_exclusive_to,
+        // date_range_from,
+        // date_range_to,
+        // date_range_exclusive_from,
+        // date_range_exclusive_to,
         minimumType,
         minimum
       } = cat;
 
-      const rangeFrom = new Date(date_range_from || new Date());
-      const rangeTo = new Date(date_range_to);
+      // const rangeFrom = new Date(date_range_from || new Date());
+      // const rangeTo = new Date(date_range_to);
 
-      const rangeExclusiveFrom = date_range_exclusive_from
-        ? new Date(date_range_exclusive_from)
-        : rangeFrom;
-      const rangeExclusiveTo = date_range_exclusive_to
-        ? new Date(date_range_to)
-        : rangeTo;
+      // const rangeExclusiveFrom = date_range_exclusive_from
+      //   ? new Date(date_range_exclusive_from)
+      //   : rangeFrom;
+      // const rangeExclusiveTo = date_range_exclusive_to
+      //   ? new Date(date_range_to)
+      //   : rangeTo;
 
       this.editing = {
-        ...cat,
-        range: {
-          start: rangeFrom,
-          end: rangeTo
-        },
-        range_exclusive: {
-          start: rangeExclusiveFrom,
-          end: rangeExclusiveTo
-        }
+        ...cat
+        // range: {
+        //   start: rangeFrom,
+        //   end: rangeTo
+        // },
+        // range_exclusive: {
+        //   start: rangeExclusiveFrom,
+        //   end: rangeExclusiveTo
+        // }
       };
       this.editingId = id;
     },
     updateCategory() {
       let editing = this.editing;
-      editing.date_range_from = editing.range.start;
-      editing.date_range_to = editing.range.end;
-      editing.date_range_exclusive_from = editing.range_exclusive.start;
-      editing.date_range_exclusive_to = editing.range_exclusive.end;
+      // editing.date_range_from = editing.range.start;
+      // editing.date_range_to = editing.range.end;
+      // editing.date_range_exclusive_from = editing.range_exclusive.start;
+      // editing.date_range_exclusive_to = editing.range_exclusive.end;
 
       axios
         .patch("/api/me/categories/" + this.editingId, editing)

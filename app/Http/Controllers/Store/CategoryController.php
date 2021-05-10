@@ -95,43 +95,43 @@ class CategoryController extends StoreController
         $category->category = $request->get('category');
         $category->subtitle = $request->get('subtitle');
 
-        $dateRange = $request->get('date_range', false);
-        $dateRangeFrom = $request->get('date_range_from', null);
-        $dateRangeTo = $request->get('date_range_to', null);
+        // $dateRange = $request->get('date_range', false);
+        // $dateRangeFrom = $request->get('date_range_from', null);
+        // $dateRangeTo = $request->get('date_range_to', null);
 
-        $dateRangeExclusive = $request->get('date_range_exclusive', false);
-        $dateRangeExclusiveFrom = $request->get(
-            'date_range_exclusive_from',
-            null
-        );
-        $dateRangeExclusiveTo = $request->get('date_range_exclusive_to', null);
+        // $dateRangeExclusive = $request->get('date_range_exclusive', false);
+        // $dateRangeExclusiveFrom = $request->get(
+        //     'date_range_exclusive_from',
+        //     null
+        // );
+        // $dateRangeExclusiveTo = $request->get('date_range_exclusive_to', null);
 
-        if ($dateRangeFrom && $dateRangeTo) {
-            $dateRangeFrom = new Carbon($dateRangeFrom);
-            $dateRangeTo = new Carbon($dateRangeTo);
-        }
+        // if ($dateRangeFrom && $dateRangeTo) {
+        //     $dateRangeFrom = new Carbon($dateRangeFrom);
+        //     $dateRangeTo = new Carbon($dateRangeTo);
+        // }
 
-        if ($dateRangeExclusiveFrom && $dateRangeExclusiveTo) {
-            $dateRangeExclusiveFrom = new Carbon($dateRangeExclusiveFrom);
-            $dateRangeExclusiveTo = new Carbon($dateRangeExclusiveTo);
-        }
+        // if ($dateRangeExclusiveFrom && $dateRangeExclusiveTo) {
+        //     $dateRangeExclusiveFrom = new Carbon($dateRangeExclusiveFrom);
+        //     $dateRangeExclusiveTo = new Carbon($dateRangeExclusiveTo);
+        // }
 
-        if ($store->modules->category_restrictions) {
-            $category->date_range = $dateRange;
-            $category->date_range_from = $dateRangeFrom;
-            $category->date_range_to = $dateRangeTo;
-            $category->date_range_exclusive = $dateRangeExclusive;
+        // if ($store->modules->category_restrictions) {
+        //     $category->date_range = $dateRange;
+        //     $category->date_range_from = $dateRangeFrom;
+        //     $category->date_range_to = $dateRangeTo;
+        //     $category->date_range_exclusive = $dateRangeExclusive;
 
-            if ($dateRangeExclusive) {
-                $category->date_range_exclusive_from =
-                    $dateRangeExclusiveFrom ?? $dateRangeFrom;
-                $category->date_range_exclusive_to =
-                    $dateRangeExclusiveTo ?? $dateRangeTo;
-            } else {
-                $category->date_range_exclusive_from = null;
-                $category->date_range_exclusive_to = null;
-            }
-        }
+        //     if ($dateRangeExclusive) {
+        //         $category->date_range_exclusive_from =
+        //             $dateRangeExclusiveFrom ?? $dateRangeFrom;
+        //         $category->date_range_exclusive_to =
+        //             $dateRangeExclusiveTo ?? $dateRangeTo;
+        //     } else {
+        //         $category->date_range_exclusive_from = null;
+        //         $category->date_range_exclusive_to = null;
+        //     }
+        // }
 
         $category->active = $request->get('active');
         $category->minimumType = $request->get('minimumType');
