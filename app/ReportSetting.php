@@ -11,7 +11,9 @@ class ReportSetting extends Model
 {
     protected $fillable = ['store_id'];
 
-    protected $casts = [];
+    protected $casts = [
+        'noQuantityMergeOnPackageReport' => 'boolean'
+    ];
 
     public function store()
     {
