@@ -1152,13 +1152,8 @@
                   label="About (Shown at the top of your menu)"
                   :state="true"
                 >
-                  <wysiwyg class="w-600" v-model="description" />
-                  <!-- <froala
-                    v-if="description"
-                    class="w-600"
-                    :tag="'textarea'"
-                    v-model="description"
-                  ></froala> -->
+                  <jodit-editor v-model="description" />
+                  <!-- <wysiwyg class="w-600" v-model="description" /> -->
                 </b-form-group>
 
                 <router-link
@@ -1791,7 +1786,8 @@ import TermsOfAgreement from "../../TermsOfAgreement";
 import SalesTax from "sales-tax";
 import PictureInput from "vue-picture-input";
 import states from "../../../data/states.js";
-import VueFroala from "vue-froala-wysiwyg";
+import "jodit/build/jodit.min.css";
+import { JoditEditor } from "jodit-vue";
 
 export default {
   components: {
@@ -1800,7 +1796,7 @@ export default {
     TermsOfService,
     TermsOfAgreement,
     PictureInput,
-    VueFroala
+    JoditEditor
   },
   watch: {
     delivery_days() {
