@@ -1264,7 +1264,7 @@ export default {
       storeSettings: "storeSettings",
       getStoreMeal: "storeMeal",
       labelSettings: "storeLabelSettings",
-      orderLabelsettings: "storeOrderLabelSettings",
+      orderLabelSettings: "storeOrderLabelSettings",
       mealMixItems: "mealMixItems",
       subscriptions: "storeSubscriptions"
     }),
