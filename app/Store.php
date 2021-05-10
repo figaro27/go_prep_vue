@@ -208,6 +208,16 @@ class Store extends Model
         return $this->hasOne('App\ReportSetting');
     }
 
+    public function labelSettings()
+    {
+        return $this->hasOne('App\LabelSetting');
+    }
+
+    public function orderLabelSettings()
+    {
+        return $this->hasOne('App\OrderLabelSetting');
+    }
+
     public function smsSettings()
     {
         return $this->hasOne('App\SmsSetting');
