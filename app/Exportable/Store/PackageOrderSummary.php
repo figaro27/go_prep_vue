@@ -237,32 +237,72 @@ class PackageOrderSummary
     public function formatMealPackageOrders($mealPackageOrders, $type)
     {
         // Special formatting for Eat Right
+        // Only certain column headers
+        // And split package orders with quantity above 1 into separate rows (they see the same order & customer multiple times)
 
         if ($this->store->id === 196 || $this->store->id === 3) {
-            $mealPackageOrders = $mealPackageOrders->map(function (
-                $mealPackageOrder
-            ) {
-                return [
-                    'customer' =>
-                        $mealPackageOrder->order->user->details->firstname .
-                        ' ' .
-                        $mealPackageOrder->order->user->details->lastname,
-                    'phone' => $mealPackageOrder->order->user->details->phone,
-                    'quantity' => $mealPackageOrder->quantity,
-                    'name' =>
-                        $mealPackageOrder->customTitle ??
-                        $mealPackageOrder->meal_package->title,
-                    'items' => $mealPackageOrder->items_quantity,
-                    'size' => ($mealPackageOrder->customSize
-                            ? $mealPackageOrder->customSize
-                            : $mealPackageOrder->meal_package_size)
-                        ? $mealPackageOrder->meal_package_size->title
-                        : null,
-                    'transferType' => $mealPackageOrder->order->pickup
-                        ? 'Pick Up'
-                        : 'Delivery'
-                ];
-            });
+            $singleMealPackageOrders = $mealPackageOrders
+                ->where('quantity', 1)
+                ->map(function ($mealPackageOrder) {
+                    return [
+                        'customer' =>
+                            $mealPackageOrder->order->user->details->firstname .
+                            ' ' .
+                            $mealPackageOrder->order->user->details->lastname,
+                        'phone' =>
+                            $mealPackageOrder->order->user->details->phone,
+                        'quantity' => $mealPackageOrder->quantity,
+                        'name' =>
+                            $mealPackageOrder->customTitle ??
+                            $mealPackageOrder->meal_package->title,
+                        'items' => $mealPackageOrder->items_quantity,
+                        'size' => ($mealPackageOrder->customSize
+                                ? $mealPackageOrder->customSize
+                                : $mealPackageOrder->meal_package_size)
+                            ? $mealPackageOrder->meal_package_size->title
+                            : null,
+                        'transferType' => $mealPackageOrder->order->pickup
+                            ? 'Pick Up'
+                            : 'Delivery'
+                    ];
+                });
+
+            $extraMealPackageOrders = $mealPackageOrders->where(
+                'quantity',
+                '>',
+                1
+            );
+            $splitMealPackageOrders = collect();
+
+            foreach ($extraMealPackageOrders as $mealPackageOrder) {
+                for ($i = 0; $i < $mealPackageOrder->quantity; $i++) {
+                    $splitMealPackageOrders->push([
+                        'customer' =>
+                            $mealPackageOrder->order->user->details->firstname .
+                            ' ' .
+                            $mealPackageOrder->order->user->details->lastname,
+                        'phone' =>
+                            $mealPackageOrder->order->user->details->phone,
+                        'quantity' => 1,
+                        'name' =>
+                            $mealPackageOrder->customTitle ??
+                            $mealPackageOrder->meal_package->title,
+                        'items' => $mealPackageOrder->items_quantity,
+                        'size' => ($mealPackageOrder->customSize
+                                ? $mealPackageOrder->customSize
+                                : $mealPackageOrder->meal_package_size)
+                            ? $mealPackageOrder->meal_package_size->title
+                            : null,
+                        'transferType' => $mealPackageOrder->order->pickup
+                            ? 'Pick Up'
+                            : 'Delivery'
+                    ]);
+                }
+            }
+
+            $mealPackageOrders = $singleMealPackageOrders->merge(
+                $splitMealPackageOrders
+            );
         } else {
             $mealPackageOrders = $mealPackageOrders->map(function (
                 $mealPackageOrder
