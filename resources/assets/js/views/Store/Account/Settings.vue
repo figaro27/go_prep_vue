@@ -1152,7 +1152,13 @@
                   label="About (Shown at the top of your menu)"
                   :state="true"
                 >
-                  <wysiwyg class="w-600" v-model="description" />
+                  <!-- <wysiwyg class="w-600" v-model="description" /> -->
+                  <froala
+                    v-if="description"
+                    class="w-600"
+                    :tag="'textarea'"
+                    v-model="description"
+                  ></froala>
                 </b-form-group>
 
                 <router-link
@@ -1785,6 +1791,7 @@ import TermsOfAgreement from "../../TermsOfAgreement";
 import SalesTax from "sales-tax";
 import PictureInput from "vue-picture-input";
 import states from "../../../data/states.js";
+import VueFroala from "vue-froala-wysiwyg";
 
 export default {
   components: {
@@ -1792,7 +1799,8 @@ export default {
     Swatches,
     TermsOfService,
     TermsOfAgreement,
-    PictureInput
+    PictureInput,
+    VueFroala
   },
   watch: {
     delivery_days() {
@@ -1806,7 +1814,7 @@ export default {
   },
   data() {
     return {
-      description: null,
+      description: "",
       delivery_days: null,
       deliveryFeeCity: {},
       deliveryFeeZipCode: {},
@@ -2000,6 +2008,7 @@ export default {
 
     this.delivery_days = this.storeSettings.delivery_days;
     this.description = this.storeDetails.description;
+    this.test = "asdf123";
   },
   destroyed() {
     this.enableSpinner();
