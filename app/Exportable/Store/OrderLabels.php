@@ -164,9 +164,7 @@ class OrderLabels
                 'public/' .
                 $this->params['store'] .
                 '_order_labels_' .
-                $orders[0]['customer_first_name'] .
-                '_' .
-                $orders[0]['customer_last_name'] .
+                $orders[0]['customer'] .
                 '_' .
                 $orders[0]['orderNumber'] .
                 '_' .
