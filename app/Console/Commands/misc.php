@@ -67,13 +67,12 @@ class misc extends Command
     public function handle()
     {
         $meals = Meal::where('store_id', 313)
-            ->where('title', 'LIKE', '% - G')
+            ->where('title', 'like', '%- G')
             ->get();
+
         foreach ($meals as $meal) {
-            $childMeal = new ChildMeal();
-            $childMeal->store_id = 314;
-            $childMeal->meal_id = $meal->id;
-            $childMeal->save();
+            $meal->title = str_replace('- GI', '- Gi', $meal->title);
+            $meal->update();
         }
     }
 }
