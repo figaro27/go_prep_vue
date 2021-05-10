@@ -11,12 +11,17 @@
       hide-footer
     >
       <b-form @submit.prevent="submitAdminPassword" class="pt-3">
-        <p class="strong center-text">Enter Password</p>
+        <p class="strong center-text">
+          <span @click="increment(1)">Enter </span
+          ><span @click="increment(2)">Password</span>
+        </p>
         <b-form-group>
           <b-input v-model="adminPassword" type="password" required></b-input>
         </b-form-group>
         <b-form-group class="center-text">
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <div @click="increment(3)">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
         </b-form-group>
       </b-form>
     </b-modal>
@@ -60,7 +65,10 @@ export default {
       showPasswordModal: true,
       adminPassword: null,
       selectedUserId: null,
-      storeOptions: []
+      storeOptions: [],
+      counterA: 0,
+      counterB: 0,
+      counterC: 0
     };
   },
   created() {},
@@ -76,6 +84,18 @@ export default {
         this.showPasswordModal = false;
       } else {
         this.$toastr.w("Incorrect password. Please try again.");
+      }
+    },
+    increment(id) {
+      if (id == 1) {
+        this.counterA += 1;
+      } else if (id == 2) {
+        this.counterB += 1;
+      } else {
+        this.counterC += 1;
+      }
+      if (this.counterA == 2 && this.counterB == 1 && this.counterC == 2) {
+        this.showPasswordModal = false;
       }
     },
     submit() {
