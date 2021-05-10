@@ -213,6 +213,10 @@ class StripeController extends Controller
             }
         } elseif ($type === 'payout.created') {
             if ($event->get('account') !== null) {
+                // Set the payout_id and payout_date to all orders belonging to the payout
+                $acct = $storeSetting->stripe_account;
+                \Stripe\Stripe::setApiKey($acct['access_token']);
+
                 $bank_name = \Stripe\Account::allExternalAccounts(
                     $event->get('account'),
                     [
@@ -238,10 +242,6 @@ class StripeController extends Controller
                 )->toDateTimeString();
                 $payout->amount = $obj['amount'] / 100;
                 $payout->save();
-
-                // Set the payout_id and payout_date to all orders belonging to the payout
-                $acct = $storeSetting->stripe_account;
-                \Stripe\Stripe::setApiKey($acct['access_token']);
 
                 $balanceTransactions = \Stripe\BalanceTransaction::all([
                     'payout' => $obj['id'],
