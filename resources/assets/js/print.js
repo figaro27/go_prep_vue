@@ -38,6 +38,7 @@ try {
         valueServingPerContainer: servingsPerMeal,
         valueServingUnitQuantity: servingUnitQuantity,
         valueServingSizeUnit: servingSizeUnit,
+        hideTextboxArrows: true,
         showPolyFat: false,
         showMonoFat: false,
         showTransFat: false,
