@@ -148,6 +148,12 @@ const state = {
     report_settings: {
       data: {}
     },
+    label_settings: {
+      data: {}
+    },
+    order_label_settings: {
+      data: {}
+    },
     menu_settings: {
       data: {}
     },
@@ -1015,6 +1021,14 @@ const mutations = {
     state.store.report_settings.data = reportSettings;
   },
 
+  storeLabelSettings(state, { labelSettings }) {
+    state.store.label_settings.data = labelSettings;
+  },
+
+  storeOrderLabelSettings(state, { orderLabelSettings }) {
+    state.store.order_label_settings.data = orderLabelSettings;
+  },
+
   storemMenuSettings(state, { menuSettings }) {
     state.store.menu_settings.data = menuSettings;
   },
@@ -1609,6 +1623,26 @@ const actions = {
       ) {
         let reportSettings = data.store.report_settings;
         commit("storeReportSettings", { reportSettings });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.label_settings) &&
+        _.isObject(data.store.label_settings)
+      ) {
+        let labelSettings = data.store.label_settings;
+        commit("storeLabelSettings", { labelSettings });
+      }
+    } catch (e) {}
+
+    try {
+      if (
+        !_.isEmpty(data.store.order_label_settings) &&
+        _.isObject(data.store.order_label_settings)
+      ) {
+        let orderLabelSettings = data.store.order_label_settings;
+        commit("storeOrderLabelSettings", { orderLabelSettings });
       }
     } catch (e) {}
 
@@ -2331,6 +2365,28 @@ const actions = {
       commit("storeReportSettings", { report_settings: data });
     } else {
       throw new Error("Failed to retrieve report settings");
+    }
+  },
+
+  async refreshStoreLabelSettings({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/labelSettings");
+    const { data } = await res;
+
+    if (_.isObject(data)) {
+      commit("storeLabelSettings", { label_settings: data });
+    } else {
+      throw new Error("Failed to retrieve label settings");
+    }
+  },
+
+  async refreshStoreOrderLabelSettings({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/orderLabelSettings");
+    const { data } = await res;
+
+    if (_.isObject(data)) {
+      commit("storeOrderLabelSettings", { order_label_settings: data });
+    } else {
+      throw new Error("Failed to retrieve order label settings");
     }
   },
 
@@ -3508,6 +3564,20 @@ const getters = {
       return {};
     }
   },
+  viewedStoreLabelSettings: state => {
+    try {
+      return state.viewed_store.label_settings || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  viewedStoreOrderLabelSettings: state => {
+    try {
+      return state.viewed_store.order_label_settings || {};
+    } catch (e) {
+      return {};
+    }
+  },
   viewedStoreMenuSettings: state => {
     try {
       return state.viewed_store.menu_settings || {};
@@ -3988,6 +4058,20 @@ const getters = {
   storeReportSettings: state => {
     try {
       return state.store.report_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeLabelSettings: state => {
+    try {
+      return state.store.label_settings.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeOrderLabelSettings: state => {
+    try {
+      return state.store.order_label_settings.data || {};
     } catch (e) {
       return {};
     }
