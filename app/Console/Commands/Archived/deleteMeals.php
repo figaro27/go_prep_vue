@@ -48,14 +48,14 @@ use App\IngredientMealComponentOption;
 use App\IngredientMealAddon;
 use App\IngredientPivot;
 
-class misc extends Command
+class deleteMeals extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'goprep:misc';
+    protected $signature = 'goprep:deleteMeals';
 
     /**
      * The console command description.
