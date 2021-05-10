@@ -66,8 +66,7 @@ export default {
   created() {},
   mounted() {
     axios.get("/api/auth/getAdminStores").then(resp => {
-      this.storeOptions = resp.data.stores;
-      this.showPasswordModal = !resp.data.adminIP ? true : false;
+      this.storeOptions = resp.data;
     });
   },
   methods: {
