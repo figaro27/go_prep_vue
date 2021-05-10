@@ -14,7 +14,7 @@ class LabelSettingController extends StoreController
      */
     public function index()
     {
-        //
+        return $this->store->labelSettings();
     }
 
     /**

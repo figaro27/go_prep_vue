@@ -14,7 +14,7 @@ class OrderLabelSettingController extends StoreController
      */
     public function index()
     {
-        //
+        return $this->store->orderLabelSettings();
     }
 
     /**
