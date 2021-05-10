@@ -672,14 +672,17 @@ class SpaController extends Controller
                     foreach ($categories as $category) {
                         $temp_id = (int) $category->id;
 
-                        $temp_meal = Meal::whereHas('categories', function (
-                            $query
-                        ) use ($temp_id) {
-                            $query->where('categories.id', $temp_id);
-                        })->where([
-                            'store_id' => $store_id,
-                            'deleted_at' => null
-                        ]);
+                        // $temp_meal = Meal::whereHas('categories', function (
+                        //     $query
+                        // ) use ($temp_id) {
+                        //     $query->where('categories.id', $temp_id);
+                        // })->where([
+                        //     'store_id' => $store_id,
+                        //     'deleted_at' => null
+                        // ]);
+
+                        // Rework this
+                        $temp_meal = Meal::first();
 
                         if ($delivery_day_id != 0 && $isValidDD) {
                             $temp_meal = $temp_meal
