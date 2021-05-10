@@ -74,6 +74,16 @@ class OrderLabelSettingController extends StoreController
         //
     }
 
+    public function updateOrderLabelSettings(Request $request)
+    {
+        $orderLabelSetting = OrderLabelSetting::where(
+            'store_id',
+            $this->store->id
+        );
+        $values = $request->all();
+        $orderLabelSetting->update($values);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

@@ -32,6 +32,9 @@ use App\IngredientMealAddon;
 use App\IngredientMealComponentOption;
 use App\IngredientMealSize;
 use App\ChildMeal;
+use App\LabelSetting;
+use App\OrderLabelSetting;
+use App\ReportSetting;
 
 class misc extends Command
 {
@@ -66,13 +69,29 @@ class misc extends Command
      */
     public function handle()
     {
-        $meals = Meal::where('store_id', 313)
-            ->where('title', 'like', '%- G')
-            ->get();
+        $reportSettings = ReportSetting::all();
 
-        foreach ($meals as $meal) {
-            $meal->title = str_replace('- GI', '- Gi', $meal->title);
-            $meal->update();
+        foreach ($reportSettings as $reportSetting) {
+            $labelSetting = new OrderLabelSetting();
+            $labelSetting->store_id = $reportSetting->store_id;
+            $labelSetting->customer = $reportSetting->o_lab_customer;
+            $labelSetting->address = $reportSetting->o_lab_address;
+            $labelSetting->phone = $reportSetting->o_lab_phone;
+            $labelSetting->delivery = $reportSetting->o_lab_delivery;
+            $labelSetting->order_number = $reportSetting->o_lab_order_number;
+            $labelSetting->order_date = $reportSetting->o_lab_order_date;
+            $labelSetting->delivery_date = $reportSetting->o_lab_delivery_date;
+            $labelSetting->amount = $reportSetting->o_lab_amount;
+            $labelSetting->balance = $reportSetting->o_lab_balance;
+            $labelSetting->daily_order_number =
+                $reportSetting->o_lab_daily_order_number;
+            $labelSetting->pickup_location =
+                $reportSetting->o_lab_pickup_location;
+            $labelSetting->website = $reportSetting->o_lab_website;
+            $labelSetting->social = $reportSetting->o_lab_social;
+            $labelSetting->width = $reportSetting->o_lab_width;
+            $labelSetting->height = $reportSetting->o_lab_height;
+            $labelSetting->save();
         }
     }
 }

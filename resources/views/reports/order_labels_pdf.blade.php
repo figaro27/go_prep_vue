@@ -37,49 +37,49 @@ font-size:10px !important;
   <div>
   <center>
     <img src="{{$order['logo']}}"/ style="width:28vh;height:28vh;margin-bottom:8px">
-    @if ($reportSettings->o_lab_customer)
+    @if ($orderLabelSettings->customer)
     <p class="text-18" style="font-weight:bold;margin-top:7px">Client: {{ $order['customer'] }}</p>
     @endif
-    @if ($reportSettings->o_lab_address)
+    @if ($orderLabelSettings->address)
     <p class="text-14" style="margin-top:7px">{{ $order['address'] }}</p>
     <p class="text-14">{{ $order['city'] }}, {{ $order['state'] }} {{ $order['zip'] }}</p>
     @endif
-    @if ($reportSettings->o_lab_phone)
+    @if ($orderLabelSettings->phone)
     <p class="text-14" style="margin-top:7px">{{ $order['phone'] }}</p>
     @endif
-    @if ($reportSettings->o_lab_delivery)
+    @if ($orderLabelSettings->delivery)
     <p class="text-14" style="margin-top:7px;font-style:italic">{{ $order['deliveryInstructions'] }}</p>
     @endif
 
     <div style="margin-top:25px">
-    @if ($reportSettings->o_lab_order_number)
+    @if ($orderLabelSettings->order_number)
     <p class="text-14" style="font-weight:bold;margin-top:7px">Order ID - {{ $order['orderNumber'] }}</p>
     @endif
-    @if ($reportSettings->o_lab_daily_order_number)
+    @if ($orderLabelSettings->daily_order_number)
     <p class="text-14" style="margin-top:7px">Daily Order - {{ $order['dailyOrderNumber'] }}</p>
     @endif
-    @if ($reportSettings->o_lab_order_date)
+    @if ($orderLabelSettings->order_date)
     <p class="text-14" style="margin-top:7px">Order Date - {{ $order['created_at'] }}</p>
     @endif
-    @if ($reportSettings->o_lab_delivery_date)
+    @if ($orderLabelSettings->delivery_date)
     <p class="text-14" style="margin-top:7px">{{ $order['transferType']}} Date - {{ $order['deliveryDate'] }}</p>
     @endif
     </div>
 
     <div style="margin-top:25px">
-    @if ($reportSettings->o_lab_amount)
+    @if ($orderLabelSettings->amount)
     <p class="text-16" style="font-weight:bold;margin-top:7px">Total - {{ $order['amount'] }}</p>
     @endif
-    @if ($reportSettings->o_lab_balance)
+    @if ($orderLabelSettings->balance)
     <p class="text-16" style="margin-top:7px">Balance - {{ $order['balance'] }}</p>
     @endif
   </div>
 
   <div style="margin-top:25px">
-    @if ($reportSettings->o_lab_website)
+    @if ($orderLabelSettings->website)
     <p class="text-14" style="margin-top:7px">{{ $website }}</p>
     @endif
-    @if ($reportSettings->o_lab_social)
+    @if ($orderLabelSettings->social)
     <p class="text-14" style="margin-top:7px">{{ $social }}</p>
     @endif
   </div>

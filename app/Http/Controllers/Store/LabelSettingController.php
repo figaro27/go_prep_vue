@@ -67,9 +67,15 @@ class LabelSettingController extends StoreController
      * @param  \App\LabelSetting  $labelSetting
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, LabelSetting $labelSetting)
+    public function update(Request $request)
     {
-        //
+    }
+
+    public function updateLabelSettings(Request $request)
+    {
+        $labelSettings = LabelSetting::where('store_id', $this->store->id);
+        $values = $request->all();
+        $labelSettings->update($values);
     }
 
     /**

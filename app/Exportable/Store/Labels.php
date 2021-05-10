@@ -283,8 +283,8 @@ class Labels
             $this->params['date'] .
             '.pdf';
 
-        $width = $this->store->reportSettings->lab_width;
-        $height = $this->store->reportSettings->lab_height;
+        $width = $this->store->labelSettings->width;
+        $height = $this->store->labelSettings->height;
 
         // Temporary solution
         $testStore = Store::where('id', 13)->first();

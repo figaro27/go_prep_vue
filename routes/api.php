@@ -568,6 +568,22 @@ foreach (
                                 'updateReportSettings',
                                 'ReportSettingController@updateReportSettings'
                             );
+                            Route::resource(
+                                'labelSettings',
+                                'LabelSettingController'
+                            );
+                            Route::post(
+                                'updateLabelSettings',
+                                'LabelSettingController@updateLabelSettings'
+                            );
+                            Route::resource(
+                                'orderLabelSettings',
+                                'OrderLabelSettingController'
+                            );
+                            Route::post(
+                                'updateOrderLabelSettings',
+                                'OrderLabelSettingController@updateOrderLabelSettings'
+                            );
 
                             Route::get(
                                 'getApplicationFee',

@@ -181,8 +181,8 @@ class OrderLabels
                 '.pdf';
         }
 
-        $width = $this->store->reportSettings->o_lab_width;
-        $height = $this->store->reportSettings->o_lab_height;
+        $width = $this->store->orderLabelSettings->o_lab_width;
+        $height = $this->store->orderLabelSettings->o_lab_height;
 
         // Temporary solution
         $testStore = Store::where('id', 13)->first();
@@ -190,7 +190,7 @@ class OrderLabels
 
         $vars = [
             'orders' => $orders,
-            'reportSettings' => $this->store->reportSettings,
+            'orderLabelSettings' => $this->store->orderLabelSettings,
             'website' => $this->store->settings->website,
             'social' => $this->store->details->social,
             'params' => $this->params,

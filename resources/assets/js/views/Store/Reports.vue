@@ -476,7 +476,7 @@
       v-if="showSettingsModal.labels"
       no-fade
       no-close-on-backdrop
-      @ok="updateReportSettings"
+      @ok="updateLabelSettings"
     >
       <b-alert variant="warning" show>
         <h6 class="center-text text-danger">Beta</h6>
@@ -528,77 +528,75 @@
         <div class="col-md-4">
           <p class="strong">Show the Following on the Label</p>
           <p v-if="store.modules.dailyOrderNumbers">
-            <b-form-checkbox v-model="reportSettings.lab_dailyOrderNumbers"
+            <b-form-checkbox v-model="labelSettings.daily_order_number"
               >Daily Order Numbers</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_index"
+            <b-form-checkbox v-model="labelSettings.index"
               >Indexes (E.G. #1 of #5)</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_nutrition"
+            <b-form-checkbox v-model="labelSettings.nutrition"
               >Nutrition</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_macros"
+            <b-form-checkbox v-model="labelSettings.macros"
               >Macros</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_logo"
-              >Logo</b-form-checkbox
-            >
+            <b-form-checkbox v-model="labelSettings.logo">Logo</b-form-checkbox>
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_website"
+            <b-form-checkbox v-model="labelSettings.website"
               >Website</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_social"
+            <b-form-checkbox v-model="labelSettings.social"
               >Social Media Handle</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_customer"
+            <b-form-checkbox v-model="labelSettings.customer"
               >Customer Name</b-form-checkbox
             >
           </p>
           <!-- <p>
-          <b-form-checkbox v-model="reportSettings.lab_description"
+          <b-form-checkbox v-model="labelSettings.description"
             >Item Description</b-form-checkbox
           >
         </p> -->
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_instructions"
+            <b-form-checkbox v-model="labelSettings.instructions"
               >Item Instructions</b-form-checkbox
             >
           </p>
           <p v-if="store.modules.mealExpiration">
-            <b-form-checkbox v-model="reportSettings.lab_expiration"
+            <b-form-checkbox v-model="labelSettings.expiration"
               >Item Expiration</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_ingredients"
+            <b-form-checkbox v-model="labelSettings.ingredients"
               >Ingredients</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_allergies"
+            <b-form-checkbox v-model="labelSettings.allergies"
               >Allergens</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_packaged_by"
+            <b-form-checkbox v-model="labelSettings.packaged_by"
               >Packaged By (Your address)</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.lab_packaged_on"
+            <b-form-checkbox v-model="labelSettings.packaged_on"
               >Packaged On (Today's date)</b-form-checkbox
             >
           </p>
@@ -607,48 +605,48 @@
           <p class="strong">Label Dimensions</p>
           <b-form-group class="mt-3">
             <b-input-group size="md" append="width">
-              <b-input v-model="reportSettings.lab_width" type="number" />
+              <b-input v-model="labelSettings.width" type="number" />
             </b-input-group>
             <b-input-group size="md" append="height">
-              <b-input v-model="reportSettings.lab_height" type="number" />
+              <b-input v-model="labelSettings.height" type="number" />
             </b-input-group>
           </b-form-group>
         </div>
-        <div class="col-md-4">
+        <!--         <div class="col-md-4">
           <p class="strong">Label Margins</p>
           <b-form-group class="mt-3">
             <b-input-group size="md" append="top">
               <b-input
-                v-model="reportSettings.lab_margin_top"
+                v-model="labelSettings.lab_margin_top"
                 class="d-inline-block"
                 type="number"
               />
             </b-input-group>
             <b-input-group size="md" append="right">
               <b-input
-                v-model="reportSettings.lab_margin_right"
+                v-model="labelSettings.lab_margin_right"
                 type="number"
               />
             </b-input-group>
             <b-input-group size="md" append="bottom">
               <b-input
-                v-model="reportSettings.lab_margin_bottom"
+                v-model="labelSettings.lab_margin_bottom"
                 class="d-inline-block"
                 type="number"
               />
             </b-input-group>
             <b-input-group size="md" append="left">
               <b-input
-                v-model="reportSettings.lab_margin_left"
+                v-model="labelSettings.lab_margin_left"
                 class="d-inline-block"
                 type="number"
               />
             </b-input-group>
           </b-form-group>
-        </div>
+        </div> -->
       </div>
 
-      <b-btn variant="primary" @click="updateReportSettings">Save</b-btn>
+      <b-btn variant="primary" @click="updateLabelSettings">Save</b-btn>
     </b-modal>
 
     <b-modal
@@ -658,91 +656,94 @@
       v-if="showSettingsModal.order_labels"
       no-fade
       no-close-on-backdrop
-      @ok="updateReportSettings"
+      @ok="updateOrderLabelSettings"
     >
       <div class="row">
         <div class="col-md-5 offset-2">
           <p class="strong">Show the Following on the Label</p>
           <p v-if="store.modules.dailyOrderNumbers">
-            <b-form-checkbox v-model="reportSettings.o_lab_daily_order_number"
+            <b-form-checkbox v-model="orderLabelSettings.daily_order_number"
               >Daily Order Numbers</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.o_lab_customer"
+            <b-form-checkbox v-model="orderLabelSettings.customer"
               >Client Name</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.o_lab_address"
+            <b-form-checkbox v-model="orderLabelSettings.address"
               >Client Address</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.o_lab_phone"
+            <b-form-checkbox v-model="orderLabelSettings.phone"
               >Client Phone Number</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.o_lab_delivery"
+            <b-form-checkbox v-model="orderLabelSettings.delivery"
               >Client Delivery Instructions</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.o_lab_order_number"
+            <b-form-checkbox v-model="orderLabelSettings.order_number"
               >Order ID</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.o_lab_order_date"
+            <b-form-checkbox v-model="orderLabelSettings.order_date"
               >Order Date</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.o_lab_delivery_date"
+            <b-form-checkbox v-model="orderLabelSettings.delivery_date"
               >Delivery Date</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.o_lab_amount"
+            <b-form-checkbox v-model="orderLabelSettings.amount"
               >Amount</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.o_lab_balance"
+            <b-form-checkbox v-model="orderLabelSettings.balance"
               >Balance</b-form-checkbox
             >
           </p>
           <p v-if="store.modules.pickupLocations">
-            <b-form-checkbox v-model="reportSettings.o_lab_pickup_location"
+            <b-form-checkbox v-model="orderLabelSettings.pickup_location"
               >Pickup Location</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.o_lab_website"
+            <b-form-checkbox v-model="orderLabelSettings.website"
               >Website</b-form-checkbox
             >
           </p>
           <p>
-            <b-form-checkbox v-model="reportSettings.o_lab_social"
+            <b-form-checkbox v-model="orderLabelSettings.social"
               >Social Media Handle</b-form-checkbox
             >
           </p>
         </div>
-        <div class="col-md-5">
+        <!-- <div class="col-md-5">
           <p class="strong">Label Dimensions</p>
           <b-form-group class="mt-3">
             <b-input-group size="md" append="width">
-              <b-input v-model="reportSettings.o_lab_width" type="number" />
+              <b-input v-model="orderLabelSettings.o_lab_width" type="number" />
             </b-input-group>
             <b-input-group size="md" append="height">
-              <b-input v-model="reportSettings.o_lab_height" type="number" />
+              <b-input v-model="orderLabelSettings.o_lab_height" type="number" />
             </b-input-group>
           </b-form-group>
-        </div>
+        </div> -->
       </div>
 
-      <b-btn variant="primary" class="float-right" @click="updateReportSettings"
+      <b-btn
+        variant="primary"
+        class="float-right"
+        @click="updateOrderLabelSettings"
         >Save</b-btn
       >
     </b-modal>
@@ -850,7 +851,8 @@ export default {
       orders: "storeOrders",
       isLoading: "isLoading",
       pickupLocations: "viewedStorePickupLocations",
-      reportSettings: "storeReportSettings"
+      labelSettings: "storeLabelSettings",
+      orderLabelSettings: "storeOrderLabelSettings"
     }),
     pickupLocationOptions() {
       return this.pickupLocations.map(loc => {
@@ -950,8 +952,8 @@ export default {
 
       params.labelsNutrition = this.labelsNutrition;
 
-      params.width = this.reportSettings.lab_width;
-      params.height = this.reportSettings.lab_height;
+      params.width = this.labelSettings.width;
+      params.height = this.labelSettings.height;
 
       params.orderByRoutes = this.orderByRoutes;
       params.startingAddress = this.startingAddress;
@@ -995,14 +997,14 @@ export default {
 
           if (format === "b64") {
             const size = new PrintSize(
-              this.reportSettings.lab_width,
-              this.reportSettings.lab_height
+              this.labelSettings.width,
+              this.labelSettings.height
             );
             const margins = {
-              top: this.reportSettings.lab_margin_top,
-              right: this.reportSettings.lab_margin_right,
-              bottom: this.reportSettings.lab_margin_bottom,
-              left: this.reportSettings.lab_margin_left
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0
             };
             const job = new PrintJob(data.url, size, margins);
 
@@ -1153,16 +1155,24 @@ export default {
           break;
       }
     },
-    updateReportSettings() {
-      let settings = { ...this.reportSettings };
-      if (settings.lab_margin_top == "") settings.lab_margin_top = 0;
-      if (settings.lab_margin_bottom == "") settings.lab_margin_bottom = 0;
-      if (settings.lab_margin_right == "") settings.lab_margin_right = 0;
-      if (settings.lab_margin_left == "") settings.lab_margin_left = 0;
+    updateLabelSettings() {
+      let settings = { ...this.labelSettings };
       axios
-        .post("/api/me/updateReportSettings", settings)
+        .post("/api/me/updateLabelSettings", settings)
         .then(response => {
-          // this.refreshStoreReportSettings();
+          this.$toastr.s("Your settings have been saved.", "Success");
+        })
+        .catch(response => {
+          let error = _.first(Object.values(response.response.data.errors));
+          error = error.join(" ");
+          this.$toastr.w(error);
+        });
+    },
+    updateOrderLabelSettings() {
+      let settings = { ...this.orderLabelSettings };
+      axios
+        .post("/api/me/updateOrderLabelSettings", settings)
+        .then(response => {
           this.$toastr.s("Your settings have been saved.", "Success");
         })
         .catch(response => {

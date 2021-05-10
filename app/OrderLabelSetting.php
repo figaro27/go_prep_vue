@@ -11,7 +11,6 @@ class OrderLabelSetting extends Model
     protected $fillable = ['store_id'];
 
     protected $casts = [
-        'daily_order_number' => 'boolean',
         'customer' => 'boolean',
         'address' => 'boolean',
         'phone' => 'boolean',
