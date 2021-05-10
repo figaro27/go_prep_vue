@@ -1152,13 +1152,13 @@
                   label="About (Shown at the top of your menu)"
                   :state="true"
                 >
-                  <!-- <wysiwyg class="w-600" v-model="description" /> -->
-                  <froala
+                  <wysiwyg class="w-600" v-model="description" />
+                  <!-- <froala
                     v-if="description"
                     class="w-600"
                     :tag="'textarea'"
                     v-model="description"
-                  ></froala>
+                  ></froala> -->
                 </b-form-group>
 
                 <router-link
