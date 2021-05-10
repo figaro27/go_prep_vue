@@ -345,6 +345,10 @@ class RegisterController extends Controller
                 ]);
 
                 $storeReportSettings = $store->reportSettings()->create();
+                $storeLabelSettings = $store->labelSettings()->create();
+                $storeOrderLabelSettings = $store
+                    ->orderLabelSettings()
+                    ->create();
                 $storeSMSSettings = $store->smsSettings()->create([
                     'autoSendOrderReminderTemplate' =>
                         'Last chance to order for {next delivery}. Our cutoff time is {cutoff}. Please order at {URL}.',
