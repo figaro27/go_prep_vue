@@ -1,15 +1,29 @@
 <template>
   <div class="category-slider d-block d-md-none">
-    <div class="text-center" v-if="showCategorySlider || mobile">
+    <div v-if="showCategorySlider || mobile">
       <b-dropdown :text="activeCategory" class="mobileCategoryDropdown m-2">
-        <b-dropdown-item href="#">Search</b-dropdown-item>
-        <b-dropdown-item @click="showFilterArea()">Filter</b-dropdown-item>
         <b-dropdown-item
           v-for="category in categories"
           @click="goToCategory(category.id)"
           >{{ category.category }}</b-dropdown-item
         >
       </b-dropdown>
+      <div class="pull-right d-flex">
+        <i
+          class="fas fa-times-circle clear-meal dark-gray pt-1"
+          @click="$parent.search = ''"
+        ></i>
+
+        <b-form-textarea
+          @input="val => ($parent.search = val)"
+          v-model="$parent.search"
+          placeholder="Search"
+          class="meal-search center-text mb-4"
+        ></b-form-textarea>
+        <p @click="showFilterArea()" class="pt-3 pull-right">
+          <i class="fas fa-filter customer-nav-icon"></i>
+        </p>
+      </div>
 
       <!-- <slick
         v-if="categories.length > 4 || categoriesCharacterCount > 30"
@@ -50,10 +64,10 @@
   display: inline-block !important;
 }
 
-.mobileCategoryDropdown .dropdown-item {
+/*.mobileCategoryDropdown .dropdown-item {
   display: flex !important;
   justify-content: center !important;
-}
+}*/
 </style>
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
