@@ -126,7 +126,7 @@
           @autoPickUpcomingMultDD="autoPickUpcomingMultDD(sortedDeliveryDays)"
           @changeDeliveryDay="changeDeliveryDay($event)"
           @closeDeliveryDayModal="closeDeliveryDayModal()"
-          @continueToCheckout="continueToCheckout($event)"
+          @continueToCheckout="goToCheckout()"
           :selectedDeliveryDay="selectedDeliveryDay"
           :showOtherDaysMessage="showOtherDaysMessage"
         >
@@ -1810,7 +1810,7 @@ export default {
     closeDeliveryDayModal() {
       this.showDeliveryDayModal = false;
     },
-    continueToCheckout(overRide = false) {
+    continueToCheckout() {
       if (this.otherDayCheck) {
         this.showOtherDaysMessage = true;
         this.showDeliveryDayModal = true;
