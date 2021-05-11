@@ -20,7 +20,7 @@
         >
           <i class="fas fa-search customer-nav-icon pr-2"></i>
         </p>
-        <p @click="showFilterArea()" class="pt-3 pull-right">
+        <p @click.stop="showFilterArea()" class="pt-3 pull-right">
           <i class="fas fa-filter customer-nav-icon"></i>
         </p>
       </div>
@@ -44,6 +44,7 @@
             v-model="$parent.search"
             placeholder="Search"
             class="meal-search center-text"
+            style="font-size:16px"
           ></b-form-textarea>
         </div>
         <div class="d-flex d-center">
