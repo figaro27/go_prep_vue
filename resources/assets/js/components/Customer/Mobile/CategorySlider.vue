@@ -8,9 +8,9 @@
           >{{ category.category }}</b-dropdown-item
         >
       </b-dropdown>
-      <div class="pull-right d-flex">
-        <p @click="showSearchModal = !showSearchModal" class="pt-3 pull-right">
-          <i class="fas fa-search customer-nav-icon"></i>
+      <div class="pull-right d-flex mr-3">
+        <p @click="showSearch()" class="pt-3 pull-right">
+          <i class="fas fa-search customer-nav-icon pr-2"></i>
         </p>
         <p @click="showFilterArea()" class="pt-3 pull-right">
           <i class="fas fa-filter customer-nav-icon"></i>
@@ -216,6 +216,9 @@ export default {
     },
     showFilterArea() {
       this.$eventBus.$emit("showFilterArea");
+    },
+    showSearch() {
+      this.showSearchModal = !this.showSearchModal;
     }
   }
 };
