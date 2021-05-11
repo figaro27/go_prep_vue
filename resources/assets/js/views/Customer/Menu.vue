@@ -1811,7 +1811,9 @@ export default {
       this.showDeliveryDayModal = false;
     },
     continueToCheckout(overRide = false) {
+      alert(1);
       if (this.otherDayCheck && !overRide) {
+        alert(2);
         this.showOtherDaysMessage = true;
         this.showDeliveryDayModal = true;
         return;
