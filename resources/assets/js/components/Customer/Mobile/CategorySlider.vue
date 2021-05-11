@@ -9,21 +9,29 @@
         >
       </b-dropdown>
       <div class="pull-right d-flex">
-        <i
-          class="fas fa-times-circle clear-meal dark-gray pt-1"
-          @click="$parent.search = ''"
-        ></i>
-
-        <b-form-textarea
-          @input="val => ($parent.search = val)"
-          v-model="$parent.search"
-          placeholder="Search"
-          class="meal-search center-text mb-4"
-        ></b-form-textarea>
+        <p @click="showSearchModal = !showSearchModal" class="pt-3 pull-right">
+          <i class="fas fa-search customer-nav-icon"></i>
+        </p>
         <p @click="showFilterArea()" class="pt-3 pull-right">
           <i class="fas fa-filter customer-nav-icon"></i>
         </p>
       </div>
+
+      <b-model v-model="showSearchModal" v-if="showSearchModal">
+        <div class="d-flex">
+          <i
+            class="fas fa-times-circle clear-meal dark-gray pt-1"
+            @click="$parent.search = ''"
+          ></i>
+
+          <b-form-textarea
+            @input="val => ($parent.search = val)"
+            v-model="$parent.search"
+            placeholder="Search"
+            class="meal-search center-text mb-4"
+          ></b-form-textarea>
+        </div>
+      </b-model>
 
       <!-- <slick
         v-if="categories.length > 4 || categoriesCharacterCount > 30"
@@ -78,7 +86,8 @@ export default {
     return {
       categories: [],
       activeCategory: null,
-      showDropdown: false
+      showDropdown: false,
+      showSearchModal: false
     };
     /*return {
       showCategorySlider: false
