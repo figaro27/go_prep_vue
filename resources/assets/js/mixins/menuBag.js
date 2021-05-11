@@ -528,8 +528,20 @@ export default {
       }
     },
     groupBag() {
+      // let grouped = [];
+
+      // this.sortedDeliveryDays.forEach(day => {
+      //   grouped.push({
+      //     delivery_day: day,
+      //     items: []
+      //   })
+      // })
+
+      // return grouped;
+
       let grouped = [];
       let groupedDD = [];
+      let delivery_day_ids = [];
 
       if (this.bag) {
         if (this.isMultipleDelivery) {
@@ -542,7 +554,7 @@ export default {
                   delivery_day: bagItem.delivery_day
                 };
               }
-
+              delivery_day_ids.push(bagItem.delivery_day.id);
               groupedDD[key].items.push(bagItem);
             }
           });
@@ -566,6 +578,7 @@ export default {
                 items: [],
                 delivery_day: this.selectedDeliveryDay
               });
+              delivery_day_ids.push(this.selectedDeliveryDay.id);
             }
           }
         } else {
@@ -574,6 +587,19 @@ export default {
           });
         }
       }
+
+      let count = 1;
+      this.sortedDeliveryDays.forEach(day => {
+        count++;
+        if (count < 4) {
+          if (!delivery_day_ids.includes(day.id)) {
+            grouped.push({
+              items: [],
+              delivery_day: day
+            });
+          }
+        }
+      });
 
       return grouped;
     },

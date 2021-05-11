@@ -1057,7 +1057,7 @@ export default {
         (!this.bagZipCode && !this.noAvailableDays) ||
         (this.bagZipCode && this.noAvailableDays)
       ) {
-        this.showDeliveryDayModal = true;
+        // this.showDeliveryDayModal = true;
       }
     }
 

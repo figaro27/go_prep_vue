@@ -1,18 +1,35 @@
 <template>
   <div class="category-slider d-block d-md-none">
     <div v-if="showCategorySlider || mobile">
-      <b-dropdown
+      <b-dd
+        :text="activeCategory"
+        class="mobileCategoryDropdown pt-2 pl-2"
+        menu-class="overflow-hidden py-0"
+      >
+        <li>
+          <ul
+            class="dropdown-menu d-block scrollable-menu position-relative mt-0 border-0"
+          >
+            <b-dropdown-item
+              v-for="category in categories"
+              @click="goToCategory(category.id)"
+              >{{ category.category }}</b-dropdown-item
+            >
+          </ul>
+        </li>
+      </b-dd>
+
+      <!-- <b-dropdown
         :text="activeCategory"
         class="mobileCategoryDropdown m-2"
-        style="position:fixed"
       >
         <b-dropdown-item
-          style="position:relative"
           v-for="category in categories"
           @click="goToCategory(category.id)"
           >{{ category.category }}</b-dropdown-item
         >
-      </b-dropdown>
+      </b-dropdown> -->
+
       <div class="pull-right d-flex mr-3">
         <p
           @click.stop="showSearchModal = !showSearchModal"
@@ -97,10 +114,12 @@
   display: inline-block !important;
 }
 
-/*.mobileCategoryDropdown .dropdown-item {
-  display: flex !important;
-  justify-content: center !important;
-}*/
+.scrollable-menu {
+  height: auto;
+  max-height: 30vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 </style>
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";

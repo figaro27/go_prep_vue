@@ -98,12 +98,13 @@
             v-if="isMultipleDelivery && groupItem.delivery_day"
             :style="activeDD(groupItem.delivery_day)"
           >
-            <div
+            <!-- <div
               v-if="
                 groupItem &&
                   !enablingDeliveryDayEdit[groupItem.delivery_day.day_friendly]
               "
-            >
+            > -->
+            <div>
               <h5 @click="loadDeliveryDayMenu(groupItem.delivery_day)">
                 ({{
                   groupItem.delivery_day.type.charAt(0).toUpperCase() +
