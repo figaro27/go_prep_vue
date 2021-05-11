@@ -66,8 +66,10 @@
           ></b-form-textarea>
         </div>
         <div class="d-flex d-center">
-          <b-btn @click="showSearchModal = false" class="secondary mr-2"
-            >Back</b-btn
+          <b-btn
+            @click="($parent.search = ''), (showSearchModal = false)"
+            class="secondary mr-2"
+            >Clear</b-btn
           >
           <b-btn @click="showSearchModal = false" class="brand-color white-text"
             >Search</b-btn
