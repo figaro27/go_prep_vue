@@ -9,7 +9,10 @@
         >
       </b-dropdown>
       <div class="pull-right d-flex mr-3">
-        <p @click="showSearch()" class="pt-3 pull-right">
+        <p
+          @click.stop="showSearchModal = !showSearchModal"
+          class="pt-3 pull-right"
+        >
           <i class="fas fa-search customer-nav-icon pr-2"></i>
         </p>
         <p @click="showFilterArea()" class="pt-3 pull-right">
@@ -216,9 +219,6 @@ export default {
     },
     showFilterArea() {
       this.$eventBus.$emit("showFilterArea");
-    },
-    showSearch() {
-      this.showSearchModal = !this.showSearchModal;
     }
   }
 };
