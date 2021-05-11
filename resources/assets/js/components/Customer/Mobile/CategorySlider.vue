@@ -41,6 +41,7 @@
 
           <b-form-textarea
             @input="val => ($parent.search = val)"
+            @keyup.enter="val => ($parent.search = val)"
             v-model="$parent.search"
             placeholder="Search"
             class="meal-search center-text"

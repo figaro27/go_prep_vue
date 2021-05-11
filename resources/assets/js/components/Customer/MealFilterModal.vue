@@ -65,15 +65,20 @@
         <div class="d-flex mt-3" style="justify-content:center">
           <div>
             <b-btn
+              @click="$emit('clearFilters')"
+              class="transparent-btn mt-2 ml-2"
+              >Clear All</b-btn
+            >
+            <b-btn
               @click="$parent.viewFilterModalParent = false"
               variant="secondary"
-              class="mt-2"
+              class="mt-2 ml-2"
               >Back</b-btn
             >
             <b-btn
-              @click="$emit('clearFilters')"
+              @click="$parent.viewFilterModalParent = false"
               class="brand-color white-text mt-2 ml-2"
-              >Clear All</b-btn
+              >Done</b-btn
             >
           </div>
         </div>

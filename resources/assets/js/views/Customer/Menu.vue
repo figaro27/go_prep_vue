@@ -238,20 +238,22 @@
 
           <div class="categoryNavArea_body">
             <div class="categoryNavArea_body_inner">
-              <div class="row">
-                <div class="col-md-2">
-                  <i
-                    class="fas fa-times-circle clear-meal dark-gray pt-1"
-                    @click="search = ''"
-                  ></i>
-                </div>
-                <div class="col-md-10">
-                  <b-form-textarea
-                    v-model="search"
-                    placeholder="Search"
-                    class="meal-search center-text mb-4"
-                  ></b-form-textarea>
-                </div>
+              <div class="d-flex">
+                <i
+                  class="fas fa-times-circle clear-meal dark-gray pt-2"
+                  @click="search = ''"
+                ></i>
+
+                <b-form-textarea
+                  v-model="search"
+                  placeholder="Search"
+                  class="meal-search center-text mb-4"
+                ></b-form-textarea>
+
+                <i
+                  class="fas fa-filter filter-icon pt-2"
+                  @click="showFilterArea()"
+                ></i>
               </div>
 
               <div
