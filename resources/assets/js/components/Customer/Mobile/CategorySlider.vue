@@ -1,8 +1,13 @@
 <template>
   <div class="category-slider d-block d-md-none">
     <div v-if="showCategorySlider || mobile">
-      <b-dropdown :text="activeCategory" class="mobileCategoryDropdown m-2">
+      <b-dropdown
+        :text="activeCategory"
+        class="mobileCategoryDropdown m-2"
+        style="position:fixed"
+      >
         <b-dropdown-item
+          style="position:relative"
           v-for="category in categories"
           @click="goToCategory(category.id)"
           >{{ category.category }}</b-dropdown-item
@@ -20,7 +25,13 @@
         </p>
       </div>
 
-      <b-model v-model="showSearchModal" v-if="showSearchModal">
+      <b-model
+        v-model="showSearchModal"
+        v-if="showSearchModal"
+        size="sm"
+        no-fade
+        class="d-flex d-center"
+      >
         <div class="d-flex">
           <i
             class="fas fa-times-circle clear-meal dark-gray pt-1"
