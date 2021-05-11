@@ -1,7 +1,17 @@
 <template>
   <div class="category-slider d-block d-md-none">
     <div class="text-center" v-if="showCategorySlider || mobile">
-      <slick
+      <b-dropdown :text="activeCategory" class="mobileCategoryDropdown m-2">
+        <b-dropdown-item href="#">Search</b-dropdown-item>
+        <b-dropdown-item @click="showFilterArea()">Filter</b-dropdown-item>
+        <b-dropdown-item
+          v-for="category in categories"
+          @click="goToCategory(category.id)"
+          >{{ category.category }}</b-dropdown-item
+        >
+      </b-dropdown>
+
+      <!-- <slick
         v-if="categories.length > 4 || categoriesCharacterCount > 30"
         :key="categories.length"
         ref="categorySlider"
@@ -31,11 +41,20 @@
           class="d-inline-block m-2"
           >{{ category.category }}</span
         >
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
+<style>
+.mobileCategoryDropdown .dropdown-toggle::after {
+  display: inline-block !important;
+}
 
+.mobileCategoryDropdown .dropdown-item {
+  display: flex !important;
+  justify-content: center !important;
+}
+</style>
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import MenuBag from "../../../mixins/menuBag";
@@ -43,7 +62,9 @@ import MenuBag from "../../../mixins/menuBag";
 export default {
   data() {
     return {
-      categories: []
+      categories: [],
+      activeCategory: null,
+      showDropdown: false
     };
     /*return {
       showCategorySlider: false
@@ -149,6 +170,12 @@ export default {
   },
   methods: {
     goTo(categoryId) {
+      let activeCat = this.categories.find(cat => {
+        return cat.id === categoryId;
+      });
+      if (activeCat) {
+        this.activeCategory = activeCat.category;
+      }
       if (this.$refs.categorySlider) {
         const index = _.findIndex(this.categories, { id: categoryId });
         this.$refs.categorySlider.goTo(index);
@@ -163,6 +190,9 @@ export default {
         const top = $(`#${category}`).position().top;
         $(".main-menu-area").scrollTop(top);
       }
+    },
+    showFilterArea() {
+      this.$eventBus.$emit("showFilterArea");
     }
   }
 };
