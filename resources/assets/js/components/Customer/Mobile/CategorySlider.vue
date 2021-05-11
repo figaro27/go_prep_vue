@@ -25,16 +25,17 @@
         </p>
       </div>
 
-      <b-model
+      <b-modal
         v-model="showSearchModal"
         v-if="showSearchModal"
         size="sm"
         no-fade
-        class="d-flex d-center"
+        hide-header
+        hide-footer
       >
-        <div class="d-flex">
+        <div class="d-flex mt-3 mb-3">
           <i
-            class="fas fa-times-circle clear-meal dark-gray pt-1"
+            class="fas fa-times-circle clear-meal dark-gray pr-2"
             @click="$parent.search = ''"
           ></i>
 
@@ -42,10 +43,18 @@
             @input="val => ($parent.search = val)"
             v-model="$parent.search"
             placeholder="Search"
-            class="meal-search center-text mb-4"
+            class="meal-search center-text"
           ></b-form-textarea>
         </div>
-      </b-model>
+        <div class="d-flex d-center">
+          <b-btn @click="showSearchModal = false" class="secondary mr-2"
+            >Back</b-btn
+          >
+          <b-btn @click="showSearchModal = false" class="brand-color white-text"
+            >Search</b-btn
+          >
+        </div>
+      </b-modal>
 
       <!-- <slick
         v-if="categories.length > 4 || categoriesCharacterCount > 30"
