@@ -1811,8 +1811,7 @@ export default {
       this.showDeliveryDayModal = false;
     },
     continueToCheckout(overRide = false) {
-      alert(this.groupBag.length);
-      alert(this.sortedDeliveryDays.length);
+      alert(overRide);
       if (this.otherDayCheck && !overRide) {
         this.showOtherDaysMessage = true;
         this.showDeliveryDayModal = true;
