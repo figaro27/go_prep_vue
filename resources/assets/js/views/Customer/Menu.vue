@@ -189,7 +189,7 @@
             type="button"
             :style="brandColor"
             class="mobile-sticky-button btn btn-lg"
-            @click="goToCheckout"
+            @click="continueToCheckout"
           >
             <div
               class="d-flex flex-column pl-1 pr-1"
