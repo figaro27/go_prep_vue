@@ -30,16 +30,16 @@
           >{{ category.category }}</b-dropdown-item
         >
       </b-dropdown> -->
-      <div style="height:50px;background-color:#ffffff">
-        <div class="pull-right d-flex mr-3">
-          <p @click.stop="showSearch = !showSearch" class="pt-3 pull-right">
-            <i class="fas fa-search customer-nav-icon pr-2"></i>
-          </p>
-          <p @click.stop="showFilterArea()" class="pt-3 pull-right">
-            <i class="fas fa-filter customer-nav-icon"></i>
-          </p>
-        </div>
+
+      <div class="pull-right d-flex mr-3">
+        <p @click.stop="showSearch = !showSearch" class="pt-3 pull-right">
+          <i class="fas fa-search customer-nav-icon pr-2"></i>
+        </p>
+        <p @click.stop="showFilterArea()" class="pt-3 pull-right">
+          <i class="fas fa-filter customer-nav-icon"></i>
+        </p>
       </div>
+
       <!-- <b-modal
         v-model="showSearch"
         v-if="showSearch"
@@ -110,7 +110,7 @@
       </div> -->
     </div>
     <div
-      style="width:100%;background-color:#ffffff;height:40px"
+      style="width:100%;background-color:#ffffff;height:50px"
       v-if="showSearch"
       class="d-flex"
     >
