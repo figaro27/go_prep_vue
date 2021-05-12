@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
         Artisan::call('db:dump', [
             'path' => database_path() . '/backups/local-db.sql'
         ]);
-        Artisan::call('migrate:images');
+        // Artisan::call('migrate:images');
 
         Artisan::call('goprep:updateCustomersTable');
         Artisan::call('goprep:optimizeOrders');
