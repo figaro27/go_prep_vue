@@ -37,6 +37,10 @@ foreach (
                 'findReferralCode',
                 'ReferralController@findReferralCode'
             );
+            Route::post(
+                'removePastDeliveryDays',
+                'DeliveryDayController@removePastDeliveryDays'
+            );
         }
     );
     //Auth::routes();
@@ -840,7 +844,6 @@ foreach (
                                 '/me/findCoupon',
                                 'CouponController@findCoupon'
                             );
-
                             Route::post(
                                 '/me/findCouponById',
                                 'CouponController@findCouponById'

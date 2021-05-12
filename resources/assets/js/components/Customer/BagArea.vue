@@ -885,6 +885,12 @@ export default {
     ) {
       this.autoPickAdjustDD();
     }
+    if (this.store.modules.multipleDeliveryDays) {
+      this.removePastDeliveryDays();
+      window.setInterval(() => {
+        this.removePastDeliveryDays();
+      }, 600000);
+    }
   },
   methods: {
     loadDeliveryDayMenu(deliveryDay) {
@@ -1251,7 +1257,10 @@ export default {
     },
     removeDeliveryDayItems(deliveryDay) {
       this.bag.forEach(item => {
-        if (item.delivery_day.day_friendly == deliveryDay.day_friendly) {
+        if (
+          item.delivery_day.day_friendly == deliveryDay.day_friendly ||
+          item.delivery_day.day_friendly == deliveryDay
+        ) {
           this.clearMealFullQuantity(
             item.meal,
             item.meal_package,
@@ -1339,6 +1348,21 @@ export default {
       this.$nextTick(() => {
         this.$set(this.enablingDeliveryDayEdit, oldDay.day_friendly, false);
       });
+    },
+    removePastDeliveryDays() {
+      axios
+        .post("/api/guest/removePastDeliveryDays", { bag: this.bag })
+        .then(response => {})
+        .catch(response => {
+          if (response.response.data.error === "past_cutoff_delivery_day") {
+            let deliveryDayFriendly = response.response.data.deliveryDay;
+            this.bag.forEach(item => {
+              if (item.delivery_day.day_friendly === deliveryDayFriendly) {
+                this.removeDeliveryDayItems(deliveryDayFriendly);
+              }
+            });
+          }
+        });
     },
     debounceNotes: _.debounce(function() {
       this.setBagNotes(this.notes);
