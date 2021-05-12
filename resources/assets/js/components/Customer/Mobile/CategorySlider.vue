@@ -110,7 +110,7 @@
       </div> -->
     </div>
     <div
-      style="width:100%;background-color:#ffffff"
+      style="width:100%;background-color:#ffffff;height:40px"
       v-if="showSearch"
       class="d-flex"
     >
