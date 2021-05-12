@@ -214,9 +214,11 @@ class StorePlanController extends StoreController
         $selectedPeriod = $request->get('period');
         $plans = collect(config('plans'));
         $planObj = $plans[$selectedPlan][$selectedPeriod];
-        $stripeId = $planObj['stripe_id'];
+        $selectedPeriod =
+            $selectedPlan == 'pay-as-you-go' ? 'n/a' : $selectedPeriod;
+        $stripeId = isset($planObj['stripe_id']) ? $planObj['stripe_id'] : null;
         $planAmount = $planObj['price'];
-        $allowedOrders = $planObj['orders'];
+        $allowedOrders = isset($planObj['orders']) ? $planObj['stripe_id'] : 0;
 
         // Cancel existing subscription in Stripe
         if ($storePlan->method !== 'connect') {
@@ -235,37 +237,38 @@ class StorePlanController extends StoreController
             $subscription->cancel();
 
             // Create new subscription
+            if ($selectedPlan !== 'pay-as-you-go') {
+                $currentChargeDay =
+                    $storePlan->plan_name !== 'pay-as-you-go'
+                        ? $storePlan->day
+                        : date('d');
+                $currentDay = date('d');
+                if ($currentChargeDay > $currentDay) {
+                    $trialPeriodDays = $currentChargeDay - $currentDay;
+                } else {
+                    $date = Carbon::create(
+                        date('Y'),
+                        date('m'),
+                        $currentChargeDay
+                    )->addMonthsNoOverflow(1);
+                    $now = Carbon::now();
+                    $trialPeriodDays = $date->diffInDays($now);
+                }
 
-            $currentChargeDay =
-                $storePlan->plan_name !== 'pay-as-you-go'
-                    ? $storePlan->day
-                    : date('d');
-            $currentDay = date('d');
-            if ($currentChargeDay > $currentDay) {
-                $trialPeriodDays = $currentChargeDay - $currentDay;
-            } else {
-                $date = Carbon::create(
-                    date('Y'),
-                    date('m'),
-                    $currentChargeDay
-                )->addMonthsNoOverflow(1);
-                $now = Carbon::now();
-                $trialPeriodDays = $date->diffInDays($now);
-            }
+                if ($trialPeriodDays === 0 && $lastChargeWasToday) {
+                    $trialPeriodDays = 30;
+                }
 
-            if ($trialPeriodDays === 0 && $lastChargeWasToday) {
-                $trialPeriodDays = 30;
-            }
-
-            $subscription = \Stripe\Subscription::create([
-                'customer' => $this->stripe_customer_id,
-                'trial_period_days' => $trialPeriodDays,
-                'items' => [
-                    [
-                        'plan' => $stripeId
+                $subscription = \Stripe\Subscription::create([
+                    'customer' => $this->stripe_customer_id,
+                    'trial_period_days' => $trialPeriodDays,
+                    'items' => [
+                        [
+                            'plan' => $stripeId
+                        ]
                     ]
-                ]
-            ]);
+                ]);
+            }
         }
 
         // Update application fee if exists
@@ -273,7 +276,8 @@ class StorePlanController extends StoreController
             'store_id',
             $this->store->id
         )->first();
-        $storeSetting->application_fee = 0;
+        $storeSetting->application_fee =
+            $selectedPlan !== 'pay-as-you-go' ? 0 : 5;
         $storeSetting->update();
 
         // Update store plan
@@ -284,6 +288,10 @@ class StorePlanController extends StoreController
         $storePlan->stripe_subscription_id =
             $storePlan->method !== 'connect' ? $subscription['id'] : null;
         $storePlan->months_over_limit = 0;
+        if ($selectedPlan == 'pay-as-you-go') {
+            $storePlan->day = 0;
+            $storePlan->month = 0;
+        }
         $storePlan->update();
         return $storePlan;
     }

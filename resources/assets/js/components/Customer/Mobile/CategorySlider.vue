@@ -12,6 +12,7 @@
           >
             <b-dropdown-item
               v-for="category in categories"
+              :key="category.id"
               @click="goToCategory(category.id)"
               >{{ category.category }}</b-dropdown-item
             >
