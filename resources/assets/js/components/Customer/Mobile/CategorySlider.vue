@@ -32,10 +32,7 @@
       </b-dropdown> -->
 
       <div class="pull-right d-flex mr-3">
-        <p
-          @click.stop="showSearchModal = !showSearchModal"
-          class="pt-3 pull-right"
-        >
+        <p @click.stop="showSearch = !showSearch" class="pt-3 pull-right">
           <i class="fas fa-search customer-nav-icon pr-2"></i>
         </p>
         <p @click.stop="showFilterArea()" class="pt-3 pull-right">
@@ -44,15 +41,15 @@
       </div>
 
       <!-- <b-modal
-        v-model="showSearchModal"
-        v-if="showSearchModal"
+        v-model="showSearch"
+        v-if="showSearch"
         size="sm"
         no-fade
         hide-header
         hide-footer
       > -->
-      <div v-if="showSearchModal">
-        <div class="d-flex d-center mt-3 mb-3">
+      <!-- <div v-if="showSearch" style="background-color:#ffffff;height:50px" class="d-flex">
+        <div class="d-center mt-3 mb-3">
           <i
             class="fas fa-times-circle clear-meal dark-gray pr-2"
             @click="$parent.search = ''"
@@ -67,17 +64,17 @@
             style="font-size:16px"
           ></b-form-textarea>
         </div>
-        <!-- <div class="d-flex d-center">
+        <div class="d-flex d-center">
           <b-btn
-            @click="($parent.search = ''), (showSearchModal = false)"
+            @click="($parent.search = ''), (showSearch = false)"
             class="secondary mr-2"
             >Clear</b-btn
           >
-          <b-btn @click="showSearchModal = false" class="brand-color white-text"
+          <b-btn @click="showSearch = false" class="brand-color white-text"
             >Search</b-btn
           >
-        </div> -->
-      </div>
+        </div>
+      </div> -->
       <!-- </b-modal> -->
 
       <!-- <slick
@@ -112,6 +109,21 @@
         >
       </div> -->
     </div>
+    <div style="width:100%" v-if="showSearch" class="d-flex">
+      <i
+        class="fas fa-times-circle clear-meal dark-gray pr-2 d-center"
+        @click="(showSearch = false), ($parent.search = '')"
+      ></i>
+
+      <b-form-textarea
+        @input="val => ($parent.search = val)"
+        @keyup.enter="val => ($parent.search = val)"
+        v-model="$parent.search"
+        placeholder="Search"
+        class="meal-search center-text d-center"
+        style="font-size:16px"
+      ></b-form-textarea>
+    </div>
   </div>
 </template>
 <style>
@@ -136,7 +148,7 @@ export default {
       categories: [],
       activeCategory: null,
       showDropdown: false,
-      showSearchModal: false
+      showSearch: false
     };
     /*return {
       showCategorySlider: false
