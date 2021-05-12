@@ -893,7 +893,7 @@ export default {
     ) {
       this.autoPickAdjustDD();
     }
-    if (this.store.modules.multipleDeliveryDays) {
+    if (this.store.modules.multipleDeliveryDays && this.context !== "store") {
       this.removePastDeliveryDays();
       window.setInterval(() => {
         this.removePastDeliveryDays();
