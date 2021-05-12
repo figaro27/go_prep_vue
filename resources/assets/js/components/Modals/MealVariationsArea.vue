@@ -68,7 +68,6 @@
         v-model="quant"
         type="number"
         class="mb-2 width-115"
-        min="1"
       ></b-form-input>
       <button
         type="button"
@@ -244,6 +243,22 @@ export default {
       if (this.components) {
         this.components.forEach(component => {
           Vue.set(this.choices, component.id, []);
+
+          // Automatically select the first option
+
+          // let selectedSizeId = this.fromMealsArea
+          //   ? this.sizeId
+          //   : this.$parent.mealSize;
+          // let firstComponentOptionId = component.options[0].id;
+          // if (selectedSizeId) {
+          //   let firstSizeComponentOption = component.options.find(option => {
+          //     return option.meal_size_id === selectedSizeId;
+          //   });
+          //   if (firstSizeComponentOption) {
+          //     firstComponentOptionId = firstSizeComponentOption.id;
+          //   }
+          // }
+          // Vue.set(this.choices, component.id, [firstComponentOptionId]);
         });
       }
     },
@@ -322,6 +337,18 @@ export default {
           this.getMealVariationPrice();
         }
       }
+      this.preventOverMaximumChoices();
+    },
+    preventOverMaximumChoices() {
+      Object.keys(this.choices).forEach(choiceId => {
+        let max = this.components.find(component => {
+          return parseInt(component.id) === parseInt(choiceId);
+        }).maximum;
+        let selectedOptions = this.choices[choiceId];
+        if (selectedOptions.length > max) {
+          selectedOptions.shift();
+        }
+      });
     },
     resetVariations() {
       //this.choices = {};
