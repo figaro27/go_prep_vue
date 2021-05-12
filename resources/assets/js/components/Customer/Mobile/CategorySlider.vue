@@ -110,12 +110,12 @@
       </div> -->
     </div>
     <div
-      style="width:100%;background-color:#ffffff;height:50px"
+      style="width:100%;background-color:#ffffff;height:40px"
       v-if="showSearch"
       class="d-flex"
     >
       <i
-        class="fas fa-times-circle clear-meal dark-gray pr-2 d-center"
+        class="fas fa-times-circle clear-meal dark-gray pr-2 d-center pb-1"
         @click="(showSearch = false), ($parent.search = '')"
       ></i>
 
@@ -124,7 +124,7 @@
         @keyup.enter="val => ($parent.search = val)"
         v-model="$parent.search"
         placeholder="Search"
-        class="meal-search center-text d-center"
+        class="meal-search center-text d-center pb-2"
         style="font-size:16px"
       ></b-form-textarea>
     </div>
