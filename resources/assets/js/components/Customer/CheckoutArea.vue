@@ -4054,6 +4054,15 @@ use next_delivery_dates
             this.setBagCoupon(null);
           }
 
+          if (response.response.data.error === "past_cutoff_delivery_day") {
+            let deliveryDayFriendly = response.response.data.deliveryDay;
+            this.bag.forEach(item => {
+              if (item.delivery_day.day_friendly === deliveryDayFriendly) {
+                this.removeDeliveryDayItems(deliveryDayFriendly);
+              }
+            });
+          }
+
           if (response.response.data.removeableMeal) {
             let removeableMeal = response.response.data.removeableMeal;
             this.bag.forEach(item => {
@@ -4073,6 +4082,20 @@ use next_delivery_dates
           this.checkingOut = false;
           this.$toastr.w(error);
         });
+    },
+    removeDeliveryDayItems(deliveryDayFriendly) {
+      this.bag.forEach(item => {
+        if (item.delivery_day.day_friendly == deliveryDayFriendly) {
+          this.clearMealFullQuantity(
+            item.meal,
+            item.meal_package,
+            item.size,
+            item.components,
+            item.addons,
+            item.special_instructions
+          );
+        }
+      });
     },
     inputCustomer(id) {
       this.existingCustomerAdded = false;

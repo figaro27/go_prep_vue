@@ -132,7 +132,9 @@ class CheckoutController extends UserController
                                     Carbon::parse($dayFriendly)->format(
                                         'D, m/d/y'
                                     ) .
-                                    ' have unfortunately passed the cutoff. Please remove that day from your bag and refresh the page.'
+                                    ' have unfortunately passed the cutoff. Day has been removed from your bag. Please checkout again.',
+                                'error' => 'past_cutoff_delivery_day',
+                                'deliveryDay' => $dayFriendly
                             ],
                             400
                         );
