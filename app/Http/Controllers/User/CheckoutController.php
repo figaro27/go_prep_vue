@@ -48,6 +48,7 @@ use App\Billing\Exceptions\BillingException;
 use App\Error;
 use App\Staff;
 use App\PickupLocation;
+use Illuminate\Support\Facades\Artisan;
 
 class CheckoutController extends UserController
 {
@@ -125,6 +126,7 @@ class CheckoutController extends UserController
                 foreach ($deliveryDays as $deliveryDay) {
                     if ($deliveryDay['past_cutoff']) {
                         $dayFriendly = $deliveryDay['formattedDayFriendly'];
+                        Artisan::call('cache:clear');
                         return response()->json(
                             [
                                 'message' =>
@@ -132,7 +134,7 @@ class CheckoutController extends UserController
                                     Carbon::parse($dayFriendly)->format(
                                         'D, m/d/y'
                                     ) .
-                                    ' have unfortunately passed the cutoff. Day has been removed from your bag. Please checkout again.',
+                                    ' have unfortunately passed the cutoff. Day has been removed from your bag. Refreshing the page in 5 seconds.',
                                 'error' => 'past_cutoff_delivery_day',
                                 'deliveryDay' => $dayFriendly
                             ],

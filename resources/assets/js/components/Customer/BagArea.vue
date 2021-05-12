@@ -185,6 +185,14 @@
             </button> -->
           </div>
           <div
+            v-if="isMultipleDelivery && groupItem.items.length == 0"
+            class="mt-1"
+          >
+            <b-alert variant="secondary" show class="d-flex d-center">
+              <span class="small strong">No items added for this day.</span>
+            </b-alert>
+          </div>
+          <div
             v-for="(item, mealId) in groupItem.items"
             :key="`bag-${mealId}`"
             style="margin-bottom: 12px;"
@@ -1256,11 +1264,11 @@ export default {
       }
     },
     removeDeliveryDayItems(deliveryDay) {
+      let dayFriendly = deliveryDay.day_friendly
+        ? deliveryDay.day_friendly
+        : deliveryDay;
       this.bag.forEach(item => {
-        if (
-          item.delivery_day.day_friendly == deliveryDay.day_friendly ||
-          item.delivery_day.day_friendly == deliveryDay
-        ) {
+        if (item.delivery_day.day_friendly == dayFriendly) {
           this.clearMealFullQuantity(
             item.meal,
             item.meal_package,
@@ -1273,7 +1281,9 @@ export default {
       });
 
       // Switch to the first delivery day in the bag if exists
-      this.loadDeliveryDayMenu(this.bag[0].delivery_day);
+      if (this.bag[0]) {
+        this.loadDeliveryDayMenu(this.bag[0].delivery_day);
+      }
     },
     changeTransferType(val) {
       this.$store.commit("emptyBag");
@@ -1359,6 +1369,10 @@ export default {
             this.bag.forEach(item => {
               if (item.delivery_day.day_friendly === deliveryDayFriendly) {
                 this.removeDeliveryDayItems(deliveryDayFriendly);
+                this.$toastr.w(response.response.data.message);
+                setTimeout(function() {
+                  window.location.reload(true);
+                }, 5000);
               }
             });
           }

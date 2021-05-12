@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Store;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
 
 class DeliveryDayController extends Controller
 {
@@ -42,6 +43,7 @@ class DeliveryDayController extends Controller
             }
             foreach ($deliveryDays as $deliveryDay) {
                 if ($deliveryDay['past_cutoff']) {
+                    Artisan::call('cache:clear');
                     $dayFriendly = $deliveryDay['formattedDayFriendly'];
                     return response()->json(
                         [
@@ -50,7 +52,7 @@ class DeliveryDayController extends Controller
                                 Carbon::parse($dayFriendly)->format(
                                     'D, m/d/y'
                                 ) .
-                                ' have unfortunately passed the cutoff. Day has been removed from your bag. Please checkout again.',
+                                ' have unfortunately passed the cutoff. Day has been removed from your bag. Refreshing the page in 5 seconds.',
                             'error' => 'past_cutoff_delivery_day',
                             'deliveryDay' => $dayFriendly
                         ],

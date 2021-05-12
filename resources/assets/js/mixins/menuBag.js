@@ -120,7 +120,9 @@ export default {
           let newDate = moment(m).add(i, "week");
           let newDay = { ...day };
           newDay.day_friendly = newDate.format("YYYY-MM-DD");
-          storeDeliveryDays.push(newDay);
+          if (newDay.day_friendly !== "Invalid date") {
+            storeDeliveryDays.push(newDay);
+          }
         });
       }
 
@@ -566,7 +568,10 @@ export default {
           }
 
           // Add all delivery days
-          if (this.selectedDeliveryDay) {
+          if (
+            this.selectedDeliveryDay &&
+            this.selectedDeliveryDay.day_friendly !== "Invalid date"
+          ) {
             let included = false;
             grouped.forEach(group => {
               if (group.delivery_day.id === this.selectedDeliveryDay.id) {
@@ -592,7 +597,10 @@ export default {
       this.sortedDeliveryDays.forEach(day => {
         count++;
         if (count < 4) {
-          if (!delivery_day_ids.includes(day.id)) {
+          if (
+            !delivery_day_ids.includes(day.id) &&
+            day.day_friendly !== "Invalid date"
+          ) {
             grouped.push({
               items: [],
               delivery_day: day

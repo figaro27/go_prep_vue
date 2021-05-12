@@ -4059,6 +4059,10 @@ use next_delivery_dates
             this.bag.forEach(item => {
               if (item.delivery_day.day_friendly === deliveryDayFriendly) {
                 this.removeDeliveryDayItems(deliveryDayFriendly);
+                this.$toastr.w(error);
+                setTimeout(function() {
+                  window.location.reload(true);
+                }, 5000);
               }
             });
           }
@@ -4080,7 +4084,9 @@ use next_delivery_dates
           }
 
           this.checkingOut = false;
-          this.$toastr.w(error);
+          if (response.response.data.error !== "past_cutoff_delivery_day") {
+            this.$toastr.w(error);
+          }
         });
     },
     removeDeliveryDayItems(deliveryDayFriendly) {

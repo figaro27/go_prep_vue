@@ -1652,7 +1652,6 @@ export default {
       if (!availableDates) {
         if (this.isMultipleDelivery) {
           let nextDeliveryDay = this.sortedDeliveryDays[0];
-
           this.selectedDeliveryDay = nextDeliveryDay;
           this.finalDeliveryDay = nextDeliveryDay;
 
