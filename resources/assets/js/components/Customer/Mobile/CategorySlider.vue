@@ -43,15 +43,16 @@
         </p>
       </div>
 
-      <b-modal
+      <!-- <b-modal
         v-model="showSearchModal"
         v-if="showSearchModal"
         size="sm"
         no-fade
         hide-header
         hide-footer
-      >
-        <div class="d-flex mt-3 mb-3">
+      > -->
+      <div v-if="showSearchModal">
+        <div class="d-flex d-center mt-3 mb-3">
           <i
             class="fas fa-times-circle clear-meal dark-gray pr-2"
             @click="$parent.search = ''"
@@ -66,7 +67,7 @@
             style="font-size:16px"
           ></b-form-textarea>
         </div>
-        <div class="d-flex d-center">
+        <!-- <div class="d-flex d-center">
           <b-btn
             @click="($parent.search = ''), (showSearchModal = false)"
             class="secondary mr-2"
@@ -75,8 +76,9 @@
           <b-btn @click="showSearchModal = false" class="brand-color white-text"
             >Search</b-btn
           >
-        </div>
-      </b-modal>
+        </div> -->
+      </div>
+      <!-- </b-modal> -->
 
       <!-- <slick
         v-if="categories.length > 4 || categoriesCharacterCount > 30"
