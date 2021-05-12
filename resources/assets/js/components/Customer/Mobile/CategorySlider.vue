@@ -109,7 +109,11 @@
         >
       </div> -->
     </div>
-    <div style="width:100%" v-if="showSearch" class="d-flex">
+    <div
+      style="width:100%;background-color:#ffffff"
+      v-if="showSearch"
+      class="d-flex"
+    >
       <i
         class="fas fa-times-circle clear-meal dark-gray pr-2 d-center"
         @click="(showSearch = false), ($parent.search = '')"
