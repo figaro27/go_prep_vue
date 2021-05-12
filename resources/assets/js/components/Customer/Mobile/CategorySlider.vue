@@ -115,7 +115,7 @@
       class="d-flex"
     >
       <i
-        class="fas fa-times-circle clear-meal dark-gray pr-2 d-center pb-1"
+        class="fas fa-times-circle clear-meal dark-gray pr-2 d-center mb-1"
         @click="(showSearch = false), ($parent.search = '')"
       ></i>
 
