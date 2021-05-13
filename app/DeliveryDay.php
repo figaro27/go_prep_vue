@@ -5,6 +5,7 @@ namespace App;
 use App\Traits\DeliveryDates;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
 
 class DeliveryDay extends Model
 {
@@ -119,17 +120,20 @@ class DeliveryDay extends Model
         return $this->day;
     }
 
-    public function isPastCutoff($dayFriendly)
+    public function isPastCutoff($dayFriendly, $type)
     {
-        $date = Carbon::parse($dayFriendly);
-
-        $cutoffDate = $date
-            ->subDays($this->cutoff_days)
-            ->subHours($this->cutoff_hours);
-
-        if ($cutoffDate->isPast()) {
-            return true;
+        Artisan::call('cache:clear');
+        $nextOrderableDates =
+            $type == 'delivery'
+                ? $this->store->settings->next_orderable_delivery_dates
+                : $this->store->settings->next_orderable_pickup_dates;
+        $dateIsAvailable = false;
+        foreach ($nextOrderableDates as $nextOrderableDate) {
+            if ($nextOrderableDate['day_friendly'] === $dayFriendly) {
+                $dateIsAvailable = true;
+            }
         }
-        return false;
+
+        return $dateIsAvailable ? false : true;
     }
 }

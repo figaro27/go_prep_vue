@@ -111,7 +111,8 @@ class CheckoutController extends UserController
                             ->first();
                         if (
                             $deliveryDay->isPastCutoff(
-                                $bagItem['delivery_day']['day_friendly']
+                                $bagItem['delivery_day']['day_friendly'],
+                                $bagItem['delivery_day']['type']
                             )
                         ) {
                             $deliveryDay['past_cutoff'] = true;
