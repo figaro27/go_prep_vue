@@ -548,9 +548,6 @@ class RegisterController extends Controller
             if ($userDetails) {
                 $userDetails->delete();
             }
-            if ($store) {
-                $store->delete();
-            }
             if ($storeDetail) {
                 $storeDetail->delete();
             }
@@ -583,6 +580,15 @@ class RegisterController extends Controller
             }
             if ($storePlan) {
                 $storePlan->delete();
+            }
+            if ($storeLabelSettings) {
+                $storeLabelSettings->delete();
+            }
+            if ($storeOrderLabelSettings) {
+                $storeOrderLabelSettings->delete();
+            }
+            if ($store) {
+                $store->delete();
             }
         }
     }
