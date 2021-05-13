@@ -6,13 +6,13 @@
 public function __construct()
 {
   parent::__construct();
-  return;
+  return; // add this line
   ...
 }
 
 public function handle()
 {
-  return;
+  return; // add this line
   ...
 }
 ```
