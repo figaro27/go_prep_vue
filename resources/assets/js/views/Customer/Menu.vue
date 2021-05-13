@@ -604,11 +604,17 @@ export default {
     otherDayCheck() {
       if (this.store.modules.multipleDeliveryDays) {
         // If there are other days available other than the ones already added to the bag with items
-        return this.groupBag.length < this.sortedDeliveryDays.length
-          ? true
-          : false;
+
+        let showOtherDayModal =
+          this.groupBag.length < this.sortedDeliveryDays.length ? true : false;
+        this.groupBag.forEach(bagItem => {
+          if (bagItem.items.length == 0) {
+            showOtherDayModal = true;
+          }
+        });
+
+        return showOtherDayModal;
       }
-      return false;
     },
     adjustingScreen() {
       if (
