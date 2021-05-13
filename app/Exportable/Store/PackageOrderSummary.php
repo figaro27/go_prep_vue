@@ -255,7 +255,9 @@ class PackageOrderSummary
                         'name' =>
                             $mealPackageOrder->customTitle ??
                             $mealPackageOrder->meal_package->title,
-                        'items' => $mealPackageOrder->items_quantity,
+                        'items' =>
+                            $mealPackageOrder->items_quantity /
+                            $mealPackageOrder->quantity,
                         'size' => ($mealPackageOrder->customSize
                                 ? $mealPackageOrder->customSize
                                 : $mealPackageOrder->meal_package_size)
@@ -287,7 +289,9 @@ class PackageOrderSummary
                         'name' =>
                             $mealPackageOrder->customTitle ??
                             $mealPackageOrder->meal_package->title,
-                        'items' => $mealPackageOrder->items_quantity,
+                        'items' =>
+                            $mealPackageOrder->items_quantity /
+                            $mealPackageOrder->quantity,
                         'size' => ($mealPackageOrder->customSize
                                 ? $mealPackageOrder->customSize
                                 : $mealPackageOrder->meal_package_size)
