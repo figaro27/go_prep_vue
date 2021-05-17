@@ -218,7 +218,7 @@ class StorePlanController extends StoreController
             $selectedPlan == 'pay-as-you-go' ? 'n/a' : $selectedPeriod;
         $stripeId = isset($planObj['stripe_id']) ? $planObj['stripe_id'] : null;
         $planAmount = $planObj['price'];
-        $allowedOrders = isset($planObj['orders']) ? $planObj['stripe_id'] : 0;
+        $allowedOrders = isset($planObj['orders']) ? $planObj['orders'] : 0;
 
         // Cancel existing subscription in Stripe
         if ($storePlan->method !== 'connect') {
