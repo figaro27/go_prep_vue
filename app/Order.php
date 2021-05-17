@@ -148,6 +148,11 @@ class Order extends Model
         return $this->hasOne('App\Card');
     }
 
+    public function orderTransaction()
+    {
+        return $this->hasOne('App\OrderTransaction');
+    }
+
     public function purchased_gift_cards()
     {
         return $this->hasMany('App\PurchasedGiftCard');
