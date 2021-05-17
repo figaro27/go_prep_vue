@@ -439,6 +439,23 @@ class Subscription extends Model
             $latestOrder->prepaid = $this->prepaid;
             $latestOrder->save();
 
+            if ($charge) {
+                $order_transaction = new OrderTransaction();
+                $order_transaction->order_id = $latestOrder->id;
+                $order_transaction->store_id = $latestOrder->store_id;
+                $order_transaction->user_id = $latestOrder->user_id;
+                $order_transaction->customer_id = $latestOrder->customer_id;
+                $order_transaction->type = 'order';
+                $order_transaction->stripe_id = $latestOrder->stripe_id
+                    ? $latestOrder->stripe_id
+                    : null;
+                $order_transaction->card_id = $latestOrder->card_id
+                    ? $latestOrder->card_id
+                    : null;
+                $order_transaction->amount = $latestOrder->amount;
+                $order_transaction->save();
+            }
+
             $this->syncPrices();
 
             // Create new order for next delivery
@@ -770,21 +787,6 @@ class Subscription extends Model
                 'type' => 'payment_succeeded',
                 'stripe_event' => !$applyCharge ? json_encode($charge) : null
             ]);
-
-            $order_transaction = new OrderTransaction();
-            $order_transaction->order_id = $latestOrder->id;
-            $order_transaction->store_id = $latestOrder->store_id;
-            $order_transaction->user_id = $latestOrder->user_id;
-            $order_transaction->customer_id = $latestOrder->customer_id;
-            $order_transaction->type = 'order';
-            $order_transaction->stripe_id = $latestOrder->stripe_id
-                ? $latestOrder->stripe_id
-                : null;
-            $order_transaction->card_id = $latestOrder->card_id
-                ? $latestOrder->card_id
-                : null;
-            $order_transaction->amount = $latestOrder->amount;
-            $order_transaction->save();
 
             if ($this->status !== 'paused') {
                 // Send new order notification to store at the cutoff once the order is paid

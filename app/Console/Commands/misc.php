@@ -71,5 +71,23 @@ class misc extends Command
      */
     public function handle()
     {
+        $orders = Order::where('id', '>', 45000)
+            ->where('paid', 1)
+            ->where('cashOrder', 0)
+            ->where('payment_gateway', 'stripe')
+            ->where('stripe_id', '!=', null)
+            ->get();
+
+        foreach ($orders as $order) {
+            $orderTransaction = $order->orderTransaction;
+            if (!$orderTransaction) {
+                $this->info(
+                    'Missing - Order ID: ' .
+                        $order->id .
+                        ' Store ID: ' .
+                        $order->store_id
+                );
+            }
+        }
     }
 }
