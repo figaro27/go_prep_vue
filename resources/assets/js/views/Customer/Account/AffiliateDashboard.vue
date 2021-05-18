@@ -146,11 +146,9 @@ export default {
   methods: {
     formatMoney: format.money,
     getReferralOrders() {
-      axios
-        .post("/api/me/getReferralOrders", { code: this.user.referralUrlCode })
-        .then(resp => {
-          this.referralOrders = resp.data;
-        });
+      axios.post("/api/me/getReferralOrders").then(resp => {
+        this.referralOrders = resp.data;
+      });
     },
     onCopy: function(e) {
       this.$toastr.s("Link copied to clipboard.");

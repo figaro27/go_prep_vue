@@ -86,6 +86,7 @@ class misc extends Command
         $stores = Store::whereIn('id', $storeIds)->get();
 
         foreach ($stores as $store) {
+            $this->info($store->id);
             $referralSettings = $store->referralSettings;
             $orders = $store->orders;
             foreach ($orders as $order) {

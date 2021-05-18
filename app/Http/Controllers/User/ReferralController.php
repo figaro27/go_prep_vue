@@ -40,7 +40,7 @@ class ReferralController extends UserController
 
     public function getReferralOrders(Request $request)
     {
-        $referralId = Referral::where('code', $request->code)
+        $referralId = Referral::where('user_id', $this->user->id)
             ->pluck('id')
             ->first();
         return Order::where('referral_id', $referralId)->get();
