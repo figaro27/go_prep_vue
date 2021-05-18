@@ -599,7 +599,7 @@ class Subscription extends Model
             if (
                 $referralSettings->enabled &&
                 $latestOrder->referral_id &&
-                $referralSettings->frequency !== 'firstOrder'
+                $referralSettings->frequency === 'allOrders'
             ) {
                 $referralKickbackAmount =
                     $referralSettings->type == 'flat'
