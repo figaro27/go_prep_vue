@@ -125,7 +125,8 @@ class RegisterController extends StoreController
                     'meal_plan_paused' => true,
                     'new_order' => true,
                     'subscription_meal_substituted' => true,
-                    'subscription_renewing' => true
+                    'subscription_renewing' => true,
+                    'new_referral' => true
                 )
             ]);
         }

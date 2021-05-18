@@ -83,7 +83,8 @@ const state = {
     subscription: null,
     notes: null,
     publicNotes: null,
-    lineItems: []
+    lineItems: [],
+    referralUrl: null
   },
   delivery_date: null,
   zip_code: null,
@@ -290,6 +291,9 @@ const mutations = {
   },
   setBagLineItems(state, data) {
     state.bag.lineItems = data;
+  },
+  setBagReferralUrl(state, data) {
+    state.bag.referralUrl = data;
   },
   setCards(state, data) {
     state.cards = data;
@@ -3715,6 +3719,9 @@ const getters = {
   },
   bagReferral(state) {
     return state.bag.referral;
+  },
+  bagReferralUrl(state) {
+    return state.bag.referralUrl;
   },
   bagMealPlan(state) {
     return state.bag.meal_plan;

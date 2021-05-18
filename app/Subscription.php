@@ -27,6 +27,7 @@ use App\StoreModule;
 use App\Error;
 use App\PickupLocation;
 use App\User;
+use App\Referral;
 
 class Subscription extends Model
 {
@@ -593,6 +594,28 @@ class Subscription extends Model
             $newOrder->goprep_fee = $goPrepFee;
             $newOrder->stripe_fee = $stripeFee;
             $newOrder->grandTotal = $newOrder->amount - $goPrepFee - $stripeFee;
+
+            $referralSettings = $this->store->referralSettings;
+            if (
+                $referralSettings->enabled &&
+                $latestOrder->referral_id &&
+                $referralSettings->frequency !== 'firstOrder'
+            ) {
+                $referralKickbackAmount =
+                    $referralSettings->type == 'flat'
+                        ? $referralSettings->amount
+                        : ($referralSettings->amount / 100) * $newOrder->amount;
+                $newOrder->referral_kickback_amount = $referralKickbackAmount;
+                $newOrder->referral_id = $latestOrder->referral_id;
+                $referral = Referral::where(
+                    'id',
+                    $latestOrder->referral_id
+                )->first();
+                $referral->amountReferred += $newOrder->amount;
+                $referral->ordersReferred += 1;
+                $referral->balance += $referralKickbackAmount;
+                $referral->update();
+            }
 
             $newOrder->save();
 

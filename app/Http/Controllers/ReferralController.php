@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Referral;
 use Illuminate\Http\Request;
+use App\ReferralSetting;
 
 class ReferralController extends Controller
 {
@@ -20,13 +21,19 @@ class ReferralController extends Controller
     public function findReferralCode(Request $request)
     {
         $storeId = $request->get('store_id');
-        $referralCode = $request->get('referralCode');
-        $referral = Referral::where([
-            'store_id' => $storeId,
-            'code' => $referralCode
-        ])->first();
-        if (isset($referral)) {
-            return $referral;
+        $referralSetting = ReferralSetting::where(
+            'store_id',
+            $storeId
+        )->first();
+        if ($referralSetting->kickbackType !== 'cash') {
+            $referralCode = $request->get('referralCode');
+            $referral = Referral::where([
+                'store_id' => $storeId,
+                'code' => $referralCode
+            ])->first();
+            if (isset($referral)) {
+                return $referral;
+            }
         }
     }
     /**

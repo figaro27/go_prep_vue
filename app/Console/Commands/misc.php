@@ -38,6 +38,11 @@ use App\ReportSetting;
 use App\OrderTransaction;
 use App\Order;
 use App\Payout;
+use App\UserDetail;
+use App\Customer;
+use App\Card;
+use App\ReferralSetting;
+use App\Referral;
 
 class misc extends Command
 {
@@ -72,53 +77,152 @@ class misc extends Command
      */
     public function handle()
     {
-        $stores = Store::where('id', '>', 20)->get();
+        $storeIds = ReferralSetting::where('enabled', 1)
+            ->get()
+            ->map(function ($setting) {
+                return $setting->store_id;
+            });
+
+        $stores = Store::whereIn('id', $storeIds)->get();
 
         foreach ($stores as $store) {
-            $this->info('Store ID: ' . $store->id);
-            $acct = $store->settings->stripe_account;
-            \Stripe\Stripe::setApiKey($acct['access_token']);
-
-            $payouts = Payout::where('store_id', $store->id)->get();
-
-            foreach ($payouts as $payout) {
-                try {
-                    $balanceTransactions = \Stripe\BalanceTransaction::all([
-                        'payout' => $payout->stripe_id,
-                        'limit' => 100
-                    ])->data;
-
-                    foreach ($balanceTransactions as $balanceTransaction) {
-                        if ($balanceTransaction->type === 'charge') {
-                            $charge = $balanceTransaction->source;
-
-                            $order = Order::where(
-                                'stripe_id',
-                                $charge
-                            )->first();
-                            if (!$order) {
-                                $this->info(
-                                    'No order found for charge: ' . $charge
-                                );
-                            } else {
-                                if (!$order->payout_date) {
-                                    $order->payout_date = $payout->arrival_date;
-                                    $order->payout_amount = $payout->amount;
-                                    $order->update();
-                                    $this->info(
-                                        'Order ID: ' . $order->id . ' updated.'
-                                    );
-                                }
-                            }
-                        }
+            $referralSettings = $store->referralSettings;
+            $orders = $store->orders;
+            foreach ($orders as $order) {
+                if ($order->referral_id) {
+                    if ($referralSettings->type === 'flat') {
+                        $order->referral_kickback_amount =
+                            $referralSettings->amount;
+                    } else {
+                        $order->referral_kickback_amount =
+                            ($referralSettings->amount / 100) * $order->amount;
                     }
-                } catch (\Exception $e) {
-                    $this->info(
-                        'Payout ID: ' . $payout->id . ' not found in Stripe'
-                    );
+                    $order->update();
                 }
             }
         }
+
+        // $syncCustomersStripe = [];
+
+        // $customers = Customer::all();
+
+        // foreach ($customers as $customer){
+        //     $syncCustomersStripe[$customer->user_id] = $customer->stripe_id;
+        //     $customer->delete();
+        // }
+
+        // $orders = Order::all();
+
+        // foreach ($orders as $order)
+        // {
+        //     $existingCustomer = Customer::where('store_id', $order->store_id)->where('user_id', $order->user_id)->first();
+        //     if ($existingCustomer){
+        //         $existingCustomer->last_order = $order->paid_at;
+        //         $existingCustomer->total_payments += 1;
+        //         $existingCustomer->total_paid += $order->amount;
+        //         $existingCustomer->update();
+        //     } else {
+        //         $customer = new Customer();
+        //         $customer->store_id = $order->store_id;
+        //         $customer->user_id = $order->user_id;
+        //         $customer->stripe_id = $syncCustomersStripe[$order->user_id];
+        //         $customer->currency = $order->currency;
+        //         $customer->payment_gateway = $order->payment_gateway;
+        //         $customer->email = $order->user->email;
+        //         $customer->firstname = $order->user->details->firstname;
+        //         $customer->lastname = $order->user->details->lastname;
+        //         $customer->name = $order->user->details->firstname . ' ' . $order->user->details->lastname;
+        //         $customer->company = $order->user->details->company;
+        //         $customer->phone = $order->user->details->phone;
+        //         $customer->address = $order->user->details->address;
+        //         $customer->city = $order->user->details->city;
+        //         $customer->state = $order->user->details->state;
+        //         $customer->zip = $order->user->details->zip;
+        //         $customer->delivery = $order->user->details->delivery;
+        //         $customer->last_order = $order->paid_at;
+        //         $customer->total_payments = 1;
+        //         $customer->total_paid = $order->amount;
+        //         $customer->save();
+        //     }
+
+        // }
+
+        // $moreThanTwo = [];
+        // $totalRemoved = 0;
+        // $orders = Order::where('id', '>', 25000)->where('id', '<', 45000)->get();
+
+        // foreach ($orders as $order){
+        // $this->info($order->id);
+        //     $orderTransactions = OrderTransaction::where('order_id', $order->id)->where('type', 'order')->get();
+        //     // if ($orderTransactions->count() > 1){
+        //         if ($orderTransactions->count() > 2){
+        //             dd($orderTransactions);
+        //             $this->info($orderTransactions[0]['id']);
+        //             array_push($orderTransactions[0]['id'], $moreThanTwo);
+        //         }
+        //         // else {
+        //         //     $firstOrderTransaction = $orderTransactions[0];
+        //         // $secondOrderTransaction = $orderTransactions[1];
+        //         // $stripe_id = $firstOrderTransaction['stripe_id'];
+        //         // $amount = $firstOrderTransaction['amount'];
+        //         // $this->info($stripe_id);
+        //         // $this->info($amount);
+        //         // if ($secondOrderTransaction['stripe_id'] === $stripe_id && $secondOrderTransaction['amount'] === $amount){
+        //         //     $remove = OrderTransaction::where('id', $secondOrderTransaction['id'])->first();
+        //         //     $remove->delete();
+        //         //     $totalRemoved += 1;
+        //         //     $this->info('Exact duplicate found ' . $firstOrderTransaction['id']);
+        //         // }
+        //         // }
+        //     // }
+        // }
+        // // $this->info('Total Removed: ' . $totalRemoved);
+        // $this->info('More than two:' );
+        // dd($moreThanTwo);
+
+        // $stores = Store::where('id', '>', 20)->get();
+
+        // foreach ($stores as $store) {
+        //     $this->info('Store ID: ' . $store->id);
+        //     $acct = $store->settings->stripe_account;
+        //     \Stripe\Stripe::setApiKey($acct['access_token']);
+
+        //     $payouts = Payout::where('store_id', $store->id)->get();
+        //     foreach ($payouts as $payout) {
+        //         $this->info('Payout ID: ' . $payout->id);
+        //         try {
+        //             $balanceTransactions = \Stripe\BalanceTransaction::all([
+        //                 'payout' => $payout->stripe_id,
+        //                 'limit' => 100
+        //             ])->data;
+
+        //             foreach ($balanceTransactions as $balanceTransaction) {
+        //                 if ($balanceTransaction->type === 'charge') {
+        //                     $charge = $balanceTransaction->source;
+
+        //                     $order = Order::where(
+        //                         'stripe_id',
+        //                         $charge
+        //                     )->first();
+        //                     if ($order) {
+        //                         if (!$order->payout_date) {
+        //                             $order->payout_date = $payout->arrival_date;
+        //                             $order->payout_total = $payout->amount;
+        //                             $order->update();
+        //                             $this->info(
+        //                                 'Order ID: ' . $order->id . ' updated.'
+        //                             );
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         } catch (\Exception $e) {
+        //             $this->info(
+        //                 'Payout ID: ' . $payout->id . ' not found in Stripe'
+        //             );
+        //         }
+        //     }
+        // }
 
         // $orderTransactions = OrderTransaction::all();
 

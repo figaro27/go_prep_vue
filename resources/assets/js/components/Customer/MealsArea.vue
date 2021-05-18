@@ -169,7 +169,10 @@
           <span v-if="referralSettings.frequency == 'urlOnly'">
             using your link
           </span>
-          receive {{ referralSettings.amountFormat }} credit
+          receive {{ referralSettings.amountFormat }}
+          <span v-if="referralSettings.kickbackType === 'credit'"
+            >store credit</span
+          >
           <span v-if="referralSettings.frequency == 'firstOrder'">
             on the first order they place.
           </span>

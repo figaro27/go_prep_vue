@@ -1132,6 +1132,10 @@ export default {
     if (!this.loggedIn) {
       this.setBagSubscription(null);
     }
+
+    if (this.$route.query.r) {
+      this.setBagReferralUrl(this.$route.query.r);
+    }
   },
   beforeDestroy() {
     this.showActiveFilters();
@@ -1172,7 +1176,8 @@ export default {
       "setBagZipCode",
       "setBagPickup",
       "setMultDDZipCode",
-      "setBagSubscription"
+      "setBagSubscription",
+      "setBagReferralUrl"
     ]),
     updateScrollbar() {
       return; // disabling for now

@@ -101,6 +101,9 @@ class ReferralController extends StoreController
     public function settleBalance(Request $request)
     {
         $referral = Referral::where('id', $request->get('id'))->first();
+        $referral->total_paid_or_used = $referral->balance;
+        $referral->update();
+
         $referral->balance = 0;
         $referral->update();
     }

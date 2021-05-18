@@ -734,7 +734,10 @@ $referralURL = $order->store->details->full_url . '/customer/menu?r=' . $order->
                   @if ($referralSettings->frequency == 'urlOnly')
                   using your link 
                   @endif
-                  you will receive {{ $referralSettings->amountFormat }} credit
+                  you will receive {{ $referralSettings->amountFormat }}
+                  @if ($referralSettings->kickbackType === 'credit') 
+                  store credit
+                  @endif
                   @if ($referralSettings->frequency === 'firstOrder')
                     on the first order they place.
                   @else

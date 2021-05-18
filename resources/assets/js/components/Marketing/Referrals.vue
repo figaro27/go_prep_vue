@@ -20,7 +20,11 @@
             ordersReferred: 'Referred Orders',
             amountReferred: 'Total Revenue',
             referralUrlCode: 'Referral URL',
-            code: 'Redeem Code'
+            code: 'Redeem Code',
+            total_paid_or_used:
+              referralSettings.kickbackType === 'credit'
+                ? 'Total Amount Used'
+                : 'Total Paid Out'
           }
         }"
       >
@@ -111,7 +115,27 @@
                     class="popover-size ml-1"
                   /></p
               ></b-form-checkbox> -->
-              <h5 class="strong mt-3 mb-2">Display</h5>
+              <h5 class="strong mt-3 mb-2">
+                Kickback Type
+                <img
+                  v-b-popover.hover="
+                    'Choose \'Store Credit\' to allow the affiliate spend their accumulated kickback amount as store credit in their future orders with you. Choose \'Cash\' to disable store credit. Instead you pay out the accumulated amount to the affiliate and then click \'Settle Balance\' in the table below to reset the amount down to 0. As of now, you have to pay the affiliate outside of the GoPrep platform in a payment method of your choosing (Paypal, Venmo, check, etc.)'
+                  "
+                  title="Kickback Type"
+                  src="/images/store/popover.png"
+                  class="popover-size ml-1"
+                />
+              </h5>
+              <b-form-radio-group
+                v-model="referralSettings.kickbackType"
+                :options="[
+                  { text: 'Store Credit', value: 'credit' },
+                  { text: 'Cash', value: 'cash' }
+                ]"
+              >
+              </b-form-radio-group>
+
+              <h5 class="strong mt-4 mb-2">Display</h5>
               <b-form-checkbox v-model="referralSettings.showInNotifications"
                 ><p>
                   Show in Notifications
@@ -143,7 +167,7 @@
                   v-b-popover.hover="
                     'Choose the frequency and conditions in which your affiliate gets rewarded. \'First Order Only\' applies the reward only on the first order of a new customer they referred. \'All Orders With Link\' applies the reward on all orders in which the referral link is used. \'All Orders\' applies the reward on all orders that were created by a referred customer regardless if they use the referral link or not.'
                   "
-                  title="Type"
+                  title="Frequency"
                   src="/images/store/popover.png"
                   class="popover-size ml-1"
                 />
@@ -270,6 +294,7 @@ export default {
         "amountReferred",
         "referralUrlCode",
         "code",
+        "total_paid_or_used",
         "balance",
         "actions"
       ],

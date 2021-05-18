@@ -861,7 +861,10 @@ foreach (
                                 '/me/findReferralCode',
                                 'ReferralController@findReferralCode'
                             );
-
+                            Route::post(
+                                '/me/getReferralOrders',
+                                'ReferralController@getReferralOrders'
+                            );
                             Route::get(
                                 '/me/getCustomer',
                                 'UserController@getCustomer'

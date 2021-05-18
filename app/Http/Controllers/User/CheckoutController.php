@@ -1831,6 +1831,7 @@ class CheckoutController extends UserController
                     }
                     $order = Order::where('id', $orderId)->first();
                     $order->referral_id = $referral->id;
+                    $order->referral_kickback_amount = $referralAmount;
                     $order->update();
 
                     $referralUser = User::where('id', $referralUserId)->first();

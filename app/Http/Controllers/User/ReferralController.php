@@ -4,6 +4,8 @@ namespace App\Http\Controllers\User;
 
 use App\Referral;
 use Illuminate\Http\Request;
+use App\ReferralSetting;
+use App\Order;
 
 class ReferralController extends UserController
 {
@@ -20,14 +22,28 @@ class ReferralController extends UserController
     public function findReferralCode(Request $request)
     {
         $storeId = $request->get('store_id');
-        $referralCode = $request->get('referralCode');
-        $referral = Referral::where([
-            'store_id' => $storeId,
-            'code' => $referralCode
-        ])->first();
-        if (isset($referral)) {
-            return $referral;
+        $referralSetting = ReferralSetting::where(
+            'store_id',
+            $storeId
+        )->first();
+        if ($referralSetting->kickbackType !== 'cash') {
+            $referralCode = $request->get('referralCode');
+            $referral = Referral::where([
+                'store_id' => $storeId,
+                'code' => $referralCode
+            ])->first();
+            if (isset($referral)) {
+                return $referral;
+            }
         }
+    }
+
+    public function getReferralOrders(Request $request)
+    {
+        $referralId = Referral::where('code', $request->code)
+            ->pluck('id')
+            ->first();
+        return Order::where('referral_id', $referralId)->get();
     }
     /**
      * Show the form for creating a new resource.

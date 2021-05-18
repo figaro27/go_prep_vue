@@ -1697,6 +1697,10 @@ export default {
           ? this.$parent.$route.params.subscription.gratuity
           : 0;
     }
+
+    if (this.$route.query.r) {
+      this.setBagReferralUrl(this.$route.query.r);
+    }
   },
   mixins: [MenuBag],
   computed: {
@@ -1755,7 +1759,8 @@ export default {
       bagNotes: "bagNotes",
       bagPublicNotes: "bagPublicNotes",
       bagMealPlan: "bagMealPlan",
-      bagLineItems: "bagLineItems"
+      bagLineItems: "bagLineItems",
+      bagReferralUrl: "bagReferralUrl"
     }),
     prepaid() {
       if (
@@ -3450,7 +3455,8 @@ use next_delivery_dates
       "setBagCustomGratuity",
       "setBagSubscriptionInterval",
       "setBagNotes",
-      "setBagPublicNotes"
+      "setBagPublicNotes",
+      "setBagReferralUrl"
     ]),
     setOrderFrequency() {
       // this.setBagSubscriptionInterval(null)
@@ -3977,7 +3983,7 @@ use next_delivery_dates
           gratuity: this.tip,
           grandTotal: this.grandTotal,
           emailCustomer: this.emailCustomer,
-          referralUrl: this.$route.query.r,
+          referralUrl: this.bagReferralUrl,
           promotionPointsAmount: this.promotionPointsAmount,
           pointsReduction: this.promotionPointsReduction,
           staff: this.staffMember,

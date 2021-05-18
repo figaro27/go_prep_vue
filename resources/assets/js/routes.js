@@ -16,6 +16,7 @@ import CustomerCheckout from "./views/Customer/Checkout.vue";
 import CustomerMenu from "./views/Customer/Menu.vue";
 import CustomerContact from "./views/Customer/Account/Contact.vue";
 import CustomerMyAccount from "./views/Customer/Account/MyAccount.vue";
+import CustomerAffiliateDashboard from "./views/Customer/Account/AffiliateDashboard.vue";
 import CustomerSubscriptions from "./views/Customer/Subscriptions.vue";
 import CustomerAdjustSubscription from "./views/Customer/AdjustSubscription.vue";
 import CustomerOrders from "./views/Customer/Orders.vue";
@@ -141,6 +142,11 @@ let routes = [
     path: "/customer/account/my-account",
     component: CustomerMyAccount,
     name: "customer-myaccount"
+  },
+  {
+    path: "/customer/account/affiliate-dashboard",
+    component: CustomerAffiliateDashboard,
+    name: "customer-affiliate-dashboard"
   },
   {
     path: "/customer/subscriptions",

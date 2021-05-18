@@ -185,7 +185,11 @@ $currency = $order->store->settings->currency
           <tr>
             <td height="50" style="font-family: 'Open Sans', Arial, sans-serif; font-size:14px; color:#7f8c8d;">
             <p>Your referral URL was used by this customer to place this order.</p>
-            <p><span style="font-weight:bold">@money($referralAmount , $currency, 2)</span> was added to your balance on code <span style="font-weight:bold">{{ $referral->code }}</span></p>
+            <p><span style="font-weight:bold">@money($referralAmount , $currency, 2)</span> was added to your balance 
+              @if ($order->store->referralSettings->kickbackType === 'credit')
+              on code <span style="font-weight:bold">{{ $referral->code }}
+              @endif
+              </span></p>
             <p>Your total balance is now <span style="font-weight:bold">@money($referral->balance, $currency, 2)</span>.</p>
           </td>
           </tr>
