@@ -33,7 +33,7 @@
       </p>
 
       <p v-if="store.referral_settings.kickbackType === 'credit'">
-        <b>Total store credit used:</b>
+        <b>Total Store Credit Used:</b>
         {{ format.money(referral.total_paid_or_used, storeSettings.currency) }}
       </p>
       <p v-else>
@@ -41,7 +41,11 @@
         {{ format.money(referral.total_paid_or_used, storeSettings.currency) }}
       </p>
 
-      <p>
+      <p v-if="store.referral_settings.kickbackType === 'credit'">
+        <b>Store Credit Balance:</b>
+        {{ format.money(referral.balance, storeSettings.currency) }}
+      </p>
+      <p v-else>
         <b>Balance:</b>
         {{ format.money(referral.balance, storeSettings.currency) }}
       </p>

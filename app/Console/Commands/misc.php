@@ -77,31 +77,43 @@ class misc extends Command
      */
     public function handle()
     {
-        $storeIds = ReferralSetting::where('enabled', 1)
-            ->get()
-            ->map(function ($setting) {
-                return $setting->store_id;
-            });
+        $referrals = Referral::all();
 
-        $stores = Store::whereIn('id', $storeIds)->get();
-
-        foreach ($stores as $store) {
-            $this->info($store->id);
-            $referralSettings = $store->referralSettings;
-            $orders = $store->orders;
+        foreach ($referrals as $referral) {
+            $orders = Order::where('user_id', $referral->user_id)
+                ->where('referralReduction', '>', 0)
+                ->get();
             foreach ($orders as $order) {
-                if ($order->referral_id) {
-                    if ($referralSettings->type === 'flat') {
-                        $order->referral_kickback_amount =
-                            $referralSettings->amount;
-                    } else {
-                        $order->referral_kickback_amount =
-                            ($referralSettings->amount / 100) * $order->amount;
-                    }
-                    $order->update();
-                }
+                $referral->total_paid_or_used += $order->referralReduction;
+                $referral->update();
             }
         }
+
+        // $storeIds = ReferralSetting::where('enabled', 1)
+        //     ->get()
+        //     ->map(function ($setting) {
+        //         return $setting->store_id;
+        //     });
+
+        // $stores = Store::whereIn('id', $storeIds)->get();
+
+        // foreach ($stores as $store) {
+        //     $this->info($store->id);
+        //     $referralSettings = $store->referralSettings;
+        //     $orders = $store->orders;
+        //     foreach ($orders as $order) {
+        //         if ($order->referral_id) {
+        //             if ($referralSettings->type === 'flat') {
+        //                 $order->referral_kickback_amount =
+        //                     $referralSettings->amount;
+        //             } else {
+        //                 $order->referral_kickback_amount =
+        //                     ($referralSettings->amount / 100) * $order->amount;
+        //             }
+        //             $order->update();
+        //         }
+        //     }
+        // }
 
         // $syncCustomersStripe = [];
 
