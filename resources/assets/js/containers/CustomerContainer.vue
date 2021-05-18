@@ -80,9 +80,11 @@
           <b-nav-item v-if="loggedInCheck" to="/customer/account/my-account"
             >My Account</b-nav-item
           >
-          <!-- <b-nav-item v-if="loggedInCheck && store.referral_settings.enabled" to="/customer/account/affiliate-dashboard"
+          <b-nav-item
+            v-if="loggedInCheck && store.referral_settings.enabled"
+            to="/customer/account/affiliate-dashboard"
             >Affiliate Dashboard</b-nav-item
-          > -->
+          >
           <b-nav-item
             v-if="loggedInCheck"
             to="/customer/account/contact"
