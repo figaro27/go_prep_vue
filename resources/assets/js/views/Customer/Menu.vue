@@ -1156,6 +1156,20 @@ export default {
       if (this.$route.query.cat && !val.isRunningLazy) {
         this.backToMenu("categorySection_" + this.$route.query.cat, 0);
       }
+    },
+    bag(val) {
+      if (this.store.modules.multipleDeliveryDays) {
+        if (
+          !this.selectedDeliveryDay ||
+          this.selectedDeliveryDay === "undefined"
+        ) {
+          if (val.length > 0) {
+            this.selectedDeliveryDay = this.sortedDeliveryDays.find(day => {
+              return day.day_friendly === this.bag[0].delivery_day.day_friendly;
+            });
+          }
+        }
+      }
     }
   },
   methods: {
