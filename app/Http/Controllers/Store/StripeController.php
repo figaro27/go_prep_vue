@@ -61,6 +61,8 @@ class StripeController extends StoreController
 
         $this->store->settings->stripe_id = $account->stripe_user_id;
         $this->store->settings->stripe_account = $account;
+        $this->store->settings->account_type =
+            $account->scope === 'express' ? 'express' : 'standard';
         $this->store->settings->save();
 
         return redirect('/store/account/settings');
