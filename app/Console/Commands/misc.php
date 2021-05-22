@@ -109,10 +109,30 @@ class misc extends Command
                             )
                                 ->where('store_id', $store->id)
                                 ->get();
-                            $firstCustomer = Customer::where(
-                                'id',
-                                $duplicateCustomers[0]->id
-                            )->first();
+
+                            // Setting the main customer if the email exists
+                            $firstCustomer = null;
+                            foreach (
+                                $duplicateCustomers
+                                as $duplicateCustomer
+                            ) {
+                                if (
+                                    strpos(
+                                        $duplicateCustomer->email,
+                                        'noemail'
+                                    ) === false
+                                ) {
+                                    $firstCustomer = $duplicateCustomer;
+                                }
+                            }
+
+                            // If not then just choose the first one
+                            if (!$firstCustomer) {
+                                $firstCustomer = Customer::where(
+                                    'id',
+                                    $duplicateCustomers[0]->id
+                                )->first();
+                            }
 
                             foreach (
                                 $duplicateCustomers
@@ -180,7 +200,7 @@ class misc extends Command
                                         strpos(
                                             $duplicateCustomer->email,
                                             'no-email'
-                                        ) !== true
+                                        ) === false
                                     ) {
                                         $firstCustomer->email =
                                             $duplicateCustomer->email;
