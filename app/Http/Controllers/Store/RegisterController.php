@@ -63,7 +63,7 @@ class RegisterController extends StoreController
         // Removing for now - 5/22. Instead if the user exists, update the user with new information, and return existing associated customer.
         if ($user) {
             // Update user details
-            $userDetails = $user->details();
+            $userDetails = UserDetail::where('user_id', $user->id)->first();
             $userDetails->companyname = $request->get('company_name');
             $userDetails->email = $email;
             $userDetails->firstname = $request->get('firstname');
