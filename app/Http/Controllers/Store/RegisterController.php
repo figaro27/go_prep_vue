@@ -94,22 +94,22 @@ class RegisterController extends StoreController
             if (
                 !$user->hasStoreCustomer(
                     $store->id,
-                    $storeSettings->currency,
-                    $gateway
+                    $store->settings->currency,
+                    $store->settings->payment_gateway
                 )
             ) {
                 // If none then make a new one
                 $user->createStoreCustomer(
                     $store->id,
-                    $storeSettings->currency,
-                    $gateway
+                    $store->settings->currency,
+                    $store->settings->payment_gateway
                 );
             }
 
             $customer = $user->getStoreCustomer(
                 $store->id,
-                $storeSettings->currency,
-                $gateway
+                $store->settings->currency,
+                $store->settings->payment_gateway
             );
 
             // return new or existing customer
