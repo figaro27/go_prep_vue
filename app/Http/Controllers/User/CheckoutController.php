@@ -356,7 +356,7 @@ class CheckoutController extends UserController
             if ($cashOrder || ($grandTotal == 0 && !$weeklyPlan)) {
                 $cardId = null;
                 $card = null;
-                $gateway = Constants::GATEWAY_CASH;
+                $gateway = $store->settings->payment_gateway;
             } else {
                 $cardId = $request->get('card_id');
                 $card = $this->user->cards()->findOrFail($cardId);
@@ -517,78 +517,83 @@ class CheckoutController extends UserController
             }
 
             if (!$weeklyPlan) {
-                if ($gateway === Constants::GATEWAY_STRIPE) {
-                    if ($total > 0.5) {
-                        $storeSource = \Stripe\Source::create(
-                            [
-                                "customer" => $this->user->stripe_id,
-                                "original_source" => $card->stripe_id,
-                                "usage" => "single_use"
-                            ],
-                            ["stripe_account" => $storeSettings->stripe_id]
-                        );
+                if (!$cashOrder) {
+                    if ($gateway === Constants::GATEWAY_STRIPE) {
+                        if ($total > 0.5) {
+                            $storeSource = \Stripe\Source::create(
+                                [
+                                    "customer" => $this->user->stripe_id,
+                                    "original_source" => $card->stripe_id,
+                                    "usage" => "single_use"
+                                ],
+                                ["stripe_account" => $storeSettings->stripe_id]
+                            );
+
+                            try {
+                                $additionalFee =
+                                    $store->details->country === 'US'
+                                        ? floor($total * 0.4)
+                                        : 0;
+                                $charge = \Stripe\Charge::create(
+                                    [
+                                        "amount" => round($total * 100),
+                                        "currency" => $storeSettings->currency,
+                                        "source" => $storeSource,
+                                        "application_fee" =>
+                                            round(
+                                                $afterDiscountBeforeFees *
+                                                    $application_fee
+                                            ) + $additionalFee
+                                    ],
+                                    [
+                                        "stripe_account" =>
+                                            $storeSettings->stripe_id
+                                    ],
+                                    [
+                                        "idempotency_key" =>
+                                            substr(
+                                                uniqid(rand(10, 99), false),
+                                                0,
+                                                14
+                                            ) .
+                                            chr(rand(65, 90)) .
+                                            rand(0, 9)
+                                    ]
+                                );
+                            } catch (\Stripe\Error\Charge $e) {
+                                return response()->json(
+                                    [
+                                        'error' => trim(
+                                            json_encode(
+                                                $e->jsonBody['error']['message']
+                                            ),
+                                            '"'
+                                        )
+                                    ],
+                                    400
+                                );
+                            }
+                        }
+                    } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
+                        $billing = Billing::init($gateway, $store);
+
+                        $charge = new \App\Billing\Charge();
+                        $charge->amount = round($total * 100);
+                        $charge->customer = $customer;
+                        $charge->card = $card;
 
                         try {
-                            $additionalFee =
-                                $store->details->country === 'US'
-                                    ? floor($total * 0.4)
-                                    : 0;
-                            $charge = \Stripe\Charge::create(
-                                [
-                                    "amount" => round($total * 100),
-                                    "currency" => $storeSettings->currency,
-                                    "source" => $storeSource,
-                                    "application_fee" =>
-                                        round(
-                                            $afterDiscountBeforeFees *
-                                                $application_fee
-                                        ) + $additionalFee
-                                ],
-                                ["stripe_account" => $storeSettings->stripe_id],
-                                [
-                                    "idempotency_key" =>
-                                        substr(
-                                            uniqid(rand(10, 99), false),
-                                            0,
-                                            14
-                                        ) .
-                                        chr(rand(65, 90)) .
-                                        rand(0, 9)
-                                ]
-                            );
-                        } catch (\Stripe\Error\Charge $e) {
+                            $transactionId = $billing->charge($charge);
+                        } catch (BillingException $e) {
                             return response()->json(
                                 [
-                                    'error' => trim(
-                                        json_encode(
-                                            $e->jsonBody['error']['message']
-                                        ),
-                                        '"'
-                                    )
+                                    'error' => $e->getMessage()
                                 ],
-                                400
+                                500
                             );
                         }
+                        $charge->id = $transactionId;
                     }
-                } elseif ($gateway === Constants::GATEWAY_AUTHORIZE) {
-                    $billing = Billing::init($gateway, $store);
-
-                    $charge = new \App\Billing\Charge();
-                    $charge->amount = round($total * 100);
-                    $charge->customer = $customer;
-                    $charge->card = $card;
-
-                    try {
-                        $transactionId = $billing->charge($charge);
-                    } catch (BillingException $e) {
-                        return response()->json(
-                            [
-                                'error' => $e->getMessage()
-                            ],
-                            500
-                        );
-                    }
-                    $charge->id = $transactionId;
                 }
 
                 $order = new Order();
@@ -674,7 +679,7 @@ class CheckoutController extends UserController
                     : 'Delivery';
                 $order->transferTime = $transferTime;
                 $order->cashOrder = $cashOrder;
-                $order->payment_gateway = $gateway;
+                $order->payment_gateway = $cashOrder ? 'CASH' : $gateway;
                 $order->dailyOrderNumber = $dailyOrderNumber;
                 $order->originalAmount = $total * $deposit;
                 $order->isMultipleDelivery = $isMultipleDelivery;
@@ -699,10 +704,7 @@ class CheckoutController extends UserController
 
                 $orderId = $order->id;
 
-                if (
-                    $gateway === Constants::GATEWAY_CASH &&
-                    $application_fee > 0
-                ) {
+                if ($cashOrder && $application_fee > 0) {
                     // Charge must be at least .5
                     if (
                         round($afterDiscountBeforeFees * $application_fee) /
@@ -1139,18 +1141,11 @@ class CheckoutController extends UserController
                         ' weeks';
                 }
 
-                $stripeCustomerId = $storeCustomer
-                    ? $storeCustomer->id
-                    : 'NULL';
-                if ($cashOrder) {
-                    $stripeCustomerId = 'CASH';
-                }
-
                 $userSubscription = new Subscription();
                 $userSubscription->user_id = $user->id;
                 $userSubscription->customer_id = $customer->id;
                 $userSubscription->card_id = $cardId;
-                $userSubscription->stripe_customer_id = $stripeCustomerId;
+                $userSubscription->stripe_customer_id = $customer->stripe_id;
                 $userSubscription->store_id = $store->id;
                 $userSubscription->name =
                     ucwords($period) .
@@ -1209,6 +1204,9 @@ class CheckoutController extends UserController
                 $userSubscription->latest_unpaid_order_date = (new Carbon(
                     $deliveryDay
                 ))->toDateString();
+                $userSubscription->payment_gateway = $cashOrder
+                    ? 'CASH'
+                    : $gateway;
                 $userSubscription->save();
 
                 // Create initial order
@@ -1294,6 +1292,7 @@ class CheckoutController extends UserController
                 $order->originalAmount = $total * $deposit;
                 $order->cashOrder = $cashOrder;
                 $order->isMultipleDelivery = $isMultipleDelivery;
+                $order->payment_gateway = $cashOrder ? 'CASH' : $gateway;
                 $goPrepFee =
                     $order->afterDiscountBeforeFees *
                     ($store->settings->application_fee / 100);

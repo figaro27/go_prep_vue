@@ -468,8 +468,6 @@ class User extends Authenticatable implements JWTSubject
             $authorize = new Authorize($store);
             $gatewayCustomerId = $authorize->createCustomer($this);
             $customer->stripe_id = $gatewayCustomerId;
-        } elseif ($gateway === Constants::GATEWAY_CASH) {
-            $customer->stripe_id = 'cash';
         }
 
         $customer->save();

@@ -595,6 +595,8 @@ class Subscription extends Model
             $newOrder->stripe_fee = $stripeFee;
             $newOrder->grandTotal = $newOrder->amount - $goPrepFee - $stripeFee;
 
+            $newOrder->payment_gateway = $this->payment_gateway;
+
             $referralSettings = $this->store->referralSettings;
             if (
                 $referralSettings->enabled &&
