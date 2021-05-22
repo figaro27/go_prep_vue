@@ -47,6 +47,11 @@ class RegisterController extends StoreController
                 '@goprep.com';
         $password = $request->get('password');
 
+        $zip = $request->get('zip') ? $request->get('zip') : 'N/A';
+        if ($store->details->country == 'US') {
+            $zip = substr($zip, 0, 5);
+        }
+
         // See if a user exists with either the entered email or phone number
 
         $user = User::where('email', $email)->first();
@@ -72,10 +77,16 @@ class RegisterController extends StoreController
             $userDetails->address = $request->get('address')
                 ? $request->get('address')
                 : 'N/A';
-            $userDetails->city = $request->get('city');
-            $userDetails->state = $request->get('state');
-            $userDetails->zip = $request->get('zip');
-            $userDetails->delivery = $request->get('delivery');
+            $userDetails->city = $request->get('city')
+                ? $request->get('city')
+                : 'N/A';
+            $userDetails->state = $request->get('state')
+                ? $request->get('state')
+                : null;
+            $userDetails->zip = $zip;
+            $userDetails->delivery = $request->get('delivery')
+                ? $request->get('delivery')
+                : 'N/A';
             $userDetails->country = $store->details->country;
             $userDetails->update();
 
@@ -140,11 +151,6 @@ class RegisterController extends StoreController
                     rand(0, 9) .
                     chr(rand(65, 90))
             ]);
-
-            $zip = $request->get('zip') ? $request->get('zip') : 'N/A';
-            if ($store->details->country == 'US') {
-                $zip = substr($zip, 0, 5);
-            }
 
             $userDetails = $user->details()->create([
                 'companyname' => $request->get('company_name'),
