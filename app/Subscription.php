@@ -41,7 +41,8 @@ class Subscription extends Model
         'renewalCount',
         'next_renewal_at',
         'prepaid',
-        'prepaidWeeks'
+        'prepaidWeeks',
+        'customer_id'
     ];
 
     protected $appends = [
