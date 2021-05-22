@@ -113,7 +113,7 @@ $currency = $order->store->settings->currency
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:16px; color:#3b3b3b; line-height:26px; font-weight: bold;">{{ $order->store_name }}</td>
                       </tr>
-                      @if ($order->customer_company)
+                      @if ($order->customer_company && $order->customer_company !== 'N/A')
                       <tr>
                         <td align="right" style="font-family: 'Open Sans', Arial, sans-serif; font-size:13px; color:#3b3b3b; line-height:26px;">{{ $order->customer_company }}</td>
                       </tr>

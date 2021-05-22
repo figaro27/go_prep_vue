@@ -60,20 +60,67 @@ class RegisterController extends StoreController
                     ->first();
             }
         }
-
-        // If there's an existing user, check if the home store of that user is trying to add it again and if so, block them
+        // Removing for now - 5/22. Instead if the user exists, update the user with new information, and return existing associated customer.
         if ($user) {
-            // Add check for last_viewed_store_id also?
-            if ($user->added_by_store_id === $store->id) {
-                return response()->json(
-                    [
-                        'message' =>
-                            'A user with this email address or phone already exists. Please exit out of this window and search the customer by name'
-                    ],
-                    400
+            // Update user details
+            $userDetails = $user->details();
+            $userDetails->companyname = $request->get('company_name');
+            $userDetails->email = $email;
+            $userDetails->firstname = $request->get('firstname');
+            $userDetails->lastname = $request->get('lastname');
+            $userDetails->phone = $request->get('phone');
+            $userDetails->address = $request->get('address')
+                ? $request->get('address')
+                : 'N/A';
+            $userDetails->city = $request->get('city');
+            $userDetails->state = $request->get('state');
+            $userDetails->zip = $request->get('zip');
+            $userDetails->delivery = $request->get('delivery');
+            $userDetails->country = $store->details->country;
+            $userDetails->update();
+
+            // Check for existing customer for this user and store
+            if (
+                !$user->hasStoreCustomer(
+                    $store->id,
+                    $storeSettings->currency,
+                    $gateway
+                )
+            ) {
+                // If none then make a new one
+                $user->createStoreCustomer(
+                    $store->id,
+                    $storeSettings->currency,
+                    $gateway
                 );
             }
-        } else {
+
+            $customer = $user->getStoreCustomer(
+                $store->id,
+                $storeSettings->currency,
+                $gateway
+            );
+
+            // return new or existing customer
+            return [
+                'text' => $customer->name,
+                'value' => $customer->id
+            ];
+        }
+        // // If there's an existing user, check if the home store of that user is trying to add it again and if so, block them
+        // if ($user) {
+        //     // Add check for last_viewed_store_id also?
+        //     if ($user->added_by_store_id === $store->id) {
+        //         return response()->json(
+        //             [
+        //                 'message' =>
+        //                     'A user with this email address or phone already exists. Please exit out of this window and search the customer by name or phone number'
+        //             ],
+        //             400
+        //         );
+        //     }
+        // }
+        else {
             // If the user doesn't exist, add a new user record, new user detail record, and then add them as a new customer
             $user = User::create([
                 'user_role_id' => 1,
