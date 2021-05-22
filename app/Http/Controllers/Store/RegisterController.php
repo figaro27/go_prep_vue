@@ -58,6 +58,49 @@ class RegisterController extends StoreController
         }
     }
 
+    public function checkIfCustomerExists(
+        $email,
+        $phone,
+        $zip,
+        $storeId,
+        $request
+    ) {
+        // Try phone first
+        $customer = Customer::where([
+            'phone' => $phone,
+            'store_id' => $storeId
+        ])->first();
+        // Then email
+        if (!$customer) {
+            $customer = Customer::where([
+                'email' => $email,
+                'store_id' => $storeId
+            ])->first();
+        }
+
+        if ($customer) {
+            // Update the existing customer with newly entered information (each customer is tied to their own store so this is okay). The main user & user details remain unaffected.
+            $customer->firstname = $request['firstname'];
+            $customer->lastname = $request['lastname'];
+            $customer->name =
+                $request['firstname'] . ' ' . $request['lastname'];
+            $customer->phone = $phone;
+            $customer->address = $request['address']
+                ? $request['address']
+                : 'N/A';
+            $customer->city = $request['city'] ? $request['city'] : 'N/A';
+            $customer->state = $request['state'] ? $request['state'] : null;
+            $customer->zip = $zip;
+            $customer->delivery = $request['delivery']
+                ? $request['delivery']
+                : 'N/A';
+            $customer->update();
+            return $customer;
+        } else {
+            return null;
+        }
+    }
+
     public function store(Request $request)
     {
         $store = $this->store;
@@ -66,6 +109,7 @@ class RegisterController extends StoreController
             : 'noemail-' .
                 substr(uniqid(rand(10, 99), false), 0, 12) .
                 '@goprep.com';
+        $phone = $request->get('phone');
         $password = $request->get('password');
 
         $zip = $request->get('zip') ? $request->get('zip') : 'N/A';
@@ -75,11 +119,25 @@ class RegisterController extends StoreController
 
         $name = $request->get('firstname') . ' ' . $request->get('lastname');
 
+        $existingCustomer = $this->checkIfCustomerExists(
+            $email,
+            $phone,
+            $zip,
+            $store->id,
+            $request
+        );
+        if ($existingCustomer) {
+            return [
+                'text' => $existingCustomer->name,
+                'value' => $existingCustomer->id
+            ];
+        }
+
         // See if a user exists with either the entered email or phone number
 
         $user = User::where('email', $email)->first();
         if (!$user) {
-            $userId = UserDetail::where('phone', $request->get('phone'))
+            $userId = UserDetail::where('phone', $phone)
                 ->pluck('user_id')
                 ->first();
             if ($userId) {
@@ -88,93 +146,8 @@ class RegisterController extends StoreController
                     ->first();
             }
         }
-        // Removing for now - 5/22. Instead if the user exists, update the user with new information, and return existing associated customer.
-        if ($user) {
-            // Check for existing customer for this user and store
-            if (
-                !$user->hasStoreCustomer(
-                    $store->id,
-                    $store->settings->currency,
-                    $store->settings->payment_gateway
-                )
-            ) {
-                // If none then make a new one
-                $customer = new Customer();
-                $customer->store_id = $store->id;
-                $customer->stripe_id = $this->createStripeOrAuthorizeId(
-                    $store,
-                    $user,
-                    $name
-                );
-                $customer->currency = $store->settings->currency;
-                $customer->payment_gateway = $store->settings->payment_gateway;
-                $customer->email = $user->email;
-                $customer->firstname = $request->get('firstname');
-                $customer->lastname = $request->get('lastname');
-                $customer->phone = $request->get('phone');
-                $customer->address = $request->get('address')
-                    ? $request->get('address')
-                    : 'N/A';
-                $customer->city = $request->get('city')
-                    ? $request->get('city')
-                    : 'N/A';
-                $customer->state = $request->get('state')
-                    ? $request->get('state')
-                    : null;
-                $customer->zip = $zip;
-                $customer->delivery = $request->get('delivery')
-                    ? $request->get('delivery')
-                    : 'N/A';
-                $customer->save();
-            }
 
-            // Otherwise retrieve existing one
-            $customer = $user->getStoreCustomer(
-                $store->id,
-                $store->settings->currency,
-                $store->settings->payment_gateway
-            );
-
-            // Update customer with newly added data
-            $customer->email = $user->email;
-            $customer->firstname = $request->get('firstname');
-            $customer->lastname = $request->get('lastname');
-            $customer->phone = $request->get('phone');
-            $customer->address = $request->get('address')
-                ? $request->get('address')
-                : 'N/A';
-            $customer->city = $request->get('city')
-                ? $request->get('city')
-                : 'N/A';
-            $customer->state = $request->get('state')
-                ? $request->get('state')
-                : null;
-            $customer->zip = $zip;
-            $customer->delivery = $request->get('delivery')
-                ? $request->get('delivery')
-                : 'N/A';
-            $customer->update();
-
-            // return new or existing customer
-            return [
-                'text' => $customer->name,
-                'value' => $customer->id
-            ];
-        }
-        // // If there's an existing user, check if the home store of that user is trying to add it again and if so, block them
-        // if ($user) {
-        //     // Add check for last_viewed_store_id also?
-        //     if ($user->added_by_store_id === $store->id) {
-        //         return response()->json(
-        //             [
-        //                 'message' =>
-        //                     'A user with this email address or phone already exists. Please exit out of this window and search the customer by name or phone number'
-        //             ],
-        //             400
-        //         );
-        //     }
-        // }
-        else {
+        if (!$user) {
             // If the user doesn't exist, add a new user record, new user detail record, and then add them as a new customer
             $user = User::create([
                 'user_role_id' => 1,
@@ -200,7 +173,7 @@ class RegisterController extends StoreController
                 'email' => $email,
                 'firstname' => $request->get('firstname'),
                 'lastname' => $request->get('lastname'),
-                'phone' => $request->get('phone'),
+                'phone' => $phone,
                 'address' => $request->get('address')
                     ? $request->get('address')
                     : 'N/A',
@@ -227,158 +200,31 @@ class RegisterController extends StoreController
             ]);
         }
 
-        // If not blocked by an existing user being added again by the home store, add the customer
-        $customer = $user->createStoreCustomer(
-            $store->id,
-            $store->settings->currency,
-            $store->settings->payment_gateway,
-            $request->all()
+        $customer = new Customer();
+        $customer->store_id = $store->id;
+        $customer->user_id = $user->id;
+        $customer->stripe_id = $this->createStripeOrAuthorizeId(
+            $store,
+            $user,
+            $name
         );
+        $customer->firstname = $request['firstname'];
+        $customer->lastname = $request['lastname'];
+        $customer->name = $name;
+        $customer->phone = $phone;
+        $customer->address = $request['address'] ? $request['address'] : 'N/A';
+        $customer->city = $request['city'] ? $request['city'] : 'N/A';
+        $customer->state = $request['state'] ? $request['state'] : null;
+        $customer->zip = $zip;
+        $customer->delivery = $request['delivery']
+            ? $request['delivery']
+            : 'N/A';
+        $customer->save();
 
         return [
             'text' => $customer->name,
             'value' => $customer->id
         ];
-
-        // $user = User::where('email', $request->get('email'))->first();
-        // $store = $this->store;
-        // $storeId = $this->store->id;
-        // $email = $request->get('email') ? $request->get('email') : 'noemail-' . substr(uniqid(rand(10, 99), false), 0, 12) . '@goprep.com';
-        // $password = $request->get('password');
-
-        // $existingUser = User::where('email', $email)->first();
-
-        // if ($existingUser) {
-        //     return response()->json(
-        //         [
-        //             'message' =>
-        //                 'A user with this email address already exists. Please search the email in the customer box or add the email to your list of customers at the top.'
-        //         ],
-        //         400
-        //     );
-        // }
-
-        // $existingPhoneUser = Customer::where('phone', $request->get('phone'))
-        //     ->with('user')
-        //     ->first();
-        // $existingUserEmail = $existingPhoneUser
-        //     ? $existingPhoneUser->user->email
-        //     : null;
-
-        // if ($existingPhoneUser) {
-        //     return response()->json(
-        //         [
-        //             'message' =>
-        //                 'A user with this phone number already exists. Please search the phone number in the customer box or add the email to your list of customers at the top: ' .
-        //                 $existingUserEmail
-        //         ],
-        //         400
-        //     );
-        // }
-
-        // if (!$user) {
-        //     $user = User::create([
-        //         'user_role_id' => 1,
-        //         'email' => $email,
-        //         'password' => $password
-        //             ? bcrypt($password)
-        //             : Hash::make(str_random(10)),
-        //         'timezone' => 'America/New_York',
-        //         'remember_token' => Hash::make(str_random(10)),
-        //         'accepted_tos' => 1,
-        //         'added_by_store_id' => $storeId,
-        //         'referralUrlCode' =>
-        //             'R' .
-        //             strtoupper(substr(uniqid(rand(10, 99), false), -4)) .
-        //             chr(rand(65, 90)) .
-        //             rand(0, 9) .
-        //             rand(0, 9) .
-        //             chr(rand(65, 90))
-        //     ]);
-
-        //     $zip = $request->get('zip') ? $request->get('zip') : 'N/A';
-        //     if ($store->details->country == 'US') {
-        //         $zip = substr($zip, 0, 5);
-        //     }
-
-        //     $userDetails = $user->details()->create([
-        //         'companyname' => $request->get('company_name'),
-        //         'email' => $email,
-        //         'firstname' => $request->get('firstname'),
-        //         'lastname' => $request->get('lastname'),
-        //         'phone' => $request->get('phone'),
-        //         'address' => $request->get('address')
-        //             ? $request->get('address')
-        //             : 'N/A',
-        //         'city' => $request->get('city') ? $request->get('city') : 'N/A',
-        //         'state' => $request->get('state')
-        //             ? $request->get('state')
-        //             : null,
-        //         'zip' => $zip,
-        //         'delivery' => $request->get('delivery')
-        //             ? $request->get('delivery')
-        //             : 'N/A',
-        //         'country' => $store->details->country,
-        //         'created_at' => now(),
-        //         'updated_at' => now(),
-        //         'notifications' => array(
-        //             'delivery_today' => true,
-        //             'meal_plan' => true,
-        //             'meal_plan_paused' => true,
-        //             'new_order' => true,
-        //             'subscription_meal_substituted' => true,
-        //             'subscription_renewing' => true
-        //         )
-        //     ]);
-        // } else {
-        //     // Update user detail with newly entered data
-        //     $userDetail = UserDetail::where('user_id', $user->id)->first();
-        //     $userDetail->email = $email;
-        //     $userDetail->firstname = $request->get('firstname');
-        //     $userDetail->lastname = $request->get('lastname');
-        //     $userDetail->address = $request->get('address')
-        //         ? $request->get('address')
-        //         : 'N/A';
-        //     $userDetail->city = $request->get('city')
-        //         ? $request->get('city')
-        //         : 'N/A';
-        //     $userDetail->zip = $request->get('zip')
-        //         ? $request->get('zip')
-        //         : 'N/A';
-        //     $userDetail->state = $request->get('state')
-        //         ? $request->get('state')
-        //         : 'N/A';
-        //     $userDetail->phone = $request->get('phone');
-        //     $userDetail->country = 'USA';
-        //     $userDetail->delivery = $request->get('delivery')
-        //         ? $request->get('delivery')
-        //         : 'N/A';
-        //     $userDetail->update();
-        // }
-
-        // $user = User::findOrFail($user->id);
-        // $user->createStoreCustomer(
-        //     $storeId,
-        //     $store->settings->currency,
-        //     $store->settings->payment_gateway
-        // );
-
-        // $id = Customer::where('user_id', $user->id)
-        //     ->pluck('id')
-        //     ->first();
-
-        // $firstname = UserDetail::where('user_id', $user->id)
-        //     ->pluck('firstname')
-        //     ->first();
-
-        // $lastname = UserDetail::where('user_id', $user->id)
-        //     ->pluck('lastname')
-        //     ->first();
-
-        // return [
-        //     'text' => $firstname . ' ' . $lastname,
-        //     'value' => $id
-        // ];
     }
 
     public function checkExistingCustomer(Request $request)
