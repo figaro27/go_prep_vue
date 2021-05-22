@@ -95,7 +95,7 @@ class CustomerController extends StoreController
     public function show(Request $request)
     {
         $customerId = $request->route()->parameter('customer');
-        $customer = Customer::where('id', $id)
+        $customer = Customer::where('id', $customerId)
             ->with('orders')
             ->first();
         return $customer;
