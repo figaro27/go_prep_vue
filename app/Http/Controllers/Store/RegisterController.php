@@ -53,7 +53,7 @@ class RegisterController extends StoreController
             return $stripeCustomer->id;
         } elseif ($gateway === 'authorize') {
             $authorize = new Authorize($store);
-            $gatewayCustomerId = $authorize->createCustomer($this);
+            $gatewayCustomerId = $authorize->createCustomer($user);
             return $gatewayCustomerId;
         }
     }
@@ -125,7 +125,6 @@ class RegisterController extends StoreController
                 $customer->delivery = $request->get('delivery')
                     ? $request->get('delivery')
                     : 'N/A';
-                $customer->country = $store->details->country;
                 $customer->save();
             }
 
@@ -139,7 +138,7 @@ class RegisterController extends StoreController
             // Update customer with newly added data
             $customer->email = $user->email;
             $customer->firstname = $request->get('firstname');
-            $userDetails->lastname = $request->get('lastname');
+            $customer->lastname = $request->get('lastname');
             $customer->phone = $request->get('phone');
             $customer->address = $request->get('address')
                 ? $request->get('address')
@@ -154,7 +153,6 @@ class RegisterController extends StoreController
             $customer->delivery = $request->get('delivery')
                 ? $request->get('delivery')
                 : 'N/A';
-            $customer->country = $store->details->country;
             $customer->update();
 
             // return new or existing customer

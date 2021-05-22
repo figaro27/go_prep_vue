@@ -342,8 +342,7 @@ class User extends Authenticatable implements JWTSubject
         $customer = Customer::where([
             'user_id' => $this->id,
             'store_id' => $storeId,
-            'currency' => $currency,
-            'payment_gateway' => $gateway
+            'currency' => $currency
         ])->first();
         return !is_null($customer);
     }
@@ -358,8 +357,7 @@ class User extends Authenticatable implements JWTSubject
         $customer = Customer::where([
             'user_id' => $this->id,
             'store_id' => $storeId,
-            'currency' => $currency,
-            'payment_gateway' => $gateway
+            'currency' => $currency
         ])->first();
 
         if (!$fromGateway) {
