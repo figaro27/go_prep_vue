@@ -203,6 +203,7 @@ class RegisterController extends StoreController
         $customer = new Customer();
         $customer->store_id = $store->id;
         $customer->user_id = $user->id;
+        $customer->payment_gateway = $store->settings->payment_gateway;
         $customer->stripe_id = $this->createStripeOrAuthorizeId(
             $store,
             $user,
