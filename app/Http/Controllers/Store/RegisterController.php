@@ -73,6 +73,8 @@ class RegisterController extends StoreController
             $zip = substr($zip, 0, 5);
         }
 
+        $name = $request->get('firstname') . ' ' . $request->get('lastname');
+
         // See if a user exists with either the entered email or phone number
 
         $user = User::where('email', $email)->first();
@@ -96,10 +98,6 @@ class RegisterController extends StoreController
                     $store->settings->payment_gateway
                 )
             ) {
-                $name =
-                    $request->get('firstname') .
-                    ' ' .
-                    $request->get('lastname');
                 // If none then make a new one
                 $customer = new Customer();
                 $customer->store_id = $store->id;
@@ -131,11 +129,33 @@ class RegisterController extends StoreController
                 $customer->save();
             }
 
+            // Otherwise retrieve existing one
             $customer = $user->getStoreCustomer(
                 $store->id,
                 $store->settings->currency,
                 $store->settings->payment_gateway
             );
+
+            // Update customer with newly added data
+            $customer->email = $user->email;
+            $customer->firstname = $request->get('firstname');
+            $userDetails->lastname = $request->get('lastname');
+            $customer->phone = $request->get('phone');
+            $customer->address = $request->get('address')
+                ? $request->get('address')
+                : 'N/A';
+            $customer->city = $request->get('city')
+                ? $request->get('city')
+                : 'N/A';
+            $customer->state = $request->get('state')
+                ? $request->get('state')
+                : null;
+            $customer->zip = $zip;
+            $customer->delivery = $request->get('delivery')
+                ? $request->get('delivery')
+                : 'N/A';
+            $customer->country = $store->details->country;
+            $customer->update();
 
             // return new or existing customer
             return [
