@@ -343,7 +343,7 @@ class User extends Authenticatable implements JWTSubject
             'user_id' => $this->id,
             'store_id' => $storeId,
             'currency' => $currency,
-            'gateway' => $gateway
+            'payment_gateway' => $gateway
         ])->first();
         return !is_null($customer);
     }
@@ -359,7 +359,7 @@ class User extends Authenticatable implements JWTSubject
             'user_id' => $this->id,
             'store_id' => $storeId,
             'currency' => $currency,
-            'gateway' => $gateway
+            'payment_gateway' => $gateway
         ])->first();
 
         if (!$fromGateway) {
