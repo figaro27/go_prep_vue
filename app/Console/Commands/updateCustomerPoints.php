@@ -42,6 +42,7 @@ class updateCustomerPoints extends Command
         $promotions = Promotion::where('promotionType', 'points')->get();
 
         foreach ($promotions as $promotion) {
+            $this->info($promotion->id);
             try {
                 $store = $promotion->store;
                 foreach ($store->customers as $customer) {
@@ -65,6 +66,7 @@ class updateCustomerPoints extends Command
                     $customer->update();
                 }
             } catch (\Exception $e) {
+                $this->info('Failed: ' . $e->getMessage());
             }
         }
     }
