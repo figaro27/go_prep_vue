@@ -246,8 +246,6 @@ class CheckoutController extends StoreController
                 $gateway
             );
 
-            $storeCustomer = null;
-
             $promotionPointsAmount = $request->get('promotionPointsAmount');
 
             if ($store->modules->multipleDeliveryDays) {
@@ -266,15 +264,6 @@ class CheckoutController extends StoreController
                 if (isset($closestFutureDate)) {
                     $deliveryDay = $closestFutureDate;
                 }
-            }
-
-            if (!$cashOrder) {
-                $storeCustomer = $customerUser->getStoreCustomer(
-                    $store->id,
-                    $storeSettings->currency,
-                    $gateway,
-                    true
-                );
             }
 
             $balance = null;

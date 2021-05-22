@@ -492,17 +492,6 @@ class CheckoutController extends UserController
                 $gateway
             );
 
-            $storeCustomer = null;
-
-            if (!$cashOrder) {
-                $storeCustomer = $user->getStoreCustomer(
-                    $store->id,
-                    $storeSettings->currency,
-                    $gateway,
-                    true
-                );
-            }
-
             $total = $request->get('grandTotal')
                 ? $request->get('grandTotal')
                 : 0;
