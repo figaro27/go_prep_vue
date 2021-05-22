@@ -110,7 +110,7 @@ class RegisterController extends StoreController
                 $customer->payment_gateway = $store->settings->payment_gateway;
                 $customer->email = $user->email;
                 $customer->firstname = $request->get('firstname');
-                $userDetails->lastname = $request->get('lastname');
+                $customer->lastname = $request->get('lastname');
                 $customer->phone = $request->get('phone');
                 $customer->address = $request->get('address')
                     ? $request->get('address')
