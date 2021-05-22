@@ -8,6 +8,7 @@ use App\Customer;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Stripe;
+use App\Billing\Authorize;
 use App\UserDetail;
 
 class RegisterController extends StoreController
@@ -37,6 +38,26 @@ class RegisterController extends StoreController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function createStripeOrAuthorizeId($store, $user, $name)
+    {
+        $gateway = $store->settings->payment_gateway;
+        if ($gateway === 'stripe') {
+            $acct = $store->settings->stripe_account;
+            \Stripe\Stripe::setApiKey($acct['access_token']);
+            $stripeCustomer = \Stripe\Customer::create([
+                'email' => $user->email,
+                'description' => $name
+            ]);
+            $gatewayCustomerId = $stripeCustomer->id;
+            \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+            return $stripeCustomer->id;
+        } elseif ($gateway === 'authorize') {
+            $authorize = new Authorize($store);
+            $gatewayCustomerId = $authorize->createCustomer($this);
+            return $gatewayCustomerId;
+        }
+    }
+
     public function store(Request $request)
     {
         $store = $this->store;
@@ -67,29 +88,6 @@ class RegisterController extends StoreController
         }
         // Removing for now - 5/22. Instead if the user exists, update the user with new information, and return existing associated customer.
         if ($user) {
-            // Update user details
-            $userDetails = UserDetail::where('user_id', $user->id)->first();
-            $userDetails->companyname = $request->get('company_name');
-            $userDetails->email = $email;
-            $userDetails->firstname = $request->get('firstname');
-            $userDetails->lastname = $request->get('lastname');
-            $userDetails->phone = $request->get('phone');
-            $userDetails->address = $request->get('address')
-                ? $request->get('address')
-                : 'N/A';
-            $userDetails->city = $request->get('city')
-                ? $request->get('city')
-                : 'N/A';
-            $userDetails->state = $request->get('state')
-                ? $request->get('state')
-                : null;
-            $userDetails->zip = $zip;
-            $userDetails->delivery = $request->get('delivery')
-                ? $request->get('delivery')
-                : 'N/A';
-            $userDetails->country = $store->details->country;
-            $userDetails->update();
-
             // Check for existing customer for this user and store
             if (
                 !$user->hasStoreCustomer(
@@ -98,12 +96,39 @@ class RegisterController extends StoreController
                     $store->settings->payment_gateway
                 )
             ) {
+                $name =
+                    $request->get('firstname') .
+                    ' ' .
+                    $request->get('lastname');
                 // If none then make a new one
-                $user->createStoreCustomer(
-                    $store->id,
-                    $store->settings->currency,
-                    $store->settings->payment_gateway
+                $customer = new Customer();
+                $customer->store_id = $store->id;
+                $customer->stripe_id = $this->createStripeOrAuthorizeId(
+                    $store,
+                    $user,
+                    $name
                 );
+                $customer->currency = $store->settings->currency;
+                $customer->payment_gateway = $store->settings->payment_gateway;
+                $customer->email = $user->email;
+                $customer->firstname = $request->get('firstname');
+                $userDetails->lastname = $request->get('lastname');
+                $customer->phone = $request->get('phone');
+                $customer->address = $request->get('address')
+                    ? $request->get('address')
+                    : 'N/A';
+                $customer->city = $request->get('city')
+                    ? $request->get('city')
+                    : 'N/A';
+                $customer->state = $request->get('state')
+                    ? $request->get('state')
+                    : null;
+                $customer->zip = $zip;
+                $customer->delivery = $request->get('delivery')
+                    ? $request->get('delivery')
+                    : 'N/A';
+                $customer->country = $store->details->country;
+                $customer->save();
             }
 
             $customer = $user->getStoreCustomer(
