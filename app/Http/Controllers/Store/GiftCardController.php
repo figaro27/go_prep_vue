@@ -57,9 +57,14 @@ class GiftCardController extends StoreController
 
         $giftCard->save();
 
-        $childStoreIds = $request->get('child_store_ids');
+        $childStoreIds = $request->get('child_store_ids') ?? [];
 
-        $giftCard->childStores()->sync($childStoreIds);
+        foreach ($childStoreIds as $childStoreId) {
+            $newChildGiftCard = new ChildGiftCard();
+            $newChildGiftCard->gift_card_id = $giftCard->id;
+            $newChildGiftCard->store_id = $childStoreId;
+            $newChildGiftCard->save();
+        }
 
         $categories = $request->get('category_ids');
         if (is_array($categories)) {
@@ -104,8 +109,30 @@ class GiftCardController extends StoreController
             $giftCard->price = $request->get('price');
             $giftCard->value = $request->get('value');
 
-            $childStoreIds = $request->get('child_store_ids');
-            $giftCard->childStores()->sync($childStoreIds);
+            $childStoreIds = $request->get('child_store_ids') ?? [];
+
+            $childGiftCards = ChildGiftCard::where(
+                'gift_card_id',
+                $giftCard->id
+            )->get();
+            foreach ($childGiftCards as $childGiftCard) {
+                if (!in_array($childGiftCard->store_id, $childStoreIds)) {
+                    $childGiftCard->delete();
+                }
+            }
+
+            foreach ($childStoreIds as $childStoreId) {
+                $existingChildGiftCard = ChildGiftcard::where([
+                    'gift_card_id' => $giftCard->id,
+                    'store_id' => $childStoreId
+                ])->first();
+                if (!$existingChildGiftCard) {
+                    $newChildGiftCard = new ChildGiftCard();
+                    $newChildGiftCard->gift_card_id = $giftCard->id;
+                    $newChildGiftCard->store_id = $childStoreId;
+                    $newChildGiftCard->save();
+                }
+            }
 
             $categories = $request->get('category_ids');
             if (is_array($categories)) {

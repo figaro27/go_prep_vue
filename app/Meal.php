@@ -506,16 +506,6 @@ class Meal extends Model implements HasMedia
         return $this->belongsTo('App\Store');
     }
 
-    public function childStores()
-    {
-        return $this->belongsToMany(
-            'App\Store',
-            'child_meals',
-            'meal_id',
-            'store_id'
-        );
-    }
-
     public function ingredients()
     {
         return $this->belongsToMany('App\Ingredient')
@@ -741,9 +731,12 @@ class Meal extends Model implements HasMedia
 
         $childStoreIds = isset($props['child_store_ids'])
             ? $props['child_store_ids']
-            : null;
-        if (isset($props['child_store_ids'])) {
-            $meal->childStores()->sync($childStoreIds);
+            : [];
+        foreach ($childStoreIds as $childStoreId) {
+            $newChildMeal = new ChildMeal();
+            $newChildMeal->meal_id = $meal->id;
+            $newChildMeal->store_id = $childStoreId;
+            $newChildMeal->save();
         }
 
         try {
@@ -1149,9 +1142,26 @@ class Meal extends Model implements HasMedia
 
         $childStoreIds = isset($props['child_store_ids'])
             ? $props['child_store_ids']
-            : null;
-        if (isset($props['child_store_ids'])) {
-            $meal->childStores()->sync($childStoreIds);
+            : [];
+
+        $childMeals = ChildMeal::where('meal_id', $meal->id)->get();
+        foreach ($childMeals as $childMeal) {
+            if (!in_array($childMeal->store_id, $childStoreIds)) {
+                $childMeal->delete();
+            }
+        }
+
+        foreach ($childStoreIds as $childStoreId) {
+            $existingChildMeal = ChildMeal::where([
+                'meal_id' => $meal->id,
+                'store_id' => $childStoreId
+            ])->first();
+            if (!$existingChildMeal) {
+                $newChildMeal = new ChildMeal();
+                $newChildMeal->meal_id = $meal->id;
+                $newChildMeal->store_id = $childStoreId;
+                $newChildMeal->save();
+            }
         }
 
         if ($props->has('featured_image')) {
@@ -1867,7 +1877,13 @@ class Meal extends Model implements HasMedia
 
     public function getChildStoreIdsAttribute()
     {
-        return $this->childStores->pluck('id');
+        if ($this->store->childStores) {
+            return ChildMeal::where('meal_id', $this->id)
+                ->get()
+                ->map(function ($childMeal) {
+                    return $childMeal->store_id;
+                });
+        }
     }
 
     public function getHasVariationsAttribute()

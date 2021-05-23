@@ -9,6 +9,7 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
 use App\Media\Utils as MediaUtils;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\ChildGiftCard;
 
 class GiftCard extends Model implements HasMedia
 {
@@ -56,16 +57,6 @@ class GiftCard extends Model implements HasMedia
         return $this->belongsTo('App\Store');
     }
 
-    public function childStores()
-    {
-        return $this->belongsToMany(
-            'App\Store',
-            'child_gift_cards',
-            'gift_card_id',
-            'store_id'
-        );
-    }
-
     public function getCategoryIdsAttribute()
     {
         return $this->categories->pluck('id');
@@ -83,7 +74,13 @@ class GiftCard extends Model implements HasMedia
 
     public function getChildStoreIdsAttribute()
     {
-        return $this->childStores->pluck('id');
+        if ($this->store->childStores) {
+            return ChildGiftCard::where('gift_card_id', $this->id)
+                ->get()
+                ->map(function ($childGiftCard) {
+                    return $childGiftCard->store_id;
+                });
+        }
     }
 
     public function getImageAttribute()

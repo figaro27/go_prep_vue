@@ -65,16 +65,6 @@ class MealPackage extends Model implements HasMedia
         return $this->belongsTo('App\\Store');
     }
 
-    public function childStores()
-    {
-        return $this->belongsToMany(
-            'App\Store',
-            'child_meal_packages',
-            'meal_package_id',
-            'store_id'
-        );
-    }
-
     public function sizes()
     {
         return $this->hasMany('App\MealPackageSize', 'meal_package_id', 'id');
@@ -130,7 +120,13 @@ class MealPackage extends Model implements HasMedia
 
     public function getChildStoreIdsAttribute()
     {
-        return $this->childStores->pluck('id');
+        if ($this->store->childStores) {
+            return ChildMealPackage::where('meal_package_id', $this->id)
+                ->get()
+                ->map(function ($childMealPackage) {
+                    return $childMealPackage->store_id;
+                });
+        }
     }
 
     public function getImageAttribute()
@@ -212,9 +208,12 @@ class MealPackage extends Model implements HasMedia
 
         $childStoreIds = isset($props['child_store_ids'])
             ? $props['child_store_ids']
-            : null;
-        if (isset($props['child_store_ids'])) {
-            $package->childStores()->sync($childStoreIds);
+            : [];
+        foreach ($childStoreIds as $childStoreId) {
+            $newChildMealPackage = new ChildMealPackage();
+            $newChildMealPackage->meal_package_id = $package->id;
+            $newChildMealPackage->store_id = $childStoreId;
+            $newChildMealPackage->save();
         }
 
         if ($props->has('featured_image')) {
@@ -486,9 +485,29 @@ class MealPackage extends Model implements HasMedia
 
         $childStoreIds = isset($props['child_store_ids'])
             ? $props['child_store_ids']
-            : null;
-        if (isset($props['child_store_ids'])) {
-            $this->childStores()->sync($childStoreIds);
+            : [];
+
+        $childMealPackages = ChildMealPackage::where(
+            'meal_package_id',
+            $this->id
+        )->get();
+        foreach ($childMealPackages as $childMealPackage) {
+            if (!in_array($childMealPackage->store_id, $childStoreIds)) {
+                $childMealPackage->delete();
+            }
+        }
+
+        foreach ($childStoreIds as $childStoreId) {
+            $existingChildMealPackage = ChildMealPackage::where([
+                'meal_package_id' => $this->id,
+                'store_id' => $childStoreId
+            ])->first();
+            if (!$existingChildMealPackage) {
+                $newChildMealPackage = new ChildMealPackage();
+                $newChildMealPackage->meal_package_id = $this->id;
+                $newChildMealPackage->store_id = $childStoreId;
+                $newChildMealPackage->save();
+            }
         }
 
         if ($props->has('featured_image')) {
