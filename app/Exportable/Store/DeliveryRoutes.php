@@ -200,7 +200,12 @@ class DeliveryRoutes
                     'store_id',
                     $this->store->id
                 )->first();
-                $reportRecord->delivery_routes += 1;
+                if ($orderByRoutes === "true") {
+                    $reportRecord->delivery_routes += 1;
+                } else {
+                    $reportRecord->delivery += 1;
+                }
+
                 $reportRecord->update();
 
                 if ($orderByRoutes === "true") {
