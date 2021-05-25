@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\Store\Onboarding;
 use Carbon\Carbon;
 use App\UserDetail;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -542,6 +543,8 @@ class RegisterController extends Controller
 
             return $user;
         } catch (\Exception $e) {
+            Log::channel('failed_registration')->info($e);
+
             if ($user) {
                 $user->delete();
             }
@@ -586,6 +589,9 @@ class RegisterController extends Controller
             }
             if ($storeOrderLabelSettings) {
                 $storeOrderLabelSettings->delete();
+            }
+            if ($storeSMSMasterList) {
+                $storeSMSMasterList->delete();
             }
             if ($store) {
                 $store->delete();
