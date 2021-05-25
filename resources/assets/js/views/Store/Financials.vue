@@ -7,7 +7,7 @@
         <b-tab title="Payments">
           <payments :tabs="tabs"></payments>
         </b-tab>
-        <b-tab title="Payouts">
+        <b-tab title="Payouts" v-if="store.settings.account_type === 'express'">
           <payouts :tabs="tabs"></payouts>
         </b-tab>
         <b-tab title="Refunds">
