@@ -53,6 +53,7 @@ class DeliveryRoutes
         } else {
             $reportRecord->delivery += 1;
         }
+        $reportRecord->update();
 
         $id = auth('api')->user()->id;
         $store = Store::where('user_id', $id)->first();
@@ -205,8 +206,6 @@ class DeliveryRoutes
                         ];
                     }
                 }
-
-                $reportRecord->update();
 
                 if ($orderByRoutes === "true") {
                     if ($type !== 'pdf') {
