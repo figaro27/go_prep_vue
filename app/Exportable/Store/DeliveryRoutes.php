@@ -44,6 +44,16 @@ class DeliveryRoutes
         $orders = $orders->where('voided', 0);
         $orderByRoutes = $this->params['orderByRoutes'];
 
+        $reportRecord = ReportRecord::where(
+            'store_id',
+            $this->store->id
+        )->first();
+        if ($orderByRoutes === "true") {
+            $reportRecord->delivery_routes += 1;
+        } else {
+            $reportRecord->delivery += 1;
+        }
+
         $id = auth('api')->user()->id;
         $store = Store::where('user_id', $id)->first();
         $storeDetails = $store->details;
@@ -194,16 +204,6 @@ class DeliveryRoutes
                             "delivery" => $customer ? $customer->delivery : null
                         ];
                     }
-                }
-
-                $reportRecord = ReportRecord::where(
-                    'store_id',
-                    $this->store->id
-                )->first();
-                if ($orderByRoutes === "true") {
-                    $reportRecord->delivery_routes += 1;
-                } else {
-                    $reportRecord->delivery += 1;
                 }
 
                 $reportRecord->update();
