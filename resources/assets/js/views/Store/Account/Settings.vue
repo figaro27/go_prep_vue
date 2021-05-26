@@ -1695,7 +1695,7 @@
                 />
               </b-form>
             </b-tab>
-            <b-tab title="Child Stores" v-if="store.child_stores">
+            <b-tab title="Child Stores" v-if="store.child_stores.length > 0">
               <b-form-checkbox-group
                 class="child_stores storeFilters"
                 buttons
