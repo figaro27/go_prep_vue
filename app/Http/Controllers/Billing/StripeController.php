@@ -207,7 +207,7 @@ class StripeController extends Controller
             $subscription->cancel();
         } elseif ($type === 'payout.paid') {
             $acct = $storeSetting->stripe_account;
-            if (!$acct || ($acct && $acct->account_type === 'standard')) {
+            if ($storeSetting->account_type === 'standard') {
                 return;
             }
             $payout = Payout::where('stripe_id', $obj['id'])->first();
@@ -219,7 +219,7 @@ class StripeController extends Controller
             if ($event->get('account') !== null) {
                 // Set the payout_id and payout_date to all orders belonging to the payout
                 $acct = $storeSetting->stripe_account;
-                if (!$acct || ($acct && $acct->account_type === 'standard')) {
+                if ($storeSetting->account_type === 'standard') {
                     return;
                 }
                 \Stripe\Stripe::setApiKey($acct['access_token']);
