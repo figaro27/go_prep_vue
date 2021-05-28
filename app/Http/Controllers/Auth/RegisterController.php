@@ -15,6 +15,7 @@ use App\Mail\Store\Onboarding;
 use Carbon\Carbon;
 use App\UserDetail;
 use Illuminate\Support\Facades\Log;
+use App\SmsList;
 
 class RegisterController extends Controller
 {
@@ -496,8 +497,10 @@ class RegisterController extends Controller
                                 $userDetails->lastname
                         ]);
                     }
+                    if (isset($customer) && $customer && $customer->id) {
+                        $storePlan->stripe_customer_id = $customer->id;
+                    }
 
-                    $storePlan->stripe_customer_id = $customer->id;
                     $storePlan->save();
 
                     // If using credit card billing, charge here
@@ -591,7 +594,8 @@ class RegisterController extends Controller
                 $storeOrderLabelSettings->delete();
             }
             if ($storeSMSMasterList) {
-                $storeSMSMasterList->delete();
+                $smsList = SmsList::where('store_id', $store->id)->first();
+                $smsList->delete();
             }
             if ($store) {
                 $store->delete();
