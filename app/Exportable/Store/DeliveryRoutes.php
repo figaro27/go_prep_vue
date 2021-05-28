@@ -99,10 +99,10 @@ class DeliveryRoutes
 
             // if (!in_array($uniqueAddress, $uniqueAddresses)) {
             $address = implode(', ', [
-                $order->customer_address,
-                $order->customer_city,
-                $order->customer_state,
-                $order->customer_zip
+                $order->customer->address,
+                $order->customer->city,
+                $order->customer->state,
+                $order->customer->zip
             ]);
 
             $stops[] = [
@@ -114,13 +114,13 @@ class DeliveryRoutes
             // $uniqueAddresses[] = $uniqueAddress;
 
             $recipients[] = [
-                "name" => $order->customer_name,
-                "phone" => $order->customer_phone,
-                "address" => $order->customer_address,
-                "city" => $order->customer_city,
-                "state" => $order->customer_state,
-                "zip" => $order->customer_zip,
-                "delivery" => $order->customer_delivery
+                "name" => $order->customer->name,
+                "phone" => $order->customer->phone,
+                "address" => $order->customer->address,
+                "city" => $order->customer->city,
+                "state" => $order->customer->state,
+                "zip" => $order->customer->zip,
+                "delivery" => $order->customer->delivery
             ];
             // }
         }
