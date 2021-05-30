@@ -89,7 +89,11 @@
           </div>
           <div
             class="mt-2 mb-2"
-            v-if="storePlan && storePlan.plan_name !== 'pay-as-you-go'"
+            v-if="
+              storePlan &&
+                storePlan.plan_name !== 'pay-as-you-go' &&
+                storePlan.status !== 'cancelled'
+            "
           >
             <b-btn variant="primary" @click="showUpdatePlanModal = true"
               >Update Plan</b-btn
@@ -189,7 +193,8 @@
               >Cancel Subscription</b-btn
             >
             <p v-else>
-              Subscription has been cancelled.
+              Subscription has been cancelled. To get back on a plan, please
+              contact us using the Help window below.
               <span v-if="storePlanTransactions.length > 0"
                 >Your store will remain active until
                 {{

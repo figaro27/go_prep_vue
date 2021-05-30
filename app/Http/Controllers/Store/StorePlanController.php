@@ -124,6 +124,11 @@ class StorePlanController extends StoreController
         $email = new StorePlanCancelled(['plan' => $storePlan]);
         Mail::send($email);
 
+        // Set the application fee to 5% in case they continue to get orders
+        $settings = StoreSetting::where('store_id', $this->store->id)->first();
+        $settings->application_fee = 5.0;
+        $settings->update();
+
         return $storePlan;
     }
 
