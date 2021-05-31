@@ -69,23 +69,10 @@
         ></subscription-template>
       </b-modal>
 
-      <div class="mb-4">
+      <div class="mb-3">
         <p v-if="smsSettings.phone" class="strong">
           Your Number - {{ smsSettings.phone }}
         </p>
-        <span v-if="smsSettings.phone" class="strong">
-          Balance -
-          {{ format.money(smsSettings.balance, store.settings.currency) }}
-        </span>
-        <img
-          v-if="smsSettings.phone"
-          v-b-popover.hover="
-            'Your connected Stripe account will be charged every time it reaches a $5.00 threshold.'
-          "
-          title="Balance"
-          src="/images/store/popover.png"
-          class="popover-size"
-        />
         <b-btn
           v-if="!smsSettings.phone"
           variant="primary"

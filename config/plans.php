@@ -115,5 +115,10 @@ return [
             'stripe_id' => env('PLAN_ENTERPRISE_ANNUALLY'),
             'orders' => 500
         ]
+    ],
+    'smsNumber' => [
+        'title' => 'Monthly SMS phone number',
+        'price' => 800,
+        'stripe_id' => env('PLAN_SMS_NUMBER', 'price_1ItE5BFJbkXmjRjECV0Yuy87')
     ]
 ];

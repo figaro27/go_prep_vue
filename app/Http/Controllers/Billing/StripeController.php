@@ -35,6 +35,49 @@ class StripeController extends Controller
             $event->get('account')
         )->first();
 
+        // SMS Plan Renewal for Standard Stores
+        if (
+            ($type === 'charge.succeeded' ||
+                $type === 'invoice.payment_succeeded') &&
+            isset($obj['subscription'])
+        ) {
+            $subscriptionId = $obj['subscription'];
+            $smsSettings = SmsSetting::where(
+                'stripe_subscription_id',
+                $subscriptionId
+            )->first();
+            // If the subscription belongs to an SMS plan
+            if ($smsSettings) {
+                $plan = \Stripe\Plan::create([
+                    // Keep the $8.00 fee for the phone number in the amount
+                    'amount' => 800,
+                    'currency' => 'usd',
+                    'interval' => 'month',
+                    'product' => env('PRODUCT_SMS_MESSAGE_BALANCE')
+                ]);
+
+                $subscription = \Stripe\Subscription::retrieve($subscriptionId);
+
+                $subscription = \Stripe\Subscription::update(
+                    $subscription->id,
+                    [
+                        'cancel_at_period_end' => false,
+                        'items' => [
+                            [
+                                'id' => $subscription->items->data[0]->id,
+                                'plan' => $plan->id
+                            ]
+                        ],
+                        'prorate' => false
+                    ]
+                );
+
+                $smsSettings->balance = 0;
+                $smsSettings->update();
+                return;
+            }
+        }
+
         // Store Plan Subscription Renewals
         if ($type === 'charge.succeeded') {
             $nonSubscriptionPayment = false;

@@ -5,42 +5,29 @@
       <b-card no-body>
         <b-tabs v-model="tabs">
           <b-tab title="Messages">
-            <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
-              {{ unreadSMSMessages }} {{ chatsText }}
-            </div>
             <messages :tabs="tabs"></messages>
           </b-tab>
           <b-tab title="Chats">
-            <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
-              {{ unreadSMSMessages }} {{ chatsText }}
-            </div>
-            <!-- <template v-slot:title>
+            <div class="badge badge-primary" v-if="unreadSMSMessages > 0"></div>
+            <template v-slot:title>
               <span
                 class="badge badge-primary unreadBadge"
                 v-if="unreadSMSMessages"
                 >{{ unreadSMSMessages }}</span
               >
               Chats
-            </template> -->
+            </template>
             <chats :tabs="tabs"></chats>
           </b-tab>
           <b-tab title="Contacts">
-            <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
-              {{ unreadSMSMessages }} {{ chatsText }}
-            </div>
             <contacts :tabs="tabs"></contacts>
           </b-tab>
-          <!-- <b-tab title="Lists">
-            <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
-              {{ unreadSMSMessages }} {{ chatsText }}
-            </div>
-            <lists></lists>
-          </b-tab> -->
           <b-tab title="Settings">
-            <div class="badge badge-primary" v-if="unreadSMSMessages > 0">
-              {{ unreadSMSMessages }} {{ chatsText }}
-            </div>
             <settings :tabs="tabs"></settings>
+          </b-tab>
+
+          <b-tab title="Billing">
+            <billing :tabs="tabs"></billing>
           </b-tab>
         </b-tabs>
       </b-card>
@@ -60,6 +47,7 @@ import Chats from "./Sms/Chats.vue";
 import Contacts from "./Sms/Contacts.vue";
 import Lists from "./Sms/Lists.vue";
 import Settings from "./Sms/Settings.vue";
+import Billing from "./Sms/Billing.vue";
 
 export default {
   components: {
@@ -69,7 +57,8 @@ export default {
     Chats,
     Contacts,
     Lists,
-    Settings
+    Settings,
+    Billing
   },
   mixins: [checkDateRange],
   data() {

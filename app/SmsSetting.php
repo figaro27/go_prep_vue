@@ -34,7 +34,8 @@ class SmsSetting extends Model
         'orderConfirmationTemplatePreview',
         'deliveryTemplatePreview',
         'subscriptionTemplatePreview',
-        'aboveFiftyContacts'
+        'aboveFiftyContacts',
+        'subscription'
     ];
 
     protected $guarded = [
@@ -277,16 +278,43 @@ class SmsSetting extends Model
 
     public function chargeBalance($store)
     {
-        if ($this->balance >= 5) {
-            $charge = \Stripe\Charge::create([
-                'amount' => round($this->balance * 100),
-                'currency' => $store->settings->currency,
-                'source' => $store->settings->stripe_id,
-                'description' =>
-                    'SMS fee balance for ' . $store->storeDetail->name
+        if ($store->settings->account_type === 'express') {
+            if ($this->balance >= 10) {
+                $charge = \Stripe\Charge::create([
+                    'amount' => round($this->balance * 100),
+                    'currency' => $store->settings->currency,
+                    'source' => $store->settings->stripe_id,
+                    'description' =>
+                        'SMS fee balance for ' . $store->storeDetail->name
+                ]);
+                $this->balance = 0;
+                $this->update();
+            }
+        } else {
+            $plan = \Stripe\Plan::create([
+                // Keep the $8.00 fee for the phone number in the amount
+                'amount' => 800 + $this->balance * 100,
+                'currency' => 'usd',
+                'interval' => 'month',
+                'product' => env('PRODUCT_SMS_MESSAGE_BALANCE')
             ]);
-            $this->balance = 0;
-            $this->update();
+
+            $subscription = \Stripe\Subscription::retrieve(
+                $this->stripe_subscription_id
+            );
+
+            $subscription = \Stripe\Subscription::update($subscription->id, [
+                'cancel_at_period_end' => false,
+                'items' => [
+                    [
+                        'id' => $subscription->items->data[0]->id,
+                        'plan' => $plan->id
+                    ]
+                ],
+                'prorate' => false
+            ]);
+
+            return $subscription;
         }
     }
 
@@ -356,6 +384,17 @@ class SmsSetting extends Model
     public function getSubscriptionTemplatePreviewAttribute()
     {
         return $this->processTags($this->autoSendSubscriptionRenewalTemplate);
+    }
+
+    public function getSubscriptionAttribute()
+    {
+        if ($this->store->settings->account_type === 'standard') {
+            if ($this->stripe_subscription_id) {
+                return \Stripe\Subscription::retrieve(
+                    $this->stripe_subscription_id
+                );
+            }
+        }
     }
 
     public function getAboveFiftyContactsAttribute()

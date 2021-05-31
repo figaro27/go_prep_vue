@@ -143,18 +143,20 @@ class Daily extends Command
         foreach ($stores as $store) {
             $smsSettings = SmsSetting::where('store_id', $store->id)->first();
 
-            if ($smsSettings->last_payment !== null) {
-                $lastPayment = new Carbon($smsSettings->last_payment);
-                $lastPaymentDay = $lastPayment->format('d');
-                if ($today === $lastPaymentDay) {
-                    $charge = \Stripe\Charge::create([
-                        'amount' => 795,
-                        'currency' => $store->settings->currency,
-                        'source' => $store->settings->stripe_id,
-                        'description' =>
-                            'Monthly SMS phone number fee ' .
-                            $store->storeDetail->name
-                    ]);
+            if ($store->settings->account_type === 'express') {
+                if ($smsSettings->last_payment !== null) {
+                    $lastPayment = new Carbon($smsSettings->last_payment);
+                    $lastPaymentDay = $lastPayment->format('d');
+                    if ($today === $lastPaymentDay) {
+                        $charge = \Stripe\Charge::create([
+                            'amount' => 795,
+                            'currency' => $store->settings->currency,
+                            'source' => $store->settings->stripe_id,
+                            'description' =>
+                                'Monthly SMS phone number fee ' .
+                                $store->storeDetail->name
+                        ]);
+                    }
                 }
             }
         }
