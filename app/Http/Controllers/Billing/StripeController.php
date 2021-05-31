@@ -15,6 +15,7 @@ use App\OrderTransaction;
 use App\StorePlan;
 use App\StorePlanTransaction;
 use Illuminate\Support\Facades\Log;
+use App\SmsSetting;
 
 class StripeController extends Controller
 {
