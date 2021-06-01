@@ -50,7 +50,8 @@ class Meal extends Model implements HasMedia
         'salesTax',
         'stock',
         'expirationDays',
-        'frequencyType'
+        'frequencyType',
+        'hideFromMenu'
     ];
 
     protected $casts = [
@@ -59,7 +60,8 @@ class Meal extends Model implements HasMedia
         'created_at' => 'date:F d, Y',
         'created_at_local' => 'date:F d, Y',
         'substitute' => 'boolean',
-        'expirationDays' => 'integer'
+        'expirationDays' => 'integer',
+        'hideFromMenu' => 'boolean'
     ];
 
     protected $appends = [
@@ -715,7 +717,8 @@ class Meal extends Model implements HasMedia
             'servingUnitQuantity',
             'servingSizeUnit',
             'frequencyType',
-            'child_store_ids'
+            'child_store_ids',
+            'hideFromMenu'
         ]);
 
         $meal = new Meal();
@@ -1137,7 +1140,8 @@ class Meal extends Model implements HasMedia
             'stock',
             'expirationDays',
             'frequencyType',
-            'child_store_ids'
+            'child_store_ids',
+            'hideFromMenu'
         ]);
 
         $childStoreIds = isset($props['child_store_ids'])

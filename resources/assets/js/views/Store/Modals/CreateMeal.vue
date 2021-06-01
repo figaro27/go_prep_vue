@@ -149,7 +149,7 @@
                 class="storeFilters"
               ></b-form-checkbox-group>
 
-              <h4 class="mt-4">Contains</h4>
+              <h4 class="mt-4">Allergies</h4>
               <b-form-checkbox-group
                 buttons
                 v-model="meal.allergy_ids"
@@ -268,6 +268,17 @@
                 min="0"
                 max="9999999"
               ></b-form-input>
+              <b-form-checkbox v-model="meal.hideFromMenu" class="mt-3"
+                >Hide From Menu
+                <img
+                  v-b-popover.hover="
+                    'Use this when you want to keep the meal active for menu rotations / meal replacements in packages & subscriptions but still prevent the meal from being purchased a la carte.'
+                  "
+                  title="Hide From Menu"
+                  src="/images/store/popover.png"
+                  class="popover-size"
+                />
+              </b-form-checkbox>
             </b-tab>
 
             <b-tab title="Ingredients">

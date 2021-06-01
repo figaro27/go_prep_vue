@@ -397,7 +397,7 @@
                   ></b-form-checkbox-group>
 
                   <h4 class="mt-4">
-                    Contains
+                    Allergies
                     <img
                       v-b-popover.hover="
                         'Indicate if your item contains any of the below. These allow your items to be filtered by your customer on your menu page for anyone looking to avoid items that contain any of these.'
@@ -539,6 +539,17 @@
                   min="0"
                   max="9999999"
                 ></b-form-input>
+                <b-form-checkbox v-model="meal.hideFromMenu"
+                  >Hide From Menu
+                  <img
+                    v-b-popover.hover="
+                      'Use this when you want to keep the meal active for menu rotations / meal replacements in packages & subscriptions but still prevent the meal from being purchased a la carte.'
+                    "
+                    title="Hide From Menu"
+                    src="/images/store/popover.png"
+                    class="popover-size"
+                  />
+                </b-form-checkbox>
               </b-tab>
 
               <b-tab title="Ingredients">
@@ -1484,7 +1495,8 @@ export default {
         macros: this.meal.macros,
         salesTax: this.meal.salesTax,
         expirationDays: this.meal.expirationDays,
-        stock: this.meal.stock
+        stock: this.meal.stock,
+        hideFromMenu: this.meal.hideFromMenu
       };
       const updated = await this.updateMeal(this.meal.id, data, true);
 

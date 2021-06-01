@@ -140,7 +140,8 @@ class MealController extends StoreController
                 'stock',
                 'expirationDays',
                 'frequencyType',
-                'child_store_ids'
+                'child_store_ids',
+                'hideFromMenu'
             ]),
             'menu'
         );
