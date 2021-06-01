@@ -539,7 +539,7 @@
                   min="0"
                   max="9999999"
                 ></b-form-input>
-                <b-form-checkbox v-model="meal.hideFromMenu"
+                <b-form-checkbox v-model="meal.hideFromMenu" class="mt-3"
                   >Hide From Menu
                   <img
                     v-b-popover.hover="
