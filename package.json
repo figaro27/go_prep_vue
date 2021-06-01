@@ -131,7 +131,7 @@
     "vue-carousel": "^0.18.0",
     "vue-click-outside": "^1.1.0",
     "vue-clipboard2": "^0.3.1",
-    "vue-credit-card-field": "git+https://github.com/concept-9/vue-credit-card-field.git",
+    "vue-credit-card-field": "git+https://github.com/msolda2/vue-credit-card-field.git",
     "vue-disable-autocomplete": "^0.0.4",
     "vue-image-lightbox": "^6.2.0",
     "vue-interface": "^0.4.25",
