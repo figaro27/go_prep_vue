@@ -48,7 +48,8 @@ class SmsSetting extends Model
         'orderConfirmationTemplatePreview',
         'deliveryTemplatePreview',
         'subscriptionTemplatePreview',
-        'aboveFiftyContacts'
+        'aboveFiftyContacts',
+        'subscription'
     ];
 
     public function store()
