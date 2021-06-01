@@ -1,5 +1,6 @@
 <template>
   <div class="app customer">
+    <auth-modal :showAuthModal="showAuthModal"></auth-modal>
     <b-navbar toggleable="lg" class="app-header" fixed>
       <b-navbar-brand @click="visitStoreWebsite" class="">
         <img
@@ -119,7 +120,7 @@
           ></b-nav-item>
           <CustomerDropdown v-if="loggedInCheck" class="d-none d-md-block" />
           <b-nav-item
-            v-if="!loggedInCheck"
+            v-if="!loggedInCheck && !loginPageCheck"
             @click.prevent="showAuthScreen()"
             class="white-text d-none d-md-block"
             ><i class="fas fa-user customer-nav-icon"></i
@@ -192,6 +193,7 @@ import DefaultHeaderDropdownAccnt from "./DefaultHeaderDropdownAccnt";
 import CustomerDropdown from "./CustomerDropdown";
 import DefaultHeaderDropdownMssgs from "./DefaultHeaderDropdownMssgs";
 import DefaultHeaderDropdownTasks from "./DefaultHeaderDropdownTasks";
+import AuthModal from "../components/Customer/AuthModal";
 
 export default {
   name: "DefaultContainer",
@@ -214,13 +216,15 @@ export default {
     SidebarToggler,
     SidebarHeader,
     SidebarNav,
-    SidebarMinimizer
+    SidebarMinimizer,
+    AuthModal
   },
   data() {
     return {
       navBgColor: "",
       bgColor: "",
-      pickup: null
+      pickup: null,
+      showAuthModal: false
     };
   },
   computed: {
@@ -234,6 +238,9 @@ export default {
     }),
     loggedInCheck() {
       return this.loggedIn && this.user.user_role_id !== 4;
+    },
+    loginPageCheck() {
+      return this.$route.path == "/login" || this.$route.path == "/register";
     },
     loggedInAsGuest() {
       return this.user.user_role_id === 4;
@@ -343,7 +350,7 @@ export default {
     ...mapActions(["logout"]),
     async showAuthScreen() {
       if (!this.loggedIn) {
-        this.showAuthModal();
+        this.showAuthModal = true;
       } else {
         await axios.post("/api/auth/logout");
         auth.deleteToken();
@@ -366,9 +373,6 @@ export default {
     },
     showFilterArea() {
       this.$eventBus.$emit("showFilterArea");
-    },
-    async showAuthModal() {
-      this.$eventBus.$emit("showAuthModal");
     },
     backToMenu() {
       this.$router.replace({
