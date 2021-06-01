@@ -766,20 +766,22 @@ export default {
     },
     planOptions() {
       return _.map(this.plans, (plan, planId) => {
-        const period = this.form[3].plan_period;
-        const planDetails = plan[period];
-        return {
-          text: sprintf(
-            "%s - %s %s %s",
-            plan.title,
-            format.money(planDetails.price / 100),
-            period === "monthly" ? "Per Month" : "Per Year",
-            planDetails.price_upfront
-              ? ` - ${format.money(planDetails.price_upfront / 100)} up front`
-              : ""
-          ),
-          value: planId
-        };
+        if (plan.title !== "Monthly SMS phone number") {
+          const period = this.form[3].plan_period;
+          const planDetails = plan[period];
+          return {
+            text: sprintf(
+              "%s - %s %s %s",
+              plan.title,
+              format.money(planDetails.price / 100),
+              period === "monthly" ? "Per Month" : "Per Year",
+              planDetails.price_upfront
+                ? ` - ${format.money(planDetails.price_upfront / 100)} up front`
+                : ""
+            ),
+            value: planId
+          };
+        }
       });
     },
     planSelected() {
