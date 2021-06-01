@@ -503,43 +503,46 @@ class RegisterController extends Controller
 
                     $storePlan->save();
 
-                    // If using credit card billing, charge here
-                    if (!$payAsYouGo && $planMethod === 'credit_card') {
-                        $subscription = \Stripe\Subscription::create([
-                            'customer' => $customer,
-                            'trial_from_plan' => $freeTrial,
-                            'items' => [
-                                [
-                                    'plan' => $plan->get('stripe_id')
+                    if (isset($customer) && $customer && $customer->id) {
+                        // If using credit card billing, charge here
+                        if (!$payAsYouGo && $planMethod === 'credit_card') {
+                            $subscription = \Stripe\Subscription::create([
+                                'customer' => $customer,
+                                'trial_from_plan' => $freeTrial,
+                                'items' => [
+                                    [
+                                        'plan' => $plan->get('stripe_id')
+                                    ]
                                 ]
-                            ]
-                        ]);
+                            ]);
 
-                        $storePlan->stripe_subscription_id = $subscription->id;
+                            $storePlan->stripe_subscription_id =
+                                $subscription->id;
 
-                        // Get card ID
-                        $customer = \Stripe\Customer::retrieve(
-                            $customer->id,
-                            []
-                        );
-                        $storePlan->stripe_card_id = $customer->allSources(
-                            $customer->id,
-                            []
-                        )->data[0]['id'];
+                            // Get card ID
+                            $customer = \Stripe\Customer::retrieve(
+                                $customer->id,
+                                []
+                            );
+                            $storePlan->stripe_card_id = $customer->allSources(
+                                $customer->id,
+                                []
+                            )->data[0]['id'];
+                        }
+
+                        // Charge the up-front fee
+                        if ($upfrontFee) {
+                            $charge = \Stripe\Charge::create([
+                                'amount' => $upfrontFee,
+                                'currency' => 'usd',
+                                'customer' => $customer,
+                                'description' => 'GoPrep: One-time signup fee'
+                            ]);
+                        }
+
+                        // if (!$payAsYouGo) {
+                        $storePlan->update();
                     }
-
-                    // Charge the up-front fee
-                    if ($upfrontFee) {
-                        $charge = \Stripe\Charge::create([
-                            'amount' => $upfrontFee,
-                            'currency' => 'usd',
-                            'customer' => $customer,
-                            'description' => 'GoPrep: One-time signup fee'
-                        ]);
-                    }
-
-                    // if (!$payAsYouGo) {
-                    $storePlan->update();
                     // }
                 }
             }

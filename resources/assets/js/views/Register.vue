@@ -1035,6 +1035,16 @@ export default {
         return;
       }
 
+      if (
+        this.form[0].role === "store" &&
+        this.planRequiresCard &&
+        !this.cardStatus &&
+        !this.planless
+      ) {
+        this.$toastr.w("Please add a credit card.");
+        return;
+      }
+
       if (!(await this.validate(this.step))) {
         return;
       }
@@ -1076,16 +1086,6 @@ export default {
         !this.form[1].zip.includes(" ")
       ) {
         this.$toastr.w("Please include a space in your postal code.");
-        return;
-      }
-
-      if (
-        this.form[0].role === "store" &&
-        this.planRequiresCard &&
-        !this.cardStatus &&
-        !this.planless
-      ) {
-        this.$toastr.w("Please add a credit card.");
         return;
       }
 
