@@ -56,6 +56,23 @@ class SmsSetting extends Model
         return $this->belongsTo('App\Store');
     }
 
+    public function cancelSMSNumber()
+    {
+        $phoneId = $this->textmagic_phone_id;
+
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request(
+            'DELETE',
+            'https://rest.textmagic.com/api/v2/numbers/' . $phoneId,
+            [
+                'headers' => $this->headers
+            ]
+        );
+
+        $this->last_payment = null;
+        $this->update();
+    }
+
     public function addNewCustomerToContacts($customer)
     {
         $contact = $customer;

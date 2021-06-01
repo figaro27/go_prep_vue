@@ -10,6 +10,7 @@ use App\StoreSetting;
 use App\Store;
 use App\Mail\Store\StorePlanCancelled;
 use Illuminate\Support\Facades\Mail;
+use App\SmsSetting;
 
 class StorePlanController extends StoreController
 {
@@ -129,7 +130,17 @@ class StorePlanController extends StoreController
         $settings->application_fee = 5.0;
         $settings->update();
 
+        $this->cancelSMSNumber();
+
         return $storePlan;
+    }
+
+    public function cancelSMSNumber()
+    {
+        $smsSettings = SmsSetting::where('store_id', $this->store->id)->first();
+        if ($smsSettings->phone) {
+            $smsSettings->cancelSMSNumber();
+        }
     }
 
     public function getStorePlanCards()

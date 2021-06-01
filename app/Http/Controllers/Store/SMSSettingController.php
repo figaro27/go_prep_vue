@@ -168,6 +168,7 @@ class SMSSettingController extends StoreController
         $body = $res->getBody();
 
         $smsSettings->phone = $phone;
+        $smsSettings->textmagic_phone_id = json_decode($body)->id;
 
         // Standard Stripe accounts don't allow direct charges to the account. Have to make it a subscription instead.
         if ($this->store->settings->account_type === 'standard') {
