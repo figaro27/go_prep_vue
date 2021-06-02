@@ -3403,9 +3403,7 @@ const getters = {
       console.log("");
       console.log("");
       console.log("");
-      state.viewed_store.meals.forEach(meal => {
-        console.log(meal.id);
-      });
+      console.log(state.viewed_store.meals);
       if (!meal) {
         console.log("Meal not found");
         return null;
