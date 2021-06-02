@@ -3,7 +3,6 @@
     <div class="main-customer-container box-shadow top-fill">
       <div class="row" v-if="!responded && !showThankYou">
         <div class="col-md-12" v-if="order">
-          TEST 1
           <b-form-rating
             v-model="value"
             variant="warning"
@@ -224,8 +223,6 @@ export default {
       let items = [];
       let itemQuestions = [];
       this.orderItems.forEach((item, parent_index) => {
-        console.log(1);
-        console.log(item);
         this.surveyQuestions.forEach((question, index) => {
           if (question.context === "items" && !question.conditional) {
             if (!items.includes(item)) {
@@ -242,11 +239,7 @@ export default {
       });
 
       this.orderItems.forEach((item, parent_index) => {
-        console.log(2);
-        console.log(item);
         this.surveyQuestions.forEach((question, index) => {
-          console.log(3);
-          console.log(item);
           let newQuestion = { ...question };
           if (newQuestion.context === "items" && newQuestion.conditional) {
             newQuestion.item = item.meal;
@@ -480,8 +473,12 @@ export default {
       });
 
       items.forEach(item => {
+        console.log(1);
+        console.log(item);
         if (item.meal_package_order_id === null && !item.hidden) {
           const meal = this.getStoreMeal(item.meal_id);
+          console.log(2);
+          console.log(meal);
           if (!meal) {
             return null;
           }
