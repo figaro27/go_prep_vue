@@ -269,7 +269,6 @@ export default {
           }
         });
       });
-      console.log(itemQuestions);
       this.surveyItemQuestions = itemQuestions;
     },
     getRadioOptions(question) {
