@@ -34,8 +34,7 @@
                   rows="3"
                   required
                 />
-                <p v-if="question.type === 'Rating'">RATING QUESTION</p>
-                <b-form-rating
+                <!-- <b-form-rating
                   v-if="question.type === 'Rating'"
                   v-model="surveyResponses[question.id]"
                   :stars="question.max"
@@ -46,7 +45,14 @@
                   class="stars"
                   size="lg"
                   required
-                />
+                /> -->
+                <b-form-group v-if="question.type === 'Rating'">
+                  <b-form-radio-group
+                    v-model="surveyResponses[question.id]"
+                    :options="ratingOptions(question)"
+                    required
+                  ></b-form-radio-group>
+                </b-form-group>
                 <b-form-radio-group
                   v-if="question.type === 'Selection' && question.limit"
                   :options="getRadioOptions(question)"
@@ -83,7 +89,7 @@
                     "
                     required
                   />
-                  <b-form-rating
+                  <!-- <b-form-rating
                     v-if="question.type === 'Rating'"
                     v-model="
                       surveyItemResponses[
@@ -98,7 +104,19 @@
                     class="stars"
                     size="lg"
                     required
-                  ></b-form-rating>
+                  ></b-form-rating> -->
+                  <b-form-group v-if="question.type === 'Rating'">
+                    <b-form-radio-group
+                      v-model="
+                        surveyItemResponses[
+                          question.item + ' | Question ID: ' + question.id
+                        ]
+                      "
+                      :options="ratingOptions(question)"
+                      required
+                    ></b-form-radio-group>
+                  </b-form-group>
+
                   <b-form-radio-group
                     v-if="question.type === 'Selection' && question.limit"
                     :options="getRadioOptions(question)"
@@ -362,12 +380,21 @@ export default {
       } else {
         return true;
       }
+    },
+    ratingOptions(question) {
+      let options = [];
+      for (let i = 1; i <= question.max; i++) {
+        options.push({
+          text: i,
+          value: i
+        });
+      }
+      return options;
     }
   },
   computed: {
     ...mapGetters({
       user: "user",
-      getStoreMeal: "viewedStoreMeal",
       store: "viewedStore"
     }),
     orderItems() {
