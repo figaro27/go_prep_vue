@@ -412,7 +412,7 @@
         ></b-form-input>
 
         <b-tabs class="mt-4">
-          <b-tab title="Questions" :active="activeTab('questions')">
+          <b-tab title="Questions" :active="!hasResponses">
             <v-client-table
               :columns="surveyQuestionsColumns"
               :data="questions"
@@ -468,7 +468,7 @@
               </div>
             </v-client-table>
           </b-tab>
-          <b-tab title="Responses" :active="activeTab('responses')">
+          <b-tab title="Responses" :active="hasResponses">
             <v-client-table
               :columns="surveyResponsesColumns"
               :data="responses"
@@ -570,6 +570,9 @@ export default {
       surveyQuestions: "storeSurveyQuestions",
       surveyResponses: "storeSurveyResponses"
     }),
+    hasResponses() {
+      return this.responses.length > 0 ? true : false;
+    },
     questions() {
       return this.surveyQuestions && this.surveyQuestions.length > 0
         ? this.surveyQuestions
@@ -709,21 +712,6 @@ export default {
         return array.join(", ");
       } else {
         return array;
-      }
-    },
-    activeTab(type) {
-      console.log(type);
-      console.log(this.responses.length);
-      if (type === "questions" && this.responses.length === 0) {
-        return true;
-      } else if (type === "questions" && this.responses.length > 0) {
-        return false;
-      }
-
-      if (type === "responses" && this.responses.length === 0) {
-        return false;
-      } else if (type === "responses" && this.responses.length > 0) {
-        return true;
       }
     },
     setSelectedConditionQuestion(q) {
