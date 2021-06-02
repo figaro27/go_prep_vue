@@ -390,7 +390,7 @@
           variant="pill"
           size="lg"
           v-model="storeModuleSettings.emailSurveyResponses"
-          @change.native="updateStoreModules(true, true)"
+          @change.native="updateStoreModules(false, true)"
         />
         <p class="mt-2">
           <span class="mr-1 mt-2">Days After Delivery to Email Customer</span>
