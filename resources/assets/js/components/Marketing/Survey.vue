@@ -412,7 +412,7 @@
         ></b-form-input>
 
         <b-tabs class="mt-4">
-          <b-tab title="Questions" :active="!hasResponses">
+          <b-tab title="Questions">
             <v-client-table
               :columns="surveyQuestionsColumns"
               :data="questions"
@@ -468,7 +468,7 @@
               </div>
             </v-client-table>
           </b-tab>
-          <b-tab title="Responses" :active="hasResponses">
+          <b-tab title="Responses">
             <v-client-table
               :columns="surveyResponsesColumns"
               :data="responses"
@@ -570,9 +570,6 @@ export default {
       surveyQuestions: "storeSurveyQuestions",
       surveyResponses: "storeSurveyResponses"
     }),
-    hasResponses() {
-      return this.responses.length > 0 ? true : false;
-    },
     questions() {
       return this.surveyQuestions && this.surveyQuestions.length > 0
         ? this.surveyQuestions
