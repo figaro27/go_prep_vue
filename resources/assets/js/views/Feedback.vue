@@ -40,6 +40,7 @@
                   rows="3"
                   required
                 />
+                <p v-if="question.type === 'Rating'">RATING QUESTION</p>
                 <b-form-rating
                   v-if="question.type === 'Rating'"
                   v-model="surveyResponses[question.id]"
@@ -473,12 +474,8 @@ export default {
       });
 
       items.forEach(item => {
-        console.log(1);
-        console.log(item);
         if (item.meal_package_order_id === null && !item.hidden) {
           const meal = this.getStoreMeal(item.meal_id);
-          console.log(2);
-          console.log(meal);
           if (!meal) {
             return null;
           }
