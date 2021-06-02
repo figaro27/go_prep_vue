@@ -3,6 +3,13 @@
     <div class="main-customer-container box-shadow top-fill">
       <div class="row" v-if="!responded && !showThankYou">
         <div class="col-md-12" v-if="order">
+          TEST 1
+          <b-form-rating
+            v-model="value"
+            variant="warning"
+            class="mb-2"
+          ></b-form-rating>
+
           <p class="strong font-20">Hi {{ order.customer_firstname }},</p>
           <p class="font-17">
             Thank you for your order #{{ order.order_number }} from
@@ -34,16 +41,6 @@
                   rows="3"
                   required
                 />
-                TEST 1 {{ question.max }}
-                <b-form-rating
-                  :stars="question.max"
-                  show-value
-                  inline
-                  no-border
-                  variant="warning"
-                  size="lg"
-                  required
-                />
                 <b-form-rating
                   v-if="question.type === 'Rating'"
                   v-model="surveyResponses[question.id]"
@@ -70,7 +67,6 @@
                 />
               </b-form-group>
             </li>
-            TEST 2 - {{ surveyItemQuestions }}
             <div v-if="surveyItemQuestions.length > 0" class="mt-3">
               <hr class="pt-3" />
               <li
@@ -228,6 +224,8 @@ export default {
       let items = [];
       let itemQuestions = [];
       this.orderItems.forEach((item, parent_index) => {
+        console.log(1);
+        console.log(item);
         this.surveyQuestions.forEach((question, index) => {
           if (question.context === "items" && !question.conditional) {
             if (!items.includes(item)) {
@@ -244,7 +242,11 @@ export default {
       });
 
       this.orderItems.forEach((item, parent_index) => {
+        console.log(2);
+        console.log(item);
         this.surveyQuestions.forEach((question, index) => {
+          console.log(3);
+          console.log(item);
           let newQuestion = { ...question };
           if (newQuestion.context === "items" && newQuestion.conditional) {
             newQuestion.item = item.meal;
@@ -261,7 +263,7 @@ export default {
           }
         });
       });
-
+      console.log(itemQuestions);
       this.surveyItemQuestions = itemQuestions;
     },
     getRadioOptions(question) {
