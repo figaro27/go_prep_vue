@@ -712,6 +712,8 @@ export default {
       }
     },
     activeTab(type) {
+      console.log(type);
+      console.log(this.responses.length);
       if (type === "questions" && this.responses.length === 0) {
         return true;
       } else if (type === "questions" && this.responses.length > 0) {
