@@ -87,6 +87,7 @@
                         question.item + ' | Question ID: ' + question.id
                       ]
                     "
+                    rows="3"
                     required
                   />
                   <!-- <b-form-rating
