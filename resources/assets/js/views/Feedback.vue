@@ -24,16 +24,26 @@
               v-if="question.context === 'order' && conditionMet(question)"
             >
               <div class="strong mb-3 pt-2">
-                TEST 0 - {{ question.question }}
+                {{ question.question }}
               </div>
-              TEST 1
+
               <b-form-group class="surveyLabel">
                 <b-form-textarea
                   v-if="question.type === 'Text'"
                   v-model="surveyResponses[question.id]"
+                  rows="3"
                   required
                 />
-                TEST 2 - {{ question.type }}
+                TEST 1 {{ question.max }}
+                <b-form-rating
+                  :stars="question.max"
+                  show-value
+                  inline
+                  no-border
+                  variant="warning"
+                  size="lg"
+                  required
+                />
                 <b-form-rating
                   v-if="question.type === 'Rating'"
                   v-model="surveyResponses[question.id]"
@@ -46,7 +56,6 @@
                   size="lg"
                   required
                 />
-                TEST 3 - {{ question.type }} | {{ question.limit }}
                 <b-form-radio-group
                   v-if="question.type === 'Selection' && question.limit"
                   :options="getRadioOptions(question)"
@@ -61,7 +70,7 @@
                 />
               </b-form-group>
             </li>
-
+            TEST 2 - {{ surveyItemQuestions }}
             <div v-if="surveyItemQuestions.length > 0" class="mt-3">
               <hr class="pt-3" />
               <li
