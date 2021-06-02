@@ -408,7 +408,7 @@
           v-model="storeModuleSettings.customerSurveyDays"
           type="number"
           min="1"
-          @input="updateStoreModules(true, true)"
+          @input="updateStoreModules(false, true)"
         ></b-form-input>
 
         <b-tabs class="mt-4">
