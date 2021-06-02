@@ -3392,8 +3392,6 @@ const getters = {
     }
   },
   viewedStoreMeal: state => (id, defaultMeal = null) => {
-    console.log(id);
-    console.log(state.viewed_store.meals);
     try {
       let meal = null;
       if (defaultMeal != null) {
@@ -3401,8 +3399,15 @@ const getters = {
       } else {
         meal = _.find(state.viewed_store.meals, ["id", parseInt(id)]) || null;
       }
-
+      console.log(id);
+      console.log("");
+      console.log("");
+      console.log("");
+      state.viewed_store.meals.forEach(meal => {
+        console.log(meal.id);
+      });
       if (!meal) {
+        console.log("Meal not found");
         return null;
       }
 

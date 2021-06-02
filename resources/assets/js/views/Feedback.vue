@@ -169,6 +169,7 @@ export default {
   components: {},
   data() {
     return {
+      value: null,
       order: null,
       surveyQuestions: null,
       surveyResponses: {},
