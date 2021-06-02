@@ -15,6 +15,7 @@ use App\Mail\Customer\SubscriptionCancelled;
 use App\Mail\Customer\AdjustedOrder;
 use App\Mail\Customer\NewReferral;
 use App\Mail\Customer\AbandonedCart;
+use App\Mail\Customer\Survey;
 use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -119,6 +120,11 @@ class User extends Authenticatable implements JWTSubject
     public function details()
     {
         return $this->hasOne('App\UserDetail');
+    }
+
+    public function surveyResponses()
+    {
+        return $this->hasMany('App\SurveyResponse');
     }
 
     public function customers()
@@ -601,6 +607,9 @@ class User extends Authenticatable implements JWTSubject
                 break;
             case 'new_referral':
                 $email = new NewReferral($data);
+                break;
+            case 'survey':
+                $email = new Survey($data);
                 break;
         }
 

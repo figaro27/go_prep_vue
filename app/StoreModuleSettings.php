@@ -15,7 +15,8 @@ class StoreModuleSettings extends Model
         'specialInstructionsStoreOnly' => 'boolean',
         'coolerOptional' => 'boolean',
         'coolerDeposit' => 'float',
-        'orderNotesForCustomer' => 'boolean'
+        'orderNotesForCustomer' => 'boolean',
+        'emailSurveyRespones' => 'boolean'
     ];
 
     protected $guarded = [];

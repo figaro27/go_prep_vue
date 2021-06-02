@@ -55,7 +55,8 @@ class Order extends Model
         'coolerDeposit' => 'float',
         'grandTotal' => 'float',
         'shipping' => 'boolean',
-        'prepaid' => 'boolean'
+        'prepaid' => 'boolean',
+        'surveySent' => 'boolean'
         //'created_at' => 'date:F d, Y'
     ];
 
@@ -87,6 +88,11 @@ class Order extends Model
     public function store()
     {
         return $this->belongsTo('App\Store');
+    }
+
+    public function surveyResponses()
+    {
+        return $this->hasMany('App\SurveyResponse');
     }
 
     public function meal_orders()

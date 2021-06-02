@@ -105,6 +105,16 @@ class Store extends Model
         return $this->hasMany('App\Payout');
     }
 
+    public function surveyQuestions()
+    {
+        return $this->hasMany('App\SurveyQuestion');
+    }
+
+    public function surveyResponses()
+    {
+        return $this->hasMany('App\SurveyResponse');
+    }
+
     public function mealOrders()
     {
         return $this->hasMany('App\MealOrder');

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use App\User;
 use App\MenuSession;
 use App\StoreModule;
+use Illuminate\Support\Facades\Log;
 
 class Hourly extends Command
 {
@@ -107,6 +108,9 @@ class Hourly extends Command
 
         // Send Order Reminder SMS if enabled
         $this->sendSMSReminders();
+
+        // Send Order Surveys a certain amount of time after delivery
+        $this->sendOrderSurveys();
     }
 
     public function sendAbandonedCartEmails()
@@ -178,6 +182,52 @@ class Hourly extends Command
                         'abandoned_cart',
                         $data
                     );
+                }
+            }
+        }
+    }
+
+    public function sendOrderSurveys()
+    {
+        $now = Carbon::now();
+        $orders = Order::where('delivery_date', '<=', $now)->get();
+        foreach ($orders as $order) {
+            if ($order->store->modules->customerSurvey) {
+                $customerSurveyDays =
+                    $order->store->moduleSettings->customerSurveyDays;
+                if ($customerSurveyDays !== 0) {
+                    $deliveryDate = Carbon::parse(
+                        $order->delivery_dates_array[
+                            array_key_last($order->delivery_dates_array)
+                        ]
+                    );
+                    $diff = $deliveryDate->diffInDays($now);
+                    if (!$order->surveySent && $customerSurveyDays >= $diff) {
+                        $customerUser = User::where(
+                            'id',
+                            $order->user_id
+                        )->first();
+                        $customerUser->email = $order->customer_email;
+                        $url =
+                            $order->store->url .
+                            '/feedback?order=' .
+                            $order->order_number;
+                        try {
+                            $customerUser->sendNotification('survey', [
+                                'order' => $order ?? null,
+                                'pickup' => $order->pickup ?? null,
+                                'url' => $url,
+                                'details' => $order->store->details
+                            ]);
+                            $order->surveySent = true;
+                            $order->update();
+                        } catch (\Exception $e) {
+                            Log::channel('misc')->info(
+                                'Failed sendOrderSurveys in Hourly job'
+                            );
+                            Log::channel('misc')->info($e);
+                        }
+                    }
                 }
             }
         }

@@ -16,49 +16,50 @@ class DeliveryDayController extends Controller
             $storeId = $bagItems[0]['delivery_day']['store_id'];
 
             $store = Store::where('id', $storeId)->first();
-
-            $deliveryDays = [];
-            foreach ($bagItems as $bagItem) {
-                if (!in_array($bagItem['delivery_day'], $deliveryDays)) {
-                    $deliveryDay = $store
-                        ->deliveryDays()
-                        ->where([
-                            'day' => $bagItem['delivery_day']['day'],
-                            'type' => $bagItem['delivery_day']['type']
-                        ])
-                        ->first();
-                    if (
-                        $deliveryDay->isPastCutoff(
-                            $bagItem['delivery_day']['day_friendly'],
-                            $bagItem['delivery_day']['type']
-                        )
-                    ) {
-                        $deliveryDay['past_cutoff'] = true;
-                    } else {
-                        $deliveryDay['past_cutoff'] = false;
+            if ($store) {
+                $deliveryDays = [];
+                foreach ($bagItems as $bagItem) {
+                    if (!in_array($bagItem['delivery_day'], $deliveryDays)) {
+                        $deliveryDay = $store
+                            ->deliveryDays()
+                            ->where([
+                                'day' => $bagItem['delivery_day']['day'],
+                                'type' => $bagItem['delivery_day']['type']
+                            ])
+                            ->first();
+                        if (
+                            $deliveryDay->isPastCutoff(
+                                $bagItem['delivery_day']['day_friendly'],
+                                $bagItem['delivery_day']['type']
+                            )
+                        ) {
+                            $deliveryDay['past_cutoff'] = true;
+                        } else {
+                            $deliveryDay['past_cutoff'] = false;
+                        }
+                        $deliveryDay['formattedDayFriendly'] =
+                            $bagItem['delivery_day']['day_friendly'];
+                        $deliveryDays[] = $deliveryDay;
                     }
-                    $deliveryDay['formattedDayFriendly'] =
-                        $bagItem['delivery_day']['day_friendly'];
-                    $deliveryDays[] = $deliveryDay;
                 }
-            }
-            foreach ($deliveryDays as $deliveryDay) {
-                if ($deliveryDay['past_cutoff']) {
-                    Artisan::call('cache:clear');
-                    $dayFriendly = $deliveryDay['formattedDayFriendly'];
-                    return response()->json(
-                        [
-                            'message' =>
-                                'Orders for ' .
-                                Carbon::parse($dayFriendly)->format(
-                                    'D, m/d/y'
-                                ) .
-                                ' have unfortunately passed the cutoff. Day has been removed from your bag. Refreshing the page in 5 seconds.',
-                            'error' => 'past_cutoff_delivery_day',
-                            'deliveryDay' => $dayFriendly
-                        ],
-                        400
-                    );
+                foreach ($deliveryDays as $deliveryDay) {
+                    if ($deliveryDay['past_cutoff']) {
+                        Artisan::call('cache:clear');
+                        $dayFriendly = $deliveryDay['formattedDayFriendly'];
+                        return response()->json(
+                            [
+                                'message' =>
+                                    'Orders for ' .
+                                    Carbon::parse($dayFriendly)->format(
+                                        'D, m/d/y'
+                                    ) .
+                                    ' have unfortunately passed the cutoff. Day has been removed from your bag. Refreshing the page in 5 seconds.',
+                                'error' => 'past_cutoff_delivery_day',
+                                'deliveryDay' => $dayFriendly
+                            ],
+                            400
+                        );
+                    }
                 }
             }
         }

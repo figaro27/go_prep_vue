@@ -329,6 +329,12 @@
                   >Email Customer Receipt</a
                 >
                 <a
+                  v-if="store.modules.customerSurvey"
+                  class="dropdown-item"
+                  @click="emailSurvey(props.row.id)"
+                  >Email Survey</a
+                >
+                <a
                   class="dropdown-item"
                   v-if="
                     props.row.coolerDeposit > 0 &&
@@ -507,6 +513,8 @@
                 >Charge</b-btn
               >
               <b-form-input
+                type="number"
+                min="0"
                 v-model="chargeAmount"
                 placeholder="$0.00"
                 class="d-inline width-100"
@@ -543,6 +551,7 @@
                 placeholder="$0.00"
                 class="d-inline width-100"
                 type="number"
+                min="0"
               ></b-form-input>
               <img
                 v-b-popover.hover="
@@ -689,6 +698,22 @@
                   'Customers automatically receive email receipts after they checkout. This button would send a second copy if they didn\'t receive the first for any reason.'
                 "
                 title="Email Receipt"
+                src="/images/store/popover.png"
+                class="popover-size d-inline"
+              />
+            </div>
+            <div v-if="store.modules.customerSurvey">
+              <b-btn
+                class="btn mb-2 white-text d-inline"
+                variant="success"
+                @click="emailSurvey(order.id)"
+                >Email Survey</b-btn
+              >
+              <img
+                v-b-popover.hover="
+                  'Sends an email prompting the customer to click a link and fill out your feedback survey. You may already have this set to automatically send in your settings on the Survey page.'
+                "
+                title="Email Survey"
                 src="/images/store/popover.png"
                 class="popover-size d-inline"
               />
@@ -1934,6 +1959,11 @@ export default {
     },
     emailCustomerReceipt(id) {
       axios.post("/api/me/emailCustomerReceipt", { id: id }).then(resp => {
+        this.$toastr.s("Customer emailed.");
+      });
+    },
+    emailSurvey(id) {
+      axios.post("/api/me/emailSurvey", { id: id }).then(resp => {
         this.$toastr.s("Customer emailed.");
       });
     },

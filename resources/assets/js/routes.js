@@ -9,6 +9,7 @@ import AdminLogin from "./views/AdminLogin.vue";
 import Register from "./views/Register.vue";
 import Forgot from "./views/ForgotPassword.vue";
 import Reset from "./views/ResetPassword.vue";
+import Feedback from "./views/Feedback.vue";
 
 import CustomerHome from "./views/Customer/Home.vue";
 import CustomerBag from "./views/Customer/Bag.vue";
@@ -114,6 +115,11 @@ let routes = [
     beforeEnter: (to, from, next) => {
       window.location = window.app.front_url;
     }
+  },
+  {
+    path: "/feedback",
+    component: Feedback,
+    name: "feedback"
   },
   {
     path: "/customer/bag",

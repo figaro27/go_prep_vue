@@ -1631,6 +1631,26 @@ class OrderController extends StoreController
         }
     }
 
+    public function emailSurvey(Request $request)
+    {
+        // Send email to customer
+        $order = Order::where('id', $request->get('id'))->first();
+        $customerUser = User::where('id', $order->user_id)->first();
+        $customerUser->email = $order->customer_email;
+        $url = $this->store->url . '/feedback?order=' . $order->order_number;
+        try {
+            $customerUser->sendNotification('survey', [
+                'order' => $order ?? null,
+                'pickup' => $order->pickup ?? null,
+                'url' => $url,
+                'details' => $order->store->details
+            ]);
+            $order->surveySent = true;
+            $order->update();
+        } catch (\Exception $e) {
+        }
+    }
+
     public function getLineItemOrders($order_id)
     {
         return LineItemOrder::where('order_id', $order_id)

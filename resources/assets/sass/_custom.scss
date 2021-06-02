@@ -561,6 +561,12 @@ body.sidebar-minimized {
   cursor: pointer !important;
 }
 
+.text-underline {
+  border-bottom: 1px solid #d3d3d3;
+  display: inline-block;
+  line-height: 1.4;
+}
+
 .dbl-underline {
   padding-bottom: 4px !important;
   // font-family: "Montserrat", sans-serif !important;
@@ -1709,6 +1715,22 @@ body.forgotresettoken {
   font-size: 18px !important;
 }
 
+.font-19 {
+  font-size: 19px !important;
+}
+
+.font-20 {
+  font-size: 20px !important;
+}
+
+.font-21 {
+  font-size: 21px !important;
+}
+
+.font-22 {
+  font-size: 22px !important;
+}
+
 .checkoutArea li input,
 .delivery-select,
 .vs__dropdown-toggle {
@@ -1810,4 +1832,20 @@ body.forgotresettoken {
 
 .transparent-btn {
   background-color: #ffffff !important;
+}
+
+.stars {
+  padding: 0px;
+  margin: 0px;
+  position: relative;
+  right: 4px;
+}
+
+.surveyLabel legend {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.link-color {
+  color: #3e9fff !important;
 }

@@ -19,6 +19,18 @@
         <b-tab title="Purchased Gift Cards">
           <gift-cards></gift-cards>
         </b-tab>
+        <b-tab
+          title="Customer Survey"
+          v-if="
+            store.id === 3 ||
+              store.id === 108 ||
+              store.id === 109 ||
+              store.id === 110 ||
+              store.id === 278
+          "
+        >
+          <survey></survey>
+        </b-tab>
       </b-tabs>
     </div>
   </div>
@@ -36,6 +48,7 @@ import Promotions from "../../components/Marketing/Promotions";
 import Referrals from "../../components/Marketing/Referrals";
 import Coupons from "../../components/Marketing/Coupons";
 import GiftCards from "../../components/Marketing/GiftCards";
+import Survey from "../../components/Marketing/Survey";
 
 export default {
   components: {
@@ -45,7 +58,8 @@ export default {
     Referrals,
     Promotions,
     Coupons,
-    GiftCards
+    GiftCards,
+    Survey
   },
   mixins: [checkDateRange],
   data() {

@@ -41,6 +41,8 @@ foreach (
                 'removePastDeliveryDays',
                 'DeliveryDayController@removePastDeliveryDays'
             );
+            Route::post('getSurvey', 'SurveyController@getSurvey');
+            Route::post('submitSurvey', 'SurveyController@submitSurvey');
         }
     );
     //Auth::routes();
@@ -401,6 +403,10 @@ foreach (
                                 'OrderController@emailCustomerReceipt'
                             );
                             Route::post(
+                                'emailSurvey',
+                                'OrderController@emailSurvey'
+                            );
+                            Route::post(
                                 'coolerReturned',
                                 'OrderController@coolerReturned'
                             );
@@ -532,6 +538,18 @@ foreach (
                             Route::post(
                                 'updateProdGroups',
                                 'ProductionGroupController@updateProdGroups'
+                            );
+                            Route::resource(
+                                'surveyQuestions',
+                                'SurveyQuestionController'
+                            );
+                            Route::resource(
+                                'surveyResponses',
+                                'SurveyResponseController'
+                            );
+                            Route::post(
+                                'getSurveyResponse',
+                                'SurveyResponseController@getSurveyResponse'
                             );
                             Route::resource(
                                 'productionGroups',

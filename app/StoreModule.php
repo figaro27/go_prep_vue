@@ -31,7 +31,8 @@ class StoreModule extends Model
         'guestCheckout' => 'boolean',
         'noPromosOnSubscriptions' => 'boolean',
         'strictCoupons' => 'boolean',
-        'cartReminders' => 'boolean'
+        'cartReminders' => 'boolean',
+        'customerSurvey' => 'boolean'
     ];
 
     protected $guarded = [];

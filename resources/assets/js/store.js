@@ -194,6 +194,12 @@ const state = {
     purchased_gift_cards: {
       data: {}
     },
+    survey_questions: {
+      data: {}
+    },
+    survey_responses: {
+      data: {}
+    },
     pickupLocations: {
       data: {}
     },
@@ -1065,6 +1071,14 @@ const mutations = {
     state.store.purchased_gift_cards.data = purchased_gift_cards;
   },
 
+  storeSurveyQuestions(state, { survey_questions }) {
+    state.store.survey_questions.data = survey_questions;
+  },
+
+  storeSurveyResponses(state, { survey_responses }) {
+    state.store.survey_responses.data = survey_responses;
+  },
+
   storePickupLocations(state, { pickupLocations }) {
     state.store.pickupLocations.data = pickupLocations;
   },
@@ -1823,6 +1837,26 @@ const actions = {
     } catch (e) {}
 
     try {
+      if (!_.isEmpty(data.store.survey_questions)) {
+        let survey_questions = data.store.survey_questions;
+
+        if (!_.isEmpty(survey_questions)) {
+          commit("storeSurveyQuestions", { survey_questions });
+        }
+      }
+    } catch (e) {}
+
+    try {
+      if (!_.isEmpty(data.store.survey_responses)) {
+        let survey_responses = data.store.survey_responses;
+
+        if (!_.isEmpty(survey_responses)) {
+          commit("storeSurveyResponses", { survey_responses });
+        }
+      }
+    } catch (e) {}
+
+    try {
       if (
         !_.isEmpty(data.store.customers) &&
         _.isObject(data.store.customers)
@@ -2446,6 +2480,28 @@ const actions = {
       commit("storePurchasedGiftCards", { purchased_gift_cards: data });
     } else {
       throw new Error("Failed to retrieve gift cards");
+    }
+  },
+
+  async refreshStoreSurveyQuestions({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/surveyQuestions");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      commit("storeSurveyQuestions", { survey_questions: data });
+    } else {
+      throw new Error("Failed to retrieve survey questions");
+    }
+  },
+
+  async refreshStoreSurveyResponses({ commit, state }, args = {}) {
+    const res = await axios.get("/api/me/surveyResponses");
+    const { data } = await res;
+
+    if (_.isArray(data)) {
+      commit("storeSurveyResponses", { survey_responses: data });
+    } else {
+      throw new Error("Failed to retrieve survey responses");
     }
   },
 
@@ -4135,6 +4191,20 @@ const getters = {
   storePurchasedGiftCards: state => {
     try {
       return state.store.purchased_gift_cards.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeSurveyQuestions: state => {
+    try {
+      return state.store.survey_questions.data || {};
+    } catch (e) {
+      return {};
+    }
+  },
+  storeSurveyResponses: state => {
+    try {
+      return state.store.survey_responses.data || {};
     } catch (e) {
       return {};
     }
