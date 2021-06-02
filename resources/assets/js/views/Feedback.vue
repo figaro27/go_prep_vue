@@ -3,12 +3,6 @@
     <div class="main-customer-container box-shadow top-fill">
       <div class="row" v-if="!responded && !showThankYou">
         <div class="col-md-12" v-if="order">
-          <b-form-rating
-            v-model="value"
-            variant="warning"
-            class="mb-2"
-          ></b-form-rating>
-
           <p class="strong font-20">Hi {{ order.customer_firstname }},</p>
           <p class="font-17">
             Thank you for your order #{{ order.order_number }} from
@@ -169,7 +163,6 @@ export default {
   components: {},
   data() {
     return {
-      value: null,
       order: null,
       surveyQuestions: null,
       surveyResponses: {},
@@ -433,21 +426,7 @@ export default {
             item.meal_package_order_id === meal_package_item.id &&
             !item.hidden
           ) {
-            const meal = this.getStoreMeal(item.meal_id);
-            if (!meal) {
-              return null;
-            }
-            const size = meal.getSize(item.meal_size_id);
-            const title = meal.getTitle(
-              true,
-              size,
-              item.components,
-              item.addons,
-              item.special_instructions,
-              false,
-              item.customTitle,
-              item.customSize
-            );
+            const title = item.html_title;
 
             data.push({
               // delivery_date: item.delivery_date
@@ -457,7 +436,6 @@ export default {
                 ? moment(item.delivery_date.date).format("dddd, MMM Do")
                 : null,
               //meal: meal.title,
-              size: size ? size.title : meal.default_size_title,
               meal: title,
               quantity: item.quantity,
               unit_price: "In Package",
@@ -476,31 +454,12 @@ export default {
 
       items.forEach(item => {
         if (item.meal_package_order_id === null && !item.hidden) {
-          const meal = this.getStoreMeal(item.meal_id);
-          if (!meal) {
-            return null;
-          }
-          const size = item.customSize
-            ? { title: item.customSize }
-            : meal.getSize(item.meal_size_id);
-          const title = item.customTitle
-            ? item.customTitle
-            : meal.getTitle(
-                true,
-                size,
-                item.components,
-                item.addons,
-                item.special_instructions,
-                false,
-                item.customTitle,
-                item.customSize
-              );
+          const title = item.customTitle ? item.customTitle : item.html_title;
           data.push({
             delivery_date: item.delivery_date
               ? moment(item.delivery_date.date).format("dddd, MMM Do")
               : null,
             //meal: meal.title,
-            size: size ? size.title : meal.default_size_title,
             meal: title,
             quantity: item.quantity,
             unit_price:
