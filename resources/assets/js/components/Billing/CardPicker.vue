@@ -60,7 +60,7 @@
       v-if="gateway === 'stripe' || billingPage"
     >
       <card
-        v-if="!isLoading"
+        v-if="!isLoading && stripeKey && showCard"
         class="stripe-card"
         :class="{ newCard }"
         :stripe="stripeKey"
@@ -174,7 +174,7 @@
   }
 }
 </style>
-
+<script src="https://js.stripe.com/v3/"></script>
 <script>
 import { createToken } from "vue-stripe-elements-plus";
 import InlineCreditCardField from "vue-credit-card-field/src/Components/InlineCreditCardField.vue";
@@ -220,7 +220,8 @@ export default {
       addingCard: false,
       card: null,
       newCard: null,
-      saveCard: true
+      saveCard: true,
+      showCard: false
     };
   },
   computed: {
@@ -241,6 +242,7 @@ export default {
     if (this.store.details.country !== "US") {
       this.hidePostalCode = true;
     }
+    this.showCard = true;
   },
   methods: {
     ...mapActions(["refreshCards", "refreshSubscriptions"]),

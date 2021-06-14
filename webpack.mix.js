@@ -42,6 +42,10 @@ if (process.env.NODE_ENV === "production") {
       ]
     }
   });
+} else {
+  mix.webpackConfig({
+    devtool: "inline-source-map"
+  });
 }
 
 mix
